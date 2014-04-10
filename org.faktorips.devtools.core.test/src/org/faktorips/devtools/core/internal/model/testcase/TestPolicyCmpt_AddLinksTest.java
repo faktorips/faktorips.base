@@ -1145,7 +1145,7 @@ public class TestPolicyCmpt_AddLinksTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)createAssociation((IType)source,
                 (IType)target, minCardinality, maxCardinality);
         association.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
-        association.setConfigured(true);
+        association.setConfigurable(true);
         return association;
     }
 

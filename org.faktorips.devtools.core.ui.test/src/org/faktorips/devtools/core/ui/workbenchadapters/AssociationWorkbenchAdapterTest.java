@@ -116,7 +116,7 @@ public class AssociationWorkbenchAdapterTest extends AbstractIpsPluginTest {
     @Test
     public void testGetImageDescriptor_OverlayProductRelevant() throws Exception {
         when(aPolicyAssociation.getAssociationType()).thenReturn(AssociationType.ASSOCIATION);
-        when(aPolicyAssociation.isConfigured()).thenReturn(true);
+        when(aPolicyAssociation.isConfigurable()).thenReturn(true);
         when(aPolicyAssociation.getIpsProject()).thenReturn(ipsProject);
         when(aPolicyAssociation.isConstrainedByProductStructure(ipsProject)).thenReturn(true);
 

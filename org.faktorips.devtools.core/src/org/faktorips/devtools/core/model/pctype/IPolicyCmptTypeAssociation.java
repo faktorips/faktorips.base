@@ -50,7 +50,7 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
 
     public static final String PROPERTY_MATCHING_ASSOCIATION_NAME = "matchingAssociationName"; //$NON-NLS-1$
 
-    public static final String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
+    public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -491,9 +491,9 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
     /**
      * Setting whether this association is configured by product component or not.
      * 
-     * @param configured True to mark this association to be configured by product component
+     * @param configurable True to mark this association to be configured by product component
      */
-    void setConfigured(boolean configured);
+    void setConfigurable(boolean configurable);
 
     /**
      * Getting whether this association is configured by product component or not. A
@@ -503,6 +503,6 @@ public interface IPolicyCmptTypeAssociation extends IAssociation {
      * 
      * @return true if this association is marked as being configured by product component
      */
-    boolean isConfigured();
+    boolean isConfigurable();
 
 }

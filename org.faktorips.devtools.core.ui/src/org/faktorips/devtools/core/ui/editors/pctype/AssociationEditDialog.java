@@ -454,9 +454,10 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         private void createConfigurationGroup(Group groupMatching) {
             final Checkbox checkbox = getToolkit().createCheckbox(groupMatching,
                     Messages.AssociationEditDialog_check_configuration);
-            getBindingContext().bindContent(checkbox, pmoAssociation, PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURED);
+            getBindingContext().bindContent(checkbox, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE);
             getBindingContext().add(
-                    new ControlPropertyBinding(checkbox, association, IPolicyCmptTypeAssociation.PROPERTY_CONFIGURED,
+                    new ControlPropertyBinding(checkbox, association, IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE,
                             Boolean.TYPE) {
 
                         @Override
@@ -481,7 +482,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public static final String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
         public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
-        public static final String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
+        public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
 
         private boolean matchingExplicitly;
 
@@ -647,16 +648,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         /**
-         * @param configured The configured to set.
+         * @param configurable The configured to set.
          */
-        public void setConfigured(boolean configured) {
-            getAssociation().setConfigured(configured);
+        public void setConfigurable(boolean configurable) {
+            getAssociation().setConfigurable(configurable);
         }
 
         /**
          * @return Returns the configured.
          */
-        public boolean isConfigured() {
+        public boolean isConfigurable() {
             try {
                 if (!getAssociation().isConstrainedByProductStructure(ipsProject)) {
                     return false;
@@ -664,7 +665,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            return getAssociation().isConfigured();
+            return getAssociation().isConfigurable();
         }
 
         /**
