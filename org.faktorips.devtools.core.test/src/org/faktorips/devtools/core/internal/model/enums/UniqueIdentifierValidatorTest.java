@@ -46,12 +46,8 @@ public class UniqueIdentifierValidatorTest {
 
     @Before
     public void createUniqueIdentifierValidator() throws Exception {
-        uniqueIdentifierValidator = new UniqueIdentifierValidator(container);
-    }
-
-    @Before
-    public void initContainer() {
         when(container.getIpsModel()).thenReturn(ipsModel);
+        uniqueIdentifierValidator = new UniqueIdentifierValidator(container);
     }
 
     @Test

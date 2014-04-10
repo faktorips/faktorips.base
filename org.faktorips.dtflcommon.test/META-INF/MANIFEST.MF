@@ -7,7 +7,6 @@ Fragment-Host: org.faktorips.dtflcommon;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.mockito.mockito-all;bundle-version="1.8.5"
-Import-Package: org.hamcrest.core;version="1.1.0",
- org.junit;version="4.5.0",
+Import-Package: org.junit;version="4.5.0",
  org.junit.matchers;version="4.5.0",
  org.junit.runner;version="4.5.0"

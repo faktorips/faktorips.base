@@ -496,7 +496,7 @@ public class EnumAttributeTest extends AbstractIpsEnumPluginTest {
         ValueDatatype datatype = genderEnumAttributeId.findDatatypeIgnoreEnumContents(ipsProject);
 
         assertNotSame(genderEnumAttributeId.findDatatype(ipsProject), datatype);
-        assertThat(datatype, is(EnumTypeDatatypeAdapter.class));
+        assertThat(datatype, instanceOf(EnumTypeDatatypeAdapter.class));
         assertNull(((EnumTypeDatatypeAdapter)datatype).getEnumContent());
         assertThat((EnumType)((EnumTypeDatatypeAdapter)datatype).getEnumType(), is(paymentMode));
     }

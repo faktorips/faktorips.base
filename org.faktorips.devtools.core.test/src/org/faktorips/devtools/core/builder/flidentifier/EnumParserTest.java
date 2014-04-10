@@ -42,14 +42,10 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Before
     public void createEnumParser() throws Exception {
-        enumParser = new EnumParser(getExpression(), getIpsProject());
-    }
-
-    @Before
-    public void mockEnumDatatype() {
         when(getExpression().getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
         when(enumDatatype.getName()).thenReturn(MY_ENUM_CLASS);
         when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUM_VALUE });
+        enumParser = new EnumParser(getExpression(), getIpsProject());
     }
 
     @Test
