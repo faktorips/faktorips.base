@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -491,9 +492,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             try {
                 return getAssociation().isConstrainedByProductStructure(ipsProject);
             } catch (CoreException e) {
-                e.printStackTrace();
+                throw new CoreRuntimeException(e);
             }
-            return false;
         }
 
         public String getQualificationLabel() {
