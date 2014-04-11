@@ -187,7 +187,7 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
             if (association instanceof IPolicyCmptTypeAssociation) {
                 IPolicyCmptTypeAssociation polCmptTypeAsso = (IPolicyCmptTypeAssociation)association;
                 productRelevant = polCmptTypeAsso.isConstrainedByProductStructure(getIpsProject())
-                        && polCmptTypeAsso.isConfigured();
+                        && polCmptTypeAsso.isConfigurable();
             }
             modelTypeAssociation.setAttribute(IModelTypeAssociation.PROPERTY_PRODUCT_RELEVANT,
                     Boolean.toString(productRelevant));

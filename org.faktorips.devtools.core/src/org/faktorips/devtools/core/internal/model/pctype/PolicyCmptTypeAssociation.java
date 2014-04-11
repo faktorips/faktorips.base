@@ -45,7 +45,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private boolean qualified = false;
 
-    private boolean configured = true;
+    private boolean configurable = true;
 
     private String inverseAssociation = ""; //$NON-NLS-1$
 
@@ -404,21 +404,21 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
     }
 
     /**
-     * @param configured The configured to set.
+     * @param configurable The configured to set.
      */
     @Override
-    public void setConfigured(boolean configured) {
-        boolean oldValue = this.configured;
-        this.configured = configured;
-        valueChanged(oldValue, configured);
+    public void setConfigurable(boolean configurable) {
+        boolean oldValue = this.configurable;
+        this.configurable = configurable;
+        valueChanged(oldValue, configurable);
     }
 
     /**
      * @return Returns the configured.
      */
     @Override
-    public boolean isConfigured() {
-        return configured;
+    public boolean isConfigurable() {
+        return configurable;
     }
 
     @Override
@@ -689,8 +689,8 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
             IAssociation constrainedAssociation = findConstrainedAssociation(ipsProject);
             if (constrainedAssociation != null && isQualified() != constrainedAssociation.isQualified()) {
                 list.newError(MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH,
-                        Messages.PolicyCmptTypeAssociation_errorMsg_constrainedPropertyQualifiedMismatch, new ObjectProperty(this,
-                                PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_QUALIFIED));
+                        Messages.PolicyCmptTypeAssociation_errorMsg_constrainedPropertyQualifiedMismatch,
+                        new ObjectProperty(this, PROPERTY_CONSTRAIN), new ObjectProperty(this, PROPERTY_QUALIFIED));
             }
         }
     }
@@ -734,6 +734,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         sharedAssociation = Boolean.parseBoolean(element.getAttribute(PROPERTY_SHARED_ASSOCIATION));
         matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
         matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
+        configurable = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE));
     }
 
     @Override
@@ -744,6 +745,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         newElement.setAttribute(PROPERTY_SHARED_ASSOCIATION, Boolean.toString(sharedAssociation));
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME, matchingAssociationName);
         newElement.setAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE, getMatchingAssociationSource());
+        newElement.setAttribute(PROPERTY_CONFIGURABLE, Boolean.toString(isConfigurable()));
     }
 
     @Override

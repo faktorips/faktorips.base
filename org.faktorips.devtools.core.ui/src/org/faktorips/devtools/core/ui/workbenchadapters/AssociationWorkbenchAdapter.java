@@ -60,7 +60,7 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
         if (association instanceof IPolicyCmptTypeAssociation) {
             try {
                 IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
-                if (polAssociation.isConfigured()
+                if (polAssociation.isConfigurable()
                         && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
                     overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_OVR;
                 }

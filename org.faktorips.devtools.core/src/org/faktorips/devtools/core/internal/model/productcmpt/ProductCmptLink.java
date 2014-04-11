@@ -346,7 +346,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
         IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
                 .findMatchingPolicyCmptTypeAssociation(ipsProject);
-        return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigured();
+        return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
 
     }
 

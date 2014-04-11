@@ -32,6 +32,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -452,24 +453,12 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         private void createConfigurationGroup(Group groupMatching) {
-            final Checkbox checkbox = getToolkit().createCheckbox(groupMatching,
+            Checkbox checkbox = getToolkit().createCheckbox(groupMatching,
                     Messages.AssociationEditDialog_check_configuration);
-            getBindingContext().bindContent(checkbox, pmoAssociation, PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURED);
-            getBindingContext().add(
-                    new ControlPropertyBinding(checkbox, association, IPolicyCmptTypeAssociation.PROPERTY_CONFIGURED,
-                            Boolean.TYPE) {
-
-                        @Override
-                        public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                            try {
-                                boolean constrainedByProductStructure = association
-                                        .isConstrainedByProductStructure(ipsProject);
-                                checkbox.setEnabled(constrainedByProductStructure);
-                            } catch (CoreException e) {
-                                IpsPlugin.log(e);
-                            }
-                        }
-                    });
+            getBindingContext().bindContent(checkbox, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE);
+            getBindingContext().bindEnabled(checkbox, pmoAssociation,
+                    PmoPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED);
         }
     }
 
@@ -481,8 +470,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         public static final String PROPERTY_QUALIFICATION_POSSIBLE = "qualificationPossible"; //$NON-NLS-1$
         public static final String PROPERTY_MATCHING_EXPLICITLY = "matchingExplicitly"; //$NON-NLS-1$
         public static final String PROPERTY_INFO_LABEL = "infoLabel"; //$NON-NLS-1$
-        public static final String PROPERTY_CONFIGURED = "configured"; //$NON-NLS-1$
-
+        public static final String PROPERTY_CONFIGURABLE = "configurable"; //$NON-NLS-1$
+        public static final String PROPERTY_CONFIGURABLE_CHECKBOX_ENABLED = "configurableCheckboxEnabled"; //$NON-NLS-1$
         private boolean matchingExplicitly;
 
         private String actualConfiguredAssociationSourceName;
@@ -497,6 +486,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
         private IPolicyCmptTypeAssociation getAssociation() {
             return (IPolicyCmptTypeAssociation)super.getIpsObjectPartContainer();
+        }
+
+        public boolean isConfigurableCheckboxEnabled() {
+            try {
+                return getAssociation().isConstrainedByProductStructure(ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
         public String getQualificationLabel() {
@@ -647,16 +644,16 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         }
 
         /**
-         * @param configured The configured to set.
+         * @param configurable The configured to set.
          */
-        public void setConfigured(boolean configured) {
-            getAssociation().setConfigured(configured);
+        public void setConfigurable(boolean configurable) {
+            getAssociation().setConfigurable(configurable);
         }
 
         /**
          * @return Returns the configured.
          */
-        public boolean isConfigured() {
+        public boolean isConfigurable() {
             try {
                 if (!getAssociation().isConstrainedByProductStructure(ipsProject)) {
                     return false;
@@ -664,7 +661,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             } catch (CoreException e) {
                 IpsPlugin.log(e);
             }
-            return getAssociation().isConfigured();
+            return getAssociation().isConfigurable();
         }
 
         /**
@@ -949,7 +946,5 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             return group;
         }
-
     }
-
 }

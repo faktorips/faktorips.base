@@ -15,6 +15,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.HashSet;
 import java.util.Locale;
@@ -84,7 +87,7 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAssociation inverseAssociation = association.newInverseAssociation();
         inverseAssociation.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
         inverseAssociation.setConstrain(false);
-        association.setConfigured(true);
+        association.setConfigurable(true);
 
         assertFalse(inverseAssociation.isConstrain());
         assertFalse(association.isConstrain());
@@ -1157,4 +1160,24 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
         assertNull(messageList.getMessageByCode(IPolicyCmptTypeAssociation.MSGCODE_CONSTRAINED_QUALIFIER_MISMATCH));
     }
 
+    @Test
+    public void test_propertiesToXMLConfigurable() {
+        Element element = mock(Element.class);
+
+        association.setConfigurable(true);
+
+        association.propertiesToXml(element);
+        verify(element).setAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE, Boolean.toString(true));
+    }
+
+    @Test
+    public void test_initFromXMLConfigurable() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
+
+        association.setConfigurable(true);
+
+        association.initPropertiesFromXml(element, "aggr");
+        verify(element).getAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE);
+    }
 }
