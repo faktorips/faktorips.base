@@ -52,7 +52,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Roman Grutza
  */
-public class ArchiveComposite extends Composite {
+public class ArchiveComposite extends DataChangeableComposite {
 
     private UIToolkit toolkit;
     private TableViewer tableViewer;
@@ -68,25 +68,25 @@ public class ArchiveComposite extends Composite {
      */
     public ArchiveComposite(Composite parent) {
         super(parent, SWT.NONE);
-    
+
         toolkit = new UIToolkit(null);
-    
+
         setLayout(new GridLayout(1, true));
-    
+
         Composite tableWithButtons = toolkit.createGridComposite(this, 2, false, true);
         tableWithButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    
+
         IpsArchiveAdapter archiveAdapter = new IpsArchiveAdapter();
-    
+
         Label tableViewerLabel = new Label(tableWithButtons, SWT.NONE);
         tableViewerLabel.setText(Messages.ArchiveComposite_viewer_label);
         GridData gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
         gd.horizontalSpan = 2;
         tableViewerLabel.setLayoutData(gd);
-    
+
         tableViewer = createViewer(tableWithButtons, archiveAdapter);
         tableViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-    
+
         Composite buttons = toolkit.createComposite(tableWithButtons);
         buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
         GridLayout buttonLayout = new GridLayout(1, true);
@@ -259,6 +259,12 @@ public class ArchiveComposite extends Composite {
                 }
             });
         }
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        table.setEnabled(changeable);
     }
 
     private class IpsArchiveAdapter implements SelectionListener, ISelectionChangedListener {

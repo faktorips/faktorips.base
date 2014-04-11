@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
@@ -58,13 +59,14 @@ import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.FolderSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRefControl;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
  * Composite for modifying IPS source folders
  * 
  * @author Roman Grutza
  */
-public class SrcFolderComposite extends Composite {
+public class SrcFolderComposite extends DataChangeableComposite {
 
     private UIToolkit toolkit;
     private TreeViewer treeViewer;
@@ -314,64 +316,64 @@ public class SrcFolderComposite extends Composite {
     }
 
     private void editSelection() {
-        ISelection selection = treeViewer.getSelection();
-        if (selection.isEmpty()) {
+        TypedSelection<IIpsObjectPathEntryAttribute> typedSelection = new TypedSelection<IIpsObjectPathEntryAttribute>(
+                IIpsObjectPathEntryAttribute.class, treeViewer.getSelection());
+
+        if (!typedSelection.isValid()) {
             return;
         }
 
-        if (selection instanceof ITreeSelection) {
-            ITreeSelection treeSelection = (ITreeSelection)selection;
-            Object selectedElement = treeSelection.getFirstElement();
+        TreeItem[] treeItems = treeViewer.getTree().getSelection();
+        IIpsSrcFolderEntry srcFolderEntry = (IIpsSrcFolderEntry)treeItems[0].getParentItem().getData();
 
-            TreeItem[] treeItems = treeViewer.getTree().getSelection();
-            IIpsSrcFolderEntry srcFolderEntry = (IIpsSrcFolderEntry)treeItems[0].getParentItem().getData();
+        IIpsObjectPathEntryAttribute attribute = typedSelection.getElement();
 
-            if (selectedElement instanceof IpsObjectPathEntryAttribute) {
-                IIpsObjectPathEntryAttribute attribute = (IIpsObjectPathEntryAttribute)selectedElement;
-
-                createEditDialogForEntryAttribute(srcFolderEntry, attribute);
-            }
+        if (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources()) {
+            editSelectionFolder(srcFolderEntry, attribute);
+        } else if (attribute.isPackageNameForDerivedSources()) {
+            editSelectionPackageDerived(srcFolderEntry, attribute);
+        } else if (attribute.isPackageNameForMergableSources()) {
+            editSelectionPackageMergable(srcFolderEntry, attribute);
+        } else if (attribute.isTocPath()) {
+            editSelectionTocPath(srcFolderEntry);
         }
         treeViewer.refresh();
     }
 
-    private void createEditDialogForEntryAttribute(IIpsSrcFolderEntry srcFolderEntry,
-            IIpsObjectPathEntryAttribute attribute) {
-        if (attribute.isFolderForDerivedSources() || attribute.isFolderForMergableSources()) {
-            OutputFolderEditDialog editDialog = new OutputFolderEditDialog(getShell(), srcFolderEntry,
-                    attribute);
-            if (editDialog.open() == Window.OK) {
-                IContainer newOutputFolder = editDialog.getSelectedFolder();
-                if (attribute.isFolderForDerivedSources()) {
-                    srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles((IFolder)newOutputFolder
-                            .getAdapter(IFolder.class));
-                } else {
-                    srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles((IFolder)newOutputFolder
-                            .getAdapter(IFolder.class));
-                }
-                dataChanged = true;
+    private void editSelectionFolder(IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+        OutputFolderEditDialog editDialog = new OutputFolderEditDialog(getShell(), srcFolderEntry, attribute);
+        if (editDialog.open() == Window.OK) {
+            IContainer newOutputFolder = editDialog.getSelectedFolder();
+            if (attribute.isFolderForDerivedSources()) {
+                srcFolderEntry.setSpecificOutputFolderForDerivedJavaFiles((IFolder)newOutputFolder
+                        .getAdapter(IFolder.class));
+            } else {
+                srcFolderEntry.setSpecificOutputFolderForMergableJavaFiles((IFolder)newOutputFolder
+                        .getAdapter(IFolder.class));
             }
-        } else if (attribute.isPackageNameForDerivedSources()) {
-
-            PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
-            if (editDialog.open() == Window.OK) {
-                String newPackageName = editDialog.getPackageName();
-                srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
-                dataChanged = true;
-            }
-        } else if (attribute.isPackageNameForMergableSources()) {
-            PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
-            if (editDialog.open() == Window.OK) {
-                String newPackageName = editDialog.getPackageName();
-                srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
-                dataChanged = true;
-            }
-        } else if (attribute.isTocPath()) {
-            createTocPathDialog(srcFolderEntry);
+            dataChanged = true;
         }
     }
 
-    private void createTocPathDialog(IIpsSrcFolderEntry srcFolderEntry) {
+    private void editSelectionPackageDerived(IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+        PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
+        if (editDialog.open() == Window.OK) {
+            String newPackageName = editDialog.getPackageName();
+            srcFolderEntry.setSpecificBasePackageNameForDerivedJavaClasses(newPackageName);
+            dataChanged = true;
+        }
+    }
+
+    private void editSelectionPackageMergable(IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
+        PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
+        if (editDialog.open() == Window.OK) {
+            String newPackageName = editDialog.getPackageName();
+            srcFolderEntry.setSpecificBasePackageNameForMergableJavaClasses(newPackageName);
+            dataChanged = true;
+        }
+    }
+
+    private void editSelectionTocPath(IIpsSrcFolderEntry srcFolderEntry) {
         String tocPath = srcFolderEntry.getBasePackageRelativeTocPath();
         IInputValidator inputValidator = new IInputValidator() {
             @Override
@@ -382,9 +384,8 @@ public class SrcFolderComposite extends Composite {
                 return null;
             }
         };
-        InputDialog newTocPathDialog = new InputDialog(getShell(),
-                Messages.SrcFolderComposite_tocpath_title, Messages.SrcFolderComposite_tocpath_message,
-                tocPath, inputValidator);
+        InputDialog newTocPathDialog = new InputDialog(getShell(), Messages.SrcFolderComposite_tocpath_title,
+                Messages.SrcFolderComposite_tocpath_message, tocPath, inputValidator);
 
         if (newTocPathDialog.open() == Window.OK) {
             srcFolderEntry.setBasePackageRelativeTocPath(newTocPathDialog.getValue());
@@ -427,7 +428,7 @@ public class SrcFolderComposite extends Composite {
                 Composite composite = (Composite)super.createDialogArea(parent);
 
                 Button newSrcFolderButton = new Button(composite, SWT.NONE);
-                newSrcFolderButton.addSelectionListener(new SelectionAdapterExtension());
+                newSrcFolderButton.addSelectionListener(new NewButtonSelectionListener(ipsObjectPath, getShell()));
                 newSrcFolderButton.setText(Messages.SrcFolderComposite_create_new_folder_title);
 
                 return composite;
@@ -515,7 +516,22 @@ public class SrcFolderComposite extends Composite {
         dataChanged = true;
     }
 
-    private final class SelectionAdapterExtension extends SelectionAdapter {
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        tree.setEnabled(changeable);
+    }
+
+    private static class NewButtonSelectionListener extends SelectionAdapter {
+
+        private final IIpsObjectPath ipsObjectPath;
+        private final Shell shell;
+
+        public NewButtonSelectionListener(IIpsObjectPath ipsObjectPath, Shell shell) {
+            this.ipsObjectPath = ipsObjectPath;
+            this.shell = shell;
+        }
+
         @Override
         public void widgetSelected(SelectionEvent event) {
             IInputValidator validator = new IInputValidator() {
@@ -531,7 +547,7 @@ public class SrcFolderComposite extends Composite {
                 }
             };
 
-            InputDialog dialog = new InputDialog(getShell(), Messages.SrcFolderComposite_create_new_folder_title,
+            InputDialog dialog = new InputDialog(shell, Messages.SrcFolderComposite_create_new_folder_title,
                     Messages.SrcFolderComposite_create_new_folder_message,
                     Messages.SrcFolderComposite_create_new_folder_defaultText, validator);
 

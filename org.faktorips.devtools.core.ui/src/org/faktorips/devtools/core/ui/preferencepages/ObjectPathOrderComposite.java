@@ -35,7 +35,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Roman Grutza
  */
-public class ObjectPathOrderComposite extends Composite {
+public class ObjectPathOrderComposite extends DataChangeableComposite {
 
     private IIpsObjectPath ipsObjectPath;
     private UIToolkit toolkit;
@@ -154,13 +154,13 @@ public class ObjectPathOrderComposite extends Composite {
 
     private void moveSelectedEntries(boolean up) {
         Table table = tableViewer.getTable();
-    
+
         int[] selectionIndices = table.getSelectionIndices();
         int[] newSelection = ipsObjectPath.moveEntries(selectionIndices, up);
-    
+
         tableViewer.refresh(false);
         table.setSelection(newSelection);
-    
+
         dataChanged = true;
     }
 
@@ -170,11 +170,11 @@ public class ObjectPathOrderComposite extends Composite {
      */
     private void moveEntriesTopBottom(boolean top) {
         int[] currentSelection = tableViewer.getTable().getSelectionIndices();
-    
+
         if (currentSelection.length == 0) {
             return;
         }
-    
+
         if (top) {
             for (int i = 0; i < currentSelection[currentSelection.length - 1]; i++) {
                 moveSelectedEntries(true);
@@ -211,6 +211,12 @@ public class ObjectPathOrderComposite extends Composite {
                 }
             });
         }
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        tableViewer.getTable().setEnabled(changeable);
     }
 
     // widget action handling

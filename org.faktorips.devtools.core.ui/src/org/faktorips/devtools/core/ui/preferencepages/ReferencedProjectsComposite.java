@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
  * 
  * @author Roman Grutza
  */
-public class ReferencedProjectsComposite extends Composite {
+public class ReferencedProjectsComposite extends DataChangeableComposite {
 
     private UIToolkit toolkit;
     private Table table;
@@ -185,6 +185,12 @@ public class ReferencedProjectsComposite extends Composite {
                 tableViewer.refresh(false);
             }
         }
+    }
+
+    @Override
+    public void setDataChangeable(boolean changeable) {
+        super.setDataChangeable(changeable);
+        table.setEnabled(changeable);
     }
 
     /**
