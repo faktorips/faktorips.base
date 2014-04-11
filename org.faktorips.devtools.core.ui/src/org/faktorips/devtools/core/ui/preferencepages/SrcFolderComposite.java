@@ -364,8 +364,7 @@ public class SrcFolderComposite extends DataChangeableComposite {
         }
     }
 
-    private void editSelectionPackageMergable(IIpsSrcFolderEntry srcFolderEntry,
-            IIpsObjectPathEntryAttribute attribute) {
+    private void editSelectionPackageMergable(IIpsSrcFolderEntry srcFolderEntry, IIpsObjectPathEntryAttribute attribute) {
         PackageNameEditDialog editDialog = new PackageNameEditDialog(getShell(), srcFolderEntry, attribute);
         if (editDialog.open() == Window.OK) {
             String newPackageName = editDialog.getPackageName();

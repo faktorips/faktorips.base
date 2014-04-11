@@ -12,16 +12,7 @@ package org.faktorips.devtools.core.model.ipsobject;
 
 public interface IIpsObjectPart extends IIpsObjectPartContainer {
 
-    /**
-     * The description is no longer a property of {@IIpsObjectPart} but an
-     * {@link IIpsObjectPart} itself.
-     * 
-     * @deprecated Since version 3.1
-     */
-    @Deprecated
-    public final static String PROPERTY_DESCRIPTION = "description"; //$NON-NLS-1$
-
-    public final static String PROPERTY_ID = "id"; //$NON-NLS-1$
+    public static final String PROPERTY_ID = "id"; //$NON-NLS-1$
 
     /**
      * The part's id that uniquely identifies it in it's parent.

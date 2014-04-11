@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -83,9 +82,7 @@ public class AssociationTargetPage extends WizardPage implements IBlockedValidat
     }
 
     private void createDescriptionControl(Composite pageComposite) {
-        Text text = wizard.createDescriptionText(pageComposite, 2);
-        bindingContext.bindContent(text, association, IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
-        visibleProperties.add(IPolicyCmptTypeAssociation.PROPERTY_DESCRIPTION);
+        wizard.createDescriptionText(pageComposite, 2);
     }
 
     @Override
