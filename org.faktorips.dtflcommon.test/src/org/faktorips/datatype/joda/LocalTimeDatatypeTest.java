@@ -10,11 +10,12 @@
 
 package org.faktorips.datatype.joda;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class LocalTimeDatatypeTest extends TestCase {
+public class LocalTimeDatatypeTest {
 
     private LocalTimeDatatype datatype;
 

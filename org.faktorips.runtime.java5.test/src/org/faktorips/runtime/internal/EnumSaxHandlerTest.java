@@ -22,6 +22,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.faktorips.values.InternationalString;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -39,7 +40,7 @@ public class EnumSaxHandlerTest {
         handler = new EnumSaxHandler();
     }
 
-    @Before
+    @After
     public void tearDown() {
         if (is != null) {
             try {

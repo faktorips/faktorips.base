@@ -10,11 +10,11 @@
 
 package org.faktorips.datatype.classtypes;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class BooleanDatatypeTest extends TestCase {
+public class BooleanDatatypeTest {
 
     @Test
     public void testCompare() {

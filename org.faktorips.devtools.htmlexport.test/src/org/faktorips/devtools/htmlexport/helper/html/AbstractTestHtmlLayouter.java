@@ -21,6 +21,7 @@ import org.faktorips.devtools.htmlexport.TestUtil;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.junit.Assert;
 import org.xml.sax.SAXException;
 
 public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
@@ -50,7 +51,7 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
     protected void assertContains(String html, String... containments) {
         for (String string : containments) {
-            assertTrue("Nicht enthalten: " + string, html.contains(string)); //$NON-NLS-1$
+            Assert.assertTrue("Nicht enthalten: " + string, html.contains(string)); //$NON-NLS-1$
         }
     }
 

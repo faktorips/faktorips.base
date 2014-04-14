@@ -12,6 +12,7 @@ package org.faktorips.devtools.htmlexport.helper.html;
 
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TreeNodePageElement;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HtmlLayouterTreeNodePageElementTest extends AbstractTestHtmlLayouter {
@@ -38,6 +39,6 @@ public class HtmlLayouterTreeNodePageElementTest extends AbstractTestHtmlLayoute
         expectedResult.append("</div>"); //$NON-NLS-1$
         expectedResult.append("</div>"); //$NON-NLS-1$
 
-        assertEquals(expectedResult.toString(), layout);
+        Assert.assertEquals(expectedResult.toString(), layout);
     }
 }

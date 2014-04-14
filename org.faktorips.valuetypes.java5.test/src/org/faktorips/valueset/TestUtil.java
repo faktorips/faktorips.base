@@ -10,6 +10,8 @@
 
 package org.faktorips.valueset;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,13 +19,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
+import org.junit.Test;
 
 public abstract class TestUtil {
 
-    public final static void testSerializable(Serializable serializableObject) throws AssertionFailedError,
-            IOException, ClassNotFoundException {
+    @Test
+    public final static void testSerializable(Serializable serializableObject) throws AssertionError, IOException,
+            ClassNotFoundException {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream os = new ObjectOutputStream(bos);
@@ -33,7 +35,7 @@ public abstract class TestUtil {
         ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
         ObjectInputStream is = new ObjectInputStream(bis);
         Object deserializedObject = is.readObject();
-        Assert.assertEquals(serializableObject, deserializedObject);
+        assertEquals(serializableObject, deserializedObject);
     }
 
 }

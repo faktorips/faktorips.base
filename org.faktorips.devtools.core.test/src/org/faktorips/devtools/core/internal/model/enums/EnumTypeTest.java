@@ -498,10 +498,10 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         assertEquals(null, loadedEnumType.getIdentifierBoundary());
     }
 
+    @Test
     public void testIsExtensibleAndSavingValuesInType() throws CoreException {
         IEnumType extensibleEnumType = newEnumType(ipsProject, "ExtensibleEnum");
-        extensibleEnumType.setExtensible(false);
-        assertNull(extensibleEnumType.getEnumValues());
+        extensibleEnumType.setExtensible(true);
         IEnumAttribute enumAttributeId = extensibleEnumType.newEnumAttribute();
         IEnumAttribute enumAttributeName = extensibleEnumType.newEnumAttribute();
         enumAttributeId.setName("ID");
@@ -510,7 +510,8 @@ public class EnumTypeTest extends AbstractIpsEnumPluginTest {
         IEnumValue enumValue2 = extensibleEnumType.newEnumValue();
         enumValue1.setEnumAttributeValue(enumAttributeId, ValueFactory.createStringValue("1"));
         enumValue2.setEnumAttributeValue(enumAttributeName, ValueFactory.createStringValue("Name"));
-        assertNotNull(extensibleEnumType.getEnumValues());
+        assertEquals(extensibleEnumType.getEnumValues().get(0), enumValue1);
+        assertEquals(extensibleEnumType.getEnumValues().get(1), enumValue2);
     }
 
     @Test

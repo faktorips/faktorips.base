@@ -13,6 +13,7 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTest {
@@ -25,7 +26,7 @@ public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTe
 
         String classes = elementLayouter.getClasses();
 
-        assertTrue(StringUtils.isEmpty(classes));
+        Assert.assertTrue(StringUtils.isEmpty(classes));
 
     }
 
@@ -39,7 +40,7 @@ public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTe
 
         String classes = elementLayouter.getClasses();
 
-        assertTrue(classes.matches("(ITALIC BOLD|BOLD ITALIC)"));
+        Assert.assertTrue(classes.matches("(ITALIC BOLD|BOLD ITALIC)"));
 
     }
 

@@ -12,8 +12,6 @@ package org.faktorips.devtools.htmlexport;
 
 import java.io.IOException;
 
-import junit.framework.AssertionFailedError;
-
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.xml.sax.SAXException;
@@ -29,8 +27,8 @@ public abstract class AbstractHtmlExportXmlUnitLayouterTest extends XMLTestCase 
         } catch (XpathException e) {
             throw new RuntimeException("Fehler in XPath: " + xPath, e); //$NON-NLS-1$
 
-        } catch (AssertionFailedError e) {
-            throw new AssertionFailedError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$ 
+        } catch (AssertionError e) {
+            throw new AssertionError("Fehler in Auswertung: " + xPath + " in:\n" + xml); //$NON-NLS-1$ 
         }
     }
 

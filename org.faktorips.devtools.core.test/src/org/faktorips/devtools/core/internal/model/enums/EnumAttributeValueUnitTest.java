@@ -111,9 +111,10 @@ public class EnumAttributeValueUnitTest {
         assertFalse(validator.canValidate());
     }
 
+    @Test
     public void testIntegerDatatype() {
-        assertEquals(-5, datatype.compare("5", "10"));
-        assertEquals(10, datatype.compare("20", "10"));
+        assertEquals(-1, datatype.compare("5", "10"));
+        assertEquals(1, datatype.compare("20", "10"));
         assertEquals(0, datatype.compare("10", "10"));
     }
 

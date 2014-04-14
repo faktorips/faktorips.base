@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
-import java.util.Map;
+import static org.junit.Assert.assertEquals;
 
-import junit.framework.Assert;
+import java.util.Map;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -69,22 +69,22 @@ public class DatatypeInputFormatRegistryTest {
     @Test
     public void test_getDatatypeInputFormat() {
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(datatype1, ipsProject);
-        Assert.assertEquals(result1, actualResult);
+        assertEquals(result1, actualResult);
         IInputFormat<String> actualResult2 = inputFormatMap.getDatatypeInputFormat(datatype2, ipsProject);
-        Assert.assertEquals(result2, actualResult2);
+        assertEquals(result2, actualResult2);
     }
 
     @Test
     public void test_getDefaultInputFormat() {
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(unregisteredDatatype, ipsProject);
-        Assert.assertEquals(DefaultInputFormat.class, actualResult.getClass());
+        assertEquals(DefaultInputFormat.class, actualResult.getClass());
     }
 
     @Test
     public void test_superclassInputFormat() {
         Mockito.when(factory1.newInputFormat(subclassDatatype, ipsProject)).thenReturn(result1);
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subclassDatatype, ipsProject);
-        Assert.assertEquals(result1, actualResult);
+        assertEquals(result1, actualResult);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class DatatypeInputFormatRegistryTest {
         Mockito.when(subclassFactory.newInputFormat(subsubclassDatatype, ipsProject)).thenReturn(subclassResult);
 
         IInputFormat<String> actualResult = inputFormatMap.getDatatypeInputFormat(subsubclassDatatype, ipsProject);
-        Assert.assertEquals(subclassResult, actualResult);
+        assertEquals(subclassResult, actualResult);
     }
 
     private static class GregoriacCalendarSubDatatype extends GregorianCalendarAsDateDatatype {

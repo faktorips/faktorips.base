@@ -16,8 +16,6 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -57,7 +55,7 @@ public class IpsSrcFileCollectionTest extends AbstractIpsPluginTest {
 
         try {
             collection.isDuplicateName(cmpt1.getIpsSrcFile());
-            Assert.fail();
+            fail();
         } catch (CoreException ce) {
             // success
         }

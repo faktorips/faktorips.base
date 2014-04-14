@@ -14,6 +14,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableCellPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
@@ -29,7 +30,7 @@ public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLay
 
         String generateText = layouter.generateText();
 
-        assertEquals(0, generateText.length());
+        Assert.assertEquals(0, generateText.length());
     }
 
     @Test

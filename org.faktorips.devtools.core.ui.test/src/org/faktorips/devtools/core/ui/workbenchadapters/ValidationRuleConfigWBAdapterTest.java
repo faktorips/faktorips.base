@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import junit.framework.Assert;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -45,7 +45,7 @@ public class ValidationRuleConfigWBAdapterTest extends AbstractIpsPluginTest {
 
         ImageDescriptor expectedImageDesc = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
                 "ValidationRuleDef.gif", true);
-        Assert.assertEquals(expectedImageDesc, imageDesc);
+        assertEquals(expectedImageDesc, imageDesc);
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ValidationRuleConfigWBAdapterTest extends AbstractIpsPluginTest {
         ImageDescriptor expectedImageDesc = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
                 "ValidationRuleDef.gif", true);
         expectedImageDesc = IpsUIPlugin.getImageHandling().createDisabledImageDescriptor(expectedImageDesc);
-        Assert.assertEquals(expectedImageDesc, imageDesc);
+        assertEquals(expectedImageDesc, imageDesc);
     }
 
 }

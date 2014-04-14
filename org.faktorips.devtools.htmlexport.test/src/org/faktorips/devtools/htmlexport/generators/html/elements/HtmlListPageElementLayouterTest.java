@@ -13,9 +13,10 @@ package org.faktorips.devtools.htmlexport.generators.html.elements;
 import java.util.Arrays;
 import java.util.Collections;
 
-import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayouterTest {
@@ -31,7 +32,7 @@ public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         String generateText = layouter.generateText();
 
-        assertEquals(0, generateText.length());
+        Assert.assertEquals(0, generateText.length());
     }
 
     @Test

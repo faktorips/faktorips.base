@@ -258,6 +258,7 @@ public class XPolicyAttributeTest {
         assertTrue(generateInitWithProductData);
     }
 
+    @Test
     public void testIsGenerateSetterInternal_GenerateChangeSupportAndSetters() {
         xPolicyAttribute = spy(xPolicyAttribute);
         doReturn(true).when(xPolicyAttribute).isGenerateChangeSupport();
