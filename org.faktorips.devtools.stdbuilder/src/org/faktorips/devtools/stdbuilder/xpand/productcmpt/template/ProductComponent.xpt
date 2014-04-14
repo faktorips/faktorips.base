@@ -134,14 +134,15 @@
 	    protected void «writePropertiesToXml(Element() + " element")» {
 	    	«IF hasSupertype()-»
 	        	super.«writePropertiesToXml("element")»;
-	        «ELSE-»
- 			«REM» TODO translate «ENDREM»     	// Do not call super. See overridden method for clarification.
+	        «ELSEIF attributes.size == 0 && configuredAttributes.size == 0-»
+	        	// no attributes to write
 	        «ENDIF-»
 	        «IF nonOverwrittenAttributePresent-»
-		        Element attributeElement = null;
-	        	«EXPAND ProductAttribute::writeAttributeToXML FOREACH attributes-»
+	        	«EXPAND ProductAttribute::writeAttributeToXmlMethodCall FOREACH attributes-»
 	        «ENDIF-»
 	    }
+
+       	«EXPAND ProductAttribute::writeAttributeToXmlMethod FOREACH attributes-»
 	    
 		«IF  containsNotDerivedOrConstrainingAssociations»
 		    /**

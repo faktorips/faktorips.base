@@ -65,6 +65,10 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return getJavaNamingConvention().getGetterMethodName(getName(), getDatatype());
     }
 
+    public String getMethodNameWriteToXml() {
+        return "write" + StringUtils.capitalize(getName());
+    }
+
     public String getFieldName() {
         return getJavaNamingConvention().getMemberVarName(getName());
     }

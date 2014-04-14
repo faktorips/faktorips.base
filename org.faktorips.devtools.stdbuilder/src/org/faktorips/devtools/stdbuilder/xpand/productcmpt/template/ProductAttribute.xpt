@@ -154,26 +154,37 @@
 	this.«fieldName» = valueList;
 «ENDDEFINE»
 
-«DEFINE writeAttributeToXML FOR XProductAttribute-»
+«DEFINE writeAttributeToXmlMethodCall FOR XProductAttribute-»
 	«IF !overwrite-»
-        attributeElement = element.getOwnerDocument().createElement(«XML_TAG_ATTRIBUTE_VALUE()»);
-        attributeElement.setAttribute("attribute", «constantNamePropertyName»);
-        «IF multiValue-»
-            «IF multiValueDirectXmlHandling-»
-                «MultiValueXmlHelper()».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
-            «ELSE-»
-            	«LET singleValueOfMultiValueAttribute AS this-»
-			        «List_("String")» stringList«fieldName.toFirstUpper()» = new «ArrayList("String")»();
-			        for («javaClassName» value : this.«fieldName») {
-			            String stringValue = «getToStringExpression("value")»;
-			            stringList«fieldName.toFirstUpper()».add(stringValue);
-			        }
-			    «ENDLET-»
-		        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList" + fieldName.toFirstUpper())»;
+		«methodNameWriteToXml»(element);
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE writeAttributeToXmlMethod FOR XProductAttribute-»
+	«IF !overwrite-»
+	    /**
+	     * @generated
+	     */
+		private void «method(methodNameWriteToXml, Element(), "element")» {
+	        Element attributeElement = element.getOwnerDocument().createElement(«XML_TAG_ATTRIBUTE_VALUE()»);
+	        attributeElement.setAttribute("attribute", «constantNamePropertyName»);
+	        «IF multiValue-»
+	            «IF multiValueDirectXmlHandling-»
+	                «MultiValueXmlHelper()».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
+	            «ELSE-»
+	            	«LET singleValueOfMultiValueAttribute AS this-»
+				        «List_("String")» stringList«fieldName.toFirstUpper()» = new «ArrayList("String")»();
+				        for («javaClassName» value : this.«fieldName») {
+				            String stringValue = «getToStringExpression("value")»;
+				            stringList«fieldName.toFirstUpper()».add(stringValue);
+				        }
+				    «ENDLET-»
+			        «MultiValueXmlHelper()».«addValuesToElement("attributeElement", "stringList" + fieldName.toFirstUpper())»;
+		        «ENDIF-»
+		    «ELSE-»
+	       		«ValueToXmlHelper()».«addToElement(getToStringExpression(fieldName), "attributeElement", XML_TAG_VALUE())»;
 	        «ENDIF-»
-	    «ELSE-»
-       		«ValueToXmlHelper()».«addToElement(getToStringExpression(fieldName), "attributeElement", XML_TAG_VALUE())»;
-        «ENDIF-»
-        element.appendChild(attributeElement);
+	        element.appendChild(attributeElement);
+		}
 	«ENDIF-»
 «ENDDEFINE»
