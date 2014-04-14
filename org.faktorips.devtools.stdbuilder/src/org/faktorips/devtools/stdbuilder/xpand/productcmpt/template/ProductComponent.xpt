@@ -76,9 +76,11 @@
 			    «overrideAnnotation(false)-»
 			    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
 			        super.«doInitReferencesFromXml("elementsMap")»;
-			        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+			        «EXPAND ProductAssociation::doInitFromXmlMethodCall FOREACH associations-»
 			    }
 			«ENDIF»
+
+			«EXPAND ProductAssociation::doInitFromXmlMethod FOREACH associations-»
 			
 			«EXPAND writeToXmlMethods-»
 
@@ -150,9 +152,12 @@
 		    «overrideAnnotation(false)-»
 		    protected void «writeReferencesToXml(Element() + " element")» {
 		        super.«writeReferencesToXml("element")»;
-		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
+		        «EXPAND ProductAssociation::writeReferencesToXmlMethodCall FOREACH associations-»
 		    }
 		«ENDIF»
+		
+		«EXPAND ProductAssociation::writeReferencesToXmlMethod FOREACH associations-»
+
 	«ENDIF-»
 «ENDDEFINE»
 

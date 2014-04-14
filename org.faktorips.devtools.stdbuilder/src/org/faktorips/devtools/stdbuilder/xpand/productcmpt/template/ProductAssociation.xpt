@@ -345,36 +345,58 @@
     }
 «ENDDEFINE»
 
-«DEFINE doInitReferencesFromXmlPart FOR XProductAssociation-»
+«DEFINE doInitFromXmlMethodCall FOR XProductAssociation-»
 	«IF !derivedUnion && !constrain-»
-	   associationElements = elementsMap.get(«constantNameXmlTag»);
-	    if (associationElements != null) {
+		«methodNameDoInitFromXml»(elementsMap);
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE doInitFromXmlMethod FOR XProductAssociation-»
+	«IF !derivedUnion && !constrain-»
+	    /**
+ 	     * @generated
+	     */
+		private void «method(methodNameDoInitFromXml, Map("String", List_(Element())), "elementsMap")» {
+			«List_(Element())» associationElements = elementsMap.get(«constantNameXmlTag»);
+	    	if (associationElements != null) {
 			«IF oneToMany-»
-			        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(associationElements.size());
-			        for (Element element : associationElements) {
-			            «IProductComponentLink(targetInterfaceName)» link = new «ProductComponentLink(targetInterfaceName)»(this);
-			            link.initFromXml(element);
-			            this.«fieldName».put(link.getTargetId(), link);
-	        }
+		        this.«fieldName» = new «LinkedHashMap("String", IProductComponentLink(targetInterfaceName))»(associationElements.size());
+		        for (Element element : associationElements) {
+		            «IProductComponentLink(targetInterfaceName)» link = new «ProductComponentLink(targetInterfaceName)»(this);
+		            link.initFromXml(element);
+		            this.«fieldName».put(link.getTargetId(), link);
+		        }
 			«ELSE-»
 	            Element element = associationElements.get(0);
 	            «fieldName» = new «ProductComponentLink(targetInterfaceName)»(this);
 	            «fieldName».initFromXml(element);
 			«ENDIF-»
+		    }
 	    }
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE writeReferencesToXmlPart FOR XProductAssociation-»
+«DEFINE writeReferencesToXmlMethodCall FOR XProductAssociation-»
 	«IF !derivedUnion && !constrain-»
-		«IF oneToMany-»
-		    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
-		        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
-		    }
-		«ELSE-»
-		    if («fieldName» != null) {
-				element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
-			}
-		«ENDIF-»
+		«methodNameWriteToXml»(element);
+	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE writeReferencesToXmlMethod FOR XProductAssociation-»
+	«IF !derivedUnion && !constrain-»
+	    /**
+	     * @generated
+	     */
+	    private void «method(methodNameWriteToXml, Element(), " element")» {
+			«IF oneToMany-»
+			    for («IProductComponentLink(targetInterfaceName)» link : «fieldName».values()) {
+			        element.appendChild(((«IXmlPersistenceSupport()»)link).«toXml("element.getOwnerDocument()")»);
+			    }
+			«ELSE-»
+			    if («fieldName» != null) {
+					element.appendChild(((«IXmlPersistenceSupport()»)«fieldName»).«toXml("element.getOwnerDocument()")»);
+				}
+			«ENDIF-»
+		}
 	«ENDIF-»
 «ENDDEFINE»

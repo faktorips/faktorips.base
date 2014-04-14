@@ -86,16 +86,18 @@
 	        	«EXPAND DefaultAndAllowedValues::initAttributeFromXML FOREACH configuredAttributes-»
 	    	}
 		
-			«IF containsNotDerivedOrConstrainingAssociations»
+			«IF containsNotDerivedOrConstrainingAssociations-»
 			    /**
 			     * @generated
 			     */
 			    «overrideAnnotation(false)-»
 			    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
 			        super.«doInitReferencesFromXml("elementsMap")»;
-			        «List_(Element())» «EXPAND ProductAssociation::doInitReferencesFromXmlPart FOREACH associations-»
+			        «EXPAND ProductAssociation::doInitFromXmlMethodCall FOREACH associations-»
 			    }
 			«ENDIF»
+
+			«EXPAND ProductAssociation::doInitFromXmlMethod FOREACH associations-»
 
 			«IF containsTables-»
 			    /**
@@ -185,9 +187,11 @@
 		    «overrideAnnotation(false)-»
 		    protected void «writeReferencesToXml(Element() + " element")» {
 		        super.«writeReferencesToXml("element")»;
-		        «EXPAND ProductAssociation::writeReferencesToXmlPart FOREACH associations-»
+		        «EXPAND ProductAssociation::writeReferencesToXmlMethodCall FOREACH associations-»
 		    }
 		«ENDIF»
+		
+		«EXPAND ProductAssociation::writeReferencesToXmlMethod FOREACH associations-»
 
 			«IF containsTables-»
 		    /**
