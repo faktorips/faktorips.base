@@ -85,7 +85,6 @@
 
 			«EXPAND createPolicyCmpt(this) FOREACH policyTypeClassHierarchy»
 
-			«REM» TODO may use covariant return type«ENDREM»
 			«IF generateMethodGenericCreatePolicyComponent»
 			    /**
 			     * «inheritDoc()»
@@ -93,7 +92,7 @@
 			     * @generated
 			     */
 			    «overrideAnnotation(!hasNonAbstractSupertype())-»
-			    public «IConfigurableModelObject()» «createPolicyComponent()» {
+			    public «policyInterfaceName» «createPolicyComponent()» {
 			    	«IF !configurationForPolicyCmptType-»
 			    		return null;
 			    	«ELSE-»

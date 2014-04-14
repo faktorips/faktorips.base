@@ -31,6 +31,7 @@ import org.faktorips.devtools.stdbuilder.xpand.model.XDerivedUnionAssociation;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.runtime.IConfigurableModelObject;
 
 public abstract class XProductClass extends XType {
 
@@ -219,8 +220,12 @@ public abstract class XProductClass extends XType {
     }
 
     protected String getPolicyClassName(BuilderAspect aspect) {
-        XPolicyCmptClass xPolicyCmptClass = getPolicyCmptClass();
-        return xPolicyCmptClass.getSimpleName(aspect);
+        if (isConfigurationForPolicyCmptType()) {
+            XPolicyCmptClass xPolicyCmptClass = getPolicyCmptClass();
+            return xPolicyCmptClass.getSimpleName(aspect);
+        } else {
+            return addImport(IConfigurableModelObject.class);
+        }
     }
 
     public XPolicyCmptClass getPolicyCmptClass() {
@@ -280,11 +285,7 @@ public abstract class XProductClass extends XType {
      */
     public boolean isGenerateMethodGenericCreatePolicyComponent() {
         if (!isConfigurationForPolicyCmptType()) {
-            if (!hasSupertype()) {
-                return true;
-            } else {
-                return false;
-            }
+            return !hasSupertype();
         } else {
             XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
             return !policyCmptClass.isAbstract() && policyCmptClass.isConfiguredBy(getType().getQualifiedName());
