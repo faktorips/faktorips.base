@@ -130,6 +130,9 @@ castToImplementation(AbstractGeneratorModelNode this, String className) :
 	
 castToImplementation(AbstractGeneratorModelNode this, String className, String varName) :
 	if generatePublishedInterfaces then "((" + className + ")" + varName + ")" else varName;
+
+castFromTo(AbstractGeneratorModelNode this, String currentClassName, String castClassName) :
+	if currentClassName != castClassName then "(" + castClassName + ")";
 	
 castFromTo(AbstractGeneratorModelNode this, String currentClassName, String castClassName, String varName) :
 	if currentClassName != castClassName then "((" + castClassName + ")" + varName + ")" else varName;

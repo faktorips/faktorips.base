@@ -106,10 +106,11 @@
 			    @Override
 			    protected void «doInitTableUsagesFromXml(Map("String", Element()) + " tableUsageMap")» {
 			        super.«doInitTableUsagesFromXml("tableUsageMap")»;
-			        Element element = null;
-			        «EXPAND TableUsages::initTableUsages FOREACH tables-»
+			        «EXPAND TableUsages::doInitFromXmlMethodCall FOREACH tables-»
 			    }
 			«ENDIF»
+
+	        «EXPAND TableUsages::doInitFromXmlMethod FOREACH tables-»
 		
 			«EXPAND writeToXmlMethods-»
 

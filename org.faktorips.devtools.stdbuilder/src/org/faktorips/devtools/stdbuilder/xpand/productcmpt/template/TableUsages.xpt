@@ -39,7 +39,7 @@
         if («fieldName» == null) {
             return null;
         }
-        return («tableClassName»)getRepository().getTable(«fieldName»);
+        return «castFromTo("ITable", tableClassName)»getRepository().getTable(«fieldName»);
     }
 «ENDDEFINE»
 
@@ -55,11 +55,17 @@
     }
 «ENDDEFINE»
 
-«DEFINE initTableUsages FOR XTableUsage-»
-        element = tableUsageMap.get(«constantNameTable»);
+«DEFINE doInitFromXmlMethodCall FOR XTableUsage-»
+	«methodNameDoInitFromXml»(tableUsageMap);
+«ENDDEFINE»
+
+«DEFINE doInitFromXmlMethod FOR XTableUsage-»
+	private void «method(methodNameDoInitFromXml, Map("String", Element()), " tableUsageMap")» {
+        Element element = tableUsageMap.get(«constantNameTable»);
         if (element != null) {
             «fieldName» = «ValueToXmlHelper()».«getValueFromElement("element", XML_TAG_TABLE_CONTENT_NAME())»;
         }
+	}
 «ENDDEFINE»
 
 «DEFINE writeTableUsages FOR XTableUsage-»
