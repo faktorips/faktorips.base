@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -159,5 +160,9 @@ public class XProductAttribute extends XAttribute {
 
     public boolean isChangingOverTime() {
         return getAttribute().isChangingOverTime();
+    }
+
+    public String getMethodDoInitFromXmlName() {
+        return "doInit" + StringUtils.capitalize(getName());
     }
 }

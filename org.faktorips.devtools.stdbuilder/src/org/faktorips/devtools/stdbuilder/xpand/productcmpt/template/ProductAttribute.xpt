@@ -113,17 +113,28 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE initAttributeFromXML FOR XProductAttribute-»
+«DEFINE initFromXmlMethodCall FOR XProductAttribute-»
 	«IF !overwrite-»
-        configElement = configMap.get(«constantNamePropertyName»);
-        if (configElement != null) {
-        «IF multiValue-»
-        	«EXPAND initMultiValueAttributeFromXml-»
-        «ELSE-»
-            «xmlValueType()» value = «ValueToXmlHelper()».«getFromElement("configElement", XML_TAG_VALUE())»;
-           	this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
-        «ENDIF-»
-        }
+		«methodDoInitFromXmlName»(configMap);
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initFromXmlMethod FOR XProductAttribute-»
+	«IF !overwrite-»
+		/**
+ 		* @generated
+ 		*/
+		private void «method(methodDoInitFromXmlName, Map("String", Element()), "configMap")» {
+	        Element configElement = configMap.get(«constantNamePropertyName»);
+	        if (configElement != null) {
+	        «IF multiValue-»
+	        	«EXPAND initMultiValueAttributeFromXml-»
+	        «ELSE-»
+	            «xmlValueType()» value = «ValueToXmlHelper()».«getFromElement("configElement", XML_TAG_VALUE())»;
+	           	this.«fieldName» = «getNewInstanceFromExpression("value", "getRepository()")»;
+	        «ENDIF-»
+	        }
+	    }
     «ENDIF-»
 «ENDDEFINE»
 

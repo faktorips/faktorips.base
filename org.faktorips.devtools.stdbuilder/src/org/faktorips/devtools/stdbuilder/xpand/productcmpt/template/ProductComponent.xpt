@@ -63,11 +63,10 @@
 	    	«overrideAnnotation(false)-»
 	    	protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 	        	super.«doInitPropertiesFromXml("configMap")»;
-	        	«IF nonOverwrittenAttributePresent-»
-	        		Element configElement = null;
-	        	«ENDIF-»
-	        	«EXPAND ProductAttribute::initAttributeFromXML FOREACH attributes-»
+	        	«EXPAND ProductAttribute::initFromXmlMethodCall FOREACH attributes-»
 	    	}
+
+        	«EXPAND ProductAttribute::initFromXmlMethod FOREACH attributes-»
 		    
 			«IF containsNotDerivedOrConstrainingAssociations-»
 			    /**

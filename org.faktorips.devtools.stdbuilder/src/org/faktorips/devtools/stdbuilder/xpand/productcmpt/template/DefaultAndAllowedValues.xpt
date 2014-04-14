@@ -68,9 +68,20 @@
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
+«DEFINE initFromXmlMethodCall FOR XPolicyAttribute-»
+	«IF !overwrite-»
+		«methodDoInitFromXmlName»(configMap);
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initFromXmlMethod FOR XPolicyAttribute-»
+«IF !overwrite-»
+		/**
+ 		* @generated
+ 		*/
+ 		private void «method(methodDoInitFromXmlName, Map("String", Element()), "configMap")» {
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
-        configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
+        Element configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", XML_TAG_VALUE())»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
@@ -101,6 +112,8 @@
             «ENDIF-»
         }
 	«ENDIF-»
+	}
+	 «ENDIF-»
 «ENDDEFINE»
 
 

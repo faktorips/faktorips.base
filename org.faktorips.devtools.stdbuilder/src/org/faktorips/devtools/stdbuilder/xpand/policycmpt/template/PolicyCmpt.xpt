@@ -323,8 +323,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 «overrideAnnotation(false)-»
 	    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
 	        super.«initPropertiesFromXml("propMap", "productRepository")»;
-			«EXPAND PolicyCmptAttribute::initAttributeFromXML FOREACH attributes-»
+	        «EXPAND PolicyCmptAttribute::initFromXmlMethodCall FOREACH attributes-»
 	    }
+	    «EXPAND PolicyCmptAttribute::initFromXmlMethod FOREACH attributes-»
     «ENDIF-»
     
     /**

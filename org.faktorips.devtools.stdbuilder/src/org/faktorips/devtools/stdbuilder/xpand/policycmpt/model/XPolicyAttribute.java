@@ -594,4 +594,7 @@ public class XPolicyAttribute extends XAttribute {
         return getValuesetDatatypeHelper().getJavaClassName();
     }
 
+    public String getMethodDoInitFromXmlName() {
+        return "doInit" + StringUtils.capitalize(getName());
+    }
 }
