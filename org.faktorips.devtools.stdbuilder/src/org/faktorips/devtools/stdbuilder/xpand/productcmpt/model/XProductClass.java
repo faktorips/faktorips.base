@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -190,12 +191,17 @@ public abstract class XProductClass extends XType {
     }
 
     public Set<XTableUsage> getTables() {
-        if (isCached(XTableUsage.class)) {
-            return getCachedObjects(XTableUsage.class);
+        if (isChangeOverTimeClass()) {
+            if (isCached(XTableUsage.class)) {
+                return getCachedObjects(XTableUsage.class);
+            } else {
+                Set<XTableUsage> nodesForParts = initNodesForParts(getType().getTableStructureUsages(),
+                        XTableUsage.class);
+                putToCache(nodesForParts);
+                return nodesForParts;
+            }
         } else {
-            Set<XTableUsage> nodesForParts = initNodesForParts(getType().getTableStructureUsages(), XTableUsage.class);
-            putToCache(nodesForParts);
-            return nodesForParts;
+            return Collections.emptySet();
         }
     }
 
