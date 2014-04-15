@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.util.UiMessage;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -44,6 +45,12 @@ public class IpsObjectEditorTest {
 
     @Mock
     private IIpsProject ipsProject;
+
+    @Before
+    public void setUp() {
+        doReturn(ipsObject).when(ipsObjectEditor).getIpsObject();
+        doReturn(ipsProject).when(ipsObjectEditor).getIpsProject();
+    }
 
     @Test
     public void testGetHighestSeverity_empty() throws Exception {
@@ -102,8 +109,6 @@ public class IpsObjectEditorTest {
     }
 
     private MessageList mockValidation() throws CoreException {
-        doReturn(ipsObject).when(ipsObjectEditor).getIpsObject();
-        doReturn(ipsProject).when(ipsObjectEditor).getIpsProject();
         MessageList messageList = new MessageList();
         when(ipsObject.validate(any(IIpsProject.class))).thenReturn(messageList);
         return messageList;
@@ -140,5 +145,40 @@ public class IpsObjectEditorTest {
 
         assertEquals(NLS.bind(Messages.IpsObjectEditor_messagesText, Messages.IpsObjectEditor_messagesErrors),
                 headerMessage);
+    }
+
+    @Test
+    public void testgetMessageList_SizeBiggerSix() throws CoreException {
+        MessageList messageList = createMessageList();
+        messageList.add(new Message("warning2", "warning2", Message.WARNING));
+        messageList.add(new Message("err7", "err7", Message.ERROR));
+
+        doReturn(messageList).when(ipsObject).validate(ipsProject);
+
+        List<IMessage> editorMessages = ipsObjectEditor.getMessages();
+        String expectedText = NLS.bind(Messages.IpsPartEditDialog_moreMessagesInTooltip, 3);
+        assertEquals(expectedText, editorMessages.get(editorMessages.size() - 1).getMessage());
+        assertEquals(6, editorMessages.size());
+    }
+
+    @Test
+    public void testgetMessageList_SizeSixOrSmaller() throws CoreException {
+        MessageList messageList = createMessageList();
+
+        doReturn(messageList).when(ipsObject).validate(ipsProject);
+
+        List<IMessage> editorMessages = ipsObjectEditor.getMessages();
+        assertEquals(editorMessages.size(), messageList.size());
+    }
+
+    private MessageList createMessageList() {
+        MessageList messageList = new MessageList();
+        messageList.add(new Message("err1", "err1", Message.WARNING));
+        messageList.add(new Message("err2", "err2", Message.INFO));
+        messageList.add(new Message("err3", "err3", Message.NONE));
+        messageList.add(new Message("err4", "err4", Message.INFO));
+        messageList.add(new Message("err5", "err5", Message.ERROR));
+        messageList.add(new Message("err6", "err6", Message.ERROR));
+        return messageList;
     }
 }

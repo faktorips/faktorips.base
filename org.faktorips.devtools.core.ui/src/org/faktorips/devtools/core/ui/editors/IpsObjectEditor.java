@@ -107,6 +107,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      */
     private static final String SETTING_DONT_FIX_DIFFERENCES = "dontFixDifferences"; //$NON-NLS-1$
 
+    private static final int MAX_MSG_LIST_SIZE = 5;
+
     /** The file that's being edited (if any) */
     private IIpsSrcFile ipsSrcFile;
 
@@ -940,18 +942,30 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
     protected List<IMessage> getMessages() {
         try {
             MessageList msgList = getIpsObject().validate(getIpsProject());
+            MessageList subList = msgList.getSubList(MAX_MSG_LIST_SIZE);
+            List<IMessage> messages = getUiMessages(subList);
 
-            List<IMessage> messages = new ArrayList<IMessage>();
-            for (Message message : msgList) {
-                messages.add(new UiMessage(message));
+            int oneMore = MAX_MSG_LIST_SIZE + 1;
+            if (msgList.size() == oneMore) {
+                messages.add(new UiMessage(msgList.getMessage(msgList.size() - 1)));
+            } else if (msgList.size() > oneMore) {
+                messages.add(new UiMessage(NLS.bind(Messages.IpsPartEditDialog_moreMessagesInTooltip,
+                        (msgList.size() - MAX_MSG_LIST_SIZE))));
             }
-
             return messages;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }
 
+    }
+
+    private List<IMessage> getUiMessages(MessageList msgList) {
+        List<IMessage> newList = new ArrayList<IMessage>();
+        for (Message message : msgList) {
+            newList.add(new UiMessage(message));
+        }
+        return newList;
     }
 
     /**

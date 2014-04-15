@@ -10,7 +10,10 @@
 
 package org.faktorips.util.message;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -452,5 +455,39 @@ public class MessageList implements Iterable<Message> {
             ObjectProperty[] newOne = (ObjectProperty[])ArrayUtils.addAll(invalidObjectProperties, newObjectProperties);
             return newOne;
         }
+    }
+
+    /**
+     * The method returns a MethodList containing a sublist of messages of this messageList. By
+     * copying the content of this messageList, the original content won't be changed.
+     * <code>maxCount</code> defines how big the sublist should be. If <code>maxCount</code> ist
+     * higher than the size of the messageList the whole content of the original messageList will be
+     * returned.
+     * 
+     * @param maxCount the number of messages to be returned
+     * @return MessageList a sublist of the original MessageList
+     */
+    public MessageList getSubList(int maxCount) {
+        MessageList messageList = new MessageList();
+        ArrayList<Message> messagesCopy = new ArrayList<Message>(messages);
+        Collections.sort(messagesCopy, new SeverityComparator());
+        messageList.messages = messagesCopy.subList(0, Math.min(maxCount, size()));
+        return messageList;
+    }
+
+    public static class SeverityComparator implements Comparator<Message>, Serializable {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 3947147318451484963L;
+
+        public int compare(Message o1, Message o2) {
+            if (o1.getSeverity() > o2.getSeverity()) {
+                return -1;
+            }
+            return o1.getSeverity() == o2.getSeverity() ? 0 : 1;
+        }
+
     }
 }
