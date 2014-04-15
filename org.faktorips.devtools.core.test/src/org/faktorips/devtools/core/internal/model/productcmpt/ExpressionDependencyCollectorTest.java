@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
@@ -239,7 +240,7 @@ public class ExpressionDependencyCollectorTest {
     }
 
     @Test
-    public void testParseExpression() throws Exception {
+    public void testParseExpression() {
         when(expression.getExpression()).thenReturn(MY_EXPRESSION);
 
         SimpleNode node = expressionDependencyCollector.parseExpression();
@@ -251,6 +252,15 @@ public class ExpressionDependencyCollectorTest {
         assertThat(addNode.jjtGetNumChildren(), is(2));
         assertThat(addNode.jjtGetChild(0), instanceOf(ASTIntegerNode.class));
         assertThat(addNode.jjtGetChild(1), instanceOf(ASTIntegerNode.class));
+    }
+
+    @Test
+    public void testParseExpression_withError() throws Exception {
+        when(expression.getExpression()).thenReturn("a..b");
+
+        SimpleNode node = expressionDependencyCollector.parseExpression();
+
+        assertNull(node);
     }
 
 }

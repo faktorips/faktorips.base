@@ -1163,21 +1163,45 @@ public class PolicyCmptTypeAssociationTest extends AbstractIpsPluginTest {
     @Test
     public void test_propertiesToXMLConfigurable() {
         Element element = mock(Element.class);
-
         association.setConfigurable(true);
 
         association.propertiesToXml(element);
+
         verify(element).setAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE, Boolean.toString(true));
     }
 
     @Test
-    public void test_initFromXMLConfigurable() {
+    public void test_initFromXMLConfigurable_true() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
+        when(element.hasAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE)).thenReturn(true);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE)).thenReturn("true");
+
+        association.initPropertiesFromXml(element, "aggr");
+
+        assertTrue(association.isConfigurable());
+    }
+
+    @Test
+    public void test_initFromXMLConfigurable_false() {
+        Element element = mock(Element.class);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
+        when(element.hasAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE)).thenReturn(true);
+        when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE)).thenReturn("false");
+
+        association.initPropertiesFromXml(element, "aggr");
+
+        assertFalse(association.isConfigurable());
+    }
+
+    @Test
+    public void test_initFromXMLConfigurable_default() {
         Element element = mock(Element.class);
         when(element.getAttribute(IPolicyCmptTypeAssociation.PROPERTY_ASSOCIATION_TYPE)).thenReturn("aggr");
 
-        association.setConfigurable(true);
-
         association.initPropertiesFromXml(element, "aggr");
-        verify(element).getAttribute(IPolicyCmptTypeAssociation.PROPERTY_CONFIGURABLE);
+
+        assertTrue(association.isConfigurable());
     }
+
 }

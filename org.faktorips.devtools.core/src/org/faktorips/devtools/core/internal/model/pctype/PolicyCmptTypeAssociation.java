@@ -734,7 +734,14 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
         sharedAssociation = Boolean.parseBoolean(element.getAttribute(PROPERTY_SHARED_ASSOCIATION));
         matchingAssociationName = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_NAME);
         matchingAssociationSource = element.getAttribute(PROPERTY_MATCHING_ASSOCIATION_SOURCE);
-        configurable = Boolean.parseBoolean(element.getAttribute(PROPERTY_CONFIGURABLE));
+        initConfigurable(element);
+    }
+
+    private void initConfigurable(Element element) {
+        if (element.hasAttribute(PROPERTY_CONFIGURABLE)) {
+            String attribute = element.getAttribute(PROPERTY_CONFIGURABLE);
+            configurable = Boolean.parseBoolean(attribute);
+        }
     }
 
     @Override

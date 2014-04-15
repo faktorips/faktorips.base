@@ -95,15 +95,23 @@ public class ExpressionDependencyCollector {
     }
 
     protected SimpleNode parseExpression() {
+        // CSOFF: IllegalCatch
         try {
-            StringReader reader = new StringReader(expression.getExpression());
-            FlParser parser = new FlParser(reader);
-            SimpleNode rootNode = parser.start();
-            return rootNode;
-        } catch (ParseException e) {
-            // we ignore parsing exceptions because they have to be recognized by validation already
+            return parseExpressionInternal();
+        } catch (Throwable e) {
+            // We really catch Throwable at this point because the parser may throw any kind of
+            // exceptions and even errors like TokenMgrError. Correct dependencies are only
+            // available for valid expressions. The exception should be evaluated during validation.
             return null;
         }
+        // CSON: IllegalCatch
+    }
+
+    private SimpleNode parseExpressionInternal() throws ParseException {
+        StringReader reader = new StringReader(expression.getExpression());
+        FlParser parser = new FlParser(reader);
+        SimpleNode rootNode = parser.start();
+        return rootNode;
     }
 
     /**
