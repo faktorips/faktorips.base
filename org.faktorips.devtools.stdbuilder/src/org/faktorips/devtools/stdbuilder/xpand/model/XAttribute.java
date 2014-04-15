@@ -186,4 +186,8 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         return "PROPERTY_" + StringUtils.upperCase(getFieldName());
     }
 
+    public String getMethodDoInitFromXmlName() {
+        return "doInit" + StringUtils.capitalize(getName());
+    }
+
 }

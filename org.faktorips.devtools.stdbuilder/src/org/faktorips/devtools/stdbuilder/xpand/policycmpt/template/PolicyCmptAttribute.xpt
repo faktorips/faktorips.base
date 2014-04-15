@@ -147,23 +147,31 @@
 «DEFINE initFromXmlMethodCall FOR XPolicyAttribute-»
 	«IF !overwrite-»
 	«IF generateInitPropertiesFromXML-»
+		«IF datatypeExtensibleEnum-»
+		«methodDoInitFromXmlName»(propMap, productRepository);
+		«ELSE-»
 		«methodDoInitFromXmlName»(propMap);
+		«ENDIF-»
     «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE initFromXmlMethod FOR XPolicyAttribute-»
-«IF !overwrite-»
-«IF generateInitPropertiesFromXML-»
-		/**
- 		* @generated
- 		*/
-		private void «method(methodDoInitFromXmlName, Map("String", "String"), "propMap")» {
-        if (propMap.containsKey(«constantNamePropertyName»)) {
-            this.«fieldName» = «getNewInstanceFromExpression("propMap.get(" + constantNamePropertyName + ")", "productRepository")»;
-        }
-    }
-            «ENDIF-»
+	«IF !overwrite-»
+	«IF generateInitPropertiesFromXML-»
+			/**
+	 		* @generated
+	 		*/
+	 		«IF datatypeExtensibleEnum-»
+			private void «method(methodDoInitFromXmlName, Map("String", "String"),"propMap", "IRuntimeRepository", "productRepository")» {
+			«ELSE-»
+			private void «method(methodDoInitFromXmlName, Map("String", "String"),"propMap")» {
+		        «ENDIF-»	
+	        	if (propMap.containsKey(«constantNamePropertyName»)) {
+	            	this.«fieldName» = «getNewInstanceFromExpression("propMap.get(" + constantNamePropertyName + ")", "productRepository")»;
+	        	}
+	    	}
+    «ENDIF-»
     «ENDIF-»
 «ENDDEFINE»
 
