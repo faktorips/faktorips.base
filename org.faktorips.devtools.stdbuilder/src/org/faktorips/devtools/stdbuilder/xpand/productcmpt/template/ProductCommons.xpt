@@ -10,3 +10,56 @@
             throw new «IllegalRepositoryModificationException()»();
         }
 «ENDDEFINE»
+
+«REM» Even though config elements and tables cannot be added to product components (as of now),
+ the providing methods are implemented in XProductClass and always return empty lists in that case. 
+ Thus the below code is also valid for product component code. 
+ Moreover, when config elements and tables can finally be made "static", the below template will work 
+ without changes and generate the correct product component code.«ENDREM»
+«DEFINE writeToXmlMethods FOR XProductClass-»
+	«IF generateToXmlSupport-»
+	    /**
+	     * «inheritDoc()»
+	     * 
+	     * @generated
+	     */
+	    «overrideAnnotation(false)-»
+	    protected void «writePropertiesToXml(Element() + " element")» {
+	    	«IF hasSupertype()-»
+	        	super.«writePropertiesToXml("element")»;
+	        «ELSEIF attributes.size == 0 && configuredAttributes.size == 0-»
+	        	// no attributes to write
+	        «ENDIF-»
+	        «EXPAND ProductAttribute::writeAttributeToXmlMethodCall FOREACH attributes-»
+	        «EXPAND DefaultAndAllowedValues::writeAttributeToXmlMethodCall FOREACH configuredAttributes-»
+	    }
+	    
+       	«EXPAND ProductAttribute::writeAttributeToXmlMethod FOREACH attributes-»
+
+       	«EXPAND DefaultAndAllowedValues::writeAttributeToXmlMethod FOREACH configuredAttributes-»
+	    
+		«IF  containsNotDerivedOrConstrainingAssociations»
+		    /**
+		     * @generated
+		     */
+		    «overrideAnnotation(false)-»
+		    protected void «writeReferencesToXml(Element() + " element")» {
+		        super.«writeReferencesToXml("element")»;
+		        «EXPAND ProductAssociation::writeReferencesToXmlMethodCall FOREACH associations-»
+		    }
+		«ENDIF»
+		
+		«EXPAND ProductAssociation::writeReferencesToXmlMethod FOREACH associations-»
+
+		«IF containsTables-»
+		    /**
+		     * @generated
+		     */
+		    @Override
+		    protected void «writeTableUsagesToXml(Element() + " element")» {
+		        super.«writeTableUsagesToXml("element")»;
+		        «EXPAND TableUsages::writeTableUsages FOREACH tables-»
+		    }
+		«ENDIF»
+	«ENDIF-»
+«ENDDEFINE»

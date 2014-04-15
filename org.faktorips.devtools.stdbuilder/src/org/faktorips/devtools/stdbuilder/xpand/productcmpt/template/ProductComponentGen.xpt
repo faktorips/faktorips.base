@@ -112,7 +112,7 @@
 
 	        «EXPAND TableUsages::doInitFromXmlMethod FOREACH tables-»
 		
-			«EXPAND writeToXmlMethods-»
+			«EXPAND ProductCommons::writeToXmlMethods-»
 
 			«EXPAND createPolicyCmpt(productCmptClassNode) FOREACH policyTypeClassHierarchy»
 
@@ -152,58 +152,6 @@
 	        return («interfaceName»)«getProductComponent()»;
 	    }
 	    «ENDIF»
-«ENDDEFINE»
-
-«DEFINE writeToXmlMethods FOR XProductCmptGenerationClass-»
-	«IF generateToXmlSupport-»
-	    /**
-	     * «inheritDoc()»
-	     * 
-	     * @generated
-	     */
-	    «overrideAnnotation(false)-»
-	    protected void «writePropertiesToXml(Element() + " element")» {
-	    	«IF hasSupertype()-»
-	        	super.«writePropertiesToXml("element")»;
-	        «ELSEIF attributes.size == 0 && configuredAttributes.size == 0-»
-	        	// no attributes to write
-	        «ENDIF-»
-	        	«EXPAND ProductAttribute::writeAttributeToXmlMethodCall FOREACH attributes-»
-	        	«EXPAND DefaultAndAllowedValues::writeAttributeToXmlMethodCall FOREACH configuredAttributes-»
-	        «ENDIF-»
-	    }
-	    
-       	«EXPAND ProductAttribute::writeAttributeToXmlMethod FOREACH attributes-»
-
-       	«EXPAND DefaultAndAllowedValues::writeAttributeToXmlMethod FOREACH configuredAttributes-»
-	    
-		«IF  containsNotDerivedOrConstrainingAssociations»
-	    
-	   
-		«IF  containsNotDerivedOrConstrainingAssociations»
-		    /**
-		     * @generated
-		     */
-		    «overrideAnnotation(false)-»
-		    protected void «writeReferencesToXml(Element() + " element")» {
-		        super.«writeReferencesToXml("element")»;
-		        «EXPAND ProductAssociation::writeReferencesToXmlMethodCall FOREACH associations-»
-		    }
-		«ENDIF»
-		
-		«EXPAND ProductAssociation::writeReferencesToXmlMethod FOREACH associations-»
-
-			«IF containsTables-»
-		    /**
-		     * @generated
-		     */
-		    @Override
-		    protected void «writeTableUsagesToXml(Element() + " element")» {
-		        super.«writeTableUsagesToXml("element")»;
-		        «EXPAND TableUsages::writeTableUsages FOREACH tables-»
-		    }
-		«ENDIF»
-	«ENDIF-»
 «ENDDEFINE»
 
 «REM» The content of the method is always the same (use currentType). The methodName is derived from different types «ENDREM»
