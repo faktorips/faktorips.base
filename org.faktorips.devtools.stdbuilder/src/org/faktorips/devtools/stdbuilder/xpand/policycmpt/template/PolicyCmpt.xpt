@@ -339,11 +339,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
         if (newChild != null) {
             return newChild;
         }
-        «EXPAND PolicyCmptAssociation::createTargetFromXMLMethodCall FOREACH associations-»
+        «EXPAND PolicyCmptAssociation::createTargetFromXmlMethodCall FOREACH associations-»
         return null;
     }
     
-    «EXPAND PolicyCmptAssociation::createTargetFromXMLMethod FOREACH associations-»
+    «EXPAND PolicyCmptAssociation::createTargetFromXmlMethod FOREACH associations-»
     
     «IF generateMethodCreateUnresolvedReference-»
 	    /**

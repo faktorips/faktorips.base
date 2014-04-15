@@ -562,21 +562,21 @@
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE createTargetFromXMLMethodCall FOR XPolicyAssociation-»
+«DEFINE createTargetFromXmlMethodCall FOR XPolicyAssociation-»
 	«IF considerInCreateChildFromXML-»
         if ("«name»".equals(childEl.getNodeName())) {
-         return «methodNameDoInitFromXml»(childEl);
+			return «methodNameDoInitFromXml»(childEl);
         }
 	«ENDIF-»
 «ENDDEFINE»
 
-«DEFINE createTargetFromXMLMethod FOR XPolicyAssociation-»
+«DEFINE createTargetFromXmlMethod FOR XPolicyAssociation-»
 	«IF considerInCreateChildFromXML-»
 		/**
 	 	* @generated
 	 	*/
 		private «AbstractModelObject()» «method(methodNameDoInitFromXml, Element(), "childEl")»{
-            		String className = childEl.getAttribute("class");
+			String className = childEl.getAttribute("class");
             if (className.length() > 0) {
                 try {
                     «targetClassName» «createChildFromXMLLocalVarName» = («targetClassName»)Class.forName(className).newInstance();
