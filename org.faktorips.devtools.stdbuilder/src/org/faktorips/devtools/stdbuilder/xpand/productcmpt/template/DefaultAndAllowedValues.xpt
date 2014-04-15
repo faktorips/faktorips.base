@@ -1,6 +1,5 @@
 «IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
-«IMPORT org::faktorips::runtime»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
@@ -68,9 +67,19 @@
     «ENDIF»
 «ENDDEFINE»
 
-«DEFINE initAttributeFromXML FOR XPolicyAttribute-»
+«DEFINE initFromXmlMethodCall FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
-        configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
+		«methodNameDoInitFromXml»(configMap);
+    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE initFromXmlMethod FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
+		/**
+ 		* @generated
+ 		*/
+ 		private void «method(methodNameDoInitFromXml, Map("String", Element()), "configMap")» {
+        Element configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
         if (configElement != null) {
             String value = «ValueToXmlHelper()».«getValueFromElement("configElement", XML_TAG_VALUE())»;
             «fieldNameDefaultValue» = «getNewInstanceFromExpression("value", "getRepository()")»;
@@ -100,44 +109,55 @@
 	            }
             «ENDIF-»
         }
+	}
+	 «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE writeAttributeToXmlMethodCall FOR XPolicyAttribute-»
+	«IF generateGetAllowedValuesForAndGetDefaultValue-»
+		«methodNameWriteToXml»(element);
 	«ENDIF-»
 «ENDDEFINE»
 
-
-«DEFINE writeAttributeToXML FOR XPolicyAttribute-»
+«DEFINE writeAttributeToXmlMethod FOR XPolicyAttribute-»
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
-        configElement = element.getOwnerDocument().createElement(«XML_TAG_CONFIG_ELEMENT()»);
-        configElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE()», «policyCmptNode.implClassName».«constantNamePropertyName»);
-        «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", XML_TAG_VALUE())»;
-        valueSetElement = element.getOwnerDocument().createElement(«XML_TAG_VALUE_SET()»);
-        «IF valueSetUnrestricted-»
-	        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
-	            Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES()»);
-	            valueSetElement.appendChild(valueElement);
-	        }
-        «ENDIF-»
-    	«IF valueSetUnrestricted && rangeSupported-»
-        	if («fieldNameValueSet» instanceof «qnameRange("?")») {
-	            «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
-	            «EXPAND writeRange("range")-»
-	        }
-        «ELSEIF valueSetRange-»
-                «EXPAND writeRange(fieldNameValueSet)-»
-        «ENDIF-»
-        «IF valueSetUnrestricted && enumValueSetSupported-»
-    		if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
-    			«EXPAND writeEnumValueSet-»
-	        }
-	    «ELSEIF valueSetEnum-»
-       			«EXPAND writeEnumValueSet-»
-		«ENDIF-»
-        configElement.appendChild(valueSetElement);
-        element.appendChild(configElement);
+		/**
+		 * @generated
+	     */
+		private void «method(methodNameWriteToXml, Element(), "element")» {
+	        Element configElement = element.getOwnerDocument().createElement(«XML_TAG_CONFIG_ELEMENT()»);
+	        configElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE()», «policyCmptNode.implClassName».«constantNamePropertyName»);
+	        «ValueToXmlHelper()».«addValueToElement(toStringExpression, "configElement", XML_TAG_VALUE())»;
+	        Element valueSetElement = element.getOwnerDocument().createElement(«XML_TAG_VALUE_SET()»);
+	        «IF valueSetUnrestricted-»
+		        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
+		            Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES()»);
+		            valueSetElement.appendChild(valueElement);
+		        }
+	        «ENDIF-»
+	    	«IF valueSetUnrestricted && rangeSupported-»
+	        	if («fieldNameValueSet» instanceof «qnameRange("?")») {
+		            «qnameRange(javaClassQualifiedNameUsedForValueSet)» range = («qnameRange(javaClassQualifiedNameUsedForValueSet)»)«fieldNameValueSet»;
+		            «EXPAND writeRange("range")-»
+		        }
+	        «ELSEIF valueSetRange-»
+	                «EXPAND writeRange(fieldNameValueSet)-»
+	        «ENDIF-»
+	        «IF valueSetUnrestricted && enumValueSetSupported-»
+	    		if («fieldNameValueSet» instanceof «OrderedValueSet("?")») {
+	    			«EXPAND writeEnumValueSet-»
+		        }
+		    «ELSEIF valueSetEnum-»
+	       			«EXPAND writeEnumValueSet-»
+			«ENDIF-»
+	        configElement.appendChild(valueSetElement);
+	        element.appendChild(configElement);
+		}
 	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE writeRange(String rangeVar) FOR XPolicyAttribute-»
-	            valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_RANGE()»);
+	            Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_RANGE()»);
 	            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL()», Boolean.toString(«fieldNameValueSet».«containsNull()»));
 	            «ValueToXmlHelper()».«addValueToElement(getToStringExpression(rangeVar + ".getLowerBound()"),
 	                    "valueSetValuesElement", XML_TAG_LOWER_BOUND())»;
@@ -149,7 +169,7 @@
 «ENDDEFINE»
 
 «DEFINE writeEnumValueSet FOR XPolicyAttribute-»
-	            valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_ENUM()»);
+	            Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_ENUM()»);
 	            valueSetValuesElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL()», Boolean.toString(«fieldNameValueSet».«containsNull()»));
 	            for («javaClassQualifiedName» value : «fieldNameValueSet».getValues(true)) {
 	                Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_VALUE()»);

@@ -40,6 +40,7 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -201,6 +202,7 @@ public class XProductClassTest {
     public void testGetPolicyClassName() throws Exception {
         when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
         when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(true);
 
         when(xPolicyCmpt.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("IPolicyCmpt");
         when(xPolicyCmpt.getSimpleName(BuilderAspect.IMPLEMENTATION)).thenReturn("PolicyCmpt");
@@ -210,6 +212,20 @@ public class XProductClassTest {
 
         assertEquals("IPolicyCmpt", xProductClass.getPolicyInterfaceName());
         assertEquals("PolicyCmpt", xProductClass.getPolicyImplClassName());
+    }
+
+    @Test
+    public void testGetPolicyClassName_notConfigured() throws Exception {
+        when(type.findPolicyCmptType(ipsProject)).thenReturn(policyType);
+        when(modelService.getModelNode(policyType, XPolicyCmptClass.class, modelContext)).thenReturn(xPolicyCmpt);
+        when(xProductClass.isConfigurationForPolicyCmptType()).thenReturn(false);
+
+        assertEquals(IConfigurableModelObject.class.getSimpleName(),
+                xProductClass.getPolicyClassName(BuilderAspect.INTERFACE));
+        assertEquals(IConfigurableModelObject.class.getSimpleName(),
+                xProductClass.getPolicyClassName(BuilderAspect.IMPLEMENTATION));
+        assertEquals(IConfigurableModelObject.class.getSimpleName(), xProductClass.getPolicyInterfaceName());
+        assertEquals(IConfigurableModelObject.class.getSimpleName(), xProductClass.getPolicyImplClassName());
     }
 
     @Test

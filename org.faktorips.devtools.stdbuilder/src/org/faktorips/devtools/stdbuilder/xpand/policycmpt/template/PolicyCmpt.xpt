@@ -323,8 +323,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 «overrideAnnotation(false)-»
 	    protected void «initPropertiesFromXml(Map("String", "String")+" propMap", IRuntimeRepository()+" productRepository")» {
 	        super.«initPropertiesFromXml("propMap", "productRepository")»;
-			«EXPAND PolicyCmptAttribute::initAttributeFromXML FOREACH attributes-»
+	        «EXPAND PolicyCmptAttribute::initFromXmlMethodCall FOREACH attributes-»
 	    }
+	    «EXPAND PolicyCmptAttribute::initFromXmlMethod FOREACH attributes-»
     «ENDIF-»
     
     /**
@@ -338,9 +339,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
         if (newChild != null) {
             return newChild;
         }
-        «EXPAND PolicyCmptAssociation::createTargetFromXML FOREACH associations-»
+        «EXPAND PolicyCmptAssociation::createTargetFromXmlMethodCall FOREACH associations-»
         return null;
     }
+    
+    «EXPAND PolicyCmptAssociation::createTargetFromXmlMethod FOREACH associations-»
     
     «IF generateMethodCreateUnresolvedReference-»
 	    /**

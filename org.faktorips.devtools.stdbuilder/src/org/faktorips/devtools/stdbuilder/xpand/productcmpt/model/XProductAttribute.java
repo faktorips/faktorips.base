@@ -160,4 +160,5 @@ public class XProductAttribute extends XAttribute {
     public boolean isChangingOverTime() {
         return getAttribute().isChangingOverTime();
     }
+
 }

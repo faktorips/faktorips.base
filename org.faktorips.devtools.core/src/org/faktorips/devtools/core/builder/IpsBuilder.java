@@ -369,7 +369,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     private IIpsProject getIpsProject() {
         // need null check because builder sometimes still running when shutdown platform and
         // IpsPlugin is already down
-        if (IpsPlugin.getDefault() != null) {
+        if (IpsPlugin.getDefault() != null && IpsPlugin.getDefault().getIpsModel() != null) {
             return IpsPlugin.getDefault().getIpsModel().getIpsProject(getProject());
         } else {
             return null;
