@@ -69,14 +69,6 @@ public class XProductAssociation extends XAssociation {
         return getJavaNamingConvention().getGetterMethodName("CardinalityFor" + matchingSingularName);
     }
 
-    public String getMethodNameDoInitFromXml() {
-        return "doInit" + StringUtils.capitalize(getName());
-    }
-
-    public String getMethodNameWriteToXml() {
-        return "write" + StringUtils.capitalize(getName());
-    }
-
     public String getNameOfMatchingAssociation() throws CoreException {
         return getAssociation().findMatchingPolicyCmptTypeAssociation(getIpsProject()).getTargetRoleSingular();
     }

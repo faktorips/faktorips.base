@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -50,10 +49,6 @@ public class XTableUsage extends AbstractGeneratorModelNode {
 
     public String getMethodNameGetter() {
         return getJavaNamingConvention().getGetterMethodName(getName());
-    }
-
-    public String getMethodNameDoInitFromXml() {
-        return "doInit" + StringUtils.capitalize(getName());
     }
 
     public String getTableClassName() {

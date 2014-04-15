@@ -115,7 +115,7 @@
 
 «DEFINE initFromXmlMethodCall FOR XProductAttribute-»
 	«IF !overwrite-»
-		«methodDoInitFromXmlName»(configMap);
+		«methodNameDoInitFromXml»(configMap);
     «ENDIF-»
 «ENDDEFINE»
 
@@ -124,7 +124,7 @@
 		/**
  		* @generated
  		*/
-		private void «method(methodDoInitFromXmlName, Map("String", Element()), "configMap")» {
+		private void «method(methodNameDoInitFromXml, Map("String", Element()), "configMap")» {
 	        Element configElement = configMap.get(«constantNamePropertyName»);
 	        if (configElement != null) {
 	        «IF multiValue-»

@@ -765,6 +765,14 @@ public abstract class AbstractGeneratorModelNode {
         return methodSignature.getDefinition();
     }
 
+    public String getMethodNameDoInitFromXml() {
+        return "doInit" + StringUtils.capitalize(getName());
+    }
+
+    public String getMethodNameWriteToXml() {
+        return "write" + StringUtils.capitalize(getName());
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + " [" + ipsObjectPartContainer + "]";

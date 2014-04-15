@@ -69,7 +69,7 @@
 
 «DEFINE initFromXmlMethodCall FOR XPolicyAttribute-»
 	«IF !overwrite-»
-		«methodDoInitFromXmlName»(configMap);
+		«methodNameDoInitFromXml»(configMap);
     «ENDIF-»
 «ENDDEFINE»
 
@@ -78,7 +78,7 @@
 		/**
  		* @generated
  		*/
- 		private void «method(methodDoInitFromXmlName, Map("String", Element()), "configMap")» {
+ 		private void «method(methodNameDoInitFromXml, Map("String", Element()), "configMap")» {
 	«IF generateGetAllowedValuesForAndGetDefaultValue-»
         Element configElement = configMap.get(«policyCmptNode.implClassName».«constantNamePropertyName»);
         if (configElement != null) {
