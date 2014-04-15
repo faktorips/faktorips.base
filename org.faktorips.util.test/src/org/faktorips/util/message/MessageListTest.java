@@ -12,11 +12,17 @@ package org.faktorips.util.message;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.faktorips.util.message.MessageList.SeverityComparator;
 import org.junit.Test;
 
 public class MessageListTest {
@@ -352,4 +358,75 @@ public class MessageListTest {
         assertEquals(3, list.getMessageByCode("code").getInvalidObjectProperties().length);
         assertEquals(2, list.getMessage(1).getInvalidObjectProperties().length);
     }
+
+    @Test
+    public void testGetSublist_CopyFunctionality() {
+        MessageList messageList = new MessageList();
+
+        messageList.add(new Message("warning1", "warning1", Message.WARNING));
+        messageList.add(new Message("info1", "info1", Message.INFO));
+        messageList.add(new Message("none", "none", Message.NONE));
+
+        MessageList subList = messageList.getSubList(5);
+        assertSame(subList.size(), messageList.size());
+
+        Message message = new Message("error1", "error1", Message.WARNING);
+        subList.add(message);
+
+        assertNotSame(subList.size(), messageList.size());
+    }
+
+    @Test
+    public void testComparator() {
+        List<Message> messageList = new ArrayList<Message>();
+        messageList.add(new Message("warning1", "warning1", Message.WARNING));
+        messageList.add(new Message("info1", "info1", Message.INFO));
+        messageList.add(new Message("none", "none", Message.NONE));
+        messageList.add(new Message("info2", "info2", Message.INFO));
+        messageList.add(new Message("err1", "err1", Message.ERROR));
+        messageList.add(new Message("err2", "err2", Message.ERROR));
+        messageList.add(new Message("err3", "err3", Message.ERROR));
+
+        Collections.sort(messageList, new SeverityComparator());
+
+        assertEquals("err1", messageList.get(0).getText());
+        assertEquals("err3", messageList.get(2).getText());
+        assertEquals("warning1", messageList.get(3).getText());
+        assertEquals("info2", messageList.get(5).getText());
+        assertEquals("none", messageList.get(messageList.size() - 1).getText());
+    }
+
+    @Test
+    public void testGetSubList() throws Exception {
+        MessageList messageList = new MessageList();
+        Message msg1 = new Message("err1", "err1", Message.ERROR);
+        messageList.add(msg1);
+        Message msg2 = new Message("err2", "err2", Message.ERROR);
+        messageList.add(msg2);
+        messageList.add(new Message("err3", "err3", Message.ERROR));
+
+        MessageList subList = messageList.getSubList(2);
+
+        assertEquals(2, subList.size());
+        assertEquals(msg1, subList.getMessage(0));
+        assertEquals(msg2, subList.getMessage(1));
+    }
+
+    @Test
+    public void testGetSubList_WithSort() throws Exception {
+        MessageList messageList = new MessageList();
+        Message msg1 = new Message("err1", "err1", Message.ERROR);
+        messageList.add(msg1);
+        Message msg2 = new Message("warning1", "warning1", Message.WARNING);
+        messageList.add(msg2);
+        Message msg3 = new Message("err3", "err3", Message.ERROR);
+        messageList.add(msg3);
+
+        MessageList subList = messageList.getSubList(2);
+
+        assertEquals(2, subList.size());
+        assertEquals(msg1, subList.getMessage(0));
+        assertEquals(msg3, subList.getMessage(1));
+    }
+
 }

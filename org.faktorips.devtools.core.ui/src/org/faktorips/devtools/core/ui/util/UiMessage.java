@@ -26,85 +26,24 @@ public final class UiMessage implements IMessage {
 
     static final String SEPERATOR = ": "; //$NON-NLS-1$
 
-    private final Message message;
+    private final int messageType;
+    private final String messageText;
+    private final String messageCode;
+    private final String prefix;
 
     public UiMessage(Message message) {
-        this.message = message;
+        messageType = convertSeverityToMessageType(message.getSeverity());
+        messageText = message.getText();
+        messageCode = message.getCode();
+        Object firstObject = getFirstObject(message.getInvalidObjectProperties());
+        prefix = getPrefix(firstObject);
     }
 
-    @Override
-    public int getMessageType() {
-        return convertSeverityToMessageType(message.getSeverity());
-    }
-
-    @Override
-    public String getMessage() {
-        return message.getText();
-    }
-
-    @Override
-    public String getPrefix() {
-        Object contextObject = getFirstInvalidObject();
-        if (contextObject instanceof IValueHolder<?>) {
-            IValueHolder<?> holder = (IValueHolder<?>)contextObject;
-            contextObject = holder.getParent();
-        }
-
-        String objectName = StringUtils.EMPTY;
-        if (contextObject instanceof IIpsObject) {
-            return StringUtils.EMPTY;
-        }
-        if (contextObject instanceof ILabeledElement) {
-            objectName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
-        } else if (contextObject instanceof IIpsObjectPartContainer) {
-            objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
-        }
-        if (StringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
-            objectName = ((IIpsElement)contextObject).getName();
-        }
-        if (StringUtils.isEmpty(objectName)) {
-            return StringUtils.EMPTY;
-        } else {
-            return objectName + SEPERATOR;
-        }
-    }
-
-    private Object getFirstInvalidObject() {
-        ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
-        if (invalidObjectProperties.length == 0 || invalidObjectProperties[0] == null) {
-            return StringUtils.EMPTY;
-        }
-
-        ObjectProperty invalidObjectProperty = invalidObjectProperties[0];
-        Object contextObject = invalidObjectProperty.getObject();
-        return contextObject;
-    }
-
-    String getCaptionName(IIpsObjectPartContainer contextObject) {
-        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(contextObject);
-        if (StringUtils.isEmpty(caption)) {
-            IIpsElement parent = contextObject.getParent();
-            if (parent instanceof IIpsObjectPartContainer) {
-                IIpsObjectPartContainer parentContainer = (IIpsObjectPartContainer)parent;
-                return getCaptionName(parentContainer);
-            }
-        }
-        return caption;
-    }
-
-    @Override
-    public Object getKey() {
-        return message.getCode();
-    }
-
-    @Override
-    public Object getData() {
-        return null;
-    }
-
-    @Override
-    public Control getControl() {
-        return null;
+    public UiMessage(String text) {
+        messageType = IMessageProvider.INFORMATION;
+        messageText = text;
+        messageCode = text;
+        prefix = StringUtils.EMPTY;
     }
 
     /**
@@ -124,5 +63,87 @@ public final class UiMessage implements IMessage {
             default:
                 return IMessageProvider.NONE;
         }
+    }
+
+    private Object getFirstObject(ObjectProperty[] objectProperties) {
+        if (objectProperties.length == 0 || objectProperties[0] == null) {
+            return StringUtils.EMPTY;
+        }
+
+        ObjectProperty invalidObjectProperty = objectProperties[0];
+        Object contextObject = invalidObjectProperty.getObject();
+        return contextObject;
+    }
+
+    private String getPrefix(Object contextObject) {
+        if (contextObject instanceof IIpsObject) {
+            return StringUtils.EMPTY;
+        }
+        if (contextObject instanceof IValueHolder<?>) {
+            IValueHolder<?> holder = (IValueHolder<?>)contextObject;
+            return getObjectName(holder.getParent());
+
+        }
+        return getObjectName(contextObject);
+
+    }
+
+    private String getObjectName(Object contextObject) {
+        String objectName = StringUtils.EMPTY;
+        if (contextObject instanceof ILabeledElement) {
+            objectName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)contextObject);
+        } else if (contextObject instanceof IIpsObjectPartContainer) {
+            objectName = getCaptionName((IIpsObjectPartContainer)contextObject);
+        }
+        if (StringUtils.isEmpty(objectName) && contextObject instanceof IIpsElement) {
+            objectName = ((IIpsElement)contextObject).getName();
+        }
+        if (StringUtils.isEmpty(objectName)) {
+            return StringUtils.EMPTY;
+        } else {
+            return objectName + SEPERATOR;
+        }
+    }
+
+    String getCaptionName(IIpsObjectPartContainer contextObject) {
+        String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(contextObject);
+        if (StringUtils.isEmpty(caption)) {
+            IIpsElement parent = contextObject.getParent();
+            if (parent instanceof IIpsObjectPartContainer) {
+                IIpsObjectPartContainer parentContainer = (IIpsObjectPartContainer)parent;
+                return getCaptionName(parentContainer);
+            }
+        }
+        return caption;
+    }
+
+    @Override
+    public int getMessageType() {
+        return messageType;
+    }
+
+    @Override
+    public String getMessage() {
+        return messageText;
+    }
+
+    @Override
+    public String getPrefix() {
+        return prefix;
+    }
+
+    @Override
+    public Object getKey() {
+        return messageCode;
+    }
+
+    @Override
+    public Object getData() {
+        return null;
+    }
+
+    @Override
+    public Control getControl() {
+        return null;
     }
 }

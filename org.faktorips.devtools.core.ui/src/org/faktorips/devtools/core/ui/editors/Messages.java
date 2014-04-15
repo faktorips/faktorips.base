@@ -40,6 +40,8 @@ public class Messages extends NLS {
     public static String IpsPartEditDialog_versionAvailableSince;
     public static String IpsPartEditDialog_versionTooltip;
 
+    public static String IpsPartEditDialog_moreMessagesInTooltip;
+
     public static String IpsPartsComposite_submenuRefactor;
     public static String IpsPartsComposite_labelRenameRefactoring;
     public static String IpsPartsComposite_labelPullUpRefactoring;

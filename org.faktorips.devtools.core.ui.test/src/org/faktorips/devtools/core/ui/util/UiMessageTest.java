@@ -101,8 +101,8 @@ public class UiMessageTest {
     @Test
     public void testGetPrefix_caption() throws Exception {
         message = new Message("ABC", "text", Message.INFO, part1);
-        uiMessage = new UiMessage(message);
         when(part2.getCaption(Locale.GERMAN)).thenReturn(CAPTION2);
+        uiMessage = new UiMessage(message);
 
         String prefix = uiMessage.getPrefix();
 
@@ -140,8 +140,8 @@ public class UiMessageTest {
     public void testGetPrefix_name() throws Exception {
         IIpsElement ipsElement = mock(IIpsElement.class);
         message = new Message("ABC", "text", Message.INFO, ipsElement);
-        uiMessage = new UiMessage(message);
         when(ipsElement.getName()).thenReturn(NAME1);
+        uiMessage = new UiMessage(message);
 
         String prefix = uiMessage.getPrefix();
 
