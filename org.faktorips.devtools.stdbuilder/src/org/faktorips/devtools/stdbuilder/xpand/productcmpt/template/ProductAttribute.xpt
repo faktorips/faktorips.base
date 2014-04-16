@@ -167,7 +167,7 @@
 	     */
 		private void «method(methodNameWriteToXml, Element(), "element")» {
 	        Element attributeElement = element.getOwnerDocument().createElement(«XML_TAG_ATTRIBUTE_VALUE()»);
-	        attributeElement.setAttribute("attribute", «constantNamePropertyName»);
+	        attributeElement.setAttribute(«XML_ATTRIBUTE_ATTRIBUTE()», «constantNamePropertyName»);
 	        «IF multiValue-»
 	            «IF multiValueDirectXmlHandling-»
 	                «MultiValueXmlHelper()».«addMultiValueToElement("attributeElement", "this." + fieldName)»;
