@@ -165,6 +165,147 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValue_nullLowerBounds() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound("100");
+        range.setStep(null);
+
+        assertTrue(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_nullLowerBoundsWithStep() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound("100");
+        range.setStep("1");
+
+        assertFalse(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_nullUpperBounds() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("1");
+        range.setUpperBound(null);
+        range.setStep(null);
+
+        assertTrue(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_nullUpperBoundsWithStep() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("1");
+        range.setUpperBound(null);
+        range.setStep("1");
+
+        assertTrue(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_nullLowerUpperBounds() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound(null);
+        range.setStep(null);
+
+        assertTrue(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_nullLowerUpperBoundsWithStep() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("1");
+        range.setUpperBound(null);
+        range.setStep("1");
+
+        assertTrue(range.containsValue("5", ipsProject));
+    }
+
+    @Test
+    public void testContainsValueSet_nullRange() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound(null);
+        range.setStep("1");
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound(null);
+        subRange.setUpperBound(null);
+        subRange.setStep("1");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_lowerNull() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound("100");
+        range.setStep("1");
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound(null);
+        subRange.setUpperBound(null);
+        subRange.setStep("1");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_upperNull() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound("1");
+        range.setUpperBound(null);
+        range.setStep("1");
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound(null);
+        subRange.setUpperBound(null);
+        subRange.setStep("1");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_subLowerNull() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound(null);
+        range.setStep("1");
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound(null);
+        subRange.setUpperBound("100");
+        subRange.setStep("1");
+
+        assertFalse(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_subUpperNull() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "idXY");
+        intEl.findPcTypeAttribute(ipsProject).setDatatype(Datatype.INTEGER.getQualifiedName());
+        range.setLowerBound(null);
+        range.setUpperBound(null);
+        range.setStep(null);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setLowerBound("1");
+        subRange.setUpperBound(null);
+        subRange.setStep("1");
+
+        assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
     public void testContainsValueSet_BothSetsAreRanges() {
         RangeValueSet range = new RangeValueSet(intEl, "50");
         range.setLowerBound("10");

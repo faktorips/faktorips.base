@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.IDependency;
@@ -627,9 +626,7 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
         result = new MessageList();
 
-        // Obtain the project properties via the IPS model as it provides caching
-        IIpsProjectProperties properties = ((IpsModel)getIpsModel())
-                .getIpsProjectProperties((IpsProject)getIpsProject());
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         int languageCount = properties.getSupportedLanguages().size();
         if (this instanceof IDescribedElement) {
             validateDescriptionCount(result, languageCount);
