@@ -16,9 +16,9 @@ import org.faktorips.devtools.core.internal.model.productcmpt.Messages;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Class realizing a delta entry concerning hidden Attributes {@link IProductCmptType}
@@ -27,8 +27,9 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     private IAttributeValue attributeValue;
 
-    public HiddenAttributeMismatchEntry(IPropertyValue propertyValue, IAttributeValue attributeValue) {
-        super(propertyValue);
+    public HiddenAttributeMismatchEntry(IAttributeValue attributeValue) {
+        super(attributeValue);
+        ArgumentCheck.notNull(attributeValue);
         this.attributeValue = attributeValue;
     }
 
