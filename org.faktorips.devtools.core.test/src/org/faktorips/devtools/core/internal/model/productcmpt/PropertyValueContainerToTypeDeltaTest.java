@@ -27,7 +27,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta.DeltaEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -533,11 +533,41 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         ProductCmptToTypeDelta propValueToTypeDelta = new ProductCmptToTypeDelta(productCmpt, ipsProject);
         IAttributeValue attrValue = new AttributeValue(productCmpt.getProductCmpt(), "Produkt", "attribute");
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "someValue"));
-        DeltaEntry deltaEntry = propValueToTypeDelta.new DeltaEntry(propValue, attrValue);
+        HiddenAttributeMismatchEntry deltaEntry = propValueToTypeDelta.new HiddenAttributeMismatchEntry(propValue, attrValue);
 
         deltaEntry.fix();
 
         assertEquals("defaultval", attrValue.getValueHolder().getValue().toString());
+    }
+
+    @Test
+    public void testCheckForHiddenAttributeMismatchNoEntryAdded() {
+        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
+                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
+        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
+
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IAttributeValue value = mock(IAttributeValue.class);
+
+        when(attribute.isVisible()).thenReturn(true);
+
+        propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
+        verify(propertyValueContainerToTypeDelta, times(0)).addEntry(any(IDeltaEntry.class));
+    }
+
+    @Test
+    public void testCheckForHiddenAttributeMismatchEntryAdded() {
+        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
+                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
+        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
+
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IAttributeValue value = mock(IAttributeValue.class);
+
+        when(attribute.isVisible()).thenReturn(false);
+
+        propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
+        verify(propertyValueContainerToTypeDelta, times(1)).addEntry(any(IDeltaEntry.class));
     }
 
 }

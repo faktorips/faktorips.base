@@ -172,6 +172,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                     checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
                     checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
                 }
             }
         }
@@ -196,6 +197,12 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     private void checkForMultilingualMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
         if (attribute.isMultilingual() != (value.getValueHolder().getValueType().equals(ValueType.INTERNATIONAL_STRING))) {
             addEntry(new MultilingualMismatchEntry(value, attribute));
+        }
+    }
+
+    protected void checkForHiddenAttributeMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
+        if (!attribute.isVisible()) {
+            addEntry(new HiddenAttributeMismatchEntry(null, value));
         }
     }
 
@@ -297,14 +304,13 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     /**
-     * 
-     * 
+     * Class realizing a delta entry concerning hidden Attributes {@link IProductCmptType}
      */
-    public class DeltaEntry extends AbstractDeltaEntryForProperty {
+    public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty {
 
         private IAttributeValue attributeValue;
 
-        public DeltaEntry(IPropertyValue propertyValue, IAttributeValue attributeValue) {
+        public HiddenAttributeMismatchEntry(IPropertyValue propertyValue, IAttributeValue attributeValue) {
             super(propertyValue);
             this.attributeValue = attributeValue;
         }
