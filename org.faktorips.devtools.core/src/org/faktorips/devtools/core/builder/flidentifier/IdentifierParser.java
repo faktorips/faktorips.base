@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -85,7 +86,7 @@ public class IdentifierParser {
      * 
      */
     public IdentifierNode parse(String identifier) {
-        matcher = new IdentifierMatcher(identifier);
+        setMatcher(identifier);
         return parseNextPart(null);
     }
 
@@ -104,6 +105,36 @@ public class IdentifierParser {
         return new IdentifierNodeFactory(identifierPart, matcher.getTextRegion(), ipsProject)
                 .createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
                         NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, identifierPart)));
+    }
+
+    public List<IdentifierNode> getProposals(String existingContent) {
+        setMatcher(existingContent);
+        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        List<AbstractIdentifierNodeParser> latestParsers = getLatestParsers(null);
+        for (AbstractIdentifierNodeParser parser : latestParsers) {
+            result.addAll(parser.getProposals(matcher.getIdentifierPart()));
+        }
+        return result;
+    }
+
+    private List<AbstractIdentifierNodeParser> getLatestParsers(IdentifierNode previousNode) {
+        ArrayList<AbstractIdentifierNodeParser> result = new ArrayList<AbstractIdentifierNodeParser>();
+        String identifierPart = matcher.getIdentifierPart();
+        for (AbstractIdentifierNodeParser parser : parsers) {
+            IdentifierNode node = parser.parse(identifierPart, previousNode, matcher.getTextRegion());
+            if (node != null) {
+                if (matcher.hasNextIdentifierPart()) {
+                    matcher.nextIdentifierPart();
+                    return getLatestParsers(node);
+                }
+            }
+            result.add(parser);
+        }
+        return result;
+    }
+
+    private void setMatcher(String identifier) {
+        matcher = new IdentifierMatcher(identifier);
     }
 
     protected static class IdentifierMatcher {

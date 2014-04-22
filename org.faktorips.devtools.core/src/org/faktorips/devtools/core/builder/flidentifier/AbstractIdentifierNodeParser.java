@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -142,8 +145,32 @@ public abstract class AbstractIdentifierNodeParser {
         return new IdentifierNodeFactory(getIdentifierPart(), getTextRegion(), getIpsProject());
     }
 
+    /**
+     * The text region that matches the current parser position. It defines the region that is
+     * parsed by this node parser of the whole identifier that is parsed by the
+     * {@link IdentifierParser}.
+     * 
+     * @return The text region that corresponds to the text part that is parsed by this node parser
+     */
     public TextRegion getTextRegion() {
         return textRegion;
+    }
+
+    /**
+     * Returns every possible identifier node that could be parsed by this parser given the current
+     * context type and previous node. Before you call this method you have to setup the parser
+     * context by calling {@link #parse(String, IdentifierNode, TextRegion)}. The result is filtered
+     * by the given prefix, that means only nodes with a text that starts with the given prefix
+     * should be included in the result list. The prefix compare could be case insensitive.
+     * 
+     * @param prefix The prefix text to filter the result. May be null to get all available results.
+     * 
+     * @return A list of {@link IdentifierNode nodes} that could be parsed by this node parser given
+     *         the current parser state.
+     */
+    public List<IdentifierNode> getProposals(String prefix) {
+        // TODO make abstract!
+        return new ArrayList<IdentifierNode>();
     }
 
 }
