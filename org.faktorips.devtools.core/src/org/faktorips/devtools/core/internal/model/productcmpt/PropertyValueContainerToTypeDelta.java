@@ -15,9 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.AbstractDeltaEntryForProperty;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -42,7 +41,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
@@ -302,44 +300,4 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
 
     }
-
-    /**
-     * Class realizing a delta entry concerning hidden Attributes {@link IProductCmptType}
-     */
-    public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty {
-
-        private IAttributeValue attributeValue;
-
-        public HiddenAttributeMismatchEntry(IPropertyValue propertyValue, IAttributeValue attributeValue) {
-            super(propertyValue);
-            this.attributeValue = attributeValue;
-        }
-
-        @Override
-        public DeltaType getDeltaType() {
-            return DeltaType.HIDDEN_ATTRIBUTE_MISMATCH;
-        }
-
-        @Override
-        public String getDescription() {
-            return Messages.Hidden_Attribute_InvalidValue;
-        }
-
-        @Override
-        public void fix() {
-            IProductCmptType prodCmpT = getProdCmptType();
-            IAttribute attribute = prodCmpT.getAttribute(attributeValue.getAttribute());
-            String defaultValue = attribute.getDefaultValue();
-            attributeValue.setValueHolder(new SingleValueHolder(attributeValue, defaultValue));
-        }
-
-        private IProductCmptType getProdCmptType() {
-            try {
-                return attributeValue.getPropertyValueContainer().findProductCmptType(attributeValue.getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-    }
-
 }

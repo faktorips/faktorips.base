@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.productcmpt.PropertyValueContainerToTypeDelta.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -41,13 +40,11 @@ import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
@@ -521,23 +518,6 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         rule = policyCmptType.newRule();
         rule.setName("UnconfiguredRule");
         rule.setConfigurableByProductComponent(true);
-    }
-
-    @Test
-    public void testDeltaTypeFix() throws CoreException {
-        IPropertyValue propValue = mock(IPropertyValue.class);
-
-        IAttribute newAttribute = productCmptType.newAttribute();
-        newAttribute.setDefaultValue("defaultval");
-        newAttribute.setName("attribute");
-        ProductCmptToTypeDelta propValueToTypeDelta = new ProductCmptToTypeDelta(productCmpt, ipsProject);
-        IAttributeValue attrValue = new AttributeValue(productCmpt.getProductCmpt(), "Produkt", "attribute");
-        attrValue.setValueHolder(new SingleValueHolder(attrValue, "someValue"));
-        HiddenAttributeMismatchEntry deltaEntry = propValueToTypeDelta.new HiddenAttributeMismatchEntry(propValue, attrValue);
-
-        deltaEntry.fix();
-
-        assertEquals("defaultval", attrValue.getValueHolder().getValue().toString());
     }
 
     @Test
