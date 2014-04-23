@@ -10,12 +10,18 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder.Factory;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.ArgumentCheck;
@@ -49,7 +55,19 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
         IProductCmptType prodCmpT = getProdCmptType();
         IAttribute attribute = prodCmpT.getAttribute(getAttributeValue().getAttribute());
         String defaultValue = attribute.getDefaultValue();
-        getAttributeValue().setValueHolder(new SingleValueHolder(getAttributeValue(), defaultValue));
+        setAttributeValueToDefault(defaultValue, getAttributeValue().getValueHolder());
+    }
+
+    private void setAttributeValueToDefault(String defaultValue, IValueHolder<?> valueHolder) {
+        IAttributeValue attributeValue = getAttributeValue();
+        if (valueHolder instanceof MultiValueHolder) {
+            Factory factory = new MultiValueHolder.Factory();
+            List<SingleValueHolder> multiDefaultValues = factory.splitMultiDefaultValues(attributeValue,
+                    new StringValue(defaultValue));
+            attributeValue.setValueHolder(new MultiValueHolder(attributeValue, multiDefaultValues));
+        } else {
+            attributeValue.setValueHolder(new SingleValueHolder(attributeValue, defaultValue));
+        }
     }
 
     private IProductCmptType getProdCmptType() {

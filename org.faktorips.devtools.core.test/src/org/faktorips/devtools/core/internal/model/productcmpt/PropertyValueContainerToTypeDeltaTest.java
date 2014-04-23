@@ -53,13 +53,17 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * 
  * @author Jan Ortmann
  */
+@RunWith(MockitoJUnitRunner.class)
 public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
@@ -68,6 +72,19 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     private IPolicyCmptType superPolicyCmptType;
     private IProductCmptType superProductCmptType;
     private IProductCmpt productCmpt;
+    private PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta;
+
+    @Mock
+    private IProductCmptTypeAttribute attribute;
+
+    @Mock
+    private IAttributeValue value;
+
+    @Mock
+    private SingleValueHolder singleValueHolder;
+
+    @Mock
+    private MultiValueHolder multiValueHolder;
 
     @Override
     @Before
@@ -81,6 +98,9 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmptType.setSupertype(superProductCmptType.getQualifiedName());
         productCmpt = newProductCmpt(productCmptType, "ProductA");
+
+        propertyValueContainerToTypeDelta = mock(PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
+        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
     }
 
     @Test
@@ -363,14 +383,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testValueMismatch_singleValue_multiAttribute() throws Exception {
-        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
-                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
         ArgumentCaptor<IDeltaEntry> captor = ArgumentCaptor.forClass(IDeltaEntry.class);
-
-        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
-        IAttributeValue value = mock(IAttributeValue.class);
-        SingleValueHolder singleValueHolder = mock(SingleValueHolder.class);
 
         when(attribute.isMultiValueAttribute()).thenReturn(true);
         doReturn(singleValueHolder).when(value).getValueHolder();
@@ -382,14 +395,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testValueMismatch_multiValue_singeAttribute() throws Exception {
-        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
-                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
         ArgumentCaptor<IDeltaEntry> captor = ArgumentCaptor.forClass(IDeltaEntry.class);
-
-        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
-        IAttributeValue value = mock(IAttributeValue.class);
-        MultiValueHolder multiValueHolder = mock(MultiValueHolder.class);
 
         when(attribute.isMultiValueAttribute()).thenReturn(false);
         doReturn(multiValueHolder).when(value).getValueHolder();
@@ -401,13 +407,6 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testValueMismatch_singleValue_singeAttribute() throws Exception {
-        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
-                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
-
-        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
-        IAttributeValue value = mock(IAttributeValue.class);
-        SingleValueHolder singleValueHolder = mock(SingleValueHolder.class);
 
         when(attribute.isMultiValueAttribute()).thenReturn(false);
         doReturn(singleValueHolder).when(value).getValueHolder();
@@ -418,13 +417,6 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testValueMismatch_multiValue_multiAttribute() throws Exception {
-        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
-                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
-
-        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
-        IAttributeValue value = mock(IAttributeValue.class);
-        MultiValueHolder multiValueHolder = mock(MultiValueHolder.class);
 
         when(attribute.isMultiValueAttribute()).thenReturn(true);
         doReturn(multiValueHolder).when(value).getValueHolder();
@@ -523,13 +515,6 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testCheckForHiddenAttributeMismatchNoEntryAdded() {
-        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
-                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
-
-        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
-        IAttributeValue value = mock(IAttributeValue.class);
-
         when(attribute.isVisible()).thenReturn(true);
 
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
@@ -538,13 +523,6 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
     @Test
     public void testCheckForHiddenAttributeMismatchEntryAdded() {
-        PropertyValueContainerToTypeDelta propertyValueContainerToTypeDelta = mock(
-                PropertyValueContainerToTypeDelta.class, Mockito.CALLS_REAL_METHODS);
-        doNothing().when(propertyValueContainerToTypeDelta).addEntry(any(IDeltaEntry.class));
-
-        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
-        IAttributeValue value = mock(IAttributeValue.class);
-
         when(attribute.isVisible()).thenReturn(false);
 
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);

@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -27,6 +28,8 @@ public class HiddenAttributeMismatchEntryTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
+    private IAttribute newAttribute;
+    private IAttributeValue attrValue;
 
     @Override
     @Before
@@ -35,19 +38,33 @@ public class HiddenAttributeMismatchEntryTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "Product");
         productCmpt = newProductCmpt(productCmptType, "ProductA");
+
+        newAttribute = productCmptType.newAttribute();
+        newAttribute.setName("attribute");
+        attrValue = new AttributeValue(productCmpt.getProductCmpt(), "Produkt", "attribute");
     }
 
     @Test
-    public void testDeltaTypeFix() {
-        IAttribute newAttribute = productCmptType.newAttribute();
-        newAttribute.setDefaultValue("defaultval");
+    public void testFixSingleValueHolder() {
+        newAttribute.setDefaultValue("defaultvalue");
         newAttribute.setName("attribute");
-        IAttributeValue attrValue = new AttributeValue(productCmpt.getProductCmpt(), "Produkt", "attribute");
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "someValue"));
-        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue);
 
+        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue);
         deltaEntry.fix();
 
-        assertEquals("defaultval", attrValue.getValueHolder().getValue().toString());
+        assertEquals("defaultvalue", attrValue.getValueHolder().getValue().toString());
+    }
+
+    @Test
+    public void testFixMultiValueHolder() {
+        newAttribute.setDefaultValue("80 | 60");
+        newAttribute.setName("attribute");
+        attrValue.setValueHolder(new MultiValueHolder(attrValue, null));
+
+        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue);
+        deltaEntry.fix();
+
+        assertEquals("[80, 60]", attrValue.getValueHolder().getStringValue());
     }
 }
