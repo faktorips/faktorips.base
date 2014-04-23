@@ -52,7 +52,7 @@ public class AbstractParserTest {
 
     public class TestNode extends IdentifierNode {
 
-        TestNode(Datatype datatype) {
+        public TestNode(Datatype datatype) {
             super(datatype, null);
         }
 
