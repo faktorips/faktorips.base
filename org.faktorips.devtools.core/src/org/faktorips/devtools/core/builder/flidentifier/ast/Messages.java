@@ -19,6 +19,8 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    public static String AttributeNode_defaultOfName;
+
     public static String ParameterNode_description;
 
     private Messages() {

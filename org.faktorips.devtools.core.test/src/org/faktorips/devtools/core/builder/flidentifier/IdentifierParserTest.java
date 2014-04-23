@@ -124,7 +124,14 @@ public class IdentifierParserTest {
 
     @Before
     public void createIdentifierParser() throws Exception {
+        mockEnum();
         identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
+    }
+
+    public void mockEnum() throws Exception {
+        when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
+        when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
+        when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
     }
 
     @Before
@@ -154,13 +161,6 @@ public class IdentifierParserTest {
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
                 .thenReturn(true);
-    }
-
-    @Before
-    public void mockEnum() throws Exception {
-        when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
-        when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
-        when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
     }
 
     @Test

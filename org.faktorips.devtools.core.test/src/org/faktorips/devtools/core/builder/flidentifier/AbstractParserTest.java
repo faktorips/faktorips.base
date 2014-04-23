@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -58,6 +59,16 @@ public class AbstractParserTest {
 
         TestNode(Datatype datatype, boolean listOfTypes) {
             super(datatype, listOfTypes, null);
+        }
+
+        @Override
+        public String getText() {
+            return null;
+        }
+
+        @Override
+        public String getDescription(MultiLanguageSupport multiLanguageSupport) {
+            return null;
         }
 
     }

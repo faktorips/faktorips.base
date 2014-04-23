@@ -30,6 +30,8 @@ import org.faktorips.devtools.core.util.TextRegion;
  */
 public abstract class IdentifierNode {
 
+    public static final String NAME_DESCRIPTION_SEPERATOR = " - "; //$NON-NLS-1$
+
     private final Datatype datatype;
 
     private IdentifierNode successor;
@@ -102,20 +104,34 @@ public abstract class IdentifierNode {
      */
     public abstract String getDescription(MultiLanguageSupport multiLanguageSupport);
 
-    protected String getDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+    protected String getNameAndDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        return getNameAndDescription(getName(ipsElement, multiLanguageSupport),
+                getDescription(ipsElement, multiLanguageSupport));
+    }
+
+    protected String getNameAndDescription(String name, String description) {
         StringBuffer result = new StringBuffer();
-        if (ipsElement instanceof ILabeledElement) {
-            result.append(multiLanguageSupport.getLocalizedLabel((ILabeledElement)ipsElement));
-        } else {
-            result.append(ipsElement.getName());
-        }
-        if (ipsElement instanceof IDescribedElement) {
-            String description = multiLanguageSupport.getLocalizedDescription((IDescribedElement)ipsElement);
-            if (StringUtils.isNotBlank(description)) {
-                result.append(" - ").append(description); //$NON-NLS-1$
-            }
+        result.append(name);
+        if (StringUtils.isNotBlank(description)) {
+            result.append(NAME_DESCRIPTION_SEPERATOR).append(description);
         }
         return result.toString();
+    }
+
+    protected String getName(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        if (ipsElement instanceof ILabeledElement) {
+            return multiLanguageSupport.getLocalizedLabel((ILabeledElement)ipsElement);
+        } else {
+            return ipsElement.getName();
+        }
+    }
+
+    protected String getDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        if (ipsElement instanceof IDescribedElement) {
+            return multiLanguageSupport.getLocalizedDescription((IDescribedElement)ipsElement);
+        } else {
+            return null;
+        }
     }
 
 }

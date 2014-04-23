@@ -55,7 +55,7 @@ public class ParameterNode extends IdentifierNode {
         try {
             Datatype datatype = parameter.findDatatype(ipsProject);
             if (datatype instanceof IIpsElement) {
-                return getDescription((IIpsElement)datatype, multiLanguageSupport);
+                return getNameAndDescription((IIpsElement)datatype, multiLanguageSupport);
             } else {
                 return NLS.bind(Messages.ParameterNode_description, parameter.getName(), parameter.getDatatype());
             }

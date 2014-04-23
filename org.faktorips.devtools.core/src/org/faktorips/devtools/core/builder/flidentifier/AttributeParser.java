@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -42,12 +44,45 @@ import org.faktorips.util.message.Message;
 public class AttributeParser extends TypeBasedIdentifierParser {
 
     public static final char VALUE_SUFFIX_SEPARATOR_CHAR = '@';
+
     public static final String DEFAULT_VALUE_SUFFIX = VALUE_SUFFIX_SEPARATOR_CHAR + "default"; //$NON-NLS-1$
+
     private final IdentifierFilter identifierFilter;
 
     public AttributeParser(IExpression expression, IIpsProject ipsProject, IdentifierFilter identifierFilter) {
         super(expression, ipsProject);
         this.identifierFilter = identifierFilter;
+    }
+
+    @Override
+    public List<IdentifierNode> getProposals(String prefix) {
+        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        List<IAttribute> attributes = findAttributes();
+        for (IAttribute attribute : attributes) {
+            addIfNotNull(getAttributeProposal(attribute, false, prefix), result);
+            addIfNotNull(getAttributeProposal(attribute, true, prefix), result);
+        }
+        return result;
+    }
+
+    private IdentifierNode getAttributeProposal(IAttribute attribute, boolean defaultAccess, String prefix) {
+        if (isProposalAllowed(attribute, defaultAccess)) {
+            IdentifierNode node = nodeFactory().createAttributeNode(attribute, defaultAccess, isListOfTypeContext());
+            if (isMatchingNode(node, prefix)) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    private boolean isProposalAllowed(IAttribute attribute, boolean defaultAccess) {
+        return (attribute instanceof IPolicyCmptTypeAttribute || !defaultAccess) && isAllowd(attribute, defaultAccess);
+    }
+
+    private void addIfNotNull(IdentifierNode node, List<IdentifierNode> result) {
+        if (node != null) {
+            result.add(node);
+        }
     }
 
     @Override
@@ -60,7 +95,6 @@ public class AttributeParser extends TypeBasedIdentifierParser {
                     Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
                             Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
         }
-
     }
 
     private IdentifierNode parseToNode() {
@@ -106,9 +140,9 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     private List<IAttribute> getPolicyAndProductAttributesFromIType() {
-        List<IAttribute> attributes;
+        List<IAttribute> attributes = new ArrayList<IAttribute>();
         IType contextType = getContextType();
-        attributes = findAllAttributesFor(contextType);
+        attributes.addAll(findAllAttributesFor(contextType));
         attributes.addAll(findProductAttributesIfAvailable(contextType));
         return attributes;
     }

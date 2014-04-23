@@ -39,36 +39,36 @@ public class IdentifierNodeTest {
     private MultiLanguageSupport multiLanguageSupport;
 
     @Test
-    public void testGetDescriptionIIpsElementMultiLanguageSupport_labeled() throws Exception {
+    public void testGetNameAndDescriptionIIpsElementMultiLanguageSupport_labeled() throws Exception {
         ILabeledElement labeledElement = mock(ILabeledElement.class);
         when(multiLanguageSupport.getLocalizedLabel(labeledElement)).thenReturn(MY_LABEL);
 
-        String description = identifierNode.getDescription(labeledElement, multiLanguageSupport);
+        String description = identifierNode.getNameAndDescription(labeledElement, multiLanguageSupport);
 
         assertEquals(MY_LABEL, description);
     }
 
     @Test
-    public void testGetDescriptionIIpsElementMultiLanguageSupport_described() throws Exception {
+    public void testGetNameAndDescriptionIIpsElementMultiLanguageSupport_described() throws Exception {
         IDescribedElement descibedElement = mock(IDescribedElement.class);
         when(multiLanguageSupport.getLocalizedDescription(descibedElement)).thenReturn(MY_DESCRIPTION);
         when(descibedElement.getName()).thenReturn(MY_NAME);
 
-        String description = identifierNode.getDescription(descibedElement, multiLanguageSupport);
+        String description = identifierNode.getNameAndDescription(descibedElement, multiLanguageSupport);
 
         assertEquals(MY_NAME + " - " + MY_DESCRIPTION, description);
 
     }
 
     @Test
-    public void testGetDescriptionIIpsElementMultiLanguageSupport_labeledAndDescribed() throws Exception {
+    public void testGetNameAndDescriptionIIpsElementMultiLanguageSupport_labeledAndDescribed() throws Exception {
         ILabeledElement labeledAndDescribedElement = mock(ILabeledElement.class,
                 withSettings().extraInterfaces(IDescribedElement.class));
         when(multiLanguageSupport.getLocalizedLabel(labeledAndDescribedElement)).thenReturn(MY_LABEL);
         when(multiLanguageSupport.getLocalizedDescription((IDescribedElement)labeledAndDescribedElement)).thenReturn(
                 MY_DESCRIPTION);
 
-        String description = identifierNode.getDescription(labeledAndDescribedElement, multiLanguageSupport);
+        String description = identifierNode.getNameAndDescription(labeledAndDescribedElement, multiLanguageSupport);
 
         assertEquals(MY_LABEL + " - " + MY_DESCRIPTION, description);
 

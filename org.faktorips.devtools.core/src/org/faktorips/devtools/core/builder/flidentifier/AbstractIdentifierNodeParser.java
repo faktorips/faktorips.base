@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
@@ -173,4 +174,17 @@ public abstract class AbstractIdentifierNodeParser {
      *         state and the current input (prefix).
      */
     public abstract List<IdentifierNode> getProposals(String prefix);
+
+    /**
+     * Check whether the given node is matching the specified prefix or not.
+     * 
+     * @param node The {@link IdentifierNode} that should be checked
+     * @param prefix The prefix that should match the identifier's text.
+     * 
+     * @return <code>true</code> if the prefix matches the text, otherwise <code>false</code>.
+     */
+    protected boolean isMatchingNode(IdentifierNode node, String prefix) {
+        return StringUtils.startsWithIgnoreCase(node.getText(), prefix);
+    }
+
 }

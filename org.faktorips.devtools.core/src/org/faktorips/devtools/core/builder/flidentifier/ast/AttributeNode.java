@@ -11,9 +11,12 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
+import org.faktorips.devtools.core.builder.flidentifier.AttributeParser;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -53,6 +56,24 @@ public class AttributeNode extends IdentifierNode {
 
     public IIpsProject getIpsProject() {
         return ipsProject;
+    }
+
+    @Override
+    public String getText() {
+        if (defaultValueAccess) {
+            return attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX;
+        } else {
+            return attribute.getName();
+        }
+    }
+
+    @Override
+    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
+        String name = getName(attribute, multiLanguageSupport);
+        if (defaultValueAccess) {
+            name = NLS.bind(Messages.AttributeNode_defaultOfName, name);
+        }
+        return getNameAndDescription(name, getDescription(attribute, multiLanguageSupport));
     }
 
 }
