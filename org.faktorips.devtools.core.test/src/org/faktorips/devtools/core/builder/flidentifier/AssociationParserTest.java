@@ -12,13 +12,18 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,11 +34,14 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class AssociationParserTest extends AbstractParserTest {
 
     private static final String MY_ASSOCIATION = "myAssociation";
+    private static final String MY_SECOND_ASSOCIATION = "mySecondAssociation";
 
     private static final String ANY_ASSOCIATION = "anyAssociation";
 
     @Mock
-    private IPolicyCmptTypeAssociation assciation;
+    private IPolicyCmptTypeAssociation association;
+    @Mock
+    private IPolicyCmptTypeAssociation association2;
 
     @Mock
     private IPolicyCmptType policyCmptType;
@@ -44,15 +52,22 @@ public class AssociationParserTest extends AbstractParserTest {
     private AssociationParser associationParser;
 
     @Before
-    public void createAssociationParser() throws Exception {
-        associationParser = new AssociationParser(getExpression(), getIpsProject());
-    }
-
-    @Before
     public void mockAssociation() throws Exception {
-        when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(assciation);
-        when(assciation.getName()).thenReturn(MY_ASSOCIATION);
-        when(assciation.findTarget(getIpsProject())).thenReturn(targetType);
+        associationParser = new AssociationParser(getExpression(), getIpsProject());
+
+        when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(association);
+        when(association.getName()).thenReturn(MY_ASSOCIATION);
+        when(association.findTarget(getIpsProject())).thenReturn(targetType);
+        when(policyCmptType.findAssociation(MY_SECOND_ASSOCIATION, getIpsProject())).thenReturn(association2);
+        when(association2.getName()).thenReturn(MY_SECOND_ASSOCIATION);
+        when(association2.findTarget(getIpsProject())).thenReturn(targetType);
+
+        List<IAssociation> assocList = new ArrayList<IAssociation>();
+        assocList.add(association);
+        assocList.add(association2);
+        when(policyCmptType.findAllAssociations(getIpsProject())).thenReturn(assocList);
+
+        associationParser.setContextType(policyCmptType);
     }
 
     @Test
@@ -64,45 +79,45 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_findAssociation1To1() throws Exception {
-        when(assciation.is1ToMany()).thenReturn(false);
+        when(association.is1ToMany()).thenReturn(false);
 
         AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType),
                 null);
 
-        assertEquals(assciation, node.getAssociation());
+        assertEquals(association, node.getAssociation());
         assertEquals(targetType, node.getDatatype());
     }
 
     @Test
     public void testParse_findAssociation1ToMany() throws Exception {
-        when(assciation.is1ToMany()).thenReturn(true);
+        when(association.is1ToMany()).thenReturn(true);
 
         AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType),
                 null);
 
-        assertEquals(assciation, node.getAssociation());
+        assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
     }
 
     @Test
     public void testParse_findAssociation1To1FromMany() throws Exception {
-        when(assciation.is1ToMany()).thenReturn(false);
+        when(association.is1ToMany()).thenReturn(false);
 
         AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType,
                 true), null);
 
-        assertEquals(assciation, node.getAssociation());
+        assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
     }
 
     @Test
     public void testParse_findAssociation1ToManyFromMany() throws Exception {
-        when(assciation.is1ToMany()).thenReturn(true);
+        when(association.is1ToMany()).thenReturn(true);
 
         AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType,
                 true), null);
 
-        assertEquals(assciation, node.getAssociation());
+        assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
     }
 
@@ -112,6 +127,33 @@ public class AssociationParserTest extends AbstractParserTest {
                 getProductCmptType()), null);
 
         assertNull(node);
+    }
+
+    @Test
+    public void testGetProposals_noProposals() {
+        List<IdentifierNode> proposals = associationParser.getProposals("nonExistentAssociation");
+        assertTrue(proposals.isEmpty());
+    }
+
+    @Test
+    public void testGetProposals_oneProposal() {
+        /* no pun intended ;-) */
+        List<IdentifierNode> proposals = associationParser.getProposals("myAss");
+        assertEquals(1, proposals.size());
+        proposals = associationParser.getProposals("myAssociation");
+        assertEquals(1, proposals.size());
+        proposals = associationParser.getProposals("myS");
+        assertEquals(1, proposals.size());
+    }
+
+    @Test
+    public void testGetProposals_multipleProposals() {
+        List<IdentifierNode> proposals = associationParser.getProposals("my");
+        assertEquals(2, proposals.size());
+        proposals = associationParser.getProposals("m");
+        assertEquals(2, proposals.size());
+        proposals = associationParser.getProposals("");
+        assertEquals(2, proposals.size());
     }
 
 }
