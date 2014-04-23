@@ -156,17 +156,21 @@ public abstract class AbstractIdentifierNodeParser {
     }
 
     /**
-     * Returns every possible identifier node that could be parsed by this parser given the current
-     * context type and previous node. Before you call this method you have to setup the parser
-     * context by calling {@link #parse(String, IdentifierNode, TextRegion)}. The result is filtered
-     * by the given prefix, that means only nodes with a text that starts with the given prefix
-     * should be included in the result list. The prefix compare could be case insensitive.
+     * Returns every possible identifier node that this parser can provide based on this parsers'
+     * state (the current context type and the predecessor node) and the user input (prefix).
+     * <p>
+     * The context type and the predecessor node are used to calculate all possible identifier nodes
+     * of the node type this parser is responsible for, the prefix is then used to filter those
+     * nodes. Only nodes whose texts start with the given prefix (case insensitive) are returned.
+     * <p>
+     * Before calling this method the parser context must be set up, e.g. by calling
+     * {@link #parse(String, IdentifierNode, TextRegion)}.
      * 
-     * @param prefix The prefix text to filter the result. To get all available proposals the prefix
-     *            needs to be an empty string.
+     * @param prefix The prefix text to filter the result. Empty string to get all available
+     *            proposals.
      * 
-     * @return A list of {@link IdentifierNode nodes} that could be parsed by this node parser given
-     *         the current parser state.
+     * @return A list of {@link IdentifierNode nodes} that are possible given the current parser
+     *         state and the current input (prefix).
      */
     public abstract List<IdentifierNode> getProposals(String prefix);
 }
