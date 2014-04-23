@@ -13,9 +13,13 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
@@ -97,6 +101,55 @@ public class ParameterParserTest extends AbstractParserTest {
         InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, null, null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
+    }
+
+    @Test
+    public void testGetProposals_noPrefix() throws Exception {
+        parameterParser.parse(null, null, null);
+
+        List<IdentifierNode> proposals = parameterParser.getProposals(StringUtils.EMPTY);
+
+        assertEquals(1, proposals.size());
+        assertEquals(parameter, ((ParameterNode)proposals.get(0)).getParameter());
+    }
+
+    @Test
+    public void testGetProposals_invalidPrefix() throws Exception {
+        parameterParser.parse(null, null, null);
+
+        List<IdentifierNode> proposals = parameterParser.getProposals("gfassddf");
+
+        assertTrue(proposals.isEmpty());
+    }
+
+    @Test
+    public void testGetProposals_withPrefix() throws Exception {
+        parameterParser.parse(null, null, null);
+
+        List<IdentifierNode> proposals = parameterParser.getProposals("any");
+
+        assertEquals(1, proposals.size());
+        assertEquals(parameter, ((ParameterNode)proposals.get(0)).getParameter());
+    }
+
+    @Test
+    public void testGetProposals_moreParameters() throws Exception {
+        IParameter param1 = mock(IParameter.class);
+        IParameter param2 = mock(IParameter.class);
+        IParameter param3 = mock(IParameter.class);
+        when(formulaSignature.getParameters()).thenReturn(new IParameter[] { parameter, param1, param2, param3 });
+        when(param1.getName()).thenReturn("notInAny");
+        when(param2.getName()).thenReturn("notInResult");
+        when(param3.getName()).thenReturn("AnyX");
+        when(param3.findDatatype(getIpsProject())).thenReturn(AnyDatatype.INSTANCE);
+
+        parameterParser.parse(null, null, null);
+
+        List<IdentifierNode> proposals = parameterParser.getProposals("any");
+
+        assertEquals(2, proposals.size());
+        assertEquals(parameter, ((ParameterNode)proposals.get(0)).getParameter());
+        assertEquals(param3, ((ParameterNode)proposals.get(1)).getParameter());
     }
 
 }

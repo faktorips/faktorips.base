@@ -10,9 +10,14 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.util.TextRegion;
 
 /**
@@ -87,10 +92,7 @@ public abstract class IdentifierNode {
      *         would lead to to exactly this identifier node if it is parsed by the
      *         {@link IdentifierParser}.
      */
-    public String getText() {
-        // TODO make abstract!
-        return "";
-    }
+    public abstract String getText();
 
     /**
      * A brief description of the meaning of this identifier node. The primary use of this method is
@@ -98,9 +100,22 @@ public abstract class IdentifierNode {
      * 
      * @return A short text that describes the use of this identifier node.
      */
-    public String getDescription() {
-        // TODO make abstract!
-        return "";
+    public abstract String getDescription(MultiLanguageSupport multiLanguageSupport);
+
+    protected String getDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        StringBuffer result = new StringBuffer();
+        if (ipsElement instanceof ILabeledElement) {
+            result.append(multiLanguageSupport.getLocalizedLabel((ILabeledElement)ipsElement));
+        } else {
+            result.append(ipsElement.getName());
+        }
+        if (ipsElement instanceof IDescribedElement) {
+            String description = multiLanguageSupport.getLocalizedDescription((IDescribedElement)ipsElement);
+            if (StringUtils.isNotBlank(description)) {
+                result.append(" - ").append(description); //$NON-NLS-1$
+            }
+        }
+        return result.toString();
     }
 
 }

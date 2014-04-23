@@ -35,7 +35,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Alexander Weickmann
  */
-public final class MultiLanguageSupport {
+public class MultiLanguageSupport {
 
     private final Locale localizationLocale;
 

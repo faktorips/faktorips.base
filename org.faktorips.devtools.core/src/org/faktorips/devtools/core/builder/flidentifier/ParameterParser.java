@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -40,6 +44,20 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<IdentifierNode> getProposals(String prefix) {
+        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        if (isContextTypeFormulaType()) {
+            IParameter[] parameters = getParameters();
+            for (IParameter parameter : parameters) {
+                if (StringUtils.startsWithIgnoreCase(parameter.getName(), prefix)) {
+                    result.add(nodeFactory().createParameterNode(parameter));
+                }
+            }
+        }
+        return result;
     }
 
     /* private */protected IParameter[] getParameters() {
