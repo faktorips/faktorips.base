@@ -10,17 +10,15 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -32,9 +30,6 @@ import org.faktorips.util.message.Message;
  * This parser tires to match the identifier node to an association of the context type. It also
  * handles optional qualifiers or indices. The output will be an {@link AssociationNode} or a
  * subclass of this class.
- * 
- * 
- * @author dirmeier
  */
 public class AssociationParser extends TypeBasedIdentifierParser {
 
@@ -80,21 +75,22 @@ public class AssociationParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        List<IAssociation> availableAssociations = getAvailableAssociations();
-        ArrayList<IdentifierNode> nodes = new ArrayList<IdentifierNode>();
-        for (IAssociation association : availableAssociations) {
-            if (nameStartsWithIgnoreCase(association, prefix)) {
-                nodes.add(createNodeFor(association));
-            }
+        if (isPolicyCmptTypeContext()) {
+            return getProposalsFor(prefix);
         }
-        return nodes;
+        return Collections.emptyList();
     }
 
-    private boolean nameStartsWithIgnoreCase(IIpsElement ipsElement, String prefix) {
-        return StringUtils.startsWithIgnoreCase(ipsElement.getName(), prefix);
+    private List<IdentifierNode> getProposalsFor(String prefix) {
+        IdentifierNodeCollector nodeCollector = new IdentifierNodeCollector(this);
+        List<IAssociation> allAssociations = getAllAssociations();
+        for (IAssociation association : allAssociations) {
+            nodeCollector.addMatchingNode(createNodeFor(association), prefix);
+        }
+        return nodeCollector.getNodes();
     }
 
-    private List<IAssociation> getAvailableAssociations() {
+    private List<IAssociation> getAllAssociations() {
         try {
             return getContextType().findAllAssociations(getIpsProject());
         } catch (CoreException e) {

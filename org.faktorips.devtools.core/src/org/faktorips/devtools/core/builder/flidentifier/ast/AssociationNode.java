@@ -13,10 +13,12 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
+import org.faktorips.util.StringUtil;
 
 /**
  * This identifier node represents an association. The resulting {@link Datatype} will either be of
@@ -50,6 +52,31 @@ public class AssociationNode extends IdentifierNode {
 
     public boolean isListContext() {
         return listContext;
+    }
+
+    @Override
+    public String getText() {
+        return association.getName();
+    }
+
+    @Override
+    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
+        StringBuilder description = new StringBuilder();
+        description.append(getText());
+        description.append(" -> "); //$NON-NLS-1$
+        if (isToManyAssociation()) {
+            description.append(Messages.AssociationNode_ListDatatypeDescriptionPrefix);
+        }
+        description.append(getUnqualifiedTargetName());
+        return description.toString();
+    }
+
+    private boolean isToManyAssociation() {
+        return getAssociation().is1ToMany();
+    }
+
+    private String getUnqualifiedTargetName() {
+        return StringUtil.unqualifiedName(association.getTarget());
     }
 
 }

@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -140,10 +141,13 @@ public class AssociationParserTest extends AbstractParserTest {
         /* no pun intended ;-) */
         List<IdentifierNode> proposals = associationParser.getProposals("myAss");
         assertEquals(1, proposals.size());
-        proposals = associationParser.getProposals("myAssociation");
+        proposals = associationParser.getProposals(MY_ASSOCIATION);
         assertEquals(1, proposals.size());
+        assertEquals(MY_ASSOCIATION, proposals.get(0).getText());
+
         proposals = associationParser.getProposals("myS");
         assertEquals(1, proposals.size());
+        assertEquals(MY_SECOND_ASSOCIATION, proposals.get(0).getText());
     }
 
     @Test
@@ -154,6 +158,18 @@ public class AssociationParserTest extends AbstractParserTest {
         assertEquals(2, proposals.size());
         proposals = associationParser.getProposals("");
         assertEquals(2, proposals.size());
+    }
+
+    @Test
+    public void testGetProposals_wrongContextType() {
+        associationParser.setContextType(Datatype.MONEY);
+
+        List<IdentifierNode> proposals = associationParser.getProposals("my");
+        assertTrue(proposals.isEmpty());
+        proposals = associationParser.getProposals("m");
+        assertTrue(proposals.isEmpty());
+        proposals = associationParser.getProposals("");
+        assertTrue(proposals.isEmpty());
     }
 
 }
