@@ -19,6 +19,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -532,7 +533,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         when(attribute.isVisible()).thenReturn(true);
 
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
-        verify(propertyValueContainerToTypeDelta, times(0)).addEntry(any(IDeltaEntry.class));
+        verify(propertyValueContainerToTypeDelta, never()).addEntry(any(IDeltaEntry.class));
     }
 
     @Test

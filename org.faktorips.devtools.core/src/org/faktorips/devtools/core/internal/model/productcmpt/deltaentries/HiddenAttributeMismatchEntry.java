@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpt.Messages;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -25,12 +25,9 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty {
 
-    private IAttributeValue attributeValue;
-
     public HiddenAttributeMismatchEntry(IAttributeValue attributeValue) {
         super(attributeValue);
         ArgumentCheck.notNull(attributeValue);
-        this.attributeValue = attributeValue;
     }
 
     @Override
@@ -40,20 +37,25 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     @Override
     public String getDescription() {
-        return Messages.Hidden_Attribute_InvalidValue;
+        return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc, getPropertyName());
+    }
+
+    private IAttributeValue getAttributeValue() {
+        return (IAttributeValue)getPropertyValue();
     }
 
     @Override
     public void fix() {
         IProductCmptType prodCmpT = getProdCmptType();
-        IAttribute attribute = prodCmpT.getAttribute(attributeValue.getAttribute());
+        IAttribute attribute = prodCmpT.getAttribute(getAttributeValue().getAttribute());
         String defaultValue = attribute.getDefaultValue();
-        attributeValue.setValueHolder(new SingleValueHolder(attributeValue, defaultValue));
+        getAttributeValue().setValueHolder(new SingleValueHolder(getAttributeValue(), defaultValue));
     }
 
     private IProductCmptType getProdCmptType() {
         try {
-            return attributeValue.getPropertyValueContainer().findProductCmptType(attributeValue.getIpsProject());
+            return getAttributeValue().getPropertyValueContainer().findProductCmptType(
+                    getAttributeValue().getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
