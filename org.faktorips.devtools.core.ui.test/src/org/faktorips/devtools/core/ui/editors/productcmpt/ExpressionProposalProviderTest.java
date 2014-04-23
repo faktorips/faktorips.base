@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -51,6 +52,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     private IpsProject ipsProject;
     private IProductCmptType productCmptType;
     private static final String FUNCTION_ABS = "Abs";
+
+    @Mock
+    private IdentifierParser parser;
 
     @Override
     @Before
@@ -74,9 +78,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetProposalsWithoutFunctions() {
-        proposalProvider = new ExpressionProposalProvider(configElement);
-        IdentifierParser parser = mock(IdentifierParser.class);
-        proposalProvider.setIdentifierParser(parser);
+        proposalProvider = new ExpressionProposalProvider(configElement, parser);
 
         List<IdentifierNode> list = new ArrayList<IdentifierNode>();
         AttributeNode attr1 = mock(AttributeNode.class);
@@ -97,9 +99,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetProposalsWithFunctions() {
-        proposalProvider = new ExpressionProposalProvider(configElement);
-        IdentifierParser parser = mock(IdentifierParser.class);
-        proposalProvider.setIdentifierParser(parser);
+        proposalProvider = new ExpressionProposalProvider(configElement, parser);
 
         doReturn(Collections.EMPTY_LIST).when(parser).getProposals(FUNCTION_ABS);
 
@@ -110,7 +110,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     @Test
     public void testgetProposalCompletionForFunctions() throws Exception {
-        proposalProvider = new ExpressionProposalProvider(configElement);
+        proposalProvider = new ExpressionProposalProvider(configElement, parser);
         IContentProposal[] results = proposalProvider.getProposals("WE", 2);
         IContentProposal proposal = results[0];
         assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());

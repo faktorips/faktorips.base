@@ -18,39 +18,47 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
-import org.faktorips.runtime.internal.StringUtils;
 import org.faktorips.util.ArgumentCheck;
 
 /**
  * A {@link IContentProposalProvider} for {@link IExpression}s for use in a
  * {@link ContentProposalAdapter}.
- * 
- * @author schwering
  */
 public class ExpressionProposalProvider implements IContentProposalProvider {
 
-    private IdentifierParser identifierParser;
-    private IExpression expression;
+    private final IdentifierParser identifierParser;
+    private final IExpression expression;
+    private final MultiLanguageSupport multiLanguageSupport;
 
     public ExpressionProposalProvider(IExpression expression) {
         super();
         ArgumentCheck.notNull(expression);
         this.expression = expression;
         identifierParser = new IdentifierParser(expression, expression.getIpsProject());
+        multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+    }
+
+    public ExpressionProposalProvider(IExpression expression, IdentifierParser identifierParser) {
+        super();
+        ArgumentCheck.notNull(expression);
+        this.expression = expression;
+        this.identifierParser = identifierParser;
+        multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        String identifier = getLastIdentifier(contents.substring(0, position));
         List<IContentProposal> result = new LinkedList<IContentProposal>();
-        addIdentifierNodes(identifier, result);
-        addMatchingFunctions(result, identifier);
+        addIdentifierNodes(contents, result);
+        addMatchingFunctions(result, contents);
         return result.toArray(new IContentProposal[result.size()]);
     }
 
@@ -58,7 +66,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         List<IdentifierNode> proposals = identifierParser.getProposals(contents);
         for (IdentifierNode identifierNode : proposals) {
             result.add(new ContentProposal(identifierNode.getText(), identifierNode.getText(), identifierNode
-                    .getDescription()));
+                    .getDescription(multiLanguageSupport)));
         }
     }
 
@@ -109,36 +117,5 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         String description = function.getDescription();
         ContentProposal proposal = new ContentProposal(name, displayText.toString(), description, prefix);
         result.add(proposal);
-    }
-
-    /**
-     * The characters that are checked within this method have to be in synch with the identifier
-     * tokens defined in the ffl.jjt grammar
-     */
-    private String getLastIdentifier(String s) {
-        if (StringUtils.isEmpty(s)) {
-            return ""; //$NON-NLS-1$
-        }
-        int i = s.length() - 1;
-        boolean isInQuotes = false;
-        while (i >= 0) {
-            char c = s.charAt(i);
-            if (c == '"') {
-                isInQuotes = !isInQuotes;
-            } else if (!isLegalChar(c, isInQuotes)) {
-                break;
-            }
-            i--;
-        }
-        return s.substring(i + 1);
-    }
-
-    private boolean isLegalChar(char c, boolean isInQuotes) {
-        return Character.isLetterOrDigit(c) || c == '.' || c == '_' || c == '-' || c == '[' || c == ']'
-                || (isInQuotes && c == ' ');
-    }
-
-    protected void setIdentifierParser(IdentifierParser identifierParser) {
-        this.identifierParser = identifierParser;
     }
 }
