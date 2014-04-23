@@ -94,21 +94,21 @@ public class DeltaLabelProvider extends LabelProvider {
 
     private ImageDescriptor getImageDescriptorForDeltaEntry(IDeltaEntry deltaEntry) {
         ImageDescriptor baseImageDescriptor = getBaseImage(deltaEntry.getDeltaType());
-        baseImageDescriptor = getChaningOvertimeDecorationIfRequired(deltaEntry, baseImageDescriptor);
+        baseImageDescriptor = getChangingOverTimeDecorationIfRequired(deltaEntry, baseImageDescriptor);
         return baseImageDescriptor;
     }
 
-    private ImageDescriptor getChaningOvertimeDecorationIfRequired(IDeltaEntry deltaEntry,
+    private ImageDescriptor getChangingOverTimeDecorationIfRequired(IDeltaEntry deltaEntry,
             ImageDescriptor baseImageDescriptor) {
         ImageDescriptor resultDescriptor = baseImageDescriptor;
         if (deltaEntry.getDeltaType() == DeltaType.LINK_CHANGING_OVER_TIME_MISMATCH) {
             LinkChangingOverTimeMismatchEntry mismatchEntry = (LinkChangingOverTimeMismatchEntry)deltaEntry;
-            resultDescriptor = getChanginOverTimeMismatchDescriptor(mismatchEntry, baseImageDescriptor);
+            resultDescriptor = getChangingOverTimeMismatchDescriptor(mismatchEntry, baseImageDescriptor);
         }
         return resultDescriptor;
     }
 
-    private ImageDescriptor getChanginOverTimeMismatchDescriptor(LinkChangingOverTimeMismatchEntry mismatchEntry,
+    private ImageDescriptor getChangingOverTimeMismatchDescriptor(LinkChangingOverTimeMismatchEntry mismatchEntry,
             ImageDescriptor baseImageDescriptor) {
         Image baseImage = (Image)resourceManager.get(baseImageDescriptor);
         if (mismatchEntry.isMovingLink()) {
