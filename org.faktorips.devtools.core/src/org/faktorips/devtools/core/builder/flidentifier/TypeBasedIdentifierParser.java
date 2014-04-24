@@ -14,7 +14,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IType;
 
@@ -70,10 +69,6 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
 
     protected boolean isListOfTypeContext() {
         return super.getContextType() instanceof ListOfTypeDatatype;
-    }
-
-    protected boolean isPolicyCmptTypeContext() {
-        return super.getContextType() instanceof IPolicyCmptType;
     }
 
     /**

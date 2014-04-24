@@ -75,7 +75,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        if (isPolicyCmptTypeContext()) {
+        if (isAllowedType()) {
             return getProposalsFor(prefix);
         }
         return Collections.emptyList();
