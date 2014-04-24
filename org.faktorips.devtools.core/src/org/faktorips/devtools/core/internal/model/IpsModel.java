@@ -1373,7 +1373,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
 
         IResource enclResource = file.getEnclosingResource();
-        if (enclResource == null || !enclResource.exists()) {
+        if (enclResource == null) {
             return content;
         }
 
