@@ -128,7 +128,7 @@ public class IdentifierParserTest {
         identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
     }
 
-    public void mockEnum() throws Exception {
+    private void mockEnum() throws Exception {
         when(expression.getEnumDatatypesAllowedInFormula()).thenReturn(new EnumDatatype[] { enumDatatype });
         when(enumDatatype.getName()).thenReturn(MY_ENUMCLASS);
         when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUMVALUE });
