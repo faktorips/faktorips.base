@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -90,6 +91,12 @@ public class EnumParser extends AbstractIdentifierNodeParser {
                                 ExprCompiler.UNDEFINED_IDENTIFIER,
                                 NLS.bind(Messages.EnumParser_msgErrorInvalidEnumValue, getIdentifierPart(),
                                         enumType.getName())));
+    }
+
+    @Override
+    public List<IdentifierNode> getProposals(String prefix) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

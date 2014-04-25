@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -170,6 +172,12 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     private String getQualifierOrIndex() {
         return getIdentifierPart().substring(0, getIndexOrQualifierEnd());
+    }
+
+    @Override
+    public List<IdentifierNode> getProposals(String prefix) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

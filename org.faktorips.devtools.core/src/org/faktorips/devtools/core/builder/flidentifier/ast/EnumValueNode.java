@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.util.TextRegion;
 
 /**
@@ -36,6 +37,18 @@ public class EnumValueNode extends IdentifierNode {
     @Override
     public EnumDatatype getDatatype() {
         return (EnumDatatype)super.getDatatype();
+    }
+
+    @Override
+    public String getText() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

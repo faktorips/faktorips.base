@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
@@ -39,6 +40,18 @@ public class QualifierNode extends IdentifierNode {
 
     public IProductCmpt getProductCmpt() {
         return productCmpt;
+    }
+
+    @Override
+    public String getText() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

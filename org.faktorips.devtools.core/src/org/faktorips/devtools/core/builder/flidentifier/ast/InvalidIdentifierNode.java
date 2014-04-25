@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.util.message.Message;
 
@@ -32,6 +33,18 @@ public class InvalidIdentifierNode extends IdentifierNode {
 
     public Message getMessage() {
         return errorMessage;
+    }
+
+    @Override
+    public String getText() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
