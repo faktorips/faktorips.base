@@ -14,10 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.IWorkbenchAdapter2;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -26,7 +27,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory {
 
-    Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
+    private Map<Class<? extends IIpsElement>, IpsElementWorkbenchAdapter> workbenchAdapterMap;
 
     public IpsElementWorkbenchAdapterAdapterFactory() {
         super();
@@ -63,10 +64,9 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
                      * workspace, return the image of the IPS source file to decide between valid
                      * and invalid IPS objects.
                      */
-
                 }
-            } catch (Exception e) {
-                IpsPlugin.log(e);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
         if (adaptableObject instanceof IpsElement) {
@@ -82,14 +82,15 @@ public class IpsElementWorkbenchAdapterAdapterFactory implements IAdapterFactory
      */
     public IpsElementWorkbenchAdapter getAdapterByClass(Class<? extends IpsElement> adaptableClass) {
         IpsElementWorkbenchAdapter result = null;
+        Class<? extends IIpsElement> classOrSuperclass = adaptableClass;
         while (result == null) {
-            result = workbenchAdapterMap.get(adaptableClass);
+            result = workbenchAdapterMap.get(classOrSuperclass);
             if (result == null) {
-                Class<?> superClass = adaptableClass.getSuperclass();
+                Class<?> superClass = classOrSuperclass.getSuperclass();
                 if (IpsElement.class.isAssignableFrom(superClass)) {
                     @SuppressWarnings("unchecked")
                     Class<? extends IpsElement> castedClass = (Class<? extends IpsElement>)superClass;
-                    adaptableClass = castedClass;
+                    classOrSuperclass = castedClass;
                 } else {
                     return null;
                 }

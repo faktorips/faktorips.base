@@ -20,6 +20,7 @@ public enum DeltaType {
     MISSING_PROPERTY_VALUE(Messages.DeltaType_missingValue),
     VALUE_WITHOUT_PROPERTY(Messages.DeltaType_propertiesNotFoundInTheModel),
     PROPERTY_TYPE_MISMATCH(Messages.DeltaType_propertiesWithTypeMismatch),
+    HIDDEN_ATTRIBUTE_MISMATCH(Messages.DeltaType_hiddenAttributeMismatch),
     VALUE_SET_MISMATCH(Messages.DeltaType_ValueSetMismatches),
     VALUE_HOLDER_MISMATCH(Messages.DeltaType_valueHolderMismatch),
     MULTILINGUAL_MISMATCH(Messages.DeltaType_multilingualMismatch),

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
@@ -169,6 +170,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.equals(propertyType)) {
                     checkForValueMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
                     checkForMultilingualMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
+                    checkForHiddenAttributeMismatch((IProductCmptTypeAttribute)property, (IAttributeValue)value);
                 }
             }
         }
@@ -193,6 +195,12 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     private void checkForMultilingualMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
         if (attribute.isMultilingual() != (value.getValueHolder().getValueType().equals(ValueType.INTERNATIONAL_STRING))) {
             addEntry(new MultilingualMismatchEntry(value, attribute));
+        }
+    }
+
+    protected void checkForHiddenAttributeMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
+        if (!attribute.isVisible()) {
+            addEntry(new HiddenAttributeMismatchEntry(value));
         }
     }
 
@@ -292,5 +300,4 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
 
     }
-
 }
