@@ -144,6 +144,9 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!(datatype instanceof NumericDatatype)) {
             return false;
         }
+        if (!isValid(ipsProject)) {
+            return false;
+        }
         return checkValueInRange(value, datatype);
     }
 
@@ -238,7 +241,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (subRange.isAbstract()) {
             return false;
         }
-
         if (!isContainingNull() && subRange.isContainingNull()) {
             return false;
         }
@@ -293,15 +295,17 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!datatype.divisibleWithoutRemainder(diffLower, step)) {
             return false;
         }
-        String diffUpper = datatype.subtract(upper, subUpper);
-        if (!datatype.divisibleWithoutRemainder(diffUpper, step)) {
-            return false;
+        if (isNonNull(datatype, upper, subUpper)) {
+            String diffUpper = datatype.subtract(upper, subUpper);
+            if (!datatype.divisibleWithoutRemainder(diffUpper, step)) {
+                return false;
+            }
         }
         return true;
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+    public void validateThis(MessageList list, IIpsProject ipsProject) {
         ObjectProperty parentObjectProperty = new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET);
         ObjectProperty lowerBoundProperty = new ObjectProperty(this, PROPERTY_LOWERBOUND);
         ObjectProperty upperBoundProperty = new ObjectProperty(this, PROPERTY_UPPERBOUND);
@@ -319,16 +323,15 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         validateParsable(datatype, getUpperBound(), list, this, PROPERTY_UPPERBOUND);
         boolean stepParsable = validateParsable(datatype, getStep(), list, this, PROPERTY_STEP);
 
-        if (list.getSeverity() == Message.ERROR) {
+        NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
+
+        if (list.containsErrorMsg()) {
             return;
         }
 
-        NumericDatatype numDatatype = getAndValidateNumericDatatype(datatype, list);
-
         String lowerValue = getLowerBound();
         String upperValue = getUpperBound();
-        if (!isNullValue(lowerValue, datatype) && !isNullValue(upperValue, datatype)) {
-            // range is not unbounded on one side
+        if (isNonNull(numDatatype, lowerValue, upperValue)) {
             if (datatype.compare(lowerValue, upperValue) > 0) {
                 String text = Messages.Range_msgLowerboundGreaterUpperbound;
                 list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.ERROR, parentObjectProperty,
@@ -337,7 +340,12 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             }
         }
 
-        if (numDatatype != null && stepParsable && isNotEmpty(upperValue, lowerValue, getStep())) {
+        if (isNullValue(lowerValue, numDatatype) && !isNullValue(step, numDatatype)) {
+            String msg = Messages.RangeValueSet_msgStepWithLowerNull;
+            list.newError(MSGCODE_STEP_RANGE_MISMATCH, msg, stepProperty, lowerBoundProperty);
+        }
+
+        if (stepParsable && isNonNull(numDatatype, upperValue, lowerValue, getStep())) {
             String range = numDatatype.subtract(upperValue, lowerValue);
             if (!numDatatype.divisibleWithoutRemainder(range, getStep())) {
                 String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch, new String[] { lowerValue,
@@ -348,21 +356,26 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
     }
 
+    private boolean isNonNull(NumericDatatype datatype, String... values) {
+        for (String value : values) {
+            if (isNullValue(value, datatype)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     private ValueDatatype checkDatatypePrimitiv(MessageList list, ValueDatatype datatype) {
         if (datatype.isPrimitive()) {
             if (isContainingNull()) {
                 String text = Messages.RangeValueSet_msgNullNotSupported;
                 list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
             }
-            // even if the basic datatype is a primitve, null is allowed for upper, lower bound and
+            // even if the basic datatype is a primitive, null is allowed for upper, lower bound and
             // step.
             return datatype.getWrapperType();
         }
         return datatype;
-    }
-
-    private boolean isNotEmpty(String upperValue, String lowerValue, String step) {
-        return !StringUtils.isEmpty(upperValue) && !StringUtils.isEmpty(lowerValue) && !StringUtils.isEmpty(step);
     }
 
     private NumericDatatype getAndValidateNumericDatatype(ValueDatatype datatype, MessageList list) {

@@ -18,22 +18,36 @@ import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class AllowanceSearchOperatorTest {
+
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
+    private IIpsProjectProperties ipsProjectProperties;
+
+    @Mock
+    private IProductCmptGeneration productCmptGeneration;
 
     @Test
     public void testInteger() throws CoreException {
 
         String argument = "10000";
 
-        IProductCmptGeneration productCmptGeneration = mock(ProductCmptGeneration.class);
+        when(productCmptGeneration.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(ipsProjectProperties);
 
         IPolicyCmptTypeAttribute valueSetOwner = mock(IPolicyCmptTypeAttribute.class);
         when(valueSetOwner.findValueDatatype(any(IIpsProject.class))).thenReturn(new IntegerDatatype());

@@ -1149,7 +1149,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder,
             IEnumType enumType,
             IEnumAttribute currentEnumAttribute) throws CoreException {
-        String parameterName = currentEnumAttribute.getName();
+        String parameterName = getMemberVarName(currentEnumAttribute);
         DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
 
         String[] parameterClasses;
@@ -1261,7 +1261,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragment compareCode) {
         boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
-        compareCode.append(currentEnumAttribute.getName());
+        compareCode.append(getMemberVarName(currentEnumAttribute));
         if (primitiveDatatype) {
             compareCode.append(" == "); //$NON-NLS-1$
             compareCode.append(parameterName);
