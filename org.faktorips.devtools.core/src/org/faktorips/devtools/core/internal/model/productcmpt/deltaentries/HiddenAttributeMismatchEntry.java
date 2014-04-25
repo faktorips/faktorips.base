@@ -16,8 +16,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder.Factory;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder.Factory;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -55,19 +55,28 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
         IProductCmptType prodCmpT = getProdCmptType();
         IAttribute attribute = prodCmpT.getAttribute(getAttributeValue().getAttribute());
         String defaultValue = attribute.getDefaultValue();
-        setAttributeValueToDefault(defaultValue, getAttributeValue().getValueHolder());
+        setAttributeValueToDefault(defaultValue);
     }
 
-    private void setAttributeValueToDefault(String defaultValue, IValueHolder<?> valueHolder) {
+    private void setAttributeValueToDefault(String defaultValue) {
         IAttributeValue attributeValue = getAttributeValue();
-        if (valueHolder instanceof MultiValueHolder) {
-            Factory factory = new MultiValueHolder.Factory();
-            List<SingleValueHolder> multiDefaultValues = factory.splitMultiDefaultValues(attributeValue,
-                    new StringValue(defaultValue));
-            attributeValue.setValueHolder(new MultiValueHolder(attributeValue, multiDefaultValues));
+        attributeValue.setValueHolder(getValueHolderFor(defaultValue));
+    }
+
+    private IValueHolder<?> getValueHolderFor(String defaultValue) {
+        IAttributeValue attributeValue = getAttributeValue();
+        if (attributeValue.getValueHolder() instanceof MultiValueHolder) {
+            return createMultiValueHolder(defaultValue, attributeValue);
         } else {
-            attributeValue.setValueHolder(new SingleValueHolder(attributeValue, defaultValue));
+            return new SingleValueHolder(attributeValue, defaultValue);
         }
+    }
+
+    private IValueHolder<?> createMultiValueHolder(String defaultValue, IAttributeValue attributeValue) {
+        Factory factory = new MultiValueHolder.Factory();
+        List<SingleValueHolder> multiDefaultValues = factory.splitMultiDefaultValues(attributeValue, new StringValue(
+                defaultValue));
+        return new MultiValueHolder(attributeValue, multiDefaultValues);
     }
 
     private IProductCmptType getProdCmptType() {
