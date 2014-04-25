@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -176,8 +177,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyList();
     }
 
 }

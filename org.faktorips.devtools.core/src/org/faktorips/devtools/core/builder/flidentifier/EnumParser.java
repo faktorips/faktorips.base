@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +96,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyList();
     }
 
 }

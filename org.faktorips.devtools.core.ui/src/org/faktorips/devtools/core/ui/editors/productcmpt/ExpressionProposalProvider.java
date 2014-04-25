@@ -57,8 +57,9 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
         List<IContentProposal> result = new LinkedList<IContentProposal>();
-        addIdentifierNodes(contents, result);
-        addMatchingFunctions(result, contents);
+        String consideredInput = contents.substring(0, position);
+        addIdentifierNodes(consideredInput, result);
+        addMatchingFunctions(consideredInput, result);
         return result.toArray(new IContentProposal[result.size()]);
     }
 
@@ -70,7 +71,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private void addMatchingFunctions(List<IContentProposal> result, String prefix) {
+    private void addMatchingFunctions(String prefix, List<IContentProposal> result) {
         ExprCompiler<JavaCodeFragment> compiler = expression.newExprCompiler(expression.getIpsProject());
         FlFunction<JavaCodeFragment>[] functions = compiler.getFunctions();
         for (FlFunction<JavaCodeFragment> function : functions) {

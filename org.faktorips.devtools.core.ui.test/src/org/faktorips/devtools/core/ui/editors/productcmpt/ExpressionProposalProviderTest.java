@@ -100,10 +100,22 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetProposalsWithFunctions() {
         proposalProvider = new ExpressionProposalProvider(configElement, parser);
-
         doReturn(Collections.EMPTY_LIST).when(parser).getProposals(FUNCTION_ABS);
 
         IContentProposal[] proposals = proposalProvider.getProposals(FUNCTION_ABS, 3);
+        assertEquals(FUNCTION_ABS.toUpperCase(), proposals[0].getContent());
+        assertEquals(1, proposals.length);
+    }
+
+    @Test
+    public void testGetProposals_considerPosition() {
+        proposalProvider = new ExpressionProposalProvider(configElement, parser);
+        doReturn(Collections.EMPTY_LIST).when(parser).getProposals(FUNCTION_ABS);
+
+        IContentProposal[] proposals = proposalProvider.getProposals("AbsXYZ_ILLEGAL_INPUT", 6);
+        assertEquals(0, proposals.length);
+
+        proposals = proposalProvider.getProposals("AbsXYZ_ILLEGAL_INPUT", 3);
         assertEquals(FUNCTION_ABS.toUpperCase(), proposals[0].getContent());
         assertEquals(1, proposals.length);
     }
