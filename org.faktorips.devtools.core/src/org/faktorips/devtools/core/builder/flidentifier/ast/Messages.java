@@ -25,6 +25,10 @@ public class Messages extends NLS {
 
     public static String ParameterNode_description;
 
+    public static String EnumValueNode_description;
+
+    public static String EnumClassNode_description;
+
     private Messages() {
         // do not instantiate
     }

@@ -10,16 +10,20 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -96,7 +100,37 @@ public class EnumParser extends AbstractIdentifierNodeParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        return Collections.emptyList();
+        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+
+        EnumDatatype[] enumDatatypesAllowedInFormula = getExpression().getEnumDatatypesAllowedInFormula();
+        for (EnumDatatype enumDatatype : enumDatatypesAllowedInFormula) {
+            addNodeIfPrefixEnumValueOrType(prefix, result, enumDatatype);
+        }
+        return result;
     }
 
+    private void addNodeIfPrefixEnumValueOrType(String prefix,
+            ArrayList<IdentifierNode> result,
+            EnumDatatype enumDatatype) {
+        if (enumDatatype instanceof EnumTypeDatatypeAdapter) {
+            IEnumType enumType = ((EnumTypeDatatypeAdapter)enumDatatype).getEnumType();
+            if (StringUtils.startsWithIgnoreCase(enumType.getName(), prefix)) {
+                result.add(nodeFactory().createEnumClassNode(new EnumClass(enumDatatype)));
+            } else {
+                addNodeIfPrefixIsEnumValue(prefix, result, enumDatatype, enumType);
+            }
+        }
+    }
+
+    private void addNodeIfPrefixIsEnumValue(String prefix,
+            ArrayList<IdentifierNode> result,
+            EnumDatatype enumDatatype,
+            IEnumType enumType) {
+        List<IEnumValue> enumValues = enumType.getEnumValues();
+        for (IEnumValue enumValue : enumValues) {
+            if (StringUtils.startsWithIgnoreCase(enumValue.getName(), prefix)) {
+                result.add(nodeFactory().createEnumValueNode(enumValue.getName(), enumDatatype));
+            }
+        }
+    }
 }

@@ -14,6 +14,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.util.TextRegion;
+import org.faktorips.runtime.internal.StringUtils;
 
 /**
  * The enum value node represents the value part of an enum access. It have to follow an
@@ -41,14 +42,11 @@ public class EnumValueNode extends IdentifierNode {
 
     @Override
     public String getText() {
-        // TODO Auto-generated method stub
-        return null;
+        return getEnumValueName();
     }
 
     @Override
     public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-        // TODO Auto-generated method stub
-        return null;
+        return StringUtils.EMPTY;
     }
-
 }
