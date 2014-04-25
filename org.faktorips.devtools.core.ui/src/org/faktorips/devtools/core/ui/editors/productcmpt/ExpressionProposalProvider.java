@@ -39,15 +39,10 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     private final MultiLanguageSupport multiLanguageSupport;
 
     public ExpressionProposalProvider(IExpression expression) {
-        super();
-        ArgumentCheck.notNull(expression);
-        this.expression = expression;
-        identifierParser = new IdentifierParser(expression, expression.getIpsProject());
-        multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+        this(expression, new IdentifierParser(expression, expression.getIpsProject()));
     }
 
     public ExpressionProposalProvider(IExpression expression, IdentifierParser identifierParser) {
-        super();
         ArgumentCheck.notNull(expression);
         this.expression = expression;
         this.identifierParser = identifierParser;
