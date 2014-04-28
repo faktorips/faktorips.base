@@ -62,7 +62,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         if (isContextTypeFormulaType()) {
             return parseEnumClass();
         }
-        if (getContextType() instanceof EnumClass) {
+        if (isAllowedType() && getContextType() instanceof EnumClass) {
             return parseEnumDatatype();
         }
         return null;

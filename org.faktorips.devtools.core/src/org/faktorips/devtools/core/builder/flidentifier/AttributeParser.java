@@ -128,22 +128,20 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     protected List<IAttribute> findAttributes() {
-        List<IAttribute> attributes;
         if (isContextTypeFormulaType()) {
-            attributes = getExpression().findMatchingProductCmptTypeAttributes();
+            return getExpression().findMatchingProductCmptTypeAttributes();
+        } else if (isAllowedType()) {
+            return getPolicyAndProductAttributesFromIType();
         } else {
-            attributes = getPolicyAndProductAttributesFromIType();
+            return Collections.emptyList();
         }
-        return attributes;
     }
 
     private List<IAttribute> getPolicyAndProductAttributesFromIType() {
         List<IAttribute> attributes = new ArrayList<IAttribute>();
         IType contextType = getContextType();
-        if (contextType != null) {
-            attributes.addAll(findAllAttributesFor(contextType));
-            attributes.addAll(findProductAttributesIfAvailable(contextType));
-        }
+        attributes.addAll(findAllAttributesFor(contextType));
+        attributes.addAll(findProductAttributesIfAvailable(contextType));
         return attributes;
     }
 

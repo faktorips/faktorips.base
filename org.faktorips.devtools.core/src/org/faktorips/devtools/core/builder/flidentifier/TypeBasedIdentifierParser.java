@@ -37,7 +37,8 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
         }
     }
 
-    protected boolean isAllowedType() {
+    @Override
+    public boolean isAllowedType() {
         if (isAllowedType(super.getContextType())) {
             return true;
         }
@@ -58,15 +59,12 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
             ListOfTypeDatatype listOfTypeDatatype = (ListOfTypeDatatype)super.getContextType();
             return (IType)listOfTypeDatatype.getBasicDatatype();
         } else {
-            if (isAllowedType(super.getContextType())) {
-                return (IType)super.getContextType();
-            }
-            return null;
+            return (IType)super.getContextType();
         }
     }
 
     protected boolean isListOfTypeContext() {
-        return super.getContextType() instanceof ListOfTypeDatatype;
+        return isAllowedType() && super.getContextType() instanceof ListOfTypeDatatype;
     }
 
     /**

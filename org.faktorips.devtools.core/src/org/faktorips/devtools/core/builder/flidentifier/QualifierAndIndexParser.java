@@ -52,7 +52,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     @Override
-    protected boolean isAllowedType() {
+    public boolean isAllowedType() {
         return super.isAllowedType() && super.getContextType() instanceof IPolicyCmptType;
     }
 

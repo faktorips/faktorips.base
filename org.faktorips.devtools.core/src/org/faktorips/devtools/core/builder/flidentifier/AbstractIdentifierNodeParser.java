@@ -106,8 +106,26 @@ public abstract class AbstractIdentifierNodeParser {
         return identifierPart;
     }
 
+    /**
+     * Returns the current context type. This class may throw a {@link ClassCastException} if the
+     * current type is not allowed. Check {@link #isAllowedType()} before calling this method.
+     * <p>
+     * If you override this method and want to cast to a specific Datatype you can do this safely if
+     * you also override {@link #isAllowedType()} accordingly.
+     * 
+     * @return The datatype of the context returned by the previous node or the type of the
+     *         expression signature.
+     */
     public Datatype getContextType() {
         return contextType;
+    }
+
+    /**
+     * Checks whether the current context type is allowed or not. Call this method to check whether
+     * it is safe to call {@link #getContextType()}.
+     */
+    public boolean isAllowedType() {
+        return true;
     }
 
     public void setContextType(Datatype contextType) {
@@ -115,7 +133,7 @@ public abstract class AbstractIdentifierNodeParser {
     }
 
     protected boolean isContextTypeFormulaType() {
-        return getContextType() == getExpression().findProductCmptType(getIpsProject());
+        return isAllowedType() && getContextType() == getExpression().findProductCmptType(getIpsProject());
     }
 
     /**
