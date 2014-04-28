@@ -61,7 +61,10 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
             ListOfTypeDatatype listOfTypeDatatype = (ListOfTypeDatatype)super.getContextType();
             return (IType)listOfTypeDatatype.getBasicDatatype();
         } else {
-            return (IType)super.getContextType();
+            if (isAllowedType(super.getContextType())) {
+                return (IType)super.getContextType();
+            }
+            return null;
         }
     }
 
