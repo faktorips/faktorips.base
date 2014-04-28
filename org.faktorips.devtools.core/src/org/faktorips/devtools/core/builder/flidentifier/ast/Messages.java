@@ -23,9 +23,13 @@ public class Messages extends NLS {
 
     public static String AttributeNode_defaultOfName;
 
+    public static String IndexNode_descriptionIndex;
+
     public static String ParameterNode_description;
 
     public static String EnumClassNode_description;
+
+    public static String QualifierNode_description;
 
     private Messages() {
         // do not instantiate

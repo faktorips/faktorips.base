@@ -13,8 +13,6 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IType;
 
 /**
@@ -26,8 +24,8 @@ import org.faktorips.devtools.core.model.type.IType;
  */
 public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodeParser {
 
-    public TypeBasedIdentifierParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public TypeBasedIdentifierParser(ParsingContext parsingContext) {
+        super(parsingContext);
     }
 
     @Override

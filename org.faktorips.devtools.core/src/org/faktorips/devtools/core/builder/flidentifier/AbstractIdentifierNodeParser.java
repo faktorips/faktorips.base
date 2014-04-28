@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,15 +30,11 @@ import org.faktorips.devtools.core.util.TextRegion;
  */
 public abstract class AbstractIdentifierNodeParser {
 
-    private final IExpression expression;
-
-    private final IIpsProject ipsProject;
+    private final ParsingContext parsingContext;
 
     private String identifierPart;
 
     private Datatype contextType;
-
-    private IdentifierNode previousNode;
 
     private TextRegion textRegion;
 
@@ -45,33 +42,32 @@ public abstract class AbstractIdentifierNodeParser {
      * Creates the identifier parser and store the {@link IExpression} as well as the used
      * {@link IIpsProject}.
      * 
-     * @param expression The expression where the identifier was entered
-     * @param ipsProject The {@link IIpsProject} that we use to search other IPS objects.
+     * @param parsingContext The context that holds the status of parsing of the whole identifier
      */
-    public AbstractIdentifierNodeParser(IExpression expression, IIpsProject ipsProject) {
-        this.expression = expression;
-        this.ipsProject = ipsProject;
-        setContextType(expression.findProductCmptType(ipsProject));
+    public AbstractIdentifierNodeParser(ParsingContext parsingContext) {
+        this.parsingContext = parsingContext;
+        setContextType(getExpression().findProductCmptType(getIpsProject()));
+    }
+
+    public ParsingContext getParsingContext() {
+        return parsingContext;
     }
 
     /**
      * This method is called to parse the identifier part string with the given context type.
      * 
      * @param identifierPart The part of the identifier that should be parsed
-     * @param previousNode The previous node that was already parsed. May be null if there is no
-     *            previous identifier part
      * 
      * @return The parsed identifier node or null if this parser is not responsible
      */
-    public IdentifierNode parse(String identifierPart, IdentifierNode previousNode, TextRegion textRegion) {
+    public IdentifierNode parse(String identifierPart, TextRegion textRegion) {
         this.textRegion = textRegion;
         this.setIdentifierPart(identifierPart);
-        if (previousNode == null) {
-            this.setContextType(expression.findProductCmptType(getIpsProject()));
+        if (getPreviousNode() == null) {
+            this.setContextType(getExpression().findProductCmptType(getIpsProject()));
         } else {
-            this.setContextType(previousNode.getDatatype());
+            this.setContextType(getPreviousNode().getDatatype());
         }
-        this.setPreviousNode(previousNode);
         IdentifierNode identifierNode = parse();
         return identifierNode;
     }
@@ -95,11 +91,11 @@ public abstract class AbstractIdentifierNodeParser {
     protected abstract IdentifierNode parse();
 
     public IExpression getExpression() {
-        return expression;
+        return getParsingContext().getExpression();
     }
 
     public IIpsProject getIpsProject() {
-        return ipsProject;
+        return getParsingContext().getIpsProject();
     }
 
     public void setIdentifierPart(String identifierPart) {
@@ -129,11 +125,17 @@ public abstract class AbstractIdentifierNodeParser {
      * @return The previous parsed identifier node or null if there is none.
      */
     public IdentifierNode getPreviousNode() {
-        return previousNode;
+        return getParsingContext().getPreviousNode();
     }
 
-    public void setPreviousNode(IdentifierNode previousNode) {
-        this.previousNode = previousNode;
+    /**
+     * Returns an iterator with the previous nodes. The first element is the latest node which is
+     * also returned by {@link #getPreviousNode()}. The iterator traverses from the latest node to
+     * the first one.
+     * 
+     */
+    public LinkedList<IdentifierNode> getPreviousNodes() {
+        return getParsingContext().getNodes();
     }
 
     /**
@@ -165,7 +167,7 @@ public abstract class AbstractIdentifierNodeParser {
      * nodes. Only nodes whose texts start with the given prefix (case insensitive) are returned.
      * <p>
      * Before calling this method the parser context must be set up, e.g. by calling
-     * {@link #parse(String, IdentifierNode, TextRegion)}.
+     * {@link #parse(String, TextRegion)}.
      * 
      * @param prefix The prefix text to filter the result. Empty string to get all available
      *            proposals.

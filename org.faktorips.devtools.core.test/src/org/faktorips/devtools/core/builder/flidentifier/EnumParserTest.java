@@ -66,19 +66,19 @@ public class EnumParserTest extends AbstractParserTest {
                 new EnumDatatype[] { enumDatatype, enumDatatypeAdapter });
         when(enumDatatype.getName()).thenReturn(MY_ENUM_CLASS);
         when(enumDatatype.getAllValueIds(true)).thenReturn(new String[] { MY_ENUM_VALUE });
-        enumParser = new EnumParser(getExpression(), getIpsProject());
+        enumParser = new EnumParser(getParsingContext());
     }
 
     @Test
     public void testParse_parseEnumClass() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, null, null);
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, null);
 
         assertEquals(new EnumClassNode.EnumClass(enumDatatype), enumClassNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumClassNotFound() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, null, null);
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, null);
 
         assertNull(enumClassNode);
     }
@@ -87,8 +87,9 @@ public class EnumParserTest extends AbstractParserTest {
     public void testParse_parseEnumDatatype() throws Exception {
         EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
+        getParsingContext().pushNode(enumClassNode);
 
-        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, enumClassNode, null);
+        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, null);
 
         assertEquals(enumDatatype, enumDatatypeNode.getDatatype());
     }
@@ -97,8 +98,9 @@ public class EnumParserTest extends AbstractParserTest {
     public void testParse_parseEnumDatatypeNotFount() throws Exception {
         EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
+        getParsingContext().pushNode(enumClassNode);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, enumClassNode, null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }

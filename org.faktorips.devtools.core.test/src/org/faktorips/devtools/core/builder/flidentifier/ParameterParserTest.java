@@ -51,7 +51,7 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Before
     public void createParameterParser() throws Exception {
-        parameterParser = new ParameterParser(getExpression(), getIpsProject());
+        parameterParser = new ParameterParser(getParsingContext());
     }
 
     @Before
@@ -64,22 +64,23 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_wrongType() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(MY_PARAMETER, new TestNode(mock(IProductCmptType.class)),
-                null);
+        getParsingContext().pushNode(new TestNode(mock(IProductCmptType.class)));
+
+        IdentifierNode parameterNode = parameterParser.parse(MY_PARAMETER, null);
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_noParameter() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(ANY_PARAMETER, null, null);
+        IdentifierNode parameterNode = parameterParser.parse(ANY_PARAMETER, null);
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_findParameter() throws Exception {
-        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(MY_PARAMETER, null, null);
+        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(MY_PARAMETER, null);
 
         assertNotNull(parameterNode);
         assertEquals(parameter, parameterNode.getParameter());
@@ -98,14 +99,14 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testParse_noDatatype() throws Exception {
         when(parameter.findDatatype(getIpsProject())).thenReturn(null);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, null, null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, null);
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }
 
     @Test
     public void testGetProposals_noPrefix() throws Exception {
-        parameterParser.parse(null, null, null);
+        parameterParser.parse(null, null);
 
         List<IdentifierNode> proposals = parameterParser.getProposals(StringUtils.EMPTY);
 
@@ -115,7 +116,7 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testGetProposals_invalidPrefix() throws Exception {
-        parameterParser.parse(null, null, null);
+        parameterParser.parse(null, null);
 
         List<IdentifierNode> proposals = parameterParser.getProposals("gfassddf");
 
@@ -124,7 +125,7 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testGetProposals_withPrefix() throws Exception {
-        parameterParser.parse(null, null, null);
+        parameterParser.parse(null, null);
 
         List<IdentifierNode> proposals = parameterParser.getProposals("any");
 
@@ -143,7 +144,7 @@ public class ParameterParserTest extends AbstractParserTest {
         when(param3.getName()).thenReturn("AnyX");
         when(param3.findDatatype(getIpsProject())).thenReturn(AnyDatatype.INSTANCE);
 
-        parameterParser.parse(null, null, null);
+        parameterParser.parse(null, null);
 
         List<IdentifierNode> proposals = parameterParser.getProposals("any");
 

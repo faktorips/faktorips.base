@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -19,11 +19,10 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.contextcollector.ContextProductCmptFinder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.fl.ExprCompiler;
@@ -42,12 +41,14 @@ import org.faktorips.util.message.Message;
  */
 public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
-    private static final String QUALIFIER_END = "]"; //$NON-NLS-1$
+    public static final String QUALIFIER_START = "["; //$NON-NLS-1$
+
+    public static final String QUALIFIER_END = "]"; //$NON-NLS-1$
 
     private static final String QUALIFIER_QUOTATION = "\""; //$NON-NLS-1$
 
-    public QualifierAndIndexParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public QualifierAndIndexParser(ParsingContext parsingContext) {
+        super(parsingContext);
     }
 
     @Override
@@ -101,16 +102,18 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         IProductCmpt productCmpt;
         try {
             productCmpt = findProductCmpt();
-            AssociationNode associationNode = (AssociationNode)getPreviousNode();
-            boolean listOfType = associationNode.isListContext()
-                    || associationNode.getAssociation().is1ToManyIgnoringQualifier();
-            return nodeFactory().createQualifierNode(productCmpt, getQualifier(), listOfType);
+            return nodeFactory().createQualifierNode(productCmpt, getQualifier(), isListOfType());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return nodeFactory().createInvalidIdentifier(
                     Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS.bind(
                             Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
         }
+    }
+
+    private boolean isListOfType() {
+        AssociationNode associationNode = (AssociationNode)getPreviousNode();
+        return associationNode.isListContext() || associationNode.getAssociation().is1ToManyIgnoringQualifier();
     }
 
     private IProductCmpt findProductCmpt() throws CoreException {
@@ -177,7 +180,17 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        return Collections.emptyList();
+        List<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        if (getPreviousNode() instanceof AssociationNode) {
+            List<IProductCmpt> contextProductCmpts = new ContextProductCmptFinder(getParsingContext().getNodes(),
+                    getExpression(), getIpsProject()).getContextProductCmpts();
+            result.add(nodeFactory().createIndexBasedAssociationNode(0, getContextType()));
+            for (IProductCmpt productCmpt : contextProductCmpts) {
+                IdentifierNode qualifierNode = nodeFactory().createQualifierNode(productCmpt, productCmpt.getName(),
+                        isListOfType());
+                result.add(qualifierNode);
+            }
+        }
+        return result;
     }
-
 }

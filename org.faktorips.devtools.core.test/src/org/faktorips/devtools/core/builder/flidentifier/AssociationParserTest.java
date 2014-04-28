@@ -54,7 +54,7 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Before
     public void mockAssociation() throws Exception {
-        associationParser = new AssociationParser(getExpression(), getIpsProject());
+        associationParser = new AssociationParser(getParsingContext());
 
         when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(association);
         when(association.getName()).thenReturn(MY_ASSOCIATION);
@@ -73,7 +73,7 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_noAssociationWithoutPreviousNode() throws Exception {
-        IdentifierNode node = associationParser.parse(MY_ASSOCIATION, null, null);
+        IdentifierNode node = associationParser.parse(MY_ASSOCIATION, null);
 
         assertNull(node);
     }
@@ -81,9 +81,9 @@ public class AssociationParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAssociation1To1() throws Exception {
         when(association.is1ToMany()).thenReturn(false);
+        getParsingContext().pushNode(new TestNode(policyCmptType));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType),
-                null);
+        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
 
         assertEquals(association, node.getAssociation());
         assertEquals(targetType, node.getDatatype());
@@ -92,9 +92,9 @@ public class AssociationParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAssociation1ToMany() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
+        getParsingContext().pushNode(new TestNode(policyCmptType));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType),
-                null);
+        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
 
         assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -103,9 +103,9 @@ public class AssociationParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAssociation1To1FromMany() throws Exception {
         when(association.is1ToMany()).thenReturn(false);
+        getParsingContext().pushNode(new TestNode(policyCmptType, true));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType,
-                true), null);
+        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
 
         assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -114,9 +114,9 @@ public class AssociationParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAssociation1ToManyFromMany() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
+        getParsingContext().pushNode(new TestNode(policyCmptType, true));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, new TestNode(policyCmptType,
-                true), null);
+        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
 
         assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -124,8 +124,9 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_findNoAssociation() throws Exception {
-        AssociationNode node = (AssociationNode)associationParser.parse(ANY_ASSOCIATION, new TestNode(
-                getProductCmptType()), null);
+        getParsingContext().pushNode(new TestNode(getProductCmptType()));
+
+        AssociationNode node = (AssociationNode)associationParser.parse(ANY_ASSOCIATION, null);
 
         assertNull(node);
     }

@@ -16,9 +16,8 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
 /**
  * The {@link ParameterParser} parses an identifier part to an {@link ParameterNode}. It checks
@@ -29,8 +28,8 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
  */
 public class ParameterParser extends AbstractIdentifierNodeParser {
 
-    public ParameterParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public ParameterParser(ParsingContext parsingContext) {
+        super(parsingContext);
     }
 
     @Override
@@ -61,7 +60,12 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
     }
 
     /* private */protected IParameter[] getParameters() {
-        return getExpression().findFormulaSignature(getIpsProject()).getParameters();
+        IFormulaMethod formulaSignature = getExpression().findFormulaSignature(getIpsProject());
+        if (formulaSignature != null) {
+            return formulaSignature.getParameters();
+        } else {
+            return new IParameter[0];
+        }
     }
 
 }

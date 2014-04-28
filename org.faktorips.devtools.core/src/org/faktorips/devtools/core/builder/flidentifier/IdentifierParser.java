@@ -36,9 +36,11 @@ import org.faktorips.util.message.Message;
  */
 public class IdentifierParser {
 
-    private final IIpsProject ipsProject;
+    private final IdentifierFilter identifierFilter;
 
-    private final ArrayList<AbstractIdentifierNodeParser> parsers;
+    private final ParsingContext parsingContext;
+
+    private ArrayList<AbstractIdentifierNodeParser> parsers;
 
     private IdentifierMatcher matcher;
 
@@ -61,13 +63,18 @@ public class IdentifierParser {
      * @param ipsProject The {@link IIpsProject} to search other {@link IIpsObject IPS objects}
      */
     public IdentifierParser(IExpression expression, IIpsProject ipsProject, IdentifierFilter identifierFilter) {
-        this.ipsProject = ipsProject;
+        parsingContext = new ParsingContext(expression, ipsProject);
+        this.identifierFilter = identifierFilter;
+        initParsers();
+    }
+
+    private void initParsers() {
         parsers = new ArrayList<AbstractIdentifierNodeParser>();
-        parsers.add(new ParameterParser(expression, ipsProject));
-        parsers.add(new AttributeParser(expression, ipsProject, identifierFilter));
-        parsers.add(new AssociationParser(expression, ipsProject));
-        parsers.add(new QualifierAndIndexParser(expression, ipsProject));
-        parsers.add(new EnumParser(expression, ipsProject));
+        parsers.add(new ParameterParser(parsingContext));
+        parsers.add(new AttributeParser(parsingContext, identifierFilter));
+        parsers.add(new AssociationParser(parsingContext));
+        parsers.add(new QualifierAndIndexParser(parsingContext));
+        parsers.add(new EnumParser(parsingContext));
     }
 
     /**
@@ -86,46 +93,48 @@ public class IdentifierParser {
      * 
      */
     public IdentifierNode parse(String identifier) {
-        setMatcher(identifier);
-        return parseNextPart(null);
+        initNewParse(identifier);
+        return parseNextPart();
     }
 
-    private IdentifierNode parseNextPart(IdentifierNode previousNode) {
+    private IdentifierNode parseNextPart() {
         String identifierPart = matcher.getIdentifierPart();
         for (AbstractIdentifierNodeParser parser : parsers) {
-            IdentifierNode node = parser.parse(identifierPart, previousNode, matcher.getTextRegion());
+            IdentifierNode node = parser.parse(identifierPart, matcher.getTextRegion());
             if (node != null) {
+                parsingContext.pushNode(node);
                 if (matcher.hasNextIdentifierPart()) {
                     matcher.nextIdentifierPart();
-                    node.setSuccessor(parseNextPart(node));
+                    node.setSuccessor(parseNextPart());
                 }
                 return node;
             }
         }
-        return new IdentifierNodeFactory(identifierPart, matcher.getTextRegion(), ipsProject)
+        return new IdentifierNodeFactory(identifierPart, matcher.getTextRegion(), parsingContext.getIpsProject())
                 .createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
                         NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, identifierPart)));
     }
 
     public List<IdentifierNode> getProposals(String existingContent) {
-        setMatcher(existingContent);
+        initNewParse(existingContent);
         ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
-        List<AbstractIdentifierNodeParser> latestParsers = getLatestParsers(null);
+        List<AbstractIdentifierNodeParser> latestParsers = getLatestParsers();
         for (AbstractIdentifierNodeParser parser : latestParsers) {
             result.addAll(parser.getProposals(matcher.getIdentifierPart()));
         }
         return result;
     }
 
-    private List<AbstractIdentifierNodeParser> getLatestParsers(IdentifierNode previousNode) {
+    private List<AbstractIdentifierNodeParser> getLatestParsers() {
         ArrayList<AbstractIdentifierNodeParser> result = new ArrayList<AbstractIdentifierNodeParser>();
         String identifierPart = matcher.getIdentifierPart();
         for (AbstractIdentifierNodeParser parser : parsers) {
-            IdentifierNode node = parser.parse(identifierPart, previousNode, matcher.getTextRegion());
+            IdentifierNode node = parser.parse(identifierPart, matcher.getTextRegion());
             if (node != null) {
+                parsingContext.pushNode(node);
                 if (matcher.hasNextIdentifierPart()) {
                     matcher.nextIdentifierPart();
-                    return getLatestParsers(node);
+                    return getLatestParsers();
                 }
             }
             result.add(parser);
@@ -133,7 +142,8 @@ public class IdentifierParser {
         return result;
     }
 
-    private void setMatcher(String identifier) {
+    private void initNewParse(String identifier) {
+        parsingContext.init();
         matcher = new IdentifierMatcher(identifier);
     }
 

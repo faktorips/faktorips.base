@@ -24,9 +24,6 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -45,12 +42,9 @@ public class EnumParser extends AbstractIdentifierNodeParser {
 
     /**
      * Creates a new {@link EnumParser} for the specified expression and project
-     * 
-     * @param expression The expression that holds the identifier that will be parsed by this parser
-     * @param ipsProject The {@link IIpsProject} used for searching any {@link IIpsObject}.
      */
-    public EnumParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public EnumParser(ParsingContext parsingContext) {
+        super(parsingContext);
         enumDatatypes = createEnumMap();
     }
 

@@ -19,9 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
@@ -33,8 +31,8 @@ import org.faktorips.util.message.Message;
  */
 public class AssociationParser extends TypeBasedIdentifierParser {
 
-    public AssociationParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public AssociationParser(ParsingContext parsingContext) {
+        super(parsingContext);
     }
 
     @Override

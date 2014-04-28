@@ -25,10 +25,14 @@ public class AbstractParserTest {
 
     @Mock
     private IExpression expression;
+
     @Mock
     private IIpsProject ipsProject;
+
     @Mock
     private IProductCmptType productCmptType;
+
+    private ParsingContext parsingContext;
 
     public AbstractParserTest() {
         super();
@@ -37,6 +41,11 @@ public class AbstractParserTest {
     @Before
     public void mockExpression() throws Exception {
         when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        parsingContext = new ParsingContext(getExpression(), getIpsProject());
+    }
+
+    public ParsingContext getParsingContext() {
+        return parsingContext;
     }
 
     public IExpression getExpression() {
