@@ -53,7 +53,8 @@ public class EnumClassNode extends IdentifierNode {
 
     @Override
     public String getText() {
-        return getDatatype().getName();
+        EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)getDatatype().getEnumDatatype();
+        return enumTypeDatatypeAdapter.getEnumType().getName();
     }
 
     @Override
