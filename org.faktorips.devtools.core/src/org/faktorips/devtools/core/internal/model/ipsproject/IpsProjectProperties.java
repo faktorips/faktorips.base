@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,6 +58,7 @@ import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManage
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.fl.AssociationNavigationFunctionsResolver;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -733,14 +735,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     private void createObjectPathFromExistingManifest(IIpsProject ipsProject, IFile file) {
+        InputStream contents = null;
         try {
-            Manifest manifest = new Manifest(file.getContents());
+            contents = file.getContents();
+            Manifest manifest = new Manifest(contents);
             IpsBundleManifest bundleManifest = new IpsBundleManifest(manifest);
             path = new IpsObjectPathManifestReader(bundleManifest, ipsProject).readIpsObjectPath();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
+        } finally {
+            IoUtil.close(contents);
         }
     }
 
