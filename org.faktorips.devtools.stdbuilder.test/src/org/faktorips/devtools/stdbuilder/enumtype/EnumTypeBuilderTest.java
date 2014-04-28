@@ -354,7 +354,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         System.out.println(codeFragement.getSourcecode());
 
         assertEquals(
-                "this.getRepository().getEnumValue(TestEnumType.class, StringUtils.isEmpty(\"1\") ? null : Integer.valueOf(\"1\"))",
+                "this.getRepository().getEnumValue(TestEnumType.class, IpsStringUtils.isEmpty(\"1\") ? null : Integer.valueOf(\"1\"))",
                 codeFragement.getSourcecode());
     }
 

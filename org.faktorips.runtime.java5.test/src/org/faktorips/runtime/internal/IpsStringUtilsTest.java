@@ -15,26 +15,26 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class StringUtilsTest {
+public class IpsStringUtilsTest {
 
     @Test
     public void testIsEmpty() {
-        assertTrue(StringUtils.isEmpty(null));
-        assertTrue(StringUtils.isEmpty(""));
-        assertFalse(StringUtils.isEmpty("           "));
-        assertFalse(StringUtils.isEmpty("      \n     "));
-        assertFalse(StringUtils.isEmpty("a"));
-        assertFalse(StringUtils.isEmpty(" a "));
+        assertTrue(IpsStringUtils.isEmpty(null));
+        assertTrue(IpsStringUtils.isEmpty(""));
+        assertFalse(IpsStringUtils.isEmpty("           "));
+        assertFalse(IpsStringUtils.isEmpty("      \n     "));
+        assertFalse(IpsStringUtils.isEmpty("a"));
+        assertFalse(IpsStringUtils.isEmpty(" a "));
     }
 
     @Test
     public void testIsBlank() {
-        assertTrue(StringUtils.isBlank(null));
-        assertTrue(StringUtils.isBlank(""));
-        assertTrue(StringUtils.isBlank("           "));
-        assertTrue(StringUtils.isBlank("      \n     "));
-        assertFalse(StringUtils.isBlank("a"));
-        assertFalse(StringUtils.isBlank(" a "));
+        assertTrue(IpsStringUtils.isBlank(null));
+        assertTrue(IpsStringUtils.isBlank(""));
+        assertTrue(IpsStringUtils.isBlank("           "));
+        assertTrue(IpsStringUtils.isBlank("      \n     "));
+        assertFalse(IpsStringUtils.isBlank("a"));
+        assertFalse(IpsStringUtils.isBlank(" a "));
     }
 
 }

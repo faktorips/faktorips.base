@@ -82,12 +82,12 @@ public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {
 
         assertEquals(3, availableFormulas.size());
         assertTrue(availableFormulas.containsKey("testFormula"));
-        assertFalse(StringUtils.isEmpty(availableFormulas.get("testFormula")));
+        assertFalse(IpsStringUtils.isEmpty(availableFormulas.get("testFormula")));
 
         assertTrue(availableFormulas.containsKey("emptyFormula"));
-        assertTrue(StringUtils.isEmpty(availableFormulas.get("emptyFormula")));
+        assertTrue(IpsStringUtils.isEmpty(availableFormulas.get("emptyFormula")));
 
         assertTrue(availableFormulas.containsKey("whitespaceFormula"));
-        assertTrue(StringUtils.isEmpty(availableFormulas.get("whitespaceFormula")));
+        assertTrue(IpsStringUtils.isEmpty(availableFormulas.get("whitespaceFormula")));
     }
 }

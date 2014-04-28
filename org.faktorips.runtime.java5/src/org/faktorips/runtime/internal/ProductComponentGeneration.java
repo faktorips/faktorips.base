@@ -212,7 +212,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     protected boolean isFormulaAvailable(String formularSignature) {
         String expression = availableFormulars.get(formularSignature);
-        return !StringUtils.isBlank(expression);
+        return !IpsStringUtils.isBlank(expression);
     }
 
     /**
