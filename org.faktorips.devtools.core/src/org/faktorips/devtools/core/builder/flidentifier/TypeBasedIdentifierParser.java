@@ -64,7 +64,7 @@ public abstract class TypeBasedIdentifierParser extends AbstractIdentifierNodePa
     }
 
     protected boolean isListOfTypeContext() {
-        return isAllowedType() && super.getContextType() instanceof ListOfTypeDatatype;
+        return super.getContextType() instanceof ListOfTypeDatatype;
     }
 
     /**
