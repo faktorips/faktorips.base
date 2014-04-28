@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -73,7 +74,7 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_noAssociationWithoutPreviousNode() throws Exception {
-        IdentifierNode node = associationParser.parse(MY_ASSOCIATION, null);
+        IdentifierNode node = associationParser.parse(new TextRegion(MY_ASSOCIATION, 0, MY_ASSOCIATION.length()));
 
         assertNull(node);
     }
@@ -83,7 +84,8 @@ public class AssociationParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(false);
         getParsingContext().pushNode(new TestNode(policyCmptType));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
+        AssociationNode node = (AssociationNode)associationParser.parse(new TextRegion(MY_ASSOCIATION, 0,
+                MY_ASSOCIATION.length()));
 
         assertEquals(association, node.getAssociation());
         assertEquals(targetType, node.getDatatype());
@@ -94,7 +96,8 @@ public class AssociationParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(true);
         getParsingContext().pushNode(new TestNode(policyCmptType));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
+        AssociationNode node = (AssociationNode)associationParser.parse(new TextRegion(MY_ASSOCIATION, 0,
+                MY_ASSOCIATION.length()));
 
         assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -105,7 +108,8 @@ public class AssociationParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(false);
         getParsingContext().pushNode(new TestNode(policyCmptType, true));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
+        AssociationNode node = (AssociationNode)associationParser.parse(new TextRegion(MY_ASSOCIATION, 0,
+                MY_ASSOCIATION.length()));
 
         assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -116,7 +120,8 @@ public class AssociationParserTest extends AbstractParserTest {
         when(association.is1ToMany()).thenReturn(true);
         getParsingContext().pushNode(new TestNode(policyCmptType, true));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(MY_ASSOCIATION, null);
+        AssociationNode node = (AssociationNode)associationParser.parse(new TextRegion(MY_ASSOCIATION, 0,
+                MY_ASSOCIATION.length()));
 
         assertEquals(association, node.getAssociation());
         assertEquals(new ListOfTypeDatatype(targetType), node.getDatatype());
@@ -126,7 +131,8 @@ public class AssociationParserTest extends AbstractParserTest {
     public void testParse_findNoAssociation() throws Exception {
         getParsingContext().pushNode(new TestNode(getProductCmptType()));
 
-        AssociationNode node = (AssociationNode)associationParser.parse(ANY_ASSOCIATION, null);
+        AssociationNode node = (AssociationNode)associationParser.parse(new TextRegion(ANY_ASSOCIATION, 0,
+                ANY_ASSOCIATION.length()));
 
         assertNull(node);
     }

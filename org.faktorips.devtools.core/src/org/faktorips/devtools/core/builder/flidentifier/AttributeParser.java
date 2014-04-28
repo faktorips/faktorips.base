@@ -55,6 +55,9 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
         ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        if (!isSeperatedByDot()) {
+            return result;
+        }
         List<IAttribute> attributes = findAttributes();
         for (IAttribute attribute : attributes) {
             addIfNotNull(getAttributeProposal(attribute, false, prefix), result);

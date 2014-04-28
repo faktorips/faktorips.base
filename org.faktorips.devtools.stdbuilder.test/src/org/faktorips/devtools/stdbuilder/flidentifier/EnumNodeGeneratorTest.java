@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.fl.CompilationResult;
@@ -66,8 +67,8 @@ public class EnumNodeGeneratorTest {
     @Test
     public void testGetCompilationResultForEnumTypeDatatypeAdapter() throws Exception {
         EnumTypeDatatypeAdapter enumDatatype = mock(EnumTypeDatatypeAdapter.class);
-        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), null, ipsProject).createEnumValueNode(
-                ENUM_VALUE_NAME, enumDatatype);
+        enumValueNode = new IdentifierNodeFactory(new TextRegion(enumDatatype.getName(), 0, enumDatatype.getName()
+                .length()), ipsProject).createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
         EnumTypeBuilder enumTypeBuilder = mock(EnumTypeBuilder.class);
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment(enumValueNode.getEnumValueName());
         when(enumNodeGenerator.getEnumTypeBuilder()).thenReturn(enumTypeBuilder);
@@ -86,8 +87,8 @@ public class EnumNodeGeneratorTest {
     @Test
     public void testGetCompilationResultForEnumDatatype() throws Exception {
         EnumDatatype enumDatatype = mock(EnumDatatype.class);
-        enumValueNode = new IdentifierNodeFactory(enumDatatype.getName(), null, ipsProject).createEnumValueNode(
-                ENUM_VALUE_NAME, enumDatatype);
+        enumValueNode = new IdentifierNodeFactory(new TextRegion(enumDatatype.getName(), 0, enumDatatype.getName()
+                .length()), ipsProject).createEnumValueNode(ENUM_VALUE_NAME, enumDatatype);
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         when(enumNodeGenerator.getIpsProject()).thenReturn(ipsProject);
         when(enumNodeGenerator.getIpsProject().getDatatypeHelper(enumDatatype)).thenReturn(helper);

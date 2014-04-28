@@ -39,14 +39,11 @@ import org.faktorips.util.message.Message;
  */
 public class IdentifierNodeFactory {
 
-    private final String identifierPart;
-
     private final IIpsProject ipsProject;
 
     private final TextRegion textRegion;
 
-    public IdentifierNodeFactory(String identifierPart, TextRegion textRegion, IIpsProject ipsProject) {
-        this.identifierPart = identifierPart;
+    public IdentifierNodeFactory(TextRegion textRegion, IIpsProject ipsProject) {
         this.textRegion = textRegion;
         this.ipsProject = ipsProject;
     }
@@ -98,15 +95,15 @@ public class IdentifierNodeFactory {
     }
 
     private IdentifierNode createInvalidNoDatatype(String datatypeName) {
-        return createInvalidIdentifier(Message
-                .newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                        Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, datatypeName,
-                        identifierPart)));
+        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
+                Messages.AbstractParameterIdentifierResolver_msgDatatypeCanNotBeResolved, datatypeName,
+                textRegion.getTextRegionString())));
     }
 
     private IdentifierNode createInvalidDatatypeError(String datatypeName) {
         return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                Messages.AbstractParameterIdentifierResolver_msgErrorDatatypeResolving, datatypeName, identifierPart)));
+                Messages.AbstractParameterIdentifierResolver_msgErrorDatatypeResolving, datatypeName,
+                textRegion.getTextRegionString())));
     }
 
     /**
@@ -170,8 +167,10 @@ public class IdentifierNodeFactory {
     }
 
     private IdentifierNode createInvalidAssociationTargetNode(String targetName) {
-        return createInvalidIdentifier(Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER,
-                NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, targetName, identifierPart)));
+        return createInvalidIdentifier(Message.newError(
+                ExprCompiler.UNDEFINED_IDENTIFIER,
+                NLS.bind(Messages.AbstractParameterIdentifierResolver_noAssociationTarget, targetName,
+                        textRegion.getTextRegionString())));
     }
 
     /**

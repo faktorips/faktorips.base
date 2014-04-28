@@ -32,8 +32,6 @@ public abstract class AbstractIdentifierNodeParser {
 
     private final ParsingContext parsingContext;
 
-    private String identifierPart;
-
     private Datatype contextType;
 
     private TextRegion textRegion;
@@ -56,13 +54,13 @@ public abstract class AbstractIdentifierNodeParser {
     /**
      * This method is called to parse the identifier part string with the given context type.
      * 
-     * @param identifierPart The part of the identifier that should be parsed
+     * @param textRegion The text and region of the identifier specifying the current identifier
+     *            part
      * 
      * @return The parsed identifier node or null if this parser is not responsible
      */
-    public IdentifierNode parse(String identifierPart, TextRegion textRegion) {
+    public IdentifierNode parse(TextRegion textRegion) {
         this.textRegion = textRegion;
-        this.setIdentifierPart(identifierPart);
         if (getPreviousNode() == null) {
             this.setContextType(getExpression().findProductCmptType(getIpsProject()));
         } else {
@@ -98,12 +96,8 @@ public abstract class AbstractIdentifierNodeParser {
         return getParsingContext().getIpsProject();
     }
 
-    public void setIdentifierPart(String identifierPart) {
-        this.identifierPart = identifierPart;
-    }
-
     protected String getIdentifierPart() {
-        return identifierPart;
+        return textRegion.getTextRegionString();
     }
 
     /**
@@ -162,7 +156,7 @@ public abstract class AbstractIdentifierNodeParser {
      * @return The {@link IdentifierNodeFactory} to create a new {@link IdentifierNode}
      */
     public IdentifierNodeFactory nodeFactory() {
-        return new IdentifierNodeFactory(getIdentifierPart(), getTextRegion(), getIpsProject());
+        return new IdentifierNodeFactory(getTextRegion(), getIpsProject());
     }
 
     /**
@@ -185,7 +179,7 @@ public abstract class AbstractIdentifierNodeParser {
      * nodes. Only nodes whose texts start with the given prefix (case insensitive) are returned.
      * <p>
      * Before calling this method the parser context must be set up, e.g. by calling
-     * {@link #parse(String, TextRegion)}.
+     * {@link #parse(TextRegion)}.
      * 
      * @param prefix The prefix text to filter the result. Empty string to get all available
      *            proposals.
@@ -205,6 +199,10 @@ public abstract class AbstractIdentifierNodeParser {
      */
     protected boolean isMatchingNode(IdentifierNode node, String prefix) {
         return StringUtils.startsWithIgnoreCase(node.getText(), prefix);
+    }
+
+    protected boolean isSeperatedByDot() {
+        return getTextRegion().isRelativeChar(-1, '.');
     }
 
 }

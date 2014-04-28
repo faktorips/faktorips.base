@@ -73,7 +73,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
-        if (isAllowedType()) {
+        if (isSeperatedByDot() && isAllowedType()) {
             return getProposalsFor(prefix);
         }
         return Collections.emptyList();

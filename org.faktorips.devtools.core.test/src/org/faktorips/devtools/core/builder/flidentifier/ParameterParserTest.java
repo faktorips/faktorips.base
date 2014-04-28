@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,21 +67,22 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testParse_wrongType() throws Exception {
         getParsingContext().pushNode(new TestNode(mock(IProductCmptType.class)));
 
-        IdentifierNode parameterNode = parameterParser.parse(MY_PARAMETER, null);
+        IdentifierNode parameterNode = parameterParser.parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER.length()));
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_noParameter() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(ANY_PARAMETER, null);
+        IdentifierNode parameterNode = parameterParser.parse(new TextRegion(ANY_PARAMETER, 0, ANY_PARAMETER.length()));
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_findParameter() throws Exception {
-        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(MY_PARAMETER, null);
+        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER
+                .length()));
 
         assertNotNull(parameterNode);
         assertEquals(parameter, parameterNode.getParameter());
@@ -99,14 +101,15 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testParse_noDatatype() throws Exception {
         when(parameter.findDatatype(getIpsProject())).thenReturn(null);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(new TextRegion(MY_PARAMETER, 0,
+                MY_PARAMETER.length()));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }
 
     @Test
     public void testGetProposals_noPrefix() throws Exception {
-        parameterParser.parse(null, null);
+        parameterParser.parse(new TextRegion("any", 0, 0));
 
         List<IdentifierNode> proposals = parameterParser.getProposals(StringUtils.EMPTY);
 
@@ -116,7 +119,7 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testGetProposals_invalidPrefix() throws Exception {
-        parameterParser.parse(null, null);
+        parameterParser.parse(new TextRegion("any", 0, 0));
 
         List<IdentifierNode> proposals = parameterParser.getProposals("gfassddf");
 
@@ -125,7 +128,7 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testGetProposals_withPrefix() throws Exception {
-        parameterParser.parse(null, null);
+        parameterParser.parse(new TextRegion("any", 0, 0));
 
         List<IdentifierNode> proposals = parameterParser.getProposals("any");
 
@@ -144,7 +147,7 @@ public class ParameterParserTest extends AbstractParserTest {
         when(param3.getName()).thenReturn("AnyX");
         when(param3.findDatatype(getIpsProject())).thenReturn(AnyDatatype.INSTANCE);
 
-        parameterParser.parse(null, null);
+        parameterParser.parse(new TextRegion("any", 0, 0));
 
         List<IdentifierNode> proposals = parameterParser.getProposals("any");
 

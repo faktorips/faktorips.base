@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactor
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -76,7 +77,8 @@ public class AssociationNodeGeneratorTest {
 
     @Before
     public void setUp() throws CoreException {
-        nodeFactory = new IdentifierNodeFactory("AssociationNodeGeneratorTest", null, ipsProject);
+        nodeFactory = new IdentifierNodeFactory(new TextRegion("AssociationNodeGeneratorTest", 0,
+                "AssociationNodeGeneratorTest".length()), ipsProject);
         setUpMockAssociation();
         setUpCompilationResult();
         setUpBuilderSet();

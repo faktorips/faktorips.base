@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IndexNode;
 import org.faktorips.devtools.core.internal.model.type.Association;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -60,7 +61,8 @@ public class IndexNodeGeneratorTest {
 
     @Before
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
-        nodeFactory = new IdentifierNodeFactory("IndexBasedAssociationNodeGeneratorTest", null, ipsProject);
+        nodeFactory = new IdentifierNodeFactory(new TextRegion("IndexBasedAssociationNodeGeneratorTest", 0,
+                "IndexBasedAssociationNodeGeneratorTest".length()), ipsProject);
         indexNodeGenerator = new IndexNodeGenerator(factory, builderSet);
     }
 

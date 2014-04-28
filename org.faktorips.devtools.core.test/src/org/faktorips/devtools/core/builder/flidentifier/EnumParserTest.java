@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNod
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
 import org.junit.Test;
@@ -71,36 +72,40 @@ public class EnumParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_parseEnumClass() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(MY_ENUM_CLASS, null);
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(new TextRegion(MY_ENUM_CLASS, 0, MY_ENUM_CLASS
+                .length()));
 
         assertEquals(new EnumClassNode.EnumClass(enumDatatype), enumClassNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumClassNotFound() throws Exception {
-        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(ANY_ENUM_CLASS, null);
+        EnumClassNode enumClassNode = (EnumClassNode)enumParser.parse(new TextRegion(ANY_ENUM_CLASS, 0, ANY_ENUM_CLASS
+                .length()));
 
         assertNull(enumClassNode);
     }
 
     @Test
     public void testParse_parseEnumDatatype() throws Exception {
-        EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
+        EnumClassNode enumClassNode = new IdentifierNodeFactory(null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
         getParsingContext().pushNode(enumClassNode);
 
-        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(MY_ENUM_VALUE, null);
+        EnumValueNode enumDatatypeNode = (EnumValueNode)enumParser.parse(new TextRegion(MY_ENUM_VALUE, 0, MY_ENUM_VALUE
+                .length()));
 
         assertEquals(enumDatatype, enumDatatypeNode.getDatatype());
     }
 
     @Test
     public void testParse_parseEnumDatatypeNotFount() throws Exception {
-        EnumClassNode enumClassNode = new IdentifierNodeFactory("", null, getIpsProject())
+        EnumClassNode enumClassNode = new IdentifierNodeFactory(null, getIpsProject())
                 .createEnumClassNode(new EnumClassNode.EnumClass(enumDatatype));
         getParsingContext().pushNode(enumClassNode);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(ANY_ENUM_VALUE, null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)enumParser.parse(new TextRegion(ANY_ENUM_VALUE, 0,
+                ANY_ENUM_VALUE.length()));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }

@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
@@ -48,7 +49,8 @@ public class IdentifierNodeGeneratorTest {
 
     @Before
     public void setUp() throws Exception {
-        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory("anyIdentifierPart", null, ipsProject);
+        IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(new TextRegion("anyIdentifierPart", 0, 17),
+                ipsProject);
         invalidNode = nodeFactory.createInvalidIdentifier(new Message("Code", "text", 0));
         @SuppressWarnings("unchecked")
         CompilationResult<JavaCodeFragment> anyCompilationResult = any(CompilationResult.class);

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 import org.faktorips.fl.CompilationResult;
@@ -73,7 +74,8 @@ public class QualifierNodeGeneratorTest {
 
     @Before
     public void createIndexBasedAssociationNodeGenerator() throws Exception {
-        nodeFactory = new IdentifierNodeFactory("QualifiedAssociationNodeGeneratorTest", null, ipsProject);
+        nodeFactory = new IdentifierNodeFactory(new TextRegion("QualifiedAssociationNodeGeneratorTest", 0,
+                "QualifiedAssociationNodeGeneratorTest".length()), ipsProject);
         qualifiedAssociationNodeGenerator = new QualifierNodeGenerator(factory, builderSet);
     }
 

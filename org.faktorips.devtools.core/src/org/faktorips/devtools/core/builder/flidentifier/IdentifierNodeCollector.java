@@ -33,9 +33,11 @@ class IdentifierNodeCollector {
         this.parser = parser;
     }
 
-    public void addMatchingNode(IdentifierNode node, String prefix) {
+    public boolean addMatchingNode(IdentifierNode node, String prefix) {
         if (parser.isMatchingNode(node, prefix)) {
-            nodes.add(node);
+            return nodes.add(node);
+        } else {
+            return false;
         }
     }
 

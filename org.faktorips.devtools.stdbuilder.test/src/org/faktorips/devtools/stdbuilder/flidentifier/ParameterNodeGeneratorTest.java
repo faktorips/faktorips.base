@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactor
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.fl.CompilationResult;
 import org.junit.Before;
@@ -60,8 +61,8 @@ public class ParameterNodeGeneratorTest {
         IParameter parameter = mock(IParameter.class);
         when(parameter.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
         when(parameter.getName()).thenReturn("ParamName");
-        parameterNode = (ParameterNode)new IdentifierNodeFactory(parameter.getName(), null, ipsProject)
-                .createParameterNode(parameter);
+        parameterNode = (ParameterNode)new IdentifierNodeFactory(new TextRegion(parameter.getName(), 0, parameter
+                .getName().length()), ipsProject).createParameterNode(parameter);
     }
 
     @Test
