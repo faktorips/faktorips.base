@@ -56,9 +56,9 @@ public class EnumClassNodeTest {
     private static final String MY_LABEL = "myLabel";
 
     @Test
-    public void testGetDescription_NoIpsElement() {
-        doReturn(MY_LABEL).when(enumClass).getName();
+    public void testGetDescription_NoneEnumTypes() {
         doReturn(enumDatatypePaymentMode).when(enumClass).getEnumDatatype();
+        doReturn(MY_LABEL).when(enumDatatypePaymentMode).getName();
         enumClassNode = new EnumClassNode(enumClass, textregion);
 
         String description = enumClassNode.getDescription(multiLanguageSupport);
@@ -67,7 +67,7 @@ public class EnumClassNodeTest {
     }
 
     @Test
-    public void testGetDescription_forTypes() {
+    public void testGetDescription_forEnumTypes() {
         doReturn(enumType).when(enumDatatype).getEnumType();
         doReturn(MY_LABEL).when(enumType).getName();
         doReturn(enumDatatype).when(enumClass).getEnumDatatype();
