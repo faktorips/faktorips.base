@@ -91,7 +91,7 @@ public class TextRegionTest {
 
     @Test
     public void testGetTextRegionString() throws Exception {
-        TextRegion region = new TextRegion("abc123", 1, 5);
+        region = new TextRegion("abc123", 1, 5);
 
         String substring = region.getTextRegionString();
 
@@ -100,7 +100,7 @@ public class TextRegionTest {
 
     @Test
     public void testGetTextRegionStringIllegal() throws Exception {
-        TextRegion region = new TextRegion("abc123", 1, -5);
+        region = new TextRegion("abc123", 1, -5);
 
         String substring = region.getTextRegionString();
 

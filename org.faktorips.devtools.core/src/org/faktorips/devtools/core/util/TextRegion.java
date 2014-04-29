@@ -27,6 +27,7 @@ public class TextRegion implements Comparable<TextRegion> {
     /**
      * Creates a new Instance.
      * 
+     * @param text The complete identifier String
      * @param start The starting position
      * @param end The end position
      */
