@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,6 +27,9 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
+import org.faktorips.fl.parser.FlParserTokenManager;
+import org.faktorips.fl.parser.JavaCharStream;
+import org.faktorips.fl.parser.Token;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -51,11 +55,50 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
+        String consideredInput = getConsideredInput(contents, position);
+
         List<IContentProposal> result = new LinkedList<IContentProposal>();
-        String consideredInput = contents.substring(0, position);
         addIdentifierNodes(consideredInput, result);
         addMatchingFunctions(consideredInput, result);
         return result.toArray(new IContentProposal[result.size()]);
+    }
+
+    private String getConsideredInput(String contents, int cursorPosition) {
+        String leftOfCursor = getContentLeftOfCursor(contents, cursorPosition);
+        Token token = getLastToken(leftOfCursor);
+        return getTokenTextOrEverything(leftOfCursor, token);
+    }
+
+    private String getContentLeftOfCursor(String contents, int cursorPosition) {
+        return contents.substring(0, cursorPosition);
+    }
+
+    private Token getLastToken(String leftOfCursor) {
+        JavaCharStream stream = new JavaCharStream(new StringReader(leftOfCursor));
+        FlParserTokenManager tokenManager = new FlParserTokenManager(stream);
+        return getLastValidToken(leftOfCursor, tokenManager);
+    }
+
+    private Token getLastValidToken(String leftOfCursor, FlParserTokenManager tokenManager) {
+        Token currentToken = null;
+        Token previousToken = null;
+        do {
+            previousToken = currentToken;
+            currentToken = tokenManager.getNextToken();
+        } while (isValidToken(leftOfCursor, currentToken));
+        return previousToken;
+    }
+
+    private boolean isValidToken(String leftOfCursor, Token token) {
+        return token.beginColumn < leftOfCursor.length() - 1;
+    }
+
+    private String getTokenTextOrEverything(String leftOfCursor, Token token) {
+        if (token != null) {
+            return token.image;
+        } else {
+            return leftOfCursor;
+        }
     }
 
     private void addIdentifierNodes(String contents, List<IContentProposal> result) {

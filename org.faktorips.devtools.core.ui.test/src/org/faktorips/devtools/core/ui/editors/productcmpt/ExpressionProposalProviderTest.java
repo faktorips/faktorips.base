@@ -29,6 +29,8 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -48,7 +50,7 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     private PolicyCmptType policyCmptType;
     private IProductCmptTypeMethod formulaSignature;
     private IProductCmptGeneration productCmptGen;
-    private IFormula configElement;
+    private IFormula formula;
     private IpsProject ipsProject;
     private IProductCmptType productCmptType;
     private static final String FUNCTION_ABS = "Abs";
@@ -62,23 +64,34 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = (IpsProject)newIpsProject();
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "TestPolicy", "TestProduct");
+        PolicyCmptType targetPolicyCmptType = newPolicyAndProductCmptType(ipsProject, "Target", "TargetProduct");
         newDefinedEnumDatatype(ipsProject, new Class[] { TestEnumType.class });
+
+        IPolicyCmptTypeAssociation association = policyCmptType.newPolicyCmptTypeAssociation();
+        association.setTargetRoleSingular("part");
+        association.setTargetRolePlural("parts");
+        association.setMinCardinality(0);
+        association.setMaxCardinality(10);
+        association.setTarget(targetPolicyCmptType.getQualifiedName());
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("premium");
+        attribute.setDatatype("String");
 
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         formulaSignature = productCmptType.newProductCmptTypeMethod();
         formulaSignature.setFormulaSignatureDefinition(true);
         formulaSignature.setFormulaName("CalcPremium");
+        formulaSignature.newParameter("TestPolicy", "testPolicy");
 
         IProductCmpt productCmpt = newProductCmpt(productCmptType, "TestProduct");
         productCmptGen = productCmpt.getProductCmptGeneration(0);
-        configElement = productCmptGen.newFormula();
-        configElement.setFormulaSignature(formulaSignature.getFormulaName());
-        configElement.setExpression("expresion");
+        formula = productCmptGen.newFormula();
+        formula.setFormulaSignature(formulaSignature.getFormulaName());
+        formula.setExpression("expresion");
     }
 
     @Test
     public void testGetProposalsWithoutFunctions() {
-        proposalProvider = new ExpressionProposalProvider(configElement, parser);
+        proposalProvider = new ExpressionProposalProvider(formula, parser);
 
         List<IdentifierNode> list = new ArrayList<IdentifierNode>();
         AttributeNode attr1 = mock(AttributeNode.class);
@@ -92,37 +105,37 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         doReturn(list).when(parser).getProposals("TestPolicy");
 
         IContentProposal[] proposals = proposalProvider.getProposals("TestPolicy", 10);
+        assertEquals(3, proposals.length);
         assertEquals(attr1.getText(), proposals[0].getContent());
         assertEquals(attr2.getText(), proposals[1].getContent());
-        assertEquals(3, proposals.length);
     }
 
     @Test
     public void testGetProposalsWithFunctions() {
-        proposalProvider = new ExpressionProposalProvider(configElement, parser);
+        proposalProvider = new ExpressionProposalProvider(formula, parser);
         doReturn(Collections.EMPTY_LIST).when(parser).getProposals(FUNCTION_ABS);
 
         IContentProposal[] proposals = proposalProvider.getProposals(FUNCTION_ABS, 3);
-        assertEquals(FUNCTION_ABS.toUpperCase(), proposals[0].getContent());
         assertEquals(1, proposals.length);
+        assertEquals(FUNCTION_ABS.toUpperCase(), proposals[0].getContent());
     }
 
     @Test
     public void testGetProposals_considerPosition() {
-        proposalProvider = new ExpressionProposalProvider(configElement, parser);
+        proposalProvider = new ExpressionProposalProvider(formula, parser);
         doReturn(Collections.EMPTY_LIST).when(parser).getProposals(FUNCTION_ABS);
 
         IContentProposal[] proposals = proposalProvider.getProposals("AbsXYZ_ILLEGAL_INPUT", 6);
         assertEquals(0, proposals.length);
 
         proposals = proposalProvider.getProposals("AbsXYZ_ILLEGAL_INPUT", 3);
-        assertEquals(FUNCTION_ABS.toUpperCase(), proposals[0].getContent());
         assertEquals(1, proposals.length);
+        assertEquals(FUNCTION_ABS.toUpperCase(), proposals[0].getContent());
     }
 
     @Test
     public void testgetProposalCompletionForFunctions() throws Exception {
-        proposalProvider = new ExpressionProposalProvider(configElement, parser);
+        proposalProvider = new ExpressionProposalProvider(formula, parser);
         IContentProposal[] results = proposalProvider.getProposals("WE", 2);
         IContentProposal proposal = results[0];
         assertEquals("WENN(boolean; any; any) - any", proposal.getLabel());
@@ -143,6 +156,38 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         results = proposalProvider.getProposals("I", 1);
         proposal = results[0];
         assertEquals("IF(boolean; any; any) - any", proposal.getLabel());
+    }
+
+    @Test
+    public void testGetProposals_ignorePreviousFunctionsInInputString() throws Exception {
+        proposalProvider = new ExpressionProposalProvider(formula, new IdentifierParser(formula, ipsProject));
+
+        IContentProposal[] proposals = proposalProvider.getProposals("WENN(ABS(x+testPolicy.p)+)", 23);
+        assertProposals(proposals);
+    }
+
+    @Test
+    public void testGetProposals_ignoreFunctionsInMultilineString() throws Exception {
+        proposalProvider = new ExpressionProposalProvider(formula, new IdentifierParser(formula, ipsProject));
+
+        IContentProposal[] proposals = proposalProvider.getProposals("WENN(\r\n\tABS(\r\n\t\tx+testPolicy.p\r\t)+\n)",
+                30);
+        assertProposals(proposals);
+    }
+
+    @Test
+    public void testGetProposals_ignoreFollowingFunctionsInInputString() throws Exception {
+        proposalProvider = new ExpressionProposalProvider(formula, new IdentifierParser(formula, ipsProject));
+
+        IContentProposal[] proposals = proposalProvider.getProposals("WENN(testPolicy.p)+ABS(x)", 17);
+        assertProposals(proposals);
+    }
+
+    private void assertProposals(IContentProposal[] proposals) {
+        assertEquals(3, proposals.length);
+        assertEquals("premium", proposals[0].getContent());
+        assertEquals("premium@default", proposals[1].getContent());
+        assertEquals("part", proposals[2].getContent());
     }
 
 }
