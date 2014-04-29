@@ -59,9 +59,11 @@ public class AssociationParserTest extends AbstractParserTest {
 
         when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(association);
         when(association.getName()).thenReturn(MY_ASSOCIATION);
+        when(association.getTarget()).thenReturn("target");
         when(association.findTarget(getIpsProject())).thenReturn(targetType);
         when(policyCmptType.findAssociation(MY_SECOND_ASSOCIATION, getIpsProject())).thenReturn(association2);
         when(association2.getName()).thenReturn(MY_SECOND_ASSOCIATION);
+        when(association2.getTarget()).thenReturn("target");
         when(association2.findTarget(getIpsProject())).thenReturn(targetType);
 
         List<IAssociation> assocList = new ArrayList<IAssociation>();

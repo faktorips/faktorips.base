@@ -112,8 +112,8 @@ public class IdentifierParser {
             if (isParserSpecificSeperator(parserEntry.getValue())) {
                 IdentifierNode node = parserEntry.getKey().parse(matcher.getTextRegion());
                 if (node != null) {
-                    parsingContext.pushNode(node);
                     if (matcher.hasNextIdentifierPart()) {
+                        parsingContext.pushNode(node);
                         matcher.nextIdentifierPart();
                         node.setSuccessor(parseNextPart());
                     }

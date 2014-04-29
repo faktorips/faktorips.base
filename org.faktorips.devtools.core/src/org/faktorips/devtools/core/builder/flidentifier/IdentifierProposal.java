@@ -19,25 +19,16 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     private final String description;
 
-    private IdentifierNodeType nodeType;
+    private final String prefix;
 
-    // private Integer nodeType;
+    private final IdentifierNodeType nodeType;
 
-    public IdentifierProposal(String text, String description) {
-        this(text, text, description);
-        this.nodeType = IdentifierNodeType.INVALID_IDENTIFIER;
-    }
-
-    public IdentifierProposal(String text, String label, String description) {
+    public IdentifierProposal(String text, String label, String description, String prefix, IdentifierNodeType nodeType) {
         this.text = text;
         this.label = label;
         this.description = description;
-    }
-
-    public IdentifierProposal(String text, String description, IdentifierNodeType nodeType) {
-        this(text, text, description);
+        this.prefix = prefix;
         this.nodeType = nodeType;
-        // setNodeType(nodeType);
     }
 
     /**
@@ -81,4 +72,9 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
             return this.getNodeType().compareTo(o.getNodeType());
         }
     }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
 }

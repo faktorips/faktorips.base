@@ -34,7 +34,6 @@ public class Messages extends NLS {
     public static String IdentifierParser_msgErrorInvalidIdentifier;
 
     public static String QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt;
-    public static String QualifierAndIndexParser_errorMsg_qualifierMustFollowAssociation;
 
     public static String QualifierAndIndexParser_descriptionIndex;
     public static String QualifierAndIndexParser_descriptionQualifier;

@@ -195,18 +195,6 @@ public abstract class AbstractIdentifierNodeParser {
      */
     public abstract List<IdentifierProposal> getProposals(String prefix);
 
-    /**
-     * Check whether the given node is matching the specified prefix or not.
-     * 
-     * @param node The {@link IdentifierNode} that should be checked
-     * @param prefix The prefix that should match the identifier's text.
-     * 
-     * @return <code>true</code> if the prefix matches the text, otherwise <code>false</code>.
-     */
-    protected boolean isMatchingNode(IdentifierProposal node, String prefix) {
-        return StringUtils.startsWithIgnoreCase(node.getText(), prefix);
-    }
-
     protected String getNameAndDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
         return getNameAndDescription(getName(ipsElement, multiLanguageSupport),
                 getDescription(ipsElement, multiLanguageSupport));

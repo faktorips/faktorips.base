@@ -110,21 +110,23 @@ public class AttributeParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierProposal> getProposals(String prefix) {
-        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
         List<IAttribute> attributes = findAttributes();
         for (IAttribute attribute : attributes) {
-            collector.addMatchingNode(getAttributeProposal(attribute, false), prefix);
-            collector.addMatchingNode(getAttributeProposal(attribute, true), prefix);
+            addProposal(attribute, false, prefix, collector);
+            addProposal(attribute, true, prefix, collector);
         }
-        return collector.getNodes();
+        return collector.getProposals();
     }
 
-    private IdentifierProposal getAttributeProposal(IAttribute attribute, boolean defaultAccess) {
+    private void addProposal(IAttribute attribute,
+            boolean defaultAccess,
+            String prefix,
+            IdentifierProposalCollector collector) {
         if (isProposalAllowed(attribute, defaultAccess)) {
-            return new IdentifierProposal(getText(attribute, defaultAccess), getDescription(attribute, defaultAccess),
-                    IdentifierNodeType.ATTRIBUTE);
+            collector.addMatchingNode(getText(attribute, defaultAccess), getDescription(attribute, defaultAccess),
+                    prefix, IdentifierNodeType.ATTRIBUTE);
         }
-        return null;
     }
 
     private boolean isProposalAllowed(IAttribute attribute, boolean defaultAccess) {

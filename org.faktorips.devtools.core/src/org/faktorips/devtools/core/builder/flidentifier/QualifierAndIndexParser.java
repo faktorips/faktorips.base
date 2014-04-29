@@ -59,7 +59,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     @Override
     protected IdentifierNode parseInternal() {
         if (!isValidPreviousNode()) {
-            return invalidAssociationNode();
+            return null;
         }
         if ((isIndex()) && !isListOfTypeContext()) {
             return invalidIndexNode();
@@ -81,15 +81,6 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
             return true;
         }
         return false;
-    }
-
-    private IdentifierNode invalidAssociationNode() {
-        return nodeFactory()
-                .createInvalidIdentifier(
-                        Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                                Messages.QualifierAndIndexParser_errorMsg_qualifierMustFollowAssociation,
-                                getIdentifierPart())));
-
     }
 
     private IdentifierNode invalidIndexNode() {
@@ -180,46 +171,46 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     @Override
     public List<IdentifierProposal> getProposals(String prefix) {
-        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
-        if (getPreviousNode() instanceof AssociationNode) {
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
+        if (getPreviousNode() instanceof AssociationNode || getPreviousNode() instanceof QualifierNode) {
             addIndexProposal(prefix, collector);
+        }
+        if (getPreviousNode() instanceof AssociationNode) {
             addQualifierProposal(prefix, collector);
         }
-        return collector.getNodes();
+        return collector.getProposals();
     }
 
-    private void addIndexProposal(String prefix, IdentifierNodeCollector collector) {
-        collector.addMatchingNode(getIndexProposal(), prefix);
+    private void addIndexProposal(String prefix, IdentifierProposalCollector collector) {
+        String text = getIndexText(0);
+        collector
+                .addMatchingNode(text, QUALIFIER_START + text, getIndexDescription(), prefix, IdentifierNodeType.INDEX);
     }
 
-    private void addQualifierProposal(String prefix, IdentifierNodeCollector collector) {
+    private void addQualifierProposal(String prefix, IdentifierProposalCollector collector) {
         List<IProductCmpt> contextProductCmpts = new ContextProductCmptFinder(getParsingContext().getNodes(),
                 getExpression(), getIpsProject()).getContextProductCmpts();
         for (IProductCmpt productCmpt : contextProductCmpts) {
-            collector.addMatchingNode(getQualifierProposal(productCmpt), prefix);
+            addQualifierProposal(productCmpt, prefix, collector);
         }
     }
 
-    private IdentifierProposal getIndexProposal() {
-        return new IdentifierProposal(getIndexText(0), getIndexDescription(), IdentifierNodeType.INDEX);
-    }
-
     public String getIndexText(int index) {
-        return QualifierAndIndexParser.QUALIFIER_START + index + QualifierAndIndexParser.QUALIFIER_END;
+        return index + QUALIFIER_END;
     }
 
     public String getIndexDescription() {
         return Messages.QualifierAndIndexParser_descriptionIndex;
     }
 
-    private IdentifierProposal getQualifierProposal(IProductCmpt productCmpt) {
-        return new IdentifierProposal(getQualifierText(productCmpt), getQualifierDescription(productCmpt),
+    private void addQualifierProposal(IProductCmpt productCmpt, String prefix, IdentifierProposalCollector collector) {
+        String text = getQualifierText(productCmpt);
+        collector.addMatchingNode(text, QUALIFIER_START + text, getQualifierDescription(productCmpt), prefix,
                 IdentifierNodeType.QUALIFIER);
     }
 
     public String getQualifierText(IProductCmpt productCmpt) {
-        return QualifierAndIndexParser.QUALIFIER_START + '"' + productCmpt.getName() + '"'
-                + QualifierAndIndexParser.QUALIFIER_END;
+        return '"' + productCmpt.getName() + '"' + QUALIFIER_END;
     }
 
     public String getQualifierDescription(IProductCmpt productCmpt) {

@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FlFunction;
+import org.faktorips.fl.parser.FlParserConstants;
 import org.faktorips.fl.parser.FlParserTokenManager;
 import org.faktorips.fl.parser.JavaCharStream;
 import org.faktorips.fl.parser.Token;
@@ -63,48 +65,55 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private String getConsideredInput(String contents, int cursorPosition) {
         String leftOfCursor = getContentLeftOfCursor(contents, cursorPosition);
-        Token token = getLastToken(leftOfCursor);
-        return getTokenTextOrEverything(leftOfCursor, token);
+        return getLastIdentifier(leftOfCursor);
     }
 
     private String getContentLeftOfCursor(String contents, int cursorPosition) {
         return contents.substring(0, cursorPosition);
     }
 
-    private Token getLastToken(String leftOfCursor) {
+    private String getLastIdentifier(String leftOfCursor) {
         JavaCharStream stream = new JavaCharStream(new StringReader(leftOfCursor));
         FlParserTokenManager tokenManager = new FlParserTokenManager(stream);
-        return getLastValidToken(leftOfCursor, tokenManager);
+        Token token = null;
+        while (token == null || token.kind != FlParserConstants.EOF) {
+            // CSOFF: IllegalCatch
+            // The token manager may throw any throwable like LexialError or other exceptions :(
+            try {
+                token = tokenManager.getNextToken();
+                if (isLastToken(token, leftOfCursor)) {
+                    if (token.kind == FlParserConstants.IDENTIFIER) {
+                        return token.image;
+                    } else {
+                        return StringUtils.EMPTY;
+                    }
+                }
+            } catch (Throwable t) {
+                return getLastValidPart(token, leftOfCursor);
+            }
+            // CSON: IllegalCatch
+        }
+        return leftOfCursor;
     }
 
-    private Token getLastValidToken(String leftOfCursor, FlParserTokenManager tokenManager) {
-        Token currentToken = null;
-        Token previousToken = null;
-        do {
-            previousToken = currentToken;
-            currentToken = tokenManager.getNextToken();
-        } while (isValidToken(leftOfCursor, currentToken));
-        return previousToken;
-    }
-
-    private boolean isValidToken(String leftOfCursor, Token token) {
-        return token.beginColumn < leftOfCursor.length() - 1;
-    }
-
-    private String getTokenTextOrEverything(String leftOfCursor, Token token) {
+    private String getLastValidPart(Token token, String leftOfCursor) {
         if (token != null) {
-            return token.image;
+            return leftOfCursor.substring(token.getStartPosition(leftOfCursor));
         } else {
             return leftOfCursor;
         }
+    }
+
+    private boolean isLastToken(Token token, String leftOfCursor) {
+        return token != null && token.getEndPosition(leftOfCursor) >= leftOfCursor.length() - 1;
     }
 
     private void addIdentifierNodes(String contents, List<IContentProposal> result) {
         List<IdentifierProposal> proposals = identifierParser.getProposals(contents);
         Collections.sort(proposals);
         for (IdentifierProposal identifierProposal : proposals) {
-            result.add(new ContentProposal(identifierProposal.getText(), identifierProposal.getText(),
-                    identifierProposal.getDescription()));
+            result.add(new ContentProposal(identifierProposal.getText(), identifierProposal.getLabel(),
+                    identifierProposal.getDescription(), identifierProposal.getPrefix()));
         }
     }
 

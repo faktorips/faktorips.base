@@ -83,17 +83,13 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     private List<IdentifierProposal> getProposalsFor(String prefix) {
-        IdentifierNodeCollector nodeCollector = new IdentifierNodeCollector(this);
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
         List<IAssociation> allAssociations = getAllAssociations();
         for (IAssociation association : allAssociations) {
-            nodeCollector.addMatchingNode(createProposalFor(association), prefix);
+            collector.addMatchingNode(getText(association), getDescription(association), prefix,
+                    IdentifierNodeType.ASSOCIATION);
         }
-        return nodeCollector.getNodes();
-    }
-
-    private IdentifierProposal createProposalFor(IAssociation association) {
-        return new IdentifierProposal(getText(association), getDescription(association, getParsingContext()
-                .getMultiLanguageSupport()), IdentifierNodeType.ASSOCIATION);
+        return collector.getProposals();
     }
 
     private List<IAssociation> getAllAssociations() {

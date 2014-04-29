@@ -12,8 +12,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -107,12 +105,7 @@ public class IdentifierVisitor implements FlParserVisitor {
      * @return the position of the start of the identifier within the expression text
      */
     int getIdentifierOffset(SimpleNode node) {
-        Matcher matcher = Pattern.compile("(\\r\\n)|\\r|\\n").matcher(expressionText); //$NON-NLS-1$
-        boolean found = false;
-        for (int i = 1; i < node.getLastToken().beginLine; i++) {
-            found = matcher.find();
-        }
-        return (found ? matcher.end() : 0) + node.getLastToken().beginColumn - 1;
+        return node.getLastToken().getStartPosition(expressionText);
     }
 
     // -----------------------------------------------------------------------------------------

@@ -52,16 +52,15 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
 
     @Override
     public List<IdentifierProposal> getProposals(String prefix) {
-        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
         if (isContextTypeFormulaType()) {
             IParameter[] parameters = getParameters();
             for (IParameter parameter : parameters) {
-                IdentifierProposal proposal = new IdentifierProposal(parameter.getName(), getDescription(parameter),
+                collector.addMatchingNode(parameter.getName(), getDescription(parameter), prefix,
                         IdentifierNodeType.PARAMETER);
-                collector.addMatchingNode(proposal, prefix);
             }
         }
-        return collector.getNodes();
+        return collector.getProposals();
     }
 
     String getDescription(IParameter parameter) {

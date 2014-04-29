@@ -20,7 +20,7 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -39,7 +39,7 @@ public class ParameterCollectorTest {
     private ContextProductCmptFinder finder;
 
     @Mock
-    private IdentifierNode node;
+    private ParameterNode node;
 
     @InjectMocks
     private ParameterCollector parameterCollector;
