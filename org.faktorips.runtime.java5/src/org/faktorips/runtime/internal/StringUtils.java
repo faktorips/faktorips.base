@@ -11,24 +11,27 @@
 package org.faktorips.runtime.internal;
 
 /**
- * This class is deprecated due to import collisions with the StringUtils.class of the
- * apache.common.lang package. Use {@link IpsStringUtils} instead. It provides the same
- * functionality.
+ * A collection of utility methods for Strings. We don't use a class library like apache-commons
+ * here to minimize the dependencies for the generated code.
+ * 
+ * @deprecated This class is deprecated due to import collisions with the StringUtils.class of the
+ *             apache.common.lang package. Use {@link IpsStringUtils} instead. It provides the same
+ *             functionality.
  */
 @Deprecated
 public class StringUtils {
 
     /**
-     * This method is deprecated due to import collisions with the StringUtils.class of the
-     * apache.common.lang package. Use the <code>EMPTY</code> constant of {@link IpsStringUtils}
-     * instead. It provides the same content.
+     * @deprecated This method is deprecated due to import collisions with the StringUtils.class of
+     *             the apache.common.lang package. Use the <code>EMPTY</code> constant of
+     *             {@link IpsStringUtils} instead. It provides the same content.
      */
     @Deprecated
     public static final String EMPTY = "";
 
     /**
-     * This class is deprecated due to import collisions with the StringUtils.class of the
-     * apache.common.lang package. Use {@link IpsStringUtils} instead.
+     * @deprecated This class is deprecated due to import collisions with the StringUtils.class of
+     *             the apache.common.lang package. Use {@link IpsStringUtils} instead.
      */
     @Deprecated
     private StringUtils() {
@@ -36,9 +39,9 @@ public class StringUtils {
     }
 
     /**
-     * This method is deprecated due to import collisions with the StringUtils.class of the
-     * apache.common.lang package. Use the <code>isEmpty(String s)</code> method of
-     * {@link IpsStringUtils} instead. It has the same functionality.
+     * @deprecated This method is deprecated due to import collisions with the StringUtils.class of
+     *             the apache.common.lang package. Use the <code>isEmpty(String s)</code> method of
+     *             {@link IpsStringUtils} instead. It has the same functionality.
      */
     @Deprecated
     public static final boolean isEmpty(String s) {
@@ -46,9 +49,9 @@ public class StringUtils {
     }
 
     /**
-     * This method is deprecated due to import collisions with the StringUtils.class of the
-     * apache.common.lang package. Use the <code>isBlank(String s)</code> method of
-     * {@link IpsStringUtils} instead. It has the same functionality.
+     * @deprecated This method is deprecated due to import collisions with the StringUtils.class of
+     *             the apache.common.lang package. Use the <code>isBlank(String s)</code> method of
+     *             {@link IpsStringUtils} instead. It has the same functionality.
      */
     @Deprecated
     public static final boolean isBlank(String s) {
