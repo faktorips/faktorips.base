@@ -181,7 +181,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     @Override
     public List<IdentifierNode> getProposals(String prefix) {
         List<IdentifierNode> result = new ArrayList<IdentifierNode>();
-        if (!isSeperatedByDot() && getPreviousNode() instanceof AssociationNode) {
+        if (getPreviousNode() instanceof AssociationNode) {
             List<IProductCmpt> contextProductCmpts = new ContextProductCmptFinder(getParsingContext().getNodes(),
                     getExpression(), getIpsProject()).getContextProductCmpts();
             result.add(nodeFactory().createIndexBasedAssociationNode(0, getContextType()));

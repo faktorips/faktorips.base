@@ -201,8 +201,4 @@ public abstract class AbstractIdentifierNodeParser {
         return StringUtils.startsWithIgnoreCase(node.getText(), prefix);
     }
 
-    protected boolean isSeperatedByDot() {
-        return getTextRegion().isRelativeChar(-1, '.');
-    }
-
 }

@@ -218,8 +218,8 @@ public class AttributeNodeGeneratorTest {
     }
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
-        return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, attribute.getName()
-                .length()), ipsProject).createAttributeNode(attribute, defaultAccess, listOfType);
+        return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, 0), ipsProject)
+                .createAttributeNode(attribute, defaultAccess, listOfType);
     }
 
     @Test

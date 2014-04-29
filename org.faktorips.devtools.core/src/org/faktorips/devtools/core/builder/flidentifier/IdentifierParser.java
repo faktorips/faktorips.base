@@ -11,7 +11,10 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,11 +39,19 @@ import org.faktorips.util.message.Message;
  */
 public class IdentifierParser {
 
+    private static final char DEFAULT_SEPERATOR = '.';
+
+    private static final char QUALIFIER_SEPERATOR = '[';
+
     private final IdentifierFilter identifierFilter;
 
     private final ParsingContext parsingContext;
 
-    private ArrayList<AbstractIdentifierNodeParser> parsers;
+    /**
+     * Maps the identifier node parsers to the character that separates the identifier part
+     * concerning this parser from the previous parts.
+     */
+    private final Map<AbstractIdentifierNodeParser, Character> parsers = new LinkedHashMap<AbstractIdentifierNodeParser, Character>();
 
     private IdentifierMatcher matcher;
 
@@ -69,12 +80,11 @@ public class IdentifierParser {
     }
 
     private void initParsers() {
-        parsers = new ArrayList<AbstractIdentifierNodeParser>();
-        parsers.add(new ParameterParser(parsingContext));
-        parsers.add(new AttributeParser(parsingContext, identifierFilter));
-        parsers.add(new AssociationParser(parsingContext));
-        parsers.add(new QualifierAndIndexParser(parsingContext));
-        parsers.add(new EnumParser(parsingContext));
+        parsers.put(new ParameterParser(parsingContext), DEFAULT_SEPERATOR);
+        parsers.put(new AttributeParser(parsingContext, identifierFilter), DEFAULT_SEPERATOR);
+        parsers.put(new AssociationParser(parsingContext), DEFAULT_SEPERATOR);
+        parsers.put(new QualifierAndIndexParser(parsingContext), QUALIFIER_SEPERATOR);
+        parsers.put(new EnumParser(parsingContext), DEFAULT_SEPERATOR);
     }
 
     /**
@@ -98,15 +108,17 @@ public class IdentifierParser {
     }
 
     private IdentifierNode parseNextPart() {
-        for (AbstractIdentifierNodeParser parser : parsers) {
-            IdentifierNode node = parser.parse(matcher.getTextRegion());
-            if (node != null) {
-                parsingContext.pushNode(node);
-                if (matcher.hasNextIdentifierPart()) {
-                    matcher.nextIdentifierPart();
-                    node.setSuccessor(parseNextPart());
+        for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
+            if (isParserSpecificSeperator(parserEntry.getValue())) {
+                IdentifierNode node = parserEntry.getKey().parse(matcher.getTextRegion());
+                if (node != null) {
+                    parsingContext.pushNode(node);
+                    if (matcher.hasNextIdentifierPart()) {
+                        matcher.nextIdentifierPart();
+                        node.setSuccessor(parseNextPart());
+                    }
+                    return node;
                 }
-                return node;
             }
         }
         return new IdentifierNodeFactory(matcher.getTextRegion(), parsingContext.getIpsProject())
@@ -114,28 +126,20 @@ public class IdentifierParser {
                         NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, matcher.getIdentifierPart())));
     }
 
-    public List<IdentifierNode> getProposals(String existingContent) {
-        initNewParse(existingContent);
-        parseCompletedParts();
-        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
-        for (AbstractIdentifierNodeParser parser : parsers) {
-            result.addAll(parser.getProposals(matcher.getIdentifierPart()));
-        }
-        return result;
+    private boolean isParserSpecificSeperator(char seperator) {
+        TextRegion textRegion = matcher.getTextRegion();
+        return textRegion.getStart() == 0 || textRegion.isRelativeChar(-1, seperator);
     }
 
-    private void parseCompletedParts() {
-        for (AbstractIdentifierNodeParser parser : parsers) {
-            IdentifierNode node = parser.parse(matcher.getTextRegion());
-            if (node != null) {
-                parsingContext.pushNode(node);
-                if (matcher.hasNextIdentifierPart()) {
-                    matcher.nextIdentifierPart();
-                    parseCompletedParts();
-                    return;
-                }
+    public List<IdentifierNode> getProposals(String existingContent) {
+        parse(existingContent);
+        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
+            if (isParserSpecificSeperator(parserEntry.getValue())) {
+                result.addAll(parserEntry.getKey().getProposals(matcher.getIdentifierPart()));
             }
         }
+        return result;
     }
 
     private void initNewParse(String identifier) {
@@ -145,7 +149,7 @@ public class IdentifierParser {
 
     protected static class IdentifierMatcher {
 
-        private static final String IDENTIFIER_SEPERATOR_REGEX = "[\\.\\[]"; //$NON-NLS-1$
+        private static final String IDENTIFIER_SEPERATOR_REGEX = "[\\" + DEFAULT_SEPERATOR + "\\" + QUALIFIER_SEPERATOR + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
         private static final Pattern IDENTIFIER_SEPERATOR_PATTERN = Pattern.compile(IDENTIFIER_SEPERATOR_REGEX);
 
