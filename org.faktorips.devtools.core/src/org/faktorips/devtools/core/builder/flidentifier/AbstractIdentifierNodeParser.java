@@ -15,9 +15,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.util.TextRegion;
@@ -29,6 +33,8 @@ import org.faktorips.devtools.core.util.TextRegion;
  * @author dirmeier
  */
 public abstract class AbstractIdentifierNodeParser {
+
+    public static final String NAME_DESCRIPTION_SEPERATOR = " - "; //$NON-NLS-1$
 
     private final ParsingContext parsingContext;
 
@@ -187,7 +193,7 @@ public abstract class AbstractIdentifierNodeParser {
      * @return A list of {@link IdentifierNode nodes} that are possible given the current parser
      *         state and the current input (prefix).
      */
-    public abstract List<IdentifierNode> getProposals(String prefix);
+    public abstract List<IdentifierProposal> getProposals(String prefix);
 
     /**
      * Check whether the given node is matching the specified prefix or not.
@@ -197,8 +203,38 @@ public abstract class AbstractIdentifierNodeParser {
      * 
      * @return <code>true</code> if the prefix matches the text, otherwise <code>false</code>.
      */
-    protected boolean isMatchingNode(IdentifierNode node, String prefix) {
+    protected boolean isMatchingNode(IdentifierProposal node, String prefix) {
         return StringUtils.startsWithIgnoreCase(node.getText(), prefix);
+    }
+
+    protected String getNameAndDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        return getNameAndDescription(getName(ipsElement, multiLanguageSupport),
+                getDescription(ipsElement, multiLanguageSupport));
+    }
+
+    protected String getNameAndDescription(String name, String description) {
+        StringBuffer result = new StringBuffer();
+        result.append(name);
+        if (StringUtils.isNotBlank(description)) {
+            result.append(NAME_DESCRIPTION_SEPERATOR).append(description);
+        }
+        return result.toString();
+    }
+
+    protected String getName(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        if (ipsElement instanceof ILabeledElement) {
+            return multiLanguageSupport.getLocalizedLabel((ILabeledElement)ipsElement);
+        } else {
+            return ipsElement.getName();
+        }
+    }
+
+    protected String getDescription(IIpsElement ipsElement, MultiLanguageSupport multiLanguageSupport) {
+        if (ipsElement instanceof IDescribedElement) {
+            return multiLanguageSupport.getLocalizedDescription((IDescribedElement)ipsElement);
+        } else {
+            return null;
+        }
     }
 
 }

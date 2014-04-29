@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -179,18 +178,50 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     @Override
-    public List<IdentifierNode> getProposals(String prefix) {
-        List<IdentifierNode> result = new ArrayList<IdentifierNode>();
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
         if (getPreviousNode() instanceof AssociationNode) {
-            List<IProductCmpt> contextProductCmpts = new ContextProductCmptFinder(getParsingContext().getNodes(),
-                    getExpression(), getIpsProject()).getContextProductCmpts();
-            result.add(nodeFactory().createIndexBasedAssociationNode(0, getContextType()));
-            for (IProductCmpt productCmpt : contextProductCmpts) {
-                IdentifierNode qualifierNode = nodeFactory().createQualifierNode(productCmpt, productCmpt.getName(),
-                        isListOfType());
-                result.add(qualifierNode);
-            }
+            addIndexProposal(prefix, collector);
+            addQualifierProposal(prefix, collector);
         }
-        return result;
+        return collector.getNodes();
     }
+
+    private void addIndexProposal(String prefix, IdentifierNodeCollector collector) {
+        collector.addMatchingNode(getIndexProposal(), prefix);
+    }
+
+    private void addQualifierProposal(String prefix, IdentifierNodeCollector collector) {
+        List<IProductCmpt> contextProductCmpts = new ContextProductCmptFinder(getParsingContext().getNodes(),
+                getExpression(), getIpsProject()).getContextProductCmpts();
+        for (IProductCmpt productCmpt : contextProductCmpts) {
+            collector.addMatchingNode(getQualifierProposal(productCmpt), prefix);
+        }
+    }
+
+    private IdentifierProposal getIndexProposal() {
+        return new IdentifierProposal(getIndexText(0), getIndexDescription());
+    }
+
+    public String getIndexText(int index) {
+        return QualifierAndIndexParser.QUALIFIER_START + index + QualifierAndIndexParser.QUALIFIER_END;
+    }
+
+    public String getIndexDescription() {
+        return Messages.QualifierAndIndexParser_descriptionIndex;
+    }
+
+    private IdentifierProposal getQualifierProposal(IProductCmpt productCmpt) {
+        return new IdentifierProposal(getQualifierText(productCmpt), getQualifierDescription(productCmpt));
+    }
+
+    public String getQualifierText(IProductCmpt productCmpt) {
+        return QualifierAndIndexParser.QUALIFIER_START + '"' + productCmpt.getName() + '"'
+                + QualifierAndIndexParser.QUALIFIER_END;
+    }
+
+    public String getQualifierDescription(IProductCmpt productCmpt) {
+        return NLS.bind(Messages.QualifierAndIndexParser_descriptionQualifier, productCmpt.getName());
+    }
+
 }

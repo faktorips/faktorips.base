@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -53,37 +54,6 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     @Override
-    public List<IdentifierNode> getProposals(String prefix) {
-        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
-        List<IAttribute> attributes = findAttributes();
-        for (IAttribute attribute : attributes) {
-            addIfNotNull(getAttributeProposal(attribute, false, prefix), result);
-            addIfNotNull(getAttributeProposal(attribute, true, prefix), result);
-        }
-        return result;
-    }
-
-    private IdentifierNode getAttributeProposal(IAttribute attribute, boolean defaultAccess, String prefix) {
-        if (isProposalAllowed(attribute, defaultAccess)) {
-            IdentifierNode node = nodeFactory().createAttributeNode(attribute, defaultAccess, isListOfTypeContext());
-            if (isMatchingNode(node, prefix)) {
-                return node;
-            }
-        }
-        return null;
-    }
-
-    private boolean isProposalAllowed(IAttribute attribute, boolean defaultAccess) {
-        return (attribute instanceof IPolicyCmptTypeAttribute || !defaultAccess) && isAllowd(attribute, defaultAccess);
-    }
-
-    private void addIfNotNull(IdentifierNode node, List<IdentifierNode> result) {
-        if (node != null) {
-            result.add(node);
-        }
-    }
-
-    @Override
     public IdentifierNode parseInternal() {
         try {
             return parseToNode();
@@ -102,6 +72,18 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return createNode(defaultValueAccess, attributeName, attributes);
     }
 
+    private boolean isDefaultValueAccess(String attributeName) {
+        return getContextType() instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
+    }
+
+    private String getAttributeName(String identifier, boolean defaultValueAccess) {
+        if (defaultValueAccess) {
+            return identifier.substring(0, identifier.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR));
+        } else {
+            return identifier;
+        }
+    }
+
     private IdentifierNode createNode(boolean defaultValueAccess, String attributeName, List<IAttribute> attributes) {
         for (IAttribute anAttribute : attributes) {
             if (attributeName.equals(anAttribute.getName())) {
@@ -115,18 +97,6 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return null;
     }
 
-    private boolean isDefaultValueAccess(String attributeName) {
-        return getContextType() instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
-    }
-
-    private String getAttributeName(String identifier, boolean defaultValueAccess) {
-        if (defaultValueAccess) {
-            return identifier.substring(0, identifier.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR));
-        } else {
-            return identifier;
-        }
-    }
-
     protected List<IAttribute> findAttributes() {
         if (isContextTypeFormulaType()) {
             return getExpression().findMatchingProductCmptTypeAttributes();
@@ -135,6 +105,28 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         } else {
             return Collections.emptyList();
         }
+    }
+
+    @Override
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
+        List<IAttribute> attributes = findAttributes();
+        for (IAttribute attribute : attributes) {
+            collector.addMatchingNode(getAttributeProposal(attribute, false), prefix);
+            collector.addMatchingNode(getAttributeProposal(attribute, true), prefix);
+        }
+        return collector.getNodes();
+    }
+
+    private IdentifierProposal getAttributeProposal(IAttribute attribute, boolean defaultAccess) {
+        if (isProposalAllowed(attribute, defaultAccess)) {
+            return new IdentifierProposal(getText(attribute, defaultAccess), getDescription(attribute, defaultAccess));
+        }
+        return null;
+    }
+
+    private boolean isProposalAllowed(IAttribute attribute, boolean defaultAccess) {
+        return (attribute instanceof IPolicyCmptTypeAttribute || !defaultAccess) && isAllowd(attribute, defaultAccess);
     }
 
     private List<IAttribute> getPolicyAndProductAttributesFromIType() {
@@ -180,6 +172,23 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return nodeFactory().createInvalidIdentifier(
                 Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
                         Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
+    }
+
+    public String getText(IAttribute attribute, boolean defaultValueAccess) {
+        if (defaultValueAccess) {
+            return attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX;
+        } else {
+            return attribute.getName();
+        }
+    }
+
+    public String getDescription(IAttribute attribute, boolean defaultValueAccess) {
+        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        String name = getName(attribute, multiLanguageSupport);
+        if (defaultValueAccess) {
+            name = NLS.bind(Messages.AttributeParser_defaultOfName, name);
+        }
+        return getNameAndDescription(name, getDescription(attribute, multiLanguageSupport));
     }
 
 }

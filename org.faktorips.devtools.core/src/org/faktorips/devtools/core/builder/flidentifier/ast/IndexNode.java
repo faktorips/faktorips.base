@@ -11,8 +11,6 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.builder.flidentifier.QualifierAndIndexParser;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
 
@@ -34,16 +32,6 @@ public class IndexNode extends IdentifierNode {
 
     public int getIndex() {
         return index;
-    }
-
-    @Override
-    public String getText() {
-        return QualifierAndIndexParser.QUALIFIER_START + index + QualifierAndIndexParser.QUALIFIER_END;
-    }
-
-    @Override
-    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-        return Messages.IndexNode_descriptionIndex;
     }
 
 }

@@ -10,12 +10,9 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.AbstractDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.util.TextRegion;
 
 /**
@@ -49,21 +46,6 @@ public class EnumClassNode extends IdentifierNode {
     @Override
     public EnumValueNode getSuccessor() {
         return (EnumValueNode)super.getSuccessor();
-    }
-
-    @Override
-    public String getText() {
-        EnumDatatype enumDatatype = getDatatype().getEnumDatatype();
-        return enumDatatype.getName();
-    }
-
-    @Override
-    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-        if (getDatatype().getEnumDatatype() instanceof EnumTypeDatatypeAdapter) {
-            EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)getDatatype().getEnumDatatype();
-            return getNameAndDescription(enumTypeDatatypeAdapter.getEnumType(), multiLanguageSupport);
-        }
-        return NLS.bind(Messages.EnumClassNode_description, getText());
     }
 
     public static class EnumClass extends AbstractDatatype {

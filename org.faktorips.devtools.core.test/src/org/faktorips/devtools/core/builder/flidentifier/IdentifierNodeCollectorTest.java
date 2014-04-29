@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +25,9 @@ public class IdentifierNodeCollectorTest {
     @Mock
     private AbstractIdentifierNodeParser parser;
     @Mock
-    private IdentifierNode node1;
+    private IdentifierProposal node1;
     @Mock
-    private IdentifierNode node2;
+    private IdentifierProposal node2;
     private IdentifierNodeCollector collector;
 
     @Before

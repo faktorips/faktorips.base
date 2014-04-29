@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
@@ -42,6 +43,10 @@ public class ParameterParserTest extends AbstractParserTest {
 
     static final String MY_PARAMETER = "anyParameter";
 
+    private static final String MY_LABEL = "myLabel";
+
+    private static final String MY_DESCRIPTION = "myDescription";
+
     @Mock
     private IFormulaMethod formulaSignature;
 
@@ -49,6 +54,9 @@ public class ParameterParserTest extends AbstractParserTest {
     private IParameter parameter;
 
     private ParameterParser parameterParser;
+
+    @Mock
+    private IType type;
 
     @Before
     public void createParameterParser() throws Exception {
@@ -111,17 +119,17 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testGetProposals_noPrefix() throws Exception {
         parameterParser.parse(new TextRegion("any", 0, 0));
 
-        List<IdentifierNode> proposals = parameterParser.getProposals(StringUtils.EMPTY);
+        List<IdentifierProposal> proposals = parameterParser.getProposals(StringUtils.EMPTY);
 
         assertEquals(1, proposals.size());
-        assertEquals(parameter, ((ParameterNode)proposals.get(0)).getParameter());
+        assertEquals(parameter.getName(), proposals.get(0).getText());
     }
 
     @Test
     public void testGetProposals_invalidPrefix() throws Exception {
         parameterParser.parse(new TextRegion("any", 0, 0));
 
-        List<IdentifierNode> proposals = parameterParser.getProposals("gfassddf");
+        List<IdentifierProposal> proposals = parameterParser.getProposals("gfassddf");
 
         assertTrue(proposals.isEmpty());
     }
@@ -130,10 +138,10 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testGetProposals_withPrefix() throws Exception {
         parameterParser.parse(new TextRegion("any", 0, 0));
 
-        List<IdentifierNode> proposals = parameterParser.getProposals("any");
+        List<IdentifierProposal> proposals = parameterParser.getProposals("any");
 
         assertEquals(1, proposals.size());
-        assertEquals(parameter, ((ParameterNode)proposals.get(0)).getParameter());
+        assertEquals(parameter.getName(), (proposals.get(0)).getText());
     }
 
     @Test
@@ -149,11 +157,22 @@ public class ParameterParserTest extends AbstractParserTest {
 
         parameterParser.parse(new TextRegion("any", 0, 0));
 
-        List<IdentifierNode> proposals = parameterParser.getProposals("any");
+        List<IdentifierProposal> proposals = parameterParser.getProposals("any");
 
         assertEquals(2, proposals.size());
-        assertEquals(parameter, ((ParameterNode)proposals.get(0)).getParameter());
-        assertEquals(param3, ((ParameterNode)proposals.get(1)).getParameter());
+        assertEquals(parameter.getName(), proposals.get(0).getText());
+        assertEquals(param3.getName(), proposals.get(1).getText());
+    }
+
+    @Test
+    public void testGetDescription_forTypes() throws Exception {
+        when(parameter.findDatatype(getIpsProject())).thenReturn(type);
+        when(getMultiLanguageSupport().getLocalizedLabel(type)).thenReturn(MY_LABEL);
+        when(getMultiLanguageSupport().getLocalizedDescription(type)).thenReturn(MY_DESCRIPTION);
+
+        String description = parameterParser.getDescription(parameter);
+
+        assertEquals(MY_LABEL + " - " + MY_DESCRIPTION, description);
     }
 
 }

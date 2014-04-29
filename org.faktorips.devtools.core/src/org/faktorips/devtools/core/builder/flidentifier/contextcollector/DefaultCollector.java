@@ -14,6 +14,11 @@ import java.util.Set;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
+/**
+ * The {@link DefaultCollector} is instantiated for every node that has no explicit collector. While
+ * there is a node it simply returns the context of the previous node. If there is no node it
+ * returns <code>null</code>.
+ */
 class DefaultCollector extends AbstractProductCmptCollector {
 
     protected DefaultCollector(IdentifierNode node, ContextProductCmptFinder finder) {

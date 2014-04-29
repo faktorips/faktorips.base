@@ -15,15 +15,22 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
+/**
+ * The {@link ParameterCollector} checks the assumption whether the given parameter is a policy
+ * component that may be configured by the current product component. If the assumption matches it
+ * returns the product component of the formula. If not it returns null to indicate that the
+ * assumption does not match.
+ * 
+ */
 public class ParameterCollector extends AbstractProductCmptCollector {
 
-    protected ParameterCollector(IdentifierNode node, ContextProductCmptFinder finder) {
+    protected ParameterCollector(ParameterNode node, ContextProductCmptFinder finder) {
         super(node, finder);
     }
 

@@ -17,11 +17,11 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumValueNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -37,11 +37,15 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class EnumParserTest extends AbstractParserTest {
 
+    private static final String MY_LABEL = "myLabel";
+
     private static final String MY_ENUM_CLASS = "myEnumClass";
     private static final String ANY_ENUM_CLASS = "anyEnumClass";
 
     private static final String MY_ENUM_VALUE = "myEnumValue";
     private static final String ANY_ENUM_VALUE = "anyEnumValue";
+
+    private static final Object NAME = "myEnumName";
 
     @Mock
     private EnumDatatype enumDatatype;
@@ -111,7 +115,7 @@ public class EnumParserTest extends AbstractParserTest {
         doReturn(enumtype).when(enumDatatypeAdapter).getEnumType();
         doReturn("myEnum").when(enumtype).getName();
 
-        List<IdentifierNode> proposals = enumParser.getProposals("my");
+        List<IdentifierProposal> proposals = enumParser.getProposals("my");
 
         assertEquals(1, proposals.size());
 
@@ -122,10 +126,33 @@ public class EnumParserTest extends AbstractParserTest {
         doReturn(new String[] { "notMyEnumValue", "myEnumValue" }).when(enumDatatype).getAllValueIds(false);
         doReturn(new String[] {}).when(enumDatatypeAdapter).getAllValueIds(false);
         enumParser.setContextType(enumClass);
+        when(enumClass.getEnumDatatype()).thenReturn(enumDatatype);
 
-        List<IdentifierNode> proposals = enumParser.getProposals("my");
+        List<IdentifierProposal> proposals = enumParser.getProposals("my");
 
         assertEquals("myEnumValue", proposals.get(0).getText());
         assertEquals(1, proposals.size());
     }
+
+    @Test
+    public void testGetDescription_NoneEnumTypes() {
+        doReturn(enumDatatype).when(enumClass).getEnumDatatype();
+        doReturn(NAME).when(enumDatatype).getName();
+
+        String description = enumParser.getDescription(enumDatatype);
+
+        assertEquals(NLS.bind(Messages.EnumParser_description, NAME), description);
+    }
+
+    @Test
+    public void testGetDescription_forEnumTypes() {
+        doReturn(enumtype).when(enumDatatypeAdapter).getEnumType();
+        doReturn(MY_LABEL).when(enumtype).getName();
+        doReturn(enumDatatype).when(enumClass).getEnumDatatype();
+
+        String description = enumParser.getDescription(enumDatatypeAdapter);
+
+        assertEquals(MY_LABEL, description);
+    }
+
 }

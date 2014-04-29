@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.builder.flidentifier.ast;
+package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -24,16 +24,16 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class IdentifierNodeTest {
-
-    private static final String MY_NAME = "myName";
+public class AbstractIdentifierNodeParserTest {
 
     private static final String MY_LABEL = "myLabel";
 
-    private static final String MY_DESCRIPTION = "MyDescription";
+    private static final String MY_DESCRIPTION = "myDescription";
+
+    private static final String MY_NAME = "myName";
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
-    private IdentifierNode identifierNode;
+    private AbstractIdentifierNodeParser abstractIdentifierNodeParser;
 
     @Mock
     private MultiLanguageSupport multiLanguageSupport;
@@ -43,7 +43,7 @@ public class IdentifierNodeTest {
         ILabeledElement labeledElement = mock(ILabeledElement.class);
         when(multiLanguageSupport.getLocalizedLabel(labeledElement)).thenReturn(MY_LABEL);
 
-        String description = identifierNode.getNameAndDescription(labeledElement, multiLanguageSupport);
+        String description = abstractIdentifierNodeParser.getNameAndDescription(labeledElement, multiLanguageSupport);
 
         assertEquals(MY_LABEL, description);
     }
@@ -54,7 +54,7 @@ public class IdentifierNodeTest {
         when(multiLanguageSupport.getLocalizedDescription(descibedElement)).thenReturn(MY_DESCRIPTION);
         when(descibedElement.getName()).thenReturn(MY_NAME);
 
-        String description = identifierNode.getNameAndDescription(descibedElement, multiLanguageSupport);
+        String description = abstractIdentifierNodeParser.getNameAndDescription(descibedElement, multiLanguageSupport);
 
         assertEquals(MY_NAME + " - " + MY_DESCRIPTION, description);
 
@@ -68,10 +68,10 @@ public class IdentifierNodeTest {
         when(multiLanguageSupport.getLocalizedDescription((IDescribedElement)labeledAndDescribedElement)).thenReturn(
                 MY_DESCRIPTION);
 
-        String description = identifierNode.getNameAndDescription(labeledAndDescribedElement, multiLanguageSupport);
+        String description = abstractIdentifierNodeParser.getNameAndDescription(labeledAndDescribedElement,
+                multiLanguageSupport);
 
         assertEquals(MY_LABEL + " - " + MY_DESCRIPTION, description);
-
     }
 
 }

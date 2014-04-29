@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
@@ -50,6 +51,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class AttributeParserTest extends AbstractParserTest {
 
     private static final String MY_ATTRIBUTE = "myAttribute";
+
+    private static final String LABEL = "myLabel";
+
+    private static final String DESCRIPTION = "myDescription";
 
     @Mock(extraInterfaces = IPolicyCmptTypeAttribute.class)
     private IAttribute attribute;
@@ -211,29 +216,25 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testGetProposals() throws Exception {
         AbstractIdentifierNodeParser parser = mockAttributesForProposal();
 
-        List<IdentifierNode> proposals = parser.getProposals(StringUtils.EMPTY);
+        List<IdentifierProposal> proposals = parser.getProposals(StringUtils.EMPTY);
 
         assertEquals(4, proposals.size());
-        assertEquals(attribute, ((AttributeNode)proposals.get(0)).getAttribute());
-        assertFalse(((AttributeNode)proposals.get(0)).isDefaultValueAccess());
-        assertEquals(attribute, ((AttributeNode)proposals.get(1)).getAttribute());
-        assertTrue(((AttributeNode)proposals.get(1)).isDefaultValueAccess());
-        assertEquals(attribute2, ((AttributeNode)proposals.get(2)).getAttribute());
-        assertEquals(attribute3, ((AttributeNode)proposals.get(3)).getAttribute());
+        assertEquals(attribute.getName(), proposals.get(0).getText());
+        assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(1).getText());
+        assertEquals(attribute2.getName(), proposals.get(2).getText());
+        assertEquals(attribute3.getName(), proposals.get(3).getText());
     }
 
     @Test
     public void testGetProposals_withPrefix() throws Exception {
         AbstractIdentifierNodeParser parser = mockAttributesForProposal();
 
-        List<IdentifierNode> proposals = parser.getProposals("my");
+        List<IdentifierProposal> proposals = parser.getProposals("my");
 
         assertEquals(3, proposals.size());
-        assertEquals(attribute, ((AttributeNode)proposals.get(0)).getAttribute());
-        assertFalse(((AttributeNode)proposals.get(0)).isDefaultValueAccess());
-        assertEquals(attribute, ((AttributeNode)proposals.get(1)).getAttribute());
-        assertTrue(((AttributeNode)proposals.get(1)).isDefaultValueAccess());
-        assertEquals(attribute3, ((AttributeNode)proposals.get(2)).getAttribute());
+        assertEquals(attribute.getName(), proposals.get(0).getText());
+        assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(1).getText());
+        assertEquals(attribute3.getName(), proposals.get(2).getText());
     }
 
     @Test
@@ -244,13 +245,11 @@ public class AttributeParserTest extends AbstractParserTest {
         when(identifierFilter.isIdentifierAllowed(attribute2, IdentifierKind.ATTRIBUTE)).thenReturn(true);
         when(identifierFilter.isIdentifierAllowed(attribute3, IdentifierKind.ATTRIBUTE)).thenReturn(false);
 
-        List<IdentifierNode> proposals = parser.getProposals(StringUtils.EMPTY);
+        List<IdentifierProposal> proposals = parser.getProposals(StringUtils.EMPTY);
 
         assertEquals(2, proposals.size());
-        assertEquals(attribute, ((AttributeNode)proposals.get(0)).getAttribute());
-        assertTrue(((AttributeNode)proposals.get(0)).isDefaultValueAccess());
-        assertEquals(attribute2, ((AttributeNode)proposals.get(1)).getAttribute());
-        assertFalse(((AttributeNode)proposals.get(1)).isDefaultValueAccess());
+        assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(0).getText());
+        assertEquals(attribute2.getName(), proposals.get(1).getText());
     }
 
     private AbstractIdentifierNodeParser mockAttributesForProposal() throws CoreException {
@@ -265,6 +264,26 @@ public class AttributeParserTest extends AbstractParserTest {
         when(attribute3.getName()).thenReturn("myProd");
         when(attribute3.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
         return spy;
+    }
+
+    @Test
+    public void testGetDescription() throws Exception {
+        when(getMultiLanguageSupport().getLocalizedLabel(attribute)).thenReturn(LABEL);
+        when(getMultiLanguageSupport().getLocalizedDescription(attribute)).thenReturn(DESCRIPTION);
+
+        String description = attributeParser.getDescription(attribute, false);
+
+        assertEquals(LABEL + " - " + DESCRIPTION, description);
+    }
+
+    @Test
+    public void testGetDescription_defaultAccess() throws Exception {
+        when(getMultiLanguageSupport().getLocalizedLabel(attribute)).thenReturn(LABEL);
+        when(getMultiLanguageSupport().getLocalizedDescription(attribute)).thenReturn(DESCRIPTION);
+
+        String description = attributeParser.getDescription(attribute, true);
+
+        assertEquals(NLS.bind(Messages.AttributeParser_defaultOfName, LABEL) + " - " + DESCRIPTION, description);
     }
 
 }

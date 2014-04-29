@@ -11,10 +11,17 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.LinkedList;
 
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
+/**
+ * The context of the formula identifier parser. It includes information about the expression, the
+ * current context and the already parsed identifier nodes.
+ * 
+ */
 public class ParsingContext {
 
     private final IExpression expression;
@@ -23,9 +30,16 @@ public class ParsingContext {
 
     private final IIpsProject ipsProject;
 
+    private final MultiLanguageSupport multiLanguageSupport;
+
     public ParsingContext(IExpression expression, IIpsProject ipsProject) {
+        this(expression, ipsProject, IpsPlugin.getMultiLanguageSupport());
+    }
+
+    public ParsingContext(IExpression expression, IIpsProject ipsProject, MultiLanguageSupport multiLanguageSupport) {
         this.expression = expression;
         this.ipsProject = ipsProject;
+        this.multiLanguageSupport = multiLanguageSupport;
     }
 
     public void init() {
@@ -55,6 +69,10 @@ public class ParsingContext {
 
     public IIpsProject getIpsProject() {
         return ipsProject;
+    }
+
+    public MultiLanguageSupport getMultiLanguageSupport() {
+        return multiLanguageSupport;
     }
 
 }

@@ -11,8 +11,6 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.ArrayList;
 
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-
 /**
  * Helper class for filtering proposals. Collects only nodes that match a given prefix.
  * <p>
@@ -26,22 +24,22 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
  */
 class IdentifierNodeCollector {
 
-    private ArrayList<IdentifierNode> nodes = new ArrayList<IdentifierNode>();
+    private ArrayList<IdentifierProposal> nodes = new ArrayList<IdentifierProposal>();
     private final AbstractIdentifierNodeParser parser;
 
     public IdentifierNodeCollector(AbstractIdentifierNodeParser parser) {
         this.parser = parser;
     }
 
-    public boolean addMatchingNode(IdentifierNode node, String prefix) {
-        if (parser.isMatchingNode(node, prefix)) {
+    public boolean addMatchingNode(IdentifierProposal node, String prefix) {
+        if (node != null && parser.isMatchingNode(node, prefix)) {
             return nodes.add(node);
         } else {
             return false;
         }
     }
 
-    public ArrayList<IdentifierNode> getNodes() {
+    public ArrayList<IdentifierProposal> getNodes() {
         return nodes;
     }
 

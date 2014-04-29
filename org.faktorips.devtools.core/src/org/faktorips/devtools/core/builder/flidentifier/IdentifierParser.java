@@ -131,9 +131,9 @@ public class IdentifierParser {
         return textRegion.getStart() == 0 || textRegion.isRelativeChar(-1, seperator);
     }
 
-    public List<IdentifierNode> getProposals(String existingContent) {
+    public List<IdentifierProposal> getProposals(String existingContent) {
         parse(existingContent);
-        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+        ArrayList<IdentifierProposal> result = new ArrayList<IdentifierProposal>();
         for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
             if (isParserSpecificSeperator(parserEntry.getValue())) {
                 result.addAll(parserEntry.getKey().getProposals(matcher.getIdentifierPart()));

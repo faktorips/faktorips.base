@@ -32,6 +32,9 @@ public class AbstractParserTest {
     @Mock
     private IProductCmptType productCmptType;
 
+    @Mock
+    private MultiLanguageSupport multiLanguageSupport;
+
     private ParsingContext parsingContext;
 
     public AbstractParserTest() {
@@ -41,7 +44,7 @@ public class AbstractParserTest {
     @Before
     public void mockExpression() throws Exception {
         when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
-        parsingContext = new ParsingContext(getExpression(), getIpsProject());
+        parsingContext = new ParsingContext(getExpression(), getIpsProject(), getMultiLanguageSupport());
     }
 
     public ParsingContext getParsingContext() {
@@ -60,6 +63,10 @@ public class AbstractParserTest {
         return productCmptType;
     }
 
+    public MultiLanguageSupport getMultiLanguageSupport() {
+        return multiLanguageSupport;
+    }
+
     public class TestNode extends IdentifierNode {
 
         public TestNode(Datatype datatype) {
@@ -68,16 +75,6 @@ public class AbstractParserTest {
 
         TestNode(Datatype datatype, boolean listOfTypes) {
             super(datatype, listOfTypes, null);
-        }
-
-        @Override
-        public String getText() {
-            return null;
-        }
-
-        @Override
-        public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-            return null;
         }
 
     }

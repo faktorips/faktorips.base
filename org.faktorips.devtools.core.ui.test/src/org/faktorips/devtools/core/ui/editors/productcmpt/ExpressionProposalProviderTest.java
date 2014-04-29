@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,9 +24,7 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierProposal;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -46,6 +45,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
+    private static final String IDENTIFIER_PROPOSAL1 = "identifierProposal1";
+    private static final String ANY_IDENTIFIER = "TestPolicy";
     private ExpressionProposalProvider proposalProvider;
     private PolicyCmptType policyCmptType;
     private IProductCmptTypeMethod formulaSignature;
@@ -92,22 +93,20 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     @Test
     public void testGetProposalsWithoutFunctions() {
         proposalProvider = new ExpressionProposalProvider(formula, parser);
+        List<IdentifierProposal> list = new ArrayList<IdentifierProposal>();
+        IdentifierProposal identifierProposal1 = mock(IdentifierProposal.class);
+        IdentifierProposal identifierProposal2 = mock(IdentifierProposal.class);
+        when(identifierProposal1.getText()).thenReturn(IDENTIFIER_PROPOSAL1);
+        when(identifierProposal2.getText()).thenReturn(IDENTIFIER_PROPOSAL1);
+        list.add(identifierProposal1);
+        list.add(identifierProposal2);
+        doReturn(list).when(parser).getProposals(ANY_IDENTIFIER);
 
-        List<IdentifierNode> list = new ArrayList<IdentifierNode>();
-        AttributeNode attr1 = mock(AttributeNode.class);
-        AttributeNode attr2 = mock(AttributeNode.class);
-        AssociationNode assoc1 = mock(AssociationNode.class);
-        list.add(attr1);
-        list.add(attr2);
-        list.add(assoc1);
-        doReturn("attr1").when(attr1).getText();
-        doReturn("attr2").when(attr2).getText();
-        doReturn(list).when(parser).getProposals("TestPolicy");
+        IContentProposal[] proposals = proposalProvider.getProposals(ANY_IDENTIFIER, ANY_IDENTIFIER.length());
 
-        IContentProposal[] proposals = proposalProvider.getProposals("TestPolicy", 10);
-        assertEquals(3, proposals.length);
-        assertEquals(attr1.getText(), proposals[0].getContent());
-        assertEquals(attr2.getText(), proposals[1].getContent());
+        assertEquals(identifierProposal1.getText(), proposals[0].getContent());
+        assertEquals(identifierProposal2.getText(), proposals[1].getContent());
+        assertEquals(2, proposals.length);
     }
 
     @Test

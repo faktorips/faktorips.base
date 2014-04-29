@@ -13,13 +13,16 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 
+/**
+ * This collector returns the product component that is qualified by a {@link QualifierNode}.
+ * 
+ */
 public class QualifierCollector extends AbstractProductCmptCollector {
 
-    protected QualifierCollector(IdentifierNode node, ContextProductCmptFinder finder) {
+    protected QualifierCollector(QualifierNode node, ContextProductCmptFinder finder) {
         super(node, finder);
     }
 

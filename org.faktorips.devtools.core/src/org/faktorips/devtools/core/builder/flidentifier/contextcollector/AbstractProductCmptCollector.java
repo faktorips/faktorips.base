@@ -19,6 +19,11 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
+/**
+ * The product component collectors are called by the {@link ContextProductCmptFinder}. Every
+ * implementation is responsible for one kind of {@link IdentifierNode}.
+ * 
+ */
 public abstract class AbstractProductCmptCollector {
 
     private final ContextProductCmptFinder finder;

@@ -139,14 +139,15 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testGetProposals_noProposals() {
-        List<IdentifierNode> proposals = associationParser.getProposals("nonExistentAssociation");
+        List<IdentifierProposal> proposals = associationParser.getProposals("nonExistentAssociation");
+
         assertTrue(proposals.isEmpty());
     }
 
     @Test
     public void testGetProposals_oneProposal() {
         /* no pun intended ;-) */
-        List<IdentifierNode> proposals = associationParser.getProposals("myAss");
+        List<IdentifierProposal> proposals = associationParser.getProposals("myAss");
         assertEquals(1, proposals.size());
         proposals = associationParser.getProposals(MY_ASSOCIATION);
         assertEquals(1, proposals.size());
@@ -159,7 +160,7 @@ public class AssociationParserTest extends AbstractParserTest {
 
     @Test
     public void testGetProposals_multipleProposals() {
-        List<IdentifierNode> proposals = associationParser.getProposals("my");
+        List<IdentifierProposal> proposals = associationParser.getProposals("my");
         assertEquals(2, proposals.size());
         proposals = associationParser.getProposals("m");
         assertEquals(2, proposals.size());
@@ -171,7 +172,7 @@ public class AssociationParserTest extends AbstractParserTest {
     public void testGetProposals_wrongContextType() {
         associationParser.setContextType(Datatype.MONEY);
 
-        List<IdentifierNode> proposals = associationParser.getProposals("my");
+        List<IdentifierProposal> proposals = associationParser.getProposals("my");
         assertTrue(proposals.isEmpty());
         proposals = associationParser.getProposals("m");
         assertTrue(proposals.isEmpty());

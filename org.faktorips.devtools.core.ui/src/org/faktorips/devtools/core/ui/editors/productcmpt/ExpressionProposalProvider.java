@@ -19,10 +19,8 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.IdentifierProposal;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 import org.faktorips.fl.ExprCompiler;
@@ -39,8 +37,8 @@ import org.faktorips.util.ArgumentCheck;
 public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private final IdentifierParser identifierParser;
+
     private final IExpression expression;
-    private final MultiLanguageSupport multiLanguageSupport;
 
     public ExpressionProposalProvider(IExpression expression) {
         this(expression, new IdentifierParser(expression, expression.getIpsProject()));
@@ -50,7 +48,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         ArgumentCheck.notNull(expression);
         this.expression = expression;
         this.identifierParser = identifierParser;
-        multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
     }
 
     @Override
@@ -102,10 +99,10 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     }
 
     private void addIdentifierNodes(String contents, List<IContentProposal> result) {
-        List<IdentifierNode> proposals = identifierParser.getProposals(contents);
-        for (IdentifierNode identifierNode : proposals) {
-            result.add(new ContentProposal(identifierNode.getText(), identifierNode.getText(), identifierNode
-                    .getDescription(multiLanguageSupport)));
+        List<IdentifierProposal> proposals = identifierParser.getProposals(contents);
+        for (IdentifierProposal identifierProposal : proposals) {
+            result.add(new ContentProposal(identifierProposal.getText(), identifierProposal.getText(),
+                    identifierProposal.getDescription()));
         }
     }
 

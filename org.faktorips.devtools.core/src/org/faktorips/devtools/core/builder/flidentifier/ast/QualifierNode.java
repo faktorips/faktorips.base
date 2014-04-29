@@ -10,11 +10,8 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
-import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.builder.flidentifier.QualifierAndIndexParser;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
@@ -42,17 +39,6 @@ public class QualifierNode extends IdentifierNode {
 
     public IProductCmpt getProductCmpt() {
         return productCmpt;
-    }
-
-    @Override
-    public String getText() {
-        return QualifierAndIndexParser.QUALIFIER_START + '"' + productCmpt.getName() + '"'
-                + QualifierAndIndexParser.QUALIFIER_END;
-    }
-
-    @Override
-    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-        return NLS.bind(Messages.QualifierNode_description, getProductCmpt().getName());
     }
 
 }

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +18,10 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -90,36 +91,43 @@ public class EnumParser extends AbstractIdentifierNodeParser {
     }
 
     @Override
-    public List<IdentifierNode> getProposals(String prefix) {
-        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
+        if (isContextTypeFormulaType()) {
+            addEnumClassProposals(prefix, collector);
+        } else if (getContextType() instanceof EnumClass) {
+            addEnumValueProposals(prefix, collector);
+        }
+        return collector.getNodes();
+    }
+
+    private void addEnumClassProposals(String prefix, IdentifierNodeCollector collector) {
         EnumDatatype[] enumDatatypesAllowedInFormula = getExpression().getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumDatatype : enumDatatypesAllowedInFormula) {
-            addEnumClassOrEnumValueNode(prefix, result, enumDatatype);
-        }
-        return result;
-    }
-
-    private void addEnumClassOrEnumValueNode(String prefix, ArrayList<IdentifierNode> result, EnumDatatype enumDatatype) {
-        addIfEnumClassValue(prefix, result, enumDatatype);
-        addIfEnumValueNodes(prefix, result, enumDatatype);
-    }
-
-    private void addIfEnumClassValue(String prefix, ArrayList<IdentifierNode> result, EnumDatatype enumDatatype) {
-        if (isContextTypeFormulaType()) {
-            if (StringUtils.startsWithIgnoreCase(enumDatatype.getName(), prefix)) {
-                result.add(nodeFactory().createEnumClassNode(new EnumClass(enumDatatype)));
-            }
+            IdentifierProposal proposal = new IdentifierProposal(getText(enumDatatype), getDescription(enumDatatype));
+            collector.addMatchingNode(proposal, prefix);
         }
     }
 
-    private void addIfEnumValueNodes(String prefix, ArrayList<IdentifierNode> result, EnumDatatype enumDatatype) {
-        if (getContextType() instanceof EnumClass) {
-            String[] valueIds = enumDatatype.getAllValueIds(false);
-            for (String enumValueName : valueIds) {
-                if (StringUtils.startsWithIgnoreCase(enumValueName, prefix)) {
-                    result.add(nodeFactory().createEnumValueNode(enumValueName, enumDatatype));
-                }
-            }
+    private String getText(EnumDatatype enumDatatype) {
+        return enumDatatype.getName();
+    }
+
+    protected String getDescription(EnumDatatype enumDatatype) {
+        if (enumDatatype instanceof EnumTypeDatatypeAdapter) {
+            EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)enumDatatype;
+            MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+            return getNameAndDescription(enumTypeDatatypeAdapter.getEnumType(), multiLanguageSupport);
+        }
+        return NLS.bind(Messages.EnumParser_description, getText(enumDatatype));
+    }
+
+    private void addEnumValueProposals(String prefix, IdentifierNodeCollector collector) {
+        EnumDatatype enumDatatype = ((EnumClass)getContextType()).getEnumDatatype();
+        String[] valueIds = enumDatatype.getAllValueIds(false);
+        for (String enumValueName : valueIds) {
+            IdentifierProposal proposal = new IdentifierProposal(enumValueName, StringUtils.EMPTY);
+            collector.addMatchingNode(proposal, prefix);
         }
     }
 }

@@ -17,7 +17,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
-import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -28,9 +27,15 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 
+/**
+ * This collector is used to collect the product components that may be used as qualifiers by the
+ * current {@link AssociationNode}
+ * 
+ * @author dirmeier
+ */
 public class AssociationCollector extends AbstractProductCmptCollector {
 
-    protected AssociationCollector(IdentifierNode node, ContextProductCmptFinder finder) {
+    protected AssociationCollector(AssociationNode node, ContextProductCmptFinder finder) {
         super(node, finder);
     }
 

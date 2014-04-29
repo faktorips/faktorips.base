@@ -16,12 +16,14 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.fl.ExprCompiler;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 
 /**
@@ -72,20 +74,25 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     @Override
-    public List<IdentifierNode> getProposals(String prefix) {
+    public List<IdentifierProposal> getProposals(String prefix) {
         if (isAllowedType()) {
             return getProposalsFor(prefix);
         }
         return Collections.emptyList();
     }
 
-    private List<IdentifierNode> getProposalsFor(String prefix) {
+    private List<IdentifierProposal> getProposalsFor(String prefix) {
         IdentifierNodeCollector nodeCollector = new IdentifierNodeCollector(this);
         List<IAssociation> allAssociations = getAllAssociations();
         for (IAssociation association : allAssociations) {
-            nodeCollector.addMatchingNode(createNodeFor(association), prefix);
+            nodeCollector.addMatchingNode(createProposalFor(association), prefix);
         }
         return nodeCollector.getNodes();
+    }
+
+    private IdentifierProposal createProposalFor(IAssociation association) {
+        return new IdentifierProposal(getText(association), getDescription(association, getParsingContext()
+                .getMultiLanguageSupport()));
     }
 
     private List<IAssociation> getAllAssociations() {
@@ -94,6 +101,31 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    public String getText(IAssociation association) {
+        return association.getName();
+    }
+
+    public String getDescription(IAssociation association) {
+        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        StringBuilder description = new StringBuilder();
+        description.append(getText(association));
+        description.append(" -> "); //$NON-NLS-1$
+        if (isToManyAssociation(association)) {
+            description.append(Messages.AssociationParser_ListDatatypeDescriptionPrefix);
+        }
+        description.append(getUnqualifiedTargetName(association));
+        description.append(NAME_DESCRIPTION_SEPERATOR).append(getDescription(association, multiLanguageSupport));
+        return description.toString();
+    }
+
+    private boolean isToManyAssociation(IAssociation association) {
+        return association.is1ToMany();
+    }
+
+    private String getUnqualifiedTargetName(IAssociation association) {
+        return StringUtil.unqualifiedName(association.getTarget());
     }
 
 }

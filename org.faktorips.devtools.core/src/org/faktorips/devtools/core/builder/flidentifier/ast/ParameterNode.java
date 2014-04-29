@@ -11,11 +11,7 @@
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.MultiLanguageSupport;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.util.TextRegion;
@@ -45,22 +41,4 @@ public class ParameterNode extends IdentifierNode {
         return ipsProject;
     }
 
-    @Override
-    public String getText() {
-        return parameter.getName();
-    }
-
-    @Override
-    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-        try {
-            Datatype datatype = parameter.findDatatype(ipsProject);
-            if (datatype instanceof IIpsElement) {
-                return getNameAndDescription((IIpsElement)datatype, multiLanguageSupport);
-            } else {
-                return NLS.bind(Messages.ParameterNode_description, parameter.getName(), parameter.getDatatype());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
 }

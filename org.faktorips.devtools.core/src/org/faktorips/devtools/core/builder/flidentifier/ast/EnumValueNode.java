@@ -12,9 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier.ast;
 
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.util.TextRegion;
-import org.faktorips.runtime.internal.StringUtils;
 
 /**
  * The enum value node represents the value part of an enum access. It have to follow an
@@ -40,13 +38,4 @@ public class EnumValueNode extends IdentifierNode {
         return (EnumDatatype)super.getDatatype();
     }
 
-    @Override
-    public String getText() {
-        return getEnumValueName();
-    }
-
-    @Override
-    public String getDescription(MultiLanguageSupport multiLanguageSupport) {
-        return StringUtils.EMPTY;
-    }
 }

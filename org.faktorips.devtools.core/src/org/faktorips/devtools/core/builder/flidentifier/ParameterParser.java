@@ -10,12 +10,16 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 
@@ -46,17 +50,30 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
     }
 
     @Override
-    public List<IdentifierNode> getProposals(String prefix) {
-        ArrayList<IdentifierNode> result = new ArrayList<IdentifierNode>();
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierNodeCollector collector = new IdentifierNodeCollector(this);
         if (isContextTypeFormulaType()) {
             IParameter[] parameters = getParameters();
             for (IParameter parameter : parameters) {
-                if (StringUtils.startsWithIgnoreCase(parameter.getName(), prefix)) {
-                    result.add(nodeFactory().createParameterNode(parameter));
-                }
+                IdentifierProposal proposal = new IdentifierProposal(parameter.getName(), getDescription(parameter));
+                collector.addMatchingNode(proposal, prefix);
             }
         }
-        return result;
+        return collector.getNodes();
+    }
+
+    String getDescription(IParameter parameter) {
+        try {
+            Datatype datatype = parameter.findDatatype(getIpsProject());
+            if (datatype instanceof IIpsElement) {
+                MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+                return getNameAndDescription((IIpsElement)datatype, multiLanguageSupport);
+            } else {
+                return NLS.bind(Messages.ParameterParser_description, parameter.getName(), parameter.getDatatype());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /* private */protected IParameter[] getParameters() {
