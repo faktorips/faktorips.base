@@ -20,6 +20,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
@@ -120,7 +121,8 @@ public class AttributeParser extends TypeBasedIdentifierParser {
 
     private IdentifierProposal getAttributeProposal(IAttribute attribute, boolean defaultAccess) {
         if (isProposalAllowed(attribute, defaultAccess)) {
-            return new IdentifierProposal(getText(attribute, defaultAccess), getDescription(attribute, defaultAccess));
+            return new IdentifierProposal(getText(attribute, defaultAccess), getDescription(attribute, defaultAccess),
+                    IdentifierNodeType.ATTRIBUTE);
         }
         return null;
     }

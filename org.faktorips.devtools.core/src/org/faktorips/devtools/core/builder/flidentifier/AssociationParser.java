@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -92,7 +93,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
 
     private IdentifierProposal createProposalFor(IAssociation association) {
         return new IdentifierProposal(getText(association), getDescription(association, getParsingContext()
-                .getMultiLanguageSupport()));
+                .getMultiLanguageSupport()), IdentifierNodeType.ASSOCIATION);
     }
 
     private List<IAssociation> getAllAssociations() {

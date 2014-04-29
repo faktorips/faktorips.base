@@ -184,9 +184,9 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
 
     private void assertProposals(IContentProposal[] proposals) {
         assertEquals(3, proposals.length);
-        assertEquals("premium", proposals[0].getContent());
-        assertEquals("premium@default", proposals[1].getContent());
-        assertEquals("part", proposals[2].getContent());
+        assertEquals("premium", proposals[1].getContent());
+        assertEquals("premium@default", proposals[2].getContent());
+        assertEquals("part", proposals[0].getContent());
     }
 
 }

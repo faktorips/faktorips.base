@@ -17,6 +17,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.contextcollector.ContextProductCmptFinder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -200,7 +201,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IdentifierProposal getIndexProposal() {
-        return new IdentifierProposal(getIndexText(0), getIndexDescription());
+        return new IdentifierProposal(getIndexText(0), getIndexDescription(), IdentifierNodeType.INDEX);
     }
 
     public String getIndexText(int index) {
@@ -212,7 +213,8 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IdentifierProposal getQualifierProposal(IProductCmpt productCmpt) {
-        return new IdentifierProposal(getQualifierText(productCmpt), getQualifierDescription(productCmpt));
+        return new IdentifierProposal(getQualifierText(productCmpt), getQualifierDescription(productCmpt),
+                IdentifierNodeType.QUALIFIER);
     }
 
     public String getQualifierText(IProductCmpt productCmpt) {

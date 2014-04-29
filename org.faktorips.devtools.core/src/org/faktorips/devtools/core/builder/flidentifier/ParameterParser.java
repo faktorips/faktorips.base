@@ -17,6 +17,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -55,7 +56,8 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
         if (isContextTypeFormulaType()) {
             IParameter[] parameters = getParameters();
             for (IParameter parameter : parameters) {
-                IdentifierProposal proposal = new IdentifierProposal(parameter.getName(), getDescription(parameter));
+                IdentifierProposal proposal = new IdentifierProposal(parameter.getName(), getDescription(parameter),
+                        IdentifierNodeType.PARAMETER);
                 collector.addMatchingNode(proposal, prefix);
             }
         }

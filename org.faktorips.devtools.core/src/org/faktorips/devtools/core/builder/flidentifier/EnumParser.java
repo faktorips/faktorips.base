@@ -21,6 +21,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
@@ -104,7 +105,8 @@ public class EnumParser extends AbstractIdentifierNodeParser {
     private void addEnumClassProposals(String prefix, IdentifierNodeCollector collector) {
         EnumDatatype[] enumDatatypesAllowedInFormula = getExpression().getEnumDatatypesAllowedInFormula();
         for (EnumDatatype enumDatatype : enumDatatypesAllowedInFormula) {
-            IdentifierProposal proposal = new IdentifierProposal(getText(enumDatatype), getDescription(enumDatatype));
+            IdentifierProposal proposal = new IdentifierProposal(getText(enumDatatype), getDescription(enumDatatype),
+                    IdentifierNodeType.ENUM_CLASS);
             collector.addMatchingNode(proposal, prefix);
         }
     }
@@ -126,7 +128,8 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         EnumDatatype enumDatatype = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumDatatype.getAllValueIds(false);
         for (String enumValueName : valueIds) {
-            IdentifierProposal proposal = new IdentifierProposal(enumValueName, StringUtils.EMPTY);
+            IdentifierProposal proposal = new IdentifierProposal(enumValueName, StringUtils.EMPTY,
+                    IdentifierNodeType.ENUM_VALUE);
             collector.addMatchingNode(proposal, prefix);
         }
     }

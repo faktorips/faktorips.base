@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.io.StringReader;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -100,6 +101,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private void addIdentifierNodes(String contents, List<IContentProposal> result) {
         List<IdentifierProposal> proposals = identifierParser.getProposals(contents);
+        Collections.sort(proposals);
         for (IdentifierProposal identifierProposal : proposals) {
             result.add(new ContentProposal(identifierProposal.getText(), identifierProposal.getText(),
                     identifierProposal.getDescription()));

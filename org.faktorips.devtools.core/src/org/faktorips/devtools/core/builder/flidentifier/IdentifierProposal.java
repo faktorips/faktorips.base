@@ -9,8 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 
-public class IdentifierProposal {
+public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     private final String text;
 
@@ -18,14 +19,25 @@ public class IdentifierProposal {
 
     private final String description;
 
+    private IdentifierNodeType nodeType;
+
+    // private Integer nodeType;
+
     public IdentifierProposal(String text, String description) {
         this(text, text, description);
+        this.nodeType = IdentifierNodeType.INVALID_IDENTIFIER;
     }
 
     public IdentifierProposal(String text, String label, String description) {
         this.text = text;
         this.label = label;
         this.description = description;
+    }
+
+    public IdentifierProposal(String text, String description, IdentifierNodeType nodeType) {
+        this(text, text, description);
+        this.nodeType = nodeType;
+        // setNodeType(nodeType);
     }
 
     /**
@@ -57,4 +69,16 @@ public class IdentifierProposal {
         return description;
     }
 
+    public IdentifierNodeType getNodeType() {
+        return nodeType;
+    }
+
+    @Override
+    public int compareTo(IdentifierProposal o) {
+        if (this.getNodeType() == o.getNodeType()) {
+            return this.getText().compareTo(o.getText());
+        } else {
+            return this.getNodeType().compareTo(o.getNodeType());
+        }
+    }
 }
