@@ -1067,7 +1067,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     JavaCodeFragment methodBody = new JavaCodeFragment();
                     methodBody.append("return "); //$NON-NLS-1$
                     appendGetterReturnStatement(currentEnumAttribute, argNames, methodBody);
-
+                    if (currentEnumAttribute.isInherited()) {
+                        methodBuilder.annotationLn(Override.class);
+                    }
                     methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, argNames,
                             argClasses);
                     methodBuilder.append(methodBody);
