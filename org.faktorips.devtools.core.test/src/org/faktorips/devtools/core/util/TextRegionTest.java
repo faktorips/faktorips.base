@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
@@ -105,5 +106,17 @@ public class TextRegionTest {
         String substring = region.getTextRegionString();
 
         assertEquals("abc123", substring);
+    }
+
+    @Test
+    public void testIsRelativeChar() throws Exception {
+        region = new TextRegion("abc123", 1, 5);
+
+        assertTrue(region.isRelativeChar(0, 'b'));
+        assertFalse(region.isRelativeChar(0, 'a'));
+        assertTrue(region.isRelativeChar(1, 'c'));
+        assertTrue(region.isRelativeChar(-1, 'a'));
+        assertFalse(region.isRelativeChar(-2, 'a'));
+        assertFalse(region.isRelativeChar(10, 'a'));
     }
 }
