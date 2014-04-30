@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -89,12 +90,18 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     private void addAssociationProposals(IAssociation association, String prefix, IdentifierProposalCollector collector) {
-        collector.addMatchingNode(getText(association), getDescription(association), prefix,
+        collector.addMatchingNode(getDisplayText(association, StringUtils.EMPTY),
+                getText(association, StringUtils.EMPTY), getDescription(association), prefix,
                 IdentifierNodeType.ASSOCIATION);
-        collector.addMatchingNode(getText(association) + INDEX_PROPOSAL, getDescription(association), prefix,
+        collector.addMatchingNode(getDisplayText(association, INDEX_PROPOSAL), getText(association, INDEX_PROPOSAL),
+                getDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
+        collector.addMatchingNode(getDisplayText(association, QUALIFIER_PROPOSAL),
+                getText(association, QUALIFIER_PROPOSAL_LABEL), getDescription(association), prefix,
                 IdentifierNodeType.ASSOCIATION);
-        collector.addMatchingNode(getText(association) + QUALIFIER_PROPOSAL, getText(association)
-                + QUALIFIER_PROPOSAL_LABEL, getDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
+    }
+
+    private String getDisplayText(IAssociation association, String proposal) {
+        return association.getName() + proposal;
     }
 
     private List<IAssociation> getAllAssociations() {
@@ -114,8 +121,9 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         return collector.getProposals();
     }
 
-    String getText(IAssociation association) {
-        return getAssociationAndTarget(association).toString();
+    String getText(IAssociation association, String proposal) {
+        return association.getName() + proposal + (getAssociationAndTarget(association).toString());
+
     }
 
     String getDescription(IAssociation association) {
@@ -123,12 +131,11 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         StringBuilder description = getAssociationAndTarget(association);
         description.append(NAME_DESCRIPTION_SEPERATOR)
                 .append(multiLanguageSupport.getLocalizedDescription(association));
-        return description.toString();
+        return association.getName() + description.toString();
     }
 
     private StringBuilder getAssociationAndTarget(IAssociation association) {
         StringBuilder description = new StringBuilder();
-        description.append(association.getName());
         description.append(" -> "); //$NON-NLS-1$
         if (isToManyAssociation(association)) {
             description.append(Messages.AssociationParser_ListDatatypeDescriptionPrefix);
