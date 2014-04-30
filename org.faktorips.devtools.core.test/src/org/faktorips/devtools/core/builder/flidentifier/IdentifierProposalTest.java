@@ -25,11 +25,11 @@ public class IdentifierProposalTest {
 
     @Test
     public void testCompareSameIdentifierNodeTypes() {
-        IdentifierProposal enumClass1 = new IdentifierProposal("ZZenumClass", "description",
+        IdentifierProposal enumClass1 = new IdentifierProposal("ZZenumClass", "ZZenumClass", "description", "",
                 IdentifierNodeType.ENUM_CLASS);
-        IdentifierProposal enumClass2 = new IdentifierProposal("10enumClass", "description",
+        IdentifierProposal enumClass2 = new IdentifierProposal("10enumClass", "10enumClass", "description", "",
                 IdentifierNodeType.ENUM_CLASS);
-        IdentifierProposal enumClass3 = new IdentifierProposal("AAenumClass", "description",
+        IdentifierProposal enumClass3 = new IdentifierProposal("AAenumClass", "AAenumClass", "description", "",
                 IdentifierNodeType.ENUM_CLASS);
 
         List<IdentifierProposal> list = new ArrayList<IdentifierProposal>();
@@ -66,18 +66,24 @@ public class IdentifierProposalTest {
     }
 
     public List<IdentifierProposal> initList() {
-        IdentifierProposal association1 = new IdentifierProposal("Xasso", "description", IdentifierNodeType.ASSOCIATION);
-        IdentifierProposal association2 = new IdentifierProposal("Yasso", "description", IdentifierNodeType.ASSOCIATION);
+        IdentifierProposal association1 = new IdentifierProposal("Xasso", "Xasso", "description", "",
+                IdentifierNodeType.ASSOCIATION);
+        IdentifierProposal association2 = new IdentifierProposal("Yasso", "Yasso", "description", "",
+                IdentifierNodeType.ASSOCIATION);
 
-        IdentifierProposal attribute1 = new IdentifierProposal("Gattr", "description", IdentifierNodeType.ATTRIBUTE);
-        IdentifierProposal attribute2 = new IdentifierProposal("Hattr", "description", IdentifierNodeType.ATTRIBUTE);
+        IdentifierProposal attribute1 = new IdentifierProposal("Gattr", "Gattr", "description", "",
+                IdentifierNodeType.ATTRIBUTE);
+        IdentifierProposal attribute2 = new IdentifierProposal("Hattr", "Hattr", "description", "",
+                IdentifierNodeType.ATTRIBUTE);
 
-        IdentifierProposal param1 = new IdentifierProposal("Iparam", "description", IdentifierNodeType.PARAMETER);
-        IdentifierProposal param2 = new IdentifierProposal("Jparam", "description", IdentifierNodeType.PARAMETER);
+        IdentifierProposal param1 = new IdentifierProposal("Iparam", "Iparam", "description", "",
+                IdentifierNodeType.PARAMETER);
+        IdentifierProposal param2 = new IdentifierProposal("Jparam", "Jparam", "description", "",
+                IdentifierNodeType.PARAMETER);
 
-        IdentifierProposal enumValue1 = new IdentifierProposal("VenumValue", "description",
+        IdentifierProposal enumValue1 = new IdentifierProposal("VenumValue", "VenumValue", "description", "",
                 IdentifierNodeType.ENUM_VALUE);
-        IdentifierProposal enumValue2 = new IdentifierProposal("WenumValue", "description",
+        IdentifierProposal enumValue2 = new IdentifierProposal("WenumValue", "WenumValue", "description", "",
                 IdentifierNodeType.ENUM_VALUE);
 
         List<IdentifierProposal> sortedList = new ArrayList<IdentifierProposal>();
