@@ -34,6 +34,12 @@ import org.faktorips.util.message.Message;
  */
 public class AssociationParser extends TypeBasedIdentifierParser {
 
+    private static final String INDEX_PROPOSAL = "[0]"; //$NON-NLS-1$
+
+    private static final String QUALIFIER_PROPOSAL = "[\""; //$NON-NLS-1$
+
+    private static final String QUALIFIER_PROPOSAL_LABEL = "[\"...\"]"; //$NON-NLS-1$
+
     public AssociationParser(ParsingContext parsingContext) {
         super(parsingContext);
     }
@@ -82,14 +88,13 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         return Collections.emptyList();
     }
 
-    private List<IdentifierProposal> getProposalsFor(String prefix) {
-        IdentifierProposalCollector collector = new IdentifierProposalCollector();
-        List<IAssociation> allAssociations = getAllAssociations();
-        for (IAssociation association : allAssociations) {
-            collector.addMatchingNode(getText(association), getDescription(association), prefix,
-                    IdentifierNodeType.ASSOCIATION);
-        }
-        return collector.getProposals();
+    private void addAssociationProposals(IAssociation association, String prefix, IdentifierProposalCollector collector) {
+        collector.addMatchingNode(getText(association), getDescription(association), prefix,
+                IdentifierNodeType.ASSOCIATION);
+        collector.addMatchingNode(getText(association) + INDEX_PROPOSAL, getDescription(association), prefix,
+                IdentifierNodeType.ASSOCIATION);
+        collector.addMatchingNode(getText(association) + QUALIFIER_PROPOSAL, getText(association)
+                + QUALIFIER_PROPOSAL_LABEL, getDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
     }
 
     private List<IAssociation> getAllAssociations() {
@@ -100,11 +105,20 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         }
     }
 
-    public String getText(IAssociation association) {
+    private List<IdentifierProposal> getProposalsFor(String prefix) {
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
+        List<IAssociation> allAssociations = getAllAssociations();
+        for (IAssociation association : allAssociations) {
+            addAssociationProposals(association, prefix, collector);
+        }
+        return collector.getProposals();
+    }
+
+    String getText(IAssociation association) {
         return association.getName();
     }
 
-    public String getDescription(IAssociation association) {
+    String getDescription(IAssociation association) {
         MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
         StringBuilder description = new StringBuilder();
         description.append(getText(association));

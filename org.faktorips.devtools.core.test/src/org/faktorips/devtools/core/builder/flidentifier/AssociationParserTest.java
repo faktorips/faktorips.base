@@ -150,24 +150,26 @@ public class AssociationParserTest extends AbstractParserTest {
     public void testGetProposals_oneProposal() {
         /* no pun intended ;-) */
         List<IdentifierProposal> proposals = associationParser.getProposals("myAss");
-        assertEquals(1, proposals.size());
+        assertEquals(3, proposals.size());
         proposals = associationParser.getProposals(MY_ASSOCIATION);
-        assertEquals(1, proposals.size());
+        assertEquals(3, proposals.size());
         assertEquals(MY_ASSOCIATION, proposals.get(0).getText());
 
         proposals = associationParser.getProposals("myS");
-        assertEquals(1, proposals.size());
+        assertEquals(3, proposals.size());
         assertEquals(MY_SECOND_ASSOCIATION, proposals.get(0).getText());
+        assertEquals(MY_SECOND_ASSOCIATION + "[0]", proposals.get(1).getText());
+        assertEquals(MY_SECOND_ASSOCIATION + "[\"", proposals.get(2).getText());
     }
 
     @Test
     public void testGetProposals_multipleProposals() {
         List<IdentifierProposal> proposals = associationParser.getProposals("my");
-        assertEquals(2, proposals.size());
+        assertEquals(6, proposals.size());
         proposals = associationParser.getProposals("m");
-        assertEquals(2, proposals.size());
+        assertEquals(6, proposals.size());
         proposals = associationParser.getProposals("");
-        assertEquals(2, proposals.size());
+        assertEquals(6, proposals.size());
     }
 
     @Test
