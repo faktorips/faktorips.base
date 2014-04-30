@@ -115,20 +115,26 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     String getText(IAssociation association) {
-        return association.getName();
+        return getAssociationAndTarget(association).toString();
     }
 
     String getDescription(IAssociation association) {
         MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        StringBuilder description = getAssociationAndTarget(association);
+        description.append(NAME_DESCRIPTION_SEPERATOR)
+                .append(multiLanguageSupport.getLocalizedDescription(association));
+        return description.toString();
+    }
+
+    private StringBuilder getAssociationAndTarget(IAssociation association) {
         StringBuilder description = new StringBuilder();
-        description.append(getText(association));
+        description.append(association.getName());
         description.append(" -> "); //$NON-NLS-1$
         if (isToManyAssociation(association)) {
             description.append(Messages.AssociationParser_ListDatatypeDescriptionPrefix);
         }
         description.append(getUnqualifiedTargetName(association));
-        description.append(NAME_DESCRIPTION_SEPERATOR).append(getDescription(association, multiLanguageSupport));
-        return description.toString();
+        return description;
     }
 
     private boolean isToManyAssociation(IAssociation association) {
