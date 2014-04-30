@@ -191,11 +191,26 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         assertProposals(proposals);
     }
 
+    @Test
+    public void testGetProposals_ignoreFollowingFunctionsInInputString_lexicalError() throws Exception {
+        proposalProvider = new ExpressionProposalProvider(formula, new IdentifierParser(formula, ipsProject));
+
+        /*
+         * An unclosed "[" produces a lexical error for some reason. Expect valid proposal
+         * nonetheless.
+         */
+        IContentProposal[] proposals = proposalProvider.getProposals("WENN(testPolicy.part[", 21);
+        assertEquals(1, proposals.length);
+        assertEquals("0]", proposals[0].getContent());
+    }
+
     private void assertProposals(IContentProposal[] proposals) {
-        assertEquals(3, proposals.length);
-        assertEquals("premium", proposals[1].getContent());
-        assertEquals("premium@default", proposals[2].getContent());
-        assertEquals("part", proposals[0].getContent());
+        assertEquals(5, proposals.length);
+        assertEquals("premium", proposals[0].getContent());
+        assertEquals("premium@default", proposals[1].getContent());
+        assertEquals("part", proposals[2].getContent());
+        assertEquals("part[\"", proposals[3].getContent());
+        assertEquals("part[0]", proposals[4].getContent());
     }
 
 }
