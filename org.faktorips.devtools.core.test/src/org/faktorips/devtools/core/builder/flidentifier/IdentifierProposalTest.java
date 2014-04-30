@@ -87,12 +87,12 @@ public class IdentifierProposalTest {
                 IdentifierNodeType.ENUM_VALUE);
 
         List<IdentifierProposal> sortedList = new ArrayList<IdentifierProposal>();
-        sortedList.add(association1);
-        sortedList.add(association2);
-        sortedList.add(attribute1);
-        sortedList.add(attribute2);
         sortedList.add(param1);
         sortedList.add(param2);
+        sortedList.add(attribute1);
+        sortedList.add(attribute2);
+        sortedList.add(association1);
+        sortedList.add(association2);
         sortedList.add(enumValue1);
         sortedList.add(enumValue2);
         return sortedList;

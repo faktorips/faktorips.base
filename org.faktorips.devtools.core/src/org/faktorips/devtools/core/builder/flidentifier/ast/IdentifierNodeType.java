@@ -17,37 +17,22 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 
 /**
  * This enum contains an entry for every {@link IdentifierNode} that is used by the
- * {@link IdentifierParser}.
+ * {@link IdentifierParser}. Each {@link IdentifierNode} has an Integer named
+ * <code>proposalSortOrder</code> which indicates in which order they will appear on the UI.
  * 
  * @author dirmeier
  */
 public enum IdentifierNodeType {
 
-    ASSOCIATION(AssociationNode.class) {
+    PARAMETER(ParameterNode.class, 1) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForAssociationNode();
+            return factory.getGeneratorForParameterNode();
         }
     },
 
-    INDEX(IndexNode.class) {
-
-        @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForIndexBasedAssociationNode();
-        }
-    },
-
-    QUALIFIER(QualifierNode.class) {
-
-        @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForQualifiedAssociationNode();
-        }
-    },
-
-    ATTRIBUTE(AttributeNode.class) {
+    ATTRIBUTE(AttributeNode.class, 2) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -56,15 +41,31 @@ public enum IdentifierNodeType {
 
     },
 
-    PARAMETER(ParameterNode.class) {
+    ASSOCIATION(AssociationNode.class, 3) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForParameterNode();
+            return factory.getGeneratorForAssociationNode();
         }
     },
 
-    ENUM_CLASS(EnumClassNode.class) {
+    INDEX(IndexNode.class, 4) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+            return factory.getGeneratorForIndexBasedAssociationNode();
+        }
+    },
+
+    QUALIFIER(QualifierNode.class, 5) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+            return factory.getGeneratorForQualifiedAssociationNode();
+        }
+    },
+
+    ENUM_CLASS(EnumClassNode.class, 6) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -72,7 +73,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    ENUM_VALUE(EnumValueNode.class) {
+    ENUM_VALUE(EnumValueNode.class, 7) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -80,7 +81,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    INVALID_IDENTIFIER(InvalidIdentifierNode.class) {
+    INVALID_IDENTIFIER(InvalidIdentifierNode.class, -1) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -90,8 +91,11 @@ public enum IdentifierNodeType {
 
     private final Class<? extends IdentifierNode> nodeClass;
 
-    private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass) {
+    private final Integer proposalSortOrder;
+
+    private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass, int proposalSortOrder) {
         this.nodeClass = nodeClass;
+        this.proposalSortOrder = proposalSortOrder;
     }
 
     /**
@@ -107,6 +111,10 @@ public enum IdentifierNodeType {
             }
         }
         throw new IllegalArgumentException("Illegal node class " + nodeClass); //$NON-NLS-1$
+    }
+
+    public Integer getProposalSortOrder() {
+        return proposalSortOrder;
     }
 
     public Class<? extends IdentifierNode> getNodeClass() {
