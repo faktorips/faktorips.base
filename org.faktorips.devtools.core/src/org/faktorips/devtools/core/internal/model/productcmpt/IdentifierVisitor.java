@@ -105,7 +105,7 @@ public class IdentifierVisitor implements FlParserVisitor {
      * @return the position of the start of the identifier within the expression text
      */
     int getIdentifierOffset(SimpleNode node) {
-        return node.getLastToken().getStartPosition(expressionText);
+        return node.getLastToken().getStartPositionRelativeTo(expressionText);
     }
 
     // -----------------------------------------------------------------------------------------

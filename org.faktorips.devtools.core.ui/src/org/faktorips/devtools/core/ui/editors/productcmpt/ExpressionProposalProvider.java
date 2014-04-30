@@ -78,34 +78,38 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         Token token = null;
         while (token == null || token.kind != FlParserConstants.EOF) {
             // CSOFF: IllegalCatch
-            // The token manager may throw any throwable like LexialError or other exceptions :(
+            // The token manager may throw any throwable like a LexialError or exceptions :(
             try {
                 token = tokenManager.getNextToken();
                 if (isLastToken(token, leftOfCursor)) {
-                    if (token.kind == FlParserConstants.IDENTIFIER) {
-                        return token.image;
-                    } else {
-                        return StringUtils.EMPTY;
-                    }
+                    return getIdentifierText(token);
                 }
             } catch (Throwable t) {
-                return getLastValidPart(token, leftOfCursor);
+                return getRemainingContent(token, leftOfCursor);
             }
             // CSON: IllegalCatch
         }
         return leftOfCursor;
     }
 
-    private String getLastValidPart(Token token, String leftOfCursor) {
-        if (token != null) {
-            return leftOfCursor.substring(token.getStartPosition(leftOfCursor));
+    private String getIdentifierText(Token token) {
+        if (token.kind == FlParserConstants.IDENTIFIER) {
+            return token.image;
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
+    private String getRemainingContent(Token lastValidToken, String leftOfCursor) {
+        if (lastValidToken != null) {
+            return leftOfCursor.substring(lastValidToken.getStartPositionRelativeTo(leftOfCursor));
         } else {
             return leftOfCursor;
         }
     }
 
     private boolean isLastToken(Token token, String leftOfCursor) {
-        return token != null && token.getEndPosition(leftOfCursor) >= leftOfCursor.length() - 1;
+        return token != null && token.getEndPositionRelativeTo(leftOfCursor) >= leftOfCursor.length() - 1;
     }
 
     private void addIdentifierNodes(String contents, List<IContentProposal> result) {

@@ -166,11 +166,20 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetProposals_ignoreFunctionsInMultilineString() throws Exception {
+    public void testGetProposals_ignoreFunctionsInMultilineString_tab() throws Exception {
         proposalProvider = new ExpressionProposalProvider(formula, new IdentifierParser(formula, ipsProject));
 
         IContentProposal[] proposals = proposalProvider.getProposals("WENN(\r\n\tABS(\r\n\t\tx+testPolicy.p\r\t)+\n)",
                 30);
+        assertProposals(proposals);
+    }
+
+    @Test
+    public void testGetProposals_ignoreFunctionsInMultilineString_blank() throws Exception {
+        proposalProvider = new ExpressionProposalProvider(formula, new IdentifierParser(formula, ipsProject));
+
+        IContentProposal[] proposals = proposalProvider.getProposals(
+                "WENN(\r\n       ABS(\r\n             x+testPolicy.p\r    )+\n)", 47);
         assertProposals(proposals);
     }
 

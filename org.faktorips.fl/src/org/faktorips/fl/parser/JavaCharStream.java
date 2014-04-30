@@ -217,10 +217,14 @@ public class JavaCharStream {
             case '\n':
                 prevCharIsLF = true;
                 break;
-            case '\t':
-                column--;
-                column += (8 - (column & 07));
-                break;
+            /*
+             * SW 30.4.2014 Interpret tab as 1 character. The below code however interprets it as
+             * (up to) 8 chars, which breaks parsing, refactoring and Error messages in FIPS
+             * formulas. Do NOT use this code. (see also JIRA-1491)
+             */
+            /*
+             * case '\t': column--; column += (8 - (column & 07)); break;
+             */
             default:
                 break;
         }

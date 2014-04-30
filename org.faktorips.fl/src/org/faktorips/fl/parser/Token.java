@@ -83,19 +83,20 @@ public class Token {
      * 
      * @return the position of the start of the identifier within the expression text
      */
-    public int getStartPosition(String text) {
+    public int getStartPositionRelativeTo(String text) {
         return getPosition(text, beginLine, beginColumn);
     }
 
     /**
-     * Returns the ending point of the token. The Token only provides the row and column of the
-     * starting point so we need to transfer these coordinates into a text position.
+     * Returns the ending position of the token relative the given string by converting the token's
+     * row and column indices to an absolute string position. (The string is interpreted as a single
+     * line, and line-feed and carriage-return are each counted as a character)
      * 
      * @param text The text in which the position should be determined
      * 
      * @return the position of the start of the identifier within the expression text
      */
-    public int getEndPosition(String text) {
+    public int getEndPositionRelativeTo(String text) {
         return getPosition(text, endLine, endColumn);
     }
 
