@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 
 /**
  * This enum contains an entry for every {@link IdentifierNode} that is used by the
- * {@link IdentifierParser}. Each {@link IdentifierNode} has an Integer named
+ * {@link IdentifierParser}. Each {@link IdentifierNode} has an integer named
  * <code>proposalSortOrder</code> which indicates in which order they will appear on the UI.
  * 
  * @author dirmeier
@@ -91,7 +91,7 @@ public enum IdentifierNodeType {
 
     private final Class<? extends IdentifierNode> nodeClass;
 
-    private final Integer proposalSortOrder;
+    private final int proposalSortOrder;
 
     private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass, int proposalSortOrder) {
         this.nodeClass = nodeClass;
@@ -113,7 +113,7 @@ public enum IdentifierNodeType {
         throw new IllegalArgumentException("Illegal node class " + nodeClass); //$NON-NLS-1$
     }
 
-    public Integer getProposalSortOrder() {
+    public int getProposalSortOrder() {
         return proposalSortOrder;
     }
 

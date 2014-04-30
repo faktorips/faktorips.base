@@ -69,7 +69,7 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
         if (this.getNodeType().equals(o.getNodeType())) {
             return this.getText().compareTo(o.getText());
         } else {
-            return this.getNodeType().getProposalSortOrder().compareTo(o.getNodeType().getProposalSortOrder());
+            return this.getNodeType().getProposalSortOrder() - o.getNodeType().getProposalSortOrder();
         }
     }
 
