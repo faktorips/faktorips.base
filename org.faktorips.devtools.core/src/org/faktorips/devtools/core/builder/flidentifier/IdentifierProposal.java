@@ -11,6 +11,11 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 
+/**
+ * This class contains the data for a proposal of an identifier as it is provided by the an proposal
+ * provider in auto completion context in the UI.
+ * 
+ */
 public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     private final String text;
@@ -36,7 +41,8 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
      * parsed expression but is derived from the state of this identifier node. For example an
      * identifier node that represents an attribute may return the name of the attribute.
      * <p>
-     * The primary use of this method is to provide the expression text in a content proposal.
+     * The primary use of this method is to provide the expression text in a content proposal. The
+     * text would be inserted when the proposal is selected.
      * 
      * @return The text that represents this identifier node. In other words this is the text that
      *         would lead to to exactly this identifier node if it is parsed by the
@@ -46,6 +52,11 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
         return text;
     }
 
+    /**
+     * Returns the text that is represented in the proposal list. In most cases this is the same
+     * returns {@link #getText()} but in some cases we want to provide additional information in the
+     * list.
+     */
     public String getLabel() {
         return label;
     }
@@ -60,8 +71,20 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
         return description;
     }
 
+    /**
+     * The type of the identifier node that would be created by this proposal.
+     */
     public IdentifierNodeType getNodeType() {
         return nodeType;
+    }
+
+    /**
+     * The prefix is the part of the proposal that already was typed in the text. This information
+     * is used to replace the existing text instead of inserting the whole String from
+     * {@link #getText()}.
+     */
+    public String getPrefix() {
+        return prefix;
     }
 
     @Override
@@ -71,10 +94,6 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
         } else {
             return this.getNodeType().getProposalSortOrder() - o.getNodeType().getProposalSortOrder();
         }
-    }
-
-    public String getPrefix() {
-        return prefix;
     }
 
 }
