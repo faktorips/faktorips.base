@@ -266,6 +266,16 @@
                name="windowImages"
                value="platform:/plugin/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon16.gif,platform:/plugin/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon32.gif">
          </property>
+         
+         <property
+		    name="cssTheme"
+		    value="org.eclipse.e4.ui.css.theme.e4_default">
+		</property>
+		<property
+		    name="applicationCSSResources"
+		    value="platform:/plugin/org.eclipse.platform/images/">
+		</property>
+
       </product>
    </extension>
 
