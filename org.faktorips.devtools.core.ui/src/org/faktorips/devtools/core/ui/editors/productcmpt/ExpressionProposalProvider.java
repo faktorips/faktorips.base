@@ -72,11 +72,21 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         return contents.substring(0, cursorPosition);
     }
 
+    /**
+     * Sadly a hacky method. The basic problem is that in the context of ExpressionProposals an
+     * incomplete string must be parsed. The generated FlParser and TokenManager have a problem with
+     * incomplete tokens. The IdentifierParsers on the other hand could work with incomplete
+     * identifiers, but not with other tokens (e.g. function names as "IF()").
+     * 
+     * This method lets the TokenManager parse as much as it can of the incomplete input string. In
+     * case of an error the remaining content is used and given to the identifier parsers in the
+     * hope that they can process it and provide proposals.
+     */
     private String getLastIdentifier(String leftOfCursor) {
         JavaCharStream stream = new JavaCharStream(new StringReader(leftOfCursor));
         FlParserTokenManager tokenManager = new FlParserTokenManager(stream);
         Token token = null;
-        while (token == null || token.kind != FlParserConstants.EOF) {
+        while (continueParsingAfter(token)) {
             // CSOFF: IllegalCatch
             // The token manager may throw any throwable like a LexialError or exceptions :(
             try {
@@ -85,11 +95,25 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
                     return getIdentifierText(token);
                 }
             } catch (Throwable t) {
+                /*
+                 * SW 2.5.2014: Even though this a very common case for context proposals, the
+                 * TokenManager cannot parse "p.coverages[" as a single identifier. It expects [0]
+                 * or ["..."] in an identifier, but cannot find a corresponding closing bracket. The
+                 * longest identifier it can match is "p.coverages". Continuing with "[" causes an
+                 * error as the bracket on its own is never allowed by the defined grammar.
+                 * 
+                 * Our only choice is to catch the exception and use the whole remaining content
+                 * (including the bracket) to calculate proposals.
+                 */
                 return getRemainingContent(token, leftOfCursor);
             }
             // CSON: IllegalCatch
         }
         return leftOfCursor;
+    }
+
+    private boolean continueParsingAfter(Token token) {
+        return token == null || token.kind != FlParserConstants.EOF;
     }
 
     private String getIdentifierText(Token token) {
