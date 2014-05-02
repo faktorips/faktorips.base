@@ -66,7 +66,7 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     @Override
     public int compareTo(IdentifierProposal o) {
-        if (this.getNodeType().equals(o.getNodeType())) {
+        if (this.getNodeType() == o.getNodeType()) {
             return this.getText().compareTo(o.getText());
         } else {
             return this.getNodeType().getProposalSortOrder() - o.getNodeType().getProposalSortOrder();
