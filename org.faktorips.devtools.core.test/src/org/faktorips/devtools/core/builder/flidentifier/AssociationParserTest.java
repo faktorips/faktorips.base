@@ -18,6 +18,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
@@ -35,6 +37,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class AssociationParserTest extends AbstractParserTest {
 
+    private static final String TARGET = "target";
     private static final String MY_ASSOCIATION = "myAssociation";
     private static final String MY_SECOND_ASSOCIATION = "mySecondAssociation";
 
@@ -59,11 +62,11 @@ public class AssociationParserTest extends AbstractParserTest {
 
         when(policyCmptType.findAssociation(MY_ASSOCIATION, getIpsProject())).thenReturn(association);
         when(association.getName()).thenReturn(MY_ASSOCIATION);
-        when(association.getTarget()).thenReturn("target");
+        when(association.getTarget()).thenReturn(TARGET);
         when(association.findTarget(getIpsProject())).thenReturn(targetType);
         when(policyCmptType.findAssociation(MY_SECOND_ASSOCIATION, getIpsProject())).thenReturn(association2);
         when(association2.getName()).thenReturn(MY_SECOND_ASSOCIATION);
-        when(association2.getTarget()).thenReturn("target");
+        when(association2.getTarget()).thenReturn(TARGET);
         when(association2.findTarget(getIpsProject())).thenReturn(targetType);
 
         List<IAssociation> assocList = new ArrayList<IAssociation>();
@@ -160,6 +163,38 @@ public class AssociationParserTest extends AbstractParserTest {
         assertEquals(MY_SECOND_ASSOCIATION, proposals.get(0).getText());
         assertEquals(MY_SECOND_ASSOCIATION + "[0]", proposals.get(1).getText());
         assertEquals(MY_SECOND_ASSOCIATION + "[\"", proposals.get(2).getText());
+    }
+
+    @Test
+    public void testGetDisplayText() {
+        when(association.is1ToMany()).thenReturn(false);
+        when(association.is1ToManyIgnoringQualifier()).thenReturn(true);
+        when(association2.is1ToMany()).thenReturn(true);
+        when(association2.is1ToManyIgnoringQualifier()).thenReturn(false);
+
+        List<IdentifierProposal> proposals = associationParser.getProposals("");
+
+        assertEquals(6, proposals.size());
+        assertEquals(getDisplayText(MY_ASSOCIATION, StringUtils.EMPTY, false), proposals.get(0).getLabel());
+        assertEquals(getDisplayText(MY_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false), proposals.get(1)
+                .getLabel());
+        assertEquals(getDisplayText(MY_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, true), proposals.get(2)
+                .getLabel());
+        assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, StringUtils.EMPTY, true), proposals.get(3).getLabel());
+        assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false), proposals.get(4)
+                .getLabel());
+        assertEquals(getDisplayText(MY_SECOND_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, false),
+                proposals.get(5).getLabel());
+    }
+
+    private String getDisplayText(String associationName, String suffix, boolean listTarget) {
+        String result = associationName + suffix + AssociationParser.ASSOCIATION_TARGET_SEPERATOR;
+        if (listTarget) {
+            result += NLS.bind(Messages.AssociationParser_ListDatatypeDescriptionPrefix, TARGET);
+        } else {
+            result += TARGET;
+        }
+        return result;
     }
 
     @Test

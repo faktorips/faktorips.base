@@ -35,11 +35,13 @@ import org.faktorips.util.message.Message;
  */
 public class AssociationParser extends TypeBasedIdentifierParser {
 
-    private static final String INDEX_PROPOSAL = "[0]"; //$NON-NLS-1$
+    static final String ASSOCIATION_TARGET_SEPERATOR = " -> "; //$NON-NLS-1$
 
-    private static final String QUALIFIER_PROPOSAL = "[\""; //$NON-NLS-1$
+    static final String INDEX_PROPOSAL = "[0]"; //$NON-NLS-1$
 
-    private static final String QUALIFIER_PROPOSAL_LABEL = "[\"...\"]"; //$NON-NLS-1$
+    static final String QUALIFIER_PROPOSAL = "[\""; //$NON-NLS-1$
+
+    static final String QUALIFIER_PROPOSAL_LABEL = "[\"...\"]"; //$NON-NLS-1$
 
     public AssociationParser(ParsingContext parsingContext) {
         super(parsingContext);
@@ -90,18 +92,16 @@ public class AssociationParser extends TypeBasedIdentifierParser {
     }
 
     private void addAssociationProposals(IAssociation association, String prefix, IdentifierProposalCollector collector) {
-        collector.addMatchingNode(getDisplayText(association, StringUtils.EMPTY),
-                getText(association, StringUtils.EMPTY), getDescription(association), prefix,
-                IdentifierNodeType.ASSOCIATION);
-        collector.addMatchingNode(getDisplayText(association, INDEX_PROPOSAL), getText(association, INDEX_PROPOSAL),
+        collector.addMatchingNode(getText(association, StringUtils.EMPTY), getDisplayText(association),
                 getDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
-        collector.addMatchingNode(getDisplayText(association, QUALIFIER_PROPOSAL),
-                getText(association, QUALIFIER_PROPOSAL_LABEL), getDescription(association), prefix,
-                IdentifierNodeType.ASSOCIATION);
+        collector.addMatchingNode(getText(association, INDEX_PROPOSAL), getIndexDisplayText(association),
+                getIndexDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
+        collector.addMatchingNode(getText(association, QUALIFIER_PROPOSAL), getQualifierDisplayText(association),
+                getQualifierDescription(association), prefix, IdentifierNodeType.ASSOCIATION);
     }
 
-    private String getDisplayText(IAssociation association, String proposal) {
-        return association.getName() + proposal;
+    private String getText(IAssociation association, String proposalSuffix) {
+        return association.getName() + proposalSuffix;
     }
 
     private List<IAssociation> getAllAssociations() {
@@ -112,44 +112,68 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         }
     }
 
-    private List<IdentifierProposal> getProposalsFor(String prefix) {
+    private List<IdentifierProposal> getProposalsFor(String prefixSuffix) {
         IdentifierProposalCollector collector = new IdentifierProposalCollector();
         List<IAssociation> allAssociations = getAllAssociations();
         for (IAssociation association : allAssociations) {
-            addAssociationProposals(association, prefix, collector);
+            addAssociationProposals(association, prefixSuffix, collector);
         }
         return collector.getProposals();
     }
 
-    String getText(IAssociation association, String proposal) {
-        return association.getName() + proposal + (getAssociationAndTarget(association).toString());
+    String getDisplayText(IAssociation association) {
+        return getText(association, StringUtils.EMPTY) + getAssociationTarget(association, association.is1ToMany());
 
     }
 
-    String getDescription(IAssociation association) {
-        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
-        StringBuilder description = getAssociationAndTarget(association);
-        description.append(NAME_DESCRIPTION_SEPERATOR)
-                .append(multiLanguageSupport.getLocalizedDescription(association));
-        return association.getName() + description.toString();
+    String getIndexDisplayText(IAssociation association) {
+        return getText(association, INDEX_PROPOSAL) + getAssociationTarget(association, false);
     }
 
-    private StringBuilder getAssociationAndTarget(IAssociation association) {
-        StringBuilder description = new StringBuilder();
-        description.append(" -> "); //$NON-NLS-1$
-        if (isToManyAssociation(association)) {
-            description.append(Messages.AssociationParser_ListDatatypeDescriptionPrefix);
+    private String getQualifierDisplayText(IAssociation association) {
+        return getText(association, QUALIFIER_PROPOSAL_LABEL)
+                + getAssociationTarget(association, association.is1ToManyIgnoringQualifier());
+    }
+
+    private String getAssociationTarget(IAssociation association, boolean oneToMany) {
+        String associationTarget = ASSOCIATION_TARGET_SEPERATOR;
+        if (oneToMany) {
+            associationTarget += NLS.bind(Messages.AssociationParser_ListDatatypeDescriptionPrefix,
+                    getUnqualifiedTargetName(association));
+        } else {
+            associationTarget += getUnqualifiedTargetName(association);
         }
-        description.append(getUnqualifiedTargetName(association));
-        return description;
-    }
-
-    private boolean isToManyAssociation(IAssociation association) {
-        return association.is1ToMany();
+        return associationTarget.toString();
     }
 
     private String getUnqualifiedTargetName(IAssociation association) {
         return StringUtil.unqualifiedName(association.getTarget());
+    }
+
+    String getDescription(IAssociation association) {
+        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        StringBuilder description = new StringBuilder();
+        description.append(getDisplayText(association)).append("\n\n") //$NON-NLS-1$
+                .append(multiLanguageSupport.getLocalizedDescription(association));
+        return association.getName() + description.toString();
+    }
+
+    String getIndexDescription(IAssociation association) {
+        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        StringBuilder description = new StringBuilder();
+        description.append(getIndexDisplayText(association)).append("\n\n") //$NON-NLS-1$
+                .append(Messages.QualifierAndIndexParser_descriptionIndex).append("\n\n") //$NON-NLS-1$
+                .append(multiLanguageSupport.getLocalizedDescription(association));
+        return association.getName() + description.toString();
+    }
+
+    String getQualifierDescription(IAssociation association) {
+        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        StringBuilder description = new StringBuilder();
+        description.append(getQualifierDisplayText(association)).append("\n\n") //$NON-NLS-1$
+                .append(Messages.QualifierAndIndexParser_descriptionQualifierUndefined).append("\n\n") //$NON-NLS-1$
+                .append(multiLanguageSupport.getLocalizedDescription(association));
+        return association.getName() + description.toString();
     }
 
 }

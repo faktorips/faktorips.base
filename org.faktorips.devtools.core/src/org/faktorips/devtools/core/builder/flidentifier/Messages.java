@@ -37,6 +37,7 @@ public class Messages extends NLS {
 
     public static String QualifierAndIndexParser_descriptionIndex;
     public static String QualifierAndIndexParser_descriptionQualifier;
+    public static String QualifierAndIndexParser_descriptionQualifierUndefined;
 
     public static String ParameterParser_description;
 
