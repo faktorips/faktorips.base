@@ -89,11 +89,33 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     @Override
     public int compareTo(IdentifierProposal o) {
-        if (this.getNodeType() == o.getNodeType()) {
+        if (this.getNodeType().equals(o.getNodeType())) {
             return this.getText().compareTo(o.getText());
         } else {
             return this.getNodeType().getProposalSortOrder() - o.getNodeType().getProposalSortOrder();
         }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((label == null) ? 0 : label.hashCode());
+        result = prime * result + ((nodeType == null) ? 0 : nodeType.hashCode());
+        result = prime * result + ((prefix == null) ? 0 : prefix.hashCode());
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        IdentifierProposal other = (IdentifierProposal)obj;
+        return text.equals(other.text) && label.equals(other.label) && description.equals(other.description)
+                && prefix.equals(other.prefix) && nodeType == other.nodeType;
     }
 
 }
