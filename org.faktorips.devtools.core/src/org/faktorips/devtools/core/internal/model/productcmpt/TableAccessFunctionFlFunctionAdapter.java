@@ -113,4 +113,42 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
     protected String getReferencedName() {
         return referencedName;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((fct == null) ? 0 : fct.hashCode());
+        result = prime * result + ((referencedName == null) ? 0 : referencedName.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        TableAccessFunctionFlFunctionAdapter other = (TableAccessFunctionFlFunctionAdapter)obj;
+        if (fct == null) {
+            if (other.fct != null) {
+                return false;
+            }
+        } else if (!fct.equals(other.fct)) {
+            return false;
+        }
+        if (referencedName == null) {
+            if (other.referencedName != null) {
+                return false;
+            }
+        } else if (!referencedName.equals(other.referencedName)) {
+            return false;
+        }
+        return true;
+    }
 }

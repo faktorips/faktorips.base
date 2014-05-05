@@ -90,12 +90,12 @@ public interface IIpsProjectProperties {
     /**
      * Returns the time stamp of the last persistent modification of this object.
      */
-    public Long getLastPersistentModificationTimestamp();
+    public long getLastPersistentModificationTimestamp();
 
     /**
      * Sets the time stamp of the last persistent modification of this object.
      */
-    public void setLastPersistentModificationTimestamp(Long timestamp);
+    public void setLastPersistentModificationTimestamp(long timestamp);
 
     /**
      * Validates the project properties.

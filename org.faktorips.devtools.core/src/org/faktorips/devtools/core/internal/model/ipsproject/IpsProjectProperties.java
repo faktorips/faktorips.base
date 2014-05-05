@@ -159,7 +159,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     // hidden resource names in the model and product explorer
     private Set<String> resourcesPathExcludedFromTheProductDefiniton = new HashSet<String>(10);
-    private Long lastPersistentModificationTimestamp;
+    private long lastPersistentModificationTimestamp;
 
     private IPersistenceOptions persistenceOptions = new PersistenceOptions();
 
@@ -1366,12 +1366,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public Long getLastPersistentModificationTimestamp() {
+    public long getLastPersistentModificationTimestamp() {
         return lastPersistentModificationTimestamp;
     }
 
     @Override
-    public void setLastPersistentModificationTimestamp(Long timestamp) {
+    public void setLastPersistentModificationTimestamp(long timestamp) {
         lastPersistentModificationTimestamp = timestamp;
     }
 

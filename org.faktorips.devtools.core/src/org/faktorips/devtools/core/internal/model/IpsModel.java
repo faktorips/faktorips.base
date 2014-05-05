@@ -190,7 +190,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * A map containing project data per project.
      */
-    private final Map<IIpsProject, IpsProjectData> ipsProjectDatas = new ConcurrentHashMap<IIpsProject, IpsProjectData>();
+    private final Map<IIpsProject, IpsProjectData> ipsProjectDatas = new ConcurrentHashMap<IIpsProject, IpsProjectData>(
+            3, 0.9f, 2);
 
     private IpsObjectPathContainerFactory ipsObjectPathContainerFactory = IpsObjectPathContainerFactory
             .newFactoryBasedOnExtensions();
@@ -928,9 +929,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IFile propertyFile = ipsProject.getIpsProjectPropertiesFile();
         IpsProjectProperties properties = getIpsProjectData(ipsProject).getProjectProperties();
         if (properties != null
-                && propertyFile.exists()
-                && !new Long(ipsProject.getIpsProjectPropertiesFile().getModificationStamp()).equals(properties
-                        .getLastPersistentModificationTimestamp())) {
+                && propertyFile.getModificationStamp() != properties.getLastPersistentModificationTimestamp()) {
             clearProjectSpecificCaches(ipsProject);
             properties = null;
         }

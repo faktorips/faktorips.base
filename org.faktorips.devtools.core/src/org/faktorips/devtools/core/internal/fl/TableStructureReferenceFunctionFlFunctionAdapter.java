@@ -28,7 +28,7 @@ public class TableStructureReferenceFunctionFlFunctionAdapter extends TableAcces
 
     @Override
     public String getName() {
-        return (getReferencedName()) + "." + getTableAccessFunction().getAccessedColumn(); //$NON-NLS-1$
+        return getReferencedName() + "." + getTableAccessFunction().getAccessedColumn(); //$NON-NLS-1$
     }
 
 }

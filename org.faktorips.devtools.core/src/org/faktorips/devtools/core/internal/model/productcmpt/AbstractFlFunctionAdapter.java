@@ -50,10 +50,22 @@ public abstract class AbstractFlFunctionAdapter<T extends CodeFragment> implemen
         throw new RuntimeException("The adpater does not support setDescription()!"); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This method is called very often. Therefore it first verifies some basic checks before
+     * delegating to {@link FunctionSignatureImpl} which does the real compare.
+     */
     @Override
     public boolean isSame(FunctionSignature fctSignature) {
-        FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
-        return thisFct.isSame(fctSignature);
+        if (equals(fctSignature)) {
+            return true;
+        } else if (!getName().equals(fctSignature.getName())) {
+            return false;
+        } else {
+            FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
+            return thisFct.isSame(fctSignature);
+        }
     }
 
     @Override
