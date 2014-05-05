@@ -14,17 +14,21 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
+import org.faktorips.fl.FunctionResolver;
 
 /**
  * This enum contains an entry for every {@link IdentifierNode} that is used by the
  * {@link IdentifierParser}. Each {@link IdentifierNode} has an integer named
- * <code>proposalSortOrder</code> which indicates in which order they will appear on the UI.
+ * <code>proposalSortOrder</code> which indicates in which order they will appear on the UI. A
+ * negative sort order implies that proposals of this type should be before any other proposal
+ * provided by other sources but the {@link IdentifierParser}, for example functions from
+ * {@link FunctionResolver}.
  * 
  * @author dirmeier
  */
 public enum IdentifierNodeType {
 
-    PARAMETER(ParameterNode.class, 1) {
+    PARAMETER(ParameterNode.class, -1) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -81,7 +85,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    INVALID_IDENTIFIER(InvalidIdentifierNode.class, -1) {
+    INVALID_IDENTIFIER(InvalidIdentifierNode.class, Integer.MAX_VALUE) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -93,6 +97,16 @@ public enum IdentifierNodeType {
 
     private final int proposalSortOrder;
 
+    /**
+     * Instantiates the {@link IdentifierNodeType} with the following parameters
+     * 
+     * @param nodeClass The subclass of {@link IdentifierNode} that is instantiated for the
+     *            specified type
+     * @param proposalSortOrder Proposals are sorted in blocks of same type. This number specifies
+     *            the position of this proposal type. A negative number implies that the position is
+     *            before other functions that may not be provided by the {@link IdentifierParser}.
+     * 
+     */
     private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass, int proposalSortOrder) {
         this.nodeClass = nodeClass;
         this.proposalSortOrder = proposalSortOrder;

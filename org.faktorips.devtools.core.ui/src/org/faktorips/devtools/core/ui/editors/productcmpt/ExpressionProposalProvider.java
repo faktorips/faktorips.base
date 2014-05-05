@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +44,8 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
 
     private final IExpression expression;
 
+    private LinkedList<IContentProposal> proposals;
+
     public ExpressionProposalProvider(IExpression expression) {
         this(expression, new IdentifierParser(expression, expression.getIpsProject()));
     }
@@ -57,10 +60,10 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
     public IContentProposal[] getProposals(String contents, int position) {
         String consideredInput = getConsideredInput(contents, position);
 
-        List<IContentProposal> result = new LinkedList<IContentProposal>();
-        addIdentifierNodes(consideredInput, result);
-        addMatchingFunctions(consideredInput, result);
-        return result.toArray(new IContentProposal[result.size()]);
+        proposals = new LinkedList<IContentProposal>();
+        addMatchingFunctions(consideredInput);
+        addIdentifierNodes(consideredInput);
+        return proposals.toArray(new IContentProposal[proposals.size()]);
     }
 
     private String getConsideredInput(String contents, int cursorPosition) {
@@ -136,21 +139,31 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         return token != null && token.getEndPositionRelativeTo(leftOfCursor) >= leftOfCursor.length() - 1;
     }
 
-    private void addIdentifierNodes(String contents, List<IContentProposal> result) {
-        List<IdentifierProposal> proposals = identifierParser.getProposals(contents);
-        Collections.sort(proposals);
-        for (IdentifierProposal identifierProposal : proposals) {
-            result.add(new ContentProposal(identifierProposal.getText(), identifierProposal.getLabel(),
-                    identifierProposal.getDescription(), identifierProposal.getPrefix()));
+    private void addIdentifierNodes(String contents) {
+        List<IdentifierProposal> identifierProposals = identifierParser.getProposals(contents);
+        Collections.sort(identifierProposals);
+        List<IContentProposal> preFunctionIdentifiers = new ArrayList<IContentProposal>();
+        for (IdentifierProposal identifierProposal : identifierProposals) {
+            if (identifierProposal.getNodeType().getProposalSortOrder() < 0) {
+                preFunctionIdentifiers.add(createContentProposal(identifierProposal));
+            } else {
+                proposals.add(createContentProposal(identifierProposal));
+            }
         }
+        proposals.addAll(0, preFunctionIdentifiers);
     }
 
-    private void addMatchingFunctions(String prefix, List<IContentProposal> result) {
+    private ContentProposal createContentProposal(IdentifierProposal identifierProposal) {
+        return new ContentProposal(identifierProposal.getText(), identifierProposal.getLabel(),
+                identifierProposal.getDescription(), identifierProposal.getPrefix());
+    }
+
+    private void addMatchingFunctions(String prefix) {
         ExprCompiler<JavaCodeFragment> compiler = expression.newExprCompiler(expression.getIpsProject());
         FlFunction<JavaCodeFragment>[] functions = compiler.getFunctions();
         for (FlFunction<JavaCodeFragment> function : functions) {
             if (checkMatchingNameWithCaseInsensitive(function.getName(), prefix)) {
-                addFunctionToResult(result, function, prefix);
+                addFunctionToResult(function, prefix);
             }
         }
     }
@@ -175,7 +188,7 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         return false;
     }
 
-    private void addFunctionToResult(List<IContentProposal> result, FlFunction<JavaCodeFragment> function, String prefix) {
+    private void addFunctionToResult(FlFunction<JavaCodeFragment> function, String prefix) {
         String name = function.getName();
         StringBuffer displayText = new StringBuffer(name);
         displayText.append('(');
@@ -191,6 +204,6 @@ public class ExpressionProposalProvider implements IContentProposalProvider {
         displayText.append(function.getType().getName());
         String description = function.getDescription();
         ContentProposal proposal = new ContentProposal(name, displayText.toString(), description, prefix);
-        result.add(proposal);
+        proposals.add(proposal);
     }
 }
