@@ -352,4 +352,44 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(method.isPropertyFor(propertyValue));
     }
 
+    @Test
+    public void testValidateOverloadedFormulaSignature_overloadedNoName() throws CoreException {
+        MessageList list = new MessageList();
+        method.setOverloadsFormula(true);
+
+        ((ProductCmptTypeMethod)method).validateOverloadedFormulaSignature(list, ipsProject);
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testValidateOverloadedFormulaSignature_overloadedNotFound() throws CoreException {
+        MessageList list = new MessageList();
+        method.setOverloadsFormula(true);
+        method.setFormulaName("testName");
+
+        ((ProductCmptTypeMethod)method).validateOverloadedFormulaSignature(list, ipsProject);
+
+        assertEquals(1, list.size());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY, list.getMessage(0)
+                .getCode());
+    }
+
+    @Test
+    public void testValidateOverloadedFormulaSignature_overloadedMendatory() throws CoreException {
+        MessageList list = new MessageList();
+        method.setOverloadsFormula(true);
+        method.setFormulaName("testName");
+        method.setFormulaMandatory(false);
+        ProductCmptType superType = newProductCmptType(ipsProject, "SuperType");
+        productCmptType.setSupertype("SuperType");
+        IProductCmptTypeMethod superMethod = superType.newFormulaSignature("testName");
+        superMethod.setFormulaMandatory(true);
+
+        ((ProductCmptTypeMethod)method).validateOverloadedFormulaSignature(list, ipsProject);
+
+        assertEquals(1, list.size());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_MANDATORY, list.getMessage(0).getCode());
+    }
+
 }
