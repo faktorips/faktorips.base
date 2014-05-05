@@ -143,7 +143,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         } else {
             associationTarget += getUnqualifiedTargetName(association);
         }
-        return associationTarget.toString();
+        return associationTarget;
     }
 
     private String getUnqualifiedTargetName(IAssociation association) {

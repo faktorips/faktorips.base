@@ -122,7 +122,7 @@ public class Migration_3_6_0_rfinal extends AbstractIpsProjectMigrationOperation
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
-        data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
+        data.setLastPersistentModificationTimestamp(file.getModificationStamp());
         ipsProject.setProperties(data);
         return msgResultList;
     }

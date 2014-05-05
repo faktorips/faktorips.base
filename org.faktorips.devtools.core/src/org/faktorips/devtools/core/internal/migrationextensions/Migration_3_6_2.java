@@ -120,7 +120,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
-        data.setLastPersistentModificationTimestamp(new Long(file.getModificationStamp()));
+        data.setLastPersistentModificationTimestamp(file.getModificationStamp());
         ipsProject.setProperties(data);
         return msgResultList;
     }
