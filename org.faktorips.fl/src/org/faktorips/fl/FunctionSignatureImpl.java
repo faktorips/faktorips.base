@@ -166,7 +166,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
         } else if (!match(fctSignature.getName(), fctSignature.getArgTypes())) {
             return false;
         } else {
-            return !type.equals(fctSignature.getType());
+            return type.equals(fctSignature.getType());
         }
     }
 
