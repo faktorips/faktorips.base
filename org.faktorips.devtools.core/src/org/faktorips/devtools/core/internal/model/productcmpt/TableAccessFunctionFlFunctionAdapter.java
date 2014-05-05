@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -93,7 +95,8 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     @Override
     public Datatype[] getArgTypes() {
-        return fct.findArgTypes();
+        List<Datatype> argTypes = fct.findArgTypes();
+        return argTypes.toArray(new Datatype[argTypes.size()]);
     }
 
     protected ITableAccessFunction getTableAccessFunction() {

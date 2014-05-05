@@ -46,7 +46,7 @@ public interface ITableAccessFunction {
      */
     public List<String> getArgTypes();
 
-    public Datatype[] findArgTypes();
+    public List<Datatype> findArgTypes();
 
     /**
      * Returns the description of this function

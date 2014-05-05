@@ -38,7 +38,7 @@ public class TableAccessFunction implements ITableAccessFunction {
 
     private final IColumn column;
 
-    private Datatype[] argTypes;
+    private List<Datatype> argTypes;
 
     public TableAccessFunction(IIndex key, IColumn column) {
         ArgumentCheck.notNull(key);
@@ -87,18 +87,18 @@ public class TableAccessFunction implements ITableAccessFunction {
     }
 
     @Override
-    public Datatype[] findArgTypes() {
+    public List<Datatype> findArgTypes() {
         if (argTypes == null) {
-            ArrayList<Datatype> tmpArgTypes = new ArrayList<Datatype>();
+            argTypes = new ArrayList<Datatype>();
             IIpsProject project = getIpsProject();
             for (String argType : argTypeNames) {
                 try {
-                    tmpArgTypes.add(project.findValueDatatype(argType));
+                    argTypes.add(project.findValueDatatype(argType));
                 } catch (CoreException e) {
                     throw new RuntimeException("Error searching for datatype " + argType, e); //$NON-NLS-1$
                 }
             }
-            argTypes = tmpArgTypes.toArray(new Datatype[tmpArgTypes.size()]);
+            argTypes = Collections.unmodifiableList(argTypes);
         }
         return argTypes;
     }
