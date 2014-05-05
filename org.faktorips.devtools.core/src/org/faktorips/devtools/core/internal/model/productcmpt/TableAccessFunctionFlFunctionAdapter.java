@@ -30,9 +30,13 @@ import org.faktorips.util.message.Message;
  */
 public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdapter<JavaCodeFragment> {
 
-    private ITableAccessFunction fct;
-    private String tableContentsQualifiedName;
-    private String referencedName;
+    private final ITableAccessFunction fct;
+
+    private final String tableContentsQualifiedName;
+
+    private final String referencedName;
+
+    private final String name;
 
     /**
      * @param tableContentsQName cannot be null
@@ -48,6 +52,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
         this.fct = fct;
         this.tableContentsQualifiedName = tableContentsQName;
         this.referencedName = referencedName;
+        this.name = StringUtils.capitalize(referencedName) + "." + fct.getAccessedColumnName(); //$NON-NLS-1$
     }
 
     @Override
@@ -69,8 +74,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     @Override
     public String getDescription() {
-        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(fct);
-        return localizedDescription;
+        return fct.getDescription();
     }
 
     @Override
@@ -84,22 +88,12 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     @Override
     public String getName() {
-        return StringUtils.capitalize(referencedName) + "." + fct.getAccessedColumn(); //$NON-NLS-1$
+        return name;
     }
 
     @Override
     public Datatype[] getArgTypes() {
-        IIpsProject project = getIpsProject();
-        String[] argTypes = fct.getArgTypes();
-        Datatype[] types = new Datatype[argTypes.length];
-        for (int i = 0; i < argTypes.length; i++) {
-            try {
-                types[i] = project.findValueDatatype(argTypes[i]);
-            } catch (CoreException e) {
-                throw new RuntimeException("Error searching for datatype " + argTypes[i], e); //$NON-NLS-1$
-            }
-        }
-        return types;
+        return fct.findArgTypes();
     }
 
     protected ITableAccessFunction getTableAccessFunction() {

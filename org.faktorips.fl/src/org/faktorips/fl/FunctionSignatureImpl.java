@@ -158,16 +158,16 @@ public class FunctionSignatureImpl implements FunctionSignature {
         return true;
     }
 
-    /**
-     * Overridden method.
-     * 
-     * @see org.faktorips.fl.FunctionSignature#isSame(org.faktorips.fl.FunctionSignature)
-     */
     public boolean isSame(FunctionSignature fctSignature) {
-        if (!type.equals(fctSignature.getType())) {
+        // this check is also done in #match(name, datatypes) but for performance issue we do it
+        // before getting the argTypes of fctSignature
+        if (!this.name.equals(fctSignature.getName())) {
             return false;
+        } else if (!match(fctSignature.getName(), fctSignature.getArgTypes())) {
+            return false;
+        } else {
+            return !type.equals(fctSignature.getType());
         }
-        return match(fctSignature.getName(), fctSignature.getArgTypes());
     }
 
     @Override

@@ -27,7 +27,6 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -179,16 +178,15 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         fcts = table.getAccessFunctions();
         assertEquals(2, fcts.length);
         assertSame(table, fcts[0].getTableStructure());
-        assertEquals("TestTable.rate", fcts[0].getName());
-        assertEquals("rate", fcts[0].getAccessedColumn());
-        assertSame(rate, fcts[0].findAccessedColumn());
+        assertEquals("rate", fcts[0].getAccessedColumnName());
+        assertSame(rate, fcts[0].getAccessedColumn());
         assertEquals(rate.getDatatype(), fcts[0].getType());
-        String[] argTypes = fcts[0].getArgTypes();
-        assertEquals(2, argTypes.length);
-        assertEquals(gender.getDatatype(), argTypes[0]);
-        assertEquals(range.getDatatype(), argTypes[1]);
+        List<String> argTypes = fcts[0].getArgTypes();
+        assertEquals(2, argTypes.size());
+        assertEquals(gender.getDatatype(), argTypes.get(0));
+        assertEquals(range.getDatatype(), argTypes.get(1));
 
-        assertEquals("TestTable.minPremium", fcts[1].getName());
+        assertEquals("minPremium", fcts[1].getAccessedColumnName());
 
         IColumn newKeyColumn = table.newColumn();
         newKeyColumn.setName("newKeyColumn");
@@ -199,20 +197,19 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         fcts = table.getAccessFunctions();
         assertEquals(7, fcts.length);
         assertSame(table, fcts[0].getTableStructure());
-        assertEquals("TestTable.rate", fcts[0].getName());
-        assertEquals("rate", fcts[0].getAccessedColumn());
-        assertSame(rate, fcts[0].findAccessedColumn());
+        assertEquals("rate", fcts[0].getAccessedColumnName());
+        assertSame(rate, fcts[0].getAccessedColumn());
         assertEquals(rate.getDatatype(), fcts[0].getType());
         argTypes = fcts[0].getArgTypes();
-        assertEquals(2, argTypes.length);
-        assertEquals(gender.getDatatype(), argTypes[0]);
-        assertEquals(range.getDatatype(), argTypes[1]);
-        assertEquals("TestTable.minPremium", fcts[1].getName());
-        assertEquals("TestTable.newKeyColumn", fcts[2].getName());
-        assertEquals("TestTable.ageFrom", fcts[3].getName());
-        assertEquals("TestTable.ageTo", fcts[4].getName());
-        assertEquals("TestTable.rate", fcts[5].getName());
-        assertEquals("TestTable.minPremium", fcts[6].getName());
+        assertEquals(2, argTypes.size());
+        assertEquals(gender.getDatatype(), argTypes.get(0));
+        assertEquals(range.getDatatype(), argTypes.get(1));
+        assertEquals("minPremium", fcts[1].getAccessedColumnName());
+        assertEquals("newKeyColumn", fcts[2].getAccessedColumnName());
+        assertEquals("ageFrom", fcts[3].getAccessedColumnName());
+        assertEquals("ageTo", fcts[4].getAccessedColumnName());
+        assertEquals("rate", fcts[5].getAccessedColumnName());
+        assertEquals("minPremium", fcts[6].getAccessedColumnName());
 
     }
 
@@ -240,16 +237,6 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         range.setToColumn("ageTo");
         IIndex key = table.newIndex();
         key.setKeyItems(new String[] { gender.getName(), range.getName() });
-
-        fcts = table.getAccessFunctions();
-        List<IDescription> descriptions = fcts[0].getDescriptions();
-        assertEquals(3, descriptions.size());
-        System.out.println(fcts[0].getDescription(Locale.GERMAN).getText());
-        System.out.println(fcts[0].getDescription(Locale.ENGLISH).getText());
-        System.out.println(fcts[0].getDescription(Locale.FRENCH).getText());
-        assertEquals("", fcts[0].getDescription(Locale.GERMAN).getText());
-        assertEquals("", fcts[0].getDescription(Locale.ENGLISH).getText());
-        assertEquals("", fcts[0].getDescription(Locale.FRENCH).getText());
     }
 
     @Test

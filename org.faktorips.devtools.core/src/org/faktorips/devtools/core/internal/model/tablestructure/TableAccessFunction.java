@@ -10,56 +10,70 @@
 
 package org.faktorips.devtools.core.internal.model.tablestructure;
 
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.faktorips.util.ArgumentCheck;
 
-public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAccessFunction {
+public class TableAccessFunction implements ITableAccessFunction {
 
-    private String accessedColumn;
-    private String type;
-    private String[] argTypes = new String[0];
+    private final ITableStructure tableStructure;
 
-    public TableAccessFunction(IIpsObjectPartContainer parent, String id) {
-        super(parent, id);
-    }
+    private final String description;
 
-    public TableAccessFunction() {
-        super();
+    private final String type;
+
+    private final List<String> argTypeNames;
+
+    private final IColumn column;
+
+    private Datatype[] argTypes;
+
+    public TableAccessFunction(IIndex key, IColumn column) {
+        ArgumentCheck.notNull(key);
+        ArgumentCheck.notNull(column);
+        this.column = column;
+        tableStructure = key.getTableStructure();
+        type = column.getDatatype();
+
+        StringBuilder params = new StringBuilder();
+        IKeyItem[] items = key.getKeyItems();
+        List<String> tmpArgTypes = new ArrayList<String>();
+        for (IKeyItem item : items) {
+            if (!tmpArgTypes.isEmpty()) {
+                params.append(", "); //$NON-NLS-1$
+            }
+            params.append(item.getAccessParameterName());
+            tmpArgTypes.add(item.getDatatype());
+        }
+        argTypeNames = Collections.unmodifiableList(tmpArgTypes);
+        description = NLS.bind(Messages.TableAccessFunctionDescription, params, column.getName());
     }
 
     @Override
     public ITableStructure getTableStructure() {
-        return (ITableStructure)getParent();
+        return tableStructure;
     }
 
     @Override
-    protected Element createElement(Document doc) {
-        return null;
+    public String getAccessedColumnName() {
+        return column.getName();
     }
 
     @Override
-    public String getName() {
-        return getTableStructure().getName() + '.' + getAccessedColumn();
-    }
-
-    @Override
-    public String getAccessedColumn() {
-        return accessedColumn;
-    }
-
-    @Override
-    public void setAccessedColumn(String columnName) {
-        accessedColumn = columnName;
-    }
-
-    @Override
-    public IColumn findAccessedColumn() {
-        return getTableStructure().getColumn(accessedColumn);
+    public IColumn getAccessedColumn() {
+        return column;
     }
 
     @Override
@@ -68,22 +82,77 @@ public class TableAccessFunction extends AtomicIpsObjectPart implements ITableAc
     }
 
     @Override
-    public void setType(String newType) {
-        type = newType;
+    public List<String> getArgTypes() {
+        return argTypeNames;
     }
 
     @Override
-    public void setArgTypes(String[] types) {
-        // make a defensive copy.
-        argTypes = new String[types.length];
-        System.arraycopy(types, 0, argTypes, 0, types.length);
+    public Datatype[] findArgTypes() {
+        if (argTypes == null) {
+            ArrayList<Datatype> tmpArgTypes = new ArrayList<Datatype>();
+            IIpsProject project = getIpsProject();
+            for (String argType : argTypeNames) {
+                try {
+                    tmpArgTypes.add(project.findValueDatatype(argType));
+                } catch (CoreException e) {
+                    throw new RuntimeException("Error searching for datatype " + argType, e); //$NON-NLS-1$
+                }
+            }
+            argTypes = tmpArgTypes.toArray(new Datatype[tmpArgTypes.size()]);
+        }
+        return argTypes;
     }
 
     @Override
-    public String[] getArgTypes() {
-        String[] types = new String[argTypes.length];
-        System.arraycopy(argTypes, 0, types, 0, argTypes.length);
-        return types; // return defensive copy
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public IIpsProject getIpsProject() {
+        return tableStructure.getIpsProject();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + argTypeNames.hashCode();
+        result = prime * result + ((column == null) ? 0 : column.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((tableStructure == null) ? 0 : tableStructure.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        TableAccessFunction other = (TableAccessFunction)obj;
+        if (!argTypeNames.equals(other.argTypeNames)) {
+            return false;
+        }
+        if (!column.equals(other.column)) {
+            return false;
+        }
+        if (!description.equals(other.description)) {
+            return false;
+        }
+        if (ObjectUtils.notEqual(tableStructure, tableStructure)) {
+            return false;
+        }
+        if (ObjectUtils.notEqual(type, other.type)) {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -53,19 +53,30 @@ public abstract class AbstractFlFunctionAdapter<T extends CodeFragment> implemen
     /**
      * {@inheritDoc}
      * <p>
-     * This method is called very often. Therefore it first verifies some basic checks before
-     * delegating to {@link FunctionSignatureImpl} which does the real compare.
+     * Note: This method is called very often. If you have a chance to implement it with better
+     * performance, for example by avoiding finding datatypes in {@link #getType()} or
+     * {@link #getArgTypes()}, overwrite this method and implement it as fast as possible!
      */
     @Override
     public boolean isSame(FunctionSignature fctSignature) {
-        if (equals(fctSignature)) {
-            return true;
-        } else if (!getName().equals(fctSignature.getName())) {
+        if (!getName().equals(fctSignature.getName())) {
             return false;
+        } else if (equals(fctSignature)) {
+            return true;
+        } else if (!getClass().equals(fctSignature.getClass())) {
+            return isSameSignatureInDifferentClass(fctSignature);
         } else {
-            FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
-            return thisFct.isSame(fctSignature);
+            return false;
         }
+    }
+
+    /**
+     * if the classes are different there may be a signature map with other types same signature in
+     * the same class should be found by equals-Method.
+     */
+    private boolean isSameSignatureInDifferentClass(FunctionSignature fctSignature) {
+        FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
+        return thisFct.isSame(fctSignature);
     }
 
     @Override

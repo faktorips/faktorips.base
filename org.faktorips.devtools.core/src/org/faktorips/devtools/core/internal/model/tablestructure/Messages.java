@@ -54,4 +54,6 @@ public class Messages extends NLS {
 
     public static String Column_msgInvalidName;
 
+    public static String TableAccessFunctionDescription;
+
 }
