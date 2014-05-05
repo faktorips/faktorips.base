@@ -1277,7 +1277,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + clearedQName + //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
