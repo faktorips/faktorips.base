@@ -127,6 +127,13 @@ public enum IdentifierNodeType {
         throw new IllegalArgumentException("Illegal node class " + nodeClass); //$NON-NLS-1$
     }
 
+    /**
+     * The <code>proposalSortOrder</code> represents the numerical position of this enum constant. A
+     * negative number implies that the position is before other functions that may not be provided
+     * by the {@link IdentifierParser}.
+     * 
+     * @return integer representing numerical position of the IdentifierNodeType,
+     */
     public int getProposalSortOrder() {
         return proposalSortOrder;
     }
