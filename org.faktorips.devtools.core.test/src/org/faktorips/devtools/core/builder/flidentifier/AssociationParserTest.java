@@ -43,6 +43,8 @@ public class AssociationParserTest extends AbstractParserTest {
 
     private static final String ANY_ASSOCIATION = "anyAssociation";
 
+    private static final String LOCALIZED_DESCRIPTION = "Localized description";
+
     @Mock
     private IPolicyCmptTypeAssociation association;
     @Mock
@@ -75,6 +77,7 @@ public class AssociationParserTest extends AbstractParserTest {
         when(policyCmptType.findAllAssociations(getIpsProject())).thenReturn(assocList);
 
         associationParser.setContextType(policyCmptType);
+
     }
 
     @Test
@@ -193,6 +196,44 @@ public class AssociationParserTest extends AbstractParserTest {
             result += NLS.bind(Messages.AssociationParser_ListDatatypeDescriptionPrefix, TARGET);
         } else {
             result += TARGET;
+        }
+        return result;
+    }
+
+    @Test
+    public void testGetDescription() {
+        when(association.is1ToMany()).thenReturn(false);
+        when(association.is1ToManyIgnoringQualifier()).thenReturn(true);
+        when(getMultiLanguageSupport().getLocalizedDescription(association)).thenReturn(LOCALIZED_DESCRIPTION);
+        when(association2.is1ToMany()).thenReturn(true);
+        when(association2.is1ToManyIgnoringQualifier()).thenReturn(false);
+        when(getMultiLanguageSupport().getLocalizedDescription(association2)).thenReturn(LOCALIZED_DESCRIPTION);
+
+        List<IdentifierProposal> proposals = associationParser.getProposals("");
+
+        assertEquals(6, proposals.size());
+        assertEquals(getDescriptionText(MY_ASSOCIATION, StringUtils.EMPTY, false), proposals.get(0).getDescription());
+        assertEquals(getDescriptionText(MY_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false), proposals.get(1)
+                .getDescription());
+        assertEquals(getDescriptionText(MY_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, true), proposals
+                .get(2).getDescription());
+        assertEquals(getDescriptionText(MY_SECOND_ASSOCIATION, StringUtils.EMPTY, true), proposals.get(3)
+                .getDescription());
+        assertEquals(getDescriptionText(MY_SECOND_ASSOCIATION, AssociationParser.INDEX_PROPOSAL, false),
+                proposals.get(4).getDescription());
+        assertEquals(getDescriptionText(MY_SECOND_ASSOCIATION, AssociationParser.QUALIFIER_PROPOSAL_LABEL, false),
+                proposals.get(5).getDescription());
+    }
+
+    private String getDescriptionText(String associationName, String suffix, boolean listTarget) {
+        String result = getDisplayText(associationName, suffix, listTarget);
+        result += "\n\n";
+        if (suffix.equals(StringUtils.EMPTY)) {
+            result += LOCALIZED_DESCRIPTION;
+        } else if (suffix.equals(AssociationParser.INDEX_PROPOSAL)) {
+            result += Messages.QualifierAndIndexParser_descriptionIndex + "\n\n" + LOCALIZED_DESCRIPTION;
+        } else if (suffix.equals(AssociationParser.QUALIFIER_PROPOSAL_LABEL)) {
+            result += Messages.QualifierAndIndexParser_descriptionQualifierUndefined + "\n\n" + LOCALIZED_DESCRIPTION;
         }
         return result;
     }

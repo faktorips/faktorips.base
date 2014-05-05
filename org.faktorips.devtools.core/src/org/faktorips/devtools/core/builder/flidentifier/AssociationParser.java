@@ -155,7 +155,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         StringBuilder description = new StringBuilder();
         description.append(getDisplayText(association)).append("\n\n") //$NON-NLS-1$
                 .append(multiLanguageSupport.getLocalizedDescription(association));
-        return association.getName() + description.toString();
+        return description.toString();
     }
 
     String getIndexDescription(IAssociation association) {
@@ -164,7 +164,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         description.append(getIndexDisplayText(association)).append("\n\n") //$NON-NLS-1$
                 .append(Messages.QualifierAndIndexParser_descriptionIndex).append("\n\n") //$NON-NLS-1$
                 .append(multiLanguageSupport.getLocalizedDescription(association));
-        return association.getName() + description.toString();
+        return description.toString();
     }
 
     String getQualifierDescription(IAssociation association) {
@@ -173,7 +173,7 @@ public class AssociationParser extends TypeBasedIdentifierParser {
         description.append(getQualifierDisplayText(association)).append("\n\n") //$NON-NLS-1$
                 .append(Messages.QualifierAndIndexParser_descriptionQualifierUndefined).append("\n\n") //$NON-NLS-1$
                 .append(multiLanguageSupport.getLocalizedDescription(association));
-        return association.getName() + description.toString();
+        return description.toString();
     }
 
 }

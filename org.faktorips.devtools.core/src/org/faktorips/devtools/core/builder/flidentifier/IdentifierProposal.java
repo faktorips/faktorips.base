@@ -13,7 +13,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This class contains the data for a proposal of an identifier as it is provided by the an proposal
+ * This class contains the data for a proposal of an identifier as it is provided by the proposal
  * provider in auto completion context in the UI.
  * 
  */
