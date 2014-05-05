@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * This class contains the data for a proposal of an identifier as it is provided by the an proposal
@@ -29,6 +30,7 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
     private final IdentifierNodeType nodeType;
 
     public IdentifierProposal(String text, String label, String description, String prefix, IdentifierNodeType nodeType) {
+        ArgumentCheck.notNull(new Object[] { text, label, description, prefix, nodeType });
         this.text = text;
         this.label = label;
         this.description = description;
@@ -110,6 +112,9 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
 
     @Override
     public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
@@ -117,5 +122,4 @@ public class IdentifierProposal implements Comparable<IdentifierProposal> {
         return text.equals(other.text) && label.equals(other.label) && description.equals(other.description)
                 && prefix.equals(other.prefix) && nodeType == other.nodeType;
     }
-
 }
