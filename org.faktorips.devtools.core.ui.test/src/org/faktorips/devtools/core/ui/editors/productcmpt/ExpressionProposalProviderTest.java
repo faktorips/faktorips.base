@@ -25,6 +25,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierProposal;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -98,6 +99,8 @@ public class ExpressionProposalProviderTest extends AbstractIpsPluginTest {
         IdentifierProposal identifierProposal2 = mock(IdentifierProposal.class);
         when(identifierProposal1.getText()).thenReturn(IDENTIFIER_PROPOSAL1);
         when(identifierProposal2.getText()).thenReturn(IDENTIFIER_PROPOSAL1);
+        when(identifierProposal1.getNodeType()).thenReturn(IdentifierNodeType.PARAMETER);
+        when(identifierProposal2.getNodeType()).thenReturn(IdentifierNodeType.PARAMETER);
         list.add(identifierProposal1);
         list.add(identifierProposal2);
         doReturn(list).when(parser).getProposals(ANY_IDENTIFIER);
