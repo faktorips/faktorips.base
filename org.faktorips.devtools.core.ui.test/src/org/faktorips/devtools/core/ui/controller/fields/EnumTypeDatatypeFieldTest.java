@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.ui.Messages;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -107,7 +108,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
         field.setValue(null);
         assertNull(field.getValue());
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
     }
 
     @Test
@@ -149,12 +150,12 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
         field.setValue(null);
         assertNull(field.getValue());
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
 
         field.setEnableEnumContentDisplay(false);
         field.setValue(null);
         assertNull(field.getValue());
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
         assertNull(field.getInvalidValue());
 
         field.setValue("AContent");
