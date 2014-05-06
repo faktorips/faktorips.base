@@ -25,7 +25,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IModelObject;
-import org.faktorips.runtime.internal.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.modeltype.IModelElement;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAssociation;
@@ -61,7 +61,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
 
     public String getLabelForPlural(Locale locale) {
         String label = pluralLabelsByLocale.get(locale);
-        return StringUtils.isEmpty(label) ? getNamePlural() : label;
+        return IpsStringUtils.isEmpty(label) ? getNamePlural() : label;
     }
 
     public IModelType getModelType() {
@@ -258,7 +258,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
     protected void initLabelFromXml(XMLStreamReader parser) {
         super.initLabelFromXml(parser);
         String localeCode = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_LOCALE);
-        Locale locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
+        Locale locale = IpsStringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
         String value = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_PLURAL_VALUE);
         pluralLabelsByLocale.put(locale, value);
     }

@@ -24,6 +24,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String HiddenAttributeMismatchEntry_desc;
+
     public static String LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt;
 
     public static String LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen;

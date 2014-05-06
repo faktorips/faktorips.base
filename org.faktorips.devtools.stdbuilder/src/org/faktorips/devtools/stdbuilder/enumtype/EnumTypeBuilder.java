@@ -272,11 +272,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateStaticIdMap(JavaCodeFragmentBuilder constantBuilder) throws CoreException {
         appendLocalizedJavaDoc("ID_MAP", constantBuilder);
-        JavaCodeFragment expression = new JavaCodeFragment();
-        expression.append("new ").appendClassName(HashMap.class.getName() + getIdMapGenerics()).append("()");
         String varType = Map.class.getName() + getIdMapGenerics();
-        constantBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL | Modifier.STATIC, varType, VARNAME_ID_MAP,
-                expression);
+        constantBuilder.varDeclaration(Modifier.PRIVATE | Modifier.FINAL | Modifier.STATIC, varType, VARNAME_ID_MAP);
         generateIdMapValues(constantBuilder);
     }
 
@@ -296,6 +293,8 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         IEnumAttribute identifierAttribute = getIdentifierAttribute(getEnumType());
         appendLocalizedJavaDoc("STATIC", constantBuilder);
         constantBuilder.appendln("static").openBracket();
+        constantBuilder.append(VARNAME_ID_MAP).append(" = new ")
+                .appendClassName(HashMap.class.getName() + getIdMapGenerics()).append("();");
         constantBuilder.append("for (").append(getUnqualifiedClassName()).appendln(" value : values())").openBracket();
         constantBuilder.append(VARNAME_ID_MAP).append(".put(value.").append(getMemberVarName(identifierAttribute))
                 .append(", ").appendln("value);");
@@ -1067,7 +1066,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
                     JavaCodeFragment methodBody = new JavaCodeFragment();
                     methodBody.append("return "); //$NON-NLS-1$
                     appendGetterReturnStatement(currentEnumAttribute, argNames, methodBody);
-
+                    if (currentEnumAttribute.isInherited()) {
+                        methodBuilder.annotationLn(Override.class);
+                    }
                     methodBuilder.methodBegin(Modifier.PUBLIC, datatypeHelper.getJavaClassName(), methodName, argNames,
                             argClasses);
                     methodBuilder.append(methodBody);
@@ -1149,7 +1150,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder,
             IEnumType enumType,
             IEnumAttribute currentEnumAttribute) throws CoreException {
-        String parameterName = currentEnumAttribute.getName();
+        String parameterName = getMemberVarName(currentEnumAttribute);
         DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
 
         String[] parameterClasses;
@@ -1261,7 +1262,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             DatatypeHelper datatypeHelper,
             JavaCodeFragment compareCode) {
         boolean primitiveDatatype = datatypeHelper.getDatatype().isPrimitive();
-        compareCode.append(currentEnumAttribute.getName());
+        compareCode.append(getMemberVarName(currentEnumAttribute));
         if (primitiveDatatype) {
             compareCode.append(" == "); //$NON-NLS-1$
             compareCode.append(parameterName);

@@ -299,7 +299,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
          * model to always use {@link IValueHolder} for default values instead of a single String
          * field.
          */
-        ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, StringValue defaultValue) {
+        public ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, StringValue defaultValue) {
             ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
             String content = defaultValue.getContent();
             if (content != null) {

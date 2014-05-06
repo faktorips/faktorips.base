@@ -14,7 +14,7 @@ import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.runtime.internal.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.valueset.OrderedValueSet;
 
@@ -84,7 +84,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
 
     private JavaCodeFragment generateNewInstanceWithStringUtils(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(StringUtils.class).append(".isEmpty(") //$NON-NLS-1$
+        fragment.appendClassName(IpsStringUtils.class).append(".isEmpty(") //$NON-NLS-1$
                 .append(expression).append(") ? "); //$NON-NLS-1$
         fragment.append(nullExpression());
         fragment.append(" : "); //$NON-NLS-1$

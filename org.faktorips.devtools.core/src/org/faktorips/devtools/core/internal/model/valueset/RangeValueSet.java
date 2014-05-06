@@ -295,9 +295,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (!datatype.divisibleWithoutRemainder(diffLower, step)) {
             return false;
         }
-        String diffUpper = datatype.subtract(upper, subUpper);
-        if (!datatype.divisibleWithoutRemainder(diffUpper, step)) {
-            return false;
+        if (isNonNull(datatype, upper, subUpper)) {
+            String diffUpper = datatype.subtract(upper, subUpper);
+            if (!datatype.divisibleWithoutRemainder(diffUpper, step)) {
+                return false;
+            }
         }
         return true;
     }
@@ -329,7 +331,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
         String lowerValue = getLowerBound();
         String upperValue = getUpperBound();
-        if (isNoneNull(numDatatype, lowerValue, upperValue)) {
+        if (isNonNull(numDatatype, lowerValue, upperValue)) {
             if (datatype.compare(lowerValue, upperValue) > 0) {
                 String text = Messages.Range_msgLowerboundGreaterUpperbound;
                 list.add(new Message(MSGCODE_LBOUND_GREATER_UBOUND, text, Message.ERROR, parentObjectProperty,
@@ -343,7 +345,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             list.newError(MSGCODE_STEP_RANGE_MISMATCH, msg, stepProperty, lowerBoundProperty);
         }
 
-        if (stepParsable && isNoneNull(numDatatype, upperValue, lowerValue, getStep())) {
+        if (stepParsable && isNonNull(numDatatype, upperValue, lowerValue, getStep())) {
             String range = numDatatype.subtract(upperValue, lowerValue);
             if (!numDatatype.divisibleWithoutRemainder(range, getStep())) {
                 String msg = NLS.bind(Messages.RangeValueSet_msgStepRangeMismatch, new String[] { lowerValue,
@@ -354,7 +356,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
     }
 
-    private boolean isNoneNull(NumericDatatype datatype, String... values) {
+    private boolean isNonNull(NumericDatatype datatype, String... values) {
         for (String value : values) {
             if (isNullValue(value, datatype)) {
                 return false;

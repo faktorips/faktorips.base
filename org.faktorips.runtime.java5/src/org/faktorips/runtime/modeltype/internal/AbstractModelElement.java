@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.StringUtils;
+import org.faktorips.runtime.internal.IpsStringUtils;
 import org.faktorips.runtime.modeltype.IModelElement;
 
 /**
@@ -46,12 +46,12 @@ public class AbstractModelElement implements IModelElement {
 
     public String getLabel(Locale locale) {
         String label = labelsByLocale.get(locale);
-        return StringUtils.isEmpty(label) ? getName() : label;
+        return IpsStringUtils.isEmpty(label) ? getName() : label;
     }
 
     public String getDescription(Locale locale) {
         String description = descriptionsByLocale.get(locale);
-        return StringUtils.isEmpty(description) ? StringUtils.EMPTY : description;
+        return IpsStringUtils.isEmpty(description) ? IpsStringUtils.EMPTY : description;
     }
 
     public Object getExtensionPropertyValue(String propertyId) {
@@ -112,7 +112,7 @@ public class AbstractModelElement implements IModelElement {
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals(IModelElement.DESCRIPTIONS_PROPERTY_LOCALE)) {
                 String localeCode = parser.getAttributeValue(i);
-                locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
+                locale = IpsStringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
             }
         }
         return locale;
@@ -137,7 +137,7 @@ public class AbstractModelElement implements IModelElement {
 
     protected void initLabelFromXml(XMLStreamReader parser) {
         String localeCode = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_LOCALE);
-        Locale locale = StringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
+        Locale locale = IpsStringUtils.isEmpty(localeCode) ? null : new Locale(localeCode);
         String value = parser.getAttributeValue(null, IModelElement.LABELS_PROPERTY_VALUE);
         labelsByLocale.put(locale, value);
     }

@@ -1359,7 +1359,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
 
         IResource enclResource = file.getEnclosingResource();
-        if (enclResource == null || !enclResource.exists()) {
+        if (enclResource == null) {
             return content;
         }
 
@@ -1416,22 +1416,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     public synchronized IpsSrcFileContent getIpsSrcFileContent(IIpsSrcFile file) {
         return getIpsSrcFileContent(file, true);
-    }
-
-    /**
-     * Returns <code>true</code> if the ips source file' content is in sync with the enclosing
-     * resource storing it's contents.
-     */
-    public synchronized boolean isInSyncWithEnclosingResource(IIpsSrcFile file) {
-        IResource enclResource = file.getEnclosingResource();
-        if (enclResource == null || !enclResource.exists()) {
-            return false;
-        }
-        IpsSrcFileContent content = ipsObjectsMap.get(file);
-        if (content == null) {
-            return true;
-        }
-        return content.getModificationStamp() == enclResource.getModificationStamp();
     }
 
     public void ipsSrcFileContentHasChanged(ContentChangeEvent event) {

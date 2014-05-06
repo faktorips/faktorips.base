@@ -163,21 +163,25 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         validateOverloadedFormulaSignature(result, ipsProject);
     }
 
-    private void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) throws CoreException {
-        if (isFormulaSignatureDefinition() && isOverloadsFormula()) {
+    protected void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) throws CoreException {
+        if (isFormulaSignatureDefinition() && isOverloadsFormula() && !StringUtils.isEmpty(getFormulaName())) {
             FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
             finder.start(getProductCmptType().findSuperProductCmptType(ipsProject));
-            if (!StringUtils.isEmpty(getFormulaName()) && !finder.formulaNameFound()) {
+            if (!finder.isOverloadedMethodAvailable()) {
                 result.add(new Message(IProductCmptTypeMethod.MSGCODE_NO_FORMULA_WITH_SAME_NAME_IN_TYPE_HIERARCHY,
                         Messages.ProductCmptTypeMethod_msgNoOverloadableFormulaInSupertypeHierarchy, Message.ERROR,
                         this, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA));
+            } else {
+                validateFormulaMandatoryOverloaded(result, finder);
             }
+        }
+    }
 
-            if (!isFormulaMandatory() && finder.getMethod().isFormulaMandatory()) {
-                result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_MANDATORY,
-                        Messages.ProductCmptTypeMethod_msgOptionalNotAllowedBecauseNotOptionalInSupertypeHierarchy,
-                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY));
-            }
+    private void validateFormulaMandatoryOverloaded(MessageList result, FormulaNameFinder finder) {
+        if (!isFormulaMandatory() && finder.getMethod().isFormulaMandatory()) {
+            result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_MANDATORY,
+                    Messages.ProductCmptTypeMethod_msgOptionalNotAllowedBecauseNotOptionalInSupertypeHierarchy,
+                    Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY));
         }
     }
 
@@ -249,7 +253,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             super(ipsProject);
         }
 
-        private boolean formulaNameFound() {
+        private boolean isOverloadedMethodAvailable() {
             return method != null;
         }
 

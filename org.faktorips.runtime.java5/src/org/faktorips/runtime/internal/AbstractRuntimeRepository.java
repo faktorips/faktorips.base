@@ -499,7 +499,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             suiteQName = removeLastSegment(testCaseQName);
         }
 
-        if (StringUtils.isEmpty(suiteQName)) {
+        if (IpsStringUtils.isEmpty(suiteQName)) {
             suiteQName = ROOTIPSTESTSUITENAME;
         }
 
