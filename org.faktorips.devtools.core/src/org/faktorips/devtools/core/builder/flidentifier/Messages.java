@@ -26,13 +26,22 @@ public class Messages extends NLS {
     public static String AssociationParser_msgErrorAssociationQualifierOrIndex;
     public static String AssociationParser_msgErrorWhileFindAssociation;
     public static String AssociationParser_msgErrorAssociationQualifier;
+    public static String AssociationParser_ListDatatypeDescriptionPrefix;
 
     public static String EnumParser_msgErrorInvalidEnumValue;
+    public static String EnumParser_description;
+
     public static String IdentifierParser_msgErrorInvalidIdentifier;
 
     public static String QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt;
 
-    public static String QualifierAndIndexParser_errorMsg_qualifierMustFollowAssociation;
+    public static String QualifierAndIndexParser_descriptionIndex;
+    public static String QualifierAndIndexParser_descriptionQualifier;
+    public static String QualifierAndIndexParser_descriptionQualifierUndefined;
+
+    public static String ParameterParser_description;
+
+    public static String AttributeParser_defaultOfName;
 
     static {
         // initialize resource bundle

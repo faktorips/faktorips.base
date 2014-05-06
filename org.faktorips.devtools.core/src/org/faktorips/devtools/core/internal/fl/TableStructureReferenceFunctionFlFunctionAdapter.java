@@ -21,14 +21,17 @@ import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
  */
 public class TableStructureReferenceFunctionFlFunctionAdapter extends TableAccessFunctionFlFunctionAdapter {
 
+    private final String name;
+
     public TableStructureReferenceFunctionFlFunctionAdapter(String tableContentsQName, ITableAccessFunction fct,
             String referencedName, IIpsProject ipsProject) {
         super(tableContentsQName, fct, referencedName, ipsProject);
+        name = getReferencedName() + "." + getTableAccessFunction().getAccessedColumnName(); //$NON-NLS-1$
     }
 
     @Override
     public String getName() {
-        return (getReferencedName()) + "." + getTableAccessFunction().getAccessedColumn(); //$NON-NLS-1$
+        return name;
     }
 
 }

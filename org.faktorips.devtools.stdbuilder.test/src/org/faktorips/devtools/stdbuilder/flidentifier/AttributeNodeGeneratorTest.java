@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
@@ -217,8 +218,8 @@ public class AttributeNodeGeneratorTest {
     }
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
-        return (AttributeNode)new IdentifierNodeFactory(attribute.getName(), null, ipsProject).createAttributeNode(
-                attribute, defaultAccess, listOfType);
+        return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, 0), ipsProject)
+                .createAttributeNode(attribute, defaultAccess, listOfType);
     }
 
     @Test

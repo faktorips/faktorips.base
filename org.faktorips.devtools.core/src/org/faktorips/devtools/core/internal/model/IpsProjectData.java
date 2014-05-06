@@ -35,11 +35,11 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class IpsProjectData {
 
-    private IIpsProject ipsProject;
+    private final IIpsProject ipsProject;
 
-    private IpsObjectPathContainerFactory containerFactory;
+    private final IpsObjectPathContainerFactory containerFactory;
 
-    private Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new HashMap<ContainerTypeAndPath, IIpsObjectPathContainer>();
+    private final Map<ContainerTypeAndPath, IIpsObjectPathContainer> containers = new HashMap<ContainerTypeAndPath, IIpsObjectPathContainer>();
 
     private IIpsArtefactBuilderSet ipsArtefactBuilderSet;
 

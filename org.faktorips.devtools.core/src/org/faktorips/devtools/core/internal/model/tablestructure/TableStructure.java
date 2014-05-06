@@ -15,21 +15,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IForeignKey;
@@ -41,14 +38,9 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.devtools.core.util.TreeSetHelper;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.LocalizedStringsSet;
 import org.w3c.dom.Element;
 
 public class TableStructure extends IpsObject implements ITableStructure {
-
-    private static final String KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END = "TableAccessFunctionDescriptionEnd"; //$NON-NLS-1$
-
-    private static final String KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START = "TableAccessFunctionDescriptionStart"; //$NON-NLS-1$
 
     private TableStructureType type = TableStructureType.SINGLE_CONTENT;
 
@@ -373,58 +365,16 @@ public class TableStructure extends IpsObject implements ITableStructure {
         // add functions for each key and column which is not in the key
         for (IIndex index : indices) {
             IColumn[] columnsNotInKey = getColumnsNotInKey(index);
-            for (int j = 0; j < columnsNotInKey.length; j++) {
-                // add function for each column which is not included in the key
-                functions.add(createFunction("" + j, index, columnsNotInKey[j])); //$NON-NLS-1$
+            for (IColumn element : columnsNotInKey) {
+                functions.add(createFunction(index, element));
             }
         }
 
         return functions.toArray(new ITableAccessFunction[functions.size()]);
     }
 
-    private ITableAccessFunction createFunction(String id, IIndex key, IColumn column) {
-        TableAccessFunction fct = new TableAccessFunction(this, id);
-        fct.setAccessedColumn(column.getName());
-        fct.setType(column.getDatatype());
-
-        IKeyItem[] items = key.getKeyItems();
-        String[] argTypes = new String[items.length];
-        for (int i = 0; i < items.length; i++) {
-            argTypes[i] = items[i].getDatatype();
-        }
-        fct.setArgTypes(argTypes);
-
-        createDescriptionForFunction(key, column, fct);
-        return fct;
-    }
-
-    private void createDescriptionForFunction(IIndex key, IColumn column, TableAccessFunction fct) {
-        LocalizedStringsSet localizedStringSet = new LocalizedStringsSet(this.getClass());
-        Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
-        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-            Locale locale = supportedLanguage.getLocale();
-            if (localizedStringSet.isAccessible(locale)) {
-                StringBuffer descriptionText = new StringBuffer(localizedStringSet.getString(
-                        KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_START, locale));
-                IKeyItem[] items = key.getKeyItems();
-                String[] argTypes = new String[items.length];
-                for (int i = 0; i < items.length; i++) {
-                    argTypes[i] = items[i].getDatatype();
-                    if (i > 0) {
-                        descriptionText.append(", "); //$NON-NLS-1$
-                    }
-                    descriptionText.append(items[i].getAccessParameterName());
-                }
-                fct.setArgTypes(argTypes);
-                descriptionText.append(localizedStringSet.getString(KEY_TABLE_ACCESS_FUNCTION_DESCRIPTION_END, locale))
-                        .append(' ').append(column.getName());
-
-                Description description = (Description)fct.getDescription(locale);
-                if (description != null) {
-                    description.setTextWithoutChangeEvent(descriptionText.toString());
-                }
-            }
-        }
+    private ITableAccessFunction createFunction(IIndex key, IColumn column) {
+        return new TableAccessFunction(key, column);
     }
 
     @Override

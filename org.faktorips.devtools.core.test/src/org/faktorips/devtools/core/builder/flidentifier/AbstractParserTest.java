@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -24,10 +25,17 @@ public class AbstractParserTest {
 
     @Mock
     private IExpression expression;
+
     @Mock
     private IIpsProject ipsProject;
+
     @Mock
     private IProductCmptType productCmptType;
+
+    @Mock
+    private MultiLanguageSupport multiLanguageSupport;
+
+    private ParsingContext parsingContext;
 
     public AbstractParserTest() {
         super();
@@ -36,6 +44,11 @@ public class AbstractParserTest {
     @Before
     public void mockExpression() throws Exception {
         when(getExpression().findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        parsingContext = new ParsingContext(getExpression(), getIpsProject(), getMultiLanguageSupport());
+    }
+
+    public ParsingContext getParsingContext() {
+        return parsingContext;
     }
 
     public IExpression getExpression() {
@@ -50,9 +63,13 @@ public class AbstractParserTest {
         return productCmptType;
     }
 
+    public MultiLanguageSupport getMultiLanguageSupport() {
+        return multiLanguageSupport;
+    }
+
     public class TestNode extends IdentifierNode {
 
-        TestNode(Datatype datatype) {
+        public TestNode(Datatype datatype) {
             super(datatype, null);
         }
 

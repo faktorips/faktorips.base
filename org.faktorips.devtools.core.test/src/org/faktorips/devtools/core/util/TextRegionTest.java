@@ -10,10 +10,10 @@
 package org.faktorips.devtools.core.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.StringUtils;
-import org.faktorips.devtools.core.util.TextRegion;
 import org.junit.Test;
 
 public class TextRegionTest {
@@ -24,7 +24,7 @@ public class TextRegionTest {
 
     @Test
     public void testReplaceTextRegion() {
-        region = new TextRegion(0, 3);
+        region = new TextRegion(completeIdentifierString, 0, 3);
         String refactoredString = region.replaceTextRegion(completeIdentifierString, newString);
 
         assertEquals("thisIsTheNewString.oldPartOfString", refactoredString);
@@ -32,7 +32,7 @@ public class TextRegionTest {
 
     @Test
     public void testReplaceTextRegionEmptyString() {
-        region = new TextRegion(10, 17);
+        region = new TextRegion(completeIdentifierString, 10, 17);
         String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
 
         assertEquals("oldString.OfString", refactoredString);
@@ -40,7 +40,7 @@ public class TextRegionTest {
 
     @Test
     public void testReplaceTextRegionInvalidStartEndPoints() {
-        region = new TextRegion(-1, -8);
+        region = new TextRegion(completeIdentifierString, -1, -8);
         String refactoredString = region.replaceTextRegion(completeIdentifierString, StringUtils.EMPTY);
 
         assertEquals(completeIdentifierString, refactoredString);
@@ -48,7 +48,7 @@ public class TextRegionTest {
 
     @Test
     public void testOffset() throws Exception {
-        TextRegion textRegion = new TextRegion(13, 57);
+        TextRegion textRegion = new TextRegion(completeIdentifierString, 13, 57);
 
         TextRegion offsetTextRegion = textRegion.offset(42);
 
@@ -58,7 +58,7 @@ public class TextRegionTest {
 
     @Test
     public void testStartOffset() throws Exception {
-        TextRegion textRegion = new TextRegion(13, 57);
+        TextRegion textRegion = new TextRegion(completeIdentifierString, 13, 57);
 
         TextRegion offsetTextRegion = textRegion.startOffset(42);
 
@@ -68,7 +68,7 @@ public class TextRegionTest {
 
     @Test
     public void testEndOffset() throws Exception {
-        TextRegion textRegion = new TextRegion(13, 57);
+        TextRegion textRegion = new TextRegion(completeIdentifierString, 13, 57);
 
         TextRegion offsetTextRegion = textRegion.endOffset(42);
 
@@ -78,9 +78,9 @@ public class TextRegionTest {
 
     @Test
     public void testCompareTo() throws Exception {
-        TextRegion textRegion1 = new TextRegion(2, 10);
-        TextRegion textRegion2 = new TextRegion(5, 12);
-        TextRegion textRegion3 = new TextRegion(2, 5);
+        TextRegion textRegion1 = new TextRegion(completeIdentifierString, 2, 10);
+        TextRegion textRegion2 = new TextRegion(completeIdentifierString, 5, 12);
+        TextRegion textRegion3 = new TextRegion(completeIdentifierString, 2, 5);
 
         assertTrue(textRegion1.compareTo(textRegion1) == 0);
         assertTrue(textRegion2.compareTo(textRegion2) == 0);
@@ -91,20 +91,32 @@ public class TextRegionTest {
     }
 
     @Test
-    public void testGetSubstring() throws Exception {
-        TextRegion region = new TextRegion(1, 5);
+    public void testGetTextRegionString() throws Exception {
+        region = new TextRegion("abc123", 1, 5);
 
-        String substring = region.getSubstring("abc123");
+        String substring = region.getTextRegionString();
 
         assertEquals("bc12", substring);
     }
 
     @Test
-    public void testGetSubstringIllegal() throws Exception {
-        TextRegion region = new TextRegion(1, -5);
+    public void testGetTextRegionStringIllegal() throws Exception {
+        region = new TextRegion("abc123", 1, -5);
 
-        String substring = region.getSubstring("abc123");
+        String substring = region.getTextRegionString();
 
         assertEquals("abc123", substring);
+    }
+
+    @Test
+    public void testIsRelativeChar() throws Exception {
+        region = new TextRegion("abc123", 1, 5);
+
+        assertTrue(region.isRelativeChar(0, 'b'));
+        assertFalse(region.isRelativeChar(0, 'a'));
+        assertTrue(region.isRelativeChar(1, 'c'));
+        assertTrue(region.isRelativeChar(-1, 'a'));
+        assertFalse(region.isRelativeChar(-2, 'a'));
+        assertFalse(region.isRelativeChar(10, 'a'));
     }
 }

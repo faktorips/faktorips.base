@@ -40,10 +40,6 @@ public interface FunctionSignature {
     /**
      * Returns true if the given fctSignature is the same as this one. This is the case if they have
      * the same type, name and the arguments' types are the same (in the same order).
-     * <p>
-     * We could also use <code>equals()</code> here, but by defining a new function we emphasize the
-     * fact, that classes implementing this interface must implement the desired functionality. This
-     * is not the case with the standard <code>equals()</code> method.
      */
     public boolean isSame(FunctionSignature fctSignature);
 

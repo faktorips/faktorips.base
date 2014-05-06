@@ -50,8 +50,31 @@ public abstract class AbstractFlFunctionAdapter<T extends CodeFragment> implemen
         throw new RuntimeException("The adpater does not support setDescription()!"); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Note: This method is called very often. If you have a chance to implement it with better
+     * performance, for example by avoiding finding datatypes in {@link #getType()} or
+     * {@link #getArgTypes()}, overwrite this method and implement it as fast as possible!
+     */
     @Override
     public boolean isSame(FunctionSignature fctSignature) {
+        if (!getName().equals(fctSignature.getName())) {
+            return false;
+        } else if (equals(fctSignature)) {
+            return true;
+        } else if (!getClass().equals(fctSignature.getClass())) {
+            return isSameSignatureInDifferentClass(fctSignature);
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * if the classes are different there may be a signature map with other types same signature in
+     * the same class should be found by equals-Method.
+     */
+    private boolean isSameSignatureInDifferentClass(FunctionSignature fctSignature) {
         FunctionSignature thisFct = new FunctionSignatureImpl(getName(), getType(), getArgTypes());
         return thisFct.isSame(fctSignature);
     }

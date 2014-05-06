@@ -22,9 +22,13 @@ import org.eclipse.jface.fieldassist.IContentProposal;
  * @author Daniel Schwering, Faktor Zehn AG
  */
 public class ContentProposal implements IContentProposal {
+
     private final String content;
+
     private final String label;
+
     private final String description;
+
     private final String prefix;
 
     /**

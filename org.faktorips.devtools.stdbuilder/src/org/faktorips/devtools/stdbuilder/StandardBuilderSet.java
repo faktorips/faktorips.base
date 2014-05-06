@@ -217,7 +217,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             result.addMessages(argResults[i].getMessages());
         }
         code.append(").get"); //$NON-NLS-1$
-        code.append(StringUtils.capitalize(fct.findAccessedColumn().getName()));
+        code.append(StringUtils.capitalize(fct.getAccessedColumn().getName()));
         code.append("()"); //$NON-NLS-1$
 
         return result;

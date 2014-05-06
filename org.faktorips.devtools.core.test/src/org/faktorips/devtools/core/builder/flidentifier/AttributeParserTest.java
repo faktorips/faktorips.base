@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
@@ -32,11 +34,12 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNod
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +52,11 @@ public class AttributeParserTest extends AbstractParserTest {
 
     private static final String MY_ATTRIBUTE = "myAttribute";
 
-    @Mock
+    private static final String LABEL = "myLabel";
+
+    private static final String DESCRIPTION = "myDescription";
+
+    @Mock(extraInterfaces = IPolicyCmptTypeAttribute.class)
     private IAttribute attribute;
 
     @Mock
@@ -68,16 +75,13 @@ public class AttributeParserTest extends AbstractParserTest {
     private IProductCmptType prodType;
 
     @Mock
-    private IIpsProject ipsProject;
-
-    @Mock
     private IdentifierFilter identifierFilter;
 
     private AttributeParser attributeParser;
 
     @Before
     public void createAttributeParser() throws Exception {
-        attributeParser = new AttributeParser(getExpression(), getIpsProject(), identifierFilter);
+        attributeParser = new AttributeParser(getParsingContext(), identifierFilter);
     }
 
     @Before
@@ -90,7 +94,9 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_noAttribute() throws Exception {
-        IdentifierNode attributeNode = attributeParser.parse(MY_ATTRIBUTE, new TestNode(getProductCmptType()), null);
+        getParsingContext().pushNode(new TestNode(getProductCmptType()));
+
+        IdentifierNode attributeNode = attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE.length()));
 
         assertNull(attributeNode);
     }
@@ -98,9 +104,10 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAttributeInExpressionType() throws Exception {
         when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
+        getParsingContext().pushNode(new TestNode(getProductCmptType()));
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(
-                getProductCmptType()), null);
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE
+                .length()));
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertFalse(attributeNode.isDefaultValueAccess());
@@ -109,8 +116,10 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAttributeInOtherType() throws Exception {
         when(otherType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        getParsingContext().pushNode(new TestNode(otherType));
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(otherType), null);
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE
+                .length()));
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertFalse(attributeNode.isDefaultValueAccess());
@@ -119,9 +128,10 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testParse_findAttributeInList() throws Exception {
         when(otherType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        getParsingContext().pushNode(new TestNode(otherType, true));
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(MY_ATTRIBUTE, new TestNode(otherType, true),
-                null);
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE
+                .length()));
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertEquals(new ListOfTypeDatatype(Datatype.INTEGER), attributeNode.getDatatype());
@@ -132,9 +142,10 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testParse_findDefaultValueAccess() throws Exception {
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
+        getParsingContext().pushNode(new TestNode(policyType));
 
-        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(identifierPart, new TestNode(policyType),
-                null);
+        AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(identifierPart, 0,
+                identifierPart.length()));
 
         assertEquals(attribute, attributeNode.getAttribute());
         assertTrue(attributeNode.isDefaultValueAccess());
@@ -145,9 +156,10 @@ public class AttributeParserTest extends AbstractParserTest {
         when(identifierFilter.isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER)).thenReturn(false);
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
+        getParsingContext().pushNode(new TestNode(policyType));
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(identifierPart, new TestNode(
-                policyType), null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(new TextRegion(identifierPart, 0,
+                identifierPart.length()));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }
@@ -157,9 +169,10 @@ public class AttributeParserTest extends AbstractParserTest {
         when(attribute.findDatatype(getIpsProject())).thenReturn(null);
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         String identifierPart = MY_ATTRIBUTE + AttributeParser.DEFAULT_VALUE_SUFFIX;
+        getParsingContext().pushNode(new TestNode(policyType));
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(identifierPart, new TestNode(
-                policyType), null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)attributeParser.parse(new TextRegion(identifierPart, 0,
+                identifierPart.length()));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
     }
@@ -169,7 +182,6 @@ public class AttributeParserTest extends AbstractParserTest {
         AttributeParser spy = spy(attributeParser);
         ArrayList<IAttribute> arrayList = new ArrayList<IAttribute>();
         arrayList.add(attribute);
-
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(arrayList);
@@ -184,7 +196,6 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testfindAttributes_NoProductCmpt() throws CoreException {
         AttributeParser spy = spy(attributeParser);
-
         doReturn(false).when(spy).isContextTypeFormulaType();
         when(spy.getContextType()).thenReturn(policyType);
         when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
@@ -199,6 +210,80 @@ public class AttributeParserTest extends AbstractParserTest {
         list.add(attribute2);
         list.add(attribute3);
         return list;
+    }
+
+    @Test
+    public void testGetProposals() throws Exception {
+        AbstractIdentifierNodeParser parser = mockAttributesForProposal();
+
+        List<IdentifierProposal> proposals = parser.getProposals(StringUtils.EMPTY);
+
+        assertEquals(4, proposals.size());
+        assertEquals(attribute.getName(), proposals.get(0).getText());
+        assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(1).getText());
+        assertEquals(attribute2.getName(), proposals.get(2).getText());
+        assertEquals(attribute3.getName(), proposals.get(3).getText());
+    }
+
+    @Test
+    public void testGetProposals_withPrefix() throws Exception {
+        AbstractIdentifierNodeParser parser = mockAttributesForProposal();
+
+        List<IdentifierProposal> proposals = parser.getProposals("my");
+
+        assertEquals(3, proposals.size());
+        assertEquals(attribute.getName(), proposals.get(0).getText());
+        assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(1).getText());
+        assertEquals(attribute3.getName(), proposals.get(2).getText());
+    }
+
+    @Test
+    public void testGetProposals_withFilter() throws Exception {
+        AbstractIdentifierNodeParser parser = mockAttributesForProposal();
+        when(identifierFilter.isIdentifierAllowed(attribute, IdentifierKind.ATTRIBUTE)).thenReturn(false);
+        when(identifierFilter.isIdentifierAllowed(attribute, IdentifierKind.DEFAULT_IDENTIFIER)).thenReturn(true);
+        when(identifierFilter.isIdentifierAllowed(attribute2, IdentifierKind.ATTRIBUTE)).thenReturn(true);
+        when(identifierFilter.isIdentifierAllowed(attribute3, IdentifierKind.ATTRIBUTE)).thenReturn(false);
+
+        List<IdentifierProposal> proposals = parser.getProposals(StringUtils.EMPTY);
+
+        assertEquals(2, proposals.size());
+        assertEquals(attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX, proposals.get(0).getText());
+        assertEquals(attribute2.getName(), proposals.get(1).getText());
+    }
+
+    private AbstractIdentifierNodeParser mockAttributesForProposal() throws CoreException {
+        AttributeParser spy = spy(attributeParser);
+        doReturn(false).when(spy).isContextTypeFormulaType();
+        when(spy.getContextType()).thenReturn(policyType);
+        when(policyType.findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
+        when(policyType.findProductCmptType(getIpsProject())).thenReturn(prodType);
+        when(attribute2.getName()).thenReturn("xyz");
+        when(attribute2.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
+        when(attribute3.getName()).thenReturn("myProd");
+        when(attribute3.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
+        return spy;
+    }
+
+    @Test
+    public void testGetDescription() throws Exception {
+        when(getMultiLanguageSupport().getLocalizedLabel(attribute)).thenReturn(LABEL);
+        when(getMultiLanguageSupport().getLocalizedDescription(attribute)).thenReturn(DESCRIPTION);
+
+        String description = attributeParser.getDescription(attribute, false);
+
+        assertEquals(LABEL + " - " + DESCRIPTION, description);
+    }
+
+    @Test
+    public void testGetDescription_defaultAccess() throws Exception {
+        when(getMultiLanguageSupport().getLocalizedLabel(attribute)).thenReturn(LABEL);
+        when(getMultiLanguageSupport().getLocalizedDescription(attribute)).thenReturn(DESCRIPTION);
+
+        String description = attributeParser.getDescription(attribute, true);
+
+        assertEquals(NLS.bind(Messages.AttributeParser_defaultOfName, LABEL) + " - " + DESCRIPTION, description);
     }
 
 }

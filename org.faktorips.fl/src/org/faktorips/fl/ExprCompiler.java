@@ -592,7 +592,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
 
         for (FlFunction<T> function2 : functions) {
             if (function2.match(fctName, argTypes)) {
-                if (isAmbiguousFunction(function2, ambiguousFunctions)) {
+                if (ambiguousFunctions.contains(function2)) {
                     return createAmbiguousFunctionCompilationResultImpl(function2);
                 }
                 return function2.compile(argResults);
@@ -604,7 +604,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         }
 
         if (function != null) {
-            if (isAmbiguousFunction(function, ambiguousFunctions)) {
+            if (ambiguousFunctions.contains(function)) {
                 return createAmbiguousFunctionCompilationResultImpl(function);
             }
             return function.compile(convert(function, argResults));
@@ -644,15 +644,6 @@ public abstract class ExprCompiler<T extends CodeFragment> {
                 flFunction.getName());
 
         return newCompilationResultImpl(Message.newError(ExprCompiler.AMBIGUOUS_FUNCTION_CALL, text));
-    }
-
-    private boolean isAmbiguousFunction(FlFunction<T> flFunction, LinkedHashSet<FlFunction<T>> ambiguousFunctions) {
-        for (FlFunction<T> ambiguousFlFunction : ambiguousFunctions) {
-            if (flFunction.isSame(ambiguousFlFunction)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private String argTypesToString(CompilationResult<T>[] results) {

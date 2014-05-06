@@ -13,9 +13,13 @@ package org.faktorips.devtools.core.builder.flidentifier;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.AnyDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
@@ -23,6 +27,8 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,6 +43,10 @@ public class ParameterParserTest extends AbstractParserTest {
 
     static final String MY_PARAMETER = "anyParameter";
 
+    private static final String MY_LABEL = "myLabel";
+
+    private static final String MY_DESCRIPTION = "myDescription";
+
     @Mock
     private IFormulaMethod formulaSignature;
 
@@ -45,9 +55,12 @@ public class ParameterParserTest extends AbstractParserTest {
 
     private ParameterParser parameterParser;
 
+    @Mock
+    private IType type;
+
     @Before
     public void createParameterParser() throws Exception {
-        parameterParser = new ParameterParser(getExpression(), getIpsProject());
+        parameterParser = new ParameterParser(getParsingContext());
     }
 
     @Before
@@ -60,22 +73,24 @@ public class ParameterParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_wrongType() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(MY_PARAMETER, new TestNode(mock(IProductCmptType.class)),
-                null);
+        getParsingContext().pushNode(new TestNode(mock(IProductCmptType.class)));
+
+        IdentifierNode parameterNode = parameterParser.parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER.length()));
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_noParameter() throws Exception {
-        IdentifierNode parameterNode = parameterParser.parse(ANY_PARAMETER, null, null);
+        IdentifierNode parameterNode = parameterParser.parse(new TextRegion(ANY_PARAMETER, 0, ANY_PARAMETER.length()));
 
         assertNull(parameterNode);
     }
 
     @Test
     public void testParse_findParameter() throws Exception {
-        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(MY_PARAMETER, null, null);
+        ParameterNode parameterNode = (ParameterNode)parameterParser.parse(new TextRegion(MY_PARAMETER, 0, MY_PARAMETER
+                .length()));
 
         assertNotNull(parameterNode);
         assertEquals(parameter, parameterNode.getParameter());
@@ -94,9 +109,70 @@ public class ParameterParserTest extends AbstractParserTest {
     public void testParse_noDatatype() throws Exception {
         when(parameter.findDatatype(getIpsProject())).thenReturn(null);
 
-        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(MY_PARAMETER, null, null);
+        InvalidIdentifierNode node = (InvalidIdentifierNode)parameterParser.parse(new TextRegion(MY_PARAMETER, 0,
+                MY_PARAMETER.length()));
 
         assertEquals(ExprCompiler.UNDEFINED_IDENTIFIER, node.getMessage().getCode());
+    }
+
+    @Test
+    public void testGetProposals_noPrefix() throws Exception {
+        parameterParser.parse(new TextRegion("any", 0, 0));
+
+        List<IdentifierProposal> proposals = parameterParser.getProposals(StringUtils.EMPTY);
+
+        assertEquals(1, proposals.size());
+        assertEquals(parameter.getName(), proposals.get(0).getText());
+    }
+
+    @Test
+    public void testGetProposals_invalidPrefix() throws Exception {
+        parameterParser.parse(new TextRegion("any", 0, 0));
+
+        List<IdentifierProposal> proposals = parameterParser.getProposals("gfassddf");
+
+        assertTrue(proposals.isEmpty());
+    }
+
+    @Test
+    public void testGetProposals_withPrefix() throws Exception {
+        parameterParser.parse(new TextRegion("any", 0, 0));
+
+        List<IdentifierProposal> proposals = parameterParser.getProposals("any");
+
+        assertEquals(1, proposals.size());
+        assertEquals(parameter.getName(), (proposals.get(0)).getText());
+    }
+
+    @Test
+    public void testGetProposals_moreParameters() throws Exception {
+        IParameter param1 = mock(IParameter.class);
+        IParameter param2 = mock(IParameter.class);
+        IParameter param3 = mock(IParameter.class);
+        when(formulaSignature.getParameters()).thenReturn(new IParameter[] { parameter, param1, param2, param3 });
+        when(param1.getName()).thenReturn("notInAny");
+        when(param2.getName()).thenReturn("notInResult");
+        when(param3.getName()).thenReturn("AnyX");
+        when(param3.findDatatype(getIpsProject())).thenReturn(AnyDatatype.INSTANCE);
+
+        parameterParser.parse(new TextRegion("any", 0, 0));
+
+        List<IdentifierProposal> proposals = parameterParser.getProposals("any");
+
+        assertEquals(2, proposals.size());
+        assertEquals(parameter.getName(), proposals.get(0).getText());
+        assertEquals(param3.getName(), proposals.get(1).getText());
+    }
+
+    @Test
+    public void testGetDescription_forTypes() throws Exception {
+        when(parameter.findDatatype(getIpsProject())).thenReturn(type);
+        when(getMultiLanguageSupport().getLocalizedLabel(type)).thenReturn(MY_LABEL);
+        when(getMultiLanguageSupport().getLocalizedDescription(type)).thenReturn(MY_DESCRIPTION);
+
+        String description = parameterParser.getDescription(parameter);
+
+        assertEquals(MY_LABEL + " - " + MY_DESCRIPTION, description);
     }
 
 }

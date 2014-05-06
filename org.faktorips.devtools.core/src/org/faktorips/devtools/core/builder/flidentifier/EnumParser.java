@@ -11,16 +11,18 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.EnumClassNode.EnumClass;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.fl.ExprCompiler;
 import org.faktorips.util.message.Message;
 
@@ -39,12 +41,9 @@ public class EnumParser extends AbstractIdentifierNodeParser {
 
     /**
      * Creates a new {@link EnumParser} for the specified expression and project
-     * 
-     * @param expression The expression that holds the identifier that will be parsed by this parser
-     * @param ipsProject The {@link IIpsProject} used for searching any {@link IIpsObject}.
      */
-    public EnumParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public EnumParser(ParsingContext parsingContext) {
+        super(parsingContext);
         enumDatatypes = createEnumMap();
     }
 
@@ -62,7 +61,7 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         if (isContextTypeFormulaType()) {
             return parseEnumClass();
         }
-        if (getContextType() instanceof EnumClass) {
+        if (isAllowedType() && getContextType() instanceof EnumClass) {
             return parseEnumDatatype();
         }
         return null;
@@ -92,4 +91,43 @@ public class EnumParser extends AbstractIdentifierNodeParser {
                                         enumType.getName())));
     }
 
+    @Override
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
+        if (isContextTypeFormulaType()) {
+            addEnumClassProposals(prefix, collector);
+        } else if (getContextType() instanceof EnumClass) {
+            addEnumValueProposals(prefix, collector);
+        }
+        return collector.getProposals();
+    }
+
+    private void addEnumClassProposals(String prefix, IdentifierProposalCollector collector) {
+        EnumDatatype[] enumDatatypesAllowedInFormula = getExpression().getEnumDatatypesAllowedInFormula();
+        for (EnumDatatype enumDatatype : enumDatatypesAllowedInFormula) {
+            collector.addMatchingNode(getText(enumDatatype), getDescription(enumDatatype), prefix,
+                    IdentifierNodeType.ENUM_CLASS);
+        }
+    }
+
+    private String getText(EnumDatatype enumDatatype) {
+        return enumDatatype.getName();
+    }
+
+    protected String getDescription(EnumDatatype enumDatatype) {
+        if (enumDatatype instanceof EnumTypeDatatypeAdapter) {
+            EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)enumDatatype;
+            MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+            return getNameAndDescription(enumTypeDatatypeAdapter.getEnumType(), multiLanguageSupport);
+        }
+        return NLS.bind(Messages.EnumParser_description, getText(enumDatatype));
+    }
+
+    private void addEnumValueProposals(String prefix, IdentifierProposalCollector collector) {
+        EnumDatatype enumDatatype = ((EnumClass)getContextType()).getEnumDatatype();
+        String[] valueIds = enumDatatype.getAllValueIds(false);
+        for (String enumValueName : valueIds) {
+            collector.addMatchingNode(enumValueName, StringUtils.EMPTY, prefix, IdentifierNodeType.ENUM_VALUE);
+        }
+    }
 }

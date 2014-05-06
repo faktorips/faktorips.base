@@ -109,11 +109,11 @@ public class ExpressionDependencyCollectorTest {
         when(qualifierNode.getProductCmpt()).thenReturn(targetProductCmpt);
         when(targetProductCmpt.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType(MY_TARGET_NAME, IpsObjectType.PRODUCT_CMPT));
-        when(qualifierNode.getTextRegion()).thenReturn(new TextRegion(1, 7));
+        when(qualifierNode.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 1, 7));
         when(qualifierNode2.getProductCmpt()).thenReturn(targetProductCmpt2);
         when(targetProductCmpt2.getQualifiedNameType()).thenReturn(
                 new QualifiedNameType("secondTarget", IpsObjectType.PRODUCT_CMPT));
-        when(qualifierNode2.getTextRegion()).thenReturn(new TextRegion(8, 29));
+        when(qualifierNode2.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION, 8, 29));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class ExpressionDependencyCollectorTest {
         ExpressionDependencyDetail expressionDependencyDetail = dependencies.get(dependency);
 
         assertEquals(1, expressionDependencyDetail.getTextRegions().size());
-        assertEquals(new TextRegion(44, 47), expressionDependencyDetail.getTextRegions().first());
+        assertEquals(new TextRegion(MY_EXPRESSION, 44, 47), expressionDependencyDetail.getTextRegions().first());
     }
 
     @Test
@@ -221,13 +221,13 @@ public class ExpressionDependencyCollectorTest {
         ExpressionDependencyDetail expressionDependencyDetail = dependencies.get(dependency);
 
         assertEquals(2, expressionDependencyDetail.getTextRegions().size());
-        assertEquals(new TextRegion(44, 47), expressionDependencyDetail.getTextRegions().first());
-        assertEquals(new TextRegion(51, 69), expressionDependencyDetail.getTextRegions().last());
+        assertEquals(new TextRegion(MY_EXPRESSION, 44, 47), expressionDependencyDetail.getTextRegions().first());
+        assertEquals(new TextRegion(MY_EXPRESSION, 51, 69), expressionDependencyDetail.getTextRegions().last());
     }
 
     @Test
     public void testGetTextRegion() throws Exception {
-        when(identifierNode.getTextRegion()).thenReturn(new TextRegion(3, 8));
+        when(identifierNode.getTextRegion()).thenReturn(new TextRegion(MY_EXPRESSION,3, 8));
 
         TextRegion textRegion = expressionDependencyCollector.getTextRegion(identifierNode, 42, 13, 9);
 

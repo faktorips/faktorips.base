@@ -9,12 +9,16 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.util;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * The TextRegion describes a certain range in a String. The TextRegion is defined by the start and
  * end variables. The variables don't change over time.
  * 
  */
 public class TextRegion implements Comparable<TextRegion> {
+
+    private final String text;
 
     private final int start;
 
@@ -23,13 +27,18 @@ public class TextRegion implements Comparable<TextRegion> {
     /**
      * Creates a new Instance.
      * 
+     * @param text The complete identifier String
      * @param start The starting position
      * @param end The end position
      */
-    public TextRegion(int start, int end) {
-        super();
+    public TextRegion(String text, int start, int end) {
+        this.text = text;
         this.start = start;
         this.end = end;
+    }
+
+    public String getText() {
+        return text;
     }
 
     /**
@@ -59,7 +68,7 @@ public class TextRegion implements Comparable<TextRegion> {
      * @return The new {@link TextRegion} moved by the offset
      */
     public TextRegion offset(int offset) {
-        return new TextRegion(start + offset, end + offset);
+        return new TextRegion(text, start + offset, end + offset);
     }
 
     /**
@@ -71,7 +80,7 @@ public class TextRegion implements Comparable<TextRegion> {
      * @return The new {@link TextRegion} with the moved starting position
      */
     public TextRegion startOffset(int offset) {
-        return new TextRegion(start + offset, end);
+        return new TextRegion(text, start + offset, end);
     }
 
     /**
@@ -82,7 +91,7 @@ public class TextRegion implements Comparable<TextRegion> {
      * @return The new {@link TextRegion} with the moved ending position
      */
     public TextRegion endOffset(int offset) {
-        return new TextRegion(start, end + offset);
+        return new TextRegion(text, start, end + offset);
     }
 
     /**
@@ -117,7 +126,7 @@ public class TextRegion implements Comparable<TextRegion> {
 
     /**
      * Returns the substring that is defined by this text region within the input string. If the
-     * text region is invalid the inputString is returned without any changes.
+     * text region is invalid the text is returned without any changes.
      * <p>
      * For example in string "abc123" you get the following results:
      * <ul>
@@ -125,18 +134,31 @@ public class TextRegion implements Comparable<TextRegion> {
      * <li>Text region 1 to -5: <b>abc123</b></li>
      * </ul>
      * 
-     * @param inputString The input from which you want to get the substring defined by this region
      * @return The string that is the defined substring of the input string.
      */
-    public String getSubstring(String inputString) {
-        if (!isValidStartAndEnd(inputString)) {
-            return inputString;
+    public String getTextRegionString() {
+        if (!isValidStartAndEnd(text)) {
+            return text;
         }
-        return inputString.substring(getStart(), getEnd());
+        return text.substring(getStart(), getEnd());
+    }
+
+    /**
+     * Returns whether the given char is at the position <code>start + offset</code>.
+     * 
+     * @param offset The offset that is added to the start position
+     * @param expected The expected char at the position <code>start + offset</code>
+     */
+    public boolean isRelativeChar(int offset, char expected) {
+        int index = start + offset;
+        return index >= 0 && index < text.length() && text.charAt(index) == expected;
     }
 
     @Override
     public int compareTo(TextRegion o) {
+        if (!StringUtils.equals(text, o.text)) {
+            return text.compareTo(o.text);
+        }
         int compareStart = getStart() - o.getStart();
         if (compareStart == 0) {
             return getEnd() - o.getEnd();
@@ -151,6 +173,7 @@ public class TextRegion implements Comparable<TextRegion> {
         int result = 1;
         result = prime * result + end;
         result = prime * result + start;
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
         return result;
     }
 
@@ -172,12 +195,19 @@ public class TextRegion implements Comparable<TextRegion> {
         if (start != other.start) {
             return false;
         }
+        if (text == null) {
+            if (other.text != null) {
+                return false;
+            }
+        } else if (!text.equals(other.text)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public String toString() {
-        return "TextRegion [start=" + start + ", end=" + end + "]"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+        return "TextRegion [text=" + text + ", start=" + start + ", end=" + end + "]"; //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
     }
 
 }

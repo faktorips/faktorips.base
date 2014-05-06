@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
 import org.faktorips.fl.ExprCompiler;
@@ -43,7 +44,7 @@ public class AbstractIdentifierResolverTest {
     private IdentifierNodeGeneratorFactory<JavaCodeFragment> identifierNodeGeneratorFactory;
 
     @Mock
-    private IdentifierParser parser;
+    private IdentifierParser identifierParser;
 
     @Mock(answer = Answers.CALLS_REAL_METHODS)
     private AbstractIdentifierResolver<JavaCodeFragment> abstractIdentifierResolver;
@@ -53,20 +54,20 @@ public class AbstractIdentifierResolverTest {
 
     @Test
     public void testParseIdentifier() throws Exception {
-        when(abstractIdentifierResolver.getParser()).thenReturn(parser);
+        when(abstractIdentifierResolver.getParser()).thenReturn(identifierParser);
 
         abstractIdentifierResolver.parseIdentifier(ANY_IDENTIFIER_XYZ);
 
-        verify(parser).parse(ANY_IDENTIFIER_XYZ);
+        verify(identifierParser).parse(ANY_IDENTIFIER_XYZ);
     }
 
     @Test
     public void testCompile() throws Exception {
         final CompilationResultImpl expectedResult = new CompilationResultImpl();
-        when(abstractIdentifierResolver.getParser()).thenReturn(parser);
-        InvalidIdentifierNode node = new IdentifierNodeFactory(ANY_IDENTIFIER_XYZ, null, ipsProject)
-                .createInvalidIdentifier(Message.newError("code", "text"));
-        when(parser.parse(ANY_IDENTIFIER_XYZ)).thenReturn(node);
+        when(abstractIdentifierResolver.getParser()).thenReturn(identifierParser);
+        InvalidIdentifierNode node = new IdentifierNodeFactory(new TextRegion(ANY_IDENTIFIER_XYZ, 0,
+                ANY_IDENTIFIER_XYZ.length()), ipsProject).createInvalidIdentifier(Message.newError("code", "text"));
+        when(identifierParser.parse(ANY_IDENTIFIER_XYZ)).thenReturn(node);
         doReturn(identifierNodeGeneratorFactory).when(abstractIdentifierResolver).getGeneratorFactory();
         doReturn(new CompilationResultImpl()).when(abstractIdentifierResolver).getStartingCompilationResult();
         when(identifierNodeGeneratorFactory.getGeneratorForInvalidNode()).thenReturn(
@@ -84,4 +85,5 @@ public class AbstractIdentifierResolverTest {
 
         assertSame(expectedResult, compilationResult);
     }
+
 }

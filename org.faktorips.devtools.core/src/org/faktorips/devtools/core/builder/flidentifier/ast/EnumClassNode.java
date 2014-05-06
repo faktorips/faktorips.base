@@ -34,20 +34,6 @@ public class EnumClassNode extends IdentifierNode {
         return (EnumClass)super.getDatatype();
     }
 
-    @Override
-    public void setSuccessor(IdentifierNode successor) {
-        if (successor instanceof EnumValueNode) {
-            super.setSuccessor(successor);
-        } else {
-            throw new RuntimeException("Invalid successor type in enum class node: " + successor); //$NON-NLS-1$
-        }
-    }
-
-    @Override
-    public EnumValueNode getSuccessor() {
-        return (EnumValueNode)super.getSuccessor();
-    }
-
     public static class EnumClass extends AbstractDatatype {
 
         private static final String CLASS_NAME = Class.class.getSimpleName();
@@ -93,5 +79,4 @@ public class EnumClassNode extends IdentifierNode {
         }
 
     }
-
 }

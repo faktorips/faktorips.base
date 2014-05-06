@@ -14,40 +14,29 @@ import org.faktorips.codegen.CodeFragment;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGenerator;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierParser;
+import org.faktorips.fl.FunctionResolver;
 
 /**
  * This enum contains an entry for every {@link IdentifierNode} that is used by the
- * {@link IdentifierParser}.
+ * {@link IdentifierParser}. Each {@link IdentifierNode} has an integer named
+ * <code>proposalSortOrder</code> which indicates in which order they will appear on the UI. A
+ * negative sort order implies that proposals of this type should be before any other proposal
+ * provided by other sources but the {@link IdentifierParser}, for example functions from
+ * {@link FunctionResolver}.
  * 
  * @author dirmeier
  */
 public enum IdentifierNodeType {
 
-    ASSOCIATION(AssociationNode.class) {
+    PARAMETER(ParameterNode.class, -1) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForAssociationNode();
+            return factory.getGeneratorForParameterNode();
         }
     },
 
-    INDEX(IndexNode.class) {
-
-        @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForIndexBasedAssociationNode();
-        }
-    },
-
-    QUALIFIER(QualifierNode.class) {
-
-        @Override
-        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForQualifiedAssociationNode();
-        }
-    },
-
-    ATTRIBUTE(AttributeNode.class) {
+    ATTRIBUTE(AttributeNode.class, 2) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -56,15 +45,31 @@ public enum IdentifierNodeType {
 
     },
 
-    PARAMETER(ParameterNode.class) {
+    ASSOCIATION(AssociationNode.class, 3) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
-            return factory.getGeneratorForParameterNode();
+            return factory.getGeneratorForAssociationNode();
         }
     },
 
-    ENUM_CLASS(EnumClassNode.class) {
+    INDEX(IndexNode.class, 4) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+            return factory.getGeneratorForIndexBasedAssociationNode();
+        }
+    },
+
+    QUALIFIER(QualifierNode.class, 5) {
+
+        @Override
+        public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
+            return factory.getGeneratorForQualifiedAssociationNode();
+        }
+    },
+
+    ENUM_CLASS(EnumClassNode.class, 6) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -72,7 +77,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    ENUM_VALUE(EnumValueNode.class) {
+    ENUM_VALUE(EnumValueNode.class, 7) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -80,7 +85,7 @@ public enum IdentifierNodeType {
         }
     },
 
-    INVALID_IDENTIFIER(InvalidIdentifierNode.class) {
+    INVALID_IDENTIFIER(InvalidIdentifierNode.class, Integer.MAX_VALUE) {
 
         @Override
         public <T extends CodeFragment> IdentifierNodeGenerator<T> getGenerator(IdentifierNodeGeneratorFactory<T> factory) {
@@ -90,8 +95,21 @@ public enum IdentifierNodeType {
 
     private final Class<? extends IdentifierNode> nodeClass;
 
-    private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass) {
+    private final int proposalSortOrder;
+
+    /**
+     * Instantiates the {@link IdentifierNodeType} with the following parameters
+     * 
+     * @param nodeClass The subclass of {@link IdentifierNode} that is instantiated for the
+     *            specified type
+     * @param proposalSortOrder Proposals are sorted in blocks of same type. This number specifies
+     *            the position of this proposal type. A negative number implies that the position is
+     *            before other functions that may not be provided by the {@link IdentifierParser}.
+     * 
+     */
+    private IdentifierNodeType(Class<? extends IdentifierNode> nodeClass, int proposalSortOrder) {
         this.nodeClass = nodeClass;
+        this.proposalSortOrder = proposalSortOrder;
     }
 
     /**
@@ -107,6 +125,17 @@ public enum IdentifierNodeType {
             }
         }
         throw new IllegalArgumentException("Illegal node class " + nodeClass); //$NON-NLS-1$
+    }
+
+    /**
+     * The <code>proposalSortOrder</code> represents the numerical position of this enum constant. A
+     * negative number implies that the position is before other functions that may not be provided
+     * by the {@link IdentifierParser}.
+     * 
+     * @return integer representing numerical position of the IdentifierNodeType,
+     */
+    public int getProposalSortOrder() {
+        return proposalSortOrder;
     }
 
     public Class<? extends IdentifierNode> getNodeClass() {

@@ -144,6 +144,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private IIpsProjectNamingConventions namingConventions = null;
 
+    private IFile propertyFile;
+
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
      * <code>IProject.addNature()</code>.
@@ -262,7 +264,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IFile getIpsProjectPropertiesFile() {
-        return getProject().getFile(PROPERTY_FILE_EXTENSION_INCL_DOT);
+        if (propertyFile == null) {
+            propertyFile = getProject().getFile(PROPERTY_FILE_EXTENSION_INCL_DOT);
+        }
+        return propertyFile;
     }
 
     @Override

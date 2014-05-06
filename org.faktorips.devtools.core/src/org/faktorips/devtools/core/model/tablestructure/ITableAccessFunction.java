@@ -10,15 +10,15 @@
 
 package org.faktorips.devtools.core.model.tablestructure;
 
-import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import java.util.List;
+
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
  * The definition of a function to access a table.
- * 
- * @author firstName lastName
  */
-public interface ITableAccessFunction extends IIpsObjectPart, IDescribedElement {
+public interface ITableAccessFunction {
 
     /**
      * Returns the table structure this function gives access to.
@@ -28,18 +28,13 @@ public interface ITableAccessFunction extends IIpsObjectPart, IDescribedElement 
     /**
      * Returns the name of the column accessed by this function.
      */
-    public String getAccessedColumn();
-
-    /**
-     * Sets the name of the column accessed by this function.
-     */
-    public void setAccessedColumn(String columnName);
+    public String getAccessedColumnName();
 
     /**
      * Returns the column accessed by this function or <code>null</code> if the column can't be
      * found.
      */
-    public IColumn findAccessedColumn();
+    public IColumn getAccessedColumn();
 
     /**
      * Returns the function's return type.
@@ -47,18 +42,18 @@ public interface ITableAccessFunction extends IIpsObjectPart, IDescribedElement 
     public String getType();
 
     /**
-     * Sets the function's return type.
-     */
-    public void setType(String newType);
-
-    /**
      * Returns the function's arguments' types.
      */
-    public String[] getArgTypes();
+    public List<String> getArgTypes();
+
+    public List<Datatype> findArgTypes();
 
     /**
-     * Sets the function's arguments' types.
+     * Returns the description of this function
+     * 
      */
-    public void setArgTypes(String[] argTypes);
+    public String getDescription();
+
+    public IIpsProject getIpsProject();
 
 }

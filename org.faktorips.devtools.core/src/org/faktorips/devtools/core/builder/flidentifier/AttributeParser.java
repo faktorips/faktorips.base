@@ -10,20 +10,22 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -42,11 +44,13 @@ import org.faktorips.util.message.Message;
 public class AttributeParser extends TypeBasedIdentifierParser {
 
     public static final char VALUE_SUFFIX_SEPARATOR_CHAR = '@';
+
     public static final String DEFAULT_VALUE_SUFFIX = VALUE_SUFFIX_SEPARATOR_CHAR + "default"; //$NON-NLS-1$
+
     private final IdentifierFilter identifierFilter;
 
-    public AttributeParser(IExpression expression, IIpsProject ipsProject, IdentifierFilter identifierFilter) {
-        super(expression, ipsProject);
+    public AttributeParser(ParsingContext parsingContext, IdentifierFilter identifierFilter) {
+        super(parsingContext);
         this.identifierFilter = identifierFilter;
     }
 
@@ -60,7 +64,6 @@ public class AttributeParser extends TypeBasedIdentifierParser {
                     Message.newInfo(ExprCompiler.UNDEFINED_IDENTIFIER,
                             Messages.AbstractParameterIdentifierResolver_msgErrorRetrievingAttribute));
         }
-
     }
 
     private IdentifierNode parseToNode() {
@@ -68,6 +71,18 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         String attributeName = getAttributeName(getIdentifierPart(), defaultValueAccess);
         List<IAttribute> attributes = findAttributes();
         return createNode(defaultValueAccess, attributeName, attributes);
+    }
+
+    private boolean isDefaultValueAccess(String attributeName) {
+        return getContextType() instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
+    }
+
+    private String getAttributeName(String identifier, boolean defaultValueAccess) {
+        if (defaultValueAccess) {
+            return identifier.substring(0, identifier.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR));
+        } else {
+            return identifier;
+        }
     }
 
     private IdentifierNode createNode(boolean defaultValueAccess, String attributeName, List<IAttribute> attributes) {
@@ -83,32 +98,45 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return null;
     }
 
-    private boolean isDefaultValueAccess(String attributeName) {
-        return getContextType() instanceof IPolicyCmptType && attributeName.endsWith(DEFAULT_VALUE_SUFFIX);
-    }
-
-    private String getAttributeName(String identifier, boolean defaultValueAccess) {
-        if (defaultValueAccess) {
-            return identifier.substring(0, identifier.lastIndexOf(VALUE_SUFFIX_SEPARATOR_CHAR));
-        } else {
-            return identifier;
-        }
-    }
-
     protected List<IAttribute> findAttributes() {
-        List<IAttribute> attributes;
         if (isContextTypeFormulaType()) {
-            attributes = getExpression().findMatchingProductCmptTypeAttributes();
+            return getExpression().findMatchingProductCmptTypeAttributes();
+        } else if (isAllowedType()) {
+            return getPolicyAndProductAttributesFromIType();
         } else {
-            attributes = getPolicyAndProductAttributesFromIType();
+            return Collections.emptyList();
         }
-        return attributes;
+    }
+
+    @Override
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
+        List<IAttribute> attributes = findAttributes();
+        for (IAttribute attribute : attributes) {
+            addProposal(attribute, false, prefix, collector);
+            addProposal(attribute, true, prefix, collector);
+        }
+        return collector.getProposals();
+    }
+
+    private void addProposal(IAttribute attribute,
+            boolean defaultAccess,
+            String prefix,
+            IdentifierProposalCollector collector) {
+        if (isProposalAllowed(attribute, defaultAccess)) {
+            collector.addMatchingNode(getText(attribute, defaultAccess), getDescription(attribute, defaultAccess),
+                    prefix, IdentifierNodeType.ATTRIBUTE);
+        }
+    }
+
+    private boolean isProposalAllowed(IAttribute attribute, boolean defaultAccess) {
+        return (attribute instanceof IPolicyCmptTypeAttribute || !defaultAccess) && isAllowd(attribute, defaultAccess);
     }
 
     private List<IAttribute> getPolicyAndProductAttributesFromIType() {
-        List<IAttribute> attributes;
+        List<IAttribute> attributes = new ArrayList<IAttribute>();
         IType contextType = getContextType();
-        attributes = findAllAttributesFor(contextType);
+        attributes.addAll(findAllAttributesFor(contextType));
         attributes.addAll(findProductAttributesIfAvailable(contextType));
         return attributes;
     }
@@ -148,6 +176,23 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         return nodeFactory().createInvalidIdentifier(
                 Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
                         Messages.AbstractParameterIdentifierResolver_msgIdentifierNotAllowed, getIdentifierPart())));
+    }
+
+    public String getText(IAttribute attribute, boolean defaultValueAccess) {
+        if (defaultValueAccess) {
+            return attribute.getName() + AttributeParser.DEFAULT_VALUE_SUFFIX;
+        } else {
+            return attribute.getName();
+        }
+    }
+
+    public String getDescription(IAttribute attribute, boolean defaultValueAccess) {
+        MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+        String name = getName(attribute, multiLanguageSupport);
+        if (defaultValueAccess) {
+            name = NLS.bind(Messages.AttributeParser_defaultOfName, name);
+        }
+        return getNameAndDescription(name, getDescription(attribute, multiLanguageSupport));
     }
 
 }

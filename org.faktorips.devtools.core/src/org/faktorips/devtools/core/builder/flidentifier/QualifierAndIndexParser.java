@@ -10,17 +10,19 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.contextcollector.ContextProductCmptFinder;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.fl.ExprCompiler;
@@ -39,23 +41,25 @@ import org.faktorips.util.message.Message;
  */
 public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
-    private static final String QUALIFIER_END = "]"; //$NON-NLS-1$
+    public static final String QUALIFIER_START = "["; //$NON-NLS-1$
+
+    public static final String QUALIFIER_END = "]"; //$NON-NLS-1$
 
     private static final String QUALIFIER_QUOTATION = "\""; //$NON-NLS-1$
 
-    public QualifierAndIndexParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public QualifierAndIndexParser(ParsingContext parsingContext) {
+        super(parsingContext);
     }
 
     @Override
-    protected boolean isAllowedType() {
+    public boolean isAllowedType() {
         return super.isAllowedType() && super.getContextType() instanceof IPolicyCmptType;
     }
 
     @Override
     protected IdentifierNode parseInternal() {
         if (!isValidPreviousNode()) {
-            return invalidAssociationNode();
+            return null;
         }
         if ((isIndex()) && !isListOfTypeContext()) {
             return invalidIndexNode();
@@ -79,15 +83,6 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return false;
     }
 
-    private IdentifierNode invalidAssociationNode() {
-        return nodeFactory()
-                .createInvalidIdentifier(
-                        Message.newError(ExprCompiler.UNDEFINED_IDENTIFIER, NLS.bind(
-                                Messages.QualifierAndIndexParser_errorMsg_qualifierMustFollowAssociation,
-                                getIdentifierPart())));
-
-    }
-
     private IdentifierNode invalidIndexNode() {
         return nodeFactory().createInvalidIdentifier(
                 Message.newError(ExprCompiler.NO_INDEX_FOR_1TO1_ASSOCIATION, NLS.bind(
@@ -98,16 +93,18 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         IProductCmpt productCmpt;
         try {
             productCmpt = findProductCmpt();
-            AssociationNode associationNode = (AssociationNode)getPreviousNode();
-            boolean listOfType = associationNode.isListContext()
-                    || associationNode.getAssociation().is1ToManyIgnoringQualifier();
-            return nodeFactory().createQualifierNode(productCmpt, getQualifier(), listOfType);
+            return nodeFactory().createQualifierNode(productCmpt, getQualifier(), isListOfType());
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return nodeFactory().createInvalidIdentifier(
                     Message.newError(ExprCompiler.UNKNOWN_QUALIFIER, NLS.bind(
                             Messages.QualifierAndIndexParser_errorMsg_errorWhileSearchingProductCmpt, getQualifier())));
         }
+    }
+
+    private boolean isListOfType() {
+        AssociationNode associationNode = (AssociationNode)getPreviousNode();
+        return associationNode.isListContext() || associationNode.getAssociation().is1ToManyIgnoringQualifier();
     }
 
     private IProductCmpt findProductCmpt() throws CoreException {
@@ -170,6 +167,54 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     private String getQualifierOrIndex() {
         return getIdentifierPart().substring(0, getIndexOrQualifierEnd());
+    }
+
+    @Override
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
+        if (getPreviousNode() instanceof AssociationNode || getPreviousNode() instanceof QualifierNode) {
+            addIndexProposal(prefix, collector);
+        }
+        if (getPreviousNode() instanceof AssociationNode) {
+            addQualifierProposal(prefix, collector);
+        }
+        return collector.getProposals();
+    }
+
+    private void addIndexProposal(String prefix, IdentifierProposalCollector collector) {
+        String text = getIndexText(0);
+        collector
+                .addMatchingNode(text, QUALIFIER_START + text, getIndexDescription(), prefix, IdentifierNodeType.INDEX);
+    }
+
+    private void addQualifierProposal(String prefix, IdentifierProposalCollector collector) {
+        List<IProductCmpt> contextProductCmpts = new ContextProductCmptFinder(getParsingContext().getNodes(),
+                getExpression(), getIpsProject()).getContextProductCmpts();
+        for (IProductCmpt productCmpt : contextProductCmpts) {
+            addQualifierProposal(productCmpt, prefix, collector);
+        }
+    }
+
+    public String getIndexText(int index) {
+        return index + QUALIFIER_END;
+    }
+
+    public String getIndexDescription() {
+        return Messages.QualifierAndIndexParser_descriptionIndex;
+    }
+
+    private void addQualifierProposal(IProductCmpt productCmpt, String prefix, IdentifierProposalCollector collector) {
+        String text = getQualifierText(productCmpt);
+        collector.addMatchingNode(text, QUALIFIER_START + text, getQualifierDescription(productCmpt), prefix,
+                IdentifierNodeType.QUALIFIER);
+    }
+
+    public String getQualifierText(IProductCmpt productCmpt) {
+        return '"' + productCmpt.getName() + '"' + QUALIFIER_END;
+    }
+
+    public String getQualifierDescription(IProductCmpt productCmpt) {
+        return NLS.bind(Messages.QualifierAndIndexParser_descriptionQualifier, productCmpt.getName());
     }
 
 }

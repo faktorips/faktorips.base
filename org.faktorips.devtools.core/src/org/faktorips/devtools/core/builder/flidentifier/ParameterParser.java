@@ -10,11 +10,19 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.List;
+
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
+import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
-import org.faktorips.devtools.core.model.productcmpt.IExpression;
 
 /**
  * The {@link ParameterParser} parses an identifier part to an {@link ParameterNode}. It checks
@@ -25,8 +33,8 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
  */
 public class ParameterParser extends AbstractIdentifierNodeParser {
 
-    public ParameterParser(IExpression expression, IIpsProject ipsProject) {
-        super(expression, ipsProject);
+    public ParameterParser(ParsingContext parsingContext) {
+        super(parsingContext);
     }
 
     @Override
@@ -42,8 +50,40 @@ public class ParameterParser extends AbstractIdentifierNodeParser {
         return null;
     }
 
+    @Override
+    public List<IdentifierProposal> getProposals(String prefix) {
+        IdentifierProposalCollector collector = new IdentifierProposalCollector();
+        if (isContextTypeFormulaType()) {
+            IParameter[] parameters = getParameters();
+            for (IParameter parameter : parameters) {
+                collector.addMatchingNode(parameter.getName(), getDescription(parameter), prefix,
+                        IdentifierNodeType.PARAMETER);
+            }
+        }
+        return collector.getProposals();
+    }
+
+    String getDescription(IParameter parameter) {
+        try {
+            Datatype datatype = parameter.findDatatype(getIpsProject());
+            if (datatype instanceof IIpsElement) {
+                MultiLanguageSupport multiLanguageSupport = getParsingContext().getMultiLanguageSupport();
+                return getNameAndDescription((IIpsElement)datatype, multiLanguageSupport);
+            } else {
+                return NLS.bind(Messages.ParameterParser_description, parameter.getName(), parameter.getDatatype());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     /* private */protected IParameter[] getParameters() {
-        return getExpression().findFormulaSignature(getIpsProject()).getParameters();
+        IFormulaMethod formulaSignature = getExpression().findFormulaSignature(getIpsProject());
+        if (formulaSignature != null) {
+            return formulaSignature.getParameters();
+        } else {
+            return new IParameter[0];
+        }
     }
 
 }

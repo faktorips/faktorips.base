@@ -379,7 +379,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Returns the value of the underlying IIpsProjectProperties instance.
      */
     @Override
-    public Long getLastPersistentModificationTimestamp() {
+    public long getLastPersistentModificationTimestamp() {
         return propertiesInternal.getLastPersistentModificationTimestamp();
     }
 
@@ -387,7 +387,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
      * Throws a runtime exceptions since manipulation of this object is disallowed.
      */
     @Override
-    public void setLastPersistentModificationTimestamp(Long timestamp) {
+    public void setLastPersistentModificationTimestamp(long timestamp) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
