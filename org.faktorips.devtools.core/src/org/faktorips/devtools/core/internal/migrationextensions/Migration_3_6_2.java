@@ -81,10 +81,11 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
                     + file, e1));
             return msgResultList;
         }
+        // CSOFF: IllegalCatch
         try {
             doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
         } catch (Exception e) {
-            IpsPlugin.log(new IpsStatus("Error parsing project file " + file, e));//$NON-NLS-1$
+            IpsPlugin.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
             return msgResultList;
         } finally {
             try {
@@ -95,7 +96,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
                 return msgResultList;
             }
         }
-
+        // CSON: IllegalCatch
         Element documentElement = doc.getDocumentElement();
         Element optionalConstraintsEl = XmlUtil.getFirstElement(documentElement, "AdditionalSettings"); //$NON-NLS-1$
         if (optionalConstraintsEl == null) {
@@ -111,7 +112,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
             }
             setting.removeAttribute("enable"); //$NON-NLS-1$
         }
-
+        // CSOFF: IllegalCatch
         try {
             data = IpsProjectProperties.createFromXml(ipsProject, documentElement);
             data.setCreatedFromParsableFileContents(true);
@@ -120,6 +121,7 @@ public class Migration_3_6_2 extends AbstractIpsProjectMigrationOperation {
                     + file, e));
             data.setCreatedFromParsableFileContents(false);
         }
+        // CSON: IllegalCatch
         data.setLastPersistentModificationTimestamp(file.getModificationStamp());
         ipsProject.setProperties(data);
         return msgResultList;
