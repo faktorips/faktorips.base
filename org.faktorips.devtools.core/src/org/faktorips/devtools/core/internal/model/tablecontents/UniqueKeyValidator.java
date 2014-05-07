@@ -132,30 +132,35 @@ public class UniqueKeyValidator {
 
     /**
      * If a row has changed then this method updates the underlying unique key cache for this row
+     * 
+     * @param uniqueKeys
      */
-    public void handleRowChanged(ITableContentsGeneration tableContentsGeneration, Row row) {
-        updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_CHANGED);
+    public void handleRowChanged(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
+        updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_CHANGED, uniqueKeys);
     }
 
     /**
      * If a row has removed then this method updates the underlying unique key cache for this row
      */
-    public void handleRowRemoved(ITableContentsGeneration tableContentsGeneration, Row row) {
-        updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_REMOVED);
+    public void handleRowRemoved(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
+        updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_REMOVED, uniqueKeys);
     }
 
     /**
      * Updates the given row depending on the given operation in all unique key caches with the new
      * calculated key value of the given row.
+     * 
      */
-    private void updateAllUniqueKeysCache(ITableContentsGeneration tableContentsGeneration, Row row, int operation) {
+    private void updateAllUniqueKeysCache(ITableContentsGeneration tableContentsGeneration,
+            Row row,
+            int operation,
+            IIndex[] uniqueKeys) {
         cachedMessageList = null;
         if (cachedTableStructure == null) {
             return;
         }
         cacheTableStructureAndValueDatatypes(tableContentsGeneration);
 
-        IIndex[] uniqueKeys = cachedTableStructure.getUniqueKeys();
         for (IIndex uniqueKey : uniqueKeys) {
             if (uniqueKey.containsTwoColumnRanges()) {
                 updateUniqueKeysColumnRange(row, operation, uniqueKey);

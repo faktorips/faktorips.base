@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
 public class TableContents extends TimedIpsObject implements ITableContents {
-
+    Performance Potential Tabellen: Datentypen der Columsn cachen
     private String structure = ""; //$NON-NLS-1$
     private int numOfColumns = 0;
 

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.enums;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.core.runtime.CoreException;
@@ -118,8 +119,8 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
      * null if none can be found) and the enum value by identifier map is re-initialized.
      */
     private void checkIdentifierAttribute(IIpsProject ipsProject) {
-        if (identifierAttribute == null || identifierAttribute.isDeleted() || identifierAttribute.isInherited()
-                || !identifierAttribute.isIdentifier()) {
+        if (identifierAttribute == null || identifierAttribute.isDeleted()
+                || !identifierAttribute.findIsIdentifier(ipsProject)) {
             identifierAttribute = findEnumType(ipsProject).findIdentiferAttribute(ipsProject);
             if (identifierAttribute != null) {
                 reinitEnumValuesByIdentifierMap();
@@ -171,9 +172,9 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                  * Now that we found the enum value that was not in the map we need to find and
                  * remove the old key and add the new one.
                  */
-                for (String storedIdentifier : enumValuesByIdentifier.keySet()) {
-                    if (enumValuesByIdentifier.get(storedIdentifier) == enumValue) {
-                        enumValuesByIdentifier.remove(storedIdentifier);
+                for (Entry<String, IEnumValue> entry : enumValuesByIdentifier.entrySet()) {
+                    if (entry.getValue() == enumValue) {
+                        enumValuesByIdentifier.remove(entry.getKey());
                         enumValuesByIdentifier.put(newIdentifier, enumValue);
                         break;
                     }

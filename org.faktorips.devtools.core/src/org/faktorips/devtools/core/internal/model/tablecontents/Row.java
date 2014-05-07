@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
@@ -111,7 +112,13 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
-        getTableContentsGeneration().updateUniqueKeyCacheFor(this);
+        IIndex[] uniqueKeys;
+        try {
+            uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        getTableContentsGeneration().updateUniqueKeyCacheFor(this, uniqueKeys);
         objectHasChanged();
     }
 
@@ -182,7 +189,9 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
         MessageList uniqueKeyList = new MessageList();
-        getTableContentsGeneration().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+        if (tableStructure.getUniqueKeys().length > 0) {
+            getTableContentsGeneration().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+        }
         list.add(uniqueKeyList.getMessagesFor(this));
     }
 

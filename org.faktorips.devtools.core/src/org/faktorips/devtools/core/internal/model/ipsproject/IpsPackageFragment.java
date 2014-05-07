@@ -61,15 +61,22 @@ import org.w3c.dom.Element;
  */
 public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
+    private final IPath path;
+
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
+        this.path = new Path(name.replace(SEPARATOR, IPath.SEPARATOR));
     }
 
     @Override
     public IResource getCorrespondingResource() {
-        String path = name.replace(SEPARATOR, IPath.SEPARATOR);
         IFolder folder = (IFolder)getParent().getCorrespondingResource();
-        return folder.getFolder(new Path(path));
+        return folder.getFolder(path);
+    }
+
+    @Override
+    public void setName(String name) {
+        new UnsupportedOperationException("Package fragment names cannot be changed."); //$NON-NLS-1$
     }
 
     /**
