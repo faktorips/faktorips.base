@@ -835,7 +835,7 @@ public class TestCaseTypeClassBuilder extends DefaultJavaSourceFileBuilder {
             // init method
             javaDoc = getJavaDocCommentForOverriddenMethod();
             method = new JavaCodeFragmentBuilder();
-
+            method.annotationLn(Override.class);
             method.method(
                     Modifier.PUBLIC,
                     "void",

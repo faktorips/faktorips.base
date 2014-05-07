@@ -1545,21 +1545,21 @@
                <iterate
                   ifEmpty="false"
                   operator="and">
-    <and>
-       <adapt
-             type="org.faktorips.devtools.core.model.IIpsElement">
+       <and>
+          <adapt
+                type="org.faktorips.devtools.core.model.IIpsElement">
+             <not>
+                <instanceof
+                      value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                </instanceof>
+             </not>
+          </adapt>
           <not>
              <instanceof
-                   value="org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart">
+                   value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference">
              </instanceof>
           </not>
-       </adapt>
-       <not>
-          <instanceof
-                value="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference">
-          </instanceof>
-       </not>
-    </and>
+       </and>
                </iterate>
             </with>
          </activeWhen>
@@ -1568,15 +1568,41 @@
                      variable="selection">
                   <iterate
                         ifEmpty="false">
-                     <adapt
-                           type="org.faktorips.devtools.core.model.IIpsElement">
-                        <test
-                              property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
-                        </test>
-                     </adapt>
+                        <adapt
+                              type="org.faktorips.devtools.core.model.IIpsElement">
+                           <test
+                                 property="org.faktorips.devtools.core.ui.commands.IpsElementTester.isEditable">
+                           </test>
+                        </adapt>
                   </iterate>
                </with>
          </enabledWhen>
+         <class
+               class="org.faktorips.devtools.core.ui.commands.IpsDeleteHandler">
+         </class>
+      </handler>
+      <handler
+            commandId="org.eclipse.ui.edit.delete">
+         <activeWhen>
+            <and>
+               <with
+                     variable="activePart">
+                  <instanceof
+                        value="org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorer">
+                  </instanceof>
+               </with>
+               <with
+                     variable="selection">
+                  <iterate
+                        ifEmpty="false"
+                        operator="and">
+                     <instanceof
+                           value="org.eclipse.core.resources.IResource">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </and>
+         </activeWhen>
          <class
                class="org.faktorips.devtools.core.ui.commands.IpsDeleteHandler">
          </class>
