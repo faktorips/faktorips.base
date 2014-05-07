@@ -11,13 +11,38 @@
 package org.faktorips.fl.functions;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.NumericDatatype;
+import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
+import org.faktorips.util.message.Message;
 
 public class SumList extends AbstractListFunction {
 
+    public static final String MSG_CODE_INVALID_DATATYPE = ExprCompiler.PREFIX + "SUM-INVALID-DATATYPE";
+
     public SumList(String name, String description) {
         super(name, description, FunctionSignatures.SumList);
+    }
+
+    @Override
+    protected CompilationResult<JavaCodeFragment> validateBasicDatatype(Datatype basicDatatype) {
+        if (!isNumeric(basicDatatype)) {
+            return createInvalidDatatypeResult(basicDatatype);
+        }
+        return super.validateBasicDatatype(basicDatatype);
+    }
+
+    private boolean isNumeric(Datatype basicDatatype) {
+        return basicDatatype instanceof NumericDatatype;
+    }
+
+    private CompilationResult<JavaCodeFragment> createInvalidDatatypeResult(Datatype basicDatatype) {
+        String text = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE,
+                new Object[] { getName(), basicDatatype.getName() });
+        return new CompilationResultImpl(Message.newError(MSG_CODE_INVALID_DATATYPE, text));
     }
 
     @Override

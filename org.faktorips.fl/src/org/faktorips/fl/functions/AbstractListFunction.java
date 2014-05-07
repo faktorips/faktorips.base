@@ -33,10 +33,27 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
 
         datatype = getBasicType(listArgument);
 
-        JavaCodeFragment fragment = createCodeFragment(listArgument);
-        CompilationResultImpl result = createCompilationResult(listArgument, fragment);
+        CompilationResult<JavaCodeFragment> datatypeResult = validateBasicDatatype(datatype);
+        if (compilationFailed(datatypeResult)) {
+            return datatypeResult;
+        } else {
+            return createCompilationResult(listArgument);
+        }
+    }
 
-        return result;
+    private boolean compilationFailed(CompilationResult<JavaCodeFragment> datatypeResult) {
+        return datatypeResult != null && datatypeResult.failed();
+    }
+
+    /**
+     * @param basicDatatype The data type of the elements in the list this function processes.
+     * 
+     * @return a {@link CompilationResult} with an error if the element data type is illegal.
+     *         Returns <code>null</code> or an error free compilation result if the data type is
+     *         valid.
+     */
+    protected CompilationResult<JavaCodeFragment> validateBasicDatatype(Datatype basicDatatype) {
+        return null;
     }
 
     protected JavaCodeFragment createCodeFragment(AbstractCompilationResult<JavaCodeFragment> listArgument) {
@@ -78,10 +95,9 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         return getCompiler().getMatchingFunctionUsingConversion(arguments, datatypes, getName()).getCodeFragment();
     }
 
-    protected CompilationResultImpl createCompilationResult(CompilationResult<JavaCodeFragment> listArgument,
-            JavaCodeFragment fragment) {
-        Datatype basicDatatype = getBasicType(listArgument);
-        CompilationResultImpl result = new CompilationResultImpl(fragment, basicDatatype);
+    protected CompilationResultImpl createCompilationResult(AbstractCompilationResult<JavaCodeFragment> listArgument) {
+        JavaCodeFragment fragment = createCodeFragment(listArgument);
+        CompilationResultImpl result = new CompilationResultImpl(fragment, getDatatype());
         result.addMessages(listArgument.getMessages());
         return result;
     }

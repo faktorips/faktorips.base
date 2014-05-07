@@ -12,6 +12,7 @@ package org.faktorips.fl.functions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -35,13 +36,13 @@ public class SumListTest {
     private ListOfTypeDatatype datatype = new ListOfTypeDatatype(Datatype.DECIMAL);
 
     @Mock
-    CompilationResultImpl argumentCompilationResult;
+    private CompilationResultImpl argumentCompilationResult;
 
     @Mock
-    JavaExprCompiler compiler;
+    private JavaExprCompiler compiler;
 
     @Mock
-    DatatypeHelper helper;
+    private DatatypeHelper helper;
 
     @Test(expected = IllegalArgumentException.class)
     public void testCompile_NumberOfArgumentsZero() {
@@ -54,7 +55,7 @@ public class SumListTest {
     }
 
     @Test
-    public void testCompile_Max() {
+    public void testCompile_Sum() {
         CompilationResultImpl arg1Result = new CompilationResultImpl("currentResult", Datatype.DECIMAL);
         CompilationResultImpl arg2Result = new CompilationResultImpl("nextValue", Datatype.DECIMAL);
         when(argumentCompilationResult.getCodeFragment()).thenReturn(argumentFragment);
@@ -76,5 +77,18 @@ public class SumListTest {
         assertEquals(
                 "new FunctionWithListAsArgumentHelper<Decimal>(){\n@Override public Decimal getPreliminaryResult(Decimal currentResult, Decimal nextValue){return currentResult.add(nextValue);}\n@Override public Decimal getFallBackValue(){return Decimal.valueOf(0);}}.getResult(valueList)",
                 compile.getCodeFragment().getSourcecode());
+    }
+
+    @Test
+    public void testValidateDatatype_invalidDatatype() {
+        CompilationResult<JavaCodeFragment> result = sumList.validateBasicDatatype(Datatype.BOOLEAN);
+        assertNotNull(result);
+        assertEquals(SumList.MSG_CODE_INVALID_DATATYPE, result.getMessages().getMessage(0).getCode());
+    }
+
+    @Test
+    public void testValidateDatatype_ValidDatatype() {
+        CompilationResult<JavaCodeFragment> result = sumList.validateBasicDatatype(Datatype.DECIMAL);
+        assertNull(result);
     }
 }
