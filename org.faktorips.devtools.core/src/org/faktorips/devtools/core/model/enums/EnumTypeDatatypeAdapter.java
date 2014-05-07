@@ -37,6 +37,8 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     private IEnumContent enumContent;
 
+    private IEnumAttribute nameAttribute;
+
     /**
      * Creates a new <tt>EnumTypeDatatypeAdapter</tt>.
      * 
@@ -107,7 +109,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
                 return null;
             }
 
-            IEnumAttribute displayNameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
+            IEnumAttribute displayNameAttribute = getNameAttribute(ipsProject);
             IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(displayNameAttribute);
             if (enumAttributeValue != null) {
                 return IpsPlugin.getMultiLanguageSupport().getLocalizedContent(enumAttributeValue.getValue(),
@@ -119,6 +121,13 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private IEnumAttribute getNameAttribute(IIpsProject ipsProject) throws CoreException {
+        if (nameAttribute == null || !nameAttribute.findIsUsedAsNameInFaktorIpsUi(ipsProject)) {
+            nameAttribute = enumType.findUsedAsNameInFaktorIpsUiAttribute(ipsProject);
+        }
+        return nameAttribute;
     }
 
     @Override
