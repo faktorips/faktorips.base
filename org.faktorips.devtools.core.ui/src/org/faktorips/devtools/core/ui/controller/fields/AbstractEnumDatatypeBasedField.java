@@ -19,6 +19,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -168,7 +169,11 @@ public abstract class AbstractEnumDatatypeBasedField extends StringValueComboFie
      * {@link IpsPreferences#ENUM_TYPE_DISPLAY} specifies the format.
      */
     public String getDisplayTextForValue(String id) {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, id);
+        if (id == null) {
+            return Messages.DefaultValueRepresentation_Combobox;
+        } else {
+            return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, id);
+        }
     }
 
     /**

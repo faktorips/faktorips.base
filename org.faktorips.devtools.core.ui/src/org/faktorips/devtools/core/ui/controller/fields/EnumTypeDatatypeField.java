@@ -20,7 +20,6 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * An implementation of <code>AbstractEnumDatatypeBasedField</code> that displays the values of an
@@ -57,10 +56,4 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
     private EnumTypeDatatypeAdapter getEnumDatatype() {
         return (EnumTypeDatatypeAdapter)getDatatype();
     }
-
-    @Override
-    public String getDisplayTextForValue(String id) {
-        return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(getEnumDatatype(), id);
-    }
-
 }

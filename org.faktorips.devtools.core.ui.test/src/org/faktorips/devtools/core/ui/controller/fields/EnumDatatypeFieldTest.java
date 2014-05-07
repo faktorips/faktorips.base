@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.junit.Before;
 import org.junit.Test;
@@ -70,7 +71,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(nullRepresentation, items[0]);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
         assertEquals(PaymentMode.ANNUAL_NAME, items[1]);
         assertEquals(PaymentMode.MONTHLY_NAME, items[2]);
 
@@ -79,13 +80,13 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(PaymentMode.ANNUAL_NAME, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(null, field.getValue());
+        assertEquals(nullRepresentation, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(nullRepresentation, items[0]);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
         assertEquals(PaymentMode.ANNUAL_NAME, items[1]);
         assertEquals(PaymentMode.MONTHLY_NAME, items[2]);
         assertEquals("unknownValue", items[3]);
@@ -104,7 +105,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(nullRepresentation, items[0]);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
         assertEquals(PaymentMode.ANNUAL_ID, items[1]);
         assertEquals(PaymentMode.MONTHLY_ID, items[2]);
 
@@ -113,13 +114,13 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(PaymentMode.ANNUAL_ID, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(null, field.getValue());
+        assertEquals(nullRepresentation, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(nullRepresentation, items[0]);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
         assertEquals(PaymentMode.ANNUAL_ID, items[1]);
         assertEquals(PaymentMode.MONTHLY_ID, items[2]);
         assertEquals("unknownValue", items[3]);
@@ -143,7 +144,7 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(nullRepresentation, items[0]);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
         assertEquals(annualNameAndId, items[1]);
         assertEquals(monthlyNameAndId, items[2]);
 
@@ -152,13 +153,13 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(annualNameAndId, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(null, field.getValue());
+        assertEquals(nullRepresentation, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(nullRepresentation, items[0]);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
         assertEquals(annualNameAndId, items[1]);
         assertEquals(monthlyNameAndId, items[2]);
         assertEquals("unknownValue", items[3]);

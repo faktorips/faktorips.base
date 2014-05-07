@@ -20,13 +20,13 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
-import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * An implementation of AbstractEnumDatatypeBasedField that displays the values of an EnumValueSet.
- * If the EnumDatatype the EnumValueSet is based on, supports value names these are displayed
- * instead of the value ids.
+ * An implementation of AbstractEnumDatatypeBasedField. This edit field selects one value out of an
+ * EnumValueSet. A combo box is used to select the value. If EnumValueSet is based on an
+ * EnumDatatype which supports value names, depending on the preferences these names are displayed
+ * instead of the value IDs.
  * 
  * @author Peter Erzberger
  */
@@ -73,14 +73,4 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
     private boolean isDefaultValueField() {
         return valueSetOwner instanceof IConfigElement;
     }
-
-    @Override
-    public String getDisplayTextForValue(String id) {
-        if (id == null && isDefaultValueField()) {
-            return Messages.DefaultValueRepresentation_Combobox;
-        } else {
-            return super.getDisplayTextForValue(id);
-        }
-    }
-
 }
