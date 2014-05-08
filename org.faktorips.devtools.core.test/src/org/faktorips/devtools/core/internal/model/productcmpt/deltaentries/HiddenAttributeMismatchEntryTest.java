@@ -10,25 +10,40 @@
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 public class HiddenAttributeMismatchEntryTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
+
     private IProductCmptType productCmptType;
+
     private IProductCmpt productCmpt;
-    private IAttribute newAttribute;
+
+    private IProductCmptTypeAttribute newAttribute;
+
     private IAttributeValue attrValue;
 
     @Override
@@ -39,32 +54,74 @@ public class HiddenAttributeMismatchEntryTest extends AbstractIpsPluginTest {
         productCmptType = newProductCmptType(ipsProject, "Product");
         productCmpt = newProductCmpt(productCmptType, "ProductA");
 
-        newAttribute = productCmptType.newAttribute();
+        newAttribute = (IProductCmptTypeAttribute)productCmptType.newAttribute();
         newAttribute.setName("attribute");
         attrValue = new AttributeValue(productCmpt.getProductCmpt(), "Produkt", "attribute");
     }
 
     @Test
-    public void testFixSingleValueHolder() {
+    public void testFix_SingleValueHolder() {
         newAttribute.setDefaultValue("defaultvalue");
         newAttribute.setName("attribute");
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "someValue"));
+        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue, newAttribute);
 
-        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue);
         deltaEntry.fix();
 
         assertEquals("defaultvalue", attrValue.getValueHolder().getValue().toString());
     }
 
     @Test
-    public void testFixMultiValueHolder() {
+    public void testFix_MultiValueHolder() {
         newAttribute.setDefaultValue("80 | 60");
         newAttribute.setName("attribute");
         attrValue.setValueHolder(new MultiValueHolder(attrValue, null));
+        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue, newAttribute);
 
-        HiddenAttributeMismatchEntry deltaEntry = new HiddenAttributeMismatchEntry(attrValue);
         deltaEntry.fix();
 
-        assertEquals("[80, 60]", attrValue.getValueHolder().getStringValue());
+        assertEquals(ValueFactory.createValue(false, "80 | 60"), attrValue.getValueHolder().getValue());
     }
+
+    @Test
+    public void testIsMismatch_missmatch() throws Exception {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IValueHolder<?> valueHolder = AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue,
+                ValueFactory.createStringValue("default"));
+        doReturn(valueHolder).when(attributeValue).getValueHolder();
+
+        HiddenAttributeMismatchEntry mismatchEntry = new HiddenAttributeMismatchEntry(attributeValue, attribute);
+        assertTrue(mismatchEntry.isMismatch());
+    }
+
+    @Test
+    public void testIsMismatch_noMissmatch() throws Exception {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        IValueHolder<?> valueHolder = AttributeValueType.SINGLE_VALUE.newHolderInstance(attributeValue,
+                ValueFactory.createStringValue("default"));
+        doReturn(valueHolder).when(attributeValue).getValueHolder();
+        when(attribute.getDefaultValue()).thenReturn("default");
+
+        HiddenAttributeMismatchEntry mismatchEntry = new HiddenAttributeMismatchEntry(attributeValue, attribute);
+        assertFalse(mismatchEntry.isMismatch());
+    }
+
+    @Test
+    public void testIsMismatch_noMultiValueMissmatch() throws Exception {
+        IAttributeValue attributeValue = mock(IAttributeValue.class);
+        IProductCmptTypeAttribute attribute = mock(IProductCmptTypeAttribute.class);
+        List<SingleValueHolder> defaultValues = new ArrayList<SingleValueHolder>();
+        defaultValues.add(new SingleValueHolder(attributeValue, "default1"));
+        defaultValues.add(new SingleValueHolder(attributeValue, "default2"));
+        MultiValueHolder valueHolder = new MultiValueHolder(attributeValue, defaultValues);
+        doReturn(valueHolder).when(attributeValue).getValueHolder();
+        when(attribute.getDefaultValue()).thenReturn("default1 |default2");
+        when(attribute.isMultiValueAttribute()).thenReturn(true);
+
+        HiddenAttributeMismatchEntry mismatchEntry = new HiddenAttributeMismatchEntry(attributeValue, attribute);
+        assertFalse(mismatchEntry.isMismatch());
+    }
+
 }

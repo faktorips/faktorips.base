@@ -514,19 +514,36 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     }
 
     @Test
-    public void testCheckForHiddenAttributeMismatchNoEntryAdded() {
+    public void testCheckForHiddenAttributeMismatch_noEntryAdded() {
+        doReturn(new SingleValueHolder(value)).when(value).getValueHolder();
         when(attribute.isVisible()).thenReturn(true);
+        when(attribute.getDefaultValue()).thenReturn("newDefaultValue");
 
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
+
         verify(propertyValueContainerToTypeDelta, never()).addEntry(any(IDeltaEntry.class));
     }
 
     @Test
-    public void testCheckForHiddenAttributeMismatchEntryAdded() {
+    public void testCheckForHiddenAttributeMismatch_entryAdded() {
+        doReturn(new SingleValueHolder(value)).when(value).getValueHolder();
         when(attribute.isVisible()).thenReturn(false);
+        when(attribute.getDefaultValue()).thenReturn("newDefaultValue");
 
         propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
+
         verify(propertyValueContainerToTypeDelta, times(1)).addEntry(any(IDeltaEntry.class));
+    }
+
+    @Test
+    public void testCheckForHiddenAttributeMismatch_noDifference() {
+        doReturn(new SingleValueHolder(value, "newDefaultValue")).when(value).getValueHolder();
+        when(attribute.isVisible()).thenReturn(false);
+        when(attribute.getDefaultValue()).thenReturn("newDefaultValue");
+
+        propertyValueContainerToTypeDelta.checkForHiddenAttributeMismatch(attribute, value);
+
+        verify(propertyValueContainerToTypeDelta, never()).addEntry(any(IDeltaEntry.class));
     }
 
 }

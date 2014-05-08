@@ -10,29 +10,29 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import java.util.List;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder.Factory;
-import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.IValue;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Class realizing a delta entry concerning hidden Attributes {@link IProductCmptType}
+ * Class realizing a delta entry concerning hidden Attributes {@link IProductCmptType}. The hidden
+ * attribute value should always have the same content as the default value of the corresponding
+ * attribute.
  */
 public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty {
 
-    public HiddenAttributeMismatchEntry(IAttributeValue attributeValue) {
+    private IProductCmptTypeAttribute attribute;
+
+    public HiddenAttributeMismatchEntry(IAttributeValue attributeValue, IProductCmptTypeAttribute attribute) {
         super(attributeValue);
+        this.attribute = attribute;
         ArgumentCheck.notNull(attributeValue);
     }
 
@@ -43,7 +43,8 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     @Override
     public String getDescription() {
-        return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc, getPropertyName());
+        return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc, new String[] { getPropertyName(),
+                getAttributeValue().getValueHolder().getStringValue(), attribute.getDefaultValue() });
     }
 
     private IAttributeValue getAttributeValue() {
@@ -52,39 +53,37 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
 
     @Override
     public void fix() {
-        IProductCmptType prodCmpT = getProdCmptType();
-        IAttribute attribute = prodCmpT.getAttribute(getAttributeValue().getAttribute());
-        String defaultValue = attribute.getDefaultValue();
-        setAttributeValueToDefault(defaultValue);
+        setAttributeValueToDefault();
     }
 
-    private void setAttributeValueToDefault(String defaultValue) {
+    private void setAttributeValueToDefault() {
         IAttributeValue attributeValue = getAttributeValue();
-        attributeValue.setValueHolder(getValueHolderFor(defaultValue));
+        attributeValue.setValueHolder(createDefaultValueHolder());
     }
 
-    private IValueHolder<?> getValueHolderFor(String defaultValue) {
+    private IValueHolder<?> createDefaultValueHolder() {
+        IValue<?> defaultValue = ValueFactory.createValue(attribute.isMultilingual(), attribute.getDefaultValue());
+        return createValueHolderFor(defaultValue);
+    }
+
+    private IValueHolder<?> createValueHolderFor(IValue<?> defaultValue) {
+        AttributeValueType attributeValueType = AttributeValueType.getTypeFor(attribute);
+        IValueHolder<?> valueHolder = attributeValueType.newHolderInstance(getAttributeValue(), defaultValue);
+        return valueHolder;
+    }
+
+    public boolean isMismatch() {
+        return isAttributeHidden() && valuesDiffer();
+    }
+
+    private boolean valuesDiffer() {
         IAttributeValue attributeValue = getAttributeValue();
-        if (attributeValue.getValueHolder() instanceof MultiValueHolder) {
-            return createMultiValueHolder(defaultValue, attributeValue);
-        } else {
-            return new SingleValueHolder(attributeValue, defaultValue);
-        }
+        IValueHolder<?> valueHolder = createDefaultValueHolder();
+        return attributeValue.getValueHolder() == null || !attributeValue.getValueHolder().equals(valueHolder);
     }
 
-    private IValueHolder<?> createMultiValueHolder(String defaultValue, IAttributeValue attributeValue) {
-        Factory factory = new MultiValueHolder.Factory();
-        List<SingleValueHolder> multiDefaultValues = factory.splitMultiDefaultValues(attributeValue, new StringValue(
-                defaultValue));
-        return new MultiValueHolder(attributeValue, multiDefaultValues);
+    private boolean isAttributeHidden() {
+        return !attribute.isVisible();
     }
 
-    private IProductCmptType getProdCmptType() {
-        try {
-            return getAttributeValue().getPropertyValueContainer().findProductCmptType(
-                    getAttributeValue().getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
 }
