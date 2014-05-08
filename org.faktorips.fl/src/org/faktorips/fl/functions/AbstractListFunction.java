@@ -16,10 +16,14 @@ import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.AbstractCompilationResult;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
 
 public abstract class AbstractListFunction extends AbstractFlFunction {
+
+    private static final String MSG_CODE_INVALID_DATATYPE = ExprCompiler.PREFIX + "LIST_FUNCTION_INVALID_DATATYPE"; //$NON-NLS-1$
 
     private Datatype datatype;
 
@@ -37,7 +41,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         if (compilationFailed(datatypeResult)) {
             return datatypeResult;
         } else {
-            return createCompilationResult(listArgument);
+            return generateFunctionCode(listArgument);
         }
     }
 
@@ -56,7 +60,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         return null;
     }
 
-    protected JavaCodeFragment createCodeFragment(AbstractCompilationResult<JavaCodeFragment> listArgument) {
+    protected CompilationResult<JavaCodeFragment> generateFunctionCode(CompilationResult<JavaCodeFragment> listArgument) {
         JavaCodeFragment fragment = new JavaCodeFragment();
 
         CompilationResultImpl arg1Result = new CompilationResultImpl("currentResult", getBasicType(listArgument));
@@ -75,7 +79,14 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         fragment.append(" currentResult, ");
         fragment.appendClassName(datatypeClassName);
         fragment.append(" nextValue){return ");
-        fragment.append(generateFunctionCall(arg1Result, arg2Result));
+        CompilationResult<JavaCodeFragment> functionCall = generateFunctionCall(arg1Result, arg2Result);
+        if (functionCall.failed()) {
+            String messageText = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE, new Object[] { getName(),
+                    getBasicType(listArgument).getName() });
+            return new CompilationResultImpl(Message.newError(MSG_CODE_INVALID_DATATYPE, messageText));
+        } else {
+            fragment.append(functionCall.getCodeFragment());
+        }
         fragment.append(";}\n@Override public ");
         fragment.appendClassName(datatypeClassName);
         fragment.append(" getFallBackValue(){");
@@ -84,20 +95,24 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         fragment.append(listArgument.getCodeFragment());
         fragment.append(")");
 
-        return fragment;
+        return createCompilationResult(listArgument, fragment);
     }
 
     protected abstract JavaCodeFragment generateReturnFallBackValueCall();
 
-    protected JavaCodeFragment generateFunctionCall(CompilationResultImpl argument1, CompilationResultImpl argument2) {
+    protected CompilationResult<JavaCodeFragment> generateFunctionCall(CompilationResultImpl argument1,
+            CompilationResultImpl argument2) {
         CompilationResultImpl[] arguments = new CompilationResultImpl[] { argument1, argument2 };
         Datatype[] datatypes = new Datatype[] { argument1.getDatatype(), argument2.getDatatype() };
-        return getCompiler().getMatchingFunctionUsingConversion(arguments, datatypes, getName()).getCodeFragment();
+        CompilationResult<JavaCodeFragment> matchingFunctionUsingConversion = getCompiler()
+                .getMatchingFunctionUsingConversion(arguments, datatypes, getName());
+        return matchingFunctionUsingConversion;
     }
 
-    protected CompilationResultImpl createCompilationResult(AbstractCompilationResult<JavaCodeFragment> listArgument) {
-        JavaCodeFragment fragment = createCodeFragment(listArgument);
-        CompilationResultImpl result = new CompilationResultImpl(fragment, getDatatype());
+    protected CompilationResultImpl createCompilationResult(CompilationResult<JavaCodeFragment> listArgument,
+            JavaCodeFragment fragment) {
+        Datatype basicDatatype = getBasicType(listArgument);
+        CompilationResultImpl result = new CompilationResultImpl(fragment, basicDatatype);
         result.addMessages(listArgument.getMessages());
         return result;
     }

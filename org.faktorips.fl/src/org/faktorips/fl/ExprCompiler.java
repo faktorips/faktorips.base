@@ -582,7 +582,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         return LOCALIZED_STRINGS;
     }
 
-    public CompilationResult<T> getMatchingFunctionUsingConversion(AbstractCompilationResult<T>[] argResults,
+    public CompilationResult<T> getMatchingFunctionUsingConversion(CompilationResult<T>[] argResults,
             Datatype[] argTypes,
             String fctName) {
         FlFunction<T> function = null;
@@ -621,7 +621,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
         return getMatchingFunctionUsingConversion(argResults, new Datatype[] { argTypes }, fctName);
     }
 
-    private CompilationResult<T> createErrorCompilationResult(AbstractCompilationResult<T>[] argResults,
+    private CompilationResult<T> createErrorCompilationResult(CompilationResult<T>[] argResults,
             String fctName,
             boolean functionFoundByName) {
         // if the function name is defined but the argument types are wrong

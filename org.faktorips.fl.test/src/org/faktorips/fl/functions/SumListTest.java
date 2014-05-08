@@ -83,7 +83,7 @@ public class SumListTest {
     public void testValidateDatatype_invalidDatatype() {
         CompilationResult<JavaCodeFragment> result = sumList.validateBasicDatatype(Datatype.BOOLEAN);
         assertNotNull(result);
-        assertEquals(SumList.MSG_CODE_INVALID_DATATYPE, result.getMessages().getMessage(0).getCode());
+        assertEquals(SumList.MSG_CODE_SUM_INVALID_DATATYPE, result.getMessages().getMessage(0).getCode());
     }
 
     @Test

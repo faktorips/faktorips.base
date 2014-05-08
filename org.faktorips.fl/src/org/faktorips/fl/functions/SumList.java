@@ -21,7 +21,7 @@ import org.faktorips.util.message.Message;
 
 public class SumList extends AbstractListFunction {
 
-    public static final String MSG_CODE_INVALID_DATATYPE = ExprCompiler.PREFIX + "SUM-INVALID-DATATYPE";
+    static final String MSG_CODE_SUM_INVALID_DATATYPE = ExprCompiler.PREFIX + "SUM-INVALID-DATATYPE";
 
     public SumList(String name, String description) {
         super(name, description, FunctionSignatures.SumList);
@@ -40,9 +40,9 @@ public class SumList extends AbstractListFunction {
     }
 
     private CompilationResult<JavaCodeFragment> createInvalidDatatypeResult(Datatype basicDatatype) {
-        String text = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE,
-                new Object[] { getName(), basicDatatype.getName() });
-        return new CompilationResultImpl(Message.newError(MSG_CODE_INVALID_DATATYPE, text));
+        String text = Messages.INSTANCE.getString(MSG_CODE_SUM_INVALID_DATATYPE, new Object[] { getName(),
+                basicDatatype.getName() });
+        return new CompilationResultImpl(Message.newError(MSG_CODE_SUM_INVALID_DATATYPE, text));
     }
 
     @Override
@@ -54,7 +54,9 @@ public class SumList extends AbstractListFunction {
     }
 
     @Override
-    protected JavaCodeFragment generateFunctionCall(CompilationResultImpl argument1, CompilationResultImpl argument2) {
-        return getCompiler().getBinaryOperation("+", argument1, argument2).getCodeFragment();
+    protected CompilationResult<JavaCodeFragment> generateFunctionCall(CompilationResultImpl argument1,
+            CompilationResultImpl argument2) {
+        return new CompilationResultImpl(getCompiler().getBinaryOperation("+", argument1, argument2).getCodeFragment(),
+                getDatatype());
     }
 }

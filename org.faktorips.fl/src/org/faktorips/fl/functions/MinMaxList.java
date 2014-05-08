@@ -21,7 +21,7 @@ import org.faktorips.util.message.Message;
 
 public class MinMaxList extends AbstractListFunction {
 
-    public static final String MSG_CODE_INVALID_DATATYPE = ExprCompiler.PREFIX + "MIN_MAX_LIST_INVALID_DATATYPE"; //$NON-NLS-1$
+    private static final String MSG_CODE_INVALID_DATATYPE = ExprCompiler.PREFIX + "MIN_MAX_LIST_INVALID_DATATYPE"; //$NON-NLS-1$
 
     public MinMaxList(String name, String description, boolean isMax) {
         super(name, description, isMax ? FunctionSignatures.MaxList : FunctionSignatures.MinList);
