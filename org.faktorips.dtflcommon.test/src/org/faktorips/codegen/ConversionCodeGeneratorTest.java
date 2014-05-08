@@ -63,7 +63,7 @@ public class ConversionCodeGeneratorTest {
         assertTrue(codeGenerator.canConvert(Datatype.GREGORIAN_CALENDAR, LocalDateTimeDatatype.DATATYPE));
         assertTrue(codeGenerator.canConvert(Datatype.STRING, Datatype.STRING));
         assertTrue(codeGenerator.canConvert(Datatype.STRING, AnyDatatype.INSTANCE));
-        assertTrue(codeGenerator.canConvert(AnyDatatype.INSTANCE, Datatype.STRING));
+        assertFalse(codeGenerator.canConvert(AnyDatatype.INSTANCE, Datatype.STRING));
 
         assertFalse(codeGenerator.canConvert(Datatype.BIG_DECIMAL, Datatype.GREGORIAN_CALENDAR));
         assertFalse(codeGenerator.canConvert(LocalDateDatatype.DATATYPE, Datatype.PRIMITIVE_INT));
@@ -95,7 +95,7 @@ public class ConversionCodeGeneratorTest {
         assertNotNull(codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.INTEGER, new JavaCodeFragment(
                 "Decimal.valueOf(2.3)")));
 
-        assertNotNull(codeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, new JavaCodeFragment(
+        assertNull(codeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, new JavaCodeFragment(
                 "FromValue")));
         assertNotNull(codeGenerator.getConversionCode(Datatype.STRING, AnyDatatype.INSTANCE, new JavaCodeFragment(
                 "FromValue")));

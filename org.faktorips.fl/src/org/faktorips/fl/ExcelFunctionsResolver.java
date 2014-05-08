@@ -33,6 +33,7 @@ import org.faktorips.fl.functions.PowerDecimal;
 import org.faktorips.fl.functions.PowerInt;
 import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.SqrtDecimal;
+import org.faktorips.fl.functions.TextFunction;
 import org.faktorips.fl.functions.WholeNumber;
 import org.faktorips.fl.functions.joda.Date;
 import org.faktorips.fl.functions.joda.Days;
@@ -93,6 +94,7 @@ public class ExcelFunctionsResolver extends LocalizedFunctionsResolver<JavaCodeF
         add(new Years(getFctName(ExcelFunction.YEARS), getFctDescription(ExcelFunction.YEARS)));
         add(new Date(getFctName(ExcelFunction.DATE), getFctDescription(ExcelFunction.DATE)));
         add(new Days360(getFctName(ExcelFunction.DAYS360), getFctDescription(ExcelFunction.DAYS360)));
+        add(new TextFunction(getFctName(ExcelFunction.TEXT), getFctDescription(ExcelFunction.TEXT)));
     }
 
     @Override
