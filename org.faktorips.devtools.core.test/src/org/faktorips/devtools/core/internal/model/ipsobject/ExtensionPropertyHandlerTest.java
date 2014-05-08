@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -463,6 +464,22 @@ public class ExtensionPropertyHandlerTest {
         ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
         assertEquals(1, map.values().size());
         assertNotNull(map.get(INVALID_ID));
+    }
+
+    /**
+     * Verify the order of the extension property map. This is important to store the properties
+     * always in same order to xml.
+     */
+    @Test
+    public void testGetExtPropertyValuesMap() throws Exception {
+        initMaps();
+
+        ExtensionPropertyMap extPropertyValuesMap = extensionPropertyHandler.getExtPropertyValuesMap();
+
+        Iterator<ExtensionPropertyValue> iterator = extPropertyValuesMap.values().iterator();
+        assertEquals(invalidExtensionProperty, iterator.next());
+        assertEquals(invalidExtensionProperty2, iterator.next());
+        assertEquals(invalidExtensionProperty3, iterator.next());
     }
 
 }
