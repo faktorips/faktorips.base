@@ -199,8 +199,9 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     protected void checkForHiddenAttributeMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
-        if (!attribute.isVisible()) {
-            addEntry(new HiddenAttributeMismatchEntry(value));
+        HiddenAttributeMismatchEntry mismatchEntry = new HiddenAttributeMismatchEntry(value, attribute);
+        if (mismatchEntry.isMismatch()) {
+            addEntry(mismatchEntry);
         }
     }
 

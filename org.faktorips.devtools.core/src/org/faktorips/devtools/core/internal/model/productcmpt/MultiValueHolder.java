@@ -264,6 +264,44 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         }
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
+        result = prime * result + ((values == null) ? 0 : values.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        MultiValueHolder other = (MultiValueHolder)obj;
+        if (getParent() == null) {
+            if (other.getParent() != null) {
+                return false;
+            }
+        } else if (!getParent().equals(other.getParent())) {
+            return false;
+        }
+        if (values == null) {
+            if (other.values != null) {
+                return false;
+            }
+        } else if (!values.equals(other.values)) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * This factory creates {@link MultiValueHolder} objects
      * 
@@ -299,7 +337,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
          * model to always use {@link IValueHolder} for default values instead of a single String
          * field.
          */
-        public ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, StringValue defaultValue) {
+        ArrayList<SingleValueHolder> splitMultiDefaultValues(IAttributeValue parent, StringValue defaultValue) {
             ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
             String content = defaultValue.getContent();
             if (content != null) {
