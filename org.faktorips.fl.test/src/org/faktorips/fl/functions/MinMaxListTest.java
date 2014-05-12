@@ -57,7 +57,8 @@ public class MinMaxListTest {
         when(argumentCompilationResult.getCodeFragment()).thenReturn(argumentFragment);
         when(argumentCompilationResult.getDatatype()).thenReturn(datatype);
         maxList = spy(maxList);
-        JavaCodeFragment fragment = new JavaCodeFragment("currentResult.max(nextValue)");
+        CompilationResultImpl fragment = new CompilationResultImpl(
+                new JavaCodeFragment("currentResult.max(nextValue)"), Datatype.DECIMAL);
         doReturn(fragment).when(maxList).generateFunctionCall(arg1Result, arg2Result);
     }
 

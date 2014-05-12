@@ -61,7 +61,8 @@ public class SumListTest {
         when(argumentCompilationResult.getCodeFragment()).thenReturn(argumentFragment);
         when(argumentCompilationResult.getDatatype()).thenReturn(datatype);
         sumList = spy(sumList);
-        JavaCodeFragment fragment = new JavaCodeFragment("currentResult.add(nextValue)");
+        CompilationResultImpl fragment = new CompilationResultImpl(
+                new JavaCodeFragment("currentResult.add(nextValue)"), Datatype.DECIMAL);
         doReturn(fragment).when(sumList).generateFunctionCall(arg1Result, arg2Result);
 
         doReturn(compiler).when(sumList).getCompiler();
