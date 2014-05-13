@@ -12,12 +12,15 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -31,22 +34,37 @@ import org.faktorips.util.ArgumentCheck;
  * could be used validate how much table contents are instantiated for a table structure. This
  * information is necessary for example to validate that there exists only one content for
  * single-table structures.
- * 
+ * <p>
+ * This class registers a {@link IIpsSrcFilesChangeListener} in the provided {@link IIpsModel}. It
+ * is designed to be instantiated only once for every {@link IIpsModel} and is bounded to the
+ * lifecycle of the model. Hence there is no removing of the registered listener.
  */
 public class TableContentsValidationCache {
+
+    private enum State {
+        NEW,
+        INITIALIZED
+    }
+
+    /**
+     * This field is marked as volatile because it is used to check the initialized state of the map
+     * using the double null check, @see {@link #checkInit()} .
+     */
+    private volatile State state = State.NEW;
 
     private final IIpsModel ipsModel;
 
     /**
-     * The cached tabled structures to available table contents. This field is marked as volatile
-     * because it is initialized by lazy loading and is used to check the initialized state of the
-     * map using the double null check, @see {@link #checkInit()}.
+     * The cached tabled structures to available table contents.
      */
-    private volatile TableStructureMap tableStructureMap;
+    private final TableStructureMap tableStructureMap;
+
+    private final TableContentUpdater updater;
 
     /**
      * The constructor getting the {@link IIpsModel} which is used to get the table contents and
-     * structures.
+     * structures. An {@link IIpsSrcFilesChangeListener} is also registered in the given
+     * {@link IIpsModel} to recognize any changes.
      * 
      * @param ipsModel The {@link IIpsModel} which holds all the {@link IIpsSrcFile source files
      *            that should be cached}
@@ -54,6 +72,9 @@ public class TableContentsValidationCache {
     public TableContentsValidationCache(IIpsModel ipsModel) {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
+        tableStructureMap = new TableStructureMap();
+        updater = new TableContentUpdater(tableStructureMap);
+        ipsModel.addIpsSrcFilesChangedListener(updater);
     }
 
     /**
@@ -62,7 +83,7 @@ public class TableContentsValidationCache {
      * <p>
      * When first calling this method all table contents will be checked and initialized. This may
      * take some time. When the cache is initialized it is updated using
-     * {@link IResourceChangeEvent}.
+     * {@link IpsSrcFilesChangedEvent}.
      * 
      * @param tableStructures The {@link IIpsSrcFile} of the table structure you want get the
      *            contents for.
@@ -70,27 +91,24 @@ public class TableContentsValidationCache {
      */
     public List<IIpsSrcFile> getTableContents(IIpsSrcFile tableStructures) {
         checkInit();
-        return tableStructureMap.get(tableStructures);
+        return Collections.unmodifiableList(tableStructureMap.get(tableStructures));
     }
 
     private void checkInit() {
-        if (tableStructureMap == null) {
-            synchronized (this) {
-                if (tableStructureMap == null) {
+        if (state != State.INITIALIZED) {
+            synchronized (state) {
+                if (state != State.INITIALIZED) {
                     init();
+                    state = State.INITIALIZED;
                 }
             }
         }
     }
 
     private void init() {
-        tableStructureMap = new TableStructureMap();
         IIpsProject[] ipsProjects;
         ipsProjects = getIpsProjects();
-        for (IIpsProject ipsProject : ipsProjects) {
-            List<IIpsSrcFile> ipsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
-            populateMaps(ipsSrcFiles);
-        }
+        updater.updateTableContents(ipsProjects);
     }
 
     private IIpsProject[] getIpsProjects() {
@@ -101,34 +119,97 @@ public class TableContentsValidationCache {
         }
     }
 
-    private void populateMaps(List<IIpsSrcFile> ipsSrcFiles) {
-        populateTableContents(ipsSrcFiles);
-    }
+    private static class TableContentUpdater implements IIpsSrcFilesChangeListener {
 
-    private void populateTableContents(List<IIpsSrcFile> ipsSrcFiles) {
-        for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())) {
-                IIpsSrcFile tableStructure = getReferencedTableStructure(ipsSrcFile);
-                if (tableStructure != null) {
-                    tableStructureMap.put(tableStructure, ipsSrcFile);
+        /**
+         * The kind of update operation. We only distinguish added and removed. While kind
+         * {@link #REMOVED} removes an existing mapping, all other operations are treated as
+         * {@link #CHANGED}.
+         */
+        public enum OperationKind {
+            CHANGED,
+            REMOVED
+        }
+
+        private TableStructureMap tableStructureMap;
+
+        public TableContentUpdater(TableStructureMap tableStructureMap) {
+            this.tableStructureMap = tableStructureMap;
+        }
+
+        public void updateTableContents(IIpsProject[] ipsProjects) {
+            for (IIpsProject ipsProject : ipsProjects) {
+                List<IIpsSrcFile> ipsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
+                updateTableContents(ipsSrcFiles);
+            }
+        }
+
+        private void updateTableContents(List<IIpsSrcFile> ipsSrcFiles) {
+            for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
+                updateTableContent(ipsSrcFile, TableContentUpdater.OperationKind.CHANGED);
+            }
+        }
+
+        @Override
+        public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+            Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
+            for (IIpsSrcFile ipsSrcFile : changedIpsSrcFiles) {
+                IResourceDelta resourceDelta = event.getResourceDelta(ipsSrcFile);
+                OperationKind operation;
+                if ((resourceDelta.getKind() & IResourceDelta.REMOVED) != 0) {
+                    operation = OperationKind.REMOVED;
+                } else {
+                    operation = OperationKind.CHANGED;
+                }
+                handleTableStructureChange(ipsSrcFile, operation);
+                updateTableContent(ipsSrcFile, operation);
+            }
+        }
+
+        private void handleTableStructureChange(IIpsSrcFile ipsSrcFile, OperationKind operation) {
+            if (IpsObjectType.TABLE_STRUCTURE.equals(ipsSrcFile.getIpsObjectType())) {
+                if (operation == OperationKind.REMOVED) {
+                    tableStructureMap.removeTableStructure(ipsSrcFile);
+                } else {
+                    try {
+                        IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
+                        updateTableContents(ipsProjects);
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
                 }
             }
         }
-    }
 
-    private IIpsSrcFile getReferencedTableStructure(IIpsSrcFile ipsSrcFile) {
-        try {
-            String structureName = ipsSrcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-            return ipsSrcFile.getIpsProject().findIpsSrcFile(
-                    new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE));
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        public void updateTableContent(IIpsSrcFile ipsSrcFile, OperationKind operation) {
+            if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())) {
+                IIpsSrcFile tableStructure;
+                if (operation == OperationKind.REMOVED) {
+                    tableStructure = null;
+                } else {
+                    tableStructure = getReferencedTableStructure(ipsSrcFile);
+                }
+                tableStructureMap.updateContent(tableStructure, ipsSrcFile);
+            }
         }
+
+        private IIpsSrcFile getReferencedTableStructure(IIpsSrcFile ipsSrcFile) {
+            try {
+                String structureName = ipsSrcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+                return ipsSrcFile.getIpsProject().findIpsSrcFile(
+                        new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE));
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+
     }
 
     private static class TableStructureMap {
 
         private ConcurrentHashMap<IIpsSrcFile, List<IIpsSrcFile>> tableStructureToContents = new ConcurrentHashMap<IIpsSrcFile, List<IIpsSrcFile>>();
+
+        private ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile> tableContentsToStructure = new ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile>();
 
         public List<IIpsSrcFile> get(IIpsSrcFile tableStructure) {
             List<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
@@ -139,17 +220,47 @@ public class TableContentsValidationCache {
             }
         }
 
-        public synchronized void put(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
+        /**
+         * Updates the mapping of table structure and table mapping. If there is no new table
+         * structure (tableStructure==null) the old table content entry is removed and no new one is
+         * created.
+         * 
+         * @param tableStructure The table structure that should be mapped to the table content, may
+         *            be null to insert no new mapping but removing an maybe existing old one.
+         * @param tableContent The table content for the mapping, should never be null.
+         */
+        public void updateContent(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
+            removeTableContent(tableContent);
+            if (tableStructure != null) {
+                put(tableStructure, tableContent);
+            }
+        }
+
+        public void put(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
             List<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
             if (list == null) {
                 list = new ArrayList<IIpsSrcFile>();
-                put(tableStructure, list);
+                tableStructureToContents.put(tableStructure, list);
             }
             list.add(tableContent);
+            tableContentsToStructure.put(tableContent, tableStructure);
         }
 
-        public void put(IIpsSrcFile tableStructure, List<IIpsSrcFile> tableContents) {
-            tableStructureToContents.put(tableStructure, tableContents);
+        public void removeTableContent(IIpsSrcFile tableContent) {
+            IIpsSrcFile oldTableStructure = tableContentsToStructure.get(tableContent);
+            if (oldTableStructure != null) {
+                List<IIpsSrcFile> list = get(oldTableStructure);
+                list.remove(tableContent);
+            }
+            tableContentsToStructure.remove(tableContent);
+        }
+
+        public void removeTableStructure(IIpsSrcFile tableStructure) {
+            List<IIpsSrcFile> list = get(tableStructure);
+            for (IIpsSrcFile tableContent : list) {
+                tableContentsToStructure.remove(tableContent);
+            }
+            tableStructureToContents.remove(tableStructure);
         }
 
     }
