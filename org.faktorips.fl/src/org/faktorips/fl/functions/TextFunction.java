@@ -50,7 +50,7 @@ public class TextFunction extends AbstractFlFunction {
     private JavaCodeFragment getFallbackToStringFragment(JavaCodeFragment argumentFragment) {
         JavaCodeFragment fragment;
         fragment = new JavaCodeFragment();
-        fragment.appendClassName(String.class).append("valueOf(").append(argumentFragment).append(")");
+        fragment.appendClassName(String.class).append(".valueOf(").append(argumentFragment).append(")");
         return fragment;
     }
 
