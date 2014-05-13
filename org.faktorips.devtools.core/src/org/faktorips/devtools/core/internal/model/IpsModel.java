@@ -74,6 +74,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentD
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.ipsproject.VersionProviderExtensionPoint;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsValidationCache;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ICustomModelExtensions;
@@ -178,6 +179,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /** validation result cache */
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
+    /** table contents validation cache */
+    private final TableContentsValidationCache tableContentsValidationCache;
+
     private IpsObjectType[] ipsObjectTypes;
 
     private final CustomModelExtensions customModelExtensions;
@@ -205,6 +209,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         initIpsObjectTypes();
         // has to be done after the ips object types are initialized!
         resourceDeltaVisitor = new ResourceDeltaVisitor(this);
+        tableContentsValidationCache = new TableContentsValidationCache(this);
     }
 
     @Override
@@ -1316,6 +1321,13 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
+    }
+
+    /**
+     * Returns the cache for the table contents validation.
+     */
+    public TableContentsValidationCache getTableContentsValidationCache() {
+        return tableContentsValidationCache;
     }
 
     /**
