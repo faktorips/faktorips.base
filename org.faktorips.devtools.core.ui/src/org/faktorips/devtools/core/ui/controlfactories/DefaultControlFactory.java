@@ -55,7 +55,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
 
         if (datatype != null && valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             Combo combo = toolkit.createCombo(parent);
-            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
+            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype, isControlForDefaultValue(valueSet));
         }
         return new TextField(toolkit.createText(parent));
     }

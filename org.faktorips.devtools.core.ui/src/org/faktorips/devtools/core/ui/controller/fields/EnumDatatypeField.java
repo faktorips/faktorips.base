@@ -27,8 +27,8 @@ import org.faktorips.datatype.EnumDatatype;
  */
 public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
 
-    public EnumDatatypeField(Combo combo, EnumDatatype datatype) {
-        super(combo, datatype);
+    public EnumDatatypeField(Combo combo, EnumDatatype datatype, boolean defaultValueField) {
+        super(combo, datatype, defaultValueField);
         reInitInternal();
     }
 
@@ -41,4 +41,5 @@ public class EnumDatatypeField extends AbstractEnumDatatypeBasedField {
         List<String> ids = Arrays.asList(getEnumDatatype().getAllValueIds(true));
         return new ArrayList<String>(ids);
     }
+
 }

@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -40,9 +39,11 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
      * @param combo the control of this EditField
      * @param valueSet the value set which is displayed by this edit field
      * @param datatype the datatype the value set bases on
+     * @param defaultValueField <code>true</code> if this field is created for a default value,
+     *            false if it is created for other purposes.
      */
-    public EnumValueSetField(Combo combo, IEnumValueSet valueSet, ValueDatatype datatype) {
-        super(combo, datatype);
+    public EnumValueSetField(Combo combo, IEnumValueSet valueSet, ValueDatatype datatype, boolean defaultValueField) {
+        super(combo, datatype, defaultValueField);
         ArgumentCheck.notNull(valueSet, this);
         this.valueSetOwner = valueSet.getValueSetOwner();
         reInitInternal();
@@ -70,7 +71,4 @@ public class EnumValueSetField extends AbstractEnumDatatypeBasedField {
         return ids;
     }
 
-    private boolean isDefaultValueField() {
-        return valueSetOwner instanceof IConfigElement;
-    }
 }

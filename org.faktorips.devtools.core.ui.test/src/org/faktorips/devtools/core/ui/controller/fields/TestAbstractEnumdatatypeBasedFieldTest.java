@@ -50,7 +50,7 @@ public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTes
     private class MyField extends AbstractEnumDatatypeBasedField {
 
         public MyField(Combo combo, ValueDatatype datatype) {
-            super(combo, datatype);
+            super(combo, datatype, false);
             reInitInternal();
         }
 
@@ -65,5 +65,6 @@ public class TestAbstractEnumdatatypeBasedFieldTest extends AbstractIpsPluginTes
             ids.add("1");
             return ids;
         }
+
     }
 }

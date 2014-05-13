@@ -33,8 +33,8 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
 
     private boolean enableEnumContentDisplay = true;
 
-    public EnumTypeDatatypeField(Combo combo, EnumTypeDatatypeAdapter datatypeAdapter) {
-        super(combo, datatypeAdapter);
+    public EnumTypeDatatypeField(Combo combo, EnumTypeDatatypeAdapter datatypeAdapter, boolean defaultValueField) {
+        super(combo, datatypeAdapter, defaultValueField);
         reInitInternal();
     }
 
@@ -56,4 +56,5 @@ public class EnumTypeDatatypeField extends AbstractEnumDatatypeBasedField {
     private EnumTypeDatatypeAdapter getEnumDatatype() {
         return (EnumTypeDatatypeAdapter)getDatatype();
     }
+
 }

@@ -43,8 +43,11 @@ public abstract class AbstractEnumDatatypeBasedField extends StringValueComboFie
 
     private String invalidValue;
 
-    public AbstractEnumDatatypeBasedField(Combo combo, ValueDatatype datatype) {
+    private boolean defaultValueField;
+
+    public AbstractEnumDatatypeBasedField(Combo combo, ValueDatatype datatype, boolean defaultValueField) {
         super(combo);
+        this.defaultValueField = defaultValueField;
         ArgumentCheck.notNull(datatype);
         this.datatype = datatype;
     }
@@ -169,7 +172,7 @@ public abstract class AbstractEnumDatatypeBasedField extends StringValueComboFie
      * {@link IpsPreferences#ENUM_TYPE_DISPLAY} specifies the format.
      */
     public String getDisplayTextForValue(String id) {
-        if (id == null) {
+        if (id == null && isDefaultValueField()) {
             return Messages.DefaultValueRepresentation_Combobox;
         } else {
             return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(datatype, id);
@@ -191,6 +194,10 @@ public abstract class AbstractEnumDatatypeBasedField extends StringValueComboFie
      */
     public String getInvalidValue() {
         return invalidValue;
+    }
+
+    protected boolean isDefaultValueField() {
+        return defaultValueField;
     }
 
 }
