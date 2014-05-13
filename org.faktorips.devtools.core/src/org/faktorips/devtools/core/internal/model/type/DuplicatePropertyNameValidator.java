@@ -193,14 +193,51 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
     @Override
     protected boolean visit(IType currentType) {
         Type currType = (Type)currentType;
-        if (currType instanceof IPolicyCmptType) {
-            addInvalidPolicyAttributes((IPolicyCmptType)currType);
+        addInvalidPolicyAndProductAttributes(currType);
+        addInvalidOverwrittenAttributes(currType);
+        addInvalidAssociations(currType);
+        return true;
+    }
+
+    private void addInvalidPolicyAndProductAttributes(Type currType) {
+        IType matchingType = null;
+        try {
+            if (currType instanceof IPolicyCmptType) {
+                matchingType = ((IPolicyCmptType)currType).findProductCmptType(ipsProject);
+                addInvalidPolicyAttributes((IPolicyCmptType)currType, (IProductCmptType)matchingType);
+            } else if (currType instanceof IProductCmptType) {
+                matchingType = ((IProductCmptType)currType).findPolicyCmptType(ipsProject);
+            }
+            if (matchingType != null) {
+                addInvalidMatchingAttributes(matchingType);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
+    }
+
+    private void addInvalidMatchingAttributes(IType matchingType) {
+        for (IAttribute attribute : matchingType.getAttributes()) {
+            add(attribute.getName().toLowerCase(), new ObjectProperty(attribute, IAssociation.PROPERTY_NAME));
+        }
+    }
+
+    private void addInvalidPolicyAttributes(IPolicyCmptType policyCmptType, IProductCmptType productCmptType) {
+        if (productCmptType != null) {
+            String name = productCmptType.getUnqualifiedName();
+            add(name.toLowerCase(), new ObjectProperty(policyCmptType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+        }
+    }
+
+    private void addInvalidOverwrittenAttributes(Type currType) {
         for (IAttribute attr : currType.getAttributesPartCollection()) {
             if (!attr.isOverwrite()) {
                 add(attr.getName().toLowerCase(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
             }
         }
+    }
+
+    private void addInvalidAssociations(Type currType) {
         for (IAssociation ass : currType.getAssociationPartCollection()) {
             if (ass.is1ToMany()) {
                 // target role plural only check if is many association
@@ -210,19 +247,6 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
             // always check target role singular
             add(ass.getTargetRoleSingular().toLowerCase(), new ObjectProperty(ass,
                     IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
-        }
-        return true;
-    }
-
-    private void addInvalidPolicyAttributes(IPolicyCmptType policyCmptType) {
-        try {
-            IProductCmptType productCmptType = ipsProject.findProductCmptType(policyCmptType.getProductCmptType());
-            if (productCmptType != null) {
-                String name = productCmptType.getUnqualifiedName();
-                add(name.toLowerCase(), new ObjectProperty(policyCmptType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 

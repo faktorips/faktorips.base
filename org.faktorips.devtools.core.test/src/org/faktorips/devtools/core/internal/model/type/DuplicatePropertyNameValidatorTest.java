@@ -17,12 +17,12 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
@@ -30,6 +30,7 @@ import org.junit.Test;
 
 public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
+    private static final String ATTRIBUTE_ID = "MY_ID";
     private DuplicatePropertyNameValidator validatorTest;
     private IPolicyCmptTypeAssociation toVA;
     private IPolicyCmptTypeAssociation toA;
@@ -44,12 +45,14 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation toO;
     private IPolicyCmptTypeAssociation toAO;
     private ObjectProperty opToVO;
+    private IIpsProject ipsProject;
+    private MessageList messageList = new MessageList();
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        IIpsProject ipsProject = newIpsProject();
+        ipsProject = newIpsProject();
         validatorTest = new DuplicatePropertyNameValidator(ipsProject);
         policyCmptTypeA = newPolicyCmptType(ipsProject, "pctA");
         PolicyCmptType policyCmptTypeB = newPolicyCmptType(ipsProject, "pctB");
@@ -191,16 +194,41 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testaddInvalidPolicyAttributes() throws CoreException {
-        MessageList messageList = new MessageList();
-        IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(policyCmptTypeA.getIpsProject());
-        new PolicyCmptTypeAttribute(policyCmptTypeA, productCmptType.getUnqualifiedName());
-        validatorTest.visit(policyCmptTypeA);
+    public void testAddInvalidPolicyAttributes() throws CoreException {
+        IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
+        policyCmptTypeA.newPolicyCmptTypeAttribute(productCmptType.getUnqualifiedName());
         validatorTest.visit(policyCmptTypeA);
         validatorTest.addMessagesForDuplicates(messageList);
 
-        assertEquals(2, messageList.size());
+        assertEquals(1, messageList.size());
         assertEquals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
+                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testAddInvalidPolicyAndProductAttributes_PolicyCmptType() throws CoreException {
+        IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
+        productCmptType.newProductCmptTypeAttribute(ATTRIBUTE_ID);
+        policyCmptTypeA.newPolicyCmptTypeAttribute(ATTRIBUTE_ID);
+        validatorTest.visit(policyCmptTypeA);
+        validatorTest.addMessagesForDuplicates(messageList);
+
+        assertEquals(1, messageList.size());
+        assertEquals(IAssociation.PROPERTY_NAME,
+                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testAddInvalidPolicyAndProductAttributes_ProdCmptType() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "prodCmptType");
+        productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
+        productCmptType.newProductCmptTypeAttribute(ATTRIBUTE_ID);
+        policyCmptTypeA.newPolicyCmptTypeAttribute(ATTRIBUTE_ID);
+        validatorTest.visit(productCmptType);
+        validatorTest.addMessagesForDuplicates(messageList);
+
+        assertEquals(1, messageList.size());
+        assertEquals(IAssociation.PROPERTY_NAME,
                 messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
     }
 
