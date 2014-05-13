@@ -19,10 +19,12 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -191,6 +193,9 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
     @Override
     protected boolean visit(IType currentType) {
         Type currType = (Type)currentType;
+        if (currType instanceof IPolicyCmptType) {
+            addInvalidPolicyAttributes((IPolicyCmptType)currType);
+        }
         for (IAttribute attr : currType.getAttributesPartCollection()) {
             if (!attr.isOverwrite()) {
                 add(attr.getName().toLowerCase(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
@@ -207,6 +212,18 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
                     IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
         }
         return true;
+    }
+
+    private void addInvalidPolicyAttributes(IPolicyCmptType policyCmptType) {
+        try {
+            IProductCmptType productCmptType = ipsProject.findProductCmptType(policyCmptType.getProductCmptType());
+            if (productCmptType != null) {
+                String name = productCmptType.getUnqualifiedName();
+                add(name.toLowerCase(), new ObjectProperty(policyCmptType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     protected void add(String propertyName, ObjectProperty wrapper) {

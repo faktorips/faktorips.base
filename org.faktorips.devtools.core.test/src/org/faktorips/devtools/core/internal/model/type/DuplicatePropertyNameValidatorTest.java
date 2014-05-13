@@ -10,14 +10,20 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +37,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     private IPolicyCmptTypeAssociation toVB;
     private IPolicyCmptTypeAssociation toC;
     private IPolicyCmptTypeAssociation toVC;
+    private PolicyCmptType policyCmptTypeA;
     private ObjectProperty opToVA;
     private ObjectProperty opToVB;
     private ObjectProperty opToVC;
@@ -44,7 +51,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         super.setUp();
         IIpsProject ipsProject = newIpsProject();
         validatorTest = new DuplicatePropertyNameValidator(ipsProject);
-        PolicyCmptType policyCmptTypeA = newPolicyCmptType(ipsProject, "pctA");
+        policyCmptTypeA = newPolicyCmptType(ipsProject, "pctA");
         PolicyCmptType policyCmptTypeB = newPolicyCmptType(ipsProject, "pctB");
         PolicyCmptType policyCmptTypeB1 = newPolicyCmptType(ipsProject, "pctB1");
         PolicyCmptType policyCmptTypeC = newPolicyCmptType(ipsProject, "pctC");
@@ -181,6 +188,20 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         toVA.setConstrain(true);
 
         assertFalse(validatorTest.ignore(objectProperties));
+    }
+
+    @Test
+    public void testaddInvalidPolicyAttributes() throws CoreException {
+        MessageList messageList = new MessageList();
+        IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(policyCmptTypeA.getIpsProject());
+        new PolicyCmptTypeAttribute(policyCmptTypeA, productCmptType.getUnqualifiedName());
+        validatorTest.visit(policyCmptTypeA);
+        validatorTest.visit(policyCmptTypeA);
+        validatorTest.addMessagesForDuplicates(messageList);
+
+        assertEquals(2, messageList.size());
+        assertEquals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
+                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
     }
 
 }
