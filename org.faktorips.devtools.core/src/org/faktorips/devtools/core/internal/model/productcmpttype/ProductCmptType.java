@@ -134,12 +134,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    protected IpsObjectPartCollection<IProductCmptTypeAttribute> getAttributesPartCollection() {
+    public IpsObjectPartCollection<IProductCmptTypeAttribute> getAttributesPartCollection() {
         return attributes;
     }
 
     @Override
-    protected IpsObjectPartCollection<IProductCmptTypeAssociation> getAssociationPartCollection() {
+    public IpsObjectPartCollection<IProductCmptTypeAssociation> getAssociationPartCollection() {
         return associations;
     }
 

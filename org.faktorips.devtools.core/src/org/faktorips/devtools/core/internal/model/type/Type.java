@@ -126,10 +126,6 @@ public abstract class Type extends BaseIpsObject implements IType {
         return isSubtypeOf(candidate, project);
     }
 
-    protected abstract IpsObjectPartCollection<? extends IAttribute> getAttributesPartCollection();
-
-    protected abstract IpsObjectPartCollection<? extends IAssociation> getAssociationPartCollection();
-
     protected abstract IpsObjectPartCollection<? extends IMethod> getMethodPartCollection();
 
     @Override
