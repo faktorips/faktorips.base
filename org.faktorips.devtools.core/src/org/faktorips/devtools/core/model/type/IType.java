@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -551,17 +550,5 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Creates a new sub type hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
-
-    /**
-     * Returns a Collection containing {@link IAttribute}s of the corresponding IType
-     * 
-     */
-    public IpsObjectPartCollection<? extends IAttribute> getAttributesPartCollection();
-
-    /**
-     * Returns a Collection containing {@link IAssociation}s of the corresponding IType
-     * 
-     */
-    public IpsObjectPartCollection<? extends IAssociation> getAssociationPartCollection();
 
 }

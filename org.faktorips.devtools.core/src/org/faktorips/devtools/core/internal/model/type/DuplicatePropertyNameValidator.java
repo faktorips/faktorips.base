@@ -48,7 +48,9 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
     }
 
     protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
-        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName);
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, new String[] { propertyName,
+                invalidObjProperties[0].getObject().getClass().getName(),
+                invalidObjProperties[1].getObject().toString() });
         return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
     }
 
@@ -192,13 +194,13 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
 
     @Override
     protected boolean visit(IType currentType) {
-        addPolicyAndProductAttributes(currentType);
-        addOverwrittenAttributes(currentType);
+        addMatchingProperties(currentType);
+        addAttributes(currentType);
         addAssociations(currentType);
         return true;
     }
 
-    private void addPolicyAndProductAttributes(IType currentType) {
+    private void addMatchingProperties(IType currentType) {
         IType matchingType = null;
         try {
             if (currentType instanceof IPolicyCmptType) {
@@ -228,8 +230,8 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
         }
     }
 
-    private void addOverwrittenAttributes(IType currentType) {
-        for (IAttribute attr : currentType.getAttributesPartCollection()) {
+    private void addAttributes(IType currentType) {
+        for (IAttribute attr : currentType.getAttributes()) {
             if (!attr.isOverwrite()) {
                 add(attr.getName().toLowerCase(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
             }
@@ -237,7 +239,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
     }
 
     private void addAssociations(IType currentType) {
-        for (IAssociation ass : currentType.getAssociationPartCollection()) {
+        for (IAssociation ass : currentType.getAssociations()) {
             if (ass.is1ToMany()) {
                 // target role plural only check if is many association
                 add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,

@@ -95,12 +95,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IpsObjectPartCollection<IPolicyCmptTypeAssociation> getAssociationPartCollection() {
+    protected IpsObjectPartCollection<IPolicyCmptTypeAssociation> getAssociationPartCollection() {
         return associations;
     }
 
     @Override
-    public IpsObjectPartCollection<IPolicyCmptTypeAttribute> getAttributesPartCollection() {
+    protected IpsObjectPartCollection<IPolicyCmptTypeAttribute> getAttributesPartCollection() {
         return attributes;
     }
 
