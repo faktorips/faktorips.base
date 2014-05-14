@@ -44,7 +44,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TableContentsValidationCacheTest {
+public class TableContentsStructureCacheTest {
 
     private static final String TABLE_STRUCTURE = "myTableStructure";
 
@@ -57,7 +57,7 @@ public class TableContentsValidationCacheTest {
     @Mock
     private IIpsProject ipsProject2;
 
-    private TableContentsValidationCache tableContentsValidationCache;
+    private TableContentsStructureCache tableContentsValidationCache;
 
     @Mock
     private IIpsSrcFile tableStructure;
@@ -85,7 +85,7 @@ public class TableContentsValidationCacheTest {
                 return null;
             }
         }).when(ipsModel).addIpsSrcFilesChangedListener(any(IIpsSrcFilesChangeListener.class));
-        tableContentsValidationCache = new TableContentsValidationCache(ipsModel);
+        tableContentsValidationCache = new TableContentsStructureCache(ipsModel);
     }
 
     @Before
@@ -146,7 +146,7 @@ public class TableContentsValidationCacheTest {
         List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
 
         assertEquals(1, tableContents.size());
-        assertEquals(tableContent1, tableContents.get(0));
+        assertThat(tableContents, hasItem(tableContent1));
     }
 
     @Test
@@ -164,16 +164,21 @@ public class TableContentsValidationCacheTest {
         assertTrue(tableContents.isEmpty());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test
     public void testGetTableContents_testDefenceCopy() throws Exception {
         when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(Arrays.asList(tableContent1));
         when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
                 .thenReturn(tableStructure);
 
         List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        assertEquals(1, tableContents.size());
+        assertThat(tableContents, hasItem(tableContent1));
 
-        // expect no modification allowed
         tableContents.add(tableContent2);
+
+        List<IIpsSrcFile> tableContentsNew = tableContentsValidationCache.getTableContents(tableStructure);
+        assertEquals(1, tableContentsNew.size());
+        assertThat(tableContentsNew, hasItem(tableContent1));
     }
 
     @Test

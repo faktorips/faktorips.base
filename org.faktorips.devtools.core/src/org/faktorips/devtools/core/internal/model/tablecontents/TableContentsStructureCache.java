@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,16 +31,13 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * This class caches for all {@link ITableStructure} the corresponding {@link ITableContents}. It
- * could be used validate how much table contents are instantiated for a table structure. This
- * information is necessary for example to validate that there exists only one content for
- * single-table structures.
+ * This class caches for all {@link ITableStructure} the corresponding {@link ITableContents}.
  * <p>
  * This class registers a {@link IIpsSrcFilesChangeListener} in the provided {@link IIpsModel}. It
  * is designed to be instantiated only once for every {@link IIpsModel} and is bounded to the
  * lifecycle of the model. Hence there is no removing of the registered listener.
  */
-public class TableContentsValidationCache {
+public class TableContentsStructureCache {
 
     private enum State {
         NEW,
@@ -69,7 +67,7 @@ public class TableContentsValidationCache {
      * @param ipsModel The {@link IIpsModel} which holds all the {@link IIpsSrcFile source files
      *            that should be cached}
      */
-    public TableContentsValidationCache(IIpsModel ipsModel) {
+    public TableContentsStructureCache(IIpsModel ipsModel) {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
         tableStructureMap = new TableStructureMap();
@@ -91,7 +89,7 @@ public class TableContentsValidationCache {
      */
     public List<IIpsSrcFile> getTableContents(IIpsSrcFile tableStructures) {
         checkInit();
-        return Collections.unmodifiableList(tableStructureMap.get(tableStructures));
+        return new ArrayList<IIpsSrcFile>(tableStructureMap.get(tableStructures));
     }
 
     private void checkInit() {
@@ -119,6 +117,13 @@ public class TableContentsValidationCache {
         }
     }
 
+    /**
+     * This class is responsible for updating the table structure map. It is an implementation of
+     * {@link IIpsSrcFilesChangeListener} and is registered in the {@link IIpsModel} to get notified
+     * for every changed {@link IIpsSrcFile}. It could also be used for the initialization of the
+     * table structure map.
+     * 
+     */
     private static class TableContentUpdater implements IIpsSrcFilesChangeListener {
 
         /**
@@ -131,7 +136,7 @@ public class TableContentsValidationCache {
             REMOVED
         }
 
-        private TableStructureMap tableStructureMap;
+        private final TableStructureMap tableStructureMap;
 
         public TableContentUpdater(TableStructureMap tableStructureMap) {
             this.tableStructureMap = tableStructureMap;
@@ -205,16 +210,31 @@ public class TableContentsValidationCache {
 
     }
 
+    /**
+     * This data structure hold the necessary mappings for {@link ITableContents} and their
+     * corresponding {@link ITableStructure}. It has the ability to update existing
+     * content-structure relations. The data structure is designed to be thread safe. We need to
+     * synchronize every writing operation because we work with two maps which content depends on
+     * each other. Doing a more fine granularity synchronization is not worth the effort.
+     */
     private static class TableStructureMap {
 
-        private ConcurrentHashMap<IIpsSrcFile, List<IIpsSrcFile>> tableStructureToContents = new ConcurrentHashMap<IIpsSrcFile, List<IIpsSrcFile>>();
+        private final ConcurrentHashMap<IIpsSrcFile, Set<IIpsSrcFile>> tableStructureToContents = new ConcurrentHashMap<IIpsSrcFile, Set<IIpsSrcFile>>();
 
-        private ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile> tableContentsToStructure = new ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile>();
+        private final ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile> tableContentsToStructure = new ConcurrentHashMap<IIpsSrcFile, IIpsSrcFile>();
 
-        public List<IIpsSrcFile> get(IIpsSrcFile tableStructure) {
-            List<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
+        /**
+         * Returns the set of table contents for the given table structure.
+         * <p>
+         * This method does not need to be synchronized because we use concurrent hash maps. We
+         * cannot guarantee that the result may be currently changed by other threads. However also
+         * using synchronized there is no guarantee that we get the result before or after the other
+         * thread is updating the result.
+         */
+        public Set<IIpsSrcFile> get(IIpsSrcFile tableStructure) {
+            Set<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
             if (list == null) {
-                return Collections.emptyList();
+                return Collections.emptySet();
             } else {
                 return list;
             }
@@ -229,34 +249,34 @@ public class TableContentsValidationCache {
          *            be null to insert no new mapping but removing an maybe existing old one.
          * @param tableContent The table content for the mapping, should never be null.
          */
-        public void updateContent(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
+        public synchronized void updateContent(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
             removeTableContent(tableContent);
             if (tableStructure != null) {
                 put(tableStructure, tableContent);
             }
         }
 
-        public void put(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
-            List<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
+        public synchronized void put(IIpsSrcFile tableStructure, IIpsSrcFile tableContent) {
+            Set<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
             if (list == null) {
-                list = new ArrayList<IIpsSrcFile>();
+                list = new HashSet<IIpsSrcFile>();
                 tableStructureToContents.put(tableStructure, list);
             }
             list.add(tableContent);
             tableContentsToStructure.put(tableContent, tableStructure);
         }
 
-        public void removeTableContent(IIpsSrcFile tableContent) {
+        public synchronized void removeTableContent(IIpsSrcFile tableContent) {
             IIpsSrcFile oldTableStructure = tableContentsToStructure.get(tableContent);
             if (oldTableStructure != null) {
-                List<IIpsSrcFile> list = get(oldTableStructure);
+                Set<IIpsSrcFile> list = get(oldTableStructure);
                 list.remove(tableContent);
             }
             tableContentsToStructure.remove(tableContent);
         }
 
-        public void removeTableStructure(IIpsSrcFile tableStructure) {
-            List<IIpsSrcFile> list = get(tableStructure);
+        public synchronized void removeTableStructure(IIpsSrcFile tableStructure) {
+            Set<IIpsSrcFile> list = get(tableStructure);
             for (IIpsSrcFile tableContent : list) {
                 tableContentsToStructure.remove(tableContent);
             }
