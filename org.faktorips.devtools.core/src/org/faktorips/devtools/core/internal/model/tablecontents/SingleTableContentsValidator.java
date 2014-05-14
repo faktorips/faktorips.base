@@ -98,4 +98,18 @@ public class SingleTableContentsValidator {
         return contentSrcFiles.size();
     }
 
+    /**
+     * Returns <code>true</code> if the table structure allows an additional table content,
+     * <code>false</code> otherwise. This method always returns <code>true</code> for table
+     * structures, that support multiple contents. For single-content structures <code>true</code>
+     * is returned only if it has no table contents, <code>false</code> otherwise.
+     * <p>
+     * Returns <code>false</code> if the table structure is <code>null</code>.
+     */
+    public boolean forbidsAdditionalContents() {
+        if (tableStructure == null) {
+            return true;
+        }
+        return !tableStructure.isMultipleContentsAllowed() && getNumberofContents() >= 1;
+    }
 }

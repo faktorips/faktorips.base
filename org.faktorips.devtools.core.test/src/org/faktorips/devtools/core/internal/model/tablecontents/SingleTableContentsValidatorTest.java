@@ -41,14 +41,15 @@ public class SingleTableContentsValidatorTest {
     private TableStructure tableStructure;
 
     @Mock
-    private IIpsSrcFile structureSrcFile;
-    @Mock
     private IIpsSrcFile contentsSrcFile1;
     @Mock
     private IIpsSrcFile contentsSrcFile2;
 
+    private SingleTableContentsValidator validator;
+
     @Before
     public void setup() {
+        validator = new SingleTableContentsValidator(tableStructure);
         when(tableStructure.getIpsProject()).thenReturn(ipsProject);
     }
 
@@ -70,7 +71,7 @@ public class SingleTableContentsValidatorTest {
 
     @Test
     public void testCanValidate() {
-        assertTrue(new SingleTableContentsValidator(tableStructure).canValidate());
+        assertTrue(validator.canValidate());
     }
 
     @Test
@@ -131,10 +132,46 @@ public class SingleTableContentsValidatorTest {
         setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
 
         MessageList messageList = new MessageList();
-        new SingleTableContentsValidator(tableStructure).validateAndAppendMessages(messageList);
+        validator.validateAndAppendMessages(messageList);
 
         assertEquals(1, messageList.size());
         assertEquals(getExpectedMessage(), messageList.getMessage(0));
+    }
+
+    @Test
+    public void testForbidsAdditionalContents_multiContentStructure() {
+        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+        when(tableStructure.isMultipleContentsAllowed()).thenReturn(true);
+
+        assertFalse(validator.forbidsAdditionalContents());
+    }
+
+    @Test
+    public void testForbidsAdditionalContents_singleContentStructure_noContents() {
+        setUpContentSrcFiles();
+
+        assertFalse(validator.forbidsAdditionalContents());
+    }
+
+    @Test
+    public void testForbidsAdditionalContents_singleContentStructure_oneContents() {
+        setUpContentSrcFiles(contentsSrcFile1);
+
+        assertTrue(validator.forbidsAdditionalContents());
+    }
+
+    @Test
+    public void testForbidsAdditionalContents_singleContentStructure_multipleContents() {
+        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+
+        assertTrue(validator.forbidsAdditionalContents());
+    }
+
+    @Test
+    public void testForbidsAdditionalContents_nullStructure() {
+        validator = new SingleTableContentsValidator(null);
+
+        assertTrue(validator.forbidsAdditionalContents());
     }
 
     private void setUpContentSrcFiles(IIpsSrcFile... srcFileArray) {
@@ -151,7 +188,7 @@ public class SingleTableContentsValidatorTest {
 
     private void validateAndAssertMessageCount(int messageCount) {
         MessageList messageList = new MessageList();
-        new SingleTableContentsValidator(tableStructure).validateAndAppendMessages(messageList);
+        validator.validateAndAppendMessages(messageList);
         assertEquals(messageCount, messageList.size());
     }
 
