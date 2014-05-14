@@ -186,8 +186,6 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         super.validateThis(list, ipsProject);
 
         ITableStructure tableStructure = findTableStructure(ipsProject);
-        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(tableStructure);
-        list.add(singleTableContentsValidator.validateIfPossible());
         if (tableStructure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
@@ -200,6 +198,9 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
             list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
         }
+
+        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(tableStructure);
+        list.add(singleTableContentsValidator.validateIfPossible());
     }
 
     ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {

@@ -80,7 +80,7 @@ public class SingleTableContentsValidator {
         List<IIpsSrcFile> contentSrcFiles = findContentSrcFiles();
         List<String> contentSrcFileNames = new ArrayList<String>();
         for (IIpsSrcFile srcFile : contentSrcFiles) {
-            contentSrcFileNames.add(srcFile.getName());
+            contentSrcFileNames.add(srcFile.getIpsObjectName());
         }
         return contentSrcFileNames;
     }

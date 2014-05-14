@@ -126,8 +126,8 @@ public class SingleTableContentsValidatorTest {
     @Test
     public void testValidateAndAppendMessages_AssertCorrectErrorMessage() {
         when(tableStructure.getName()).thenReturn("tableStructure");
-        when(contentsSrcFile1.getName()).thenReturn("contentsSrcFile1");
-        when(contentsSrcFile2.getName()).thenReturn("contentsSrcFile2");
+        when(contentsSrcFile1.getIpsObjectName()).thenReturn("contentsSrcFile1");
+        when(contentsSrcFile2.getIpsObjectName()).thenReturn("contentsSrcFile2");
         setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
 
         MessageList messageList = new MessageList();
