@@ -57,6 +57,13 @@ public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxS
     public static final String MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS = MSGCODE_PREFIX + "TooManyUniqueKeyViolations"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that there are to many contents for a single content
+     * table structure.
+     */
+    public static final String MSGCODE_TOO_MANY_CONTENTS_FOR_SINGLETABLESTRUCTURE = MSGCODE_PREFIX
+            + "TooManyContentsForSingleTableStructure"; //$NON-NLS-1$
+
+    /**
      * Returns the qualified name of the table structure this table contents is based on.
      */
     public String getTableStructure();

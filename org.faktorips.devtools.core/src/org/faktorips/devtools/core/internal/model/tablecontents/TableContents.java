@@ -186,6 +186,8 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         super.validateThis(list, ipsProject);
 
         ITableStructure tableStructure = findTableStructure(ipsProject);
+        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(tableStructure);
+        list.add(singleTableContentsValidator.validateIfPossible());
         if (tableStructure == null) {
             String text = NLS.bind(Messages.TableContents_msgMissingTablestructure, structure);
             list.add(new Message(MSGCODE_UNKNWON_STRUCTURE, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
