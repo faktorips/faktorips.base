@@ -34,8 +34,8 @@ import org.faktorips.util.ArgumentCheck;
  * This class caches for all {@link ITableStructure} the corresponding {@link ITableContents}.
  * <p>
  * This class registers a {@link IIpsSrcFilesChangeListener} in the provided {@link IIpsModel}. It
- * is designed to be instantiated only once for every {@link IIpsModel} and is bounded to the
- * lifecycle of the model. Hence there is no removing of the registered listener.
+ * is designed to be instantiated only once for every {@link IIpsModel} and is bound to the
+ * lifecycle of the model. Hence there is no method for removing the registered listener.
  */
 public class TableContentsStructureCache {
 
@@ -159,15 +159,18 @@ public class TableContentsStructureCache {
         public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
             Set<IIpsSrcFile> changedIpsSrcFiles = event.getChangedIpsSrcFiles();
             for (IIpsSrcFile ipsSrcFile : changedIpsSrcFiles) {
-                IResourceDelta resourceDelta = event.getResourceDelta(ipsSrcFile);
-                OperationKind operation;
-                if ((resourceDelta.getKind() & IResourceDelta.REMOVED) != 0) {
-                    operation = OperationKind.REMOVED;
-                } else {
-                    operation = OperationKind.CHANGED;
-                }
-                handleTableStructureChange(ipsSrcFile, operation);
-                updateTableContent(ipsSrcFile, operation);
+                OperationKind operationKind = getOperationKind(event, ipsSrcFile);
+                handleTableStructureChange(ipsSrcFile, operationKind);
+                updateTableContent(ipsSrcFile, operationKind);
+            }
+        }
+
+        private OperationKind getOperationKind(IpsSrcFilesChangedEvent event, IIpsSrcFile ipsSrcFile) {
+            IResourceDelta resourceDelta = event.getResourceDelta(ipsSrcFile);
+            if ((resourceDelta.getKind() & IResourceDelta.REMOVED) != 0) {
+                return OperationKind.REMOVED;
+            } else {
+                return OperationKind.CHANGED;
             }
         }
 
@@ -176,25 +179,32 @@ public class TableContentsStructureCache {
                 if (operation == OperationKind.REMOVED) {
                     tableStructureMap.removeTableStructure(ipsSrcFile);
                 } else {
-                    try {
-                        IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
-                        updateTableContents(ipsProjects);
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    updateTableContentsForReferencingProjects(ipsSrcFile);
                 }
+            }
+        }
+
+        private void updateTableContentsForReferencingProjects(IIpsSrcFile ipsSrcFile) {
+            try {
+                IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
+                updateTableContents(ipsProjects);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
 
         public void updateTableContent(IIpsSrcFile ipsSrcFile, OperationKind operation) {
             if (IpsObjectType.TABLE_CONTENTS.equals(ipsSrcFile.getIpsObjectType())) {
-                IIpsSrcFile tableStructure;
-                if (operation == OperationKind.REMOVED) {
-                    tableStructure = null;
-                } else {
-                    tableStructure = getReferencedTableStructure(ipsSrcFile);
-                }
+                IIpsSrcFile tableStructure = getTableStructure(ipsSrcFile, operation);
                 tableStructureMap.updateContent(tableStructure, ipsSrcFile);
+            }
+        }
+
+        private IIpsSrcFile getTableStructure(IIpsSrcFile ipsSrcFile, OperationKind operation) {
+            if (operation == OperationKind.REMOVED) {
+                return null;
+            } else {
+                return getReferencedTableStructure(ipsSrcFile);
             }
         }
 

@@ -57,7 +57,7 @@ public class TableContentsStructureCacheTest {
     @Mock
     private IIpsProject ipsProject2;
 
-    private TableContentsStructureCache tableContentsValidationCache;
+    private TableContentsStructureCache tableContentsStructureCache;
 
     @Mock
     private IIpsSrcFile tableStructure;
@@ -85,7 +85,7 @@ public class TableContentsStructureCacheTest {
                 return null;
             }
         }).when(ipsModel).addIpsSrcFilesChangedListener(any(IIpsSrcFilesChangeListener.class));
-        tableContentsValidationCache = new TableContentsStructureCache(ipsModel);
+        tableContentsStructureCache = new TableContentsStructureCache(ipsModel);
     }
 
     @Before
@@ -106,44 +106,39 @@ public class TableContentsStructureCacheTest {
 
     @Test
     public void testInit_noContent() throws Exception {
-
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertTrue(tableContents.isEmpty());
     }
 
     @Test
     public void testGetTableContents_structureInWrongProject1() throws Exception {
-        List<IIpsSrcFile> ipsSrcFiles = Arrays.asList(tableContent1, tableContent2);
-        when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(ipsSrcFiles);
+        setUpProjectWithTableContents(ipsProject1, tableContent1, tableContent2);
         doReturn(Collections.emptyList()).when(ipsProject2).findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
 
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertTrue(tableContents.isEmpty());
     }
 
     @Test
     public void testGetTableContents_structureInWrongProject2() throws Exception {
+        setUpProjectWithTableContents(ipsProject2, tableContent1, tableContent2);
         when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(Arrays.asList(tableStructure));
-        List<IIpsSrcFile> ipsSrcFiles = Arrays.asList(tableContent1, tableContent2);
-        when(ipsProject2.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(ipsSrcFiles);
 
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertTrue(tableContents.isEmpty());
     }
 
     @Test
     public void testGetTableContents_structureReferencedProject() throws Exception {
-        when(ipsProject2.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(
-                Arrays.asList(tableContent1, tableContent2));
+        setUpProjectWithTableContents(ipsProject2, tableContent1, tableContent2);
         when(tableContent1.getIpsProject()).thenReturn(ipsProject2);
         when(tableContent2.getIpsProject()).thenReturn(ipsProject2);
-        when(ipsProject2.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
+        setUpTableStructureIn(ipsProject2);
 
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertEquals(1, tableContents.size());
         assertThat(tableContents, hasItem(tableContent1));
@@ -151,47 +146,44 @@ public class TableContentsStructureCacheTest {
 
     @Test
     public void testGetTableContents_structureWrongReferencedProject() throws Exception {
-        doReturn(Collections.emptyList()).when(ipsProject1).findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
-        when(ipsProject2.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(
-                Arrays.asList(tableContent1, tableContent2));
+        setUpTableStructureIn(ipsProject1);
+        // no contents
+        setUpProjectWithTableContents(ipsProject1);
+        setUpProjectWithTableContents(ipsProject2, tableContent1, tableContent2);
         when(tableContent1.getIpsProject()).thenReturn(ipsProject2);
         when(tableContent2.getIpsProject()).thenReturn(ipsProject2);
-        when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
 
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertTrue(tableContents.isEmpty());
     }
 
     @Test
     public void testGetTableContents_testDefenceCopy() throws Exception {
-        when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(Arrays.asList(tableContent1));
-        when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
+        setUpProjectWithTableContents(ipsProject1, tableContent1);
+        setUpTableStructureIn(ipsProject1);
 
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
         assertEquals(1, tableContents.size());
         assertThat(tableContents, hasItem(tableContent1));
 
         tableContents.add(tableContent2);
 
-        List<IIpsSrcFile> tableContentsNew = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContentsNew = tableContentsStructureCache.getTableContents(tableStructure);
         assertEquals(1, tableContentsNew.size());
         assertThat(tableContentsNew, hasItem(tableContent1));
     }
 
     @Test
     public void testChangeListener_contentAdded() throws Exception {
-        when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(Arrays.asList(tableContent1));
-        when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
-        when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
+        setUpProjectWithTableContents(ipsProject1, tableContent1);
+        setUpTableStructureIn(ipsProject1);
+        setUpTableStructureNameFor(tableContent2, TABLE_STRUCTURE);
         // init
-        tableContentsValidationCache.getTableContents(tableStructure);
+        tableContentsStructureCache.getTableContents(tableStructure);
 
         changeListener.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.ADDED));
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertEquals(2, tableContents.size());
         assertThat(tableContents, hasItem(tableContent1));
@@ -200,16 +192,14 @@ public class TableContentsStructureCacheTest {
 
     @Test
     public void testChangeListener_contentRemoved() throws Exception {
-        when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(
-                Arrays.asList(tableContent1, tableContent2));
-        when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
-        when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
+        setUpProjectWithTableContents(ipsProject1, tableContent1, tableContent2);
+        setUpTableStructureIn(ipsProject1);
+        setUpTableStructureNameFor(tableContent2, TABLE_STRUCTURE);
         // init
-        tableContentsValidationCache.getTableContents(tableStructure);
+        tableContentsStructureCache.getTableContents(tableStructure);
 
         changeListener.ipsSrcFilesChanged(newChangeEvent(tableContent2, IResourceDelta.REMOVED));
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertEquals(1, tableContents.size());
         assertThat(tableContents, hasItem(tableContent1));
@@ -217,37 +207,47 @@ public class TableContentsStructureCacheTest {
 
     @Test
     public void testChangeListener_structureRemoved() throws Exception {
-        when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(
-                Arrays.asList(tableContent1, tableContent2));
-        when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
-        when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
+        setUpProjectWithTableContents(ipsProject1, tableContent1, tableContent2);
+        setUpTableStructureIn(ipsProject1);
+        setUpTableStructureNameFor(tableContent2, TABLE_STRUCTURE);
         // init
-        tableContentsValidationCache.getTableContents(tableStructure);
+        tableContentsStructureCache.getTableContents(tableStructure);
 
         changeListener.ipsSrcFilesChanged(newChangeEvent(tableStructure, IResourceDelta.REMOVED));
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertTrue(tableContents.isEmpty());
     }
 
     @Test
     public void testChangeListener_structureChanged() throws Exception {
-        when(ipsProject1.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(
-                Arrays.asList(tableContent1, tableContent2));
-        when(tableContent2.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(TABLE_STRUCTURE);
+        setUpProjectWithTableContents(ipsProject1, tableContent1, tableContent2);
+        setUpTableStructureNameFor(tableContent2, TABLE_STRUCTURE);
         when(tableStructure.getIpsObjectName()).thenReturn("");
-        // init
-        tableContentsValidationCache.getTableContents(tableStructure);
 
-        when(ipsProject1.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE)))
-                .thenReturn(tableStructure);
+        List<IIpsSrcFile> tableContents = tableContentsStructureCache.getTableContents(tableStructure);
+        assertEquals(0, tableContents.size());
+
+        setUpTableStructureIn(ipsProject1);
         changeListener.ipsSrcFilesChanged(newChangeEvent(tableStructure, IResourceDelta.CHANGED));
-        List<IIpsSrcFile> tableContents = tableContentsValidationCache.getTableContents(tableStructure);
+        tableContents = tableContentsStructureCache.getTableContents(tableStructure);
 
         assertEquals(2, tableContents.size());
         assertThat(tableContents, hasItem(tableContent1));
         assertThat(tableContents, hasItem(tableContent2));
+    }
+
+    private void setUpTableStructureNameFor(IIpsSrcFile tc, String name) throws CoreException {
+        when(tc.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(name);
+    }
+
+    private void setUpProjectWithTableContents(IIpsProject project, IIpsSrcFile... files) {
+        when(project.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(Arrays.asList(files));
+    }
+
+    private void setUpTableStructureIn(IIpsProject project) throws CoreException {
+        when(project.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE))).thenReturn(
+                tableStructure);
     }
 
     private IpsSrcFilesChangedEvent newChangeEvent(IIpsSrcFile ipsSrcFile, int kind) {
