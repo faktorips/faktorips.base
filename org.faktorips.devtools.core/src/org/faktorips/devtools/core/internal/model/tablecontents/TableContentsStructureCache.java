@@ -53,7 +53,7 @@ public class TableContentsStructureCache {
     private final IIpsModel ipsModel;
 
     /**
-     * The cached tabled structures to available table contents.
+     * The cached table structures to available table contents.
      */
     private final TableStructureMap tableStructureMap;
 
@@ -83,18 +83,18 @@ public class TableContentsStructureCache {
      * take some time. When the cache is initialized it is updated using
      * {@link IpsSrcFilesChangedEvent}.
      * 
-     * @param tableStructures The {@link IIpsSrcFile} of the table structure you want get the
+     * @param tableStructure The {@link IIpsSrcFile} of the table structure you want get the
      *            contents for.
      * @return The list of found table contents for the given table structure.
      */
-    public List<IIpsSrcFile> getTableContents(IIpsSrcFile tableStructures) {
+    public List<IIpsSrcFile> getTableContents(IIpsSrcFile tableStructure) {
         checkInit();
-        return new ArrayList<IIpsSrcFile>(tableStructureMap.get(tableStructures));
+        return new ArrayList<IIpsSrcFile>(tableStructureMap.get(tableStructure));
     }
 
     private void checkInit() {
         if (state != State.INITIALIZED) {
-            synchronized (state) {
+            synchronized (this) {
                 if (state != State.INITIALIZED) {
                     init();
                     state = State.INITIALIZED;
@@ -251,7 +251,7 @@ public class TableContentsStructureCache {
         }
 
         /**
-         * Updates the mapping of table structure and table mapping. If there is no new table
+         * Updates the mapping of table structure and table content. If there is no new table
          * structure (tableStructure==null) the old table content entry is removed and no new one is
          * created.
          * 
@@ -270,7 +270,10 @@ public class TableContentsStructureCache {
             Set<IIpsSrcFile> list = tableStructureToContents.get(tableStructure);
             if (list == null) {
                 list = new HashSet<IIpsSrcFile>();
-                tableStructureToContents.put(tableStructure, list);
+                Set<IIpsSrcFile> alreadyAddedList = tableStructureToContents.putIfAbsent(tableStructure, list);
+                if (alreadyAddedList != null) {
+                    list = alreadyAddedList;
+                }
             }
             list.add(tableContent);
             tableContentsToStructure.put(tableContent, tableStructure);
