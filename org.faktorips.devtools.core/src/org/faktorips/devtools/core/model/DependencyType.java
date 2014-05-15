@@ -11,57 +11,42 @@
 package org.faktorips.devtools.core.model;
 
 import java.io.ObjectStreamException;
-import java.io.Serializable;
 
 /**
- * An enumeration type that describes the type of dependency.
+ * An enum that describes the type of dependency.
  * 
- * @author Peter Erzberger
  */
-public class DependencyType implements Serializable {
+public enum DependencyType {
 
-    private static final long serialVersionUID = 615796376725042939L;
+    INSTANCEOF("instance of dependency"), //$NON-NLS-1$
 
-    public final static DependencyType INSTANCEOF = new DependencyType("instance of dependency"); //$NON-NLS-1$
+    SUBTYPE("subtype dependency"), //$NON-NLS-1$
 
-    public final static DependencyType SUBTYPE = new DependencyType("subtype dependency"); //$NON-NLS-1$
+    REFERENCE_COMPOSITION_MASTER_DETAIL("master to detail composition dependency"), //$NON-NLS-1$
 
-    public final static DependencyType REFERENCE_COMPOSITION_MASTER_DETAIL = new DependencyType(
-            "master to detail composition dependency"); //$NON-NLS-1$
+    REFERENCE("reference dependency"), //$NON-NLS-1$
 
-    public final static DependencyType REFERENCE = new DependencyType("reference dependency"); //$NON-NLS-1$
+    DATATYPE("datatype dependency"), //$NON-NLS-1$
 
-    public final static DependencyType DATATYPE = new DependencyType("datatype dependency"); //$NON-NLS-1$
+    /**
+     * Dependency type for objects that normally have no relation to each other, in the sense of
+     * references in a model, but require validating if one of them changes.
+     * <p>
+     * Note that this type of dependency is <em>only</em> used in <em>error cases</em>. Objects are
+     * invalid but <em>become valid</em> if one of them changes (thus the re-validation). In the
+     * opposite case, where objects <em>become invalid</em> if one of them changes, "natural"
+     * dependencies exist, e.g. references.
+     * <p>
+     * For example this type is used for table contents of single-table structures. If there are two
+     * table contents, both have errors. If one of them is deleted the other must be re-validated to
+     * become error free.
+     */
+    VALIDATION("validation dependency"); //$NON-NLS-1$
 
     private String name;
 
     private DependencyType(String name) {
-        super();
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
-
-    private DependencyType getDependencyType(String name) {
-        if (INSTANCEOF.name.equals(name)) {
-            return INSTANCEOF;
-        }
-        if (SUBTYPE.name.equals(name)) {
-            return SUBTYPE;
-        }
-        if (REFERENCE.name.equals(name)) {
-            return REFERENCE;
-        }
-        if (REFERENCE_COMPOSITION_MASTER_DETAIL.name.equals(name)) {
-            return REFERENCE_COMPOSITION_MASTER_DETAIL;
-        }
-        if (DATATYPE.name.equals(name)) {
-            return DATATYPE;
-        }
-        throw new IllegalArgumentException("No type specified for the provided name."); //$NON-NLS-1$
     }
 
     /**
@@ -71,7 +56,7 @@ public class DependencyType implements Serializable {
     @SuppressWarnings("unused")
     // OK to suppress because ObjectStreamException is required by Java's serialization algorithm
     private Object readResolve() throws ObjectStreamException {
-        return getDependencyType(name);
+        return DependencyType.valueOf(name);
     }
 
 }
