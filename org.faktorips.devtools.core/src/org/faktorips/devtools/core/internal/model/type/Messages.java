@@ -60,8 +60,23 @@ public class Messages extends NLS {
     public static String Attribute_msg_Overwritten_datatype_different;
     public static String Attribute_msg_Overwritten_modifier_different;
     public static String DuplicatePropertyNameValidator_msg;
+    public static String DuplicatePropertyNameValidator_msg_DifferentElementsSameType;
+    public static String DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes;
+    public static String DuplicatePropertyNameValidator_msg_hint;
+    public static String DuplicatePropertyNameValidator_PluralProdCmptType;
+    public static String DuplicatePropertyNameValidator_PluralAttribute;
+    public static String DuplicatePropertyNameValidator_SingularAttribute;
+    public static String DuplicatePropertyNameValidator_PluralAssociation;
+    public static String DuplicatePropertyNameValidator_SingularAssociation;
+    public static String DuplicatePropertyNameValidator_PluralFormula;
+    public static String DuplicatePropertyNameValidator_SingularFormula;
+    public static String DuplicatePropertyNameValidator_PluralMethod;
+    public static String DuplicatePropertyNameValidator_SingularMethod;
+    public static String DuplicatePropertyNameValidator_PluralElement;
+    public static String DuplicatePropertyNameValidator_SingularElement;
+    public static String DuplicatePropertyNameValidator_PluralTableStructureUsage;
+    public static String DuplicatePropertyNameValidator_SingularTableStructureUsage;
 
-    public static String TypeMethod_duplicateSignature;
     public static String TypeMethod_incompatbileReturnType;
     public static String TypeMethod_msg_abstractMethodError;
     public static String TypeMethod_msg_modifierOverriddenNotEqual;

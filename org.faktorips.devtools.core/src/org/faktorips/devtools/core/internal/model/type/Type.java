@@ -125,7 +125,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
         return isSubtypeOf(candidate, project);
     }
-    
+
     protected abstract IpsObjectPartCollection<? extends IAttribute> getAttributesPartCollection();
 
     protected abstract IpsObjectPartCollection<? extends IAssociation> getAssociationPartCollection();
@@ -526,9 +526,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
-        return new DuplicatePropertyNameValidator(ipsProject);
-    }
+    protected abstract DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject);
 
     /**
      * Validation for {@link #MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}

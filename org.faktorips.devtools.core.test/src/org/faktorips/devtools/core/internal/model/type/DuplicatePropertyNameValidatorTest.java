@@ -15,14 +15,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
@@ -30,7 +38,7 @@ import org.junit.Test;
 
 public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
-    private static final String ATTRIBUTE_ID = "MY_ID";
+    private static final String ID = "MY_ID";
     private DuplicatePropertyNameValidator validatorTest;
     private IPolicyCmptTypeAssociation toVA;
     private IPolicyCmptTypeAssociation toA;
@@ -53,7 +61,6 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        validatorTest = new DuplicatePropertyNameValidator(ipsProject);
         policyCmptTypeA = newPolicyCmptType(ipsProject, "pctA");
         PolicyCmptType policyCmptTypeB = newPolicyCmptType(ipsProject, "pctB");
         PolicyCmptType policyCmptTypeB1 = newPolicyCmptType(ipsProject, "pctB1");
@@ -63,8 +70,9 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
         policyCmptTypeB.setSupertype(policyCmptTypeA.getName());
         policyCmptTypeC.setSupertype(policyCmptTypeB.getName());
-
         policyCmptTypeB1.setSupertype(policyCmptTypeA.getName());
+
+        validatorTest = policyCmptTypeA.createDuplicatePropertyNameValidator(ipsProject);
 
         toA = (IPolicyCmptTypeAssociation)policyCmptTypeV.newAssociation();
         toA.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
@@ -197,6 +205,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     public void testAddInvalidPolicyAttributes() throws CoreException {
         IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
         policyCmptTypeA.newPolicyCmptTypeAttribute(productCmptType.getUnqualifiedName());
+
         validatorTest.visit(policyCmptTypeA);
         validatorTest.addMessagesForDuplicates(messageList);
 
@@ -206,30 +215,119 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-        public void testAddPolicyAndProductAttributes_PolicyCmptType() throws CoreException {
-            IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
-            productCmptType.newProductCmptTypeAttribute(ATTRIBUTE_ID);
-            policyCmptTypeA.newPolicyCmptTypeAttribute(ATTRIBUTE_ID);
-            validatorTest.visit(policyCmptTypeA);
-            validatorTest.addMessagesForDuplicates(messageList);
-    
-            assertEquals(1, messageList.size());
-            assertEquals(IAssociation.PROPERTY_NAME,
-                    messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
-        }
+    public void testAddPolicyAndProductAttributes_PolicyCmptType() throws CoreException {
+        IProductCmptType productCmptType = policyCmptTypeA.findProductCmptType(ipsProject);
+        productCmptType.newProductCmptTypeAttribute(ID);
+        policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
+
+        validatorTest.visit(policyCmptTypeA);
+        validatorTest.addMessagesForDuplicates(messageList);
+
+        assertEquals(1, messageList.size());
+        assertEquals(IAssociation.PROPERTY_NAME,
+                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+    }
 
     @Test
-        public void testAddPolicyAndProductAttributes_ProdCmptType() throws CoreException {
-            IProductCmptType productCmptType = newProductCmptType(ipsProject, "prodCmptType");
-            productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
-            productCmptType.newProductCmptTypeAttribute(ATTRIBUTE_ID);
-            policyCmptTypeA.newPolicyCmptTypeAttribute(ATTRIBUTE_ID);
-            validatorTest.visit(productCmptType);
-            validatorTest.addMessagesForDuplicates(messageList);
-    
-            assertEquals(1, messageList.size());
-            assertEquals(IAssociation.PROPERTY_NAME,
-                    messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
-        }
+    public void testAddPolicyAndProductAttributes_ProdCmptType() throws CoreException {
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "prodCmptType");
+        productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
+        productCmptType.newProductCmptTypeAttribute(ID);
+        policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
+        validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
 
+        validatorTest.visit(productCmptType);
+        validatorTest.addMessagesForDuplicates(messageList);
+
+        assertEquals(1, messageList.size());
+        assertEquals(IAssociation.PROPERTY_NAME,
+                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+    }
+
+    @Test
+    public void testCreateMessage_SameITypeAndObjectPartContainer() {
+        IPolicyCmptTypeAttribute attr1 = policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
+        IPolicyCmptTypeAttribute attr2 = policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
+        validatorTest.visit(policyCmptTypeA);
+        validatorTest.addMessagesForDuplicates(messageList);
+        ObjectProperty property2 = new ObjectProperty(attr1, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+        ObjectProperty property1 = new ObjectProperty(attr2, IMethod.PROPERTY_NAME);
+        ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
+
+        Message message = validatorTest.createMessage(ID, properties);
+
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID);
+        assertEquals(text + "  " + Messages.DuplicatePropertyNameValidator_msg_hint, message.getText());
+    }
+
+    @Test
+    public void testCreateMessage_SameITypeAndDifferentObjectPartContainer() {
+        IPolicyCmptTypeAttribute attr = policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
+        IPolicyCmptTypeAssociation association = policyCmptTypeA.newPolicyCmptTypeAssociation();
+        ObjectProperty property2 = new ObjectProperty(attr, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+        ObjectProperty property1 = new ObjectProperty(association, IMethod.PROPERTY_NAME);
+        ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
+
+        Message message = validatorTest.createMessage(ID, properties);
+
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+                Messages.DuplicatePropertyNameValidator_PluralAssociation,
+                Messages.DuplicatePropertyNameValidator_PluralAttribute);
+
+        assertTrue(message.getText().contains(text));
+    }
+
+    @Test
+    public void testCreateMessage_SameITypeAndDifferentObjectPartContainer_ProdCmptValidator() throws CoreException {
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        ITableStructureUsage tableUsage = productCmptType.newTableStructureUsage();
+        ObjectProperty property2 = new ObjectProperty(tableUsage, ITableStructureUsage.PROPERTY_NAME);
+        ObjectProperty property1 = new ObjectProperty(method, IMethod.PROPERTY_NAME);
+        ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
+        validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
+
+        Message message = validatorTest.createMessage(ID, properties);
+
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+                Messages.DuplicatePropertyNameValidator_PluralTableStructureUsage,
+                Messages.DuplicatePropertyNameValidator_PluralMethod);
+        assertTrue(message.getText().contains(text));
+    }
+
+    @Test
+    public void testcreateMessage_DifferentITypesAndDifferentObjectPartContainer_ProdCmptValidator()
+            throws CoreException {
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
+        productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
+        IProductCmptTypeMethod method = productCmptType.newProductCmptTypeMethod();
+        IAssociation association = policyCmptTypeA.newAssociation();
+        ObjectProperty property2 = new ObjectProperty(association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+        ObjectProperty property1 = new ObjectProperty(method, IMethod.PROPERTY_NAME);
+        ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
+        validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
+
+        Message message = validatorTest.createMessage(ID, properties);
+
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
+                Messages.DuplicatePropertyNameValidator_SingularAssociation, policyCmptTypeA.getName());
+        assertTrue(message.getText().contains(text));
+    }
+
+    @Test
+    public void testcreateMessage_PolicyAttrHasSameNameAsProdCmptType() throws CoreException {
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, ID);
+        productCmptType.setPolicyCmptType(policyCmptTypeA.getUnqualifiedName());
+        IAttribute attribute = policyCmptTypeA.newAttribute();
+        ObjectProperty property2 = new ObjectProperty(attribute, IAttribute.PROPERTY_NAME);
+        ObjectProperty property1 = new ObjectProperty(policyCmptTypeA, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
+        ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
+
+        Message message = validatorTest.createMessage(ID, properties);
+
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+                Messages.DuplicatePropertyNameValidator_PluralAttribute,
+                Messages.DuplicatePropertyNameValidator_PluralProdCmptType);
+        assertTrue(message.getText().contains(text));
+    }
 }

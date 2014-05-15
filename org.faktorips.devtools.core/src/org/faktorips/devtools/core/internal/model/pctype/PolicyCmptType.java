@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
+import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -58,6 +59,7 @@ import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
@@ -725,6 +727,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
     }
 
+    @Override
+    public DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+        return new PolicyCmptTypeDuplicatePropertyNameValidator(ipsProject);
+    }
+
     private static class ValidationRuleForNameFinder extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private IValidationRule foundRule = null;
@@ -749,6 +756,28 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 }
             }
             return true;
+        }
+
+    }
+
+    private static class PolicyCmptTypeDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
+
+        public PolicyCmptTypeDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected IType getMatchingType(IType currentType) {
+            try {
+                IProductCmptType matchingType = ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
+                if (matchingType != null) {
+                    String name = matchingType.getUnqualifiedName();
+                    add(name.toLowerCase(), new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+                }
+                return matchingType;
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
     }

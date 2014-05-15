@@ -19,12 +19,11 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -33,7 +32,7 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
-public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
+public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
 
     /*
      * Map with property names as keys. For a unqiue property name, the map contains the object
@@ -47,12 +46,7 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
         super(ipsProject);
     }
 
-    protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
-        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, new String[] { propertyName,
-                invalidObjProperties[0].getObject().getClass().getName(),
-                invalidObjProperties[1].getObject().toString() });
-        return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
-    }
+    protected abstract IType getMatchingType(IType currentType);
 
     public void addMessagesForDuplicates(MessageList messages) {
         for (String propertyName : duplicateProperties) {
@@ -61,6 +55,63 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
                 messages.add(createMessage(propertyName, duplicateObjProperties));
             }
         }
+    }
+
+    protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
+        String text = createNLSBinding(propertyName, invalidObjProperties);
+        return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
+    }
+
+    private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
+        StringBuffer stringB = new StringBuffer(NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName));
+        stringB.append(textForDifferentIpsObjectPartContainer(invalidObjProperties));
+        stringB.append(Messages.DuplicatePropertyNameValidator_msg_hint);
+        return stringB.toString();
+    }
+
+    protected String textForDifferentIpsObjectPartContainer(ObjectProperty[] invalidObjProperties) {
+        if (isIpsObjectPartContainer(invalidObjProperties)) {
+            IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperties[1].getObject());
+            IpsObjectPartContainer ipsObjectContainer0 = ((IpsObjectPartContainer)invalidObjProperties[0].getObject());
+
+            if (ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())
+                    && !(ipsObjectContainer0.getClass().isAssignableFrom(ipsObjectContainer1.getClass()))) {
+                return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+                        getObjectKindNamePlural(ipsObjectContainer0), getObjectKindNamePlural(ipsObjectContainer1));
+            } else if (!ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())) {
+                return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
+                        getObjectKindNameSingular(ipsObjectContainer0), ipsObjectContainer0.getIpsObject().getName());
+            }
+        }
+        return org.apache.commons.lang.StringUtils.EMPTY;
+    }
+
+    private boolean isIpsObjectPartContainer(ObjectProperty[] invalidObjProperties) {
+        return invalidObjProperties[0].getObject() instanceof IpsObjectPartContainer
+                && invalidObjProperties[1].getObject() instanceof IpsObjectPartContainer;
+    }
+
+    protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer) {
+        if (objectPartContainer instanceof IAttribute) {
+            return Messages.DuplicatePropertyNameValidator_PluralAttribute;
+        }
+        if (objectPartContainer instanceof IAssociation) {
+            return Messages.DuplicatePropertyNameValidator_PluralAssociation;
+        }
+        if (objectPartContainer instanceof IPolicyCmptType) {
+            return Messages.DuplicatePropertyNameValidator_PluralProdCmptType;
+        }
+        return Messages.DuplicatePropertyNameValidator_PluralElement;
+    }
+
+    protected String getObjectKindNameSingular(IpsObjectPartContainer objectPartContainer) {
+        if (objectPartContainer instanceof IAttribute) {
+            return Messages.DuplicatePropertyNameValidator_SingularAttribute;
+        }
+        if (objectPartContainer instanceof IAssociation) {
+            return Messages.DuplicatePropertyNameValidator_SingularAssociation;
+        }
+        return Messages.DuplicatePropertyNameValidator_SingularElement;
     }
 
     /**
@@ -194,39 +245,22 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
 
     @Override
     protected boolean visit(IType currentType) {
-        addMatchingProperties(currentType);
+        addMatchingType(currentType);
         addAttributes(currentType);
         addAssociations(currentType);
         return true;
     }
 
-    private void addMatchingProperties(IType currentType) {
-        IType matchingType = null;
-        try {
-            if (currentType instanceof IPolicyCmptType) {
-                matchingType = ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
-                addMatchingProductCmptType((IPolicyCmptType)currentType, (IProductCmptType)matchingType);
-            } else if (currentType instanceof IProductCmptType) {
-                matchingType = ((IProductCmptType)currentType).findPolicyCmptType(ipsProject);
-            }
-            if (matchingType != null) {
-                addMatchingAttributes(matchingType);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+    private void addMatchingType(IType currentType) {
+        IType matchingType = getMatchingType(currentType);
+        if (matchingType != null) {
+            addMatchingAttributes(matchingType);
         }
     }
 
     private void addMatchingAttributes(IType matchingType) {
         for (IAttribute attribute : matchingType.getAttributes()) {
             add(attribute.getName().toLowerCase(), new ObjectProperty(attribute, IAssociation.PROPERTY_NAME));
-        }
-    }
-
-    private void addMatchingProductCmptType(IPolicyCmptType policyCmptType, IProductCmptType productCmptType) {
-        if (productCmptType != null) {
-            String name = productCmptType.getUnqualifiedName();
-            add(name.toLowerCase(), new ObjectProperty(policyCmptType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
         }
     }
 

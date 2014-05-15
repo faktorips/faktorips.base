@@ -184,7 +184,7 @@ public abstract class Method extends TypePart implements IMethod {
             result.add(new Message(
                     "", NLS.bind(Messages.TypeMethod_msg_abstractMethodError, getName()), Message.ERROR, this, PROPERTY_ABSTRACT)); //$NON-NLS-1$
         }
-        if (validateDuplicateMethodInSameType(result)) {
+        if (isDuplicateMethodInSameType()) {
             validateOverriddenMethod(result, ipsProject);
         }
     }
@@ -222,7 +222,7 @@ public abstract class Method extends TypePart implements IMethod {
         }
     }
 
-    private boolean validateDuplicateMethodInSameType(MessageList msgList) {
+    private boolean isDuplicateMethodInSameType() {
         List<IMethod> methods = getType().getMethods();
         String thisSignature = getSignatureString();
         for (IBaseMethod formulaMethod : methods) {
@@ -230,8 +230,6 @@ public abstract class Method extends TypePart implements IMethod {
                 continue;
             }
             if (formulaMethod.getSignatureString().equals(thisSignature)) {
-                msgList.add(new Message(MSGCODE_DUBLICATE_SIGNATURE, Messages.TypeMethod_duplicateSignature,
-                        Message.ERROR, this));
                 return false;
             }
         }
