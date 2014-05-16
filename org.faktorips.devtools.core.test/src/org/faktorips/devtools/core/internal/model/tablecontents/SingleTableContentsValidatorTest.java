@@ -80,7 +80,7 @@ public class SingleTableContentsValidatorTest {
     }
 
     @Test
-    public void testValidateAndAppendMessages_SingleContent_ToManyContents() {
+    public void testValidateAndAppendMessages_SingleContent_TooManyContents() {
         setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
 
         validateAndAssertMessageCount(1);
