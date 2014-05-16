@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.osgi.util.NLS;
@@ -68,21 +67,11 @@ public class SingleTableContentsValidator {
 
     protected void validateAndAppendMessages(MessageList messageList) {
         if (isNumberOfContentsIllegal()) {
-            List<String> contentSrcFileNames = getSrcFileNames();
             String text = NLS.bind(Messages.TableContents_msgTooManyContentsForSingleTableStructure,
-                    tableStructure.getName(), contentSrcFileNames);
+                    tableStructure.getName());
             messageList.add(new Message(ITableContents.MSGCODE_TOO_MANY_CONTENTS_FOR_SINGLETABLESTRUCTURE, text,
                     Message.ERROR, tableStructure.getName(), ITableContents.PROPERTY_TABLESTRUCTURE));
         }
-    }
-
-    private List<String> getSrcFileNames() {
-        List<IIpsSrcFile> contentSrcFiles = findContentSrcFiles();
-        List<String> contentSrcFileNames = new ArrayList<String>();
-        for (IIpsSrcFile srcFile : contentSrcFiles) {
-            contentSrcFileNames.add(srcFile.getIpsObjectName());
-        }
-        return contentSrcFileNames;
     }
 
     private List<IIpsSrcFile> findContentSrcFiles() {

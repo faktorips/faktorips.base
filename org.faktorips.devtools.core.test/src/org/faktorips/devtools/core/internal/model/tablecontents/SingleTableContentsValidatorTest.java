@@ -180,7 +180,7 @@ public class SingleTableContentsValidatorTest {
 
     private Message getExpectedMessage() {
         String text = NLS.bind(Messages.TableContents_msgTooManyContentsForSingleTableStructure,
-                tableStructure.getName(), "[" + contentsSrcFile1 + ", " + contentsSrcFile2 + "]");
+                tableStructure.getName());
         Message expectedMessage = new Message(ITableContents.MSGCODE_TOO_MANY_CONTENTS_FOR_SINGLETABLESTRUCTURE, text,
                 Message.ERROR, tableStructure.getName(), ITableContents.PROPERTY_TABLESTRUCTURE);
         return expectedMessage;
