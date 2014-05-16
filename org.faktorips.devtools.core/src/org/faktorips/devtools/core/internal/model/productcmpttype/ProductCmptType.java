@@ -1511,25 +1511,25 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean ignore(ObjectProperty[] duplicateObjectProperties) {
-            boolean ignore = super.ignore(duplicateObjectProperties);
+            boolean ignore = isNotProductAndPolicyAttribute(duplicateObjectProperties);
             if (!ignore) {
-                return isNotProductAndPolicyAttribute(duplicateObjectProperties);
+                return super.ignore(duplicateObjectProperties);
             }
-            return super.ignore(duplicateObjectProperties);
+            return ignore;
         }
 
         private boolean isNotProductAndPolicyAttribute(ObjectProperty[] duplicateObjectProperties) {
-            boolean isNotProdAttribute = true;
-            boolean isNotPolicyAttribute = true;
+            boolean foundProdAttribute = false;
+            boolean foundPolicyAttribute = false;
             for (ObjectProperty objectProperty : duplicateObjectProperties) {
                 if (objectProperty.getObject() instanceof IProductCmptTypeAttribute) {
-                    isNotProdAttribute = false;
+                    foundProdAttribute = true;
                 }
                 if (objectProperty.getObject() instanceof IPolicyCmptTypeAttribute) {
-                    isNotPolicyAttribute = false;
+                    foundPolicyAttribute = true;
                 }
             }
-            return isNotPolicyAttribute || isNotProdAttribute;
+            return foundPolicyAttribute & !foundProdAttribute;
         }
 
         @Override
@@ -1542,24 +1542,22 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer) {
+        protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
             if (objectPartContainer instanceof IFormula) {
                 return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralFormula;
-            } else if (objectPartContainer instanceof IMethod) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralMethod;
-            } else if (objectPartContainer instanceof ITableStructureUsage) {
+            }
+            if (objectPartContainer instanceof ITableStructureUsage) {
                 return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralTableStructureUsage;
             }
-            return super.getObjectKindNamePlural(objectPartContainer);
+            return super.getObjectKindNamePlural(objectPartContainer, property);
         }
 
         @Override
         protected String getObjectKindNameSingular(IpsObjectPartContainer objectPartContainer) {
             if (objectPartContainer instanceof IFormula) {
                 return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularFormula;
-            } else if (objectPartContainer instanceof IMethod) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularMethod;
-            } else if (objectPartContainer instanceof ITableStructureUsage) {
+            }
+            if (objectPartContainer instanceof ITableStructureUsage) {
                 return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularTableStructureUsage;
             }
             return super.getObjectKindNameSingular(objectPartContainer);

@@ -55,7 +55,6 @@ public class Messages extends NLS {
     public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
     public static String TableStructureUsage_msgInvalidRoleName;
     public static String TableStructureUsage_msgRoleNameAlreadyInSupertype;
-    public static String TableStructureUsage_msgSameRoleName;
     public static String TableStructureUsage_msgTableStructureNotExists;
 
     public static String ProductCmptCategory_msgNameIsEmpty;

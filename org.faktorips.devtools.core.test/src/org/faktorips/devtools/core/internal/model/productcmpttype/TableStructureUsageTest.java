@@ -190,18 +190,6 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateDuplicateRoleName() throws CoreException {
-        tableStructureUsage.setRoleName("role1");
-        MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
-
-        tableStructureUsage = productCmptType.newTableStructureUsage();
-        tableStructureUsage.setRoleName("role1");
-        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_SAME_ROLENAME));
-    }
-
-    @Test
     public void testValidateRoleNameInSupertypeHierarchy() throws CoreException {
         IProductCmptType a = newProductCmptType(project, "a");
         ITableStructureUsage aStructureUsage = a.newTableStructureUsage();

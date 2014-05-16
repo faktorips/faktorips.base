@@ -47,6 +47,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeMethod;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -778,6 +779,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+        }
+
+        @Override
+        protected boolean visit(IType currentType) {
+            super.visit(currentType);
+            for (IMethod method : currentType.getMethods()) {
+                if (StringUtils.isNotEmpty(method.getName())) {
+                    add(method.getName(), new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+                }
+            }
+            return true;
         }
 
     }

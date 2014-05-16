@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
@@ -69,6 +70,18 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         return stringB.toString();
     }
 
+    /**
+     * The error message created in <code>createNLSBinding</code> can contain further informations.
+     * If the invalidObjProperties are from the same {@link IType} but instances of different
+     * {@link IpsObjectPartContainer}, the message will indicate which
+     * {@link IpsObjectPartContainer} have to be considered. If the elements are from different
+     * {@link IType} the message indicates what {@link IpsObjectPartContainer} in which
+     * {@link IType} are named ambigiously. If the invalidProperties are instances of the same
+     * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
+     * 
+     * @param invalidObjProperties containing all elements having the same name
+     * @return String representing whole error message
+     */
     protected String textForDifferentIpsObjectPartContainer(ObjectProperty[] invalidObjProperties) {
         if (isIpsObjectPartContainer(invalidObjProperties)) {
             IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperties[1].getObject());
@@ -77,7 +90,8 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             if (ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())
                     && !(ipsObjectContainer0.getClass().isAssignableFrom(ipsObjectContainer1.getClass()))) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
-                        getObjectKindNamePlural(ipsObjectContainer0), getObjectKindNamePlural(ipsObjectContainer1));
+                        getObjectKindNamePlural(ipsObjectContainer0, invalidObjProperties[0].getProperty()),
+                        getObjectKindNamePlural(ipsObjectContainer1, invalidObjProperties[1].getProperty()));
             } else if (!ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
                         getObjectKindNameSingular(ipsObjectContainer0), ipsObjectContainer0.getIpsObject().getName());
@@ -91,14 +105,18 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                 && invalidObjProperties[1].getObject() instanceof IpsObjectPartContainer;
     }
 
-    protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer) {
+    protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
         if (objectPartContainer instanceof IAttribute) {
             return Messages.DuplicatePropertyNameValidator_PluralAttribute;
         }
         if (objectPartContainer instanceof IAssociation) {
             return Messages.DuplicatePropertyNameValidator_PluralAssociation;
         }
-        if (objectPartContainer instanceof IPolicyCmptType) {
+        if (objectPartContainer instanceof IMethod) {
+            return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralMethod;
+        }
+        if (objectPartContainer instanceof IPolicyCmptType
+                && property.equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
             return Messages.DuplicatePropertyNameValidator_PluralProdCmptType;
         }
         return Messages.DuplicatePropertyNameValidator_PluralElement;
@@ -110,6 +128,9 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         }
         if (objectPartContainer instanceof IAssociation) {
             return Messages.DuplicatePropertyNameValidator_SingularAssociation;
+        }
+        if (objectPartContainer instanceof IMethod) {
+            return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularMethod;
         }
         return Messages.DuplicatePropertyNameValidator_SingularElement;
     }

@@ -125,29 +125,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateDuplicateFormulaName() throws CoreException {
-        productCmptType.newFormulaSignature("formula");
-
-        // formula in same type
-        IProductCmptTypeMethod formula1 = productCmptType.newFormulaSignature("formula");
-        MessageList result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE));
-
-        formula1.setFormulaName("formula1");
-        result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE));
-
-        // formula in supertype
-        IProductCmptTypeMethod formula2 = superProductCmptType.newFormulaSignature("formula");
-        result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY));
-
-        formula2.setFormulaName("formula2");
-        result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY));
-    }
-
-    @Test
     public void testValidate_PolicyCmptTypeDoesNotSpecifyThisOneAsConfigurationType() throws CoreException {
         MessageList result = productCmptType.validate(ipsProject);
         assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE));
@@ -170,35 +147,6 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.setConfigurableByProductCmptType(false);
         result = productCmptType.validate(ipsProject);
         assertNotNull(result.getMessageByCode(IProductCmptType.MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE));
-    }
-
-    /**
-     * Additional, product component type specific tests
-     */
-    @Test
-    public void testValidate_DuplicatePropertyName() throws CoreException {
-        IAttribute attr1 = productCmptType.newAttribute();
-        attr1.setName("property");
-
-        // table structure usage in same type
-        ITableStructureUsage tsu1 = productCmptType.newTableStructureUsage();
-        tsu1.setRoleName("property");
-        MessageList result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-
-        tsu1.setRoleName("table1");
-        result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-
-        // table structure usage in supertype
-        ITableStructureUsage tsu2 = superProductCmptType.newTableStructureUsage();
-        tsu2.setRoleName("property");
-        result = productCmptType.validate(ipsProject);
-        assertNotNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
-
-        tsu2.setRoleName("table2");
-        result = productCmptType.validate(ipsProject);
-        assertNull(result.getMessageByCode(IType.MSGCODE_DUPLICATE_PROPERTY_NAME));
     }
 
     @Test

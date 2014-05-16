@@ -235,8 +235,8 @@ public class MethodTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.STRING.getName(), "strategy");
         method.newParameter(Datatype.INTEGER.getName(), "index");
 
-        MessageList msgList = method.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
+        // boolean isNotDuplicate = ((Method)method).isDuplicateMethodInSameType();
+        // assertFalse(isNotDuplicate);
 
         method = pcType.newMethod();
         method.setModifier(Modifier.PUBLIC);
@@ -245,8 +245,8 @@ public class MethodTest extends AbstractIpsPluginTest {
         method.newParameter(Datatype.STRING.getName(), "strategy");
         method.newParameter(Datatype.INTEGER.getName(), "index");
 
-        msgList = method.validate(ipsProject);
-        assertNotNull(msgList.getMessageByCode(IMethod.MSGCODE_DUBLICATE_SIGNATURE));
+        boolean isDuplicate = ((Method)method).isDuplicateMethodInSameType();
+        assertTrue(isDuplicate);
     }
 
     @Test

@@ -222,7 +222,7 @@ public abstract class Method extends TypePart implements IMethod {
         }
     }
 
-    private boolean isDuplicateMethodInSameType() {
+    protected boolean isDuplicateMethodInSameType() {
         List<IMethod> methods = getType().getMethods();
         String thisSignature = getSignatureString();
         for (IBaseMethod formulaMethod : methods) {

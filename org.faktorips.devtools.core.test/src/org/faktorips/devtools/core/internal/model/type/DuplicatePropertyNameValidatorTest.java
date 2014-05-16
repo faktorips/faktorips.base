@@ -255,9 +255,8 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
 
         Message message = validatorTest.createMessage(ID, properties);
-
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID);
-        assertEquals(text + "  " + Messages.DuplicatePropertyNameValidator_msg_hint, message.getText());
+        assertEquals(text + Messages.DuplicatePropertyNameValidator_msg_hint, message.getText());
     }
 
     @Test
@@ -273,7 +272,6 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 Messages.DuplicatePropertyNameValidator_PluralAssociation,
                 Messages.DuplicatePropertyNameValidator_PluralAttribute);
-
         assertTrue(message.getText().contains(text));
     }
 
