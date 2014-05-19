@@ -77,6 +77,7 @@ public class Messages extends NLS {
     public static String DuplicatePropertyNameValidator_PluralTableStructureUsage;
     public static String DuplicatePropertyNameValidator_SingularTableStructureUsage;
 
+    public static String TypeMethod_duplicateSignature;
     public static String TypeMethod_incompatbileReturnType;
     public static String TypeMethod_msg_abstractMethodError;
     public static String TypeMethod_msg_modifierOverriddenNotEqual;
