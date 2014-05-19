@@ -258,9 +258,10 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private boolean isMessageHelperNeeded() {
-        if (getEnumType().isCapableOfContainingValues()) {
-            List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributes(false);
+    protected boolean isMessageHelperNeeded() {
+        if (getEnumType().isCapableOfContainingValues()
+                && (getEnumType().isInextensibleEnum() || getEnumType().containsValues())) {
+            List<IEnumAttribute> enumAttributes = getEnumType().getEnumAttributesIncludeSupertypeCopies(false);
             for (IEnumAttribute enumAttribute : enumAttributes) {
                 if (enumAttribute.isMultilingual()) {
                     return true;
