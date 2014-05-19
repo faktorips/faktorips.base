@@ -62,7 +62,7 @@
     	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
     	* @generated
     	*/
-    	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides && !genInterface())-»
     	«getModifier(false)» boolean «method(methodNameIsFormulaAvailable)» 
 	    «IF genInterface()»;«ELSE-»
 	    {
