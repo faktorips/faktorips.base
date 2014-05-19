@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -101,5 +102,9 @@ public abstract class ValueDatatypeControlFactory {
             IIpsProject ipsProject);
 
     public abstract int getDefaultAlignment();
+
+    protected boolean isControlForDefaultValue(IValueSet valueSet) {
+        return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
+    }
 
 }

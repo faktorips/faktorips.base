@@ -204,6 +204,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public ExtendedExprCompiler newExpressionCompiler() {
         ExtendedExprCompiler compiler = new ExtendedExprCompiler();
+        compiler.setDatatypeHelperProvider(new IpsProjectDatatypeHelperProvider(this));
+
         ExtensionFunctionResolversCache resolverCache = getIpsModel().getExtensionFunctionResolverCache(this);
         resolverCache.addExtensionFunctionResolversToCompiler(compiler);
         return compiler;

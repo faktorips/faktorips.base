@@ -41,8 +41,7 @@ public class ParameterCollector extends AbstractProductCmptCollector {
             if (datatype instanceof IPolicyCmptType) {
                 IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
                 IProductCmptGeneration productCmptGeneration = getOriginGeneration();
-                if (productCmptGeneration != null
-                        && policyCmptType.equals(productCmptGeneration.findPolicyCmptType(getIpsProject()))) {
+                if (isMatchingPolicyCmptType(productCmptGeneration, policyCmptType)) {
                     return new LinkedHashSet<IProductCmpt>(Arrays.asList(productCmptGeneration.getProductCmpt()));
                 }
             }
@@ -51,6 +50,21 @@ public class ParameterCollector extends AbstractProductCmptCollector {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    private boolean isMatchingPolicyCmptType(IProductCmptGeneration productCmptGeneration,
+            IPolicyCmptType policyCmptType) throws CoreException {
+        IPolicyCmptType matchingPolicyCmptType = getMatchingPolicyCmptType(productCmptGeneration);
+        return matchingPolicyCmptType != null
+                && matchingPolicyCmptType.isSubtypeOrSameType(policyCmptType, getIpsProject());
+    }
+
+    private IPolicyCmptType getMatchingPolicyCmptType(IProductCmptGeneration productCmptGeneration)
+            throws CoreException {
+        if (productCmptGeneration != null) {
+            return productCmptGeneration.findPolicyCmptType(getIpsProject());
+        }
+        return null;
     }
 
 }

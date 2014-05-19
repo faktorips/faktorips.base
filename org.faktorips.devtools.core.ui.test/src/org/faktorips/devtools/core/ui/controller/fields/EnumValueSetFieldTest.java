@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 
@@ -29,7 +31,9 @@ import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
@@ -71,7 +75,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         valueSet.addValue(PaymentMode.ANNUAL_ID);
         valueSet.addValue(PaymentMode.MONTHLY_ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumValueSetField(c, valueSet, datatype);
+        field = new EnumValueSetField(c, valueSet, datatype, false);
 
         String[] items = field.getCombo().getItems();
         assertEquals(2, items.length);
@@ -102,11 +106,11 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         valueSet.addValue(PaymentMode.ANNUAL_ID);
         valueSet.addValue(PaymentMode.MONTHLY_ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumValueSetField(c, valueSet, datatype);
+        field = new EnumValueSetField(c, valueSet, datatype, false);
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(PaymentMode.ANNUAL_ID, items[1]);
         assertEquals(PaymentMode.MONTHLY_ID, items[2]);
 
@@ -115,13 +119,13 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         assertEquals(PaymentMode.ANNUAL_ID, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(nullRepresentation, field.getValue());
+        assertEquals(null, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(PaymentMode.ANNUAL_ID, items[1]);
         assertEquals(PaymentMode.MONTHLY_ID, items[2]);
         assertEquals("unknownValue", items[3]);
@@ -133,12 +137,28 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testWithDisplayTypeId_noDefaultValue() {
+        IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.ID);
+        IEnumValueSet configElementValueSet = mock(IEnumValueSet.class);
+        Combo c = new Combo(shell, SWT.READ_ONLY);
+        IValueSetOwner configElement = mock(IConfigElement.class);
+        when(configElementValueSet.getValueSetOwner()).thenReturn(configElement);
+        when(configElementValueSet.getValues()).thenReturn(
+                new String[] { null, PaymentMode.ANNUAL_ID, PaymentMode.MONTHLY_ID });
+        field = new EnumValueSetField(c, configElementValueSet, datatype, true);
+
+        String[] items = field.getCombo().getItems();
+        assertEquals(1, items.length);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+    }
+
+    @Test
     public void testWithDisplayTypeName() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.NAME);
         valueSet.addValue(PaymentMode.ANNUAL_ID);
         valueSet.addValue(PaymentMode.MONTHLY_ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumValueSetField(c, valueSet, datatype);
+        field = new EnumValueSetField(c, valueSet, datatype, false);
 
         String[] items = field.getCombo().getItems();
         assertEquals(2, items.length);
@@ -171,7 +191,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
         valueSet.addValue(PaymentMode.MONTHLY_ID);
         prefs.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumValueSetField(c, valueSet, datatype);
+        field = new EnumValueSetField(c, valueSet, datatype, false);
 
         String annualNameAndId = formatter.formatValue(datatype, PaymentMode.ANNUAL_ID);
         String monthlyNameAndId = formatter.formatValue(datatype, PaymentMode.MONTHLY_ID);
@@ -201,7 +221,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
     @Test
     public void test_getDatatypeValueIds() {
         Combo combo = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumValueSetField(combo, valueSet, datatype);
+        field = new EnumValueSetField(combo, valueSet, datatype, false);
         valueSet.addValue(PaymentMode.ANNUAL_ID);
         valueSet.addValue(PaymentMode.MONTHLY_ID);
         valueSet.addValue(null);
@@ -217,7 +237,7 @@ public class EnumValueSetFieldTest extends AbstractIpsPluginTest {
     @Test
     public void test_getDatatypeValueIds_EMPTY() {
         Combo combo = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumValueSetField(combo, valueSet, datatype);
+        field = new EnumValueSetField(combo, valueSet, datatype, false);
         List<String> datatypeValueIds = field.getDatatypeValueIds();
 
         assertTrue(datatypeValueIds.contains(null));

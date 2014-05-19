@@ -26,7 +26,6 @@ import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
@@ -91,10 +90,6 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         } else {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
-    }
-
-    private boolean isControlForDefaultValue(IValueSet valueSet) {
-        return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
     }
 
     private void updateButtonEnablement(IValueSet valueSet, RadioButtonGroup<String> radioButtonGroup) {

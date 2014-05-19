@@ -61,9 +61,10 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         AbstractEnumDatatypeBasedField enumField = null;
 
         if (valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            enumField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
+            enumField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype,
+                    isControlForDefaultValue(valueSet));
         } else {
-            enumField = new EnumDatatypeField(combo, (EnumDatatype)datatype);
+            enumField = new EnumDatatypeField(combo, (EnumDatatype)datatype, isControlForDefaultValue(valueSet));
         }
 
         return enumField;
@@ -128,7 +129,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
             comboControl = toolkit.createCombo(parent, (IEnumValueSet)valueSet, (EnumDatatype)datatype);
         } else if (datatype.isEnum()) {
             comboControl = toolkit.createCombo(parent);
-            initializeEnumCombo(comboControl, (EnumDatatype)datatype);
+            initializeEnumCombo(comboControl, (EnumDatatype)datatype, isControlForDefaultValue(valueSet));
         } else {
             comboControl = toolkit.createIDCombo(parent, (EnumDatatype)datatype);
         }
@@ -136,10 +137,10 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         return new ComboCellEditor(comboControl);
     }
 
-    protected void initializeEnumCombo(Combo combo, EnumDatatype datatype) {
+    protected void initializeEnumCombo(Combo combo, EnumDatatype datatype, boolean defaultValueField) {
         // stores the enum datatype object as data object in the combo,
         // will be used to map between the displayed text and id
-        EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype);
+        EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype, defaultValueField);
         combo.setData(enumDatatypeField);
     }
 

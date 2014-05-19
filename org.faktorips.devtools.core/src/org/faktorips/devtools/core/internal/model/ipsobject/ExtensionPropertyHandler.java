@@ -11,9 +11,9 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -321,12 +321,13 @@ public class ExtensionPropertyHandler {
         }
 
         /**
-         * Creates a {@link ConcurrentHashMap} with a concurrencyLevel of 1 . This allows a second
-         * thread to access the map concurrently. At the same time the memory consumption is
-         * reduced. Depending on the JVM version even major reductions are possible.
+         * Creates a {@link LinkedHashMap} to preserve the insertion order and wrapping it in a
+         * synchronized map to avoid concurrent access. The initial size is reduced to 4 because
+         * normally there are only few extension properties per type.
+         * 
          */
-        private ConcurrentHashMap<String, ExtensionPropertyValue> newMap() {
-            return new ConcurrentHashMap<String, ExtensionPropertyValue>(4, 0.9f, 1);
+        private Map<String, ExtensionPropertyValue> newMap() {
+            return Collections.synchronizedMap(new LinkedHashMap<String, ExtensionPropertyValue>(4));
         }
 
     }
