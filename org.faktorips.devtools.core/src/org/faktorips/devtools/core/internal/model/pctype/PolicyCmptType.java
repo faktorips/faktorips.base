@@ -782,17 +782,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected boolean visit(IType currentType) {
-            super.visit(currentType);
-            for (IMethod method : currentType.getMethods()) {
-                if (StringUtils.isNotEmpty(method.getName())) {
-                    add(method.getName(), new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
-                }
-            }
-            return true;
-        }
-
-        @Override
         protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
             if (objectPartContainer instanceof IPolicyCmptType
                     && property.equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
