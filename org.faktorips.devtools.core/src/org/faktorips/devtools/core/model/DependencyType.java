@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.model;
 
-import java.io.ObjectStreamException;
-
 /**
  * An enum that describes the type of dependency.
  * 
@@ -49,14 +47,9 @@ public enum DependencyType {
         this.name = name;
     }
 
-    /**
-     * This is necessary to ensure that when de-serialized there exists only one instance of a
-     * dependency type within the virtual machine.
-     */
-    @SuppressWarnings("unused")
-    // OK to suppress because ObjectStreamException is required by Java's serialization algorithm
-    private Object readResolve() throws ObjectStreamException {
-        return DependencyType.valueOf(name);
+    @Override
+    public String toString() {
+        return name;
     }
 
 }
