@@ -55,6 +55,8 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     private ObjectProperty opToVO;
     private IIpsProject ipsProject;
     private MessageList messageList = new MessageList();
+    private PolicyCmptType policyCmptTypeOther;
+    private PolicyCmptType policyCmptTypeV;
 
     @Override
     @Before
@@ -65,8 +67,8 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         PolicyCmptType policyCmptTypeB = newPolicyCmptType(ipsProject, "pctB");
         PolicyCmptType policyCmptTypeB1 = newPolicyCmptType(ipsProject, "pctB1");
         PolicyCmptType policyCmptTypeC = newPolicyCmptType(ipsProject, "pctC");
-        PolicyCmptType policyCmptTypeV = newPolicyCmptType(ipsProject, "pctV");
-        PolicyCmptType policyCmptTypeOther = newPolicyCmptType(ipsProject, "pctO");
+        policyCmptTypeV = newPolicyCmptType(ipsProject, "pctV");
+        policyCmptTypeOther = newPolicyCmptType(ipsProject, "pctO");
 
         policyCmptTypeB.setSupertype(policyCmptTypeA.getName());
         policyCmptTypeC.setSupertype(policyCmptTypeB.getName());
@@ -137,34 +139,39 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
     public void testIgnore() {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
         // both are not inverse of derived union - only one is valid
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
         toA.setDerivedUnion(true);
-        assertTrue(validatorTest.ignore(objectProperties));
+        assertTrue(validatorTest.ignore(policyCmptTypeA, objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVC, opToVB, opToVA };
         // both toVC and toVB are no inverse of derived unions!
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
         toB.setDerivedUnion(true);
-        assertTrue(validatorTest.ignore(objectProperties));
+        assertTrue(validatorTest.ignore(policyCmptTypeA, objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVB, opToVA };
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVA, opToVO };
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVA };
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
 
         objectProperties = new ObjectProperty[] { opToVO, opToVO };
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeOther, objectProperties));
+    }
+
+    public void testIgnore_notInCurrentType() {
+        ObjectProperty[] objectProperties = new ObjectProperty[] { opToVO, opToVO };
+        assertTrue(validatorTest.ignore(policyCmptTypeA, objectProperties));
     }
 
     @Test
     public void testIgnore_notIgnored() {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
         // both are not inverse of derived union - only one is valid
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
     }
 
     /**
@@ -178,7 +185,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         toB.setTargetRoleSingular("toA");
         toB.setTargetRolePlural("toAs");
 
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeV, objectProperties));
     }
 
     /**
@@ -190,7 +197,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         toVB.setConstrain(true);
         toVB.setAssociationType(AssociationType.COMPOSITION_MASTER_TO_DETAIL);
 
-        assertTrue(validatorTest.ignore(objectProperties));
+        assertTrue(validatorTest.ignore(policyCmptTypeA, objectProperties));
     }
 
     @Test
@@ -198,7 +205,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty[] objectProperties = new ObjectProperty[] { opToVB, opToVA };
         toVA.setConstrain(true);
 
-        assertFalse(validatorTest.ignore(objectProperties));
+        assertFalse(validatorTest.ignore(policyCmptTypeA, objectProperties));
     }
 
     @Test
@@ -207,7 +214,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         policyCmptTypeA.newPolicyCmptTypeAttribute(productCmptType.getUnqualifiedName());
 
         validatorTest.visit(policyCmptTypeA);
-        validatorTest.addMessagesForDuplicates(messageList);
+        validatorTest.addMessagesForDuplicates(policyCmptTypeA, messageList);
 
         assertEquals(1, messageList.size());
         assertEquals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
@@ -221,7 +228,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
 
         validatorTest.visit(policyCmptTypeA);
-        validatorTest.addMessagesForDuplicates(messageList);
+        validatorTest.addMessagesForDuplicates(policyCmptTypeA, messageList);
 
         assertEquals(1, messageList.size());
         assertEquals(IAssociation.PROPERTY_NAME,
@@ -237,7 +244,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
 
         validatorTest.visit(productCmptType);
-        validatorTest.addMessagesForDuplicates(messageList);
+        validatorTest.addMessagesForDuplicates(policyCmptTypeA, messageList);
 
         assertEquals(1, messageList.size());
         assertEquals(IAssociation.PROPERTY_NAME,
@@ -249,7 +256,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         IPolicyCmptTypeAttribute attr1 = policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
         IPolicyCmptTypeAttribute attr2 = policyCmptTypeA.newPolicyCmptTypeAttribute(ID);
         validatorTest.visit(policyCmptTypeA);
-        validatorTest.addMessagesForDuplicates(messageList);
+        validatorTest.addMessagesForDuplicates(policyCmptTypeA, messageList);
         ObjectProperty property2 = new ObjectProperty(attr1, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         ObjectProperty property1 = new ObjectProperty(attr2, IMethod.PROPERTY_NAME);
         ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };

@@ -1510,10 +1510,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected boolean ignore(ObjectProperty[] duplicateObjectProperties) {
+        protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
             boolean ignore = isNotProductAndPolicyAttribute(duplicateObjectProperties);
             if (!ignore) {
-                return super.ignore(duplicateObjectProperties);
+                return super.ignore(currentType, duplicateObjectProperties);
             }
             return ignore;
         }

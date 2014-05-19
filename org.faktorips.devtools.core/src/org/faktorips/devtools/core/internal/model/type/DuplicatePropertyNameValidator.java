@@ -21,6 +21,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -49,10 +50,10 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
 
     protected abstract IType getMatchingType(IType currentType);
 
-    public void addMessagesForDuplicates(MessageList messages) {
+    public void addMessagesForDuplicates(IType currentType, MessageList messages) {
         for (String propertyName : duplicateProperties) {
             ObjectProperty[] duplicateObjProperties = properties.get(propertyName);
-            if (!ignore(duplicateObjProperties)) {
+            if (!ignore(currentType, duplicateObjProperties)) {
                 messages.add(createMessage(propertyName, duplicateObjProperties));
             }
         }
@@ -144,7 +145,10 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * @return <code>true</code> if the duplication could be ignored, <code>false</code> to not
      *         ignore.
      */
-    protected boolean ignore(ObjectProperty[] duplicateObjectProperties) {
+    protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
+        if (!isOnePropertyInThisType(currentType, duplicateObjectProperties)) {
+            return true;
+        }
         if (!checkAssociationAndType(duplicateObjectProperties)) {
             return false;
         }
@@ -152,6 +156,18 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             return true;
         }
         return ignoreDuplicateDetailToMasterAssociations(duplicateObjectProperties);
+    }
+
+    private boolean isOnePropertyInThisType(IType currentType, ObjectProperty[] duplicateObjectProperties) {
+        for (ObjectProperty objectProperty : duplicateObjectProperties) {
+            if (objectProperty.getObject() instanceof IIpsObjectPartContainer) {
+                IIpsObjectPartContainer part = (IIpsObjectPartContainer)objectProperty.getObject();
+                if (part.getIpsObject().equals(currentType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**

@@ -505,7 +505,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         super.validateThis(list, ipsProject);
         DuplicatePropertyNameValidator duplicateValidator = createDuplicatePropertyNameValidator(ipsProject);
         duplicateValidator.start(this);
-        duplicateValidator.addMessagesForDuplicates(list);
+        duplicateValidator.addMessagesForDuplicates(this, list);
         if (hasSupertype()) {
             list.add(TypeValidations.validateTypeHierachy(this, ipsProject));
         }
