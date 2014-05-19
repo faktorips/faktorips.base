@@ -53,19 +53,19 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         for (String propertyName : duplicateProperties) {
             ObjectProperty[] duplicateObjProperties = properties.get(propertyName);
             if (!ignore(currentType, duplicateObjProperties)) {
-                messages.add(createMessage(propertyName, duplicateObjProperties));
+                messages.add(createMessage(currentType, propertyName, duplicateObjProperties));
             }
         }
     }
 
-    protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
-        String text = createNLSBinding(propertyName, invalidObjProperties);
+    protected Message createMessage(IType currentType, String propertyName, ObjectProperty[] invalidObjProperties) {
+        String text = createNLSBinding(currentType, propertyName, invalidObjProperties);
         return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
     }
 
-    private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
+    private String createNLSBinding(IType currentType, String propertyName, ObjectProperty[] invalidObjProperties) {
         StringBuffer stringB = new StringBuffer(NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
-                textForDifferentIpsObjectPartContainer(invalidObjProperties[0], invalidObjProperties[1])));
+                textForDifferentIpsObjectPartContainer(currentType, invalidObjProperties[0], invalidObjProperties[1])));
         stringB.append(Messages.DuplicatePropertyNameValidator_msg_hint);
         return stringB.toString();
     }
@@ -80,9 +80,12 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * {@link IType} are named ambigiously. If the invalidProperties are instances of the same
      * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
      * 
+     * @param currentType
+     * 
      * @return String representing whole error message
      */
-    protected String textForDifferentIpsObjectPartContainer(ObjectProperty invalidObjProperty0,
+    protected String textForDifferentIpsObjectPartContainer(IType currentType,
+            ObjectProperty invalidObjProperty0,
             ObjectProperty invalidObjProperty1) {
         if (isIpsObjectPartContainer(invalidObjProperty0, invalidObjProperty1)) {
             IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
@@ -94,11 +97,27 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                         getObjectKindNamePlural(ipsObjectContainer0, invalidObjProperty0.getProperty()),
                         getObjectKindNamePlural(ipsObjectContainer1, invalidObjProperty1.getProperty()));
             } else if (!ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())) {
-                return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
-                        getObjectKindNameSingular(ipsObjectContainer0), ipsObjectContainer0.getIpsObject().getName());
+                boolean invalidProperty0IsCurrentType = isOnePropertyInThisType(currentType,
+                        new ObjectProperty[] { invalidObjProperty0 });
+                return errMsgForDifferentTypes(ipsObjectContainer0, ipsObjectContainer1, invalidProperty0IsCurrentType);
             }
         }
         return StringUtils.EMPTY;
+    }
+
+    private String errMsgForDifferentTypes(IpsObjectPartContainer ipsObjectContainer0,
+            IpsObjectPartContainer ipsObjectContainer1,
+            boolean invalidProperty0IsCurrentType) {
+        if (invalidProperty0IsCurrentType) {
+            return createErrMessageForDifferentTypes(ipsObjectContainer1);
+        } else {
+            return createErrMessageForDifferentTypes(ipsObjectContainer0);
+        }
+    }
+
+    private String createErrMessageForDifferentTypes(IpsObjectPartContainer ipsObjectContainer0) {
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
+                getObjectKindNameSingular(ipsObjectContainer0), ipsObjectContainer0.getIpsObject().getName());
     }
 
     private boolean isIpsObjectPartContainer(ObjectProperty invalidObjProperty0, ObjectProperty invalidObjProperty1) {
