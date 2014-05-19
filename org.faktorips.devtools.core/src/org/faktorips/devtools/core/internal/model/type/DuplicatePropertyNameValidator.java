@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -48,8 +49,6 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         super(ipsProject);
     }
 
-    protected abstract IType getMatchingType(IType currentType);
-
     public void addMessagesForDuplicates(IType currentType, MessageList messages) {
         for (String propertyName : duplicateProperties) {
             ObjectProperty[] duplicateObjProperties = properties.get(propertyName);
@@ -65,45 +64,46 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
     }
 
     private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
-        StringBuffer stringB = new StringBuffer(NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName));
-        stringB.append(textForDifferentIpsObjectPartContainer(invalidObjProperties));
+        StringBuffer stringB = new StringBuffer(NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
+                textForDifferentIpsObjectPartContainer(invalidObjProperties[0], invalidObjProperties[1])));
         stringB.append(Messages.DuplicatePropertyNameValidator_msg_hint);
         return stringB.toString();
     }
 
     /**
      * The error message created in <code>createNLSBinding</code> can contain further informations.
-     * If the invalidObjProperties are from the same {@link IType} but instances of different
-     * {@link IpsObjectPartContainer}, the message will indicate which
-     * {@link IpsObjectPartContainer} have to be considered. If the elements are from different
-     * {@link IType} the message indicates what {@link IpsObjectPartContainer} in which
+     * If more than two IpsElements contain the same propertyName, only one error message will be
+     * generated for the first two objectProperties. If the invalidObjProperties are from the same
+     * {@link IType} but instances of different {@link IpsObjectPartContainer}, the message will
+     * indicate which {@link IpsObjectPartContainer} have to be considered. If the elements are from
+     * different {@link IType} the message indicates what {@link IpsObjectPartContainer} in which
      * {@link IType} are named ambigiously. If the invalidProperties are instances of the same
      * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
      * 
-     * @param invalidObjProperties containing all elements having the same name
      * @return String representing whole error message
      */
-    protected String textForDifferentIpsObjectPartContainer(ObjectProperty[] invalidObjProperties) {
-        if (isIpsObjectPartContainer(invalidObjProperties)) {
-            IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperties[1].getObject());
-            IpsObjectPartContainer ipsObjectContainer0 = ((IpsObjectPartContainer)invalidObjProperties[0].getObject());
+    protected String textForDifferentIpsObjectPartContainer(ObjectProperty invalidObjProperty0,
+            ObjectProperty invalidObjProperty1) {
+        if (isIpsObjectPartContainer(invalidObjProperty0, invalidObjProperty1)) {
+            IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
+            IpsObjectPartContainer ipsObjectContainer0 = ((IpsObjectPartContainer)invalidObjProperty0.getObject());
 
             if (ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())
-                    && !(ipsObjectContainer0.getClass().isAssignableFrom(ipsObjectContainer1.getClass()))) {
+                    && !(ipsObjectContainer0.getClass().equals(ipsObjectContainer1.getClass()))) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
-                        getObjectKindNamePlural(ipsObjectContainer0, invalidObjProperties[0].getProperty()),
-                        getObjectKindNamePlural(ipsObjectContainer1, invalidObjProperties[1].getProperty()));
+                        getObjectKindNamePlural(ipsObjectContainer0, invalidObjProperty0.getProperty()),
+                        getObjectKindNamePlural(ipsObjectContainer1, invalidObjProperty1.getProperty()));
             } else if (!ipsObjectContainer0.getIpsObject().equals(ipsObjectContainer1.getIpsObject())) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
                         getObjectKindNameSingular(ipsObjectContainer0), ipsObjectContainer0.getIpsObject().getName());
             }
         }
-        return org.apache.commons.lang.StringUtils.EMPTY;
+        return StringUtils.EMPTY;
     }
 
-    private boolean isIpsObjectPartContainer(ObjectProperty[] invalidObjProperties) {
-        return invalidObjProperties[0].getObject() instanceof IpsObjectPartContainer
-                && invalidObjProperties[1].getObject() instanceof IpsObjectPartContainer;
+    private boolean isIpsObjectPartContainer(ObjectProperty invalidObjProperty0, ObjectProperty invalidObjProperty1) {
+        return invalidObjProperty0.getObject() instanceof IpsObjectPartContainer
+                && invalidObjProperty1.getObject() instanceof IpsObjectPartContainer;
     }
 
     protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
@@ -114,11 +114,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             return Messages.DuplicatePropertyNameValidator_PluralAssociation;
         }
         if (objectPartContainer instanceof IMethod) {
-            return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralMethod;
-        }
-        if (objectPartContainer instanceof IPolicyCmptType
-                && property.equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
-            return Messages.DuplicatePropertyNameValidator_PluralProdCmptType;
+            return Messages.DuplicatePropertyNameValidator_PluralMethod;
         }
         return Messages.DuplicatePropertyNameValidator_PluralElement;
     }
@@ -131,7 +127,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             return Messages.DuplicatePropertyNameValidator_SingularAssociation;
         }
         if (objectPartContainer instanceof IMethod) {
-            return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularMethod;
+            return Messages.DuplicatePropertyNameValidator_SingularMethod;
         }
         return Messages.DuplicatePropertyNameValidator_SingularElement;
     }
@@ -289,11 +285,13 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
     }
 
     private void addMatchingType(IType currentType) {
-        IType matchingType = getMatchingType(currentType);
+        IType matchingType = getMatchingTypeAndAddIfNecessary(currentType);
         if (matchingType != null) {
             addMatchingAttributes(matchingType);
         }
     }
+
+    protected abstract IType getMatchingTypeAndAddIfNecessary(IType currentType);
 
     private void addMatchingAttributes(IType matchingType) {
         for (IAttribute attribute : matchingType.getAttributes()) {

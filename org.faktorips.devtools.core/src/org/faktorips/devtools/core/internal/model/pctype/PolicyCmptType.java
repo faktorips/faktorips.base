@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
@@ -767,7 +768,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected IType getMatchingType(IType currentType) {
+        protected IType getMatchingTypeAndAddIfNecessary(IType currentType) {
             try {
                 IProductCmptType matchingType = ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
                 if (matchingType != null) {
@@ -778,6 +779,26 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+        }
+
+        @Override
+        protected boolean visit(IType currentType) {
+            super.visit(currentType);
+            for (IMethod method : currentType.getMethods()) {
+                if (StringUtils.isNotEmpty(method.getName())) {
+                    add(method.getName(), new ObjectProperty(method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
+            if (objectPartContainer instanceof IPolicyCmptType
+                    && property.equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
+                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralProdCmptType;
+            }
+            return super.getObjectKindNamePlural(objectPartContainer, property);
         }
 
     }

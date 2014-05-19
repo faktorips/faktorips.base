@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -262,8 +263,9 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
 
         Message message = validatorTest.createMessage(ID, properties);
-        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID);
-        assertEquals(text + Messages.DuplicatePropertyNameValidator_msg_hint, message.getText());
+        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID, StringUtils.EMPTY);
+        assertTrue(message.getText().contains(text));
+        assertTrue(message.getText().contains(Messages.DuplicatePropertyNameValidator_msg_hint));
     }
 
     @Test
@@ -295,7 +297,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         Message message = validatorTest.createMessage(ID, properties);
 
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
-                Messages.DuplicatePropertyNameValidator_PluralTableStructureUsage,
+                org.faktorips.devtools.core.internal.model.productcmpttype.Messages.TableStructureUsage_msg_Plural,
                 Messages.DuplicatePropertyNameValidator_PluralMethod);
         assertTrue(message.getText().contains(text));
     }

@@ -556,7 +556,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             validatePolicyCmptTypeReference(supertype, ipsProject, list);
         } else {
             if (supertype != null && supertype.isConfigurationForPolicyCmptType()) {
-                String text = org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
+                String text = Messages.ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
                 list.add(new Message(IProductCmptType.MSGCODE_MUST_HAVE_SAME_VALUE_FOR_CONFIGURES_POLICY_CMPT_TYPE,
                         text, Message.ERROR, this, IProductCmptType.PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE));
             }
@@ -579,9 +579,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (isLayerSupertype() && hasSupertype()) {
             IProductCmptType supertype = findSupertype(ipsProject);
             if (supertype != null && !supertype.isLayerSupertype()) {
-                String text = NLS
-                        .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
-                                supertype.getName());
+                String text = NLS.bind(Messages.ProductCmptType_error_supertypeNotMarkedAsLayerSupertype,
+                        supertype.getName());
                 list.add(new Message(MSGCODE_SUPERTYPE_NOT_MARKED_AS_LAYER_SUPERTYPE, text, Message.ERROR, this,
                         PROPERTY_LAYER_SUPERTYPE));
             }
@@ -606,9 +605,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         for (IProductCmptTypeMethod overloadedMethod : overloadedSupertypeFormulaSignatures) {
             for (IProductCmptTypeMethod nonFormula : nonFormulas) {
                 if (nonFormula.isSameSignature(overloadedMethod)) {
-                    String text = NLS
-                            .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden,
-                                    overloadedMethod.getFormulaName());
+                    String text = NLS.bind(Messages.ProductCmptType_msgOverloadedFormulaMethodCannotBeOverridden,
+                            overloadedMethod.getFormulaName());
                     msgList.add(new Message(MSGCODE_OVERLOADED_FORMULA_CANNOT_BE_OVERRIDDEN, text, Message.ERROR,
                             nonFormula, IIpsElement.PROPERTY_NAME));
                 }
@@ -620,8 +618,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (isUseCustomInstanceIcon()) {
             InputStream stream = ipsProject.getResourceAsStream(getInstancesIcon());
             if (stream == null) {
-                String text = org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_iconFileCannotBeResolved
-                        + getInstancesIcon() + "\"."; //$NON-NLS-1$
+                String text = Messages.ProductCmptType_iconFileCannotBeResolved + getInstancesIcon() + "\"."; //$NON-NLS-1$
                 msgList.add(new Message(MSGCODE_ICON_PATH_INVALID, text, Message.ERROR, this,
                         PROPERTY_ICON_FOR_INSTANCES));
             } else {
@@ -657,25 +654,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         IPolicyCmptType policyCmptTypeObj = findPolicyCmptType(ipsProject);
         if (policyCmptTypeObj == null) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_PolicyCmptTypeDoesNotExist,
-                            policyCmptType);
+            String text = NLS.bind(Messages.ProductCmptType_PolicyCmptTypeDoesNotExist, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_EXIST, text, Message.ERROR, this,
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
         if (!policyCmptTypeObj.isConfigurableByProductCmptType()) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_notMarkedAsConfigurable,
-                            policyCmptType);
+            String text = NLS.bind(Messages.ProductCmptType_notMarkedAsConfigurable, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_IS_NOT_MARKED_AS_CONFIGURABLE, text, Message.ERROR, this,
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
         }
         if (!isSubtypeOrSameType(policyCmptTypeObj.findProductCmptType(ipsProject), ipsProject)) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_policyCmptTypeDoesNotSpecifyThisType,
-                            policyCmptType);
+            String text = NLS.bind(Messages.ProductCmptType_policyCmptTypeDoesNotSpecifyThisType, policyCmptType);
             list.add(new Message(MSGCODE_POLICY_CMPT_TYPE_DOES_NOT_SPECIFY_THIS_TYPE, text, Message.ERROR, this,
                     PROPERTY_POLICY_CMPT_TYPE));
             return;
@@ -693,9 +684,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions,
-                            getName());
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this,
                     null);
         }
@@ -707,9 +696,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes,
-                            getName());
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
         }
     }
@@ -720,9 +707,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes,
-                            getName());
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this,
                     null);
         }
@@ -734,9 +719,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptCategory_NoDefaultForTableStructureUsages,
-                            getName());
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this, null);
         }
     }
@@ -747,9 +730,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE,
                 true, ipsProject).size() > 0;
         if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
-            String text = NLS
-                    .bind(org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptCategory_NoDefaultForValidationRules,
-                            getName());
+            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
             list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this, null);
         }
     }
@@ -854,7 +835,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public String getCaption(Locale locale) throws CoreException {
-        return org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_caption;
+        return Messages.ProductCmptType_caption;
     }
 
     @Override
@@ -1511,14 +1492,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
-            boolean ignore = isNotProductAndPolicyAttribute(duplicateObjectProperties);
+            boolean ignore = hasPolicyAttributeButNoProductAttribute(duplicateObjectProperties);
             if (!ignore) {
                 return super.ignore(currentType, duplicateObjectProperties);
             }
             return ignore;
         }
 
-        private boolean isNotProductAndPolicyAttribute(ObjectProperty[] duplicateObjectProperties) {
+        private boolean hasPolicyAttributeButNoProductAttribute(ObjectProperty[] duplicateObjectProperties) {
             boolean foundProdAttribute = false;
             boolean foundPolicyAttribute = false;
             for (ObjectProperty objectProperty : duplicateObjectProperties) {
@@ -1529,11 +1510,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
                     foundPolicyAttribute = true;
                 }
             }
-            return foundPolicyAttribute & !foundProdAttribute;
+            return foundPolicyAttribute && !foundProdAttribute;
         }
 
         @Override
-        protected IType getMatchingType(IType currentType) {
+        protected IType getMatchingTypeAndAddIfNecessary(IType currentType) {
             try {
                 return ((IProductCmptType)currentType).findPolicyCmptType(ipsProject);
             } catch (CoreException e) {
@@ -1544,10 +1525,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         @Override
         protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
             if (objectPartContainer instanceof IFormula) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralFormula;
+                return Messages.ProductCmptTypeMethod_Formula_msg_Plural;
             }
             if (objectPartContainer instanceof ITableStructureUsage) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralTableStructureUsage;
+                return Messages.TableStructureUsage_msg_Plural;
             }
             return super.getObjectKindNamePlural(objectPartContainer, property);
         }
@@ -1555,10 +1536,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         @Override
         protected String getObjectKindNameSingular(IpsObjectPartContainer objectPartContainer) {
             if (objectPartContainer instanceof IFormula) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularFormula;
+                return Messages.ProductCmptTypeMethod_Formula_msg_Singular;
             }
             if (objectPartContainer instanceof ITableStructureUsage) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_SingularTableStructureUsage;
+                return Messages.TableStructureUsage_msg_Singular;
             }
             return super.getObjectKindNameSingular(objectPartContainer);
         }

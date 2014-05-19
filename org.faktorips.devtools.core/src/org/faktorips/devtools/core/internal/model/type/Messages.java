@@ -68,14 +68,10 @@ public class Messages extends NLS {
     public static String DuplicatePropertyNameValidator_SingularAttribute;
     public static String DuplicatePropertyNameValidator_PluralAssociation;
     public static String DuplicatePropertyNameValidator_SingularAssociation;
-    public static String DuplicatePropertyNameValidator_PluralFormula;
-    public static String DuplicatePropertyNameValidator_SingularFormula;
     public static String DuplicatePropertyNameValidator_PluralMethod;
     public static String DuplicatePropertyNameValidator_SingularMethod;
     public static String DuplicatePropertyNameValidator_PluralElement;
     public static String DuplicatePropertyNameValidator_SingularElement;
-    public static String DuplicatePropertyNameValidator_PluralTableStructureUsage;
-    public static String DuplicatePropertyNameValidator_SingularTableStructureUsage;
 
     public static String TypeMethod_duplicateSignature;
     public static String TypeMethod_incompatbileReturnType;

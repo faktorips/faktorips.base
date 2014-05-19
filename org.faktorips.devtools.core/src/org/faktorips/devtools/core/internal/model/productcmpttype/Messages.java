@@ -56,7 +56,11 @@ public class Messages extends NLS {
     public static String TableStructureUsage_msgInvalidRoleName;
     public static String TableStructureUsage_msgRoleNameAlreadyInSupertype;
     public static String TableStructureUsage_msgTableStructureNotExists;
+    public static String TableStructureUsage_msg_Singular;
+    public static String TableStructureUsage_msg_Plural;
 
+    public static String ProductCmptTypeMethod_Formula_msg_Plural;
+    public static String ProductCmptTypeMethod_Formula_msg_Singular;
     public static String ProductCmptCategory_msgNameIsEmpty;
     public static String ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy;
     public static String ProductCmptCategory_msgInheritedButNotFoundInSupertypeHierarchy;
