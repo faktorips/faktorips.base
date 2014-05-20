@@ -310,7 +310,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         IAssociation association = policyCmptTypeA.newAssociation();
         ObjectProperty property2 = new ObjectProperty(association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
         ObjectProperty property1 = new ObjectProperty(method, IMethod.PROPERTY_NAME);
-        ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
+        ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
         validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
 
         Message message = validatorTest.createMessage(ID, properties);

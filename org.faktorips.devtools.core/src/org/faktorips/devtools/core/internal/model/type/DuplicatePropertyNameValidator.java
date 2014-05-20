@@ -91,7 +91,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                         getObjectKindNamePlural(invalidObjProperty1), getObjectKindNamePlural(invalidObjProperty2));
             } else if (!ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject())) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
-                        getObjectKindNameSingular(ipsObjectContainer1), ipsObjectContainer1.getIpsObject().getName());
+                        getObjectKindNameSingular(ipsObjectContainer2), ipsObjectContainer2.getIpsObject().getName());
             }
         }
         return StringUtils.EMPTY;
@@ -275,9 +275,9 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
 
     @Override
     protected boolean visit(IType currentType) {
-        addMatchingType(currentType);
         addAttributes(currentType);
         addAssociations(currentType);
+        addMatchingType(currentType);
         return true;
     }
 
