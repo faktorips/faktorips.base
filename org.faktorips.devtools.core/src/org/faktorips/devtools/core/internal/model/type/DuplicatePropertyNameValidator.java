@@ -38,7 +38,7 @@ import org.faktorips.util.message.ObjectProperty;
 public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
 
     /*
-     * Map with property names as keys. For a unqiue property name, the map contains the object
+     * Map with property names as keys. For a unique property name, the map contains the object
      * (with the name) as value. If there are multiple properties with a name, the value is a list
      * containing all the objects with the same name.
      */
@@ -65,7 +65,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
 
     private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
         return NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
-                textForDifferentIpsObjectPartContainer(invalidObjProperties[0], invalidObjProperties[1]));
+                createMoreSpecificErrorText(invalidObjProperties[0], invalidObjProperties[1]));
     }
 
     /**
@@ -79,22 +79,35 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
      * 
      */
-    protected String textForDifferentIpsObjectPartContainer(ObjectProperty invalidObjProperty1,
+    protected String createMoreSpecificErrorText(ObjectProperty invalidObjProperty1,
             ObjectProperty invalidObjProperty2) {
         if (isIpsObjectPartContainer(invalidObjProperty1, invalidObjProperty2)) {
             IpsObjectPartContainer ipsObjectContainer2 = ((IpsObjectPartContainer)invalidObjProperty2.getObject());
             IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
 
-            if (ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject())
-                    && !(ipsObjectContainer1.getClass().equals(ipsObjectContainer2.getClass()))) {
-                return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
-                        getObjectKindNamePlural(invalidObjProperty1), getObjectKindNamePlural(invalidObjProperty2));
-            } else if (!ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject())) {
-                return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
-                        getObjectKindNameSingular(ipsObjectContainer2), ipsObjectContainer2.getIpsObject().getName());
+            if (!hasSameIpsObject(ipsObjectContainer2, ipsObjectContainer1)) {
+                return createTextForDiffIpsObjectParts(ipsObjectContainer2);
+            } else if (!(ipsObjectContainer1.getClass().equals(ipsObjectContainer2.getClass()))) {
+                return createTextForDiffITypes(invalidObjProperty1, invalidObjProperty2);
             }
         }
         return StringUtils.EMPTY;
+    }
+
+    private String createTextForDiffIpsObjectParts(IpsObjectPartContainer ipsObjectContainer2) {
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
+                getObjectKindNameSingular(ipsObjectContainer2), ipsObjectContainer2.getIpsObject().getName());
+    }
+
+    private String createTextForDiffITypes(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+                StringUtils.capitalize(getObjectKindNamePlural(invalidObjProperty1)),
+                getObjectKindNamePlural(invalidObjProperty2));
+    }
+
+    private boolean hasSameIpsObject(IpsObjectPartContainer ipsObjectContainer2,
+            IpsObjectPartContainer ipsObjectContainer1) {
+        return ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject());
     }
 
     private boolean isIpsObjectPartContainer(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
