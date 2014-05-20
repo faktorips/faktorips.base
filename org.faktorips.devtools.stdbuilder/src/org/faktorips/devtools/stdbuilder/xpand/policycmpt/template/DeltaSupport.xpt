@@ -9,7 +9,7 @@
      * 
      * @generated
      */
-    «overrideAnnotationIfHasSuperclassOrInterface()-»
+    @Override
     public «IModelObjectDelta()» «computeDelta(IModelObject() +" otherObject", IDeltaComputationOptions()+" options")» {
     	«IF hasSupertype()-»
         	«ModelObjectDelta()» delta = («ModelObjectDelta()») super.computeDelta(otherObject, options);

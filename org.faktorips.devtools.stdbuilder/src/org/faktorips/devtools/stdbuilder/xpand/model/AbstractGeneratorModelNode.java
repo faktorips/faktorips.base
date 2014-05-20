@@ -26,7 +26,6 @@ import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -458,29 +457,6 @@ public abstract class AbstractGeneratorModelNode {
      */
     public final Locale getLanguageUsedInGeneratedSourceCode() {
         return getContext().getLanguageUsedInGeneratedSourceCode();
-    }
-
-    /**
-     * Checks whether or not an override annotation is needed respect to the different compliance
-     * levels. Up to Java5 there was no override annotation at all (this case is no longer
-     * supported). In Java5 there were only override annotations for real overrides not for
-     * interface implementations. For compliance levels greater Java5 we always generate an override
-     * annotation if either an interface or an other implementation is overridden. Whether or not an
-     * override annotation is needed at all you have to consider in your code template.
-     * 
-     * @param interfaceMethodImplementation True if the only an interface method is implemented
-     *            false if it overrides an other implementation
-     * @return true when override is needed
-     */
-    public boolean needOverrideAnnotation(boolean interfaceMethodImplementation) {
-        if (ComplianceCheck.isComplianceLevel5(getIpsObjectPartContainer().getIpsProject())
-                && !interfaceMethodImplementation) {
-            return true;
-        }
-        if (ComplianceCheck.isComplianceLevelGreaterJava5(getIpsObjectPartContainer().getIpsProject())) {
-            return true;
-        }
-        return false;
     }
 
     public GeneratorModelContext getContext() {

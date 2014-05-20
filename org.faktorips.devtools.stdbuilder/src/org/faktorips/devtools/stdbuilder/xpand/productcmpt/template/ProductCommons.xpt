@@ -23,7 +23,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(false)-»
+	    @Override
 	    protected void «writePropertiesToXml(Element() + " element")» {
 	    	«IF hasSupertype()-»
 	        	super.«writePropertiesToXml("element")»;
@@ -42,7 +42,7 @@
 		    /**
 		     * @generated
 		     */
-		    «overrideAnnotation(false)-»
+	    	@Override
 		    protected void «writeReferencesToXml(Element() + " element")» {
 		        super.«writeReferencesToXml("element")»;
 		        «EXPAND ProductAssociation::writeReferencesToXmlMethodCall FOREACH associations-»

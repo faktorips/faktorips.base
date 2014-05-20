@@ -299,7 +299,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotation(false)-»
+	    @Override
 	    public «IProductComponentLink("? extends " + IProductComponent())» «getLink("String linkName", IProductComponent() + " target")» {
 	    	«FOREACH associations AS this-»
 				«IF !derivedUnion && !constrain-»
@@ -322,7 +322,7 @@
      * 
      * @generated
      */
-    «overrideAnnotation(false)-»
+	@Override
     public «List_(IProductComponentLink("? extends " + IProductComponent()))» «getLinks()» {
 	    «List_(IProductComponentLink("? extends " + IProductComponent()))» list = 
 	    «IF hasSupertype()-»
