@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
@@ -34,6 +33,7 @@ import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -770,7 +770,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         @Override
         protected boolean visit(IType currentType) {
             super.visit(currentType);
-            IProductCmptType matchingType = (IProductCmptType)getMatchingType(currentType);
+            IProductCmptType matchingType = getMatchingType(currentType);
             if (matchingType != null) {
                 String name = matchingType.getUnqualifiedName();
                 add(name.toLowerCase(), new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
@@ -779,7 +779,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected IType getMatchingType(IType currentType) {
+        protected IProductCmptType getMatchingType(IType currentType) {
             try {
                 return ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
             } catch (CoreException e) {
@@ -788,12 +788,13 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
+        protected String getObjectKindNamePlural(ObjectProperty invalidObjProperty) {
+            IIpsObjectPartContainer objectPartContainer = ((IIpsObjectPartContainer)invalidObjProperty.getObject());
             if (objectPartContainer instanceof IPolicyCmptType
-                    && property.equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
-                return org.faktorips.devtools.core.internal.model.type.Messages.DuplicatePropertyNameValidator_PluralProdCmptType;
+                    && invalidObjProperty.getProperty().equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
+                return org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_pluralCaption;
             }
-            return super.getObjectKindNamePlural(objectPartContainer, property);
+            return super.getObjectKindNamePlural(invalidObjProperty);
         }
 
     }

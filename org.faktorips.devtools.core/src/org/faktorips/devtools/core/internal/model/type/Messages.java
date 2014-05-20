@@ -62,8 +62,6 @@ public class Messages extends NLS {
     public static String DuplicatePropertyNameValidator_msg;
     public static String DuplicatePropertyNameValidator_msg_DifferentElementsSameType;
     public static String DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes;
-    public static String DuplicatePropertyNameValidator_msg_hint;
-    public static String DuplicatePropertyNameValidator_PluralProdCmptType;
     public static String DuplicatePropertyNameValidator_PluralAttribute;
     public static String DuplicatePropertyNameValidator_SingularAttribute;
     public static String DuplicatePropertyNameValidator_PluralAssociation;

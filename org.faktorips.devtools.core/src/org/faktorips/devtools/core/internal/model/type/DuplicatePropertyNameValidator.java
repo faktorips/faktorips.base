@@ -64,10 +64,8 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
     }
 
     private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
-        StringBuffer stringB = new StringBuffer(NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
-                textForDifferentIpsObjectPartContainer(invalidObjProperties[0], invalidObjProperties[1])));
-        stringB.append(Messages.DuplicatePropertyNameValidator_msg_hint);
-        return stringB.toString();
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
+                textForDifferentIpsObjectPartContainer(invalidObjProperties[0], invalidObjProperties[1]));
     }
 
     /**
@@ -77,7 +75,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * {@link IType} but instances of different {@link IpsObjectPartContainer}, the message will
      * indicate which {@link IpsObjectPartContainer} have to be considered. If the elements are from
      * different {@link IType} the message indicates what {@link IpsObjectPartContainer} in which
-     * {@link IType} are named ambigiously. If the invalidProperties are instances of the same
+     * {@link IType} are named ambiguously. If the invalidProperties are instances of the same
      * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
      * 
      */
@@ -90,8 +88,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             if (ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject())
                     && !(ipsObjectContainer1.getClass().equals(ipsObjectContainer2.getClass()))) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
-                        getObjectKindNamePlural(ipsObjectContainer1, invalidObjProperty1.getProperty()),
-                        getObjectKindNamePlural(ipsObjectContainer2, invalidObjProperty2.getProperty()));
+                        getObjectKindNamePlural(invalidObjProperty1), getObjectKindNamePlural(invalidObjProperty2));
             } else if (!ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject())) {
                 return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
                         getObjectKindNameSingular(ipsObjectContainer1), ipsObjectContainer1.getIpsObject().getName());
@@ -105,7 +102,8 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                 && invalidObjProperty2.getObject() instanceof IpsObjectPartContainer;
     }
 
-    protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
+    protected String getObjectKindNamePlural(ObjectProperty invalidObjProperty) {
+        IIpsObjectPartContainer objectPartContainer = ((IIpsObjectPartContainer)invalidObjProperty.getObject());
         if (objectPartContainer instanceof IAttribute) {
             return Messages.DuplicatePropertyNameValidator_PluralAttribute;
         }

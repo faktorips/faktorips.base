@@ -44,6 +44,7 @@ import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -1492,11 +1493,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
-            boolean ignore = hasPolicyAttributeButNoProductAttribute(duplicateObjectProperties);
-            if (!ignore) {
+            if (hasPolicyAttributeButNoProductAttribute(duplicateObjectProperties)) {
+                return true;
+            } else {
                 return super.ignore(currentType, duplicateObjectProperties);
             }
-            return ignore;
         }
 
         private boolean hasPolicyAttributeButNoProductAttribute(ObjectProperty[] duplicateObjectProperties) {
@@ -1523,14 +1524,15 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected String getObjectKindNamePlural(IpsObjectPartContainer objectPartContainer, String property) {
+        protected String getObjectKindNamePlural(ObjectProperty invalidObjProperty) {
+            IIpsObjectPartContainer objectPartContainer = ((IIpsObjectPartContainer)invalidObjProperty.getObject());
             if (objectPartContainer instanceof IFormula) {
                 return Messages.ProductCmptTypeMethod_Formula_msg_Plural;
             }
             if (objectPartContainer instanceof ITableStructureUsage) {
                 return Messages.TableStructureUsage_msg_Plural;
             }
-            return super.getObjectKindNamePlural(objectPartContainer, property);
+            return super.getObjectKindNamePlural(invalidObjProperty);
         }
 
         @Override

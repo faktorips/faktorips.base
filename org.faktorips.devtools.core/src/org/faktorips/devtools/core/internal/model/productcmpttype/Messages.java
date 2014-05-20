@@ -37,6 +37,7 @@ public class Messages extends NLS {
     public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;
     public static String ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
     public static String ProductCmptType_caption;
+    public static String ProductCmptType_pluralCaption;
     public static String ProductCmptType_error_supertypeNotMarkedAsLayerSupertype;
     public static String ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis;
     public static String ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName;
