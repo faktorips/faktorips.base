@@ -1514,7 +1514,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected IType getMatchingTypeAndAddIfNecessary(IType currentType) {
+        protected IType getMatchingType(IType currentType) {
             try {
                 return ((IProductCmptType)currentType).findPolicyCmptType(ipsProject);
             } catch (CoreException e) {

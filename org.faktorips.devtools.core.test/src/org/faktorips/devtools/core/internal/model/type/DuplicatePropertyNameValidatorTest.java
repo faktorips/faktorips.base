@@ -219,7 +219,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
 
         assertEquals(1, messageList.size());
         assertEquals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE,
-                messageList.getMessage(0).getInvalidObjectProperties()[0].getProperty());
+                messageList.getMessage(0).getInvalidObjectProperties()[1].getProperty());
     }
 
     @Test
@@ -262,7 +262,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty property1 = new ObjectProperty(attr2, IMethod.PROPERTY_NAME);
         ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
 
-        Message message = validatorTest.createMessage(policyCmptTypeA, ID, properties);
+        Message message = validatorTest.createMessage(ID, properties);
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, ID, StringUtils.EMPTY);
         assertTrue(message.getText().contains(text));
         assertTrue(message.getText().contains(Messages.DuplicatePropertyNameValidator_msg_hint));
@@ -276,7 +276,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty property1 = new ObjectProperty(association, IMethod.PROPERTY_NAME);
         ObjectProperty[] properties = new ObjectProperty[] { property1, property2 };
 
-        Message message = validatorTest.createMessage(policyCmptTypeA, ID, properties);
+        Message message = validatorTest.createMessage(ID, properties);
 
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 Messages.DuplicatePropertyNameValidator_PluralAssociation,
@@ -294,7 +294,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
         validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
 
-        Message message = validatorTest.createMessage(productCmptType, ID, properties);
+        Message message = validatorTest.createMessage(ID, properties);
 
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 org.faktorips.devtools.core.internal.model.productcmpttype.Messages.TableStructureUsage_msg_Plural,
@@ -314,7 +314,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
         validatorTest = productCmptType.createDuplicatePropertyNameValidator(ipsProject);
 
-        Message message = validatorTest.createMessage(productCmptType, ID, properties);
+        Message message = validatorTest.createMessage(ID, properties);
 
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
                 Messages.DuplicatePropertyNameValidator_SingularAssociation, policyCmptTypeA.getName());
@@ -330,7 +330,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         ObjectProperty property1 = new ObjectProperty(policyCmptTypeA, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE);
         ObjectProperty[] properties = new ObjectProperty[] { property2, property1 };
 
-        Message message = validatorTest.createMessage(productCmptType, ID, properties);
+        Message message = validatorTest.createMessage(ID, properties);
 
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 Messages.DuplicatePropertyNameValidator_PluralAttribute,

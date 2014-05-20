@@ -768,14 +768,20 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         }
 
         @Override
-        protected IType getMatchingTypeAndAddIfNecessary(IType currentType) {
+        protected boolean visit(IType currentType) {
+            super.visit(currentType);
+            IProductCmptType matchingType = (IProductCmptType)getMatchingType(currentType);
+            if (matchingType != null) {
+                String name = matchingType.getUnqualifiedName();
+                add(name.toLowerCase(), new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+            }
+            return true;
+        }
+
+        @Override
+        protected IType getMatchingType(IType currentType) {
             try {
-                IProductCmptType matchingType = ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
-                if (matchingType != null) {
-                    String name = matchingType.getUnqualifiedName();
-                    add(name.toLowerCase(), new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
-                }
-                return matchingType;
+                return ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
