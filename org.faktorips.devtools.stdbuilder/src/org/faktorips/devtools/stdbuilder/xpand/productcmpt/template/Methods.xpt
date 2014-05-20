@@ -43,7 +43,7 @@
 		     * 
 		     * @generated
 		     */
-		    «overrideAnnotation(false)-»
+	    	@Override
 		    «overloaded.getModifier(genInterface())» «overloaded.javaClassName» «overloaded.methodName»(«FOREACH overloadedFormulaMethod.parameters AS param SEPARATOR ", "»«param.javaClassName» «param.name»«ENDFOREACH») throws «FormulaExecutionException()» {
 		        // TODO a delegation to the method «methodName»(«FOREACH parameters AS param SEPARATOR ", "»«param.javaClassName»«ENDFOREACH») needs to be implemented here
 		        // And make sure to disable the regeneration of this method.
@@ -62,7 +62,7 @@
     	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
     	* @generated
     	*/
-    	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, overrides)-»
+    	«overrideAnnotationForPublishedMethodOrIf(!genInterface() && published, !genInterface() && overrides )-»
     	«getModifier(false)» boolean «method(methodNameIsFormulaAvailable)» 
 	    «IF genInterface()»;«ELSE-»
 	    {

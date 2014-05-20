@@ -60,7 +60,7 @@
 	     	* 
 	     	* @generated
 	     	*/
-	    	«overrideAnnotation(false)-»
+	    	@Override
 	    	protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 	        	super.«doInitPropertiesFromXml("configMap")»;
 	        	«EXPAND ProductAttribute::initFromXmlMethodCall FOREACH attributes-»
@@ -72,7 +72,7 @@
 			    /**
 			     * @generated
 			     */
-			    «overrideAnnotation(false)-»
+	    		@Override
 			    protected void «doInitReferencesFromXml(Map("String", List_(Element())) + " elementsMap")» {
 			        super.«doInitReferencesFromXml("elementsMap")»;
 			        «EXPAND ProductAssociation::doInitFromXmlMethodCall FOREACH associations-»
@@ -91,7 +91,7 @@
 			     * 
 			     * @generated
 			     */
-			    «overrideAnnotation(!hasNonAbstractSupertype())-»
+	    		@Override
 			    public «policyInterfaceName» «createPolicyComponent()» {
 			    	«IF !configurationForPolicyCmptType-»
 			    		return null;
