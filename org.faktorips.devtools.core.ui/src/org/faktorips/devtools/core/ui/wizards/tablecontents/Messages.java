@@ -28,6 +28,7 @@ public class Messages extends NLS {
     public static String NewTableContentsValidator_msg_noProject;
     public static String NewTableContentsValidator_msg_noStructure;
     public static String NewTableContentsValidator_msgInvalidStructure;
+    public static String NewTableContentsValidator_msgNoAdditionalContentsAllowed;
     public static String NewTableContentsWizard_title;
     public static String TableContentsPage_title;
     public static String TableContentsPage_label_name;

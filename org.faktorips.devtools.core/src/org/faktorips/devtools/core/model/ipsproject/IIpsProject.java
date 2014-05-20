@@ -511,7 +511,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * are found in the workspace and are based on the provided <code>ITableStructure</code>.
      * 
      * @throws CoreException if an error occurs during search.
+     * 
+     * @deprecated Use {@link #findAllTableContentsSrcFiles(ITableStructure structure)} instead.
      */
+    @Deprecated
     public void findTableContents(ITableStructure structure, List<ITableContents> tableContents) throws CoreException;
 
     /**

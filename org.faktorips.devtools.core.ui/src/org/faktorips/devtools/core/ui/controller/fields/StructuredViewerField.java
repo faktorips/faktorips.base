@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -26,12 +25,12 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
  */
 public class StructuredViewerField<T> extends AbstractViewerField<T> {
 
-    private final StructuredViewer strucuredViewer;
+    private final StructuredViewer structuredViewer;
     private final Class<T> type;
 
     public StructuredViewerField(StructuredViewer viewer, Class<T> type) {
         super(viewer);
-        strucuredViewer = viewer;
+        structuredViewer = viewer;
         this.type = type;
     }
 
@@ -41,18 +40,19 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
 
     @Override
     public String getText() {
-        return ((IStructuredSelection)strucuredViewer.getSelection()).getFirstElement().toString();
+        return ((IStructuredSelection)structuredViewer.getSelection()).getFirstElement().toString();
     }
 
     @Override
     public T parseContent() {
-        TypedSelection<T> selection = new TypedSelection<T>(type, strucuredViewer.getSelection());
+        TypedSelection<T> selection = new TypedSelection<T>(type, structuredViewer.getSelection());
         if (!selection.isValid()) {
             return null;
         }
         T o = selection.getFirstElement();
 
-        if (supportsNullStringRepresentation() && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(o)) {
+        if (supportsNullStringRepresentation()
+                && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(o)) {
             return null;
         }
         return o;
@@ -60,18 +60,19 @@ public class StructuredViewerField<T> extends AbstractViewerField<T> {
 
     @Override
     public void setValue(T newValue) {
-        ISelection selection = null;
+        IStructuredSelection selection = null;
         if (newValue == null) {
             selection = new StructuredSelection(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
         } else {
             selection = new StructuredSelection(newValue);
         }
-        strucuredViewer.setSelection(selection, true);
+        // Also reveals the selection. Does not work in GTK/Linux.
+        structuredViewer.setSelection(selection, true);
     }
 
     @Override
     public void setText(String newText) {
-        strucuredViewer.setSelection(new StructuredSelection(newText));
+        structuredViewer.setSelection(new StructuredSelection(newText));
     }
 
 }

@@ -1178,24 +1178,20 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         result = ipsProject.findAllTableContentsSrcFiles(null);
         assertEquals(3, result.size());
 
-        //
-        // test search with different projects
-        //
+    }
+
+    @Test
+    public void testFindAllTableContentsSrcFiles_DifferentProjects() throws CoreException {
         IIpsProject ipsProject2 = newIpsProject("Project2");
 
         ITableStructure ts2 = newTableStructure(ipsProject2, "structure2");
         ITableContents tcProj2 = newTableContents(ts2, "contetnsP2");
 
-        result = ipsProject.findAllTableContentsSrcFiles(ts2);
-        assertEquals(0, result.size());
-
-        IIpsObjectPath ipsObjectPath = ipsProject.getIpsObjectPath();
-        ipsObjectPath.newIpsProjectRefEntry(ipsProject2);
-        ipsProject.setIpsObjectPath(ipsObjectPath);
-
-        result = ipsProject.findAllTableContentsSrcFiles(ts2);
+        // table validation cache is cross-project
+        List<IIpsSrcFile> result = ipsProject.findAllTableContentsSrcFiles(ts2);
         assertEquals(1, result.size());
         assertEquals(tcProj2.getIpsSrcFile(), result.get(0));
+
     }
 
     @Test
@@ -1912,6 +1908,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(h));
     }
 
+    /**
+     * @deprecated This test case is deprecated because the tested method is deprecated.
+     */
+    @Deprecated
     @Test
     public void testFindTableContents() throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
