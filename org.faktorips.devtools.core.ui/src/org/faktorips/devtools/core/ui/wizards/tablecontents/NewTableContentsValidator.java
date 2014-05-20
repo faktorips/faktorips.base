@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
+import org.faktorips.devtools.core.internal.model.tablecontents.SingleTableContentsValidator;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -42,23 +44,48 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
 
     public MessageList validateTableContents() {
         MessageList result = new MessageList();
+        validateProject(result);
+        validateStructure(result);
+        validateTableContentName();
+        return result;
+    }
+
+    private void validateProject(MessageList result) {
         if (getPmo().getIpsProject() == null) {
             result.add(new Message(MSG_NO_PROJECT, Messages.NewTableContentsValidator_msg_noProject, Message.ERROR));
         } else if (!getPmo().getIpsProject().isProductDefinitionProject()) {
             result.add(new Message(MSG_INVALID_PROJECT, Messages.NewTableContentsValidator_msg_invalidProject,
                     Message.ERROR));
         }
+    }
+
+    private void validateStructure(MessageList result) {
         if (getPmo().getSelectedStructure() == null) {
             result.add(new Message(MSG_NO_STRUCTURE, Messages.NewTableContentsValidator_msg_noStructure, Message.ERROR));
-        } else if (getPmo().getSelectedStructure().getNumOfColumns() == 0) {
+        } else {
+            validateSelectedStructure(result, getPmo().getSelectedStructure());
+        }
+    }
+
+    private void validateSelectedStructure(MessageList result, ITableStructure selectedTableStructure) {
+        if (selectedTableStructure.getNumOfColumns() == 0) {
             result.add(new Message(MSG_INVALID_STRUCTURE, Messages.NewTableContentsValidator_msgInvalidStructure,
                     Message.ERROR));
         }
+        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(
+                selectedTableStructure);
+        if (singleTableContentsValidator.forbidsAdditionalContents()) {
+            result.add(new Message(
+                    MSG_INVALID_STRUCTURE,
+                    Messages.NewTableContentsValidator_msgNoAdditionalContentsAllowed,
+                    Message.ERROR));
+        }
+    }
+
+    private void validateTableContentName() {
         if (getPmo().getIpsProject() != null) {
             validateIpsObjectName(NewTableContentsPMO.PROPERTY_NAME);
         }
-
-        return result;
     }
 
     @Override

@@ -808,7 +808,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    // TODO cd: maybe remove this method and use findAllTableContentsSrcFiles instead
+    /**
+     * @deprecated Use {@link #findAllTableContentsSrcFiles(ITableStructure structure)} instead.
+     */
+    @Deprecated
     @Override
     public void findTableContents(ITableStructure structure, List<ITableContents> tableContents) throws CoreException {
         if (structure == null) {
@@ -1446,23 +1449,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public List<IIpsSrcFile> findAllTableContentsSrcFiles(ITableStructure structure) {
-        List<IIpsSrcFile> ipsSrcFiles = findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
         if (structure == null) {
+            List<IIpsSrcFile> ipsSrcFiles = findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS);
             return ipsSrcFiles;
         }
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.size());
-        for (IIpsSrcFile srcFile : ipsSrcFiles) {
-            String tableContentsCandidateQName;
-            try {
-                tableContentsCandidateQName = srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-                if (structure.getQualifiedName().equals(tableContentsCandidateQName)) {
-                    result.add(srcFile);
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        }
-        return result;
+
+        return ((IpsModel)getIpsModel()).getTableContentsValidationCache().getTableContents(structure.getIpsSrcFile());
     }
 
     @Override
