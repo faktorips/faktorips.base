@@ -1493,18 +1493,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
-            if (hasPolicyAttributeButNoProductAttribute(duplicateObjectProperties)) {
+            if (hasPolicyAttributeButNoProductAttributeOrTableUsage(duplicateObjectProperties)) {
                 return true;
             } else {
                 return super.ignore(currentType, duplicateObjectProperties);
             }
         }
 
-        private boolean hasPolicyAttributeButNoProductAttribute(ObjectProperty[] duplicateObjectProperties) {
+        private boolean hasPolicyAttributeButNoProductAttributeOrTableUsage(ObjectProperty[] duplicateObjectProperties) {
             boolean foundProdAttribute = false;
             boolean foundPolicyAttribute = false;
             for (ObjectProperty objectProperty : duplicateObjectProperties) {
-                if (objectProperty.getObject() instanceof IProductCmptTypeAttribute) {
+                if (objectProperty.getObject() instanceof IProductCmptTypeAttribute
+                        || objectProperty.getObject() instanceof ITableStructureUsage) {
                     foundProdAttribute = true;
                 }
                 if (objectProperty.getObject() instanceof IPolicyCmptTypeAttribute) {
@@ -1548,7 +1549,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean visit(IType currentType) {
-            super.visit(currentType);
             ProductCmptType productCmptType = (ProductCmptType)currentType;
             for (ITableStructureUsage tableStructureUsage : productCmptType.tableStructureUsages) {
                 add(tableStructureUsage.getRoleName(), new ObjectProperty(tableStructureUsage,
@@ -1561,6 +1561,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                             IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
                 }
             }
+            super.visit(currentType);
             return true;
         }
     }
