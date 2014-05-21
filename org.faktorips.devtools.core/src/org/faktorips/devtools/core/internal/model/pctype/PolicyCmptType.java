@@ -773,7 +773,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
             IProductCmptType matchingType = getMatchingType(currentType);
             if (matchingType != null) {
                 String name = matchingType.getUnqualifiedName();
-                add(name.toLowerCase(), new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+                add(name, new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
             }
             return true;
         }

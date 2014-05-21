@@ -79,8 +79,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
      * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
      * 
      */
-    protected String createMoreSpecificErrorText(ObjectProperty invalidObjProperty1,
-            ObjectProperty invalidObjProperty2) {
+    protected String createMoreSpecificErrorText(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
         if (isIpsObjectPartContainer(invalidObjProperty1, invalidObjProperty2)) {
             IpsObjectPartContainer ipsObjectContainer2 = ((IpsObjectPartContainer)invalidObjProperty2.getObject());
             IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
@@ -305,14 +304,14 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
 
     private void addMatchingAttributes(IType matchingType) {
         for (IAttribute attribute : matchingType.getAttributes()) {
-            add(attribute.getName().toLowerCase(), new ObjectProperty(attribute, IAssociation.PROPERTY_NAME));
+            add(attribute.getName(), new ObjectProperty(attribute, IAssociation.PROPERTY_NAME));
         }
     }
 
     private void addAttributes(IType currentType) {
         for (IAttribute attr : currentType.getAttributes()) {
             if (!attr.isOverwrite()) {
-                add(attr.getName().toLowerCase(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
+                add(attr.getName(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
             }
         }
     }
@@ -321,16 +320,15 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         for (IAssociation ass : currentType.getAssociations()) {
             if (ass.is1ToMany()) {
                 // target role plural only check if is many association
-                add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,
-                        IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
+                add(ass.getTargetRolePlural(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
             }
             // always check target role singular
-            add(ass.getTargetRoleSingular().toLowerCase(), new ObjectProperty(ass,
-                    IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
+            add(ass.getTargetRoleSingular(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
         }
     }
 
-    protected void add(String propertyName, ObjectProperty wrapper) {
+    protected void add(String originalPropertyName, ObjectProperty wrapper) {
+        String propertyName = originalPropertyName.toLowerCase();
         Object objInMap = properties.get(propertyName);
         if (objInMap == null) {
             properties.put(propertyName, new ObjectProperty[] { wrapper });
