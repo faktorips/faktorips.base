@@ -84,29 +84,35 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
             IpsObjectPartContainer ipsObjectContainer2 = ((IpsObjectPartContainer)invalidObjProperty2.getObject());
             IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
 
-            if (!hasSameIpsObject(ipsObjectContainer2, ipsObjectContainer1)) {
-                return createTextForDiffIpsObjectParts(ipsObjectContainer2);
-            } else if (!(ipsObjectContainer1.getClass().equals(ipsObjectContainer2.getClass()))) {
-                return createTextForDiffITypes(invalidObjProperty1, invalidObjProperty2);
+            if (isDifferentIpsObject(ipsObjectContainer2, ipsObjectContainer1)) {
+                return createTextForDiffITypes(ipsObjectContainer2);
+            } else if (isDifferentIpsObjectPartContainer(ipsObjectContainer2, ipsObjectContainer1)) {
+                return createTextForDiffIpsObjPartContainer(invalidObjProperty1, invalidObjProperty2);
             }
         }
         return StringUtils.EMPTY;
     }
 
-    private String createTextForDiffIpsObjectParts(IpsObjectPartContainer ipsObjectContainer2) {
+    private boolean isDifferentIpsObject(IpsObjectPartContainer ipsObjectContainer2,
+            IpsObjectPartContainer ipsObjectContainer1) {
+        return !(ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject()));
+    }
+
+    private boolean isDifferentIpsObjectPartContainer(IpsObjectPartContainer ipsObjectContainer2,
+            IpsObjectPartContainer ipsObjectContainer1) {
+        return !(ipsObjectContainer1.getClass().equals(ipsObjectContainer2.getClass()));
+    }
+
+    private String createTextForDiffITypes(IpsObjectPartContainer ipsObjectContainer2) {
         return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
                 getObjectKindNameSingular(ipsObjectContainer2), ipsObjectContainer2.getIpsObject().getName());
     }
 
-    private String createTextForDiffITypes(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
+    private String createTextForDiffIpsObjPartContainer(ObjectProperty invalidObjProperty1,
+            ObjectProperty invalidObjProperty2) {
         return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 StringUtils.capitalize(getObjectKindNamePlural(invalidObjProperty1)),
                 getObjectKindNamePlural(invalidObjProperty2));
-    }
-
-    private boolean hasSameIpsObject(IpsObjectPartContainer ipsObjectContainer2,
-            IpsObjectPartContainer ipsObjectContainer1) {
-        return ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject());
     }
 
     private boolean isIpsObjectPartContainer(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
