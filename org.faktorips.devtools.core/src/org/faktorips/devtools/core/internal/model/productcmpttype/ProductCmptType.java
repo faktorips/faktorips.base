@@ -1493,26 +1493,26 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
-            if (hasPolicyAttributeButNoProductAttributeOrTableUsage(duplicateObjectProperties)) {
+            if (hasPolicyAttributeButNoProductRelevantPart(duplicateObjectProperties)) {
                 return true;
             } else {
                 return super.ignore(currentType, duplicateObjectProperties);
             }
         }
 
-        private boolean hasPolicyAttributeButNoProductAttributeOrTableUsage(ObjectProperty[] duplicateObjectProperties) {
-            boolean foundProdAttribute = false;
+        private boolean hasPolicyAttributeButNoProductRelevantPart(ObjectProperty[] duplicateObjectProperties) {
+            boolean foundProdRelevantPart = false;
             boolean foundPolicyAttribute = false;
             for (ObjectProperty objectProperty : duplicateObjectProperties) {
                 if (objectProperty.getObject() instanceof IProductCmptTypeAttribute
                         || objectProperty.getObject() instanceof ITableStructureUsage) {
-                    foundProdAttribute = true;
+                    foundProdRelevantPart = true;
                 }
                 if (objectProperty.getObject() instanceof IPolicyCmptTypeAttribute) {
                     foundPolicyAttribute = true;
                 }
             }
-            return foundPolicyAttribute && !foundProdAttribute;
+            return foundPolicyAttribute && !foundProdRelevantPart;
         }
 
         @Override
