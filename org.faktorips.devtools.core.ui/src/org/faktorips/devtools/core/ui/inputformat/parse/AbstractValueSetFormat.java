@@ -14,9 +14,11 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -41,6 +43,7 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
     private ValueDatatype cachedValueDatatype;
 
     public AbstractValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
+        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
         this.valueSetOwner = valueSetOwner;
         this.uiPlugin = uiPlugin;
     }

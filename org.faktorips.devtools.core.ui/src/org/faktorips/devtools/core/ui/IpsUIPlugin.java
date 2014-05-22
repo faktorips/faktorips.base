@@ -333,6 +333,17 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return dndHandler;
     }
 
+    /**
+     * Returns the input format for the given datatype. The project is used to get some default
+     * values configured by project for example the default currency for money values. The project
+     * may be null. If it is null, the input format tries to guess the default values.
+     * 
+     * @param datatype The datatype for which you need the input format
+     * @param ipsProject The IIps Project used to get some default values
+     * 
+     * @return The input format for formatting any values in the ui depending on the datatype and
+     *         the current locale.
+     */
     public IInputFormat<String> getInputFormat(ValueDatatype datatype, IIpsProject ipsProject) {
         if (datatypeInputFormat == null) {
             datatypeInputFormat = new DatatypeInputFormatRegistry();

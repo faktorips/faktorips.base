@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.EnumTypeDisplay;
@@ -27,6 +28,7 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
     private final IpsPreferences ipsPreferences;
 
     public EnumDatatypeInputFormat(EnumDatatype enumDatatype, IpsPreferences ipsPreferences) {
+        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
         this.enumDatatype = enumDatatype;
         this.ipsPreferences = ipsPreferences;
     }

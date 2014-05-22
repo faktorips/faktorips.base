@@ -32,6 +32,8 @@ public class DefaultInputFormat extends AbstractInputFormat<String> {
     }
 
     public DefaultInputFormat(ValueDatatype datatype, DatatypeFormatter formatter) {
+        super(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), IpsPlugin.getDefault()
+                .getIpsPreferences().getDatatypeFormattingLocale());
         this.datatype = datatype;
         this.formatter = formatter;
     }

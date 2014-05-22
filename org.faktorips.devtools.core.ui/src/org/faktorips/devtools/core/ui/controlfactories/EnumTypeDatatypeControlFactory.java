@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -25,9 +26,9 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.table.ComboCellEditor;
+import org.faktorips.devtools.core.ui.controller.fields.EnumumerationField;
+import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
@@ -54,12 +55,13 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        Combo combo = toolkit.createCombo(parent);
         if (valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
+            Combo combo = toolkit.createCombo(parent);
             return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype, isControlForDefaultValue(valueSet));
         }
         EnumTypeDatatypeAdapter datatypeAdapter = (EnumTypeDatatypeAdapter)datatype;
-        return new EnumTypeDatatypeField(combo, datatypeAdapter, isControlForDefaultValue(valueSet));
+        Text text = toolkit.createText(parent);
+        return new EnumumerationField(text, datatypeAdapter, getNullStringRepresentation(valueSet));
     }
 
     /**
@@ -74,7 +76,6 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
         return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
     }
 
@@ -113,7 +114,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
 
         EditField<String> editField = createEditField(toolkit, tableViewer.getTable(), datatype, valueSet, ipsProject);
         editField.getControl().setData(editField);
-        ComboCellEditor cellEditor = new ComboCellEditor((Combo)editField.getControl());
+        EditFieldCellEditor cellEditor = new EditFieldCellEditor(editField);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);

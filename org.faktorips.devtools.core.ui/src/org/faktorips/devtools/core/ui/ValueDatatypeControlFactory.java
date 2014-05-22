@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -105,6 +106,14 @@ public abstract class ValueDatatypeControlFactory {
 
     protected boolean isControlForDefaultValue(IValueSet valueSet) {
         return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
+    }
+
+    protected String getNullStringRepresentation(IValueSet valueSet) {
+        if (isControlForDefaultValue(valueSet)) {
+            return Messages.DefaultValueRepresentation_Combobox;
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
 }

@@ -15,6 +15,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
@@ -24,12 +25,12 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumumerationField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
  * A control factory for the datytpes enumeration.
@@ -57,17 +58,13 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        Combo combo = toolkit.createCombo(parent);
-        AbstractEnumDatatypeBasedField enumField = null;
-
         if (valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            enumField = new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype,
-                    isControlForDefaultValue(valueSet));
+            Combo combo = toolkit.createCombo(parent);
+            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype, isControlForDefaultValue(valueSet));
         } else {
-            enumField = new EnumDatatypeField(combo, (EnumDatatype)datatype, isControlForDefaultValue(valueSet));
+            Text text = toolkit.createText(parent);
+            return new EnumumerationField(text, (EnumDatatype)datatype, getNullStringRepresentation(valueSet));
         }
-
-        return enumField;
     }
 
     @Override
@@ -112,14 +109,14 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
             int columnIndex,
             IIpsProject ipsProject) {
 
-        ComboCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, tableViewer.getTable());
+        IpsCellEditor cellEditor = createComboCellEditor(toolkit, datatype, valueSet, tableViewer.getTable());
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);
         return cellEditor;
     }
 
-    private ComboCellEditor createComboCellEditor(UIToolkit toolkit,
+    private IpsCellEditor createComboCellEditor(UIToolkit toolkit,
             ValueDatatype datatype,
             IValueSet valueSet,
             Composite parent) {
@@ -127,21 +124,19 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
         Combo comboControl;
         if (valueSet instanceof IEnumValueSet) {
             comboControl = toolkit.createCombo(parent, (IEnumValueSet)valueSet, (EnumDatatype)datatype);
-        } else if (datatype.isEnum()) {
-            comboControl = toolkit.createCombo(parent);
-            initializeEnumCombo(comboControl, (EnumDatatype)datatype, isControlForDefaultValue(valueSet));
+            return new ComboCellEditor(comboControl);
         } else {
-            comboControl = toolkit.createIDCombo(parent, (EnumDatatype)datatype);
+            Text text = toolkit.createText(parent);
+            initializeEnumCombo(text, (EnumDatatype)datatype, getNullStringRepresentation(valueSet));
+            return new TextCellEditor(text);
         }
-
-        return new ComboCellEditor(comboControl);
     }
 
-    protected void initializeEnumCombo(Combo combo, EnumDatatype datatype, boolean defaultValueField) {
+    protected void initializeEnumCombo(Text text, EnumDatatype datatype, String nullStringRepresentation) {
         // stores the enum datatype object as data object in the combo,
         // will be used to map between the displayed text and id
-        EnumDatatypeField enumDatatypeField = new EnumDatatypeField(combo, datatype, defaultValueField);
-        combo.setData(enumDatatypeField);
+        EnumumerationField enumDatatypeField = new EnumumerationField(text, datatype, nullStringRepresentation);
+        text.setData(enumDatatypeField);
     }
 
     @Override

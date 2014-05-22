@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.ICurrencyHolder;
 import org.faktorips.values.Decimal;
 import org.faktorips.values.Money;
@@ -47,6 +48,7 @@ public class MoneyFormat extends AbstractInputFormat<String> implements ICurrenc
     private Locale locale;
 
     protected MoneyFormat(Currency defaultCurrency) {
+        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
         currentCurrency = defaultCurrency;
     }
 

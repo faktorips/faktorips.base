@@ -19,7 +19,7 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.graphics.Rectangle;
 import org.faktorips.devtools.core.IpsPlugin;
 
 public class CurrencySymbolPainter implements PaintListener {
@@ -39,7 +39,8 @@ public class CurrencySymbolPainter implements PaintListener {
             gc.setForeground(color);
         }
         String symbol = getCurrencySymbol(getCurrency());
-        int y = (((Control)e.getSource()).getSize().y - gc.textExtent(symbol).y) / 2;
+        Rectangle clipping = gc.getClipping();
+        int y = (clipping.height - gc.textExtent(symbol).y) / 2;
         gc.drawText(symbol, 2, y);
     }
 
