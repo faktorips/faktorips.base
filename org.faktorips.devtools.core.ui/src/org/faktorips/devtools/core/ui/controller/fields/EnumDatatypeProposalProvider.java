@@ -16,15 +16,13 @@ import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.EnumDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
-public class EnumDatatypeProposalProvider extends AbstractProposalProvider {
+public class EnumDatatypeProposalProvider extends AbstractEnumProposalProvider {
 
-    public EnumDatatypeProposalProvider(IConfigElement configElement, UIDatatypeFormatter uiDatatypeFormatter) {
-        super(configElement, uiDatatypeFormatter);
+    public EnumDatatypeProposalProvider(EnumDatatype enumDatatype, UIDatatypeFormatter uiDatatypeFormatter) {
+        super(enumDatatype, uiDatatypeFormatter);
     }
 
     @Override
@@ -35,10 +33,6 @@ public class EnumDatatypeProposalProvider extends AbstractProposalProvider {
             return result.toArray(new IContentProposal[result.size()]);
         }
         return new IContentProposal[0];
-    }
-
-    private boolean isEnumDatatypeAllowed() {
-        return getDatatype().isEnum();
     }
 
     private List<IContentProposal> createContentProposals(String input) {
@@ -54,9 +48,12 @@ public class EnumDatatypeProposalProvider extends AbstractProposalProvider {
         return result;
     }
 
-    private List<String> getAllowedValuesAsList() {
-        IValueSet allowedValueSet = getAllowedValueSet();
-        return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(allowedValueSet.isContainingNull()));
+    @Override
+    public EnumDatatype getValueDatatype() {
+        return (EnumDatatype)super.getValueDatatype();
     }
 
+    private List<String> getAllowedValuesAsList() {
+        return Arrays.asList(getValueDatatype().getAllValueIds(true));
+    }
 }
