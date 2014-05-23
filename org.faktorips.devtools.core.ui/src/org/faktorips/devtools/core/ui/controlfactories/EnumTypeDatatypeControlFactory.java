@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumumerationField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumerationField;
 import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
@@ -61,7 +61,7 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
         }
         EnumTypeDatatypeAdapter datatypeAdapter = (EnumTypeDatatypeAdapter)datatype;
         Text text = toolkit.createText(parent);
-        return new EnumumerationField(text, datatypeAdapter, getNullStringRepresentation(valueSet));
+        return new EnumerationField(text, datatypeAdapter, getNullStringRepresentation(valueSet));
     }
 
     /**

@@ -36,13 +36,13 @@ import org.junit.Test;
  * 
  * @author Jan Ortmann
  */
-public class EnumumerationFieldTest extends AbstractIpsPluginTest {
+public class EnumerationFieldTest extends AbstractIpsPluginTest {
 
     private static final String UNKNOWN_VALUE = "unknownValue";
     private static final String NULL = "@myNullValue@";
     private EnumDatatype datatype;
     private IEnumValueSet valueSet;
-    private EnumumerationField field;
+    private EnumerationField field;
     private Shell shell;
 
     @Override
@@ -66,7 +66,7 @@ public class EnumumerationFieldTest extends AbstractIpsPluginTest {
     public void testWithDisplayTypeName() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.NAME);
         Text text = new Text(shell, SWT.READ_ONLY);
-        field = new EnumumerationField(text, datatype, NULL);
+        field = new EnumerationField(text, datatype, NULL);
 
         field.setValue(PaymentMode.ANNUAL_ID);
         assertEquals(PaymentMode.ANNUAL_ID, field.getValue());
@@ -85,7 +85,7 @@ public class EnumumerationFieldTest extends AbstractIpsPluginTest {
     public void testWithDisplayTypeId() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.ID);
         Text text = new Text(shell, SWT.READ_ONLY);
-        field = new EnumumerationField(text, datatype, NULL);
+        field = new EnumerationField(text, datatype, NULL);
 
         field.setValue(PaymentMode.ANNUAL_ID);
         assertEquals(PaymentMode.ANNUAL_ID, field.getValue());
@@ -106,7 +106,7 @@ public class EnumumerationFieldTest extends AbstractIpsPluginTest {
         UIDatatypeFormatter formatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         prefs.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
         Text text = new Text(shell, SWT.READ_ONLY);
-        field = new EnumumerationField(text, datatype, NULL);
+        field = new EnumerationField(text, datatype, NULL);
 
         String annualNameAndId = formatter.formatValue(datatype, PaymentMode.ANNUAL_ID);
 

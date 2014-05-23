@@ -24,21 +24,20 @@ public interface IInputFormat<T> {
     public void initFormat();
 
     /**
-     * Set the null string representation. This string will be parsed as <code>null</code> value and
-     * a <code>null</code> value will be formatted using this string. If you do not set the null
-     * string representation, a datatype default value will be set by the input format
-     * implementation.
+     * Sets the null string representation used by this {@link IInputFormat}. That string will be
+     * parsed to a <code>null</code> value and a <code>null</code> value will be formatted to that
+     * string. If no null string representation is set, a datatype dependent default value is used.
      * 
      * @param nullString the null string representation that should be used
      */
     public void setNullString(String nullString);
 
     /**
-     * Returns the null string representation that is currently configured for this input format.
+     * Returns the null string representation that is currently used by this input format.
      * <p>
-     * This string will be parsed as <code>null</code> value and a <code>null</code> value will be
-     * formatted using this string. If you do not set the null string representation, a datatype
-     * default value will be set by the input format implementation.
+     * That string will be parsed to a <code>null</code> value and a <code>null</code> value will be
+     * formatted to that string. If no null string representation is set, a datatype dependent
+     * default value is used.
      * 
      * @return The string that will be handled as <code>null</code> value
      */

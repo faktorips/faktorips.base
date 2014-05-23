@@ -20,16 +20,12 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
- * An implementation of <code>AbstractEnumDatatypeBasedField</code> that displays the values of an
- * <code>EnumDatatype</code>. If the <code>EnumDatatype</code> supports value names these will be
- * displayed instead of the value ids.
- * 
- * @author Peter Kuntz
- * 
+ * A text control with a content proposal that provides the enumeration values. An arrow down icon
+ * is drawn near the text's right side to emphasize the content proposal functionality.
  */
-public class EnumumerationField extends FormattingTextField<String> {
+public class EnumerationField extends FormattingTextField<String> {
 
-    public EnumumerationField(Text text, EnumDatatype datatype, String nullRepresentation) {
+    public EnumerationField(Text text, EnumDatatype datatype, String nullRepresentation) {
         super(text, IpsUIPlugin.getDefault().getInputFormat(datatype, null), nullRepresentation);
         EnumPainter enumPainter = new EnumPainter();
         text.addPaintListener(enumPainter);
@@ -40,11 +36,14 @@ public class EnumumerationField extends FormattingTextField<String> {
         @Override
         public void paintControl(PaintEvent e) {
             GC gc = e.gc;
+            paintDownArrow(gc);
+        }
+
+        private void paintDownArrow(GC gc) {
             Rectangle clipping = gc.getClipping();
             int x = (clipping.width - 16) - 2;
             int y = (clipping.height - 16) / 2;
             Image arrow = IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown_grey.gif", true); //$NON-NLS-1$
-            System.out.println(arrow.getBounds());
             gc.drawImage(arrow, x, y);
         }
 

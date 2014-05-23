@@ -334,12 +334,13 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the input format for the given datatype. The project is used to get some default
-     * values configured by project for example the default currency for money values. The project
-     * may be null. If it is null, the input format tries to guess the default values.
+     * Returns the input format for the given datatype. The project is used to retrieve a default
+     * configuration for the format (depending on the datatype), as for example the default currency
+     * for money values. The project can be <code>null</code>. If it is null, the input format tries
+     * to guess a default configuration.
      * 
      * @param datatype The datatype for which you need the input format
-     * @param ipsProject The IIps Project used to get some default values
+     * @param ipsProject The IIps Project used to retrieve a default configuration
      * 
      * @return The input format for formatting any values in the ui depending on the datatype and
      *         the current locale.

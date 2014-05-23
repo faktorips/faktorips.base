@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumumerationField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumerationField;
 import org.faktorips.devtools.core.ui.table.ComboCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
@@ -63,7 +63,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
             return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype, isControlForDefaultValue(valueSet));
         } else {
             Text text = toolkit.createText(parent);
-            return new EnumumerationField(text, (EnumDatatype)datatype, getNullStringRepresentation(valueSet));
+            return new EnumerationField(text, (EnumDatatype)datatype, getNullStringRepresentation(valueSet));
         }
     }
 
@@ -135,7 +135,7 @@ public class EnumDatatypeControlFactory extends ValueDatatypeControlFactory {
     protected void initializeEnumCombo(Text text, EnumDatatype datatype, String nullStringRepresentation) {
         // stores the enum datatype object as data object in the combo,
         // will be used to map between the displayed text and id
-        EnumumerationField enumDatatypeField = new EnumumerationField(text, datatype, nullStringRepresentation);
+        EnumerationField enumDatatypeField = new EnumerationField(text, datatype, nullStringRepresentation);
         text.setData(enumDatatypeField);
     }
 
