@@ -11,27 +11,33 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 /**
  * This is an implementation of the {@link AbstractEnumerationProposalProvider}. It provides valid
- * proposals for {@link EnumDatatype}s.
+ * proposals for {@link EnumValueSet}s.
  */
-public class EnumDatatypeProposalProvider extends AbstractEnumerationProposalProvider {
+public class EnumValueSetProposalProvider extends AbstractEnumerationProposalProvider {
 
-    public EnumDatatypeProposalProvider(EnumDatatype enumDatatype, UIDatatypeFormatter uiDatatypeFormatter) {
-        super(enumDatatype, uiDatatypeFormatter);
+    private IValueSetOwner owner;
+
+    public EnumValueSetProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype,
+            UIDatatypeFormatter uiDatatypeFormatter) {
+        super(valueDatatype, uiDatatypeFormatter);
+        this.owner = owner;
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        if (isEnumDatatypeAllowed()) {
+        if (isEnumValueSet()) {
             List<IContentProposal> result = new ArrayList<IContentProposal>();
             result = createContentProposals(contents);
             return result.toArray(new IContentProposal[result.size()]);
@@ -39,29 +45,25 @@ public class EnumDatatypeProposalProvider extends AbstractEnumerationProposalPro
         return new IContentProposal[0];
     }
 
-    private boolean isEnumDatatypeAllowed() {
-        return getValueDatatype().isEnum();
+    private boolean isEnumValueSet() {
+        return getValueSet().isEnum();
+    }
+
+    private IValueSet getValueSet() {
+        return owner.getValueSet();
     }
 
     private List<IContentProposal> createContentProposals(String input) {
         List<IContentProposal> result = new ArrayList<IContentProposal>();
-        List<String> allowedValuesAsList = getAllowedValuesAsList();
-        for (String value : allowedValuesAsList) {
-            String content = getFormatValue(value);
-            if (content.toLowerCase().startsWith(input.toLowerCase())) {
-                ContentProposal contentProposal = new ContentProposal(content, content, null, input);
+        EnumValueSet enumValueSet = (EnumValueSet)getValueSet();
+        List<String> valuesAsList = enumValueSet.getValuesAsList();
+        for (String value : valuesAsList) {
+            String formatedValue = getFormatValue(value);
+            if (formatedValue.toLowerCase().startsWith(input.toLowerCase())) {
+                ContentProposal contentProposal = new ContentProposal(formatedValue, formatedValue, null, input);
                 result.add(contentProposal);
             }
         }
         return result;
-    }
-
-    @Override
-    public EnumDatatype getValueDatatype() {
-        return (EnumDatatype)super.getValueDatatype();
-    }
-
-    private List<String> getAllowedValuesAsList() {
-        return Arrays.asList(getValueDatatype().getAllValueIds(true));
     }
 }

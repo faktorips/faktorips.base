@@ -69,7 +69,7 @@ public class EnumDatatypeProposalProviderTest {
     @Test
     public void testGetProposals_ValidInputEntered() throws Exception {
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("aaa", 0);
+        IContentProposal[] proposals = enumProposalProvider.getProposals("enumA aaa", 0);
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);

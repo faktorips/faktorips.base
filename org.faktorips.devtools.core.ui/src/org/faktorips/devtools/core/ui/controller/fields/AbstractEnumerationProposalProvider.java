@@ -11,15 +11,18 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+/**
+ * An <code>IContentProposalProvider</code> for EnumerationFields.
+ */
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
 
-public abstract class AbstractEnumProposalProvider implements IContentProposalProvider {
+public abstract class AbstractEnumerationProposalProvider implements IContentProposalProvider {
 
     private final UIDatatypeFormatter uiDatatypeFormatter;
     private ValueDatatype valueDatatype;
 
-    public AbstractEnumProposalProvider(ValueDatatype valueDatatype, UIDatatypeFormatter uiDatatypeFormatter) {
+    public AbstractEnumerationProposalProvider(ValueDatatype valueDatatype, UIDatatypeFormatter uiDatatypeFormatter) {
         this.valueDatatype = valueDatatype;
         this.uiDatatypeFormatter = uiDatatypeFormatter;
     }
@@ -34,9 +37,5 @@ public abstract class AbstractEnumProposalProvider implements IContentProposalPr
 
     public String getFormatValue(String value) {
         return getUiDatatypeFormatter().formatValue(valueDatatype, value);
-    }
-
-    public boolean isEnumDatatypeAllowed() {
-        return getValueDatatype().isEnum();
     }
 }
