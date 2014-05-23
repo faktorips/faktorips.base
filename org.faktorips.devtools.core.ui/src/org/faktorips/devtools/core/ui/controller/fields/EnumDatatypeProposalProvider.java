@@ -31,16 +31,9 @@ public class EnumDatatypeProposalProvider extends AbstractEnumerationProposalPro
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        if (isEnumDatatypeAllowed()) {
-            List<IContentProposal> result = new ArrayList<IContentProposal>();
-            result = createContentProposals(contents);
-            return result.toArray(new IContentProposal[result.size()]);
-        }
-        return new IContentProposal[0];
-    }
-
-    private boolean isEnumDatatypeAllowed() {
-        return getValueDatatype().isEnum();
+        List<IContentProposal> result = new ArrayList<IContentProposal>();
+        result = createContentProposals(contents);
+        return result.toArray(new IContentProposal[result.size()]);
     }
 
     private List<IContentProposal> createContentProposals(String input) {

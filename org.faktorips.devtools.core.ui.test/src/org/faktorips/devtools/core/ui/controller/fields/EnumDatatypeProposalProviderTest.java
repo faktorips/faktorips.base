@@ -36,22 +36,11 @@ public class EnumDatatypeProposalProviderTest {
     @Before
     public void setUp() throws Exception {
         enumProposalProvider = new EnumDatatypeProposalProvider(enumValueDatatype, uiDatatypeFormatter);
-        when(enumValueDatatype.isEnum()).thenReturn(true);
         when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("enumA aaaaa");
         when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("enumB bbbbb");
         when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("en um C ccccc");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "<null>")).thenReturn("<null>");
-        when(enumValueDatatype.getAllValueIds(true)).thenReturn(new String[] { "aaaaa", "bbbbb", "ccccc", "<null>" });
-    }
-
-    @Test
-    public void testGetProposals_NoEnumDatatype() throws Exception {
-        when(enumValueDatatype.isEnum()).thenReturn(false);
-
-        IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
-
-        assertNotNull(proposals);
-        assertEquals(0, proposals.length);
+        when(uiDatatypeFormatter.formatValue(enumValueDatatype, null)).thenReturn("<null>");
+        when(enumValueDatatype.getAllValueIds(true)).thenReturn(new String[] { "aaaaa", "bbbbb", "ccccc", null });
     }
 
     @Test

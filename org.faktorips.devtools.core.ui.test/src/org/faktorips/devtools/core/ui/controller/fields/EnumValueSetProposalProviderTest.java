@@ -51,9 +51,9 @@ public class EnumValueSetProposalProviderTest {
         when(uiDatatypeFormatter.formatValue(valueDatatype, "aaaaa")).thenReturn("Integer aaaaa");
         when(uiDatatypeFormatter.formatValue(valueDatatype, "bbbbb")).thenReturn("Integer bbbbb");
         when(uiDatatypeFormatter.formatValue(valueDatatype, "ccccc")).thenReturn("Integer ccccc");
-        when(uiDatatypeFormatter.formatValue(valueDatatype, "<null>")).thenReturn("<null>");
-        when(enumValueSet.getValuesAsList()).thenReturn(
-                Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", "<null>" }));
+        when(uiDatatypeFormatter.formatValue(valueDatatype, null)).thenReturn("<null>");
+        when(enumValueSet.getValuesAsList())
+                .thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc", null }));
     }
 
     @Test
