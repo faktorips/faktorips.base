@@ -11,6 +11,8 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.List;
 
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 
@@ -22,7 +24,18 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  */
 public interface IValueSource {
 
+    /**
+     * Returns all values defined in a {@link ValueSet} or {@link ValueDatatype} which are
+     * considered in an {@link IValueSource}.
+     * 
+     * @return List<String> containing all values.
+     */
     public List<String> getValues();
 
-    public boolean hasValues();
+    /**
+     * Indicates if this {@link IValueSource} can be used under the given circumstances.
+     * 
+     * @return <code>true</code> if {@link IValueSource} is applicable.
+     */
+    public boolean isApplicable();
 }

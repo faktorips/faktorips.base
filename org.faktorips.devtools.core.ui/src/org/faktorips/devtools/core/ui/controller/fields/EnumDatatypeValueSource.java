@@ -33,8 +33,8 @@ public class EnumDatatypeValueSource implements IValueSource {
     }
 
     @Override
-    public boolean hasValues() {
-        return false;
+    public boolean isApplicable() {
+        return enumDatatype.isEnum();
     }
 
 }

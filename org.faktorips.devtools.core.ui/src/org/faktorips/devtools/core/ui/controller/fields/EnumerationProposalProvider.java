@@ -73,9 +73,12 @@ public class EnumerationProposalProvider implements IContentProposalProvider {
 
     private List<String> getValuesAsList() {
         IValueSource valueSource = new EnumValueSetValueSource(owner);
-        if (!valueSource.hasValues() && valueDatatype.isEnum()) {
-            valueSource = new EnumDatatypeValueSource((EnumDatatype)valueDatatype);
+        if (!valueSource.isApplicable() && valueDatatype.isEnum()) {
+            return new EnumDatatypeValueSource((EnumDatatype)valueDatatype).getValues();
         }
-        return valueSource.getValues();
+        if (valueSource.isApplicable()) {
+            return valueSource.getValues();
+        }
+        return new ArrayList<String>();
     }
 }
