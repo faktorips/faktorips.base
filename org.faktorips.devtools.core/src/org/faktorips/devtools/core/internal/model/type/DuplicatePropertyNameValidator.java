@@ -16,25 +16,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
-public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
+public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> {
 
     /*
-     * Map with property names as keys. For a unqiue property name, the map contains the object
+     * Map with property names as keys. For a unique property name, the map contains the object
      * (with the name) as value. If there are multiple properties with a name, the value is a list
      * containing all the objects with the same name.
      */
@@ -45,18 +49,102 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
         super(ipsProject);
     }
 
-    protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
-        String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName);
-        return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
-    }
-
-    public void addMessagesForDuplicates(MessageList messages) {
+    public void addMessagesForDuplicates(IType currentType, MessageList messages) {
         for (String propertyName : duplicateProperties) {
             ObjectProperty[] duplicateObjProperties = properties.get(propertyName);
-            if (!ignore(duplicateObjProperties)) {
+            if (!ignore(currentType, duplicateObjProperties)) {
                 messages.add(createMessage(propertyName, duplicateObjProperties));
             }
         }
+    }
+
+    protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
+        String text = createNLSBinding(propertyName, invalidObjProperties);
+        return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
+    }
+
+    private String createNLSBinding(String propertyName, ObjectProperty[] invalidObjProperties) {
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg, propertyName,
+                createMoreSpecificErrorText(invalidObjProperties[0], invalidObjProperties[1]));
+    }
+
+    /**
+     * The error message created in <code>createNLSBinding</code> can contain further informations.
+     * If more than two IpsElements contain the same propertyName, only one error message will be
+     * generated for the first two objectProperties. If the invalidObjProperties are from the same
+     * {@link IType} but instances of different {@link IpsObjectPartContainer}, the message will
+     * indicate which {@link IpsObjectPartContainer} have to be considered. If the elements are from
+     * different {@link IType} the message indicates what {@link IpsObjectPartContainer} in which
+     * {@link IType} are named ambiguously. If the invalidProperties are instances of the same
+     * {@link IpsObjectPartContainer} and {@link IType}, an empty string will be returned.
+     * 
+     */
+    protected String createMoreSpecificErrorText(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
+        if (isIpsObjectPartContainer(invalidObjProperty1, invalidObjProperty2)) {
+            IpsObjectPartContainer ipsObjectContainer2 = ((IpsObjectPartContainer)invalidObjProperty2.getObject());
+            IpsObjectPartContainer ipsObjectContainer1 = ((IpsObjectPartContainer)invalidObjProperty1.getObject());
+
+            if (isDifferentIpsObject(ipsObjectContainer2, ipsObjectContainer1)) {
+                return createTextForDiffITypes(ipsObjectContainer2);
+            } else if (isDifferentIpsObjectPartContainer(ipsObjectContainer2, ipsObjectContainer1)) {
+                return createTextForDiffIpsObjPartContainer(invalidObjProperty1, invalidObjProperty2);
+            }
+        }
+        return StringUtils.EMPTY;
+    }
+
+    private boolean isDifferentIpsObject(IpsObjectPartContainer ipsObjectContainer2,
+            IpsObjectPartContainer ipsObjectContainer1) {
+        return !(ipsObjectContainer1.getIpsObject().equals(ipsObjectContainer2.getIpsObject()));
+    }
+
+    private boolean isDifferentIpsObjectPartContainer(IpsObjectPartContainer ipsObjectContainer2,
+            IpsObjectPartContainer ipsObjectContainer1) {
+        return !(ipsObjectContainer1.getClass().equals(ipsObjectContainer2.getClass()));
+    }
+
+    private String createTextForDiffITypes(IpsObjectPartContainer ipsObjectContainer2) {
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsAndITypes,
+                getObjectKindNameSingular(ipsObjectContainer2), ipsObjectContainer2.getIpsObject().getName());
+    }
+
+    private String createTextForDiffIpsObjPartContainer(ObjectProperty invalidObjProperty1,
+            ObjectProperty invalidObjProperty2) {
+        return NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
+                StringUtils.capitalize(getObjectKindNamePlural(invalidObjProperty1)),
+                getObjectKindNamePlural(invalidObjProperty2));
+    }
+
+    private boolean isIpsObjectPartContainer(ObjectProperty invalidObjProperty1, ObjectProperty invalidObjProperty2) {
+        return invalidObjProperty1.getObject() instanceof IpsObjectPartContainer
+                && invalidObjProperty2.getObject() instanceof IpsObjectPartContainer;
+    }
+
+    protected String getObjectKindNamePlural(ObjectProperty invalidObjProperty) {
+        IIpsObjectPartContainer objectPartContainer = ((IIpsObjectPartContainer)invalidObjProperty.getObject());
+        if (objectPartContainer instanceof IAttribute) {
+            return Messages.DuplicatePropertyNameValidator_PluralAttribute;
+        }
+        if (objectPartContainer instanceof IAssociation) {
+            return Messages.DuplicatePropertyNameValidator_PluralAssociation;
+        }
+        if (objectPartContainer instanceof IMethod) {
+            return Messages.DuplicatePropertyNameValidator_PluralMethod;
+        }
+        return Messages.DuplicatePropertyNameValidator_PluralElement;
+    }
+
+    protected String getObjectKindNameSingular(IpsObjectPartContainer objectPartContainer) {
+        if (objectPartContainer instanceof IAttribute) {
+            return Messages.DuplicatePropertyNameValidator_SingularAttribute;
+        }
+        if (objectPartContainer instanceof IAssociation) {
+            return Messages.DuplicatePropertyNameValidator_SingularAssociation;
+        }
+        if (objectPartContainer instanceof IMethod) {
+            return Messages.DuplicatePropertyNameValidator_SingularMethod;
+        }
+        return Messages.DuplicatePropertyNameValidator_SingularElement;
     }
 
     /**
@@ -68,7 +156,10 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
      * @return <code>true</code> if the duplication could be ignored, <code>false</code> to not
      *         ignore.
      */
-    protected boolean ignore(ObjectProperty[] duplicateObjectProperties) {
+    protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
+        if (!isOnePropertyInThisType(currentType, duplicateObjectProperties)) {
+            return true;
+        }
         if (!checkAssociationAndType(duplicateObjectProperties)) {
             return false;
         }
@@ -76,6 +167,18 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
             return true;
         }
         return ignoreDuplicateDetailToMasterAssociations(duplicateObjectProperties);
+    }
+
+    private boolean isOnePropertyInThisType(IType currentType, ObjectProperty[] duplicateObjectProperties) {
+        for (ObjectProperty objectProperty : duplicateObjectProperties) {
+            if (objectProperty.getObject() instanceof IIpsObjectPartContainer) {
+                IIpsObjectPartContainer part = (IIpsObjectPartContainer)objectProperty.getObject();
+                if (part.getIpsObject().equals(currentType)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -190,26 +293,48 @@ public class DuplicatePropertyNameValidator extends TypeHierarchyVisitor<IType> 
 
     @Override
     protected boolean visit(IType currentType) {
-        Type currType = (Type)currentType;
-        for (IAttribute attr : currType.getAttributesPartCollection()) {
-            if (!attr.isOverwrite()) {
-                add(attr.getName().toLowerCase(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
-            }
-        }
-        for (IAssociation ass : currType.getAssociationPartCollection()) {
-            if (ass.is1ToMany()) {
-                // target role plural only check if is many association
-                add(ass.getTargetRolePlural().toLowerCase(), new ObjectProperty(ass,
-                        IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
-            }
-            // always check target role singular
-            add(ass.getTargetRoleSingular().toLowerCase(), new ObjectProperty(ass,
-                    IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
-        }
+        addAttributes(currentType);
+        addAssociations(currentType);
+        addMatchingType(currentType);
         return true;
     }
 
-    protected void add(String propertyName, ObjectProperty wrapper) {
+    private void addMatchingType(IType currentType) {
+        IType matchingType = getMatchingType(currentType);
+        if (matchingType != null) {
+            addMatchingAttributes(matchingType);
+        }
+    }
+
+    protected abstract IType getMatchingType(IType currentType);
+
+    private void addMatchingAttributes(IType matchingType) {
+        for (IAttribute attribute : matchingType.getAttributes()) {
+            add(attribute.getName(), new ObjectProperty(attribute, IAssociation.PROPERTY_NAME));
+        }
+    }
+
+    private void addAttributes(IType currentType) {
+        for (IAttribute attr : currentType.getAttributes()) {
+            if (!attr.isOverwrite()) {
+                add(attr.getName(), new ObjectProperty(attr, IIpsElement.PROPERTY_NAME));
+            }
+        }
+    }
+
+    private void addAssociations(IType currentType) {
+        for (IAssociation ass : currentType.getAssociations()) {
+            if (ass.is1ToMany()) {
+                // target role plural only check if is many association
+                add(ass.getTargetRolePlural(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_PLURAL));
+            }
+            // always check target role singular
+            add(ass.getTargetRoleSingular(), new ObjectProperty(ass, IAssociation.PROPERTY_TARGET_ROLE_SINGULAR));
+        }
+    }
+
+    protected void add(String originalPropertyName, ObjectProperty wrapper) {
+        String propertyName = originalPropertyName.toLowerCase();
         Object objInMap = properties.get(propertyName);
         if (objInMap == null) {
             properties.put(propertyName, new ObjectProperty[] { wrapper });

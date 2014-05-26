@@ -26,12 +26,14 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
+import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -58,6 +60,7 @@ import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Element;
 
 /**
@@ -634,6 +637,11 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         return Messages.PolicyCmptType_caption;
     }
 
+    @Override
+    public DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+        return new PolicyCmptTypeDuplicatePropertyNameValidator(ipsProject);
+    }
+
     private static class IsAggregrateRootVisitor extends TypeHierarchyVisitor<IPolicyCmptType> {
 
         private boolean root = true;
@@ -749,6 +757,44 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                 }
             }
             return true;
+        }
+
+    }
+
+    private static class PolicyCmptTypeDuplicatePropertyNameValidator extends DuplicatePropertyNameValidator {
+
+        public PolicyCmptTypeDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+            super(ipsProject);
+        }
+
+        @Override
+        protected boolean visit(IType currentType) {
+            super.visit(currentType);
+            IProductCmptType matchingType = getMatchingType(currentType);
+            if (matchingType != null) {
+                String name = matchingType.getUnqualifiedName();
+                add(name, new ObjectProperty(currentType, IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE));
+            }
+            return true;
+        }
+
+        @Override
+        protected IProductCmptType getMatchingType(IType currentType) {
+            try {
+                return ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+
+        @Override
+        protected String getObjectKindNamePlural(ObjectProperty invalidObjProperty) {
+            IIpsObjectPartContainer objectPartContainer = ((IIpsObjectPartContainer)invalidObjProperty.getObject());
+            if (objectPartContainer instanceof IPolicyCmptType
+                    && invalidObjProperty.getProperty().equals(IPolicyCmptType.PROPERTY_PRODUCT_CMPT_TYPE)) {
+                return org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_pluralCaption;
+            }
+            return super.getObjectKindNamePlural(invalidObjProperty);
         }
 
     }

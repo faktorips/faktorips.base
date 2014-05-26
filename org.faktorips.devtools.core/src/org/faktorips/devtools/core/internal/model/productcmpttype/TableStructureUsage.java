@@ -250,18 +250,6 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         }
 
         validateRoleNameInSupertypeHierarchy(list);
-        validateDuplicateRoleName(list);
-    }
-
-    private void validateDuplicateRoleName(MessageList msgList) {
-        List<ITableStructureUsage> tableStructureUsages = getProductCmptType().getTableStructureUsages();
-        for (ITableStructureUsage tableStructureUsage : tableStructureUsages) {
-            if (!(tableStructureUsage.getId().equals(getId()))
-                    && tableStructureUsage.getRoleName().equals(getRoleName())) {
-                String text = NLS.bind(Messages.TableStructureUsage_msgSameRoleName, getRoleName());
-                msgList.add(new Message(MSGCODE_SAME_ROLENAME, text, Message.ERROR));
-            }
-        }
     }
 
     private void validateRoleNameInSupertypeHierarchy(MessageList msgList) throws CoreException {

@@ -37,6 +37,7 @@ public class Messages extends NLS {
     public static String ProductCmptType_policyCmptTypeDoesNotSpecifyThisType;
     public static String ProductCmptType_TypeMustConfigureAPolicyCmptTypeIfSupertypeDoes;
     public static String ProductCmptType_caption;
+    public static String ProductCmptType_pluralCaption;
     public static String ProductCmptType_error_supertypeNotMarkedAsLayerSupertype;
     public static String ProductCmptTypeAssociation_error_MatchingAssociationDoesNotReferenceThis;
     public static String ProductCmptTypeAssociation_error_MatchingAssociationDuplicateName;
@@ -55,9 +56,12 @@ public class Messages extends NLS {
     public static String TableStructureUsage_msgAtLeastOneStructureMustBeReferenced;
     public static String TableStructureUsage_msgInvalidRoleName;
     public static String TableStructureUsage_msgRoleNameAlreadyInSupertype;
-    public static String TableStructureUsage_msgSameRoleName;
     public static String TableStructureUsage_msgTableStructureNotExists;
+    public static String TableStructureUsage_msg_Singular;
+    public static String TableStructureUsage_msg_Plural;
 
+    public static String ProductCmptTypeMethod_Formula_msg_Plural;
+    public static String ProductCmptTypeMethod_Formula_msg_Singular;
     public static String ProductCmptCategory_msgNameIsEmpty;
     public static String ProductCmptCategory_msgNameAlreadyUsedInTypeHierarchy;
     public static String ProductCmptCategory_msgInheritedButNotFoundInSupertypeHierarchy;
