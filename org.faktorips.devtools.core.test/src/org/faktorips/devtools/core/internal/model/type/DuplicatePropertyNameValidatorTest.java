@@ -280,7 +280,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 Messages.DuplicatePropertyNameValidator_PluralAssociation,
                 Messages.DuplicatePropertyNameValidator_PluralAttribute);
-        assertTrue(message.getText().contains(text));
+        assertTrue(message.getText().contains(StringUtils.capitalize(text)));
     }
 
     @Test
@@ -298,7 +298,7 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 org.faktorips.devtools.core.internal.model.productcmpttype.Messages.TableStructureUsage_msg_Plural,
                 Messages.DuplicatePropertyNameValidator_PluralMethod);
-        assertTrue(message.getText().contains(text));
+        assertTrue(message.getText().contains(StringUtils.capitalize(text)));
     }
 
     @Test
@@ -334,6 +334,6 @@ public class DuplicatePropertyNameValidatorTest extends AbstractIpsPluginTest {
         String text = NLS.bind(Messages.DuplicatePropertyNameValidator_msg_DifferentElementsSameType,
                 Messages.DuplicatePropertyNameValidator_PluralAttribute,
                 org.faktorips.devtools.core.internal.model.productcmpttype.Messages.ProductCmptType_pluralCaption);
-        assertTrue(message.getText().contains(text));
+        assertTrue(message.getText().contains(StringUtils.capitalize(text)));
     }
 }
