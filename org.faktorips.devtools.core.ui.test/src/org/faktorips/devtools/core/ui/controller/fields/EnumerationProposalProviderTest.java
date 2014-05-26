@@ -97,7 +97,7 @@ public class EnumerationProposalProviderTest {
         when(owner.getValueSet()).thenReturn(unrestrictedValueSet);
         when(enumDatatype.isEnum()).thenReturn(true);
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("b", 0);
+        IContentProposal[] proposals = enumProposalProvider.getProposals("b", 1);
 
         assertEquals(0, proposals.length);
     }
@@ -108,7 +108,7 @@ public class EnumerationProposalProviderTest {
         when(owner.getValueSet()).thenReturn(unrestrictedValueSet);
         when(enumDatatype.isEnum()).thenReturn(true);
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("y", 0);
+        IContentProposal[] proposals = enumProposalProvider.getProposals("y", 1);
 
         assertEquals(1, proposals.length);
         assertEquals("yyyyy", proposals[0].getLabel());
@@ -133,7 +133,7 @@ public class EnumerationProposalProviderTest {
         when(owner.getValueSet()).thenReturn(enumValueSet);
         when(valueDatatype.isEnum()).thenReturn(true);
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("foobar", 0);
+        IContentProposal[] proposals = enumProposalProvider.getProposals("foobar", 6);
 
         assertEquals(0, proposals.length);
     }
@@ -143,7 +143,7 @@ public class EnumerationProposalProviderTest {
         when(owner.getValueSet()).thenReturn(enumValueSet);
         when(valueDatatype.isEnum()).thenReturn(true);
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("bb", 0);
+        IContentProposal[] proposals = enumProposalProvider.getProposals("bb", 2);
 
         assertEquals(1, proposals.length);
         assertEquals("bbbbb", proposals[0].getLabel());
@@ -169,5 +169,16 @@ public class EnumerationProposalProviderTest {
         IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
 
         assertEquals(0, proposals.length);
+    }
+
+    @Test
+    public void testGetProposals_TestPosition() {
+        when(owner.getValueSet()).thenReturn(enumValueSet);
+        when(valueDatatype.isEnum()).thenReturn(true);
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("bar", 1);
+
+        assertEquals(1, proposals.length);
+        assertEquals("bbbbb", proposals[0].getLabel());
     }
 }

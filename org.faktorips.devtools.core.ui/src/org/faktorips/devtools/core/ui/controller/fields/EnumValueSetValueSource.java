@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.List;
 
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 
@@ -30,8 +30,7 @@ public class EnumValueSetValueSource implements IValueSource {
     @Override
     public List<String> getValues() {
         IValueSet valueSet = owner.getValueSet();
-        EnumValueSet enumValueSet = (EnumValueSet)valueSet;
-        return enumValueSet.getValuesAsList();
+        return ((IEnumValueSet)valueSet).getValuesAsList();
     }
 
     @Override

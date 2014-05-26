@@ -11,13 +11,11 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -26,49 +24,48 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
-public class ConfigElementProposalProvider implements IContentProposalProvider {
+/**
+ * An implementation of {@link AbstractProposalProvider} for {@link ConfigElementField}s. It
+ * provides proposals for all {@link IValueSetOwner}s allowing enum {@link ValueSetType}.
+ */
+public class ConfigElementProposalProvider extends AbstractProposalProvider {
 
-    private final IConfigElement configElement;
+    public ConfigElementProposalProvider(IConfigElement configElement, ValueDatatype valueDatatype,
+            IInputFormat<String> inputFormat) {
+        super(configElement, valueDatatype, inputFormat);
+    }
 
-    private final IInputFormat<String> inputFormat;
-
-    public ConfigElementProposalProvider(IConfigElement configElement, IInputFormat<String> inputFormat) {
-        this.configElement = configElement;
-        this.inputFormat = inputFormat;
+    @Override
+    public IConfigElement getValueSetOwner() {
+        return (IConfigElement)super.getValueSetOwner();
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
         if (isEnumValueSetAllowed()) {
-            String prefix = StringUtils.left(contents, position);
-            String lastValue = getLastValue(prefix);
-            List<IContentProposal> result = createContentProposals(lastValue);
-            return result.toArray(new IContentProposal[result.size()]);
+            return super.getProposals(contents, position);
         }
         return new IContentProposal[0];
     }
 
-    private List<IContentProposal> createContentProposals(String lastValue) {
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
-        List<String> allowedValuesAsList = getAllowedValuesAsList();
-        for (String value : allowedValuesAsList) {
-            String content = getFormatValue(value);
-            if (!isAlreadyContained(value) && content.startsWith(lastValue)) {
-                final String newContentPart = content.substring(lastValue.length());
-                ContentProposal contentProposal = new ContentProposal(newContentPart, content, null, lastValue);
-                result.add(contentProposal);
-            }
-        }
-        return result;
+    @Override
+    protected String createPrefix(String contents, int position) {
+        String prefix = super.createPrefix(contents, position);
+        return getLastValue(prefix);
+    }
+
+    @Override
+    protected boolean isApplicable(String prefix, String valueInModel, String formattedValue) {
+        return !isAlreadyContained(valueInModel) && super.isApplicable(prefix, valueInModel, formattedValue);
     }
 
     private boolean isEnumValueSetAllowed() {
         try {
-            return configElement.getAllowedValueSetTypes(getIpsProject()).contains(ValueSetType.ENUM);
+            return getValueSetOwner().getAllowedValueSetTypes(getIpsProject()).contains(ValueSetType.ENUM);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -87,46 +84,35 @@ public class ConfigElementProposalProvider implements IContentProposalProvider {
         }
     }
 
-    private ValueDatatype getDatatype() {
-        try {
-            return configElement.findValueDatatype(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
     private IIpsProject getIpsProject() {
-        return configElement.getIpsProject();
+        return getValueSetOwner().getIpsProject();
     }
 
-    private List<String> getAllowedValuesAsList() {
+    @Override
+    protected List<String> getAllowedValuesAsList() {
         IValueSet allowedValueSet = getAllowedValueSet();
         if (allowedValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return ((IEnumValueSet)allowedValueSet).getValuesAsList();
-        } else if (getDatatype().isEnum()) {
-            return Arrays.asList(((EnumDatatype)getDatatype()).getAllValueIds(allowedValueSet.isContainingNull()));
+        } else if (getValueDatatype().isEnum()) {
+            return new EnumDatatypeValueSource((EnumDatatype)getValueDatatype()).getValues();
         }
         return new ArrayList<String>();
     }
 
     private IValueSet getAllowedValueSet() {
         try {
-            return configElement.findPcTypeAttribute(getIpsProject()).getValueSet();
+            return getValueSetOwner().findPcTypeAttribute(getIpsProject()).getValueSet();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
     private boolean isCurrentEnumValueSet() {
-        return configElement.getValueSet().isEnum();
+        return getValueSetOwner().getValueSet().isEnum();
     }
 
     private IEnumValueSet getCurrentValueSet() {
-        return (IEnumValueSet)configElement.getValueSet();
-    }
-
-    private String getFormatValue(String value) {
-        return inputFormat.format(value);
+        return (IEnumValueSet)getValueSetOwner().getValueSet();
     }
 
     private String getLastValue(String s) {

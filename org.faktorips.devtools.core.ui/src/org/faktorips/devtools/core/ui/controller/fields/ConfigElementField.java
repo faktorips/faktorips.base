@@ -47,10 +47,11 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
     private void initContentAssistent() {
         if (isContentAssistAvailable()) {
             try {
-                IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(
-                        configElement.findValueDatatype(getIpsProject()), getIpsProject());
-                ConfigElementProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
-                        inputFormat);
+                ValueDatatype valueDatatype = configElement.findValueDatatype(getIpsProject());
+                IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype,
+                        getIpsProject());
+                AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
+                        valueDatatype, inputFormat);
                 new UIToolkit(null).attachContentProposalAdapter(getTextControl(), proposalProvider,
                         ContentProposalAdapter.PROPOSAL_INSERT, null);
             } catch (CoreException e) {

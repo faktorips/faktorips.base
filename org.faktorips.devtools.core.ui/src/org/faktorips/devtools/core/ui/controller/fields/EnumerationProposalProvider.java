@@ -13,68 +13,28 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.fieldassist.IContentProposal;
-import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.datatype.EnumDatatype;
-/**
- * An <code>IContentProposalProvider</code> for EnumerationFields.
- */
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 /**
- * An implementation of {@link IContentProposalProvider} for {@link EnumerationField}s. It provides
+ * An implementation of {@link AbstractProposalProvider} for {@link EnumerationField}s. It provides
  * proposals for {@link EnumDatatype}s or {@link EnumValueSet}s.
  */
-public class EnumerationProposalProvider implements IContentProposalProvider {
-
-    private final IInputFormat<String> inputFormat;
-    private ValueDatatype valueDatatype;
-    private IValueSetOwner owner;
+public class EnumerationProposalProvider extends AbstractProposalProvider {
 
     public EnumerationProposalProvider(ValueDatatype valueDatatype, IValueSetOwner owner,
             IInputFormat<String> inputFormat) {
-        this.valueDatatype = valueDatatype;
-        this.owner = owner;
-        this.inputFormat = inputFormat;
-    }
-
-    public ValueDatatype getValueDatatype() {
-        return valueDatatype;
-    }
-
-    public String getFormatValue(String value) {
-        return inputFormat.format(value);
+        super(owner, valueDatatype, inputFormat);
     }
 
     @Override
-    public IContentProposal[] getProposals(String contents, int position) {
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
-        result = createContentProposals(contents);
-        return result.toArray(new IContentProposal[result.size()]);
-    }
-
-    private List<IContentProposal> createContentProposals(String input) {
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
-        List<String> allowedValuesAsList = getValuesAsList();
-        for (String value : allowedValuesAsList) {
-            String content = getFormatValue(value);
-            if (content.toLowerCase().startsWith(input.toLowerCase())) {
-                final String newContentPart = content.substring(input.length());
-                ContentProposal contentProposal = new ContentProposal(newContentPart, content, null, input);
-                result.add(contentProposal);
-            }
-        }
-        return result;
-    }
-
-    private List<String> getValuesAsList() {
-        IValueSource valueSource = new EnumValueSetValueSource(owner);
-        if (!valueSource.isApplicable() && valueDatatype.isEnum()) {
-            return new EnumDatatypeValueSource((EnumDatatype)valueDatatype).getValues();
+    protected List<String> getAllowedValuesAsList() {
+        IValueSource valueSource = new EnumValueSetValueSource(getValueSetOwner());
+        if (!valueSource.isApplicable() && getValueDatatype().isEnum()) {
+            return new EnumDatatypeValueSource((EnumDatatype)getValueDatatype()).getValues();
         }
         if (valueSource.isApplicable()) {
             return valueSource.getValues();

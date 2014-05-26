@@ -61,7 +61,6 @@ public class ConfigElementProposalProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, inputFormat);
         enumValueSet = new EnumValueSet(propertyValue, "ID");
         when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
         when(enumValueDatatype.isEnum()).thenReturn(true);
@@ -82,6 +81,7 @@ public class ConfigElementProposalProviderTest {
         when(inputFormat.format("aaaaa")).thenReturn("enumA aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("enumB bbbbb");
         when(inputFormat.format("ccccc")).thenReturn("en um C ccccc");
+        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat);
     }
 
     @Test
