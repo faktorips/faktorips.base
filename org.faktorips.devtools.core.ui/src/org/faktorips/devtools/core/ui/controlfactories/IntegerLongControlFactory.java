@@ -56,8 +56,9 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        FormattingTextField<String> formatField = new FormattingTextField<String>(createControl(toolkit, parent,
-                datatype, valueSet, ipsProject), IntegerNumberFormat.newInstance(datatype));
+        Text text = createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        FormattingTextField<String> formatField = new FormattingTextField<String>(text,
+                IntegerNumberFormat.newInstance(datatype));
         return formatField;
     }
 
@@ -69,6 +70,7 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        adaptEnumValueSetProposal(text, valueSet, datatype);
         return text;
     }
 

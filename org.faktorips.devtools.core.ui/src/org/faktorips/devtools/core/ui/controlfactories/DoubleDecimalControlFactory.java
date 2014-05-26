@@ -51,9 +51,9 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
-        return new FormattingTextField<String>((Text)createControl(toolkit, parent, datatype, valueSet, ipsProject),
-                DecimalNumberFormat.newInstance(datatype));
+        Text text = (Text)createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        adaptEnumValueSetProposal(text, valueSet, datatype);
+        return new FormattingTextField<String>(text, DecimalNumberFormat.newInstance(datatype));
 
     }
 
@@ -63,7 +63,9 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        return toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        adaptEnumValueSetProposal(text, valueSet, datatype);
+        return text;
     }
 
     /**

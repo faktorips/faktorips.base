@@ -10,24 +10,23 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumValueSetField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
-import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
  * A default factory that creates a combo box for none-abstract enum value sets and a simple text
@@ -53,11 +52,10 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        if (datatype != null && valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            Combo combo = toolkit.createCombo(parent);
-            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype, isControlForDefaultValue(valueSet));
-        }
-        return new TextField(toolkit.createText(parent));
+        Text text = toolkit.createText(parent);
+        adaptEnumValueSetProposal(text, valueSet, datatype);
+        return new FormattingTextField<String>(text, IpsUIPlugin.getDefault().getInputFormat(datatype, null),
+                StringUtils.EMPTY);
     }
 
     @Override
@@ -66,8 +64,9 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
-        return createEditField(toolkit, parent, datatype, valueSet, ipsProject).getControl();
+        Text text = toolkit.createText(parent);
+        adaptEnumValueSetProposal(text, valueSet, datatype);
+        return text;
     }
 
     /**
@@ -101,8 +100,8 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-        Text textControl = toolkit.createText(tableViewer.getTable(), SWT.SINGLE | getDefaultAlignment());
-        TextCellEditor cellEditor = new TextCellEditor(textControl);
+        EditField<String> editField = createEditField(toolkit, tableViewer.getTable(), dataType, valueSet, ipsProject);
+        EditFieldCellEditor cellEditor = new EditFieldCellEditor(editField);
         TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
         strat.setRowCreating(true);
         cellEditor.setTraversalStrategy(strat);

@@ -55,6 +55,7 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        adaptEnumValueSetProposal(control, valueSet, datatype);
         return control;
     }
 

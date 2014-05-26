@@ -11,14 +11,22 @@
 package org.faktorips.devtools.core.ui;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.controlfactories.OpenOnMouseClickProposalAdapter;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
+import org.faktorips.devtools.core.ui.controller.fields.EnumerationProposalProvider;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 
 /**
@@ -53,6 +61,19 @@ public abstract class ValueDatatypeControlFactory {
             ValueDatatype datatype,
             @Deprecated IValueSet valueSet,
             IIpsProject ipsProject);
+
+    protected void adaptEnumValueSetProposal(Text textControl, IValueSet valueSet, ValueDatatype datatype) {
+        if (valueSet != null) {
+            IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();
+            EnumerationFieldPainter.addPainterTo(textControl);
+            IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype,
+                    valueSetOwner.getIpsProject());
+            IContentProposalProvider proposalProvider = new EnumerationProposalProvider(datatype, valueSetOwner,
+                    inputFormat);
+            OpenOnMouseClickProposalAdapter.createAndActivateOnAnyKey(textControl, new TextContentAdapter(),
+                    proposalProvider);
+        }
+    }
 
     /**
      * Creates a control that allows to edit a value of the value datatype this is a factory for.
