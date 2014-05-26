@@ -9,7 +9,7 @@
      * 
      * @generated
      */
-    «overrideAnnotationIfHasSuperclassOrInterface()-»
+    @Override
     public boolean «accept(IModelObjectVisitor() +" visitor")» {
     	«IF hasSupertype()-»
 	        if (!super.accept(visitor)) {

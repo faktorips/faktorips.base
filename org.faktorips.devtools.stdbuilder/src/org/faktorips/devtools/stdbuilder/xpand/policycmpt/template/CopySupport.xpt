@@ -11,7 +11,7 @@
 	     * 
 	     * @generated
 	     */
-	    «overrideAnnotationForInterfaceOrNonAbstractSuperclassMethod()-»
+	    @Override
 	    public «IModelObject()» «newCopy()» {
 	        «Map(IModelObject(), IModelObject())» copyMap = new «HashMap(IModelObject(), IModelObject())»();
 	        «implClassName» newCopy = («implClassName») «newCopyInternal("copyMap")»;
@@ -25,7 +25,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationIfHasSuperclass()-»
+    «overrideAnnotationIfHasSuperclass()-»
     public «IModelObject()» «newCopyInternal(Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF !abstract-»
 	        «implClassName» newCopy = («implClassName»)copyMap.get(this);
@@ -48,7 +48,7 @@
      * 
      * @generated
      */
-     «overrideAnnotationIfHasSuperclass()-»
+    «overrideAnnotationIfHasSuperclass()-»
     protected void «copyProperties(IModelObject()+" copy", Map(IModelObject(), IModelObject())+" copyMap")» {
 		«IF hasSupertype()-»
 			super.copyProperties(copy, copyMap);
@@ -68,7 +68,7 @@
      *
      * @generated
      */
-     «overrideAnnotationIfHasSuperclass()-»
+    «overrideAnnotationIfHasSuperclass()-»
     public void «copyAssociationsInternal(IModelObject()+" abstractCopy", Map(IModelObject(), IModelObject())+" copyMap")» {
     	«IF hasSupertype()-»
 	        super.«copyAssociationsInternal("abstractCopy", "copyMap")»;

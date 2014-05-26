@@ -11,6 +11,8 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,10 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -149,11 +153,60 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         if (StringUtils.isEmpty(getTableStructure())) {
             return new IDependency[0];
         }
+        return createDependencies(details);
+    }
+
+    private IDependency[] createDependencies(Map<IDependency, List<IDependencyDetail>> details) {
+        List<IDependency> dependencies = new ArrayList<IDependency>();
+        dependencies.add(createStructureDependency(details));
+        dependencies.addAll(createValidationDependencies());
+        return dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    private IDependency createStructureDependency(Map<IDependency, List<IDependencyDetail>> details) {
         IDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
                 new QualifiedNameType(getTableStructure(), IpsObjectType.TABLE_STRUCTURE));
         addDetails(details, dependency, this, PROPERTY_TABLESTRUCTURE);
+        return dependency;
+    }
 
-        return new IDependency[] { dependency };
+    private List<IDependency> createValidationDependencies() {
+        ITableStructure tableStructure = findTableStructureInternal();
+        if (isSingleContentStructure(tableStructure)) {
+            return createValidationDependencies(tableStructure);
+        }
+        return Collections.emptyList();
+    }
+
+    private ITableStructure findTableStructureInternal() {
+        ITableStructure tableStructure;
+        try {
+            tableStructure = findTableStructure(getIpsProject());
+            return tableStructure;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private boolean isSingleContentStructure(ITableStructure tableStructure) {
+        return tableStructure != null && !tableStructure.isMultipleContentsAllowed();
+    }
+
+    private List<IDependency> createValidationDependencies(ITableStructure tableStructure) {
+        List<IDependency> dependencies = new ArrayList<IDependency>();
+        List<IIpsSrcFile> siblingSrcFiles = getSiblingTableSrcFiles(tableStructure);
+        for (IIpsSrcFile other : siblingSrcFiles) {
+            IpsObjectDependency validationDependency = IpsObjectDependency.create(this.getQualifiedNameType(),
+                    other.getQualifiedNameType(), DependencyType.VALIDATION);
+            dependencies.add(validationDependency);
+        }
+        return dependencies;
+    }
+
+    private List<IIpsSrcFile> getSiblingTableSrcFiles(ITableStructure tableStructure) {
+        List<IIpsSrcFile> tableSrcFiles = getIpsProject().findAllTableContentsSrcFiles(tableStructure);
+        tableSrcFiles.remove(getIpsSrcFile());
+        return tableSrcFiles;
     }
 
     @Override
@@ -198,6 +251,9 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             String text = NLS.bind(Messages.TableContents_msgColumncountMismatch, structCols, contentCols);
             list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
         }
+
+        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(tableStructure);
+        list.add(singleTableContentsValidator.validateIfPossible());
     }
 
     ValueDatatype[] findColumnDatatypes(ITableStructure structure, IIpsProject ipsProject) throws CoreException {

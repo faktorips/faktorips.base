@@ -48,6 +48,9 @@ public class ParameterCollectorTest {
     private IPolicyCmptType policyCmptType;
 
     @Mock
+    private IPolicyCmptType superPolicyCmptType;
+
+    @Mock
     private Datatype datatype;
 
     @Mock
@@ -69,11 +72,23 @@ public class ParameterCollectorTest {
         when(formula.getProductCmptGeneration()).thenReturn(generation);
         when(generation.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
         when(generation.getProductCmpt()).thenReturn(productCmpt);
+        when(policyCmptType.isSubtypeOrSameType(policyCmptType, ipsProject)).thenReturn(true);
+        when(policyCmptType.isSubtypeOrSameType(superPolicyCmptType, ipsProject)).thenReturn(true);
     }
 
     @Test
     public void testGetContextProductCmpts_correctType() throws Exception {
         when(node.getDatatype()).thenReturn(policyCmptType);
+
+        Set<IProductCmpt> contextProductCmpts = parameterCollector.getContextProductCmpts();
+
+        assertEquals(1, contextProductCmpts.size());
+        assertThat(contextProductCmpts, hasItem(productCmpt));
+    }
+
+    @Test
+    public void testGetContextProductCmpts_superType() throws Exception {
+        when(node.getDatatype()).thenReturn(superPolicyCmptType);
 
         Set<IProductCmpt> contextProductCmpts = parameterCollector.getContextProductCmpts();
 

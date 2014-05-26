@@ -13,7 +13,9 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.Arrays;
 import java.util.GregorianCalendar;
@@ -24,11 +26,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
+import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -52,33 +57,74 @@ public class TableContentsTest extends AbstractDependencyTest {
     private IIpsProject project;
     private IIpsSrcFile pdSrcFile;
     private ITableContents table;
+    private ITableStructure structure;
+    private IDependency structureDependency;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         project = newIpsProject("TestProject");
-        table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "Tc");
+        structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
+        table = newTableContents(structure, "Tc");
         pdSrcFile = table.getIpsSrcFile();
+
+        structureDependency = IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(),
+                structure.getQualifiedNameType());
     }
 
     @Test
-    public void testDependsOn() throws Exception {
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
-        IDependency[] dependsOn = table.dependsOn();
-        assertEquals(0, dependsOn.length);
+    public void testDependsOn_noStructure_noDependency() throws Exception {
+        table.setTableStructure(null);
 
-        table.setTableStructure(structure.getQualifiedName());
+        IDependency[] dependsOn = table.dependsOn();
+
+        assertEquals(0, dependsOn.length);
+    }
+
+    @Test
+    public void testDependsOn_structureDependency() throws Exception {
         List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
-        IDependency dependency = IpsObjectDependency.createInstanceOfDependency(table.getQualifiedNameType(),
-                structure.getQualifiedNameType());
-        assertTrue(dependsOnAsList.contains(dependency));
-        assertSingleDependencyDetail(table, dependency, table, ITableContents.PROPERTY_TABLESTRUCTURE);
+
+        assertEquals(1, dependsOnAsList.size());
+        assertThat(dependsOnAsList, hasItem(structureDependency));
+        assertSingleDependencyDetail(table, dependsOnAsList.get(0), table, ITableContents.PROPERTY_TABLESTRUCTURE);
+    }
+
+    @Test
+    public void testDependsOn_validationDependency_singleContentStructure() throws Exception {
+        structure.setTableStructureType(TableStructureType.SINGLE_CONTENT);
+        TableContents table2 = newTableContents(structure, "SecondTableContents");
+        TableContents table3 = newTableContents(structure, "ThirdTableContents");
+
+        List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
+
+        assertEquals(3, dependsOnAsList.size());
+        assertThat(dependsOnAsList, hasItem(structureDependency));
+        assertThat(dependsOnAsList, hasItem(validationDependencyBetween(table, table2)));
+        assertThat(dependsOnAsList, hasItem(validationDependencyBetween(table, table3)));
+    }
+
+    @Test
+    public void testDependsOn_zeroValidationDependencies_multipleContentStructure() throws Exception {
+        structure.setTableStructureType(TableStructureType.MULTIPLE_CONTENTS);
+        newTableContents(structure, "SecondTableContents");
+        newTableContents(structure, "ThirdTableContents");
+
+        List<IDependency> dependsOnAsList = Arrays.asList(table.dependsOn());
+
+        assertEquals(1, dependsOnAsList.size());
+        assertThat(dependsOnAsList, hasItem(structureDependency));
+    }
+
+    private IDependency validationDependencyBetween(IIpsObject o1, IIpsObject o2) {
+        return IpsObjectDependency.create(o1.getQualifiedNameType(), o2.getQualifiedNameType(),
+                DependencyType.VALIDATION);
     }
 
     @Test
     public void testNewColumn() {
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.getFirstGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
         table.newGeneration();
@@ -108,7 +154,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testDeleteColumn() {
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.getFirstGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
         table.newGeneration();
@@ -227,7 +273,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         description.setText("blabla");
         table.setTableStructure("RateTableStructure");
         table.newColumn("");
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.getFirstGeneration();
         IIpsObjectGeneration gen2 = table.newGeneration();
         IRow row = gen1.newRow();
         row.setValue(0, "value");
@@ -254,7 +300,6 @@ public class TableContentsTest extends AbstractDependencyTest {
     public void testValidateKeyValuesFromTo() throws Exception {
         MessageList msgList = null;
 
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn column1 = structure.newColumn();
         column1.setDatatype(Datatype.STRING.getQualifiedName());
         column1.setName("first");
@@ -299,7 +344,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testValidateRowRangeFromGreaterToValue() throws Exception {
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn fromColumn = structure.newColumn();
         fromColumn.setDatatype(Datatype.INTEGER.getQualifiedName());
         fromColumn.setName("fromColumn");
@@ -334,7 +378,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testValidate() throws Exception {
-        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         IColumn column1 = structure.newColumn();
         column1.setDatatype(Datatype.STRING.getQualifiedName());
         column1.setName("first");
@@ -388,8 +431,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testGetGenerationEffectiveOn() throws Exception {
-        table.newGeneration();
-
         assertEquals(1, table.getNumOfGenerations());
 
         IIpsObjectGeneration generation = table.getGenerationEffectiveOn(null);
@@ -405,8 +446,6 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testGetGenerationByEffectiveDate() throws Exception {
-        table.newGeneration();
-
         assertEquals(1, table.getNumOfGenerations());
 
         IIpsObjectGeneration generation = table.getGenerationByEffectiveDate(null);

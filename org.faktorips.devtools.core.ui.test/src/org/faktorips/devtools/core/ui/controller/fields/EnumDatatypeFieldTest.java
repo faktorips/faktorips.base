@@ -67,11 +67,11 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
     public void testWithDisplayTypeName() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.NAME);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumDatatypeField(c, datatype);
+        field = new EnumDatatypeField(c, datatype, false);
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(PaymentMode.ANNUAL_NAME, items[1]);
         assertEquals(PaymentMode.MONTHLY_NAME, items[2]);
 
@@ -80,13 +80,13 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(PaymentMode.ANNUAL_NAME, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(nullRepresentation, field.getValue());
+        assertEquals(null, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(PaymentMode.ANNUAL_NAME, items[1]);
         assertEquals(PaymentMode.MONTHLY_NAME, items[2]);
         assertEquals("unknownValue", items[3]);
@@ -101,11 +101,11 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
     public void testWithDisplayTypeId() {
         IpsPlugin.getDefault().getIpsPreferences().setEnumTypeDisplay(EnumTypeDisplay.ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumDatatypeField(c, datatype);
+        field = new EnumDatatypeField(c, datatype, false);
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(PaymentMode.ANNUAL_ID, items[1]);
         assertEquals(PaymentMode.MONTHLY_ID, items[2]);
 
@@ -114,13 +114,13 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(PaymentMode.ANNUAL_ID, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(nullRepresentation, field.getValue());
+        assertEquals(null, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(PaymentMode.ANNUAL_ID, items[1]);
         assertEquals(PaymentMode.MONTHLY_ID, items[2]);
         assertEquals("unknownValue", items[3]);
@@ -137,14 +137,14 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         UIDatatypeFormatter formatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         prefs.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
         Combo c = new Combo(shell, SWT.READ_ONLY);
-        field = new EnumDatatypeField(c, datatype);
+        field = new EnumDatatypeField(c, datatype, false);
 
         String annualNameAndId = formatter.formatValue(datatype, PaymentMode.ANNUAL_ID);
         String monthlyNameAndId = formatter.formatValue(datatype, PaymentMode.MONTHLY_ID);
 
         String[] items = field.getCombo().getItems();
         assertEquals(3, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(annualNameAndId, items[1]);
         assertEquals(monthlyNameAndId, items[2]);
 
@@ -153,13 +153,13 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         assertEquals(annualNameAndId, field.getText());
 
         field.setValue(nullRepresentation);
-        assertEquals(nullRepresentation, field.getValue());
+        assertEquals(null, field.getValue());
         assertEquals(nullRepresentation, field.getText());
 
         field.setValue("unknownValue");
         items = c.getItems();
         assertEquals(4, items.length);
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(nullRepresentation, items[0]);
         assertEquals(annualNameAndId, items[1]);
         assertEquals(monthlyNameAndId, items[2]);
         assertEquals("unknownValue", items[3]);
@@ -169,4 +169,23 @@ public class EnumDatatypeFieldTest extends AbstractIpsPluginTest {
         items = c.getItems();
         assertEquals(4, items.length);
     }
+
+    @Test
+    public void testNoDefaultValue() {
+        IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+        UIDatatypeFormatter formatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
+        prefs.setEnumTypeDisplay(EnumTypeDisplay.NAME_AND_ID);
+        Combo c = new Combo(shell, SWT.READ_ONLY);
+        field = new EnumDatatypeField(c, datatype, true);
+
+        String annualNameAndId = formatter.formatValue(datatype, PaymentMode.ANNUAL_ID);
+        String monthlyNameAndId = formatter.formatValue(datatype, PaymentMode.MONTHLY_ID);
+
+        String[] items = field.getCombo().getItems();
+        assertEquals(3, items.length);
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, items[0]);
+        assertEquals(annualNameAndId, items[1]);
+        assertEquals(monthlyNameAndId, items[2]);
+    }
+
 }

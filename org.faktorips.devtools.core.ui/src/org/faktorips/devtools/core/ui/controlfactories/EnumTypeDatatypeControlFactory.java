@@ -56,10 +56,10 @@ public class EnumTypeDatatypeControlFactory extends ValueDatatypeControlFactory 
 
         Combo combo = toolkit.createCombo(parent);
         if (valueSet != null && valueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype);
+            return new EnumValueSetField(combo, (IEnumValueSet)valueSet, datatype, isControlForDefaultValue(valueSet));
         }
         EnumTypeDatatypeAdapter datatypeAdapter = (EnumTypeDatatypeAdapter)datatype;
-        return new EnumTypeDatatypeField(combo, datatypeAdapter);
+        return new EnumTypeDatatypeField(combo, datatypeAdapter, isControlForDefaultValue(valueSet));
     }
 
     /**

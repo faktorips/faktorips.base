@@ -13,7 +13,6 @@ package org.faktorips.codegen;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.faktorips.codegen.conversion.AnyToStringCg;
 import org.faktorips.codegen.conversion.BigDecimalToDecimalCg;
 import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
 import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
@@ -97,7 +96,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         ccg.add(new LocalDateTimeToGregorianCalendarCg());
         ccg.add(new GregorianCalendarToLocalDateCg());
         ccg.add(new GregorianCalendarToLocalDateTimeCg());
-        ccg.add(new AnyToStringCg());
         return ccg;
     }
 

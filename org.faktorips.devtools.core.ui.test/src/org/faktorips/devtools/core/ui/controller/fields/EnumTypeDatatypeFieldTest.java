@@ -97,7 +97,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
     public void testGetDatatypeValueIds() throws Exception {
         Shell shell = new Shell(Display.getDefault());
         Combo combo = new Combo(shell, SWT.None);
-        EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, null));
+        EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, null), false);
         field.setValue("a");
         assertEquals("a", field.getValue());
         assertEquals("aname", field.getText());
@@ -108,7 +108,7 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
         field.setValue(null);
         assertNull(field.getValue());
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
     }
 
     @Test
@@ -139,7 +139,8 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
         values.get(2).setValue(ValueFactory.createStringValue("CDescContent"));
 
         Combo combo = new Combo(shell, SWT.None);
-        EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, enumContent));
+        EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, enumContent),
+                false);
         field.setValue("AContent");
         assertEquals("AContent", field.getValue());
         assertEquals("ANameContent", field.getText());
@@ -150,17 +151,28 @@ public class EnumTypeDatatypeFieldTest extends AbstractIpsPluginTest {
 
         field.setValue(null);
         assertNull(field.getValue());
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
 
         field.setEnableEnumContentDisplay(false);
         field.setValue(null);
         assertNull(field.getValue());
-        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
+        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), field.getText());
         assertNull(field.getInvalidValue());
 
         field.setValue("AContent");
         assertEquals("AContent", field.getValue());
         assertEquals("AContent", field.getInvalidValue());
+    }
+
+    @Test
+    public void testNoDefaultValue() throws Exception {
+        Shell shell = new Shell(Display.getDefault());
+        Combo combo = new Combo(shell, SWT.None);
+        EnumTypeDatatypeField field = new EnumTypeDatatypeField(combo, new EnumTypeDatatypeAdapter(enum1, null), true);
+
+        field.setValue(null);
+        assertNull(field.getValue());
+        assertEquals(Messages.DefaultValueRepresentation_Combobox, field.getText());
     }
 
 }
