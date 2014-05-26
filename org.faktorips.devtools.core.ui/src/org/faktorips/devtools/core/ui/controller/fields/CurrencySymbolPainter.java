@@ -19,11 +19,13 @@ import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.faktorips.devtools.core.IpsPlugin;
 
 public class CurrencySymbolPainter implements PaintListener {
 
+    private static final int PADDING_X = 2;
     private final ICurrencyHolder currencyHolder;
 
     public CurrencySymbolPainter(ICurrencyHolder currencyHolder) {
@@ -40,8 +42,11 @@ public class CurrencySymbolPainter implements PaintListener {
         }
         String symbol = getCurrencySymbol(getCurrency());
         Rectangle clipping = gc.getClipping();
-        int y = (clipping.height - gc.textExtent(symbol).y) / 2;
-        gc.drawText(symbol, 2, y);
+        Point textExtent = gc.textExtent(symbol);
+        int y = (clipping.height - textExtent.y) / 2;
+        gc.drawText(symbol, clipping.x + PADDING_X, y);
+        clipping.x += textExtent.x + (PADDING_X * 2);
+        gc.setClipping(clipping);
     }
 
     public static String getCurrencySymbol(Currency currency) {
