@@ -89,7 +89,6 @@ public class EnumerationProposalProviderTest {
         assertEquals("yyyyy", proposals[1].getLabel());
         assertEquals("zzzzz", proposals[2].getLabel());
         assertEquals("<null>", proposals[3].getLabel());
-
     }
 
     @Test
@@ -101,7 +100,6 @@ public class EnumerationProposalProviderTest {
         IContentProposal[] proposals = enumProposalProvider.getProposals("b", 0);
 
         assertEquals(0, proposals.length);
-
     }
 
     @Test
@@ -114,7 +112,6 @@ public class EnumerationProposalProviderTest {
 
         assertEquals(1, proposals.length);
         assertEquals("yyyyy", proposals[0].getLabel());
-
     }
 
     @Test
@@ -129,7 +126,6 @@ public class EnumerationProposalProviderTest {
         assertEquals("bbbbb", proposals[1].getLabel());
         assertEquals("ccccc", proposals[2].getLabel());
         assertEquals("<null>", proposals[3].getLabel());
-
     }
 
     @Test
@@ -140,7 +136,6 @@ public class EnumerationProposalProviderTest {
         IContentProposal[] proposals = enumProposalProvider.getProposals("foobar", 0);
 
         assertEquals(0, proposals.length);
-
     }
 
     @Test
@@ -152,7 +147,27 @@ public class EnumerationProposalProviderTest {
 
         assertEquals(1, proposals.length);
         assertEquals("bbbbb", proposals[0].getLabel());
-
     }
 
+    @Test
+    public void testGetProposals_EnumDatatypeAndValueSetOwnerIsNull() {
+        owner = null;
+        enumProposalProvider = new EnumerationProposalProvider(enumDatatype, owner, inputFormat);
+        when(enumDatatype.isEnum()).thenReturn(true);
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
+
+        assertEquals(4, proposals.length);
+    }
+
+    @Test
+    public void testGetProposals_SomeDatatypeAndValueSetOwnerIsNull() {
+        owner = null;
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
+        when(valueDatatype.isEnum()).thenReturn(false);
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
+
+        assertEquals(0, proposals.length);
+    }
 }

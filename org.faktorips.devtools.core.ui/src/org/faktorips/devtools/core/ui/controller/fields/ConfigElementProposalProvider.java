@@ -27,18 +27,18 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 public class ConfigElementProposalProvider implements IContentProposalProvider {
 
     private final IConfigElement configElement;
 
-    private final UIDatatypeFormatter uiDatatypeFormatter;
+    private final IInputFormat<String> inputFormat;
 
-    public ConfigElementProposalProvider(IConfigElement configElement, UIDatatypeFormatter uiDatatypeFormatter) {
+    public ConfigElementProposalProvider(IConfigElement configElement, IInputFormat<String> inputFormat) {
         this.configElement = configElement;
-        this.uiDatatypeFormatter = uiDatatypeFormatter;
+        this.inputFormat = inputFormat;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ConfigElementProposalProvider implements IContentProposalProvider {
     }
 
     private String getFormatValue(String value) {
-        return uiDatatypeFormatter.formatValue(getDatatype(), value);
+        return inputFormat.format(value);
     }
 
     private String getLastValue(String s) {

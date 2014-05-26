@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 public class ConfigElementField extends FormattingTextField<IValueSet> {
 
@@ -45,10 +46,17 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
 
     private void initContentAssistent() {
         if (isContentAssistAvailable()) {
-            ConfigElementProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
-                    IpsUIPlugin.getDefault().getDatatypeFormatter());
-            new UIToolkit(null).attachContentProposalAdapter(getTextControl(), proposalProvider,
-                    ContentProposalAdapter.PROPOSAL_INSERT, null);
+            try {
+                IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(
+                        configElement.findValueDatatype(getIpsProject()), getIpsProject());
+                ConfigElementProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
+                        inputFormat);
+                new UIToolkit(null).attachContentProposalAdapter(getTextControl(), proposalProvider,
+                        ContentProposalAdapter.PROPOSAL_INSERT, null);
+            } catch (CoreException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 

@@ -36,8 +36,11 @@ public class EnumValueSetValueSource implements IValueSource {
 
     @Override
     public boolean isApplicable() {
-        IValueSet valueSet = owner.getValueSet();
-        return valueSet.isEnum();
+        if (owner != null) {
+            IValueSet valueSet = owner.getValueSet();
+            return valueSet.isEnum();
+        }
+        return false;
     }
 
 }

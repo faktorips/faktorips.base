@@ -25,8 +25,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
-import org.faktorips.devtools.core.ui.controller.fields.ConfigElementProposalProvider;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +38,7 @@ public class ConfigElementProposalProviderTest {
     private ConfigElement propertyValue;
 
     @Mock
-    private UIDatatypeFormatter uiDatatypeFormatter;
+    private IInputFormat<String> inputFormat;
 
     @Mock
     private ValueDatatype enumValueDatatype;
@@ -62,7 +61,7 @@ public class ConfigElementProposalProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, uiDatatypeFormatter);
+        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, inputFormat);
         enumValueSet = new EnumValueSet(propertyValue, "ID");
         when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
         when(enumValueDatatype.isEnum()).thenReturn(true);
@@ -80,9 +79,9 @@ public class ConfigElementProposalProviderTest {
         when(propertyValue.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
         when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("enumA aaaaa");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("enumB bbbbb");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("en um C ccccc");
+        when(inputFormat.format("aaaaa")).thenReturn("enumA aaaaa");
+        when(inputFormat.format("bbbbb")).thenReturn("enumB bbbbb");
+        when(inputFormat.format("ccccc")).thenReturn("en um C ccccc");
     }
 
     @Test
