@@ -1493,26 +1493,38 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
-            if (hasPolicyAttributeButNoProductRelevantPart(duplicateObjectProperties)) {
+            if (isIgnoreDuplicatedPolicyPart(duplicateObjectProperties)) {
                 return true;
             } else {
                 return super.ignore(currentType, duplicateObjectProperties);
             }
         }
 
-        private boolean hasPolicyAttributeButNoProductRelevantPart(ObjectProperty[] duplicateObjectProperties) {
-            boolean foundProdRelevantPart = false;
+        /**
+         * The visitor adds every policy attribute to the list of properties. However only conflicts
+         * of policy attributes with product attributes or with table structure usages should be
+         * considered. To avoid false validation messages for example if there are only two policy
+         * attributes with the same name but no product attribute, we check if there is a real
+         * conflict. Hence we could ignore the message if there is any policy attribute but no
+         * product attribute nor table structure usage.
+         */
+        private boolean isIgnoreDuplicatedPolicyPart(ObjectProperty[] duplicateObjectProperties) {
+            boolean foundRelevantProductPart = false;
             boolean foundPolicyAttribute = false;
             for (ObjectProperty objectProperty : duplicateObjectProperties) {
-                if (objectProperty.getObject() instanceof IProductCmptTypeAttribute
-                        || objectProperty.getObject() instanceof ITableStructureUsage) {
-                    foundProdRelevantPart = true;
+                if (isRelevantProductPart(objectProperty)) {
+                    foundRelevantProductPart = true;
                 }
                 if (objectProperty.getObject() instanceof IPolicyCmptTypeAttribute) {
                     foundPolicyAttribute = true;
                 }
             }
-            return foundPolicyAttribute && !foundProdRelevantPart;
+            return foundPolicyAttribute && !foundRelevantProductPart;
+        }
+
+        private boolean isRelevantProductPart(ObjectProperty objectProperty) {
+            return objectProperty.getObject() instanceof IProductCmptTypeAttribute
+                    || objectProperty.getObject() instanceof ITableStructureUsage;
         }
 
         @Override
