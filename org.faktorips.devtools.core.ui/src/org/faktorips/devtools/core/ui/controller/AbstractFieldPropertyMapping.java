@@ -10,7 +10,6 @@
 package org.faktorips.devtools.core.ui.controller;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.faktorips.devtools.core.ui.controller.fields.AbstractEnumDatatypeBasedField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
 
@@ -70,11 +69,6 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
                 return;
             }
             T propertyValue = getPropertyValue();
-
-            // if we have a field which maintans a list - update it.
-            if (getField() instanceof AbstractEnumDatatypeBasedField) {
-                ((AbstractEnumDatatypeBasedField)getField()).reInit();
-            }
 
             if (getField().isTextContentParsable() && ObjectUtils.equals(propertyValue, getField().getValue())) {
                 if (getField() instanceof StringValueComboField) {
