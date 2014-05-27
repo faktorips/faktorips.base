@@ -52,7 +52,6 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text text = (Text)createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        adaptEnumValueSetProposal(text, valueSet, datatype);
         return new FormattingTextField<String>(text, DecimalNumberFormat.newInstance(datatype));
 
     }
