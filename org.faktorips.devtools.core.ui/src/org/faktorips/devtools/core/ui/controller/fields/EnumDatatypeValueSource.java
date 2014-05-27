@@ -9,10 +9,12 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 
 /**
@@ -21,20 +23,23 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  */
 public class EnumDatatypeValueSource implements IValueSource {
 
-    EnumDatatype enumDatatype;
+    ValueDatatype valueDatatype;
 
-    public EnumDatatypeValueSource(EnumDatatype enumDatatype) {
-        this.enumDatatype = enumDatatype;
+    public EnumDatatypeValueSource(ValueDatatype enumDatatype) {
+        this.valueDatatype = enumDatatype;
     }
 
     @Override
     public List<String> getValues() {
-        return Arrays.asList(enumDatatype.getAllValueIds(true));
+        if (isApplicable()) {
+            return Arrays.asList(((EnumDatatype)valueDatatype).getAllValueIds(true));
+        }
+        return new ArrayList<String>();
     }
 
     @Override
     public boolean isApplicable() {
-        return enumDatatype.isEnum();
+        return valueDatatype.isEnum();
     }
 
 }

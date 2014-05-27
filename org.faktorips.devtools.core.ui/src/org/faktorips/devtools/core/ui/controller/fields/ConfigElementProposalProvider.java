@@ -16,7 +16,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
@@ -94,7 +93,7 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
         if (allowedValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return ((IEnumValueSet)allowedValueSet).getValuesAsList();
         } else if (getValueDatatype().isEnum()) {
-            return new EnumDatatypeValueSource((EnumDatatype)getValueDatatype()).getValues();
+            return new EnumDatatypeValueSource(getValueDatatype()).getValues();
         }
         return new ArrayList<String>();
     }

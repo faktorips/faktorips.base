@@ -1,0 +1,102 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.devtools.core.ui.controller.fields;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class EnumValueSetValueSourceTest {
+
+    @Mock
+    private IValueSetOwner valueSetOwner;
+
+    @Mock
+    private IValueSet valueSet;
+
+    @Mock
+    private EnumValueSet enumValueSet;
+
+    private EnumValueSetValueSource valueSource;
+
+    @Before
+    public void setUp() {
+        valueSource = new EnumValueSetValueSource(valueSetOwner);
+    }
+
+    @Test
+    public void testIsApplicable_true() {
+        when(valueSetOwner.getValueSet()).thenReturn(enumValueSet);
+        when(enumValueSet.isEnum()).thenReturn(true);
+
+        boolean isApplicable = valueSource.isApplicable();
+
+        assertTrue(isApplicable);
+    }
+
+    @Test
+    public void testIsApplicable_false() {
+        when(valueSetOwner.getValueSet()).thenReturn(valueSet);
+        when(valueSet.isEnum()).thenReturn(false);
+
+        boolean isApplicable = valueSource.isApplicable();
+
+        assertFalse(isApplicable);
+    }
+
+    @Test
+    public void testIsApplicable_ValueSetOwnerIsNull() {
+        EnumValueSetValueSource valueSourceNull = new EnumValueSetValueSource(null);
+
+        boolean isApplicable = valueSourceNull.isApplicable();
+
+        assertFalse(isApplicable);
+    }
+
+    @Test
+    public void testGetValues_EmptyList() {
+        when(valueSetOwner.getValueSet()).thenReturn(valueSet);
+        when(valueSet.isEnum()).thenReturn(false);
+
+        List<String> values = valueSource.getValues();
+
+        assertNotNull(values);
+        assertEquals(0, values.size());
+    }
+
+    @Test
+    public void testGetValues() {
+        when(valueSetOwner.getValueSet()).thenReturn(enumValueSet);
+        when(enumValueSet.isEnum()).thenReturn(true);
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "value1", "value2" }));
+
+        List<String> values = valueSource.getValues();
+
+        assertEquals(2, values.size());
+        assertEquals("value1", values.get(0));
+        assertEquals("value2", values.get(1));
+    }
+
+}
