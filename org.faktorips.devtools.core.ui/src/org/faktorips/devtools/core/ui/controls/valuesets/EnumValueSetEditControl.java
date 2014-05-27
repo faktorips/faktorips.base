@@ -162,7 +162,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
                 .getValueDatatypeControlFactory(valueDatatype);
         CellEditor[] editors = new CellEditor[2];
         editors[0] = null; // no editor for the message image column
-        editors[1] = ctrlFactory.createTableCellEditor(getUiToolkit(), valueDatatype, valueSet, getTableViewer(), 1,
+        editors[1] = ctrlFactory.createTableCellEditor(getUiToolkit(), valueDatatype, null, getTableViewer(), 1,
                 ipsProject);
         return editors;
     }
