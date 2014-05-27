@@ -49,7 +49,7 @@ public class EnumerationProposalAdapter extends ContentProposalAdapter {
             @Override
             public void mouseUp(MouseEvent e) {
                 Rectangle clickRegion = control.getClientArea();
-                if (isLeftAligned(control)) {
+                if (!isLeftAligned(control)) {
                     clickRegion.x = clickRegion.width - CLICK_AREA_WIDTH;
                 }
                 clickRegion.width = CLICK_AREA_WIDTH;
