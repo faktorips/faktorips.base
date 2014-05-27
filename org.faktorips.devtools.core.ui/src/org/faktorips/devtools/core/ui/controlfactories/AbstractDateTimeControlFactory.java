@@ -25,9 +25,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
-import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
+import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
@@ -51,13 +51,12 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IIpsProject ipsProject) {
         AbstractDateTimeControl dateControl = createDateTimeControl(parent, toolkit);
         adaptEnumValueSetProposal(dateControl.getTextControl(), valueSet, datatype);
-        DateControlField<String> formatField = new DateControlField<String>(dateControl, getFormat());
+        DateControlField<String> formatField = new DateControlField<String>(dateControl, getInputFormat(datatype,
+                valueSet));
         return formatField;
     }
 
     protected abstract AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit);
-
-    protected abstract AbstractInputFormat<String> getFormat();
 
     @Override
     public Control createControl(UIToolkit toolkit,
@@ -121,7 +120,8 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IIpsProject ipsProject) {
 
         Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, getFormat());
+        EditField<String> editField = new FormattingTextField<String>(textControl, getInputFormat(dataType, valueSet));
+        IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
         return tableCellEditor;
     }
 

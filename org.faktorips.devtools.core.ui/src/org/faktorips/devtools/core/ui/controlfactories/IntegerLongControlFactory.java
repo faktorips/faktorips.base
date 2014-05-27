@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Composite;
@@ -23,11 +22,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
-import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
-import org.faktorips.devtools.core.ui.table.IpsCellEditor;
-import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
-import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 /**
  * A factory for edit fields/controls for the data type Integer and Long. Creates a common text
@@ -57,8 +51,8 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         Text text = createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        FormattingTextField<String> formatField = new FormattingTextField<String>(text,
-                IntegerNumberFormat.newInstance(datatype));
+        FormattingTextField<String> formatField = new FormattingTextField<String>(text, getInputFormat(datatype,
+                valueSet));
         return formatField;
     }
 
@@ -72,54 +66,6 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
         adaptEnumValueSetProposal(text, valueSet, datatype);
         return text;
-    }
-
-    /**
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
-     */
-    @Deprecated
-    @Override
-    public IpsCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
-    }
-
-    /**
-     * Creates a {@link TextCellEditor} containing a {@link Text} control and configures it with a
-     * {@link TableViewerTraversalStrategy}.
-     */
-    @Override
-    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(), ipsProject);
-        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
-        strat.setRowCreating(true);
-        cellEditor.setTraversalStrategy(strat);
-        return cellEditor;
-    }
-
-    private IpsCellEditor createTextCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            Composite parent,
-            IIpsProject ipsProject) {
-
-        Text textControl = createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IntegerNumberFormat format = IntegerNumberFormat.newInstance(dataType);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, format);
-        return tableCellEditor;
     }
 
     @Override

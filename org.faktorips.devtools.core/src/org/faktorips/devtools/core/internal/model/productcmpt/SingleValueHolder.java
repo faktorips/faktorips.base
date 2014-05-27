@@ -15,6 +15,8 @@ import java.util.Observer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -171,10 +173,11 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             if (!attribute.getValueSet().containsValue(((StringValue)getValue()).getContentAsString(), ipsProject)) {
                 String text;
                 if (attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-                    text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, getValue(), attribute.getValueSet()
-                            .toShortString());
+                    text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, getFormattedValue(), attribute
+                            .getValueSet().toShortString());
                 } else {
-                    text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, getValue(), getParent().getName());
+                    text = NLS
+                            .bind(Messages.AttributeValue_ValueNotAllowed, getFormattedValue(), getParent().getName());
                 }
                 list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR,
                         invalidObjectProperties));
@@ -187,6 +190,16 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             }
         }
         return list;
+    }
+
+    private String getFormattedValue() {
+        try {
+            ValueDatatype datatype = getParent().findAttribute(getIpsProject()).findDatatype(getIpsProject());
+            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
+                    .formatValue(datatype, value.getContentAsString());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override

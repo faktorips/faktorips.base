@@ -16,7 +16,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -41,7 +40,7 @@ public class EnumerationControlFactory extends DefaultControlFactory {
         super.adaptEnumValueSetProposal(textControl, valueSet, datatype);
         if (valueSet == null) {
             EnumerationFieldPainter.addPainterTo(textControl, datatype, null);
-            IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, null);
+            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
             EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, datatype, null, inputFormat);
         }
     }

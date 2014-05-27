@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -22,10 +21,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.MoneyField;
-import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
-import org.faktorips.devtools.core.ui.table.IpsCellEditor;
-import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
-import org.faktorips.devtools.core.ui.table.TextCellEditor;
 
 public class MoneyControlFactory extends ValueDatatypeControlFactory {
 
@@ -57,53 +52,6 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
         Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
         adaptEnumValueSetProposal(control, valueSet, datatype);
         return control;
-    }
-
-    private IpsCellEditor createMoneyCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            Composite parent,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor tableCellEditor = new EditFieldCellEditor(createEditField(toolkit, parent, datatype, valueSet,
-                ipsProject));
-        return tableCellEditor;
-    }
-
-    /**
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
-     */
-    @Deprecated
-    @Override
-    public IpsCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-        return createTableCellEditor(toolkit, datatype, valueSet, tableViewer, columnIndex, ipsProject);
-    }
-
-    /**
-     * Creates a {@link TextCellEditor} containing a {@link Text} control and configures it with a
-     * {@link TableViewerTraversalStrategy}.
-     */
-    @Override
-    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
-                ipsProject);
-        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
-        strat.setRowCreating(true);
-        cellEditor.setTraversalStrategy(strat);
-        return cellEditor;
     }
 
     @Override

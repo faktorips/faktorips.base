@@ -20,7 +20,6 @@ import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -30,8 +29,7 @@ import org.faktorips.util.ArgumentCheck;
  * (i.e. "1.2" will be displayed as "1,2" for the german locale)</li>
  * <li>Parsing a locale specific string to a value object, that can be written back to the model</li>
  * <li>Verifying user input to avoid mistakes. No invalid characters may be entered in a
- * {@link FormattingTextField} or {@link FormattingTextCellEditor} (i.e. no letters in an integer
- * field).</li>
+ * {@link FormattingTextField} (i.e. no letters in an integer field).</li>
  * </ul>
  * <p/>
  * {@link AbstractInputFormat} supports the FIPS null-Presentation mechanism.

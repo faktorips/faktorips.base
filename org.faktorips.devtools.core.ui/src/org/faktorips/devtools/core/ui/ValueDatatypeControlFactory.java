@@ -24,7 +24,9 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
+import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
+import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
 /**
  * A factory to create controls and edit fields that allow to edit values for one or more value
@@ -63,10 +65,21 @@ public abstract class ValueDatatypeControlFactory {
         if (valueSet != null) {
             IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();
             EnumerationFieldPainter.addPainterTo(textControl, datatype, valueSetOwner);
-            IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype,
-                    valueSetOwner.getIpsProject());
+            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
             EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, datatype, valueSetOwner, inputFormat);
         }
+    }
+
+    protected IInputFormat<String> getInputFormat(ValueDatatype datatype, IValueSet valueSet) {
+        IIpsProject ipsProject = null;
+        if (valueSet != null) {
+            ipsProject = valueSet.getIpsProject();
+        }
+        IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, ipsProject);
+        if (isControlForDefaultValue(valueSet)) {
+            inputFormat.setNullString(getNullStringRepresentation(valueSet));
+        }
+        return inputFormat;
     }
 
     /**
@@ -93,29 +106,50 @@ public abstract class ValueDatatypeControlFactory {
      *             instead.
      */
     @Deprecated
-    public abstract IpsCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
+    public IpsCellEditor createCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
-            IIpsProject ipsProject);
+            IIpsProject ipsProject) {
+
+        return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
+    }
 
     /**
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory
      * for.
      * 
      * @param toolkit The ui toolkit to use for creating ui elements.
-     * @param datatype The <code>ValueDatatype</code> to create a cell editor for.
+     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
      * @param valueSet An optional valueset.
      * @param tableViewer The viewer
      * @param columnIndex The index of the column.
      */
-    public abstract IpsCellEditor createTableCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
+    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
             IValueSet valueSet,
             TableViewer tableViewer,
             int columnIndex,
-            IIpsProject ipsProject);
+            IIpsProject ipsProject) {
+
+        IpsCellEditor cellEditor = createTextCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(), ipsProject);
+        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
+        strat.setRowCreating(true);
+        cellEditor.setTraversalStrategy(strat);
+        return cellEditor;
+    }
+
+    private IpsCellEditor createTextCellEditor(UIToolkit toolkit,
+            ValueDatatype dataType,
+            IValueSet valueSet,
+            Composite parent,
+            IIpsProject ipsProject) {
+
+        EditField<String> editField = createEditField(toolkit, parent, dataType, valueSet, ipsProject);
+        IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
+        return tableCellEditor;
+    }
 
     public abstract int getDefaultAlignment();
 
