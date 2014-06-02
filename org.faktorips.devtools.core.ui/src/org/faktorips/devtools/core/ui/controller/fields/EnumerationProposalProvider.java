@@ -51,7 +51,7 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
     public IContentProposal[] getProposals(String contents, int position) {
         IContentProposal[] proposals = super.getProposals(contents, position);
         ArrayList<IContentProposal> proposalsList = new ArrayList<IContentProposal>(Arrays.asList(proposals));
-        if (isControlForDefaultValue()) {
+        if (isConfigElement()) {
             if (contents.equals(getFormatValue(null))) {
                 IContentProposal[] allProposals = super.getProposals(StringUtils.EMPTY, 0);
                 proposalsList = new ArrayList<IContentProposal>(Arrays.asList(allProposals));
@@ -63,18 +63,22 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
         return proposalsList.toArray(new IContentProposal[proposalsList.size()]);
     }
 
-    private boolean isControlForDefaultValue() {
+    private boolean isConfigElement() {
         return getValueSetOwner() instanceof IConfigElement;
     }
 
     private boolean containsNull(List<IContentProposal> proposalsList) {
-        ContentProposal nullProposal = createNullProposal();
         for (IContentProposal contentProposal : proposalsList) {
-            if (contentProposal.getLabel().equalsIgnoreCase(nullProposal.getLabel())) {
+            if (contentProposal.getLabel().equalsIgnoreCase(getFormatValue(null))) {
                 return true;
             }
         }
         return false;
+    }
+
+    private void addNullProposal(List<IContentProposal> proposalsList) {
+        ContentProposal nullProposal = createNullProposal();
+        proposalsList.add(nullProposal);
     }
 
     private ContentProposal createNullProposal() {
@@ -82,10 +86,5 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
         ContentProposal nullProposal = new ContentProposal(formattedNullValue, formattedNullValue, null,
                 formattedNullValue);
         return nullProposal;
-    }
-
-    private void addNullProposal(List<IContentProposal> proposalsList) {
-        ContentProposal nullProposal = createNullProposal();
-        proposalsList.add(nullProposal);
     }
 }

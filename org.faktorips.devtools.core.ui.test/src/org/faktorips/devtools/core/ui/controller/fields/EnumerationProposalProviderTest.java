@@ -10,7 +10,6 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -22,6 +21,7 @@ import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +31,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumerationProposalProviderTest {
+    private static final String DEFAULT_VALUE_REPRESENTATION = Messages.DefaultValueRepresentation_EditField;
+
     @Mock
     private IInputFormat<String> inputFormat;
 
@@ -39,6 +41,9 @@ public class EnumerationProposalProviderTest {
 
     @Mock
     private EnumDatatype enumDatatype;
+
+    @Mock
+    private IConfigElement configElement;
 
     @Mock
     private IValueSetOwner owner;
@@ -59,7 +64,7 @@ public class EnumerationProposalProviderTest {
         when(inputFormat.format("aaaaa")).thenReturn("aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("bbbbb");
         when(inputFormat.format("ccccc")).thenReturn("ccccc");
-        when(inputFormat.format(null)).thenReturn("<null>");
+        when(inputFormat.format(null)).thenReturn(DEFAULT_VALUE_REPRESENTATION);
         when(inputFormat.format("xxxxx")).thenReturn("xxxxx");
         when(inputFormat.format("yyyyy")).thenReturn("yyyyy");
         when(inputFormat.format("zzzzz")).thenReturn("zzzzz");
@@ -90,7 +95,7 @@ public class EnumerationProposalProviderTest {
         assertEquals("xxxxx", proposals[0].getLabel());
         assertEquals("yyyyy", proposals[1].getLabel());
         assertEquals("zzzzz", proposals[2].getLabel());
-        assertEquals("<null>", proposals[3].getLabel());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
     }
 
     @Test
@@ -127,7 +132,7 @@ public class EnumerationProposalProviderTest {
         assertEquals("aaaaa", proposals[0].getLabel());
         assertEquals("bbbbb", proposals[1].getLabel());
         assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals("<null>", proposals[3].getLabel());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
     }
 
     @Test
@@ -186,10 +191,7 @@ public class EnumerationProposalProviderTest {
 
     @Test
     public void testGetProposals_NullProposalAllreadyContained() {
-        owner = mock(IConfigElement.class);
-        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
-        when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(valueDatatype.isEnum()).thenReturn(true);
+        initEnumerationPPWithConfigElement();
 
         IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
 
@@ -197,15 +199,12 @@ public class EnumerationProposalProviderTest {
         assertEquals("aaaaa", proposals[0].getLabel());
         assertEquals("bbbbb", proposals[1].getLabel());
         assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals("<null>", proposals[3].getLabel());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
     }
 
     @Test
     public void testGetProposals_NullProposalNotContained() {
-        owner = mock(IConfigElement.class);
-        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
-        when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(valueDatatype.isEnum()).thenReturn(true);
+        initEnumerationPPWithConfigElement();
         when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc" }));
 
         IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
@@ -214,39 +213,41 @@ public class EnumerationProposalProviderTest {
         assertEquals("aaaaa", proposals[0].getLabel());
         assertEquals("bbbbb", proposals[1].getLabel());
         assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals("<null>", proposals[3].getLabel());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
     }
 
     @Test
     public void testGetProposals_NullProposalAllreadyContained_TextfieldContentIsNullrepresentation() {
-        owner = mock(IConfigElement.class);
-        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
-        when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(valueDatatype.isEnum()).thenReturn(true);
+        initEnumerationPPWithConfigElement();
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("<null>", 6);
+        IContentProposal[] proposals = enumProposalProvider.getProposals(DEFAULT_VALUE_REPRESENTATION, 6);
 
         assertEquals(4, proposals.length);
         assertEquals("aaaaa", proposals[0].getLabel());
         assertEquals("bbbbb", proposals[1].getLabel());
         assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals("<null>", proposals[3].getLabel());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
     }
 
     @Test
     public void testGetProposals_NullProposalNotContained_TextfieldContentIsNullrepresentation() {
-        owner = mock(IConfigElement.class);
-        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
-        when(owner.getValueSet()).thenReturn(enumValueSet);
-        when(valueDatatype.isEnum()).thenReturn(true);
+        initEnumerationPPWithConfigElement();
         when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc" }));
 
-        IContentProposal[] proposals = enumProposalProvider.getProposals("<null>", 6);
+        IContentProposal[] proposals = enumProposalProvider.getProposals(DEFAULT_VALUE_REPRESENTATION, 6);
 
         assertEquals(4, proposals.length);
         assertEquals("aaaaa", proposals[0].getLabel());
         assertEquals("bbbbb", proposals[1].getLabel());
         assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals("<null>", proposals[3].getLabel());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
+    }
+
+    private void initEnumerationPPWithConfigElement() {
+        when(configElement.getValueSet()).thenReturn(enumValueSet);
+        when(enumValueSet.getValueSetOwner()).thenReturn(owner);
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, configElement, inputFormat);
+        when(owner.getValueSet()).thenReturn(enumValueSet);
+        when(valueDatatype.isEnum()).thenReturn(true);
     }
 }

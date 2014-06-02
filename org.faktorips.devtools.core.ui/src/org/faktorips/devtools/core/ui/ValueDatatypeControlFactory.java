@@ -159,7 +159,7 @@ public abstract class ValueDatatypeControlFactory {
 
     protected String getNullStringRepresentation(IValueSet valueSet) {
         if (isControlForDefaultValue(valueSet)) {
-            return Messages.DefaultValueRepresentation_Combobox;
+            return Messages.DefaultValueRepresentation_EditField;
         } else {
             return StringUtils.EMPTY;
         }

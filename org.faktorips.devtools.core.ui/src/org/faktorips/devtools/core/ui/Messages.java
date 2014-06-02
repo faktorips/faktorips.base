@@ -30,7 +30,7 @@ public class Messages extends NLS {
 
     public static String DefaultValueRepresentation_RadioButtonGroup;
 
-    public static String DefaultValueRepresentation_Combobox;
+    public static String DefaultValueRepresentation_EditField;
 
     public static String FaktorIpsPreferencePage_advancedTeamFunctionsInProductDefExplorer;
 
