@@ -91,7 +91,7 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
      * @return <code>true</code> if the proposal provider can be used for formatted values.
      */
     protected boolean isApplicable(String prefix, String valueInModel, String formattedValue) {
-        return formattedValue.toLowerCase().startsWith(prefix.toLowerCase());
+        return formattedValue.startsWith(prefix);
     }
 
     /**
