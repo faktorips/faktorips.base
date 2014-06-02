@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.ui.controller.fields;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -19,6 +20,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
@@ -180,5 +182,71 @@ public class EnumerationProposalProviderTest {
 
         assertEquals(1, proposals.length);
         assertEquals("bbbbb", proposals[0].getLabel());
+    }
+
+    @Test
+    public void testGetProposals_NullProposalAllreadyContained() {
+        owner = mock(IConfigElement.class);
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
+        when(owner.getValueSet()).thenReturn(enumValueSet);
+        when(valueDatatype.isEnum()).thenReturn(true);
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
+
+        assertEquals(4, proposals.length);
+        assertEquals("aaaaa", proposals[0].getLabel());
+        assertEquals("bbbbb", proposals[1].getLabel());
+        assertEquals("ccccc", proposals[2].getLabel());
+        assertEquals("<null>", proposals[3].getLabel());
+    }
+
+    @Test
+    public void testGetProposals_NullProposalNotContained() {
+        owner = mock(IConfigElement.class);
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
+        when(owner.getValueSet()).thenReturn(enumValueSet);
+        when(valueDatatype.isEnum()).thenReturn(true);
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc" }));
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
+
+        assertEquals(4, proposals.length);
+        assertEquals("aaaaa", proposals[0].getLabel());
+        assertEquals("bbbbb", proposals[1].getLabel());
+        assertEquals("ccccc", proposals[2].getLabel());
+        assertEquals("<null>", proposals[3].getLabel());
+    }
+
+    @Test
+    public void testGetProposals_NullProposalAllreadyContained_TextfieldContentIsNullrepresentation() {
+        owner = mock(IConfigElement.class);
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
+        when(owner.getValueSet()).thenReturn(enumValueSet);
+        when(valueDatatype.isEnum()).thenReturn(true);
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("<null>", 6);
+
+        assertEquals(4, proposals.length);
+        assertEquals("aaaaa", proposals[0].getLabel());
+        assertEquals("bbbbb", proposals[1].getLabel());
+        assertEquals("ccccc", proposals[2].getLabel());
+        assertEquals("<null>", proposals[3].getLabel());
+    }
+
+    @Test
+    public void testGetProposals_NullProposalNotContained_TextfieldContentIsNullrepresentation() {
+        owner = mock(IConfigElement.class);
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
+        when(owner.getValueSet()).thenReturn(enumValueSet);
+        when(valueDatatype.isEnum()).thenReturn(true);
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "aaaaa", "bbbbb", "ccccc" }));
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("<null>", 6);
+
+        assertEquals(4, proposals.length);
+        assertEquals("aaaaa", proposals[0].getLabel());
+        assertEquals("bbbbb", proposals[1].getLabel());
+        assertEquals("ccccc", proposals[2].getLabel());
+        assertEquals("<null>", proposals[3].getLabel());
     }
 }
