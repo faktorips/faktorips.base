@@ -190,7 +190,7 @@ public class EnumerationProposalProviderTest {
     }
 
     @Test
-    public void testGetProposals_NullProposalAllreadyContained() {
+    public void testGetProposals_NullProposalAlreadyContained() {
         initEnumerationPPWithConfigElement();
 
         IContentProposal[] proposals = enumProposalProvider.getProposals("", 0);
@@ -217,7 +217,7 @@ public class EnumerationProposalProviderTest {
     }
 
     @Test
-    public void testGetProposals_NullProposalAllreadyContained_TextfieldContentIsNullrepresentation() {
+    public void testGetProposals_NullProposalAlreadyContained_TextfieldContentIsNullrepresentation() {
         initEnumerationPPWithConfigElement();
 
         IContentProposal[] proposals = enumProposalProvider.getProposals(DEFAULT_VALUE_REPRESENTATION, 6);
@@ -243,11 +243,27 @@ public class EnumerationProposalProviderTest {
         assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
     }
 
+    @Test
+    public void testGetProposals_CaseSensitive() {
+        initEnumerationPPWithConfigElement();
+        when(inputFormat.format("foobar")).thenReturn("foobar");
+        when(inputFormat.format("fooBar")).thenReturn("fooBar");
+        when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "foobar", "fooBar" }));
+
+        IContentProposal[] proposals = enumProposalProvider.getProposals("foob", 4);
+
+        assertEquals(2, proposals.length);
+        assertEquals("foobar", proposals[0].getLabel());
+        assertEquals("ar", proposals[0].getContent());
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[1].getLabel());
+    }
+
     private void initEnumerationPPWithConfigElement() {
         when(configElement.getValueSet()).thenReturn(enumValueSet);
         when(enumValueSet.getValueSetOwner()).thenReturn(owner);
-        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, configElement, inputFormat);
         when(owner.getValueSet()).thenReturn(enumValueSet);
         when(valueDatatype.isEnum()).thenReturn(true);
+
+        enumProposalProvider = new EnumerationProposalProvider(valueDatatype, configElement, inputFormat);
     }
 }

@@ -206,6 +206,21 @@ public class ConfigElementProposalProviderTest {
         assertEquals("enumA aaaaa", proposals[0].getContent());
     }
 
+    @Test
+    public void testGetProposals_CaseSensitive() {
+        enumValueSet.addValue("foobar");
+        enumValueSet.addValue("fooBar");
+        when(inputFormat.format("foobar")).thenReturn("foobar");
+        when(inputFormat.format("fooBar")).thenReturn("fooBar");
+
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("foob", 4);
+
+        assertNotNull(proposals);
+        assertEquals(1, proposals.length);
+        assertEquals("foobar", proposals[0].getLabel());
+        assertEquals("ar", proposals[0].getContent());
+    }
+
     private void setUpEnumValueSet() {
         enumValueSet.addValue("aaaaa");
         enumValueSet.addValue("bbbbb");
