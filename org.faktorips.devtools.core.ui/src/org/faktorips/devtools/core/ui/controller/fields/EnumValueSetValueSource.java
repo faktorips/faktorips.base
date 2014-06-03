@@ -9,7 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -34,7 +34,7 @@ public class EnumValueSetValueSource implements IValueSource {
             IValueSet valueSet = owner.getValueSet();
             return ((IEnumValueSet)valueSet).getValuesAsList();
         }
-        return new ArrayList<String>();
+        return Collections.emptyList();
 
     }
 

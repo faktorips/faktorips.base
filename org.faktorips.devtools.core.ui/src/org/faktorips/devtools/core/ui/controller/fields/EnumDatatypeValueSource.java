@@ -9,8 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
@@ -34,7 +34,7 @@ public class EnumDatatypeValueSource implements IValueSource {
         if (isApplicable()) {
             return Arrays.asList(((EnumDatatype)valueDatatype).getAllValueIds(true));
         }
-        return new ArrayList<String>();
+        return Collections.emptyList();
     }
 
     @Override
