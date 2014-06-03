@@ -222,11 +222,8 @@ public class EnumerationProposalProviderTest {
 
         IContentProposal[] proposals = enumProposalProvider.getProposals(DEFAULT_VALUE_REPRESENTATION, 6);
 
-        assertEquals(4, proposals.length);
-        assertEquals("aaaaa", proposals[0].getLabel());
-        assertEquals("bbbbb", proposals[1].getLabel());
-        assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
+        assertEquals(1, proposals.length);
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[0].getLabel());
     }
 
     @Test
@@ -236,11 +233,8 @@ public class EnumerationProposalProviderTest {
 
         IContentProposal[] proposals = enumProposalProvider.getProposals(DEFAULT_VALUE_REPRESENTATION, 6);
 
-        assertEquals(4, proposals.length);
-        assertEquals("aaaaa", proposals[0].getLabel());
-        assertEquals("bbbbb", proposals[1].getLabel());
-        assertEquals("ccccc", proposals[2].getLabel());
-        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[3].getLabel());
+        assertEquals(1, proposals.length);
+        assertEquals(DEFAULT_VALUE_REPRESENTATION, proposals[0].getLabel());
     }
 
     @Test

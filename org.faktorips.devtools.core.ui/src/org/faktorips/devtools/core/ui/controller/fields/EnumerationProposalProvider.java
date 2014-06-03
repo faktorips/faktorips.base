@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -51,14 +50,8 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
     public IContentProposal[] getProposals(String contents, int position) {
         IContentProposal[] proposals = super.getProposals(contents, position);
         ArrayList<IContentProposal> proposalsList = new ArrayList<IContentProposal>(Arrays.asList(proposals));
-        if (isConfigElement()) {
-            if (contents.equals(getFormatValue(null))) {
-                IContentProposal[] allProposals = super.getProposals(StringUtils.EMPTY, 0);
-                proposalsList = new ArrayList<IContentProposal>(Arrays.asList(allProposals));
-            }
-            if (!containsNull(proposalsList)) {
-                addNullProposal(proposalsList);
-            }
+        if (isConfigElement() && !containsNull(proposalsList)) {
+            addNullProposal(proposalsList);
         }
         return proposalsList.toArray(new IContentProposal[proposalsList.size()]);
     }

@@ -1064,7 +1064,7 @@ public class UIToolkit {
      * @param proposalAcceptanceStyle The style of the acceptance:
      *            {@link ContentProposalAdapter#PROPOSAL_IGNORE},
      *            {@link ContentProposalAdapter#PROPOSAL_REPLACE} or
-     *            {@link ContentProposalAdapter#PROPOSAL_IGNORE}
+     *            {@link ContentProposalAdapter#PROPOSAL_INSERT}
      * @param labelProvider Specifies how the content proposals are shown to the user. May be null
      *            to simply provide {@link ContentProposal#getLabel()}
      */
