@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
@@ -81,7 +82,8 @@ public class ConfigElementProposalProviderTest {
         when(inputFormat.format("aaaaa")).thenReturn("enumA aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("enumB bbbbb");
         when(inputFormat.format("ccccc")).thenReturn("en um C ccccc");
-        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat);
+        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat,
+                ContentProposalAdapter.PROPOSAL_INSERT);
     }
 
     @Test
@@ -209,9 +211,9 @@ public class ConfigElementProposalProviderTest {
     @Test
     public void testGetProposals_CaseSensitive() {
         enumValueSet.addValue("foobar");
-        enumValueSet.addValue("fooBar");
+        enumValueSet.addValue("fooBares");
         when(inputFormat.format("foobar")).thenReturn("foobar");
-        when(inputFormat.format("fooBar")).thenReturn("fooBar");
+        when(inputFormat.format("fooBares")).thenReturn("fooBares");
 
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("foob", 4);
 

@@ -51,7 +51,7 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
                 IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype,
                         getIpsProject());
                 AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
-                        valueDatatype, inputFormat);
+                        valueDatatype, inputFormat, ContentProposalAdapter.PROPOSAL_INSERT);
                 new UIToolkit(null).attachContentProposalAdapter(getTextControl(), proposalProvider,
                         ContentProposalAdapter.PROPOSAL_INSERT, null);
             } catch (CoreException e) {

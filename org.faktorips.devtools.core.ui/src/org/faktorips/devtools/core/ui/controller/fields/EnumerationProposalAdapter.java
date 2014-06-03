@@ -40,8 +40,12 @@ public class EnumerationProposalAdapter extends ContentProposalAdapter {
             ValueDatatype valueDatatype,
             IValueSetOwner owner,
             IInputFormat<String> inputFormat) {
-        IContentProposalProvider proposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
-        return new EnumerationProposalAdapter(control, proposalProvider, null, null);
+        IContentProposalProvider proposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat,
+                PROPOSAL_REPLACE);
+        EnumerationProposalAdapter proposalAdapter = new EnumerationProposalAdapter(control, proposalProvider, null,
+                null);
+        proposalAdapter.setProposalAcceptanceStyle(PROPOSAL_REPLACE);
+        return proposalAdapter;
     }
 
     private void addListenerForOpenOnMouseUp(final Text control) {

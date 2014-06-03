@@ -34,8 +34,8 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 public class ConfigElementProposalProvider extends AbstractProposalProvider {
 
     public ConfigElementProposalProvider(IConfigElement configElement, ValueDatatype valueDatatype,
-            IInputFormat<String> inputFormat) {
-        super(configElement, valueDatatype, inputFormat);
+            IInputFormat<String> inputFormat, int proposalAcceptanceStyle) {
+        super(configElement, valueDatatype, inputFormat, proposalAcceptanceStyle);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
 
     @Override
     protected boolean isApplicable(String prefix, String valueInModel, String formattedValue) {
-        return !isAlreadyContained(valueInModel) && super.isApplicable(prefix, valueInModel, formattedValue);
+        return !isAlreadyContained(valueInModel) && formattedValue.startsWith(prefix);
     }
 
     private boolean isEnumValueSetAllowed() {

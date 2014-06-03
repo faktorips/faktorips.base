@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.faktorips.datatype.EnumDatatype;
@@ -31,11 +32,14 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
     private final IInputFormat<String> inputFormat;
     private IValueSetOwner valueSetOwner;
     private ValueDatatype valueDatatype;
+    private int proposalAcceptanceStyle;
 
-    public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype, IInputFormat<String> inputFormat) {
+    public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype,
+            IInputFormat<String> inputFormat, int proposalAcceptanceStyle) {
         this.valueSetOwner = owner;
         this.valueDatatype = valueDatatype;
         this.inputFormat = inputFormat;
+        this.proposalAcceptanceStyle = proposalAcceptanceStyle;
     }
 
     public ValueDatatype getValueDatatype() {
@@ -48,6 +52,10 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
 
     public IInputFormat<String> getInputFormat() {
         return inputFormat;
+    }
+
+    public int getProposalAcceptanceStyle() {
+        return proposalAcceptanceStyle;
     }
 
     protected String getFormatValue(String value) {
@@ -72,12 +80,23 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         for (String valueInModel : allowedValuesAsList) {
             String formattedValue = getFormatValue(valueInModel);
             if (isApplicable(prefix, valueInModel, formattedValue)) {
-                final String newContentPart = formattedValue.substring(prefix.length());
+                final String newContentPart = getContentForAcceptanceStyle(getProposalAcceptanceStyle(), prefix,
+                        formattedValue);
                 ContentProposal contentProposal = new ContentProposal(newContentPart, formattedValue, null, prefix);
                 result.add(contentProposal);
             }
         }
         return result;
+    }
+
+    private String getContentForAcceptanceStyle(int acceptanceStyle, String prefix, String formattedValue) {
+        if (acceptanceStyle == ContentProposalAdapter.PROPOSAL_REPLACE) {
+            return formattedValue;
+        }
+        if (acceptanceStyle == ContentProposalAdapter.PROPOSAL_INSERT) {
+            return formattedValue.substring(prefix.length());
+        }
+        return formattedValue;
     }
 
     /**
@@ -91,7 +110,7 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
      * @return <code>true</code> if the proposal provider can be used for formatted values.
      */
     protected boolean isApplicable(String prefix, String valueInModel, String formattedValue) {
-        return formattedValue.startsWith(prefix);
+        return formattedValue.toLowerCase().startsWith(prefix.toLowerCase());
     }
 
     /**
