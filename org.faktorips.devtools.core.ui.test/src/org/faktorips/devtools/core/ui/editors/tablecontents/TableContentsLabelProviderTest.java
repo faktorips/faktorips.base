@@ -14,9 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,7 +33,7 @@ public class TableContentsLabelProviderTest extends AbstractIpsPluginTest {
     private IRow rowInvalid;
     private IRow rowNull;
     private TableContentsLabelProvider labelProvider;
-    private String nullPresentation = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+    private String nullPresentation = StringUtils.EMPTY;
 
     @Override
     @Before

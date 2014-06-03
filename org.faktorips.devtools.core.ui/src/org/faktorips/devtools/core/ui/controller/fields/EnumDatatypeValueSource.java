@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  */
 public class EnumDatatypeValueSource implements IValueSource {
 
-    ValueDatatype valueDatatype;
+    private ValueDatatype valueDatatype;
 
     public EnumDatatypeValueSource(ValueDatatype enumDatatype) {
         this.valueDatatype = enumDatatype;

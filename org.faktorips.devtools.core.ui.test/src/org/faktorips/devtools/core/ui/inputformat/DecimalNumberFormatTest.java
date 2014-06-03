@@ -16,8 +16,6 @@ import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.inputformat.DecimalNumberFormat;
 import org.junit.Test;
 
 public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
@@ -214,11 +212,11 @@ public class DecimalNumberFormatTest extends AbstractIpsPluginTest {
 
         input = "";
         formated = decimalFormat.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(decimalFormat.getNullString(), formated);
 
         input = null;
         formated = decimalFormat.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(decimalFormat.getNullString(), formated);
 
         input = "12345678901234567890";
         formated = decimalFormat.format(input);

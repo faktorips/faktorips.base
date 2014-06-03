@@ -40,7 +40,7 @@ public class EnumerationControlFactory extends DefaultControlFactory {
         super.adaptEnumValueSetProposal(textControl, valueSet, datatype);
         if (valueSet == null) {
             EnumerationFieldPainter.addPainterTo(textControl, datatype, null);
-            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
+            IInputFormat<String> inputFormat = getInputFormat(datatype, null);
             EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, datatype, null, inputFormat);
         }
     }
