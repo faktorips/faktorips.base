@@ -112,14 +112,18 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
+        getTableContentsGeneration().updateUniqueKeyCacheFor(this, getUniqueKeys());
+        objectHasChanged();
+    }
+
+    private IIndex[] getUniqueKeys() {
         IIndex[] uniqueKeys;
         try {
             uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        getTableContentsGeneration().updateUniqueKeyCacheFor(this, uniqueKeys);
-        objectHasChanged();
+        return uniqueKeys;
     }
 
     public void setValueInternal(int column, String newValue) {

@@ -80,15 +80,19 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         for (String value : columns) {
             newRow.setValueInternal(column++, value);
         }
+        updateUniqueKeyCacheFor(newRow, getUniqueKeys());
+
+        return newRow;
+    }
+
+    private IIndex[] getUniqueKeys() {
         IIndex[] uniqueKeys;
         try {
             uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        updateUniqueKeyCacheFor(newRow, uniqueKeys);
-
-        return newRow;
+        return uniqueKeys;
     }
 
     /**
@@ -155,12 +159,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IRow) {
-            IIndex[] uniqueKeys;
-            try {
-                uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IIndex[] uniqueKeys = getUniqueKeys();
             Row row = (Row)part;
             int delIndex = rows.indexOf(row);
             if (delIndex != -1) {
