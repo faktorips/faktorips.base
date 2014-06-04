@@ -223,10 +223,11 @@ public class TableContentsTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testToXmlDocument() {
+    public void testToXmlDocument() throws CoreException {
         IDescription description = table.newDescription();
         description.setLocale(Locale.GERMAN);
         description.setText("blabla");
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "Ts");
         table.setTableStructure(structure.getQualifiedName());
         table.newColumn("");
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
