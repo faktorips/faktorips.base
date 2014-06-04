@@ -62,7 +62,7 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
 
     private boolean containsNull(List<IContentProposal> proposalsList) {
         for (IContentProposal contentProposal : proposalsList) {
-            if (contentProposal.getLabel().equalsIgnoreCase(getFormatValue(null))) {
+            if (contentProposal.getLabel().equalsIgnoreCase(format(null))) {
                 return true;
             }
         }
@@ -75,7 +75,7 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
     }
 
     private ContentProposal createNullProposal() {
-        String formattedNullValue = getFormatValue(null);
+        String formattedNullValue = format(null);
         ContentProposal nullProposal = new ContentProposal(formattedNullValue, formattedNullValue, null,
                 formattedNullValue);
         return nullProposal;

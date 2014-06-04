@@ -58,15 +58,14 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         return proposalAcceptanceStyle;
     }
 
-    protected String getFormatValue(String value) {
+    protected String format(String value) {
         return inputFormat.format(value);
     }
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        List<IContentProposal> result = new ArrayList<IContentProposal>();
         String prefix = createPrefix(contents, position);
-        result = createContentProposals(prefix);
+        List<IContentProposal> result = createContentProposals(prefix);
         return result.toArray(new IContentProposal[result.size()]);
     }
 
@@ -78,21 +77,26 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         List<IContentProposal> result = new ArrayList<IContentProposal>();
         List<String> allowedValuesAsList = getAllowedValuesAsList();
         for (String valueInModel : allowedValuesAsList) {
-            String formattedValue = getFormatValue(valueInModel);
-            if (isApplicable(prefix, valueInModel, formattedValue)) {
-                final String newContentPart = getContentForAcceptanceStyle(getProposalAcceptanceStyle(), prefix,
-                        formattedValue);
-                ContentProposal contentProposal = new ContentProposal(newContentPart, formattedValue, null, prefix);
-                result.add(contentProposal);
-            }
+            addContentProposalIfApplicable(result, prefix, valueInModel);
         }
         return result;
     }
 
-    private String getContentForAcceptanceStyle(int acceptanceStyle, String prefix, String formattedValue) {
-        if (acceptanceStyle == ContentProposalAdapter.PROPOSAL_REPLACE) {
-            return formattedValue;
+    private void addContentProposalIfApplicable(List<IContentProposal> result, String prefix, String valueInModel) {
+        String formattedValue = format(valueInModel);
+        if (isApplicable(prefix, valueInModel, formattedValue)) {
+            ContentProposal contentProposal = createProposal(prefix, formattedValue);
+            result.add(contentProposal);
         }
+    }
+
+    private ContentProposal createProposal(String prefix, String formattedValue) {
+        final String textToInsert = getContentForAcceptanceStyle(getProposalAcceptanceStyle(), prefix, formattedValue);
+        ContentProposal contentProposal = new ContentProposal(textToInsert, formattedValue, null, prefix);
+        return contentProposal;
+    }
+
+    private String getContentForAcceptanceStyle(int acceptanceStyle, String prefix, String formattedValue) {
         if (acceptanceStyle == ContentProposalAdapter.PROPOSAL_INSERT) {
             return formattedValue.substring(prefix.length());
         }
