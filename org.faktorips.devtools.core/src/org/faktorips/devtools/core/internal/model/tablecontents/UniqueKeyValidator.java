@@ -132,8 +132,6 @@ public class UniqueKeyValidator {
 
     /**
      * If a row has changed then this method updates the underlying unique key cache for this row
-     * 
-     * @param uniqueKeys
      */
     public void handleRowChanged(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
         updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_CHANGED, uniqueKeys);

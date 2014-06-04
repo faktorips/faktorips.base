@@ -159,7 +159,6 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     @Override
     protected boolean removePartThis(IIpsObjectPart part) {
         if (part instanceof IRow) {
-            IIndex[] uniqueKeys = getUniqueKeys();
             Row row = (Row)part;
             int delIndex = rows.indexOf(row);
             if (delIndex != -1) {
@@ -169,7 +168,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
                     Row updateRow = rows.get(i);
                     updateRow.setRowNumber(i);
                 }
-                removeUniqueKeyCacheFor(row, uniqueKeys);
+                removeUniqueKeyCacheFor(row, getUniqueKeys());
             }
             return true;
         }
