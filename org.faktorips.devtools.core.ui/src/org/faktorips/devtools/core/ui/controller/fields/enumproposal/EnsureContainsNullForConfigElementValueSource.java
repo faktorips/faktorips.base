@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 
 public class EnsureContainsNullForConfigElementValueSource implements IValueSource {
 

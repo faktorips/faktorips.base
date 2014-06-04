@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.ConfigElementProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;

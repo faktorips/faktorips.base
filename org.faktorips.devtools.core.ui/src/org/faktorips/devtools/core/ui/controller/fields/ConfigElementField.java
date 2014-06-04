@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.AbstractProposalProvider;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.ConfigElementProposalProvider;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;

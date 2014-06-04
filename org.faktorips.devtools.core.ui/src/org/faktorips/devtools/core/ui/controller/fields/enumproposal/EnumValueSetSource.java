@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +16,7 @@ import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 
 /**
  * Provides the values of an {@link EnumValueSet}. If the {@link IValueSetOwner} is

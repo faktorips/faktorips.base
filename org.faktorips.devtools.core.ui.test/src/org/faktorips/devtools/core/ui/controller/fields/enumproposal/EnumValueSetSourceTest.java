@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -21,6 +21,7 @@ import java.util.List;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumValueSetSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

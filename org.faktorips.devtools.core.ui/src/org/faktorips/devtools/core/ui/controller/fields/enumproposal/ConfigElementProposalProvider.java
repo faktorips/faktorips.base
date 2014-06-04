@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.ui.controller.fields.ConfigElementField;
+import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /**

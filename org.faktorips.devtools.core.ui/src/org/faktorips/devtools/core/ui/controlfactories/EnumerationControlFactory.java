@@ -17,7 +17,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
-import org.faktorips.devtools.core.ui.controller.fields.EnumerationProposalAdapter;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /**

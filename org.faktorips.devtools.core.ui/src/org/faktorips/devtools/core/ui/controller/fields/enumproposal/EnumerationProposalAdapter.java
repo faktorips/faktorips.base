@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;

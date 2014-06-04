@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 
 /**
  * Provides the enum values for an {@link EnumDatatype}. Provides an empty list for all other

@@ -8,12 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /**
