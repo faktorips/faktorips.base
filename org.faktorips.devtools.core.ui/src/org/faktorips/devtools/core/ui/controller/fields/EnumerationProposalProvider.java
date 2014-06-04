@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.internal.ContentProposal;
 
 /**
- * An implementation of {@link AbstractProposalProvider}. It provides proposals for
- * {@link EnumDatatype}s or {@link EnumValueSet}s.
+ * An implementation of {@link AbstractProposalProvider} for EnumerationFields. It provides
+ * proposals for {@link EnumDatatype}s or {@link EnumValueSet}s.
  */
 public class EnumerationProposalProvider extends AbstractProposalProvider {
 
@@ -36,7 +36,7 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
 
     @Override
     protected List<String> getAllowedValuesAsList() {
-        IValueSource valueSource = new EnumValueSetValueSource(getValueSetOwner());
+        EnumValueSetSource valueSource = new EnumValueSetSource(getValueSetOwner());
         if (!valueSource.isApplicable() && getValueDatatype().isEnum()) {
             return new EnumDatatypeValueSource(getValueDatatype()).getValues();
         }

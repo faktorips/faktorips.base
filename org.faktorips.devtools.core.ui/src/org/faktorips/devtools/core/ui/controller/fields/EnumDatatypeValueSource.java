@@ -15,20 +15,23 @@ import java.util.List;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
 
 /**
- * An implementation of {@link IValueSource}. It considers all {@link ValueSetType}s having an
- * {@link EnumDatatype} as datatype.
+ * Provides the enum values for an {@link EnumDatatype}. Provides an empty list for all other
+ * {@link ValueDatatype datatypes}.
  */
 public class EnumDatatypeValueSource implements IValueSource {
 
     private ValueDatatype valueDatatype;
 
-    public EnumDatatypeValueSource(ValueDatatype enumDatatype) {
-        this.valueDatatype = enumDatatype;
+    public EnumDatatypeValueSource(ValueDatatype valueDatatype) {
+        this.valueDatatype = valueDatatype;
     }
 
+    /**
+     * In case of an {@link EnumDatatype} its value ids are returned. In case of any other
+     * {@link ValueDatatype} an empty list is returned.
+     */
     @Override
     public List<String> getValues() {
         if (isApplicable()) {
@@ -37,7 +40,9 @@ public class EnumDatatypeValueSource implements IValueSource {
         return Collections.emptyList();
     }
 
-    @Override
+    /**
+     * Returns <code>true</code> for {@link EnumDatatype enum datatypes}. <code>false</code> else.
+     */
     public boolean isApplicable() {
         return valueDatatype.isEnum();
     }

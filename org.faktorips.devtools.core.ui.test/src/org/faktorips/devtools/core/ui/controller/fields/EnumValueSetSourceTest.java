@@ -28,7 +28,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EnumValueSetValueSourceTest {
+public class EnumValueSetSourceTest {
 
     @Mock
     private IValueSetOwner valueSetOwner;
@@ -39,11 +39,11 @@ public class EnumValueSetValueSourceTest {
     @Mock
     private EnumValueSet enumValueSet;
 
-    private EnumValueSetValueSource valueSource;
+    private EnumValueSetSource valueSource;
 
     @Before
     public void setUp() {
-        valueSource = new EnumValueSetValueSource(valueSetOwner);
+        valueSource = new EnumValueSetSource(valueSetOwner);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class EnumValueSetValueSourceTest {
 
     @Test
     public void testIsApplicable_ValueSetOwnerIsNull() {
-        EnumValueSetValueSource valueSourceNull = new EnumValueSetValueSource(null);
+        EnumValueSetSource valueSourceNull = new EnumValueSetSource(null);
 
         boolean isApplicable = valueSourceNull.isApplicable();
 

@@ -64,12 +64,12 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
 
     @Override
     public IContentProposal[] getProposals(String contents, int position) {
-        String prefix = createPrefix(contents, position);
+        String prefix = getPrefixFor(contents, position);
         List<IContentProposal> result = createContentProposals(prefix);
         return result.toArray(new IContentProposal[result.size()]);
     }
 
-    protected String createPrefix(String contents, int position) {
+    protected String getPrefixFor(String contents, int position) {
         return StringUtils.left(contents, position);
     }
 

@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
 import org.faktorips.devtools.core.ui.controller.fields.EnumerationProposalAdapter;
+import org.faktorips.devtools.core.ui.controller.fields.EnumerationProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
@@ -61,6 +62,15 @@ public abstract class ValueDatatypeControlFactory {
             @Deprecated IValueSet valueSet,
             IIpsProject ipsProject);
 
+    /**
+     * In case a value set is defined ,enumeration support is added to the text control by adding an
+     * {@link EnumerationProposalProvider}.
+     * 
+     * @param textControl the text control to add enumeration support to
+     * @param valueSet the value set that provides the values
+     * @param datatype the data type of the field. May also provide enumeration values if it is an
+     *            enum data type.
+     */
     protected void adaptEnumValueSetProposal(Text textControl, IValueSet valueSet, ValueDatatype datatype) {
         if (valueSet != null) {
             IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();

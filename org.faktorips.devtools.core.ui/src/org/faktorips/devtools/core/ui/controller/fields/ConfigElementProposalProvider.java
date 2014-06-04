@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -52,8 +52,8 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
     }
 
     @Override
-    protected String createPrefix(String contents, int position) {
-        String prefix = super.createPrefix(contents, position);
+    protected String getPrefixFor(String contents, int position) {
+        String prefix = super.getPrefixFor(contents, position);
         return getLastValue(prefix);
     }
 
@@ -95,7 +95,7 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
         } else if (getValueDatatype().isEnum()) {
             return new EnumDatatypeValueSource(getValueDatatype()).getValues();
         }
-        return new ArrayList<String>();
+        return Collections.emptyList();
     }
 
     private IValueSet getAllowedValueSet() {

@@ -12,22 +12,27 @@ package org.faktorips.devtools.core.ui.controller.fields;
 import java.util.Collections;
 import java.util.List;
 
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 
 /**
- * This implementation of {@link IValueSource} considers all {@link IValueSet}s of
- * <code>IValueSetType.ENUM</code>. The datatype of the {@link IValueSet} is non specific.
+ * Provides the values of an {@link EnumValueSet}. If the {@link IValueSetOwner} is
+ * <code>null</code> or if there is no {@link EnumValueSet} an empty list is returned.
  */
-public class EnumValueSetValueSource implements IValueSource {
+public class EnumValueSetSource implements IValueSource {
 
     private IValueSetOwner owner;
 
-    public EnumValueSetValueSource(IValueSetOwner owner) {
+    public EnumValueSetSource(IValueSetOwner owner) {
         this.owner = owner;
     }
 
+    /**
+     * Provides the values of an {@link EnumValueSet}. If the {@link IValueSetOwner} is
+     * <code>null</code> or if there is no {@link EnumValueSet} an empty list is returned.
+     */
     @Override
     public List<String> getValues() {
         if (isApplicable()) {
@@ -38,11 +43,15 @@ public class EnumValueSetValueSource implements IValueSource {
 
     }
 
-    @Override
+    /**
+     * Returns <code>true</code> if this value source can provide enum values. That is the case if
+     * the value set owner is defined and at the same time the corresponding value set is an enum
+     * value set.
+     */
     public boolean isApplicable() {
         if (owner != null) {
             IValueSet valueSet = owner.getValueSet();
-            return valueSet.isEnum();
+            return valueSet.canBeUsedAsSupersetForAnotherEnumValueSet();
         }
         return false;
     }
