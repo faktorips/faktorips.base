@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,15 +45,18 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
     private TableContentsCompareItem compareItemRoot;
     private ITableContents table;
     private IRow row1;
+    private IIpsProject proj;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        IIpsProject proj = newIpsProject("TestProject");
+        proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
+        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
+        table.setTableStructure(structure.getQualifiedName());
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
@@ -120,6 +124,9 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         // create new table (and row) to avoid that both compareitems reference the same row
         // instance
         ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
+        ITableStructure structure2 = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable2");
+        table2.setTableStructure(structure2.getQualifiedName());
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
@@ -197,6 +204,9 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         // create new table (and row) to avoid that both compareitems reference the same row
         // instance
         ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
+        ITableStructure structure2 = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable2");
+        table2.setTableStructure(structure2.getQualifiedName());
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");

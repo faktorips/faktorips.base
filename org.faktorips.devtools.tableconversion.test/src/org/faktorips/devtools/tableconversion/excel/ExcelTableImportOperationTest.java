@@ -70,6 +70,9 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         format.addValueConverter(new StringValueConverter());
 
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
+        ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable2");
+        contents.setTableStructure(structure2.getQualifiedName());
         contents.newColumn(null);
         contents.newColumn(null);
         contents.newColumn(null);
