@@ -167,6 +167,7 @@ public class TableContentsTest extends AbstractDependencyTest {
      */
     @Test
     public void testInitFromInputStream() throws CoreException {
+        newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "RateTableStructure");
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(2, table.getNumOfColumns());
@@ -203,6 +204,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
 
+        newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "RateTableStructure");
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
 
         assertEquals("XYZ", table.getExtPropertyValue("prop1"));
@@ -225,7 +227,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         IDescription description = table.newDescription();
         description.setLocale(Locale.GERMAN);
         description.setText("blabla");
-        table.setTableStructure("RateTableStructure");
+        table.setTableStructure(structure.getQualifiedName());
         table.newColumn("");
         ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
         IIpsObjectGeneration gen2 = table.newGeneration();
@@ -240,7 +242,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         gen2.delete();
         table.initFromXml(element);
         assertEquals("blabla", description.getText());
-        assertEquals("RateTableStructure", table.getTableStructure());
+        assertEquals(structure.getQualifiedName(), table.getTableStructure());
         assertEquals(1, table.getNumOfColumns());
         assertEquals(2, table.getNumOfGenerations());
         ITableContentsGeneration gen = (ITableContentsGeneration)table.getGenerationsOrderedByValidDate()[0];
@@ -284,7 +286,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         IRow newRow = tableGen.newRow();
         msgList = table.validate(project);
         assertNotNull(msgList.getMessageByCode(IRow.MSGCODE_UNDEFINED_UNIQUEKEY_VALUE));
-        assertEquals(2, msgList.size());
+        assertEquals(msgList.toString(), 2, msgList.size());
 
         newRow.setValue(0, "1");
         msgList = table.validate(project);

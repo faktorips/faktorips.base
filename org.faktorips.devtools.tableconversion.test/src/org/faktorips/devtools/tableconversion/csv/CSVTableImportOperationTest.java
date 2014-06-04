@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
@@ -68,6 +69,9 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         format.addValueConverter(new StringValueConverter());
 
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
+        ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable2");
+        contents.setTableStructure(structure2.getQualifiedName());
         contents.newColumn(null);
         contents.newColumn(null);
         contents.newColumn(null);

@@ -76,7 +76,7 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public void setName(String name) {
-        new UnsupportedOperationException("Package fragment names cannot be changed."); //$NON-NLS-1$
+        throw new UnsupportedOperationException("Package fragment names cannot be changed."); //$NON-NLS-1$
     }
 
     /**

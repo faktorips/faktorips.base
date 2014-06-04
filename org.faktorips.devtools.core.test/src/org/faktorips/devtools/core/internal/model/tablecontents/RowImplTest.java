@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -38,7 +39,10 @@ public class RowImplTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         IIpsProject project = newIpsProject("TestProject");
+        ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE,
+                "StructureTable");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
+        table.setTableStructure(structure.getQualifiedName());
         generation = (ITableContentsGeneration)table.newGeneration();
         table.newColumn(null);
         table.newColumn(null);
