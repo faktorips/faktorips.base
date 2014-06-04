@@ -33,6 +33,7 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
     private IValueSetOwner valueSetOwner;
     private ValueDatatype valueDatatype;
     private int proposalAcceptanceStyle;
+    private IValueSource valueSource;
 
     public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype,
             IInputFormat<String> inputFormat, int proposalAcceptanceStyle) {
@@ -40,7 +41,10 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         this.valueDatatype = valueDatatype;
         this.inputFormat = inputFormat;
         this.proposalAcceptanceStyle = proposalAcceptanceStyle;
+        valueSource = createValueSource(valueSetOwner, valueDatatype);
     }
+
+    protected abstract IValueSource createValueSource(IValueSetOwner valueSetOwner, ValueDatatype datatype);
 
     public ValueDatatype getValueDatatype() {
         return valueDatatype;
@@ -123,6 +127,8 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
      * 
      * @return List<String> containing all allowed values.
      */
-    protected abstract List<String> getAllowedValuesAsList();
+    private List<String> getAllowedValuesAsList() {
+        return valueSource.getValues();
+    }
 
 }

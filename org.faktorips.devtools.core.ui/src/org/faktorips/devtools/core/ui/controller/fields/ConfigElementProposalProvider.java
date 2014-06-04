@@ -10,9 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
@@ -22,7 +19,6 @@ import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -41,6 +37,24 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
     @Override
     public IConfigElement getValueSetOwner() {
         return (IConfigElement)super.getValueSetOwner();
+    }
+
+    protected IConfigElement getConfigElement() {
+        return getValueSetOwner();
+    }
+
+    @Override
+    protected IValueSource createValueSource(IValueSetOwner valueSetOwner, ValueDatatype datatype) {
+        // use the policy attribute's enum value set as a base value set
+        return new EnumValueSource(getPolicyAttribute(), datatype);
+    }
+
+    private IValueSetOwner getPolicyAttribute() {
+        try {
+            return getConfigElement().findPcTypeAttribute(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -84,26 +98,7 @@ public class ConfigElementProposalProvider extends AbstractProposalProvider {
     }
 
     private IIpsProject getIpsProject() {
-        return getValueSetOwner().getIpsProject();
-    }
-
-    @Override
-    protected List<String> getAllowedValuesAsList() {
-        IValueSet allowedValueSet = getAllowedValueSet();
-        if (allowedValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
-            return ((IEnumValueSet)allowedValueSet).getValuesAsList();
-        } else if (getValueDatatype().isEnum()) {
-            return new EnumDatatypeValueSource(getValueDatatype()).getValues();
-        }
-        return Collections.emptyList();
-    }
-
-    private IValueSet getAllowedValueSet() {
-        try {
-            return getValueSetOwner().findPcTypeAttribute(getIpsProject()).getValueSet();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getConfigElement().getIpsProject();
     }
 
     private boolean isCurrentEnumValueSet() {

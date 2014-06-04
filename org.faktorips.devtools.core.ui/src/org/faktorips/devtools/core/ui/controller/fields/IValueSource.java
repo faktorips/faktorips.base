@@ -22,9 +22,7 @@ public interface IValueSource {
 
     /**
      * Returns all values defined in as for example in a {@link EnumValueSet} or an {@link EnumType}
-     * .
-     * 
-     * @return List<String> containing all values.
+     * . Returns an empty list if this value source cannot provide any values.
      */
     public List<String> getValues();
 

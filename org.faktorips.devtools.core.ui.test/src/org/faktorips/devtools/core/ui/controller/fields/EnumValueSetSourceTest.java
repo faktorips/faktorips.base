@@ -49,11 +49,9 @@ public class EnumValueSetSourceTest {
     @Test
     public void testIsApplicable_true() {
         when(valueSetOwner.getValueSet()).thenReturn(enumValueSet);
-        when(enumValueSet.isEnum()).thenReturn(true);
+        when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
 
-        boolean isApplicable = valueSource.isApplicable();
-
-        assertTrue(isApplicable);
+        assertTrue(valueSource.isApplicable());
     }
 
     @Test
@@ -89,7 +87,7 @@ public class EnumValueSetSourceTest {
     @Test
     public void testGetValues() {
         when(valueSetOwner.getValueSet()).thenReturn(enumValueSet);
-        when(enumValueSet.isEnum()).thenReturn(true);
+        when(enumValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(true);
         when(enumValueSet.getValuesAsList()).thenReturn(Arrays.asList(new String[] { "value1", "value2" }));
 
         List<String> values = valueSource.getValues();

@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -42,7 +42,7 @@ public class ConfigElementProposalProviderTest {
     private IInputFormat<String> inputFormat;
 
     @Mock
-    private ValueDatatype enumValueDatatype;
+    private EnumDatatype enumValueDatatype;
 
     @Mock
     private UnrestrictedValueSet unrestrictedValueSet;
@@ -71,6 +71,7 @@ public class ConfigElementProposalProviderTest {
         when(enumValueDatatype.areValuesEqual("aaaaa", "aaaaa")).thenReturn(true);
         when(enumValueDatatype.areValuesEqual("bbbbb", "bbbbb")).thenReturn(true);
         when(enumValueDatatype.areValuesEqual("ccccc", "ccccc")).thenReturn(true);
+        when(enumValueDatatype.getAllValueIds(true)).thenReturn(new String[] { "aaaaa", "bbbbb", "ccccc" });
         when(propertyValue.getIpsProject()).thenReturn(ipsProject);
         when(propertyValue.getIpsObject()).thenReturn(ipsObject);
         when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
