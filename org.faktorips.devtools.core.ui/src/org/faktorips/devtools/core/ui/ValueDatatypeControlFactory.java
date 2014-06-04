@@ -11,6 +11,11 @@
 package org.faktorips.devtools.core.ui;
 
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
@@ -20,7 +25,6 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -65,18 +69,77 @@ public abstract class ValueDatatypeControlFactory {
      * In case a value set is defined ,enumeration support is added to the text control by adding an
      * {@link EnumerationProposalProvider}.
      * 
+     * @param toolkit TODO
      * @param textControl the text control to add enumeration support to
      * @param valueSet the value set that provides the values
      * @param datatype the data type of the field. May also provide enumeration values if it is an
      *            enum data type.
      */
-    protected void adaptEnumValueSetProposal(Text textControl, IValueSet valueSet, ValueDatatype datatype) {
-        if (valueSet != null) {
+    protected void adaptEnumValueSetProposal(UIToolkit toolkit,
+            Text textControl,
+            IValueSet valueSet,
+            ValueDatatype datatype) {
+        if (valueSet != null && valueSet.isEnum()) {
             IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();
-            EnumerationFieldPainter.addPainterTo(textControl, datatype, valueSetOwner);
             IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
-            EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, datatype, valueSetOwner, inputFormat);
+            Button button = createArrowDownButton(toolkit, textControl.getParent());
+            EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, button, datatype, valueSetOwner,
+                    inputFormat);
         }
+    }
+
+    /**
+     * Creates a composite with the text control inside. This allows adding a button later on in
+     * case of an enum datatype or enum value set.
+     * <p>
+     * Layout is optimized for Win7. Sorry linux users. :-/
+     * 
+     * @see ValueDatatypeControlFactory#createArrowDownButton(UIToolkit, Composite)
+     */
+    protected Text createPotentialEnumTextControl(UIToolkit toolkit, Composite parent, int textStyle) {
+        Composite composite = toolkit.createGridComposite(parent, 2, false, false);
+        GridLayout gridLayout = (GridLayout)composite.getLayout();
+        /*
+         * Allow placement of the potential button directly next to the text control. Makes it look
+         * more like a combo.
+         */
+        gridLayout.horizontalSpacing = 0;
+        gridLayout.marginWidth = 1;
+        // avoid line of pixels below and above button. It should fit in perfectly.
+        gridLayout.marginHeight = 2;
+
+        Text text = toolkit.createTextAppendStyle(composite, textStyle);
+        toolkit.paintBorderFor(text);
+
+        return text;
+    }
+
+    /**
+     * Creates a composite with the text control inside. This allows adding a button later on in
+     * case of an enum datatype or enum value set.
+     * <p>
+     * Layout is optimized for Win7. Sorry linux users. :-/
+     * 
+     * @see ValueDatatypeControlFactory#createArrowDownButton(UIToolkit, Composite)
+     */
+    protected Text createPotentialEnumTextControl(UIToolkit toolkit, Composite parent) {
+        return createPotentialEnumTextControl(toolkit, parent, SWT.NONE);
+    }
+
+    /**
+     * Creates an button with an arrow down image that opens the context proposal for enum values.
+     * 
+     */
+    protected Button createArrowDownButton(UIToolkit toolkit, Composite parent) {
+        Button button = toolkit.createButton(parent, null);
+        GridData buttonData = new GridData();
+        buttonData.heightHint = 28;
+        button.setLayoutData(buttonData);
+
+        Image arrowDown = IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown_grey.gif", true); //$NON-NLS-1$
+        button.setImage(arrowDown);
+
+        return button;
     }
 
     protected IInputFormat<String> getInputFormat(ValueDatatype datatype, IValueSet valueSet) {
@@ -104,11 +167,22 @@ public abstract class ValueDatatypeControlFactory {
      * @param valueSet An optional @Deprecated valueset.Future Implementations should use
      *            ValueSetOwner instead.
      */
-    public abstract Control createControl(UIToolkit toolkit,
+    public Control createControl(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             @Deprecated IValueSet valueSet,
-            IIpsProject ipsProject);
+            IIpsProject ipsProject) {
+        return createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
+    }
+
+    protected Text createTextAndAdaptEnum(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet) {
+        Text text = createPotentialEnumTextControl(toolkit, parent, getDefaultAlignment());
+        adaptEnumValueSetProposal(toolkit, text, valueSet, datatype);
+        return text;
+    }
 
     /**
      * Creates a cell editor that allows to edit a value of the value datatype this is a factory

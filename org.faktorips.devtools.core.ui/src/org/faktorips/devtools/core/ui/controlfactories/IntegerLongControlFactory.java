@@ -50,22 +50,10 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        Text text = createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        Text text = createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
         FormattingTextField<String> formatField = new FormattingTextField<String>(text, getInputFormat(datatype,
                 valueSet));
         return formatField;
-    }
-
-    @Override
-    public Text createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-
-        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        adaptEnumValueSetProposal(text, valueSet, datatype);
-        return text;
     }
 
     @Override

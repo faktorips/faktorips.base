@@ -39,19 +39,8 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text control = createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        Text control = createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
         return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
-    }
-
-    @Override
-    public Text createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        adaptEnumValueSetProposal(control, valueSet, datatype);
-        return control;
     }
 
     @Override

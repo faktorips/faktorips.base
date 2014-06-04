@@ -1144,16 +1144,41 @@ public class UIToolkit {
     }
 
     /**
-     * Configures the form-toolkit to draw borders around several controls in the given composite.
-     * This affects text-, combo-, tree-, table- and composite-controls contained in the given
-     * composite. Does nothing if the form-toolkit is <code>null</code>.
+     * Draws borders around all controls in the given composite. A border is drawn also for the
+     * composite itself if its parent is also configured to paint borders. This affects text-,
+     * combo-, tree-, table- and child composite-controls in the given composite. Does nothing if
+     * the form-toolkit is <code>null</code>.
      * <p>
      * This method is used when developing a form UI, e.g. the product component editor.
+     * <p>
+     * Note that the composite requires at least one pixel of space to actually draw the border. The
+     * border is drawn <em>around</em> the controls, not inside of them. Make sure the layout
+     * ensures this, e.g. by using grid layout with a marginWidth and marginHeight of at least 1.
+     * 
      */
     public void paintBordersForComposite(Composite composite) {
         if (getFormToolkit() != null) {
             composite.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
             getFormToolkit().paintBordersFor(composite);
+        }
+    }
+
+    /**
+     * Draws borders around the given text field. Does nothing if the form-toolkit is
+     * <code>null</code>.
+     * <p>
+     * This method is used when developing a form UI, e.g. the product component editor.
+     * <p>
+     * Note that the text's parent composite requires at least one pixel of space to actually draw
+     * the border. The border is drawn <em>around</em> the text control, not inside of it. Make sure
+     * the layout ensures this, e.g. by using grid layout with a marginWidth and marginHeight of at
+     * least 1.
+     * 
+     */
+    public void paintBorderFor(Text text) {
+        if (getFormToolkit() != null) {
+            text.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+            getFormToolkit().paintBordersFor(text.getParent());
         }
     }
 

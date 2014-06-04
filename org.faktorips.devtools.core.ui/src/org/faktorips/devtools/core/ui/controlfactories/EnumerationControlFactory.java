@@ -11,12 +11,13 @@
 package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
-import org.faktorips.devtools.core.ui.controller.fields.EnumerationFieldPainter;
+import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
@@ -36,12 +37,16 @@ public class EnumerationControlFactory extends DefaultControlFactory {
     }
 
     @Override
-    protected void adaptEnumValueSetProposal(Text textControl, IValueSet valueSet, ValueDatatype datatype) {
-        super.adaptEnumValueSetProposal(textControl, valueSet, datatype);
+    protected void adaptEnumValueSetProposal(UIToolkit toolkit,
+            Text textControl,
+            IValueSet valueSet,
+            ValueDatatype datatype) {
+        super.adaptEnumValueSetProposal(toolkit, textControl, valueSet, datatype);
         if (valueSet == null) {
-            EnumerationFieldPainter.addPainterTo(textControl, datatype, null);
+            // always create a proposal provider as this is an enum datatype
             IInputFormat<String> inputFormat = getInputFormat(datatype, null);
-            EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, datatype, null, inputFormat);
+            Button button = createArrowDownButton(toolkit, textControl.getParent());
+            EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, button, datatype, null, inputFormat);
         }
     }
 

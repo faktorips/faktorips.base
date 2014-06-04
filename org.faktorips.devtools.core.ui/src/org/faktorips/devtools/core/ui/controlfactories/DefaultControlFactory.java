@@ -45,19 +45,8 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        Text text = createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        Text text = createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
         return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
-    }
-
-    @Override
-    public Text createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        Text text = toolkit.createText(parent);
-        adaptEnumValueSetProposal(text, valueSet, datatype);
-        return text;
     }
 
     @Override

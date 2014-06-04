@@ -14,10 +14,9 @@ import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.fieldassist.TextContentAdapter;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -28,44 +27,41 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
  */
 public class EnumerationProposalAdapter extends ContentProposalAdapter {
 
-    private static final int CLICK_AREA_WIDTH = 24;
-
-    public EnumerationProposalAdapter(Text control, IContentProposalProvider proposalProvider, KeyStroke keyStroke,
+    public EnumerationProposalAdapter(Text textControl, IContentProposalProvider proposalProvider, KeyStroke keyStroke,
             char[] activationChar) {
-        super(control, new TextContentAdapter(), proposalProvider, keyStroke, activationChar);
-        addListenerForOpenOnMouseUp(control);
+        super(textControl, new TextContentAdapter(), proposalProvider, keyStroke, activationChar);
     }
 
-    public static EnumerationProposalAdapter createAndActivateOnAnyKey(Text control,
+    public static EnumerationProposalAdapter createAndActivateOnAnyKey(Text text,
+            Button button,
             ValueDatatype valueDatatype,
             IValueSetOwner owner,
             IInputFormat<String> inputFormat) {
         IContentProposalProvider proposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat,
                 PROPOSAL_REPLACE);
-        EnumerationProposalAdapter proposalAdapter = new EnumerationProposalAdapter(control, proposalProvider, null,
-                null);
+        EnumerationProposalAdapter proposalAdapter = new EnumerationProposalAdapter(text, proposalProvider, null, null);
         proposalAdapter.setProposalAcceptanceStyle(PROPOSAL_REPLACE);
+        proposalAdapter.addListenerForOpenOnClick(text, button);
         return proposalAdapter;
     }
 
-    private void addListenerForOpenOnMouseUp(final Text control) {
-        control.addMouseListener(new MouseAdapter() {
+    private void addListenerForOpenOnClick(final Text text, final Button button) {
+        button.addSelectionListener(new SelectionAdapter() {
             @Override
-            public void mouseUp(MouseEvent e) {
-                Rectangle clickRegion = control.getClientArea();
-                if (!isLeftAligned(control)) {
-                    clickRegion.x = clickRegion.width - CLICK_AREA_WIDTH;
-                }
-                clickRegion.width = CLICK_AREA_WIDTH;
-                if (clickRegion.contains(e.x, e.y)) {
-                    control.setSelection(control.getText().length(), 0);
-                    openProposalPopup();
-                }
+            public void widgetSelected(SelectionEvent e) {
+                /*
+                 * Workaround to let the context proposal work like a combo control.
+                 * 
+                 * When a combo is opened it shows ALL available entries. This is not how the
+                 * context proposal works. It normally only shows matching entries, depending on the
+                 * text already entered in the text field. To simulate combo-behavior, set the
+                 * cursor position to 0. Now there is no text to the left of the cursor. This forces
+                 * the context proposal to show all values, as it has no text to use as filter.
+                 */
+                text.setSelection(0);
+                openProposalPopup();
             }
         });
     }
 
-    private boolean isLeftAligned(final Text control) {
-        return (control.getStyle() & SWT.RIGHT) != 0;
-    }
 }

@@ -15,7 +15,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -50,24 +49,13 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IValueSet valueSet,
             IIpsProject ipsProject) {
         AbstractDateTimeControl dateControl = createDateTimeControl(parent, toolkit);
-        adaptEnumValueSetProposal(dateControl.getTextControl(), valueSet, datatype);
+        adaptEnumValueSetProposal(toolkit, dateControl.getTextControl(), valueSet, datatype);
         DateControlField<String> formatField = new DateControlField<String>(dateControl, getInputFormat(datatype,
                 valueSet));
         return formatField;
     }
 
     protected abstract AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit);
-
-    @Override
-    public Control createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        adaptEnumValueSetProposal(text, valueSet, datatype);
-        return text;
-    }
 
     protected Button createButton(UIToolkit toolkit, Composite calendarComposite) {
         GridData buttonGridData = new GridData(SWT.FILL, SWT.FILL, false, false);
@@ -90,7 +78,6 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-
         return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
@@ -119,7 +106,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             Composite parent,
             IIpsProject ipsProject) {
 
-        Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
+        Text textControl = createTextAndAdaptEnum(toolkit, parent, dataType, valueSet);
         EditField<String> editField = new FormattingTextField<String>(textControl, getInputFormat(dataType, valueSet));
         IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
         return tableCellEditor;

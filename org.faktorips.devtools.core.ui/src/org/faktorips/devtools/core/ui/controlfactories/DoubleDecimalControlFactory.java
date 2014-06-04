@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.controlfactories;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -46,20 +45,9 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text text = (Text)createControl(toolkit, parent, datatype, valueSet, ipsProject);
+        Text text = createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
         return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
 
-    }
-
-    @Override
-    public Control createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        adaptEnumValueSetProposal(text, valueSet, datatype);
-        return text;
     }
 
     @Override
