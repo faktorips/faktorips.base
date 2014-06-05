@@ -25,6 +25,10 @@ public class MethodParameter {
 
     private final String paramName;
 
+    private final String KEYWORD_FINAL = "final";
+
+    private final boolean isFinalFlag;
+
     /**
      * Create the parameter with the type and the parameter name. It does not matter if the type is
      * qualified or not as far the import statement is already present.
@@ -33,8 +37,13 @@ public class MethodParameter {
      * @param paramName The name of the parameter
      */
     public MethodParameter(String type, String paramName) {
+        this(type, paramName, false);
+    }
+
+    public MethodParameter(String type, String paramName, boolean isFinalFlag) {
         this.type = type;
         this.paramName = paramName;
+        this.isFinalFlag = isFinalFlag;
     }
 
     /**
@@ -74,7 +83,11 @@ public class MethodParameter {
      * @return The definition of the parameter for use in method definitions.
      */
     public String getDefinition() {
-        return type + " " + paramName;
+        if (isFinalFlag) {
+            return KEYWORD_FINAL + " " + type + " " + paramName;
+        } else {
+            return type + " " + paramName;
+        }
     }
 
     @Override
