@@ -96,8 +96,15 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * number and date datatypes. Override this method if another behavior is required.
      */
     protected boolean isRepresentingNull(String stringToBeParsed) {
-        return nullStringRepresentation.equals(stringToBeParsed) || StringUtils.EMPTY.equals(stringToBeParsed)
-                || IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
+        return getNullString().equals(stringToBeParsed) || StringUtils.EMPTY.equals(stringToBeParsed)
+                || isPreferencesNullPresentation(stringToBeParsed);
+    }
+
+    /**
+     * Checks if the parameter equals the NullPresentation of the {@link IpsPreferences}
+     */
+    protected boolean isPreferencesNullPresentation(String stringToBeParsed) {
+        return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
     }
 
     /**

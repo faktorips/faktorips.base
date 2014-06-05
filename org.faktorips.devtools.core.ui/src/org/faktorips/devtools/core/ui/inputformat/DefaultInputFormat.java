@@ -49,8 +49,7 @@ public class DefaultInputFormat extends AbstractInputFormat<String> {
      */
     @Override
     protected boolean isRepresentingNull(String stringToBeParsed) {
-        return getNullString().equals(stringToBeParsed)
-                || IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
+        return getNullString().equals(stringToBeParsed) || isPreferencesNullPresentation(stringToBeParsed);
     }
 
     @Override
