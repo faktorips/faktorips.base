@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -86,10 +85,14 @@ public abstract class ValueDatatypeControlFactory {
             ipsProject = valueSet.getIpsProject();
         }
         IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, ipsProject);
-        if (isControlForDefaultValue(valueSet)) {
-            inputFormat.setNullString(getNullStringRepresentation(valueSet));
-        }
+        setNewNullString(valueSet, inputFormat);
         return inputFormat;
+    }
+
+    private void setNewNullString(IValueSet valueSet, IInputFormat<String> inputFormat) {
+        if (isControlForDefaultValue(valueSet)) {
+            inputFormat.setNullString(Messages.DefaultValueRepresentation_EditField);
+        }
     }
 
     /**
@@ -166,13 +169,4 @@ public abstract class ValueDatatypeControlFactory {
     protected boolean isControlForDefaultValue(IValueSet valueSet) {
         return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
     }
-
-    protected String getNullStringRepresentation(IValueSet valueSet) {
-        if (isControlForDefaultValue(valueSet)) {
-            return Messages.DefaultValueRepresentation_EditField;
-        } else {
-            return StringUtils.EMPTY;
-        }
-    }
-
 }

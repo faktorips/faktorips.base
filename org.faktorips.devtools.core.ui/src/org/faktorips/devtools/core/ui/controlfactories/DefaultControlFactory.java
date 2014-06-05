@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -47,7 +46,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             IIpsProject ipsProject) {
 
         Text text = createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet), StringUtils.EMPTY);
+        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
     }
 
     @Override

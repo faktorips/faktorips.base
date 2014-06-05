@@ -15,9 +15,11 @@ import java.text.ParsePosition;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.util.ArgumentCheck;
@@ -82,11 +84,20 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      */
     @Override
     public T parse(String stringToBeParsed, boolean supportNull) {
-        if (supportNull && nullStringRepresentation.equals(stringToBeParsed)) {
+        if (supportNull && isRepresentingNull(stringToBeParsed)) {
             return null;
         } else {
             return parseInternal(stringToBeParsed);
         }
+    }
+
+    /**
+     * Assumes empty string always represents the <code>null</code> value. This is true for all
+     * number and date datatypes. Override this method if another behavior is required.
+     */
+    protected boolean isRepresentingNull(String stringToBeParsed) {
+        return nullStringRepresentation.equals(stringToBeParsed) || StringUtils.EMPTY.equals(stringToBeParsed)
+                || IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
     }
 
     /**

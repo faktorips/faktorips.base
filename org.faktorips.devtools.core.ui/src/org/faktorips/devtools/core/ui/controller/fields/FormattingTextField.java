@@ -74,23 +74,6 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
         }
     }
 
-    /**
-     * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
-     * format. Both arguments must not be <code>null</code>. Additionally you can specify the string
-     * representation for the <code>null</code> value according to
-     * {@link IInputFormat#setNullString(String)}. This field will always be configured to update
-     * the format on focus lost event.
-     * 
-     * @param text the {@link Text} control to be used by this {@link FormattingTextField}
-     * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextField}
-     * @param nullRepresentation The string that represents the <code>null</code> value according to
-     *            {@link IInputFormat#setNullString(String)}
-     */
-    public FormattingTextField(Text text, IInputFormat<T> format, String nullRepresentation) {
-        this(text, format, true);
-        format.setNullString(nullRepresentation);
-    }
-
     @Override
     public T parseContent() {
         return getFormat().parse(getText(), supportsNullStringRepresentation());
