@@ -106,7 +106,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             Composite parent,
             IIpsProject ipsProject) {
 
-        Text textControl = createTextAndAdaptEnum(toolkit, parent, dataType, valueSet);
+        Text textControl = createTextAndAdaptEnumProposal(toolkit, parent, dataType, valueSet);
         EditField<String> editField = new FormattingTextField<String>(textControl, getInputFormat(dataType, valueSet));
         IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
         return tableCellEditor;

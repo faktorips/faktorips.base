@@ -44,8 +44,7 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
-        Text text = createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
+        Text text = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
         return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
     }
 

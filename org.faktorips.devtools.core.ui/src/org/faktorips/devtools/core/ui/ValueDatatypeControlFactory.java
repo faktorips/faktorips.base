@@ -134,6 +134,7 @@ public abstract class ValueDatatypeControlFactory {
         Button button = toolkit.createButton(parent, null);
         GridData buttonData = new GridData();
         buttonData.heightHint = 28;
+        buttonData.widthHint = 22;
         button.setLayoutData(buttonData);
 
         Image arrowDown = IpsUIPlugin.getImageHandling().getSharedImage("ArrowDown_grey.gif", true); //$NON-NLS-1$
@@ -172,10 +173,10 @@ public abstract class ValueDatatypeControlFactory {
             ValueDatatype datatype,
             @Deprecated IValueSet valueSet,
             IIpsProject ipsProject) {
-        return createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
+        return createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
     }
 
-    protected Text createTextAndAdaptEnum(UIToolkit toolkit,
+    protected Text createTextAndAdaptEnumProposal(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
             IValueSet valueSet) {

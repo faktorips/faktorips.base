@@ -50,7 +50,7 @@ public class IntegerLongControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
 
-        Text text = createTextAndAdaptEnum(toolkit, parent, datatype, valueSet);
+        Text text = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
         FormattingTextField<String> formatField = new FormattingTextField<String>(text, getInputFormat(datatype,
                 valueSet));
         return formatField;
