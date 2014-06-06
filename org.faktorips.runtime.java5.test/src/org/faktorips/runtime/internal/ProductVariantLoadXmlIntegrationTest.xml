@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Generation description="" validFrom="2006-01-01">
+	<ConfigElement attribute="attribute1" value="4">
+		<ValueSet>
+			<AllValues />
+		</ValueSet>
+	</ConfigElement>
+	<ConfigElement attribute="attribute2" value="n">
+		<ValueSet>
+			<AllValues />
+		</ValueSet>
+	</ConfigElement>
+	<AttributeValue attribute="attribute3" value="43" />
+	<Description />
+
+</Generation>
+
