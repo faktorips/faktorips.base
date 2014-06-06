@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -78,10 +80,19 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         for (String value : columns) {
             newRow.setValueInternal(column++, value);
         }
-
-        updateUniqueKeyCacheFor(newRow);
+        updateUniqueKeyCacheFor(newRow, getUniqueKeys());
 
         return newRow;
+    }
+
+    private IIndex[] getUniqueKeys() {
+        IIndex[] uniqueKeys;
+        try {
+            uniqueKeys = getTableContents().findTableStructure(getIpsProject()).getUniqueKeys();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return uniqueKeys;
     }
 
     /**
@@ -157,7 +168,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
                     Row updateRow = rows.get(i);
                     updateRow.setRowNumber(i);
                 }
-                removeUniqueKeyCacheFor(row);
+                removeUniqueKeyCacheFor(row, getUniqueKeys());
             }
             return true;
         }
@@ -227,8 +238,9 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
      */
     private void updateUniqueKeyCache(ITableStructure tableStructure) {
         uniqueKeyValidator.clearUniqueKeyCache();
+        IIndex[] uniqueKeys = tableStructure.getUniqueKeys();
         for (IRow row : rows) {
-            updateUniqueKeyCacheFor((Row)row);
+            updateUniqueKeyCacheFor((Row)row, uniqueKeys);
         }
         uniqueKeyValidator.cacheTableStructureAndValueDatatypes(this);
         // store the last table structure modification time to detect changes of the table structure
@@ -248,7 +260,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
         super.validateThis(list, ipsProject);
         ITableStructure tableStructure = getTableContents().findTableStructure(ipsProject);
         ValueDatatype[] datatypes = ((TableContents)getTableContents()).findColumnDatatypes(tableStructure, ipsProject);
-        if (tableStructure != null && datatypes != null) {
+        if (tableStructure != null && datatypes != null && tableStructure.getUniqueKeys().length > 0) {
             MessageList uniqueKeyList = new MessageList();
             validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
             list.add(uniqueKeyList.getMessageByCode(ITableContents.MSGCODE_TOO_MANY_UNIQUE_KEY_VIOLATIONS));
@@ -290,19 +302,20 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
     /**
      * Updates the unique key cache for the given row
+     * 
      */
-    void updateUniqueKeyCacheFor(Row row) {
+    void updateUniqueKeyCacheFor(Row row, IIndex[] uniqueKeys) {
         if (isUniqueKeyValidationEnabled()) {
-            uniqueKeyValidator.handleRowChanged(this, row);
+            uniqueKeyValidator.handleRowChanged(this, row, uniqueKeys);
         }
     }
 
     /**
      * Removes the row in the cached unique keys
      */
-    private void removeUniqueKeyCacheFor(Row row) {
+    private void removeUniqueKeyCacheFor(Row row, IIndex[] uniqueKeys) {
         if (isUniqueKeyValidationEnabled()) {
-            uniqueKeyValidator.handleRowRemoved(this, row);
+            uniqueKeyValidator.handleRowRemoved(this, row, uniqueKeys);
         }
     }
 
