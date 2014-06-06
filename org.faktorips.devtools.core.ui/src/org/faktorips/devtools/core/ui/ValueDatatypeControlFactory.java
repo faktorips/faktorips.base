@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -24,6 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.ui.controlfactories.EnumerationControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalProvider;
@@ -66,6 +68,32 @@ public abstract class ValueDatatypeControlFactory {
             IIpsProject ipsProject);
 
     /**
+     * Creates a control that allows to edit a value of the value datatype this is a factory for.
+     * 
+     * @param toolkit The toolkit used to create the control.
+     * @param parent The parent composite to which the control is added.
+     * @param datatype The value datatype a control should be created for.
+     * @param valueSet An optional @Deprecated valueset.Future Implementations should use
+     *            ValueSetOwner instead.
+     */
+    public Control createControl(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            @Deprecated IValueSet valueSet,
+            IIpsProject ipsProject) {
+        return createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
+    }
+
+    protected Text createTextAndAdaptEnumProposal(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet) {
+        Text text = createPotentialEnumTextControl(toolkit, parent, getDefaultAlignment());
+        adaptEnumValueProposal(toolkit, text, valueSet, datatype);
+        return text;
+    }
+
+    /**
      * In case a value set is defined ,enumeration support is added to the text control by adding an
      * {@link EnumerationProposalProvider}.
      * 
@@ -75,16 +103,49 @@ public abstract class ValueDatatypeControlFactory {
      * @param datatype the data type of the field. May also provide enumeration values if it is an
      *            enum data type.
      */
-    protected void adaptEnumValueSetProposal(UIToolkit toolkit,
+    protected void adaptEnumValueProposal(UIToolkit toolkit,
             Text textControl,
             IValueSet valueSet,
             ValueDatatype datatype) {
-        if (valueSet != null && valueSet.isEnum()) {
+        if (requiresEnumValueProposal(valueSet)) {
             IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();
             IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
             Button button = createArrowDownButton(toolkit, textControl.getParent());
             EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, button, datatype, valueSetOwner,
                     inputFormat);
+        }
+    }
+
+    /**
+     * This method returns <code>true</code> if:
+     * <ul>
+     * <li>
+     * the value set is not <code>null</code> and at the same time</li>
+     * <li>
+     * the value set is an enum</li>
+     * </ul>
+     * 
+     * For enum datatypes, content propsal will be added by the implementation in
+     * {@link EnumerationControlFactory#adaptEnumValueProposal(UIToolkit, Text, IValueSet, ValueDatatype)}
+     * .
+     */
+    private boolean requiresEnumValueProposal(IValueSet valueSet) {
+        return valueSet != null && valueSet.isEnum();
+    }
+
+    protected IInputFormat<String> getInputFormat(ValueDatatype datatype, IValueSet valueSet) {
+        IIpsProject ipsProject = null;
+        if (valueSet != null) {
+            ipsProject = valueSet.getIpsProject();
+        }
+        IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, ipsProject);
+        setNewNullString(valueSet, inputFormat);
+        return inputFormat;
+    }
+
+    private void setNewNullString(IValueSet valueSet, IInputFormat<String> inputFormat) {
+        if (isControlForDefaultValue(valueSet)) {
+            inputFormat.setNullString(Messages.DefaultValueRepresentation_EditField);
         }
     }
 
@@ -131,9 +192,11 @@ public abstract class ValueDatatypeControlFactory {
      * 
      */
     protected Button createArrowDownButton(UIToolkit toolkit, Composite parent) {
-        Button button = toolkit.createButton(parent, null);
+        Button button = toolkit.createButton(parent, StringUtils.EMPTY);
         GridData buttonData = new GridData();
+        // Matches height of the text field in Win7
         buttonData.heightHint = 28;
+        // minimum width so the arrow is still visible
         buttonData.widthHint = 22;
         button.setLayoutData(buttonData);
 
@@ -141,48 +204,6 @@ public abstract class ValueDatatypeControlFactory {
         button.setImage(arrowDown);
 
         return button;
-    }
-
-    protected IInputFormat<String> getInputFormat(ValueDatatype datatype, IValueSet valueSet) {
-        IIpsProject ipsProject = null;
-        if (valueSet != null) {
-            ipsProject = valueSet.getIpsProject();
-        }
-        IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, ipsProject);
-        setNewNullString(valueSet, inputFormat);
-        return inputFormat;
-    }
-
-    private void setNewNullString(IValueSet valueSet, IInputFormat<String> inputFormat) {
-        if (isControlForDefaultValue(valueSet)) {
-            inputFormat.setNullString(Messages.DefaultValueRepresentation_EditField);
-        }
-    }
-
-    /**
-     * Creates a control that allows to edit a value of the value datatype this is a factory for.
-     * 
-     * @param toolkit The toolkit used to create the control.
-     * @param parent The parent composite to which the control is added.
-     * @param datatype The value datatype a control should be created for.
-     * @param valueSet An optional @Deprecated valueset.Future Implementations should use
-     *            ValueSetOwner instead.
-     */
-    public Control createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            @Deprecated IValueSet valueSet,
-            IIpsProject ipsProject) {
-        return createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
-    }
-
-    protected Text createTextAndAdaptEnumProposal(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet) {
-        Text text = createPotentialEnumTextControl(toolkit, parent, getDefaultAlignment());
-        adaptEnumValueSetProposal(toolkit, text, valueSet, datatype);
-        return text;
     }
 
     /**

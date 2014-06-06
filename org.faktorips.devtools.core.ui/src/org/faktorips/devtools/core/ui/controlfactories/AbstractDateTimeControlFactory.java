@@ -49,7 +49,7 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             IValueSet valueSet,
             IIpsProject ipsProject) {
         AbstractDateTimeControl dateControl = createDateTimeControl(parent, toolkit);
-        adaptEnumValueSetProposal(toolkit, dateControl.getTextControl(), valueSet, datatype);
+        adaptEnumValueProposal(toolkit, dateControl.getTextControl(), valueSet, datatype);
         DateControlField<String> formatField = new DateControlField<String>(dateControl, getInputFormat(datatype,
                 valueSet));
         return formatField;
