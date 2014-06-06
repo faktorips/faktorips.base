@@ -44,7 +44,11 @@ public class HiddenAttributeMismatchEntry extends AbstractDeltaEntryForProperty 
     @Override
     public String getDescription() {
         return NLS.bind(Messages.HiddenAttributeMismatchEntry_desc, new String[] { getPropertyName(),
-                getAttributeValue().getValueHolder().getStringValue(), attribute.getDefaultValue() });
+                getCurrentAttributeValue(), attribute.getDefaultValue() });
+    }
+
+    public String getCurrentAttributeValue() {
+        return getAttributeValue().getValueHolder().getStringValue();
     }
 
     private IAttributeValue getAttributeValue() {
