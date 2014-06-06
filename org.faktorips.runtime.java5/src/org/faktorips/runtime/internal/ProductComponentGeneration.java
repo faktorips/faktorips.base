@@ -10,7 +10,6 @@
 
 package org.faktorips.runtime.internal;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -54,7 +53,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     private Map<String, ValidationRuleConfiguration> nameToValidationRuleConfigMap = new HashMap<String, ValidationRuleConfiguration>();
 
-    private Map<String, String> availableFormulars = Collections.emptyMap();
+    private Map<String, String> availableFormulars = new LinkedHashMap<String, String>();
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
@@ -173,7 +172,11 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
 
     /**
      * Initializes all formulas contained by genElement. If formula evaluation is supported, the map
-     * contains the compiled expression for every formula.
+     * contains the compiled expression for every formula. *
+     * <p>
+     * IPSPV-199 : changed that <code>availableFormulas</code> is not overridden, because if the
+     * method <code>initFromXML</code> is called twice, the product variant would have no formulas.
+     * 
      * <p>
      * SW 29.02.2012: TODO ProductVariants call initFromXML() twice. As of yet no formulas can be
      * varied and thus the formula-evaluator should not be overridden if it already exists. This is
@@ -182,7 +185,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * called for each formula found in the XML. see FIPS-995
      */
     protected void doInitFormulaFromXml(Element genElement) {
-        availableFormulars = ProductComponentXmlUtil.getAvailableFormulars(genElement);
+        availableFormulars.putAll(ProductComponentXmlUtil.getAvailableFormulars(genElement));
 
         if (formulaEvaluator != null) {
             return;
@@ -219,12 +222,15 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * Creates a map containing the validation rule configurations found in the indicated
      * generation's XML element. For each validation rule configuration the map contains an entry
      * with the rule name as a key and an {@link ValidationRuleConfiguration} instance as value.
+     * <p>
+     * IPSPV-199 : removed the cleaning of <code>nameToValidationRuleConfigMap</code> because if the
+     * method <code>initFromXML</code> is called twice, the product variant would have no validation
+     * rules when cleaning is used.
      * 
      * @param genElement An XML element containing a product component generation's data.
      * @throws NullPointerException if genElement is <code>null</code>.
      */
     protected void doInitValidationRuleConfigsFromXml(Element genElement) {
-        nameToValidationRuleConfigMap.clear();
         NodeList nl = genElement.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node node = nl.item(i);
