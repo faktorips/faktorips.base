@@ -21,20 +21,42 @@ import org.eclipse.jdt.core.Signature;
  */
 public class MethodParameter {
 
+    private static final String KEYWORD_FINAL = "final";
+
     private final String type;
 
     private final String paramName;
 
+    private final boolean isFinalFlag;
+
     /**
      * Create the parameter with the type and the parameter name. It does not matter if the type is
      * qualified or not as far the import statement is already present.
+     * <p>
+     * The parameter has not the keyword 'final'. Use constructor #MethodParameter(String, String,
+     * boolean) with true if the parameter needs the keyword 'final'.
      * 
      * @param type The parameter type, e.g. <em>String</em> or <em>ProductComponent</em>
      * @param paramName The name of the parameter
      */
     public MethodParameter(String type, String paramName) {
+        this(type, paramName, false);
+    }
+
+    /**
+     * Create the parameter with the type and the parameter name. It does not matter if the type is
+     * qualified or not as far the import statement is already present.
+     * <p>
+     * If isFinalFlag is <b>true</b> then the parameter gets the preceding keyword 'final'.
+     * 
+     * @param type The parameter type, e.g. <em>String</em> or <em>ProductComponent</em>
+     * @param paramName The name of the parameter
+     * @param isFinalFlag indicates if the parameter is final
+     */
+    public MethodParameter(String type, String paramName, boolean isFinalFlag) {
         this.type = type;
         this.paramName = paramName;
+        this.isFinalFlag = isFinalFlag;
     }
 
     /**
@@ -74,7 +96,11 @@ public class MethodParameter {
      * @return The definition of the parameter for use in method definitions.
      */
     public String getDefinition() {
-        return type + " " + paramName;
+        if (isFinalFlag) {
+            return KEYWORD_FINAL + " " + type + " " + paramName;
+        } else {
+            return type + " " + paramName;
+        }
     }
 
     @Override
