@@ -45,6 +45,13 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         valueSource = createValueSource(valueSetOwner, valueDatatype);
     }
 
+    /**
+     * Creates the value source for this proposal provider. For each value in the list returned by
+     * the {@link IValueSource}, a content proposal is created.
+     * 
+     * @param valueSetOwner the value set owner
+     * @param datatype the attribute's datatype
+     */
     protected abstract IValueSource createValueSource(IValueSetOwner valueSetOwner, ValueDatatype datatype);
 
     public ValueDatatype getValueDatatype() {
