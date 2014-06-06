@@ -53,4 +53,14 @@ public class DefaultControlFactory extends ValueDatatypeControlFactory {
         return SWT.LEFT;
     }
 
+    @Override
+    protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
+    }
+
 }

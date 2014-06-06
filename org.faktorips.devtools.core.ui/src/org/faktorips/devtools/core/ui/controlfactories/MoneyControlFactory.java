@@ -48,4 +48,14 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
         return SWT.RIGHT;
     }
 
+    @Override
+    protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+        Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
+    }
+
 }

@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controlfactories.EnumerationControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalAdapter;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
@@ -255,9 +256,26 @@ public abstract class ValueDatatypeControlFactory {
             Composite parent,
             IIpsProject ipsProject) {
 
-        EditField<String> editField = createEditField(toolkit, parent, dataType, valueSet, ipsProject);
+        EditField<String> editField = createEditFieldForTable(toolkit, parent, dataType, valueSet, ipsProject);
         IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
         return tableCellEditor;
+    }
+
+    /**
+     * Creates a text control and a corresponding {@link FormattingTextField} for use in a table.
+     * Subclasses may override to create different controls or different edit fields.
+     * <p>
+     * This method is called by the default implementation of
+     * {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
+     * . If subclasses override createTableCellEditor() this method can be ignored.
+     */
+    protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
     }
 
     public abstract int getDefaultAlignment();

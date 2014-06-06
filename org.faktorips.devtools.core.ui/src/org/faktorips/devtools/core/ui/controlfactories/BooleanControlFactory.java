@@ -201,4 +201,5 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
         return IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValue(Datatype.PRIMITIVE_BOOLEAN, Boolean.FALSE.toString());
     }
+
 }
