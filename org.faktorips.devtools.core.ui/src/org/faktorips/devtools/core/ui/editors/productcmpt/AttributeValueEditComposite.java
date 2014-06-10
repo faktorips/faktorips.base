@@ -129,7 +129,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         if (editField != null) {
             /*
              * SW 4.6.2014: old code set horizontal span to 2, for whatever reason. A potential enum
-             * button, however, requires a second colum, so this line was deleted.
+             * button, however, requires a second column, so that line was deleted.
              */
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);

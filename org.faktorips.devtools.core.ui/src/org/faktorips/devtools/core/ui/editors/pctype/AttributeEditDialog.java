@@ -161,7 +161,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Checkbox nullableCheckbox;
 
-    private Composite valueSetWorkArea;
+    private Composite defaultEditFieldPlaceholder;
 
     private MessageDecoration validationRuleAddedDecoration;
 
@@ -544,10 +544,14 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Control createValueSetPage(TabFolder folder) throws CoreException {
         Composite pageControl = createTabItemComposite(folder, 1, false);
 
-        valueSetWorkArea = getToolkit().createLabelEditColumnComposite(pageControl);
+        Composite valueSetWorkArea = getToolkit().createLabelEditColumnComposite(pageControl);
         labelDefaultValue = getToolkit().createLabel(valueSetWorkArea, Messages.AttributeEditDialog_labelDefaultValue);
 
-        createDefaultValueEditField(valueSetWorkArea);
+        defaultEditFieldPlaceholder = getToolkit().createComposite(valueSetWorkArea);
+        defaultEditFieldPlaceholder.setLayout(getToolkit().createNoMarginGridLayout(1, true));
+        defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+        createDefaultValueEditField(defaultEditFieldPlaceholder);
 
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
         valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, getToolkit(), getBindingContext(),
@@ -589,6 +593,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDefaultValueEditField(Composite workArea) {
+        // Composite defaultEditFieldPlaceholder=
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), workArea, currentDatatype, null,
@@ -640,17 +645,23 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             currentDatatype = newDatatype;
             if (defaultValueField != null) {
                 getBindingContext().removeBindings(defaultValueField.getControl());
-                defaultValueField.getControl().dispose();
             }
-            if (valueSetWorkArea != null && !valueSetWorkArea.isDisposed()) {
-                createDefaultValueEditField(valueSetWorkArea);
-                valueSetWorkArea.layout();
+            if (defaultEditFieldPlaceholder != null && !defaultEditFieldPlaceholder.isDisposed()) {
+                disposeChildrenOf(defaultEditFieldPlaceholder);
+                createDefaultValueEditField(defaultEditFieldPlaceholder);
+                defaultEditFieldPlaceholder.layout();
             }
             updateAllowedValueSetTypes();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
 
+    }
+
+    private void disposeChildrenOf(Composite composite) {
+        for (Control control : composite.getChildren()) {
+            control.dispose();
+        }
     }
 
     private void setEnableValueFieldAndValueSetControl(boolean enabled) {
@@ -978,8 +989,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             rule = r;
             /*
              * This notification order is crucial! First inform about enablement change, then about
-             * data change. This way controls whose enabled state is dependent on the data rather
-             * than the enablement will be activated/de-activated correctly.
+             * data change. This way controls, whose enabled state is dependent on the data rather
+             * than the enablement, will be activated/de-activated correctly.
              */
             notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLED, oldEnablement, isEnabled()));
             notifyListeners(new PropertyChangeEvent(this, PROPERTY_VALIDATION_RULE, oldRule, rule));
