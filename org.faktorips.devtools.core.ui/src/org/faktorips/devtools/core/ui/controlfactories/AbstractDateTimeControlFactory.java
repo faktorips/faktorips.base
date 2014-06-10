@@ -100,6 +100,12 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
         return cellEditor;
     }
 
+    /**
+     * @param toolkit The ui toolkit to use for creating ui elements.
+     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param valueSet An optional valueset.
+     * @param ipsProject The ipsProject where the editor belongs to.
+     */
     private IpsCellEditor createTextCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,

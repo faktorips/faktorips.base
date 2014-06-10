@@ -76,6 +76,7 @@ public abstract class ValueDatatypeControlFactory {
      * @param datatype The value datatype a control should be created for.
      * @param valueSet An optional @Deprecated valueset.Future Implementations should use
      *            ValueSetOwner instead.
+     * @param ipsProject The ipsProject where the control belongs to.
      */
     public Control createControl(UIToolkit toolkit,
             Composite parent,
@@ -98,7 +99,7 @@ public abstract class ValueDatatypeControlFactory {
      * In case a value set is defined ,enumeration support is added to the text control by adding an
      * {@link EnumerationProposalProvider}.
      * 
-     * @param toolkit TODO
+     * @param toolkit The toolkit used to create the control.
      * @param textControl the text control to add enumeration support to
      * @param valueSet the value set that provides the values
      * @param datatype the data type of the field. May also provide enumeration values if it is an
@@ -126,9 +127,8 @@ public abstract class ValueDatatypeControlFactory {
      * the value set is an enum</li>
      * </ul>
      * 
-     * For enum datatypes, content propsal will be added by the implementation in
-     * {@link EnumerationControlFactory#adaptEnumValueProposal(UIToolkit, Text, IValueSet, ValueDatatype)}
-     * .
+     * For enum datatypes, content proposal will be added by the implementation in
+     * {@link EnumerationControlFactory} .
      */
     private boolean requiresEnumValueProposal(IValueSet valueSet) {
         return valueSet != null && valueSet.isEnum();
@@ -268,6 +268,8 @@ public abstract class ValueDatatypeControlFactory {
      * This method is called by the default implementation of
      * {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
      * . If subclasses override createTableCellEditor() this method can be ignored.
+     * 
+     * @param ipsProject The ipsProject where the control belongs to.
      */
     protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
             Composite parent,
