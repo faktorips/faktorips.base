@@ -20,7 +20,9 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.MoneyField;
+import org.faktorips.devtools.core.ui.controller.fields.CurrencySymbolPainter;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.inputformat.MoneyFormat;
 
 public class MoneyControlFactory extends ValueDatatypeControlFactory {
 
@@ -40,7 +42,7 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text control = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
-        return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
+        return setUpFieldForTextControl(datatype, valueSet, control);
     }
 
     @Override
@@ -55,7 +57,12 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
+        return setUpFieldForTextControl(datatype, valueSet, control);
     }
 
+    private EditField<String> setUpFieldForTextControl(ValueDatatype datatype, IValueSet valueSet, Text control) {
+        MoneyFormat inputFormat = (MoneyFormat)getInputFormat(datatype, valueSet);
+        control.addPaintListener(new CurrencySymbolPainter(inputFormat));
+        return new FormattingTextField<String>(control, inputFormat);
+    }
 }
