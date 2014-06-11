@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
@@ -32,9 +30,13 @@ public class EnsureContainsNullForConfigElementValueSource implements IValueSour
 
     private final IValueSource valueSource;
     private final IValueSetOwner valueSetOwner;
+    private final ValueDatatype datatype;
 
-    public EnsureContainsNullForConfigElementValueSource(IValueSetOwner valueSetOwner, IValueSource valueSource) {
+    public EnsureContainsNullForConfigElementValueSource(IValueSetOwner valueSetOwner, ValueDatatype datatype,
+            IValueSource valueSource) {
         this.valueSetOwner = valueSetOwner;
+        Assert.isNotNull(datatype);
+        this.datatype = datatype;
         Assert.isNotNull(valueSource);
         this.valueSource = valueSource;
     }
@@ -54,16 +56,7 @@ public class EnsureContainsNullForConfigElementValueSource implements IValueSour
     }
 
     private boolean requiresNull(List<String> values) {
-        return isConfigElement() && !values.contains(null) && !isPrimitiveDatatype();
-    }
-
-    private boolean isPrimitiveDatatype() {
-        try {
-            ValueDatatype valueDatatype = valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
-            return valueDatatype.isPrimitive();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return isConfigElement() && !values.contains(null) && !datatype.isPrimitive();
     }
 
     private boolean isConfigElement() {

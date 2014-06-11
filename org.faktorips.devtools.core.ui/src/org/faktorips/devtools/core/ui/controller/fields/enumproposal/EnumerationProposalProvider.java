@@ -31,6 +31,6 @@ public class EnumerationProposalProvider extends AbstractProposalProvider {
     @Override
     protected IValueSource createValueSource(IValueSetOwner valueSetOwner, ValueDatatype datatype) {
         EnumValueSource enumValueSource = new EnumValueSource(valueSetOwner, datatype);
-        return new EnsureContainsNullForConfigElementValueSource(valueSetOwner, enumValueSource);
+        return new EnsureContainsNullForConfigElementValueSource(valueSetOwner, datatype, enumValueSource);
     }
 }

@@ -19,9 +19,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
@@ -38,8 +36,6 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
     @Mock
     private IValueSetOwner owner;
     @Mock
-    private IIpsProject ipsProject;
-    @Mock
     private ValueDatatype valueDatatype;
 
     private List<String> valueList;
@@ -54,21 +50,36 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
     }
 
     @Test
-    public void testGetValues_addNull() throws CoreException {
+    public void testGetValues_addNull() {
         owner = mock(IConfigElement.class);
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
-                owner, valueSource);
-        when(owner.getIpsProject()).thenReturn(ipsProject);
-        when(owner.findValueDatatype(ipsProject)).thenReturn(valueDatatype);
+                owner, valueDatatype, valueSource);
         when(valueDatatype.isPrimitive()).thenReturn(false);
         List<String> values = ensureContainsNullValueSource.getValues();
         assertValues(values);
     }
 
     @Test
-    public void testGetValues_doNotAddNull() {
+    public void testGetValues_doNotAddNull_forNonConfigElement() {
+        when(valueDatatype.isPrimitive()).thenReturn(false);
+
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
-                owner, valueSource);
+                owner, valueDatatype, valueSource);
+        List<String> values = ensureContainsNullValueSource.getValues();
+
+        assertEquals(3, values.size());
+        assertThat(values, hasItem("eins"));
+        assertThat(values, hasItem("zwei"));
+        assertThat(values, hasItem("drei"));
+    }
+
+    @Test
+    public void testGetValues_doNotAddNull_forPrimitiveDatatype() {
+        owner = mock(IConfigElement.class);
+        when(valueDatatype.isPrimitive()).thenReturn(true);
+
+        EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
+                owner, valueDatatype, valueSource);
         List<String> values = ensureContainsNullValueSource.getValues();
         assertEquals(3, values.size());
         assertThat(values, hasItem("eins"));
@@ -81,7 +92,7 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
         valueList.add(null);
 
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
-                owner, valueSource);
+                owner, valueDatatype, valueSource);
         List<String> values = ensureContainsNullValueSource.getValues();
         assertValues(values);
     }
