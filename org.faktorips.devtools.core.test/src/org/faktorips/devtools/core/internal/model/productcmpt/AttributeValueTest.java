@@ -236,4 +236,21 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertEquals(multiValueHolder, messageList.getMessage(1).getInvalidObjectProperties()[1].getObject());
     }
 
+    @Test
+    public void testValidate_hiddenAttribute() throws CoreException {
+        attribute.setMultiValueAttribute(true);
+        attribute.setDatatype("String");
+        attribute.setVisible(false);
+        MultiValueHolder multiValueHolder = new MultiValueHolder(attrValue);
+        attrValue.setValueHolder(multiValueHolder);
+        List<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
+        SingleValueHolder valueHolder = new SingleValueHolder(attrValue, "A");
+        values.add(valueHolder);
+        multiValueHolder.setValue(values);
+
+        MessageList messageList = attrValue.validate(ipsProject);
+
+        assertEquals(1, messageList.size());
+        assertEquals(IAttributeValue.MSGCODE_HIDDEN_ATTRIBUTE, messageList.getMessage(0).getCode());
+    }
 }

@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollection;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
@@ -43,6 +44,7 @@ import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -51,6 +53,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.FormulaSignatureFinder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
@@ -630,7 +633,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
+    public DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
         return new ProductCmptTypeDuplicatePropertyNameValidator(ipsProject);
     }
 
@@ -1489,44 +1492,75 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
         @Override
-        protected Message createMessage(String propertyName, ObjectProperty[] invalidObjProperties) {
-            // test if only formulas are involved
-            boolean onlyFormulas = true;
-            boolean onlyFormulasInSameType = true;
-            IProductCmptType prodType = null;
-            for (ObjectProperty invalidObjPropertie : invalidObjProperties) {
-                Object obj = invalidObjPropertie.getObject();
-                if (!(obj instanceof IProductCmptTypeMethod)) {
-                    onlyFormulas = false;
-                    onlyFormulasInSameType = false;
-                    break;
-                } else {
-                    if (prodType == null) {
-                        prodType = ((IProductCmptTypeMethod)obj).getProductCmptType();
-                        onlyFormulasInSameType = true;
-                    }
-                    if (onlyFormulasInSameType && !prodType.equals(((IProductCmptTypeMethod)obj).getProductCmptType())) {
-                        onlyFormulasInSameType = false;
-                    }
+        protected boolean ignore(IType currentType, ObjectProperty[] duplicateObjectProperties) {
+            if (isIgnoreDuplicatedPolicyPart(duplicateObjectProperties)) {
+                return true;
+            } else {
+                return super.ignore(currentType, duplicateObjectProperties);
+            }
+        }
+
+        /**
+         * The visitor adds every policy attribute to the list of properties. However only conflicts
+         * of policy attributes with product attributes or with table structure usages should be
+         * considered. To avoid false validation messages for example if there are only two policy
+         * attributes with the same name but no product attribute, we check if there is a real
+         * conflict. Hence we could ignore the message if there is any policy attribute but no
+         * product attribute nor table structure usage.
+         */
+        private boolean isIgnoreDuplicatedPolicyPart(ObjectProperty[] duplicateObjectProperties) {
+            boolean foundRelevantProductPart = false;
+            boolean foundPolicyAttribute = false;
+            for (ObjectProperty objectProperty : duplicateObjectProperties) {
+                if (isRelevantProductPart(objectProperty)) {
+                    foundRelevantProductPart = true;
+                }
+                if (objectProperty.getObject() instanceof IPolicyCmptTypeAttribute) {
+                    foundPolicyAttribute = true;
                 }
             }
-            if (onlyFormulasInSameType) {
-                String text = Messages.ProductCmptType_msgDuplicateFormulasNotAllowedInSameType;
-                return new Message(MSGCODE_DUPLICATE_FORMULAS_NOT_ALLOWED_IN_SAME_TYPE, text, Message.ERROR,
-                        invalidObjProperties);
-            } else if (onlyFormulas) {
-                String text = NLS.bind(Messages.ProductCmptType_DuplicateFormulaName, propertyName);
-                return new Message(MSGCODE_DUPLICATE_FORMULA_NAME_IN_HIERARCHY, text, Message.ERROR,
-                        invalidObjProperties);
-            } else {
-                String text = NLS.bind(Messages.ProductCmptType_multiplePropertyNames, propertyName);
-                return new Message(IType.MSGCODE_DUPLICATE_PROPERTY_NAME, text, Message.ERROR, invalidObjProperties);
+            return foundPolicyAttribute && !foundRelevantProductPart;
+        }
+
+        private boolean isRelevantProductPart(ObjectProperty objectProperty) {
+            return objectProperty.getObject() instanceof IProductCmptTypeAttribute
+                    || objectProperty.getObject() instanceof ITableStructureUsage;
+        }
+
+        @Override
+        protected IType getMatchingType(IType currentType) {
+            try {
+                return ((IProductCmptType)currentType).findPolicyCmptType(ipsProject);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
             }
         }
 
         @Override
+        protected String getObjectKindNamePlural(ObjectProperty invalidObjProperty) {
+            IIpsObjectPartContainer objectPartContainer = ((IIpsObjectPartContainer)invalidObjProperty.getObject());
+            if (objectPartContainer instanceof IFormula) {
+                return Messages.ProductCmptTypeMethod_Formula_msg_Plural;
+            }
+            if (objectPartContainer instanceof ITableStructureUsage) {
+                return Messages.TableStructureUsage_msg_Plural;
+            }
+            return super.getObjectKindNamePlural(invalidObjProperty);
+        }
+
+        @Override
+        protected String getObjectKindNameSingular(IpsObjectPartContainer objectPartContainer) {
+            if (objectPartContainer instanceof IFormula) {
+                return Messages.ProductCmptTypeMethod_Formula_msg_Singular;
+            }
+            if (objectPartContainer instanceof ITableStructureUsage) {
+                return Messages.TableStructureUsage_msg_Singular;
+            }
+            return super.getObjectKindNameSingular(objectPartContainer);
+        }
+
+        @Override
         protected boolean visit(IType currentType) {
-            super.visit(currentType);
             ProductCmptType productCmptType = (ProductCmptType)currentType;
             for (ITableStructureUsage tableStructureUsage : productCmptType.tableStructureUsages) {
                 add(tableStructureUsage.getRoleName(), new ObjectProperty(tableStructureUsage,
@@ -1539,6 +1573,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                             IProductCmptTypeMethod.PROPERTY_FORMULA_NAME));
                 }
             }
+            super.visit(currentType);
             return true;
         }
     }

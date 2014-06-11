@@ -550,4 +550,5 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      * Creates a new sub type hierarchy for the type and returns it.
      */
     public ITypeHierarchy getSubtypeHierarchy() throws CoreException;
+
 }

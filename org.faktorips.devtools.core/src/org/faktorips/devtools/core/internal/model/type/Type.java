@@ -505,7 +505,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         super.validateThis(list, ipsProject);
         DuplicatePropertyNameValidator duplicateValidator = createDuplicatePropertyNameValidator(ipsProject);
         duplicateValidator.start(this);
-        duplicateValidator.addMessagesForDuplicates(list);
+        duplicateValidator.addMessagesForDuplicates(this, list);
         if (hasSupertype()) {
             list.add(TypeValidations.validateTypeHierachy(this, ipsProject));
         }
@@ -526,9 +526,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         }
     }
 
-    protected DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject) {
-        return new DuplicatePropertyNameValidator(ipsProject);
-    }
+    protected abstract DuplicatePropertyNameValidator createDuplicatePropertyNameValidator(IIpsProject ipsProject);
 
     /**
      * Validation for {@link #MSGCODE_MUST_OVERRIDE_ABSTRACT_METHOD}

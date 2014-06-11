@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItemCreator;
@@ -62,6 +63,8 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         IIpsProject proj = newIpsProject("TestProject");
         root = proj.getIpsPackageFragmentRoots()[0];
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
+        ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
+        table.setTableStructure(structure.getQualifiedName());
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");

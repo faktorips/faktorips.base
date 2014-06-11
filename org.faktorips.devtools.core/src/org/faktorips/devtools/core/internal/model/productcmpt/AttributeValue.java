@@ -17,8 +17,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
@@ -210,6 +212,23 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         }
         MessageList validateValue = valueHolder.validate(ipsProject);
         list.add(validateValue);
+        attrIsHiddenMismatch(attr, list);
+    }
+
+    /**
+     * This method validates entries of the {@link HiddenAttributeMismatchEntry}. If more than one
+     * {@link DeltaType} Entrys have to be validated, it is better to introduce Validator classes
+     * where needed.
+     */
+    private void attrIsHiddenMismatch(IProductCmptTypeAttribute attr, MessageList list) {
+        HiddenAttributeMismatchEntry attributeEntry = new HiddenAttributeMismatchEntry(this, attr);
+        if (attributeEntry.isMismatch()) {
+            String text = NLS.bind(
+                    Messages.AttributeValue_HiddenAttributeMismatch,
+                    new String[] { attr.getDefaultValue(), attributeEntry.getPropertyName(),
+                            attributeEntry.getCurrentAttributeValue() });
+            list.add(new Message(MSGCODE_HIDDEN_ATTRIBUTE, text, Message.ERROR));
+        }
     }
 
     @Override

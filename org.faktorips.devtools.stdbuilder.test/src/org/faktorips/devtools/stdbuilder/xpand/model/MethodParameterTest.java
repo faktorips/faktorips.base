@@ -29,4 +29,11 @@ public class MethodParameterTest {
         assertEquals(Signature.createTypeSignature("testtype", false), methodParameter.getTypeSignature());
     }
 
+    @Test
+    public void testGetTypeSignature_HasFinalFlag() throws Exception {
+        MethodParameter methodParameter = new MethodParameter("testtype", "param", true);
+        assertEquals("final testtype param", methodParameter.getDefinition());
+        assertEquals("param", methodParameter.getName());
+        assertEquals("testtype", methodParameter.getType());
+    }
 }
