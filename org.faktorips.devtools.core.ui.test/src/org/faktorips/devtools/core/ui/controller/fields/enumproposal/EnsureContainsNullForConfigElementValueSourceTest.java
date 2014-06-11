@@ -19,10 +19,12 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
-import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnsureContainsNullForConfigElementValueSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,10 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
     private IValueSource valueSource;
     @Mock
     private IValueSetOwner owner;
+    @Mock
+    private IIpsProject ipsProject;
+    @Mock
+    private ValueDatatype valueDatatype;
 
     private List<String> valueList;
 
@@ -48,10 +54,13 @@ public class EnsureContainsNullForConfigElementValueSourceTest {
     }
 
     @Test
-    public void testGetValues_addNull() {
+    public void testGetValues_addNull() throws CoreException {
         owner = mock(IConfigElement.class);
         EnsureContainsNullForConfigElementValueSource ensureContainsNullValueSource = new EnsureContainsNullForConfigElementValueSource(
                 owner, valueSource);
+        when(owner.getIpsProject()).thenReturn(ipsProject);
+        when(owner.findValueDatatype(ipsProject)).thenReturn(valueDatatype);
+        when(valueDatatype.isPrimitive()).thenReturn(false);
         List<String> values = ensureContainsNullValueSource.getValues();
         assertValues(values);
     }

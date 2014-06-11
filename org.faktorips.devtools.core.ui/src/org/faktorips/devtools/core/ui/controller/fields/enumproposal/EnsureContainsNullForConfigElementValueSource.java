@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
@@ -51,7 +54,16 @@ public class EnsureContainsNullForConfigElementValueSource implements IValueSour
     }
 
     private boolean requiresNull(List<String> values) {
-        return isConfigElement() && !values.contains(null);
+        return isConfigElement() && !values.contains(null) && !isPrimitiveDatatype();
+    }
+
+    private boolean isPrimitiveDatatype() {
+        try {
+            ValueDatatype valueDatatype = valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
+            return valueDatatype.isPrimitive();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private boolean isConfigElement() {
