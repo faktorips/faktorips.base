@@ -599,6 +599,10 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 ipsProject);
         adjustLabelWidth();
         getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
+
+        defaultEditFieldPlaceholder.layout();
+        // Relayout parent, so new default value controls are displayed correctly
+        defaultEditFieldPlaceholder.getParent().getParent().layout();
     }
 
     @Override
@@ -648,7 +652,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             if (defaultEditFieldPlaceholder != null && !defaultEditFieldPlaceholder.isDisposed()) {
                 disposeChildrenOf(defaultEditFieldPlaceholder);
                 createDefaultValueEditField(defaultEditFieldPlaceholder);
-                defaultEditFieldPlaceholder.layout();
             }
             updateAllowedValueSetTypes();
         } catch (CoreException e) {
