@@ -65,6 +65,12 @@ public interface IAttributeValue extends IPropertyValue {
     public static final String MSGCODE_MULTILINGUAL_NOT_SET = MSGCODE_PREFIX + "MultilingualNotSet"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the hidden attribute value is not set to its default
+     * value
+     */
+    public static final String MSGCODE_HIDDEN_ATTRIBUTE = MSGCODE_PREFIX + "HiddenAttribute"; //$NON-NLS-1$
+
+    /**
      * Returns the attribute's value.
      * <p>
      * For multi valued attributes this method returns the string representation of the list.
