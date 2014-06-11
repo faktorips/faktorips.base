@@ -20,10 +20,11 @@ import org.faktorips.devtools.core.ui.controller.fields.IValueSource;
 
 /**
  * A {@link IValueSource} for the {@link EnumerationProposalProvider}. Reads all values from another
- * value source and adds <code>null</code> to the list if (both conditions must be met):
+ * value source and adds <code>null</code> to the list if (all conditions must be met):
  * <ul>
  * <li>it does not contain <code>null</code></li>
- * <li>the valueSetOwner is a {@link IConfigElement}.</li>
+ * <li>the valueSetOwner is a {@link IConfigElement}</li>
+ * <li>the datatype is not primitive.</li>
  * </ul>
  */
 public class EnsureContainsNullForConfigElementValueSource implements IValueSource {

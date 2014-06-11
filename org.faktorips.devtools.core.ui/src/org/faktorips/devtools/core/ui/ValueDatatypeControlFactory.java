@@ -140,12 +140,12 @@ public abstract class ValueDatatypeControlFactory {
             ipsProject = valueSet.getIpsProject();
         }
         IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, ipsProject);
-        setNewNullString(valueSet, inputFormat);
+        setNewNullString(valueSet, datatype, inputFormat);
         return inputFormat;
     }
 
-    private void setNewNullString(IValueSet valueSet, IInputFormat<String> inputFormat) {
-        if (isControlForDefaultValue(valueSet)) {
+    private void setNewNullString(IValueSet valueSet, ValueDatatype datatype, IInputFormat<String> inputFormat) {
+        if (isControlForDefaultValue(valueSet, datatype)) {
             inputFormat.setNullString(Messages.DefaultValueRepresentation_EditField);
         }
     }
@@ -282,7 +282,11 @@ public abstract class ValueDatatypeControlFactory {
 
     public abstract int getDefaultAlignment();
 
-    protected boolean isControlForDefaultValue(IValueSet valueSet) {
-        return valueSet != null && valueSet.getValueSetOwner() instanceof IConfigElement;
+    protected boolean isControlForDefaultValue(IValueSet valueSet, ValueDatatype datatype) {
+        return valueSet != null && isConfigElement(valueSet) && !datatype.isPrimitive();
+    }
+
+    private boolean isConfigElement(IValueSet valueSet) {
+        return valueSet.getValueSetOwner() instanceof IConfigElement;
     }
 }

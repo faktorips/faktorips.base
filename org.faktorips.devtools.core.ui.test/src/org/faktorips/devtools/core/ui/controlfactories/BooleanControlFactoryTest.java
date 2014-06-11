@@ -16,6 +16,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.LinkedHashMap;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +40,8 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRadioOptions_EnumValueSetWithoutNull() throws Exception {
-        LinkedHashMap<String, String> options = booleanControlFactory.initOptions(enumValueSet, true);
+        LinkedHashMap<String, String> options = booleanControlFactory.initOptions(enumValueSet,
+                Datatype.PRIMITIVE_BOOLEAN);
 
         assertThat(options.keySet(), hasItem("true"));
         assertThat(options.keySet(), hasItem("false"));
@@ -47,7 +49,7 @@ public class BooleanControlFactoryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testRadioOptions_EnumValueSetNullIncluded() throws Exception {
-        LinkedHashMap<String, String> options = booleanControlFactory.initOptions(enumValueSet, false);
+        LinkedHashMap<String, String> options = booleanControlFactory.initOptions(enumValueSet, Datatype.BOOLEAN);
 
         assertThat(options.keySet(), hasItem("true"));
         assertThat(options.keySet(), hasItem("false"));

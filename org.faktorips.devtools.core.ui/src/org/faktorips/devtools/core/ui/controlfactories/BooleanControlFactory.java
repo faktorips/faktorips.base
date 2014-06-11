@@ -59,41 +59,42 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        RadioButtonGroup<String> radioButtonGroup = createControls(toolkit, parent, valueSet,
-                isPrimitiveBoolean(datatype));
+        RadioButtonGroup<String> radioButtonGroup = createControls(toolkit, parent, valueSet, datatype);
         return new RadioButtonGroupField<String>(radioButtonGroup);
     }
 
     private RadioButtonGroup<String> createControls(UIToolkit toolkit,
             Composite parent,
             IValueSet valueSet,
-            boolean primitiveBoolean) {
-        LinkedHashMap<String, String> optionsMap = initOptions(valueSet, primitiveBoolean);
+            ValueDatatype datatype) {
+        LinkedHashMap<String, String> optionsMap = initOptions(valueSet, datatype);
         RadioButtonGroup<String> radioButtonGroup = toolkit.createRadioButtonGroup(parent, optionsMap);
-        updateButtonEnablement(valueSet, radioButtonGroup);
+        updateButtonEnablement(valueSet, datatype, radioButtonGroup);
         return radioButtonGroup;
     }
 
-    protected LinkedHashMap<String, String> initOptions(IValueSet valueSet, boolean primitiveBoolean) {
+    protected LinkedHashMap<String, String> initOptions(IValueSet valueSet, ValueDatatype datatype) {
         LinkedHashMap<String, String> optionsMap = new LinkedHashMap<String, String>();
         optionsMap.put(Boolean.TRUE.toString(), getTrueValue());
         optionsMap.put(Boolean.FALSE.toString(), getFalseValue());
-        if (!primitiveBoolean) {
-            optionsMap.put(null, getUndefinedLabel(valueSet));
+        if (!isPrimitiveBoolean(datatype)) {
+            optionsMap.put(null, getUndefinedLabel(valueSet, datatype));
         }
         return optionsMap;
     }
 
-    private String getUndefinedLabel(IValueSet valueSet) {
-        if (isControlForDefaultValue(valueSet)) {
+    private String getUndefinedLabel(IValueSet valueSet, ValueDatatype datatype) {
+        if (isControlForDefaultValue(valueSet, datatype)) {
             return Messages.DefaultValueRepresentation_RadioButtonGroup;
         } else {
             return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
         }
     }
 
-    private void updateButtonEnablement(IValueSet valueSet, RadioButtonGroup<String> radioButtonGroup) {
-        if (!isControlForDefaultValue(valueSet) && valueSet != null) {
+    private void updateButtonEnablement(IValueSet valueSet,
+            ValueDatatype datatype,
+            RadioButtonGroup<String> radioButtonGroup) {
+        if (!isControlForDefaultValue(valueSet, datatype) && valueSet != null) {
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.TRUE.toString());
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, Boolean.FALSE.toString());
             disableButtonIfValueNotAvailable(valueSet, radioButtonGroup, null);
