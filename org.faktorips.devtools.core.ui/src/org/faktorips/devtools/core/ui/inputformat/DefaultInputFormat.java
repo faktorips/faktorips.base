@@ -32,6 +32,8 @@ public class DefaultInputFormat extends AbstractInputFormat<String> {
     }
 
     public DefaultInputFormat(ValueDatatype datatype, DatatypeFormatter formatter) {
+        super(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), IpsPlugin.getDefault()
+                .getIpsPreferences().getDatatypeFormattingLocale());
         this.datatype = datatype;
         this.formatter = formatter;
     }
@@ -39,6 +41,15 @@ public class DefaultInputFormat extends AbstractInputFormat<String> {
     @Override
     protected String parseInternal(String stringToBeparsed) {
         return stringToBeparsed;
+    }
+
+    /**
+     * Allow empty string as an independent value. E.g. for datatype string "" is different than
+     * <code>null</code>.
+     */
+    @Override
+    protected boolean isRepresentingNull(String stringToBeParsed) {
+        return getNullString().equals(stringToBeParsed) || isPreferencesNullPresentation(stringToBeParsed);
     }
 
     @Override

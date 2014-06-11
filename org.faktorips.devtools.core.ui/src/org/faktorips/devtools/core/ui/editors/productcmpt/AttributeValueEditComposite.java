@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -128,7 +127,10 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             }
         }
         if (editField != null) {
-            ((GridData)editField.getControl().getLayoutData()).horizontalSpan = 2;
+            /*
+             * SW 4.6.2014: old code set horizontal span to 2, for whatever reason. A potential enum
+             * button, however, requires a second column, so that line was deleted.
+             */
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
             getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
             return editField;

@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -23,10 +21,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.inputformat.DecimalNumberFormat;
-import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
-import org.faktorips.devtools.core.ui.table.IpsCellEditor;
-import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 
 /**
  * A factory for edit fields/controls for the data type Double and Decimal.
@@ -51,67 +45,9 @@ public class DoubleDecimalControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
+        Text text = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
+        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
 
-        return new FormattingTextField<String>((Text)createControl(toolkit, parent, datatype, valueSet, ipsProject),
-                DecimalNumberFormat.newInstance(datatype));
-
-    }
-
-    @Override
-    public Control createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        return toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-    }
-
-    /**
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
-     */
-    @Deprecated
-    @Override
-    public IpsCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
-    }
-
-    /**
-     * Creates a <code>ComboCellEditor</code> containig a <code>Combo</code> using
-     * {@link #createControl(UIToolkit, Composite, ValueDatatype, IValueSet, IIpsProject)}.
-     */
-    @Override
-    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(), ipsProject);
-        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
-        strat.setRowCreating(true);
-        cellEditor.setTraversalStrategy(strat);
-        return cellEditor;
-    }
-
-    private IpsCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            Composite parent,
-            IIpsProject ipsProject) {
-
-        Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        DecimalNumberFormat format = DecimalNumberFormat.newInstance(dataType);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, format);
-        return tableCellEditor;
     }
 
     @Override

@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.controller.fields;
+package org.faktorips.devtools.core.ui.controller.fields.enumproposal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -16,8 +16,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
-import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -25,8 +26,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.UIDatatypeFormatter;
-import org.faktorips.devtools.core.ui.controller.fields.ConfigElementProposalProvider;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.ConfigElementProposalProvider;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,10 +40,10 @@ public class ConfigElementProposalProviderTest {
     private ConfigElement propertyValue;
 
     @Mock
-    private UIDatatypeFormatter uiDatatypeFormatter;
+    private IInputFormat<String> inputFormat;
 
     @Mock
-    private ValueDatatype enumValueDatatype;
+    private EnumDatatype enumValueDatatype;
 
     @Mock
     private UnrestrictedValueSet unrestrictedValueSet;
@@ -62,7 +63,6 @@ public class ConfigElementProposalProviderTest {
 
     @Before
     public void setUp() throws Exception {
-        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, uiDatatypeFormatter);
         enumValueSet = new EnumValueSet(propertyValue, "ID");
         when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
         when(enumValueDatatype.isEnum()).thenReturn(true);
@@ -72,6 +72,7 @@ public class ConfigElementProposalProviderTest {
         when(enumValueDatatype.areValuesEqual("aaaaa", "aaaaa")).thenReturn(true);
         when(enumValueDatatype.areValuesEqual("bbbbb", "bbbbb")).thenReturn(true);
         when(enumValueDatatype.areValuesEqual("ccccc", "ccccc")).thenReturn(true);
+        when(enumValueDatatype.getAllValueIds(true)).thenReturn(new String[] { "aaaaa", "bbbbb", "ccccc" });
         when(propertyValue.getIpsProject()).thenReturn(ipsProject);
         when(propertyValue.getIpsObject()).thenReturn(ipsObject);
         when(propertyValue.findPcTypeAttribute(ipsProject)).thenReturn(policyCmptTypeAttribute);
@@ -80,9 +81,11 @@ public class ConfigElementProposalProviderTest {
         when(propertyValue.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.UNRESTRICTED, ValueSetType.ENUM));
         when(policyCmptTypeAttribute.getValueSet()).thenReturn(enumValueSet);
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "aaaaa")).thenReturn("enumA aaaaa");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "bbbbb")).thenReturn("enumB bbbbb");
-        when(uiDatatypeFormatter.formatValue(enumValueDatatype, "ccccc")).thenReturn("en um C ccccc");
+        when(inputFormat.format("aaaaa")).thenReturn("enumA aaaaa");
+        when(inputFormat.format("bbbbb")).thenReturn("enumB bbbbb");
+        when(inputFormat.format("ccccc")).thenReturn("en um C ccccc");
+        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat,
+                ContentProposalAdapter.PROPOSAL_INSERT);
     }
 
     @Test
@@ -205,6 +208,21 @@ public class ConfigElementProposalProviderTest {
         assertNotNull(proposals);
         assertEquals(3, proposals.length);
         assertEquals("enumA aaaaa", proposals[0].getContent());
+    }
+
+    @Test
+    public void testGetProposals_CaseSensitive() {
+        enumValueSet.addValue("foobar");
+        enumValueSet.addValue("fooBares");
+        when(inputFormat.format("foobar")).thenReturn("foobar");
+        when(inputFormat.format("fooBares")).thenReturn("fooBares");
+
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("foob", 4);
+
+        assertNotNull(proposals);
+        assertEquals(1, proposals.length);
+        assertEquals("foobar", proposals[0].getLabel());
+        assertEquals("ar", proposals[0].getContent());
     }
 
     private void setUpEnumValueSet() {

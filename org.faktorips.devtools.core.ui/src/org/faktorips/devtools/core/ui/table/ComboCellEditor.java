@@ -17,8 +17,6 @@ import org.faktorips.datatype.PrimitiveBooleanDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controlfactories.BooleanControlFactory;
-import org.faktorips.devtools.core.ui.controller.fields.EnumDatatypeField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumTypeDatatypeField;
 
 /**
  * 
@@ -40,12 +38,7 @@ public class ComboCellEditor extends IpsCellEditor {
     @Override
     protected Object doGetValue() {
         Object data = comboControl.getData();
-        if (data instanceof EnumDatatypeField) {
-            // map the id by using the stored EnumDatatypeField
-            return ((EnumDatatypeField)data).getValue();
-        } else if (data instanceof EnumTypeDatatypeField) {
-            return ((EnumTypeDatatypeField)data).getValue();
-        } else if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
+        if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
             if (comboControl.getText().equals(BooleanControlFactory.getTrueValue())) {
                 return Boolean.TRUE.toString();
             } else if (comboControl.getText().equals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation())) {
@@ -74,12 +67,7 @@ public class ComboCellEditor extends IpsCellEditor {
     protected void doSetValue(Object value) {
         if ((comboControl != null) && (value instanceof String || value == null)) {
             Object data = comboControl.getData();
-            if (data instanceof EnumDatatypeField) {
-                // map the value by using the stored EnumDatatypeField
-                ((EnumDatatypeField)data).setValue((String)value);
-            } else if (data instanceof EnumTypeDatatypeField) {
-                ((EnumTypeDatatypeField)data).setValue((String)value);
-            } else if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
+            if (data instanceof BooleanDatatype || data instanceof PrimitiveBooleanDatatype) {
                 if (value == null) {
                     // TODO pk 08-06-2009 there is missing something
                     IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();

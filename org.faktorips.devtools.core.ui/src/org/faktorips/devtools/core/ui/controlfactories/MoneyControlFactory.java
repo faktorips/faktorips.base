@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -21,11 +20,9 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.MoneyField;
-import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
-import org.faktorips.devtools.core.ui.table.IpsCellEditor;
-import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
-import org.faktorips.devtools.core.ui.table.TextCellEditor;
+import org.faktorips.devtools.core.ui.controller.fields.CurrencySymbolPainter;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
+import org.faktorips.devtools.core.ui.inputformat.MoneyFormat;
 
 public class MoneyControlFactory extends ValueDatatypeControlFactory {
 
@@ -44,65 +41,8 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text control = createControl(toolkit, parent, datatype, valueSet, ipsProject);
-        return new MoneyField(control, ipsProject.getReadOnlyProperties().getDefaultCurrency());
-    }
-
-    @Override
-    public Text createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return control;
-    }
-
-    private IpsCellEditor createMoneyCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            Composite parent,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor tableCellEditor = new EditFieldCellEditor(createEditField(toolkit, parent, datatype, valueSet,
-                ipsProject));
-        return tableCellEditor;
-    }
-
-    /**
-     * @deprecated use
-     *             {@link #createTableCellEditor(UIToolkit, ValueDatatype, IValueSet, TableViewer, int, IIpsProject)}
-     *             instead.
-     */
-    @Deprecated
-    @Override
-    public IpsCellEditor createCellEditor(UIToolkit toolkit,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-        return createTableCellEditor(toolkit, datatype, valueSet, tableViewer, columnIndex, ipsProject);
-    }
-
-    /**
-     * Creates a {@link TextCellEditor} containing a {@link Text} control and configures it with a
-     * {@link TableViewerTraversalStrategy}.
-     */
-    @Override
-    public IpsCellEditor createTableCellEditor(UIToolkit toolkit,
-            ValueDatatype dataType,
-            IValueSet valueSet,
-            TableViewer tableViewer,
-            int columnIndex,
-            IIpsProject ipsProject) {
-
-        IpsCellEditor cellEditor = createMoneyCellEditor(toolkit, dataType, valueSet, tableViewer.getTable(),
-                ipsProject);
-        TableViewerTraversalStrategy strat = new TableViewerTraversalStrategy(cellEditor, tableViewer, columnIndex);
-        strat.setRowCreating(true);
-        cellEditor.setTraversalStrategy(strat);
-        return cellEditor;
+        Text control = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
+        return setUpFieldForTextControl(datatype, valueSet, control);
     }
 
     @Override
@@ -110,4 +50,19 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
         return SWT.RIGHT;
     }
 
+    @Override
+    protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+        Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        return setUpFieldForTextControl(datatype, valueSet, control);
+    }
+
+    private EditField<String> setUpFieldForTextControl(ValueDatatype datatype, IValueSet valueSet, Text control) {
+        MoneyFormat inputFormat = (MoneyFormat)getInputFormat(datatype, valueSet);
+        control.addPaintListener(new CurrencySymbolPainter(inputFormat));
+        return new FormattingTextField<String>(control, inputFormat);
+    }
 }

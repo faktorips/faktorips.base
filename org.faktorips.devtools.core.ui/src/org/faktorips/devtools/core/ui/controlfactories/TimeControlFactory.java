@@ -16,8 +16,6 @@ import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
 import org.faktorips.devtools.core.ui.controls.TimeControl;
-import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormat;
 
 /**
  * A factory for edit fields/controls for {@link LocalTimeDatatype}.
@@ -33,11 +31,6 @@ public class TimeControlFactory extends AbstractDateTimeControlFactory {
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
         return LocalTimeDatatype.DATATYPE.equals(datatype);
-    }
-
-    @Override
-    protected AbstractInputFormat<String> getFormat() {
-        return TimeISOStringFormat.newInstance();
     }
 
     @Override

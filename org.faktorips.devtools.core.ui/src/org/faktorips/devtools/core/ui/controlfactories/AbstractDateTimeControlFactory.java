@@ -15,7 +15,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -25,9 +24,9 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
-import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
+import org.faktorips.devtools.core.ui.table.EditFieldCellEditor;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
 import org.faktorips.devtools.core.ui.table.TextCellEditor;
@@ -49,25 +48,14 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-
         AbstractDateTimeControl dateControl = createDateTimeControl(parent, toolkit);
-        DateControlField<String> formatField = new DateControlField<String>(dateControl, getFormat());
+        adaptEnumValueProposal(toolkit, dateControl.getTextControl(), valueSet, datatype);
+        DateControlField<String> formatField = new DateControlField<String>(dateControl, getInputFormat(datatype,
+                valueSet));
         return formatField;
     }
 
     protected abstract AbstractDateTimeControl createDateTimeControl(Composite parent, UIToolkit toolkit);
-
-    protected abstract AbstractInputFormat<String> getFormat();
-
-    @Override
-    public Control createControl(UIToolkit toolkit,
-            Composite parent,
-            ValueDatatype datatype,
-            IValueSet valueSet,
-            IIpsProject ipsProject) {
-        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return text;
-    }
 
     protected Button createButton(UIToolkit toolkit, Composite calendarComposite) {
         GridData buttonGridData = new GridData(SWT.FILL, SWT.FILL, false, false);
@@ -90,7 +78,6 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
             TableViewer tableViewer,
             int columnIndex,
             IIpsProject ipsProject) {
-
         return createTableCellEditor(toolkit, dataType, valueSet, tableViewer, columnIndex, ipsProject);
     }
 
@@ -113,14 +100,21 @@ public abstract class AbstractDateTimeControlFactory extends ValueDatatypeContro
         return cellEditor;
     }
 
+    /**
+     * @param toolkit The ui toolkit to use for creating ui elements.
+     * @param dataType The <code>ValueDatatype</code> to create a cell editor for.
+     * @param valueSet An optional valueset.
+     * @param ipsProject The ipsProject where the editor belongs to.
+     */
     private IpsCellEditor createTextCellEditor(UIToolkit toolkit,
             ValueDatatype dataType,
             IValueSet valueSet,
             Composite parent,
             IIpsProject ipsProject) {
 
-        Text textControl = (Text)createControl(toolkit, parent, dataType, valueSet, ipsProject);
-        IpsCellEditor tableCellEditor = new FormattingTextCellEditor<String>(textControl, getFormat());
+        Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
+        EditField<String> editField = new FormattingTextField<String>(text, getInputFormat(dataType, valueSet));
+        IpsCellEditor tableCellEditor = new EditFieldCellEditor(editField);
         return tableCellEditor;
     }
 

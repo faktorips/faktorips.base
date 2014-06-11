@@ -17,8 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormat;
+import org.faktorips.devtools.core.ui.Messages;
 import org.junit.Test;
 
 public class DateISOStringFormatTest extends AbstractIpsPluginTest {
@@ -37,11 +36,23 @@ public class DateISOStringFormatTest extends AbstractIpsPluginTest {
 
         input = null;
         formated = format.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(format.getNullString(), formated);
 
         input = "";
         formated = format.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(format.getNullString(), formated);
+    }
+    
+    
+    @Test
+    public void testNullStringRep() {
+        DateISOStringFormat format = new DateISOStringFormat();
+        format.initFormat(Locale.GERMANY);
+        format.setNullString(Messages.DefaultValueRepresentation_EditField);
+        String input= "";
+        String formated= format.format(input);
+        assertEquals(Messages.DefaultValueRepresentation_EditField, formated);
+
     }
 
     @Test
@@ -58,11 +69,11 @@ public class DateISOStringFormatTest extends AbstractIpsPluginTest {
 
         input = null;
         formated = format.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(format.getNullString(), formated);
 
         input = "";
         formated = format.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(format.getNullString(), formated);
     }
 
     @Test

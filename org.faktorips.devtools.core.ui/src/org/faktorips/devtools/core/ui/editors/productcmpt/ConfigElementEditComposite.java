@@ -64,6 +64,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         super.setLayout();
         GridLayout clientLayout = (GridLayout)getLayout();
         clientLayout.numColumns = 2;
+        // Space between Labels and fields. Also allows error markers to be drawn.
+        clientLayout.horizontalSpacing = 7;
     }
 
     @Override

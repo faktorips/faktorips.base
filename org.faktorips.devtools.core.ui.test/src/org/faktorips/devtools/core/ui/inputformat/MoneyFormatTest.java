@@ -17,7 +17,6 @@ import java.util.Currency;
 import java.util.Locale;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -211,11 +210,11 @@ public class MoneyFormatTest extends AbstractIpsPluginTest {
 
         input = null;
         formated = moneyFormat.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(moneyFormat.getNullString(), formated);
 
         input = "";
         formated = moneyFormat.format(input);
-        assertEquals(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation(), formated);
+        assertEquals(moneyFormat.getNullString(), formated);
 
     }
 

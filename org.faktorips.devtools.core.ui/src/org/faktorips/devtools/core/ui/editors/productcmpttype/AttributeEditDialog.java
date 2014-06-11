@@ -268,7 +268,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         setDefaultValueField();
         defaultEditFieldPlaceholder.layout();
         defaultEditFieldPlaceholder.getParent().getParent().layout();
-        defaultEditFieldPlaceholder.getParent().getParent().layout(true);
         getBindingContext().bindContent(defaultValueField, attribute, IAttribute.PROPERTY_DEFAULT_VALUE);
         getBindingContext().bindEnabled(defaultValueField.getControl(), attributePmo,
                 ProductCmptTypeAttributePmo.PROPERTY_ENABLED_VALUE);
@@ -329,7 +328,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
                 currentDatatype = newDatatype;
                 getBindingContext().removeBindings(defaultValueField.getControl());
-                defaultValueField.getControl().dispose();
+                disposeChildrenOf(defaultEditFieldPlaceholder);
             }
 
             createDefaultValueEditField();
@@ -338,6 +337,12 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             throw new CoreRuntimeException(e);
         }
 
+    }
+
+    private void disposeChildrenOf(Composite composite) {
+        for (Control control : composite.getChildren()) {
+            control.dispose();
+        }
     }
 
     private boolean isOverwriteEvent(ContentChangeEvent event) {

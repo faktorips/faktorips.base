@@ -15,13 +15,14 @@ import java.text.ParsePosition;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
-import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Base class for data type specific formats. {@link AbstractInputFormat}s provide three things:
@@ -30,8 +31,7 @@ import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
  * (i.e. "1.2" will be displayed as "1,2" for the german locale)</li>
  * <li>Parsing a locale specific string to a value object, that can be written back to the model</li>
  * <li>Verifying user input to avoid mistakes. No invalid characters may be entered in a
- * {@link FormattingTextField} or {@link FormattingTextCellEditor} (i.e. no letters in an integer
- * field).</li>
+ * {@link FormattingTextField} (i.e. no letters in an integer field).</li>
  * </ul>
  * <p/>
  * {@link AbstractInputFormat} supports the FIPS null-Presentation mechanism.
@@ -50,12 +50,33 @@ import org.faktorips.devtools.core.ui.table.FormattingTextCellEditor;
  */
 public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFormat<T> {
 
+    private final Locale datatypeLocale;
+
+    private String nullStringRepresentation;
+
+    public AbstractInputFormat(String defaultNullString, Locale datatypeLocale) {
+        ArgumentCheck.notNull(datatypeLocale);
+        ArgumentCheck.notNull(defaultNullString);
+        this.nullStringRepresentation = defaultNullString;
+        this.datatypeLocale = datatypeLocale;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void initFormat() {
-        initFormat(IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        initFormat(datatypeLocale);
+    }
+
+    @Override
+    public String getNullString() {
+        return nullStringRepresentation;
+    }
+
+    @Override
+    public void setNullString(String nullString) {
+        this.nullStringRepresentation = nullString;
     }
 
     /**
@@ -63,11 +84,27 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      */
     @Override
     public T parse(String stringToBeParsed, boolean supportNull) {
-        if (supportNull && IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed)) {
+        if (supportNull && isRepresentingNull(stringToBeParsed)) {
             return null;
         } else {
             return parseInternal(stringToBeParsed);
         }
+    }
+
+    /**
+     * Assumes empty string always represents the <code>null</code> value. This is true for all
+     * number and date datatypes. Override this method if another behavior is required.
+     */
+    protected boolean isRepresentingNull(String stringToBeParsed) {
+        return getNullString().equals(stringToBeParsed) || StringUtils.EMPTY.equals(stringToBeParsed)
+                || isPreferencesNullPresentation(stringToBeParsed);
+    }
+
+    /**
+     * Checks if the parameter equals the NullPresentation of the {@link IpsPreferences}
+     */
+    protected boolean isPreferencesNullPresentation(String stringToBeParsed) {
+        return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().equals(stringToBeParsed);
     }
 
     /**
@@ -76,18 +113,20 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
     @Override
     public String format(T objectValue, boolean supportNull) {
         if (objectValue == null) {
-            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+            return nullStringRepresentation;
         } else {
             try {
                 String formatedValue = formatInternal(objectValue);
                 if (formatedValue == null) {
-                    return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+                    return nullStringRepresentation;
                 } else {
                     return formatedValue;
                 }
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
                 return objectValue.toString();
             }
+            // CSON: IllegalCatch
         }
     }
 
@@ -132,13 +171,12 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
             } else {
                 verifyInternal(e, resultingText);
             }
-        } else {
-            // ignore non-text inputs, e.g. Enter or Backspace keys
         }
+        // ignore non-text inputs, e.g. Enter or Backspace keys
     }
 
     private boolean isPotentialNullPresentation(String resultingText) {
-        return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation().startsWith(resultingText);
+        return nullStringRepresentation.startsWith(resultingText);
     }
 
     private String getResultingText(String currentText, VerifyEvent e) {
@@ -213,12 +251,12 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      * Utility Method to test a given input string for allowed characters.
      * 
      * @param template an example string that contains all allowed non digit characters.
-     * @param stringToBeVerified the string whose (non digit) characters should be verified
+     * @param inputString the string whose (non digit) characters should be verified
      * @return <code>true</code> if stringToBeVerified contains only allowed characters.
      *         <code>false</code> else.
      */
-    protected boolean containsAllowedCharactersOnly(String template, String stringToBeVerified) {
-        stringToBeVerified = getNonDigitString(stringToBeVerified);
+    protected boolean containsAllowedCharactersOnly(String template, String inputString) {
+        String stringToBeVerified = getNonDigitString(inputString);
         for (int i = 0; i < stringToBeVerified.length(); i++) {
             if (!template.contains(stringToBeVerified.substring(i, i + 1))) {
                 return false;

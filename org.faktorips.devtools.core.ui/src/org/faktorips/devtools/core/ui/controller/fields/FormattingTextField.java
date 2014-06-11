@@ -12,9 +12,11 @@ package org.faktorips.devtools.core.ui.controller.fields;
 
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
+import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -25,9 +27,7 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class FormattingTextField<T> extends AbstractTextField<T> {
 
-    private final AbstractInputFormat<T> format;
-
-    private final boolean formatOnFocusLost;
+    private final IInputFormat<T> format;
 
     /**
      * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
@@ -37,38 +37,41 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
      * @param text the {@link Text} control to be used by this {@link FormattingTextField}
      * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextField}
      */
-    public FormattingTextField(final Text text, final AbstractInputFormat<T> format) {
+    public FormattingTextField(final Text text, final IInputFormat<T> format) {
         this(text, format, true);
     }
 
     /**
      * Creates a {@link FormattingTextField} with the given {@link Text}-Control and the given
-     * format. Both arguments must not be <code>null</code>. You can specify wheater this control
+     * format. Both arguments must not be <code>null</code>. You can specify whether this control
      * should format the input after focus lost or not.
      * 
      * @param text the {@link Text} control to be used by this {@link FormattingTextField}
      * @param format the {@link AbstractInputFormat} to be used by this {@link FormattingTextField}
      * @param formatOnFocusLost True to format the input on focus lost
      */
-    public FormattingTextField(final Text text, final AbstractInputFormat<T> format, boolean formatOnFocusLost) {
+    public FormattingTextField(Text text, IInputFormat<T> format, boolean formatOnFocusLost) {
         super(text);
         ArgumentCheck.notNull(text);
         this.format = format;
-        this.formatOnFocusLost = formatOnFocusLost;
-        text.addVerifyListener(format);
-        text.addFocusListener(new FocusListener() {
+        if (format instanceof VerifyListener) {
+            text.addVerifyListener((VerifyListener)format);
+        }
+        if (formatOnFocusLost) {
+            text.addFocusListener(new FocusListener() {
 
-            @Override
-            public void focusLost(FocusEvent e) {
-                formatText();
-            }
+                @Override
+                public void focusLost(FocusEvent e) {
+                    formatText();
+                }
 
-            @Override
-            public void focusGained(FocusEvent e) {
-                // do nothing
-            }
+                @Override
+                public void focusGained(FocusEvent e) {
+                    // do nothing
+                }
 
-        });
+            });
+        }
     }
 
     @Override
@@ -81,17 +84,15 @@ public class FormattingTextField<T> extends AbstractTextField<T> {
         setText(getFormat().format(newValue, supportsNullStringRepresentation()));
     }
 
-    public AbstractInputFormat<T> getFormat() {
+    public IInputFormat<T> getFormat() {
         return format;
     }
 
     protected void formatText() {
-        if (formatOnFocusLost) {
-            String oldText = getText();
-            String newText = format.format(getValue());
-            if (!oldText.equals(newText)) {
-                getTextControl().setText(newText);
-            }
+        String oldText = getText();
+        String newText = format.format(getValue());
+        if (!oldText.equals(newText)) {
+            getTextControl().setText(newText);
         }
     }
 }

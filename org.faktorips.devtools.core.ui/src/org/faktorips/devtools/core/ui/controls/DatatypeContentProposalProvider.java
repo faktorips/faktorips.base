@@ -45,10 +45,7 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
     public DatatypeContentProposalProvider(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
 
-        includeVoid = false;
-        valuetypesOnly = false;
         includePrimitives = true;
-        includeAbstract = false;
         excludedDatatypes = null;
     }
 

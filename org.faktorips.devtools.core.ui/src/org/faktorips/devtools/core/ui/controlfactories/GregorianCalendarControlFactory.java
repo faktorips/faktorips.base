@@ -19,8 +19,6 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.AbstractDateTimeControl;
 import org.faktorips.devtools.core.ui.controls.DateControl;
-import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
-import org.faktorips.devtools.core.ui.inputformat.DateISOStringFormat;
 
 /**
  * A factory for edit fields/controls for {@link GregorianCalendarDatatype},
@@ -41,11 +39,6 @@ public class GregorianCalendarControlFactory extends AbstractDateTimeControlFact
     public boolean isFactoryFor(ValueDatatype datatype) {
         return Datatype.GREGORIAN_CALENDAR.equals(datatype) || Datatype.GREGORIAN_CALENDAR_DATE.equals(datatype)
                 || LocalDateDatatype.DATATYPE.equals(datatype);
-    }
-
-    @Override
-    protected AbstractInputFormat<String> getFormat() {
-        return DateISOStringFormat.newInstance();
     }
 
     @Override

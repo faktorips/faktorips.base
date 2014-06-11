@@ -24,6 +24,26 @@ public interface IInputFormat<T> {
     public void initFormat();
 
     /**
+     * Sets the null string representation used by this {@link IInputFormat}. That string will be
+     * parsed to a <code>null</code> value and a <code>null</code> value will be formatted to that
+     * string. If no null string representation is set, a datatype dependent default value is used.
+     * 
+     * @param nullString the null string representation that should be used
+     */
+    public void setNullString(String nullString);
+
+    /**
+     * Returns the null string representation that is currently used by this input format.
+     * <p>
+     * That string will be parsed to a <code>null</code> value and a <code>null</code> value will be
+     * formatted to that string. If no null string representation is set, a datatype dependent
+     * default value is used.
+     * 
+     * @return The string that will be handled as <code>null</code> value
+     */
+    public String getNullString();
+
+    /**
      * Parses a string to a value object. Supports the FIPS null-Presentation mechanism.
      * 
      * @param stringToBeParsed the String typed by the user that will be parsed to a value of the

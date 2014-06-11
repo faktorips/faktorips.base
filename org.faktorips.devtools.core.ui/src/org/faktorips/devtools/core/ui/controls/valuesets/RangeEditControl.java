@@ -105,15 +105,23 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelMinimum);
         lowerfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
-        lowerfield.getControl().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        /**
+         * Configure the layout of the parent instead of the text control itself.
+         * {@link ValueDatatypeControlFactory control factories} now create composites around all
+         * text controls to be able to add additional controls later on (e.g. enum drop down button)
+         */
+        lowerfield.getControl().getParent()
+                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);
         upperfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
-        upperfield.getControl().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        upperfield.getControl().getParent()
+                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);
         stepfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
-        stepfield.getControl().setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        stepfield.getControl().getParent()
+                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createLabel(
                 workArea,

@@ -173,16 +173,19 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * Creates and sets the {@link Layout} of this composite.
      * <p>
      * <strong>Subclassing:</strong><br>
-     * The default implementation creates a grid layout with 1 column, a <em>margin-width</em> of 1
-     * as well as a <em>margin-height</em> of 2 and a <em>horizontal-spacing</em> of 7. Then,
+     * The default implementation creates a grid layout with 1 column, a <em>margin-width</em> of 0,
+     * a <em>margin-height</em> of 0 and a <em>horizontal-spacing</em> of 0, to save some space.
+     * Grants error markers enough space by setting marginLeft to 8. Then,
      * {@link #setLayout(Layout)} is invoked. Subclasses are allowed to override this method if the
      * default implementation is inappropriate.
      */
     protected void setLayout() {
         GridLayout clientLayout = new GridLayout(1, false);
-        clientLayout.marginWidth = 1;
-        clientLayout.marginHeight = 2;
-        clientLayout.horizontalSpacing = 7; // needed to grant problem markers enough space
+        clientLayout.marginWidth = 0;
+        clientLayout.marginHeight = 0;
+        // needed to grant problem markers enough space
+        clientLayout.marginLeft = 8;
+        clientLayout.horizontalSpacing = 0;
         setLayout(clientLayout);
     }
 
