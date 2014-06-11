@@ -593,7 +593,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createDefaultValueEditField(Composite workArea) {
-        // Composite defaultEditFieldPlaceholder=
         ValueDatatypeControlFactory datatypeCtrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
                 currentDatatype);
         defaultValueField = datatypeCtrlFactory.createEditField(getToolkit(), workArea, currentDatatype, null,
