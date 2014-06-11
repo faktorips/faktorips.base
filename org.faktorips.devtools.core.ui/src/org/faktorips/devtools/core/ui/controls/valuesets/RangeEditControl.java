@@ -105,6 +105,11 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelMinimum);
         lowerfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        /**
+         * Configure the layout of the parent instead of the text control itself.
+         * {@link ValueDatatypeControlFactory control factories} now create composites around all
+         * text controls to be able to add additional controls later on (e.g. enum drop down button)
+         */
         lowerfield.getControl().getParent()
                 .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
