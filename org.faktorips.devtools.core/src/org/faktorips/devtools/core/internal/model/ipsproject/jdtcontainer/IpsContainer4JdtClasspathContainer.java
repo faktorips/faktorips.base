@@ -11,7 +11,9 @@
 package org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -40,7 +42,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
 
     private IClasspathContainer jdtClasspathContainer = null;
 
-    private List<IIpsObjectPathEntry> resolvedEntries = new ArrayList<IIpsObjectPathEntry>(0);
+    private List<IIpsObjectPathEntry> resolvedEntries = new CopyOnWriteArrayList<IIpsObjectPathEntry>();
 
     private JdtClasspathResolver jdtClasspathResolver;
 
@@ -88,18 +90,20 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
         } catch (JavaModelException e) {
             throw new CoreRuntimeException(e);
         }
-        if (jdtClasspathContainer != null) {
-            if (jdtClasspathContainer == currentContainer) {
-                return resolvedEntries;
+        synchronized (this) {
+            if (jdtClasspathContainer != null) {
+                if (jdtClasspathContainer == currentContainer) {
+                    return Collections.unmodifiableList(resolvedEntries);
+                }
+            } else {
+                if (currentContainer == null) {
+                    return new ArrayList<IIpsObjectPathEntry>(0);
+                }
             }
-        } else {
-            if (currentContainer == null) {
-                return new ArrayList<IIpsObjectPathEntry>(0);
-            }
+            jdtClasspathContainer = currentContainer;
+            updateResolvedEntries();
+            return Collections.unmodifiableList(resolvedEntries);
         }
-        jdtClasspathContainer = currentContainer;
-        updateResolvedEntries();
-        return resolvedEntries;
     }
 
     private IClasspathContainer getClasspathContainer() throws JavaModelException {
@@ -108,7 +112,7 @@ public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathCon
     }
 
     private void updateResolvedEntries() {
-        resolvedEntries = new ArrayList<IIpsObjectPathEntry>();
+        resolvedEntries = new CopyOnWriteArrayList<IIpsObjectPathEntry>();
         IClasspathEntry[] entries = jdtClasspathContainer.getClasspathEntries();
         for (int i = 0; i < entries.length; i++) {
             IClasspathEntry jdtEntry = jdtClasspathResolver.getResolvedClasspathEntry(entries[i]);

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -119,7 +118,7 @@ public class IpsContainer4JdtClasspathContainerTest {
 
         List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertSame(expectedEntries, sameEntries);
+        assertEquals(expectedEntries, sameEntries);
     }
 
     @Test
@@ -138,7 +137,7 @@ public class IpsContainer4JdtClasspathContainerTest {
 
         List<IIpsObjectPathEntry> sameEntries = ipsContainer4JdtClasspathContainer.resolveEntries();
 
-        assertSame(expectedEntries, sameEntries);
+        assertEquals(expectedEntries, sameEntries);
     }
 
     private void mockEntryCreator(IIpsObjectPathEntry objectPathEntry) throws Exception {
