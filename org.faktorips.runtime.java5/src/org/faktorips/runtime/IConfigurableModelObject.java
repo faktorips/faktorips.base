@@ -50,4 +50,19 @@ public interface IConfigurableModelObject extends IModelObject {
      */
     public void initialize();
 
+    /**
+     * @since 3.13
+     */
+    public void setProductComponent(IProductComponent productComponent);
+
+    /**
+     * @since 3.13
+     */
+    public void setProductCmptGeneration(IProductComponentGeneration productCmptGeneration);
+
+    /**
+     * @since 3.13
+     */
+    public void effectiveFromHasChanged();
+
 }
