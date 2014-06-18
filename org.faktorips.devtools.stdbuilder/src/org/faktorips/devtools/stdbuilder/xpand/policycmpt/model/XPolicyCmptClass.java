@@ -39,7 +39,6 @@ import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.IVisitorSupport;
-import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XType {
@@ -167,11 +166,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     protected String getBaseSuperclassName() {
-        if (isConfigured()) {
-            return addImport(AbstractConfigurableModelObject.class);
-        } else {
-            return addImport(AbstractModelObject.class);
-        }
+        return addImport(AbstractModelObject.class);
     }
 
     @Override
