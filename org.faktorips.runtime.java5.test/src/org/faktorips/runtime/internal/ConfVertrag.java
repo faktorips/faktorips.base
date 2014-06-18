@@ -17,13 +17,10 @@ public class ConfVertrag extends AbstractModelObject implements IConfigurableMod
 
     @XmlJavaTypeAdapter(value = ModelObjectConfigurationXmlAdapter.class)
     @XmlAttribute(name = "product-component.id")
-    private ModelObjectConfiguration modelObjectConfiguration;
+    private final ModelObjectConfiguration modelObjectConfiguration;
 
     public ConfVertrag() {
-    }
-
-    public ConfVertrag(ModelObjectConfiguration modelObjectConfiguration) {
-        this.modelObjectConfiguration = modelObjectConfiguration;
+        modelObjectConfiguration = new ModelObjectConfiguration();
     }
 
     @Override

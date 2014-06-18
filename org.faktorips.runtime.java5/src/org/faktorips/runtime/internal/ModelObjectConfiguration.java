@@ -105,7 +105,6 @@ public class ModelObjectConfiguration {
             IProductComponent productCmpt = productRepository.getExistingProductComponent(productCmptId);
             setProductComponent(productCmpt);
         }
-
     }
 
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.doReturn;
@@ -18,13 +19,13 @@ import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
 
-import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -42,11 +43,11 @@ public class ModelObjectConfigurationTest {
     private IProductComponentGeneration productCmptGeneration;
     @Mock
     private IRuntimeRepository repository;
-    @Mock
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Element element;
 
     @Spy
-    private final IConfigurableModelObject configurableMO = new ConfVertrag(new ModelObjectConfiguration());
+    private final ConfVertrag configurableMO = new ConfVertrag();
 
     private Calendar calendar;
 
@@ -60,8 +61,8 @@ public class ModelObjectConfigurationTest {
         doReturn(calendar).when(configurableMO).getEffectiveFromAsCalendar();
         when(productCmpt.getGenerationBase(calendar)).thenReturn(productCmptGeneration);
 
-        when(element.getAttribute("product-component.id")).thenReturn("PC-ID");
-        when(repository.getProductComponent("PC-ID")).thenReturn(productCmpt);
+        when(element.getAttribute("productCmpt")).thenReturn("PC-ID");
+        when(repository.getExistingProductComponent("PC-ID")).thenReturn(productCmpt);
 
         assertNotNull(configurableMO.getProductCmptGeneration());
     }
@@ -94,13 +95,13 @@ public class ModelObjectConfigurationTest {
         assertNull(configurableMO.getProductCmptGeneration());
     }
 
-    // @Test
-    // public void testInitFromXML() {
-    // configurableMO.setProductComponent(null);
-    // assertNull(configurableMO.getProductComponent());
-    //
-    // configurableMO.initFromXML(element, true, repository, null, null, null);
-    //
-    // assertEquals(productCmpt, configurableMO.getProductComponent());
-    // }
+    @Test
+    public void testInitFromXML() {
+        configurableMO.setProductComponent(null);
+        assertNull(configurableMO.getProductComponent());
+
+        configurableMO.initFromXml(element, true, repository, null, null, null);
+
+        assertEquals(productCmpt, configurableMO.getProductComponent());
+    }
 }
