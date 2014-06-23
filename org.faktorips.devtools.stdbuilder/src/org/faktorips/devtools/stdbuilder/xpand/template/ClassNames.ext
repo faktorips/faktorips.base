@@ -2,10 +2,13 @@ import java::lang;
 import java::util;
 import java::beans;
 import org::w3c::dom;
+import javax::xml::bind::annotation;
+import javax::xml::bind::annotation::adapters;
 import org::faktorips::values;
 import org::faktorips::valueset;
 import org::faktorips::runtime;
 import org::faktorips::runtime::internal;
+import org::faktorips::runtime::jaxb;
 import org::faktorips::runtime::util;
 import org::faktorips::devtools::stdbuilder::xpand::model;
 
@@ -54,6 +57,18 @@ AbstractModelObject(AbstractGeneratorModelNode this) :
 	
 AbstractConfigurableModelObject(AbstractGeneratorModelNode this) :
 	addImport(AbstractConfigurableModelObject.name);
+
+ModelObjectConfiguration(AbstractGeneratorModelNode this) :
+	addImport(ModelObjectConfiguration.name);
+
+ModelObjectConfigurationXmlAdapter(AbstractGeneratorModelNode this) :
+	addImport(ModelObjectConfigurationXmlAdapter.name);
+
+XmlJavaTypeAdapter(AbstractGeneratorModelNode this) :
+	addImport(XmlJavaTypeAdapter.name);
+
+XmlAttribute(AbstractGeneratorModelNode this) :
+	addImport(XmlAttribute.name);
 	
 IValidationContext(AbstractGeneratorModelNode this) :
 	addImport(IValidationContext.name);
@@ -108,6 +123,9 @@ Element(AbstractGeneratorModelNode this) :
 
 IProductComponent(AbstractGeneratorModelNode this) :
 	addImport(IProductComponent.name);
+
+IProductComponentGeneration(AbstractGeneratorModelNode this) :
+	addImport(IProductComponentGeneration.name);
 
 ProductComponentLink(AbstractGeneratorModelNode this, String genericType) :
 	addImport(ProductComponentLink.name) + "<" + genericType + ">";

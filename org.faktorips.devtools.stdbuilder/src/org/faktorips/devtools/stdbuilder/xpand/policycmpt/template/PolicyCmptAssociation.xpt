@@ -535,12 +535,12 @@
 	«IF considerInEffectiveFromHasChanged-»
 		«IF oneToMany-»
 			for («Iterator(targetInterfaceName)» it = «fieldName».iterator(); it.hasNext();) {
-	            «AbstractConfigurableModelObject()» child = «castToImplementation(AbstractConfigurableModelObject())»it.next();
+	            «targetClassName» child = «castToImplementation(targetClassName)»it.next();
 	            child.effectiveFromHasChanged();
 	        }
 		«ELSE-»
 			if («fieldName» != null) {
-	            «castToImplementation(AbstractConfigurableModelObject(), fieldName)».effectiveFromHasChanged();
+	            «castToImplementation(targetClassName, fieldName)».effectiveFromHasChanged();
 	        }
 		«ENDIF-»				 
 	«ENDIF-»

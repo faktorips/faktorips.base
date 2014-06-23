@@ -46,6 +46,13 @@ public class ModelObjectConfiguration {
     }
 
     /**
+     * Sets the product component generation <b>null</b>.
+     */
+    public void resetProductCmptGeneration() {
+        productCmptGeneration = null;
+    }
+
+    /**
      * Returns the product component that configures a policy component.
      */
     public IProductComponent getProductComponent() {
@@ -102,8 +109,8 @@ public class ModelObjectConfiguration {
     public void initFromXml(Element objectEl, IRuntimeRepository productRepository) {
         String productCmptId = objectEl.getAttribute(XML_ATTRIBUTE_PRODUCT_CMPT);
         if (!IpsStringUtils.isEmpty(productCmptId)) {
-            IProductComponent productCmpt = productRepository.getExistingProductComponent(productCmptId);
-            setProductComponent(productCmpt);
+            IProductComponent existingProductCmpt = productRepository.getExistingProductComponent(productCmptId);
+            setProductComponent(existingProductCmpt);
         }
     }
 

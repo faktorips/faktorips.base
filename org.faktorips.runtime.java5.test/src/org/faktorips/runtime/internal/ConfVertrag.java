@@ -1,11 +1,17 @@
 package org.faktorips.runtime.internal;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.faktorips.runtime.IConfigurableModelObject;
+import org.faktorips.runtime.IDeltaComputationOptions;
+import org.faktorips.runtime.IModelObject;
+import org.faktorips.runtime.IModelObjectDelta;
+import org.faktorips.runtime.IModelObjectVisitor;
 import org.faktorips.runtime.IObjectReferenceStore;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
@@ -13,21 +19,34 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.jaxb.ModelObjectConfigurationXmlAdapter;
 import org.w3c.dom.Element;
 
-public class ConfVertrag extends AbstractModelObject implements IConfigurableModelObject {
+@XmlRootElement(name = "ConfVertrag")
+public class ConfVertrag extends AbstractModelObject implements IConfVertrag {
 
     @XmlJavaTypeAdapter(value = ModelObjectConfigurationXmlAdapter.class)
     @XmlAttribute(name = "product-component.id")
     private final ModelObjectConfiguration modelObjectConfiguration;
 
     public ConfVertrag() {
+        super();
         modelObjectConfiguration = new ModelObjectConfiguration();
     }
 
+    public ConfVertrag(IProductComponent productComponent) {
+        super();
+        modelObjectConfiguration = new ModelObjectConfiguration(productComponent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IProductComponent getProductComponent() {
         return modelObjectConfiguration.getProductComponent();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IProductComponentGeneration getProductCmptGeneration() {
         return modelObjectConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
@@ -44,12 +63,16 @@ public class ConfVertrag extends AbstractModelObject implements IConfigurableMod
         // TODO Auto-generated method stub
     }
 
-    @Override
+    /**
+     * Sets the new product component.
+     */
     public void setProductComponent(IProductComponent productComponent) {
         modelObjectConfiguration.setProductComponent(productComponent);
     }
 
-    @Override
+    /**
+     * TODO
+     */
     public void setProductCmptGeneration(IProductComponentGeneration productCmptGeneration) {
         modelObjectConfiguration.setProductCmptGeneration(productCmptGeneration);
     }
@@ -67,7 +90,6 @@ public class ConfVertrag extends AbstractModelObject implements IConfigurableMod
      * Clients may change the behavior of resetting the product component by overwriting
      * {@link #resetProductCmptGenerationAfterEffectiveFromHasChanged()} instead of this method.
      */
-    @Override
     public void effectiveFromHasChanged() {
         if (getEffectiveFromAsCalendar() != null) {
             resetProductCmptGenerationAfterEffectiveFromHasChanged();
@@ -93,4 +115,63 @@ public class ConfVertrag extends AbstractModelObject implements IConfigurableMod
                 currPath);
     }
 
+    @Override
+    public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public IModelObject newCopy() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean accept(IModelObjectVisitor visitor) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener, boolean propagateEventsFromChildren) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean hasListeners(String propertyName) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void notifyChangeListeners(PropertyChangeEvent event) {
+        // TODO Auto-generated method stub
+
+    }
 }

@@ -25,6 +25,15 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
+		«IF !hasConfiguredSupertype()»
+			/**
+			 * @generated
+	 		 */
+			@«XmlJavaTypeAdapter()»(value = «ModelObjectConfigurationXmlAdapter()».class)
+    		@«XmlAttribute()»(name = "product-component.id")
+    		private final «ModelObjectConfiguration()» modelObjectConfiguration;
+    	«ENDIF»	
+
 		«IF !generatePublishedInterfaces-»
 			«EXPAND PolicyCmptAssociation::constants FOREACH associations»
 			«EXPAND ValidationRule::constants FOREACH validationRules»
@@ -97,7 +106,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		«IF configured-»
 			«EXPAND getAndSetProductComponent FOR productCmptNode-»
-			«EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
+			«EXPAND getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		«ENDIF-»
 		
@@ -135,6 +144,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      */
     public «method(implClassName)» {
         super();
+        «IF !hasConfiguredSupertype()-»
+        	modelObjectConfiguration = new «ModelObjectConfiguration()»();
+        «ENDIF»	
         «EXPAND initializationForOverrideAttributes-»
     }
     «IF configured»
@@ -144,7 +156,12 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	     * @generated
 	     */
 	    public «method(implClassName, productCmptClassName, "productCmpt")» {
-	        super(productCmpt);
+	    	«IF hasConfiguredSupertype()-»
+        		super(productCmpt);
+        	«ELSE-»
+	    		super();
+        		modelObjectConfiguration = new «ModelObjectConfiguration()»(productCmpt);
+        	«ENDIF»	
 	        «EXPAND initializationForOverrideAttributes-»
 	    }
     «ENDIF»
@@ -221,10 +238,29 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	            «initialize()»;
 	        }
 		 }
+			 «IF !policyCmptClass.hasConfiguredSupertype()»
+				/**
+				 * {@inheritDoc}
+				 * 
+				 * @generated
+				 */
+				 @Override
+				 public «IProductComponent()» «getProductComponent()» {
+				 	return modelObjectConfiguration.«getProductComponent()»;
+				 }
+				 
+				/**
+				 * @generated
+				 */
+				 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
+				 public void setProductComponent(IProductComponent productComponent) {
+				 	modelObjectConfiguration.setProductComponent(productComponent);
+				 }
+			 «ENDIF»
 		 «ENDIF»
 «ENDDEFINE»
 		 
-«DEFINE getProductComponentGeneration FOR XProductCmptGenerationClass-» 
+«DEFINE getAndSetProductComponentGeneration FOR XProductCmptGenerationClass-» 
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT_GENERATION", generationConceptNameSingular, name, policyCmptClass.name)»
 		 * 
@@ -234,25 +270,75 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 public «interfaceName» «method(methodNameGetProductComponentGeneration)»
 		 «IF genInterface()»;«ELSE-»
 		 {
-		 	return («interfaceName») «getProductCmptGeneration()»;
+		 	return («interfaceName») getProductCmptGeneration();
 		 }
 		 «ENDIF»
 	
+		/**
+		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_PRODUCTCMPT_GENERATION",  name, nameForVariable)»
+		 * 
+		 * @generated
+		 */
+		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		 public void «method(methodNameSetProductComponentGeneration, interfaceName, nameForVariable)»
+		 «IF genInterface()»;«ELSE-»
+		 {
+	        «setProductCmptGeneration(nameForVariable)»;
+		 }
+			 «IF !policyCmptClass.hasConfiguredSupertype()»
+				 /**
+				  * {@inheritDoc}
+				  * 
+				  * @generated
+				  */
+				 @Override
+				 public «IProductComponentGeneration()» «getProductCmptGeneration()» {
+				 	return modelObjectConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
+				 }
+				 
+				/**
+				 * @generated
+				 */
+				 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
+				 public void «setProductCmptGeneration("IProductComponentGeneration productComponentGeneration")» {
+				 	modelObjectConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
+				 }
+			 «ENDIF»
+		 «ENDIF»
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
-		 /**
-		 * «inheritDoc()»
-		 *
+	   
+	    /**
+		 «IF hasConfiguredSupertype()-»
+		 * {@inheritDoc}
+		 «ELSE-»
+     	 * This method is called when the effective from date has changed, so that the reference to the
+		 * product component generation can be cleared. If this policy component contains child
+		 * components, this method will also clear the reference to their product component generations.
+		 * <p>
+		 * The product component generation is cleared if and only if there is a new effective from
+		 * date. If {@link #getEffectiveFromAsCalendar()} returns <code>null</code> the product
+		 * component generation is not reset, for example if this model object was removed from its
+		 * parent.
+     	 «ENDIF»
+     	 *
 	     * @generated
 	     */
-	    @Override
+	    «overrideAnnotationIf(hasConfiguredSupertype())»
 	    public void «effectiveFromHasChanged()» {
-	        super.«effectiveFromHasChanged()»;
+	    	«IF hasConfiguredSupertype()-»
+	    		super.«effectiveFromHasChanged()»;
+	        «ELSE-»
+		        if («getEffectiveFromAsCalendar()» != null) {
+	        		modelObjectConfiguration.resetProductCmptGeneration();
+        		}
+    		«ENDIF»
 	        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
 	    }
-	    
-	    «IF firstDependantTypeInHierarchy-»
+		
+		«IF firstDependantTypeInHierarchy-»
+	    	
 			/**
 			 * «inheritDoc()»
 			 *
@@ -274,12 +360,13 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 */
 	    	@Override
 			public «Calendar()» «getEffectiveFromAsCalendar()» {
-	   			«IF hasSupertype()-»
+	   			«IF hasConfiguredSupertype()-»
 	   				return super.«getEffectiveFromAsCalendar()»;
 				«ELSE-»
-					return null; «localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
+					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE1")»
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE2")»
 					«localizedComment("METHOD_GET_EFFECTIVE_FROM_TODO_LINE3")»
+					return null;
 				«ENDIF-»
 			}
 		«ENDIF-»

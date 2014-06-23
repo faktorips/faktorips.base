@@ -326,7 +326,6 @@ public class XPolicyCmptClassTest {
         LinkedHashSet<String> extendedInterfaces = policyCmptClass.getExtendedInterfaces();
 
         assertEquals(1, extendedInterfaces.size());
-        assertThat(extendedInterfaces, hasItem("IConfigurableModelObject"));
+        assertThat(extendedInterfaces, hasItem("IModelObject"));
     }
-
 }
