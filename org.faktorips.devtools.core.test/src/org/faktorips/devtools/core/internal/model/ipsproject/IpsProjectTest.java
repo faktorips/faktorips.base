@@ -104,6 +104,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     private IpsProject ipsProject;
     private IpsProject baseProject;
     private IIpsPackageFragmentRoot root;
+    private IProductCmptType hausrat;
+    private IProductCmpt productCmptHausrat2013;
 
     @Override
     @Before
@@ -2164,4 +2166,63 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
     }
 
+    private void initProdCmptAndType() throws CoreException {
+        hausrat = newProductCmptType(ipsProject, "hausrat");
+        productCmptHausrat2013 = newProductCmpt(hausrat, "productCmptHausrat2013");
+    }
+
+    @Test
+    public void testFindProductCmptByUnqualifiedName_ValidInput() throws CoreException {
+        initProdCmptAndType();
+        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+
+        assertNotNull(result);
+        assertEquals(productCmptHausrat2013, result);
+    }
+
+    @Test
+    public void testFindProductCmptByUnqualifiedName_InvalidInput() throws CoreException {
+        initProdCmptAndType();
+        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("invalidProductName");
+
+        assertNull(result);
+    }
+
+    @Test
+    public void testFindProductCmptByUnqualifiedName_removeProductCmpt() throws CoreException {
+        initProdCmptAndType();
+        IProductCmpt oldResult = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+
+        productCmptHausrat2013.delete();
+
+        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+
+        assertNotNull(oldResult);
+        assertNull(result);
+    }
+
+    @Test
+    public void testFindProductCmptByUnqualifiedName_renameProductCmptType() throws CoreException {
+        initProdCmptAndType();
+        performRenameRefactoring(productCmptHausrat2013, "newproductCmptHausrat2013");
+
+        IProductCmpt resultWithNewName = ipsProject.findProductCmptByUnqualifiedName("newproductCmptHausrat2013");
+        IProductCmpt resultWithOldName = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+
+        assertNotNull(resultWithNewName);
+        assertNull(resultWithOldName);
+    }
+
+    @Test
+    public void testFindProductCmptByUnqualifiedName_moveProdCmptType() throws CoreException {
+        initProdCmptAndType();
+        IIpsPackageFragmentRoot fragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment targetIpsPackageFragment = fragmentRoot.createPackageFragment("target", true, null);
+        performMoveRefactoring(productCmptHausrat2013, targetIpsPackageFragment);
+
+        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+
+        assertNotNull(result);
+        assertEquals("target." + productCmptHausrat2013.getUnqualifiedName(), result.getQualifiedName());
+    }
 }

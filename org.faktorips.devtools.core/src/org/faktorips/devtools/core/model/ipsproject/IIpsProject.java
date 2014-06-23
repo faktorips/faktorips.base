@@ -464,6 +464,17 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
 
     /**
+     * Returns the product component with the given unqualified name or <code>null</code> if no such
+     * product component exists. If more than one product component with the given name exists, the
+     * first one found is returned.
+     * 
+     * @param unqualifiedName The unqualified name to find the product component for.
+     * @return The first product component identified by the given unqualified name that has been
+     *         found.
+     */
+    public IProductCmpt findProductCmptByUnqualifiedName(String unqualifiedName);
+
+    /**
      * Returns the enumeration type with the given qualified name or <code>null</code> if no such
      * enumeration type exists. If more than one enumeration type with the given name exists, the
      * first one found is returned.

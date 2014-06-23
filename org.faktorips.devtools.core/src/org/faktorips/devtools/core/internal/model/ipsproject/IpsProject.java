@@ -14,11 +14,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -145,6 +147,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IIpsProjectNamingConventions namingConventions = null;
 
     private IFile propertyFile;
+
+    private Map<String, IIpsSrcFile> prodCmptMap = new HashMap<String, IIpsSrcFile>();
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -762,6 +766,32 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException {
         return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_CMPT, qualifiedName);
+    }
+
+    @Override
+    public IProductCmpt findProductCmptByUnqualifiedName(String unqualifiedName) {
+        IIpsSrcFile result = prodCmptMap.get(unqualifiedName);
+        if (result == null || !result.exists()) {
+            initProdCmptMap();
+            result = prodCmptMap.get(unqualifiedName);
+        }
+        if (result != null) {
+            try {
+                return (IProductCmpt)result.getIpsObject();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private void initProdCmptMap() {
+        prodCmptMap.clear();
+        List<IIpsSrcFile> findAllIpsSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        for (IIpsSrcFile ipsSrcFile : findAllIpsSrcFiles) {
+            prodCmptMap.put(ipsSrcFile.getIpsObjectName(), ipsSrcFile);
+        }
     }
 
     @Override

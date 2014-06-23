@@ -20,8 +20,6 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.contextcollector.ContextProductCmptFinder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -108,20 +106,26 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IProductCmpt findProductCmpt() throws CoreException {
-        IProductCmptType productCmptType = findProductCmptType();
-        IIpsSrcFile[] allProductCmptSrcFiles = getIpsProject().findAllProductCmptSrcFiles(productCmptType, true);
-        IProductCmpt productCmpt = null;
-        for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
-            if (ipsSrcFile.getIpsObjectName().equals(getQualifier())
-                    || ipsSrcFile.getQualifiedNameType().getName().equals(getQualifier())) {
-                IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                if (ipsObject instanceof IProductCmpt) {
-                    productCmpt = (IProductCmpt)ipsObject;
-                    break;
-                }
-            }
+        IProductCmpt foundProductCmpt = findProductCmptByName();
+        if (foundProductCmpt != null && hasSubtypeOrSameProdCmptType(foundProductCmpt, findProductCmptType())) {
+            return foundProductCmpt;
         }
-        return productCmpt;
+        return null;
+    }
+
+    private IProductCmpt findProductCmptByName() throws CoreException {
+        IProductCmpt foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
+        if (foundProductCmpt == null) {
+            foundProductCmpt = getIpsProject().findProductCmpt(getQualifier());
+        }
+        return foundProductCmpt;
+    }
+
+    private boolean hasSubtypeOrSameProdCmptType(IProductCmpt productCmpt, IProductCmptType productCmptType)
+            throws CoreException {
+        String productCmptTypeName = productCmpt.getProductCmptType();
+        IProductCmptType typeOfProductCmpt = getIpsProject().findProductCmptType(productCmptTypeName);
+        return typeOfProductCmpt.isSubtypeOrSameType(productCmptType, getIpsProject());
     }
 
     private IProductCmptType findProductCmptType() throws CoreException {
