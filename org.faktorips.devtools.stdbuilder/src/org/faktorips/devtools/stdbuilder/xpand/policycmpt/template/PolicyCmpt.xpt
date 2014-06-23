@@ -310,21 +310,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
 	   
 	    /**
-		 «IF hasConfiguredSupertype()-»
-		 * {@inheritDoc}
-		 «ELSE-»
-     	 * This method is called when the effective from date has changed, so that the reference to the
-		 * product component generation can be cleared. If this policy component contains child
-		 * components, this method will also clear the reference to their product component generations.
-		 * <p>
-		 * The product component generation is cleared if and only if there is a new effective from
-		 * date. If {@link #getEffectiveFromAsCalendar()} returns <code>null</code> the product
-		 * component generation is not reset, for example if this model object was removed from its
-		 * parent.
-		 * <p>
-         * Clients may change the behavior of resetting the product component by overwriting
-         * {@link #resetProductCmptGenerationAfterEffectiveFromHasChanged()} instead of this method.
-     	 «ENDIF»
+		 * «inheritDocOrJavaDocIf(!hasConfiguredSupertype(), "METHOD_EFFECTIVE_FROM_HAS_CHANGED")»
      	 *
 	     * @generated
 	     */
