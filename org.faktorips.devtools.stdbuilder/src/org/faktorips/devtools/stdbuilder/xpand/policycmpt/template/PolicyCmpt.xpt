@@ -394,6 +394,29 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «ENDDEFINE»
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
+
+	«IF !hasConfiguredSupertype()-»
+		/**
+	    * «inheritDoc()»
+	    * 
+	    * @generated
+		*/
+	    @Override
+    	protected void initFromXml(Element objectEl,
+            	boolean initWithProductDefaultsBeforeReadingXmlData,
+        		«IRuntimeRepository()» productRepository,
+        		«IObjectReferenceStore()» store,
+        		«XmlCallback()» xmlCallback,
+        		String currPath) {
+    		modelObjectConfiguration.initFromXml(objectEl, productRepository);
+    		if (initWithProductDefaultsBeforeReadingXmlData) {
+    	    	initialize();
+    		}
+    		super.initFromXml(objectEl, initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback,
+            	currPath);
+		}
+	«ENDIF»	
+
 	«IF generateInitPropertiesFromXML-»
 	    /**
 	     * «inheritDoc()»

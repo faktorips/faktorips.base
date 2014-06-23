@@ -206,4 +206,8 @@ IllegalStateException(AbstractGeneratorModelNode this):
 ObjectUtil(AbstractGeneratorModelNode this):
 	addImport(ObjectUtil.name);
 	
+IObjectReferenceStore(AbstractGeneratorModelNode this):
+	addImport(IObjectReferenceStore.name);
 	
+XmlCallback(AbstractGeneratorModelNode this):
+	addImport(XmlCallback.name);
