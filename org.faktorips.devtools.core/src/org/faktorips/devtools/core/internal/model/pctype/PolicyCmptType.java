@@ -349,14 +349,6 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
                     }
                 }
             }
-            IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)findSupertype(ipsProject);
-            if (superPolicyCmptType != null) {
-                if (!superPolicyCmptType.isConfigurableByProductCmptType()) {
-                    String msg = Messages.PolicyCmptType_msg_IfTheSupertypeIsNotConfigurableTheTypeCanBeConfigurable;
-                    list.add(new Message(MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT, msg,
-                            Message.ERROR, this, IPolicyCmptType.PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE));
-                }
-            }
         }
         if (!isConfigurableByProductCmptType()) {
             IPolicyCmptType superPolicyCmptType = (IPolicyCmptType)findSupertype(ipsProject);
