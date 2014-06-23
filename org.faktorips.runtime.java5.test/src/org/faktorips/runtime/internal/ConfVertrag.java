@@ -97,7 +97,7 @@ public class ConfVertrag extends AbstractModelObject implements IConfVertrag {
     }
 
     protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
-        modelObjectConfiguration.setProductComponent(null);
+        modelObjectConfiguration.resetProductCmptGeneration();
     }
 
     @Override

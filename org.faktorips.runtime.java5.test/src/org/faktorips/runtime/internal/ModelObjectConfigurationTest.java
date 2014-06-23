@@ -104,4 +104,12 @@ public class ModelObjectConfigurationTest {
 
         assertEquals(productCmpt, configurableMO.getProductComponent());
     }
+
+    @Test
+    public void testResetProductCmptGeneration() {
+        assertNotNull(configurableMO.getProductCmptGeneration());
+        configurableMO.resetProductCmptGenerationAfterEffectiveFromHasChanged();
+
+        assertNull(configurableMO.getProductCmptGeneration());
+    }
 }

@@ -321,6 +321,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * date. If {@link #getEffectiveFromAsCalendar()} returns <code>null</code> the product
 		 * component generation is not reset, for example if this model object was removed from its
 		 * parent.
+		 * <p>
+         * Clients may change the behavior of resetting the product component by overwriting
+         * {@link #resetProductCmptGenerationAfterEffectiveFromHasChanged()} instead of this method.
      	 «ENDIF»
      	 *
 	     * @generated
@@ -331,12 +334,18 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    		super.«effectiveFromHasChanged()»;
 	        «ELSE-»
 		        if («getEffectiveFromAsCalendar()» != null) {
-	        		modelObjectConfiguration.resetProductCmptGeneration();
+	        		resetProductCmptGenerationAfterEffectiveFromHasChanged();
         		}
     		«ENDIF»
 	        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
 	    }
 		
+		«IF !hasConfiguredSupertype()-»
+			protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
+	        	modelObjectConfiguration.resetProductCmptGeneration();
+	    	}
+    	«ENDIF»
+    
 		«IF firstDependantTypeInHierarchy-»
 	    	
 			/**

@@ -540,7 +540,7 @@
 	        }
 		«ELSE-»
 			if («fieldName» != null) {
-	            «castToImplementation(targetClassName, fieldName)».effectiveFromHasChanged();
+	            «fieldName».effectiveFromHasChanged();
 	        }
 		«ENDIF-»				 
 	«ENDIF-»
