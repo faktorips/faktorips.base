@@ -1,3 +1,4 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
@@ -32,7 +33,7 @@
 	        if (newCopy == null) {
 	            newCopy = new «implClassName»();
 	            «IF configured-»
-		            newCopy.«copyProductCmptAndGenerationInternal("this")»;
+            		newCopy.copyProductCmptAndGenerationInternal(this);
 	            «ENDIF-»
 	            «copyProperties("newCopy", "copyMap")»;
 	        }
@@ -42,6 +43,17 @@
 	                "This method has to be abstract. It needs to have an empty body because of a bug in JMerge.");
 	    «ENDIF-»
     }
+    
+    «IF !hasConfiguredSupertype()-»
+        /**
+    	 * «localizedJDoc("METHOD_COPY_PRODUCT_AND_GENERATION")»
+    	 * 
+    	 * @generated
+	     */
+	    protected void copyProductCmptAndGenerationInternal(«getSimpleName(BuilderAspect::IMPLEMENTATION)» otherObject) {
+            modelObjectConfiguration.copy(otherObject.modelObjectConfiguration);
+	    }
+    «ENDIF»
 
     /**
      * «localizedJDoc("METHOD_COPY_PROPERTIES")»

@@ -94,7 +94,7 @@ public class ModelObjectConfiguration {
     /**
      * Copies the product component and product component generation from the other object.
      */
-    protected final void copyProductCmptAndGenerationInternal(ModelObjectConfiguration otherObject) {
+    public void copy(ModelObjectConfiguration otherObject) {
         this.productCmpt = otherObject.productCmpt;
         this.productCmptGeneration = otherObject.productCmptGeneration;
     }
