@@ -27,10 +27,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		«IF firstConfigurableInHierarchy»
 			/**
+			 * «localizedJDoc("PRODUCTCONFIGURATION_FIELD")»
+			 *  
 			 * @generated
 	 		 */
-			@«XmlJavaTypeAdapter()»(value = «ProductConfigurationXmlAdapter()».class)
-    		@«XmlAttribute()»(name = "product-component.id")
+	 		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD)-» 
     		private final «ProductConfiguration()» productConfiguration;
     	«ENDIF»	
 
@@ -252,9 +253,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 }
 			 
 			/**
+			 * «localizedJDoc("METHOD_SET_PRODUCT_COMPONENT")»
+			 *
 			 * @generated
 			 */
-			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
+			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())-»
 			 public void setProductComponent(IProductComponent productComponent) {
 			 	productConfiguration.setProductComponent(productComponent);
 			 }
@@ -287,9 +290,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 }
 			 
 			/**
+			 * «localizedJDoc("METHOD_SET_PRODUCT_COMPONENT_GENERATION")»
+			 *
 			 * @generated
 			 */
-			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
+			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())-»
 			 public void «setProductCmptGeneration("IProductComponentGeneration productComponentGeneration")» {
 			 	productConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
 			 }
@@ -316,6 +321,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    }
 		
 		«IF firstConfigurableInHierarchy-»
+			/**
+		 	 * «localizedJDoc("METHOD_RESET_PRODUCT_CMPT")»
+     	     *
+	         * @generated
+	         */
 			protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
 	        	productConfiguration.resetProductCmptGeneration();
 	    	}

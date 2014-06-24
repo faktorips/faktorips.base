@@ -31,6 +31,8 @@ public enum AnnotatedJavaElementType {
 
     POLICY_CMPT_IMPL_CLASS_ASSOCIATION,
 
+    POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD,
+
     /**
      * Using this type the annotation generator provides java doc tags for any {@link IIpsElement}.
      */
