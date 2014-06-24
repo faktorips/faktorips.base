@@ -384,7 +384,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 «DEFINE generalMethods FOR XPolicyCmptClass-»
 
-	«IF !hasConfiguredSupertype()-»
+	«IF firstConfigurableInHierarchy-»
 		/**
 	    * «inheritDoc()»
 	    * 
