@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +22,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.contextcollector.ContextProductCmptFinder;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -106,17 +109,23 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IProductCmpt findProductCmpt() throws CoreException {
-        IProductCmpt foundProductCmpt = findProductCmptByName();
-        if (foundProductCmpt != null && hasSubtypeOrSameProdCmptType(foundProductCmpt, findProductCmptType())) {
-            return foundProductCmpt;
+        Collection<IIpsSrcFile> foundProductCmpts = findProductCmptByName();
+        if (foundProductCmpts != null) {
+            for (IIpsSrcFile ipsSrcFile : foundProductCmpts) {
+                IProductCmpt foundProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                if (hasSubtypeOrSameProdCmptType(foundProductCmpt, findProductCmptType())) {
+                    return foundProductCmpt;
+                }
+            }
         }
         return null;
     }
 
-    private IProductCmpt findProductCmptByName() throws CoreException {
-        IProductCmpt foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
+    private Collection<IIpsSrcFile> findProductCmptByName() throws CoreException {
+        Collection<IIpsSrcFile> foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
         if (foundProductCmpt == null) {
-            foundProductCmpt = getIpsProject().findProductCmpt(getQualifier());
+            IProductCmpt foundProductCmptByQName = getIpsProject().findProductCmpt(getQualifier());
+            return Arrays.asList(foundProductCmptByQName.getIpsSrcFile());
         }
         return foundProductCmpt;
     }

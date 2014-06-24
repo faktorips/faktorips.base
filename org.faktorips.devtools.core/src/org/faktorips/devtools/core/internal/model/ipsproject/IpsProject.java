@@ -14,13 +14,12 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
@@ -109,6 +108,7 @@ import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
+import org.faktorips.util.MultiMap;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -123,6 +123,8 @@ import org.w3c.dom.Element;
 public class IpsProject extends IpsElement implements IIpsProject {
 
     public static final boolean TRACE_IPSPROJECT_PROPERTIES;
+
+    private MultiMap<String, IIpsSrcFile> multiMap = new MultiMap<String, IIpsSrcFile>();
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
@@ -147,8 +149,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IIpsProjectNamingConventions namingConventions = null;
 
     private IFile propertyFile;
-
-    private Map<String, IIpsSrcFile> prodCmptMap = new HashMap<String, IIpsSrcFile>();
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -769,28 +769,33 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IProductCmpt findProductCmptByUnqualifiedName(String unqualifiedName) {
-        IIpsSrcFile result = prodCmptMap.get(unqualifiedName);
-        if (result == null || !result.exists()) {
+    public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName) {
+        Collection<IIpsSrcFile> result = multiMap.get(unqualifiedName);
+        if (result == null || !exists(result)) {
             initProdCmptMap();
-            result = prodCmptMap.get(unqualifiedName);
+            result = multiMap.get(unqualifiedName);
         }
         if (result != null) {
-            try {
-                return (IProductCmpt)result.getIpsObject();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return result;
         } else {
             return null;
         }
     }
 
+    private boolean exists(Collection<IIpsSrcFile> result) {
+        for (IIpsSrcFile ipsSrcFile : result) {
+            if (ipsSrcFile.exists()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initProdCmptMap() {
-        prodCmptMap.clear();
+        multiMap.clear();
         List<IIpsSrcFile> findAllIpsSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : findAllIpsSrcFiles) {
-            prodCmptMap.put(ipsSrcFile.getIpsObjectName(), ipsSrcFile);
+            multiMap.put(ipsSrcFile.getIpsObjectName(), ipsSrcFile);
         }
     }
 

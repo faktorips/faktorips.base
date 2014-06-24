@@ -11,9 +11,10 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -60,6 +61,9 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     @Mock
     private IProductCmpt productCmpt;
 
+    @Mock
+    private IIpsSrcFile productCmptIpsSrcFile;
+
     private QualifierAndIndexParser qualifierAndIndexParser;
 
     @Before
@@ -94,7 +98,10 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     }
 
     private void initProdCmptAndType() throws CoreException {
-        doReturn(productCmpt).when(getIpsProject()).findProductCmptByUnqualifiedName(MY_QUALIFIER);
+        ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        list.add(productCmptIpsSrcFile);
+        when(getIpsProject().findProductCmptByUnqualifiedName(MY_QUALIFIER)).thenReturn(list);
+        when(productCmptIpsSrcFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmpt.getProductCmptType()).thenReturn("prodCmptType");
         when(getIpsProject().findProductCmptType("prodCmptType")).thenReturn(getProductCmptType());
         when(getProductCmptType().isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(true);
@@ -253,5 +260,10 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     private IdentifierNode createQualifierNode(boolean listOfTypes) {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(null, getIpsProject());
         return nodeFactory.createQualifierNode(productCmpt, QUALIFIER, listOfTypes);
+    }
+
+    @Test
+    public void testFindProductCmptByUnqualifiedName_sameUnqualifiedNameDifferentType() throws CoreException {
+        // TODO
     }
 }

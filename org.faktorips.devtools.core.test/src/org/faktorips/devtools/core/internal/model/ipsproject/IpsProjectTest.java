@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -2168,22 +2169,23 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     private void initProdCmptAndType() throws CoreException {
         hausrat = newProductCmptType(ipsProject, "hausrat");
-        productCmptHausrat2013 = newProductCmpt(hausrat, "productCmptHausrat2013");
+        productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat2013");
     }
 
     @Test
     public void testFindProductCmptByUnqualifiedName_ValidInput() throws CoreException {
         initProdCmptAndType();
-        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(result);
-        assertEquals(productCmptHausrat2013, result);
+        assertEquals(1, result.size());
+        assertEquals(productCmptHausrat2013, ((ArrayList<IIpsSrcFile>)result).get(0).getIpsObject());
     }
 
     @Test
     public void testFindProductCmptByUnqualifiedName_InvalidInput() throws CoreException {
         initProdCmptAndType();
-        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("invalidProductName");
+        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("invalidProductName");
 
         assertNull(result);
     }
@@ -2191,11 +2193,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     @Test
     public void testFindProductCmptByUnqualifiedName_removeProductCmpt() throws CoreException {
         initProdCmptAndType();
-        IProductCmpt oldResult = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+        Collection<IIpsSrcFile> oldResult = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         productCmptHausrat2013.delete();
 
-        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(oldResult);
         assertNull(result);
@@ -2206,8 +2208,10 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         initProdCmptAndType();
         performRenameRefactoring(productCmptHausrat2013, "newproductCmptHausrat2013");
 
-        IProductCmpt resultWithNewName = ipsProject.findProductCmptByUnqualifiedName("newproductCmptHausrat2013");
-        IProductCmpt resultWithOldName = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+        Collection<IIpsSrcFile> resultWithNewName = ipsProject
+                .findProductCmptByUnqualifiedName("newproductCmptHausrat2013");
+        Collection<IIpsSrcFile> resultWithOldName = ipsProject
+                .findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(resultWithNewName);
         assertNull(resultWithOldName);
@@ -2220,9 +2224,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsPackageFragment targetIpsPackageFragment = fragmentRoot.createPackageFragment("target", true, null);
         performMoveRefactoring(productCmptHausrat2013, targetIpsPackageFragment);
 
-        IProductCmpt result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
+        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(result);
-        assertEquals("target." + productCmptHausrat2013.getUnqualifiedName(), result.getQualifiedName());
+        assertEquals(1, result.size());
+        assertEquals("target." + productCmptHausrat2013.getUnqualifiedName(), ((ArrayList<IIpsSrcFile>)result).get(0)
+                .getQualifiedNameType().getName());
     }
 }
