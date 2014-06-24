@@ -87,11 +87,27 @@ public class XPolicyCmptClass extends XType {
         return getType().isConfigurableByProductCmptType();
     }
 
+    /**
+     * Returns <code>true</code> if this policy component type has super type that is configured by
+     * a product component type.
+     */
     public boolean hasConfiguredSupertype() {
         if (!hasSupertype()) {
             return false;
         }
         return getSupertype().isConfigured();
+    }
+
+    /**
+     * Returns <code>true</code> if this policy component type has no super type that is configured
+     * by a product component type and is self configured by a product component type.
+     */
+    public boolean isFirstConfigurableInHierarchy() {
+        if (!hasConfiguredSupertype() && isConfigured()) {
+            return true;
+        }
+        return false;
+
     }
 
     public boolean isAggregateRoot() {
@@ -147,27 +163,6 @@ public class XPolicyCmptClass extends XType {
         extendedInterfaces.addAll(super.getExtendedInterfaces());
         return extendedInterfaces;
     }
-
-    // public String getConfiguredFieldDefinition() {
-    // StringBuilder fieldDefinition = new StringBuilder();
-    // if (isConfigured()) {
-    // addImport(IProductComponent.class);
-    // addImport(IProductComponentGeneration.class);
-    // fieldDefinition.append("@");
-    // fieldDefinition.append(addImport(XmlJavaTypeAdapter.class));
-    // fieldDefinition.append("(value = ");
-    // fieldDefinition.append(addImport(ModelObjectConfigurationXmlAdapter.class));
-    // fieldDefinition.append(".class)\n");
-    //
-    // fieldDefinition.append("@");
-    // fieldDefinition.append(addImport(XmlAttribute.class));
-    // fieldDefinition.append("(name = \"product-component.id\")\n");
-    //
-    // fieldDefinition.append("private final " + addImport(ModelObjectConfiguration.class)
-    // + " modelObjectConfiguration = new ModelObjectConfiguration();");
-    // }
-    // return fieldDefinition.toString();
-    // }
 
     @Override
     protected LinkedHashSet<String> getExtendedOrImplementedInterfaces() {

@@ -75,6 +75,9 @@ public class XPolicyCmptClassTest {
     @Mock
     private XPolicyAssociation associationNode2;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     @Before
     public void initModelContext() {
         GeneratorModelCaches generatorModelCache = new GeneratorModelCaches();
@@ -326,6 +329,92 @@ public class XPolicyCmptClassTest {
         LinkedHashSet<String> extendedInterfaces = policyCmptClass.getExtendedInterfaces();
 
         assertEquals(1, extendedInterfaces.size());
-        assertThat(extendedInterfaces, hasItem("IModelObject"));
+        assertThat(extendedInterfaces, hasItem("IConfigurableModelObject"));
+    }
+
+    @Test
+    public void testIsConfigured() {
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        assertTrue(policyCmptClass.isConfigured());
+    }
+
+    @Test
+    public void testHasConfiguredSupertype_NoSupertype() {
+        when(type.hasSupertype()).thenReturn(false);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        assertFalse(policyCmptClass.hasConfiguredSupertype());
+    }
+
+    @Test
+    public void testHasConfiguredSupertype_NoConfiguredSupertype() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+
+        assertFalse(policyCmptClass.hasConfiguredSupertype());
+    }
+
+    @Test
+    public void testHasConfiguredSupertype_WithConfiguredSupertype() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(true);
+
+        assertTrue(policyCmptClass.hasConfiguredSupertype());
+    }
+
+    @Test
+    public void testIsFirstConfigurableInHierarchy_NoConfiguredSupertypeNotConfigured() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(false);
+
+        assertFalse(policyCmptClass.isFirstConfigurableInHierarchy());
+    }
+
+    @Test
+    public void testIsFirstConfigurableInHierarchy_NoConfiguredSupertypeConfigured() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+
+        assertTrue(policyCmptClass.isFirstConfigurableInHierarchy());
+    }
+
+    @Test
+    public void testIsFirstConfigurableInHierarchy_ConfiguredSupertypeNotConfigured() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(true);
+        when(type.isConfigurableByProductCmptType()).thenReturn(false);
+
+        assertFalse(policyCmptClass.isFirstConfigurableInHierarchy());
+    }
+
+    @Test
+    public void testIsFirstConfigurableInHierarchy_ConfiguredSupertypeConfigured() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(true);
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+
+        assertFalse(policyCmptClass.isFirstConfigurableInHierarchy());
     }
 }

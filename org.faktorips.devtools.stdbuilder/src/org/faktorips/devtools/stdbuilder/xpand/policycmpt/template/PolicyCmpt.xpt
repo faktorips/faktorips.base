@@ -25,7 +25,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
-		«IF !hasConfiguredSupertype()»
+		«IF firstConfigurableInHierarchy»
 			/**
 			 * @generated
 	 		 */
@@ -144,9 +144,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      */
     public «method(implClassName)» {
         super();
-        «IF !hasConfiguredSupertype()-»
+        «IF firstConfigurableInHierarchy-»
         	modelObjectConfiguration = new «ModelObjectConfiguration()»();
-        «ENDIF»	
+        «ENDIF-»	
         «EXPAND initializationForOverrideAttributes-»
     }
     «IF configured»
@@ -156,12 +156,12 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	     * @generated
 	     */
 	    public «method(implClassName, productCmptClassName, "productCmpt")» {
-	    	«IF hasConfiguredSupertype()-»
-        		super(productCmpt);
-        	«ELSE-»
+	    	«IF firstConfigurableInHierarchy-»
 	    		super();
         		modelObjectConfiguration = new «ModelObjectConfiguration()»(productCmpt);
-        	«ENDIF»	
+        	«ELSE-»
+        		super(productCmpt);
+        	«ENDIF-»	
 	        «EXPAND initializationForOverrideAttributes-»
 	    }
     «ENDIF»
@@ -238,26 +238,27 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	            «initialize()»;
 	        }
 		 }
-			 «IF !policyCmptClass.hasConfiguredSupertype()»
-				/**
-				 * {@inheritDoc}
-				 * 
-				 * @generated
-				 */
-				 @Override
-				 public «IProductComponent()» «getProductComponent()» {
-				 	return modelObjectConfiguration.«getProductComponent()»;
-				 }
-				 
-				/**
-				 * @generated
-				 */
-				 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
-				 public void setProductComponent(IProductComponent productComponent) {
-				 	modelObjectConfiguration.setProductComponent(productComponent);
-				 }
-			 «ENDIF»
-		 «ENDIF»
+		 «ENDIF-»
+	
+		 «IF !genInterface() && policyCmptClass.firstConfigurableInHierarchy-»
+			/**
+			 * {@inheritDoc}
+			 * 
+			 * @generated
+			 */
+			 @Override
+			 public «IProductComponent()» «getProductComponent()» {
+			 	return modelObjectConfiguration.«getProductComponent()»;
+			 }
+			 
+			/**
+			 * @generated
+			 */
+			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
+			 public void setProductComponent(IProductComponent productComponent) {
+			 	modelObjectConfiguration.setProductComponent(productComponent);
+			 }
+		 «ENDIF-»
 «ENDDEFINE»
 		 
 «DEFINE getAndSetProductComponentGeneration FOR XProductCmptGenerationClass-» 
@@ -272,39 +273,27 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 {
 		 	return («interfaceName») getProductCmptGeneration();
 		 }
-		 «ENDIF»
+		 «ENDIF-»
 	
-		/**
-		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_SET_PRODUCTCMPT_GENERATION",  name, nameForVariable)»
-		 * 
-		 * @generated
-		 */
-		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		 public void «method(methodNameSetProductComponentGeneration, interfaceName, nameForVariable)»
-		 «IF genInterface()»;«ELSE-»
-		 {
-	        «setProductCmptGeneration(nameForVariable)»;
-		 }
-			 «IF !policyCmptClass.hasConfiguredSupertype()»
-				 /**
-				  * {@inheritDoc}
-				  * 
-				  * @generated
-				  */
-				 @Override
-				 public «IProductComponentGeneration()» «getProductCmptGeneration()» {
-				 	return modelObjectConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
-				 }
-				 
-				/**
-				 * @generated
-				 */
-				 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
-				 public void «setProductCmptGeneration("IProductComponentGeneration productComponentGeneration")» {
-				 	modelObjectConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
-				 }
-			 «ENDIF»
-		 «ENDIF»
+		 «IF !genInterface() && policyCmptClass.firstConfigurableInHierarchy-»
+			 /**
+			  * {@inheritDoc}
+			  * 
+			  * @generated
+			  */
+			 @Override
+			 public «IProductComponentGeneration()» «getProductCmptGeneration()» {
+			 	return modelObjectConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
+			 }
+			 
+			/**
+			 * @generated
+			 */
+			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
+			 public void «setProductCmptGeneration("IProductComponentGeneration productComponentGeneration")» {
+			 	modelObjectConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
+			 }
+		 «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
@@ -322,15 +311,15 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		        if («getEffectiveFromAsCalendar()» != null) {
 	        		resetProductCmptGenerationAfterEffectiveFromHasChanged();
         		}
-    		«ENDIF»
+    		«ENDIF-»
 	        «EXPAND PolicyCmptAssociation::delegateEffectiveFromHasChanged FOREACH associations-»
 	    }
 		
-		«IF !hasConfiguredSupertype()-»
+		«IF firstConfigurableInHierarchy-»
 			protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
 	        	modelObjectConfiguration.resetProductCmptGeneration();
 	    	}
-    	«ENDIF»
+    	«ENDIF-»
     
 		«IF firstDependantTypeInHierarchy-»
 	    	
