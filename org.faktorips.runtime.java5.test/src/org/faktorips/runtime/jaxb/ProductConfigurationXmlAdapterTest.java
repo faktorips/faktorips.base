@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.ModelObjectConfiguration;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,23 +15,23 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ModelObjectConfigurationXmlAdapterTest {
+public class ProductConfigurationXmlAdapterTest {
     @Mock
     IProductComponent productCmpt;
     @Mock
     IRuntimeRepository repository;
-    private ModelObjectConfigurationXmlAdapter xmlAdapter;
+    private ProductConfigurationXmlAdapter xmlAdapter;
 
     @Before
     public void setUp() {
         when(productCmpt.getId()).thenReturn("someId");
         when(repository.getProductComponent("someId")).thenReturn(productCmpt);
-        xmlAdapter = new ModelObjectConfigurationXmlAdapter(repository);
+        xmlAdapter = new ProductConfigurationXmlAdapter(repository);
     }
 
     @Test
     public void testMarshal() throws Exception {
-        ModelObjectConfiguration config = new ModelObjectConfiguration(productCmpt);
+        ProductConfiguration config = new ProductConfiguration(productCmpt);
 
         String marshalledString = xmlAdapter.marshal(config);
 
@@ -40,14 +40,14 @@ public class ModelObjectConfigurationXmlAdapterTest {
 
     @Test
     public void testUnmarshal() throws Exception {
-        ModelObjectConfiguration unmarshalledConfig = xmlAdapter.unmarshal("someId");
+        ProductConfiguration unmarshalledConfig = xmlAdapter.unmarshal("someId");
 
         assertEquals(productCmpt, unmarshalledConfig.getProductComponent());
     }
 
     @Test
     public void testUnmarshal_neverReturnNullConfig() throws Exception {
-        ModelObjectConfiguration unmarshalledConfig = xmlAdapter.unmarshal("xxx");
+        ProductConfiguration unmarshalledConfig = xmlAdapter.unmarshal("xxx");
 
         assertNotNull(unmarshalledConfig);
         assertNull(unmarshalledConfig.getProductComponent());

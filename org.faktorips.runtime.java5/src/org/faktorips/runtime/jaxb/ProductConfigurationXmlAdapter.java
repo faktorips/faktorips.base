@@ -14,20 +14,20 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.internal.ModelObjectConfiguration;
+import org.faktorips.runtime.internal.ProductConfiguration;
 
 /**
- * Custom JAXB marshaling/unmarshaling for {@link ModelObjectConfiguration} instances.
+ * Custom JAXB marshaling/unmarshaling for {@link ProductConfiguration} instances.
  * <p>
  * When marshaling/unmarshaling a configurable policy component (and thus a
- * {@link ModelObjectConfiguration}), the respective product component is preserved in XML by the
+ * {@link ProductConfiguration}), the respective product component is preserved in XML by the
  * means of the product component ID.
  */
-public class ModelObjectConfigurationXmlAdapter extends XmlAdapter<String, ModelObjectConfiguration> {
+public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductConfiguration> {
 
     private final IRuntimeRepository repository;
 
-    public ModelObjectConfigurationXmlAdapter(IRuntimeRepository repository) {
+    public ProductConfigurationXmlAdapter(IRuntimeRepository repository) {
         this.repository = repository;
     }
 
@@ -35,7 +35,7 @@ public class ModelObjectConfigurationXmlAdapter extends XmlAdapter<String, Model
      * Returns the ID for the specified product component.
      */
     @Override
-    public String marshal(ModelObjectConfiguration config) throws Exception {
+    public String marshal(ProductConfiguration config) throws Exception {
         if (config == null) {
             return null;
         }
@@ -46,9 +46,9 @@ public class ModelObjectConfigurationXmlAdapter extends XmlAdapter<String, Model
      * Returns the product component for the specified ID.
      */
     @Override
-    public ModelObjectConfiguration unmarshal(String id) throws Exception {
+    public ProductConfiguration unmarshal(String id) throws Exception {
         IProductComponent productComponent = getProductComponentFor(id);
-        return new ModelObjectConfiguration(productComponent);
+        return new ProductConfiguration(productComponent);
     }
 
     private IProductComponent getProductComponentFor(String id) {

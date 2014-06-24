@@ -51,7 +51,7 @@
     	 * @generated
 	     */
 	    protected void copyProductCmptAndGenerationInternal(«getSimpleName(BuilderAspect::IMPLEMENTATION)» otherObject) {
-            modelObjectConfiguration.copy(otherObject.modelObjectConfiguration);
+            productConfiguration.copy(otherObject.productConfiguration);
 	    }
     «ENDIF»
 

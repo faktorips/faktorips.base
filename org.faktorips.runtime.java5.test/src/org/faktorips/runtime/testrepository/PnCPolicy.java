@@ -21,7 +21,7 @@ import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.faktorips.runtime.internal.AbstractModelObject;
-import org.faktorips.runtime.internal.ModelObjectConfiguration;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.internal.XmlCallback;
 import org.w3c.dom.Element;
 
@@ -30,17 +30,17 @@ import org.w3c.dom.Element;
  */
 public class PnCPolicy extends AbstractModelObject implements IConfigurableModelObject {
 
-    private final ModelObjectConfiguration modelObjectConfiguration;
+    private final ProductConfiguration productConfiguration;
     private final Calendar effectiveFrom = new GregorianCalendar();
 
     public PnCPolicy() {
         super();
-        modelObjectConfiguration = new ModelObjectConfiguration();
+        productConfiguration = new ProductConfiguration();
     }
 
     protected PnCPolicy(PnCProduct pc) {
         super();
-        modelObjectConfiguration = new ModelObjectConfiguration(pc);
+        productConfiguration = new ProductConfiguration(pc);
     }
 
     @Override
@@ -51,26 +51,26 @@ public class PnCPolicy extends AbstractModelObject implements IConfigurableModel
 
     @Override
     public IProductComponent getProductComponent() {
-        return modelObjectConfiguration.getProductComponent();
+        return productConfiguration.getProductComponent();
     }
 
     @Override
     public IProductComponentGeneration getProductCmptGeneration() {
-        return modelObjectConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
+        return productConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
     }
 
     /**
      * Sets the new product component.
      */
     public void setProductComponent(IProductComponent productComponent) {
-        modelObjectConfiguration.setProductComponent(productComponent);
+        productConfiguration.setProductComponent(productComponent);
     }
 
     /**
      * Sets the new product component generation.
      */
     public void setProductCmptGeneration(IProductComponentGeneration productCmptGeneration) {
-        modelObjectConfiguration.setProductCmptGeneration(productCmptGeneration);
+        productConfiguration.setProductCmptGeneration(productCmptGeneration);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class PnCPolicy extends AbstractModelObject implements IConfigurableModel
     }
 
     protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
-        modelObjectConfiguration.resetProductCmptGeneration();
+        productConfiguration.resetProductCmptGeneration();
     }
 
     @Override
@@ -100,7 +100,7 @@ public class PnCPolicy extends AbstractModelObject implements IConfigurableModel
             IObjectReferenceStore store,
             XmlCallback xmlCallback,
             String currPath) {
-        modelObjectConfiguration.initFromXml(objectEl, productRepository);
+        productConfiguration.initFromXml(objectEl, productRepository);
         if (initWithProductDefaultsBeforeReadingXmlData) {
             initialize();
         }

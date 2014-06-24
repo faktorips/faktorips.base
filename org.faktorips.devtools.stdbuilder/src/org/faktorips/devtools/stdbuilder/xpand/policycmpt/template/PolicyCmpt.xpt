@@ -29,9 +29,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			/**
 			 * @generated
 	 		 */
-			@«XmlJavaTypeAdapter()»(value = «ModelObjectConfigurationXmlAdapter()».class)
+			@«XmlJavaTypeAdapter()»(value = «ProductConfigurationXmlAdapter()».class)
     		@«XmlAttribute()»(name = "product-component.id")
-    		private final «ModelObjectConfiguration()» modelObjectConfiguration;
+    		private final «ProductConfiguration()» productConfiguration;
     	«ENDIF»	
 
 		«IF !generatePublishedInterfaces-»
@@ -145,7 +145,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
     public «method(implClassName)» {
         super();
         «IF firstConfigurableInHierarchy-»
-        	modelObjectConfiguration = new «ModelObjectConfiguration()»();
+        	productConfiguration = new «ProductConfiguration()»();
         «ENDIF-»	
         «EXPAND initializationForOverrideAttributes-»
     }
@@ -158,7 +158,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    public «method(implClassName, productCmptClassName, "productCmpt")» {
 	    	«IF firstConfigurableInHierarchy-»
 	    		super();
-        		modelObjectConfiguration = new «ModelObjectConfiguration()»(productCmpt);
+        		productConfiguration = new «ProductConfiguration()»(productCmpt);
         	«ELSE-»
         		super(productCmpt);
         	«ENDIF-»	
@@ -248,7 +248,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 */
 			 @Override
 			 public «IProductComponent()» «getProductComponent()» {
-			 	return modelObjectConfiguration.«getProductComponent()»;
+			 	return productConfiguration.«getProductComponent()»;
 			 }
 			 
 			/**
@@ -256,7 +256,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 */
 			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
 			 public void setProductComponent(IProductComponent productComponent) {
-			 	modelObjectConfiguration.setProductComponent(productComponent);
+			 	productConfiguration.setProductComponent(productComponent);
 			 }
 		 «ENDIF-»
 «ENDDEFINE»
@@ -283,7 +283,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			  */
 			 @Override
 			 public «IProductComponentGeneration()» «getProductCmptGeneration()» {
-			 	return modelObjectConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
+			 	return productConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
 			 }
 			 
 			/**
@@ -291,7 +291,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 */
 			 «overrideAnnotationIf(policyCmptClass.hasConfiguredSupertype())»
 			 public void «setProductCmptGeneration("IProductComponentGeneration productComponentGeneration")» {
-			 	modelObjectConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
+			 	productConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
 			 }
 		 «ENDIF-»
 «ENDDEFINE»
@@ -317,7 +317,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		«IF firstConfigurableInHierarchy-»
 			protected void resetProductCmptGenerationAfterEffectiveFromHasChanged() {
-	        	modelObjectConfiguration.resetProductCmptGeneration();
+	        	productConfiguration.resetProductCmptGeneration();
 	    	}
     	«ENDIF-»
     
@@ -397,7 +397,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
         		«IObjectReferenceStore()» store,
         		«XmlCallback()» xmlCallback,
         		String currPath) {
-    		modelObjectConfiguration.initFromXml(objectEl, productRepository);
+    		productConfiguration.initFromXml(objectEl, productRepository);
     		if (initWithProductDefaultsBeforeReadingXmlData) {
     	    	initialize();
     		}

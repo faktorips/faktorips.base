@@ -55,11 +55,11 @@ IConfigurableModelObject(AbstractGeneratorModelNode this) :
 AbstractModelObject(AbstractGeneratorModelNode this) :
 	addImport(AbstractModelObject.name);
 	
-ModelObjectConfiguration(AbstractGeneratorModelNode this) :
-	addImport(ModelObjectConfiguration.name);
+ProductConfiguration(AbstractGeneratorModelNode this) :
+	addImport(ProductConfiguration.name);
 
-ModelObjectConfigurationXmlAdapter(AbstractGeneratorModelNode this) :
-	addImport(ModelObjectConfigurationXmlAdapter.name);
+ProductConfigurationXmlAdapter(AbstractGeneratorModelNode this) :
+	addImport(ProductConfigurationXmlAdapter.name);
 
 XmlJavaTypeAdapter(AbstractGeneratorModelNode this) :
 	addImport(XmlJavaTypeAdapter.name);

@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
  * Manages a product component and the corresponding generation for use with configurable model
  * objects. Used by all configurable policy component classes to manage their product configuration.
  */
-public class ModelObjectConfiguration {
+public class ProductConfiguration {
 
     private static final String XML_ATTRIBUTE_PRODUCT_CMPT = "productCmpt";
 
@@ -29,11 +29,11 @@ public class ModelObjectConfiguration {
 
     private IProductComponentGeneration productCmptGeneration;
 
-    public ModelObjectConfiguration() {
+    public ProductConfiguration() {
         super();
     }
 
-    public ModelObjectConfiguration(IProductComponent productCmpt) {
+    public ProductConfiguration(IProductComponent productCmpt) {
         this.productCmpt = productCmpt;
     }
 
@@ -105,13 +105,13 @@ public class ModelObjectConfiguration {
     /**
      * Copies the product component and product component generation from the other object.
      */
-    public void copy(ModelObjectConfiguration otherObject) {
+    public void copy(ProductConfiguration otherObject) {
         this.productCmpt = otherObject.productCmpt;
         this.productCmptGeneration = otherObject.productCmptGeneration;
     }
 
     /**
-     * Loads the product component this {@link ModelObjectConfiguration} manages. Does nothing, if
+     * Loads the product component this {@link ProductConfiguration} manages. Does nothing, if
      * no product component qualified name can be found in the XML element.
      * 
      * @param objectEl the XML element containing the product component qualified name
