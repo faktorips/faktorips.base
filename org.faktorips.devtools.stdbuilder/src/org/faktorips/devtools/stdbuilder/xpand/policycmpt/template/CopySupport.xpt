@@ -44,7 +44,7 @@
 	    «ENDIF-»
     }
     
-    «IF !hasConfiguredSupertype()-»
+    «IF firstConfigurableInHierarchy-»
         /**
     	 * «localizedJDoc("METHOD_COPY_PRODUCT_AND_GENERATION")»
     	 * 
