@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
@@ -134,4 +135,12 @@ public class ModelObjectConfigurationTest {
         assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
     }
 
+    @Test
+    public void testResetProductCmptGeneration() {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration(productCmpt);
+        assertNotNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
+
+        modelObjectConfiguration.resetProductCmptGeneration();
+        assertNotNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
+    }
 }

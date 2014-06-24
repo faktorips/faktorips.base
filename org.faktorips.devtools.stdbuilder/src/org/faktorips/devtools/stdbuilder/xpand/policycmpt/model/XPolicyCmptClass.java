@@ -154,7 +154,7 @@ public class XPolicyCmptClass extends XType {
     public LinkedHashSet<String> getExtendedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<String>();
         if (!hasSupertype()) {
-            if (isConfigured()) {
+            if (isFirstConfigurableInHierarchy()) {
                 extendedInterfaces.add(addImport(IConfigurableModelObject.class));
             } else {
                 extendedInterfaces.add(addImport(IModelObject.class));
