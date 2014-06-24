@@ -113,7 +113,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         if (foundProductCmpts != null) {
             for (IIpsSrcFile ipsSrcFile : foundProductCmpts) {
                 IProductCmpt foundProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                if (hasSubtypeOrSameProdCmptType(foundProductCmpt, findProductCmptType())) {
+                if (isMatchingProductCmptType(foundProductCmpt)) {
                     return foundProductCmpt;
                 }
             }
@@ -130,11 +130,10 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         return foundProductCmpt;
     }
 
-    private boolean hasSubtypeOrSameProdCmptType(IProductCmpt productCmpt, IProductCmptType productCmptType)
-            throws CoreException {
-        String productCmptTypeName = productCmpt.getProductCmptType();
-        IProductCmptType typeOfProductCmpt = getIpsProject().findProductCmptType(productCmptTypeName);
-        return typeOfProductCmpt.isSubtypeOrSameType(productCmptType, getIpsProject());
+    private boolean isMatchingProductCmptType(IProductCmpt productCmpt) throws CoreException {
+        IProductCmptType foundProductCmptType = productCmpt.findProductCmptType(getIpsProject());
+        return foundProductCmptType.isSubtypeOrSameType(findProductCmptType(), getIpsProject());
+
     }
 
     private IProductCmptType findProductCmptType() throws CoreException {

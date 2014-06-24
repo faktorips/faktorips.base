@@ -119,10 +119,8 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         when(getIpsProject().findProductCmptByUnqualifiedName(MY_QUALIFIER)).thenReturn(list);
         when(productCmptIpsSrcFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmptIpsSrcFileOther.getIpsObject()).thenReturn(productCmptOther);
-        when(productCmpt.getProductCmptType()).thenReturn("prodCmptType");
-        when(productCmptOther.getProductCmptType()).thenReturn("productCmptOther");
-        when(getIpsProject().findProductCmptType("productCmptOther")).thenReturn(productCmptTypeOther);
-        when(getIpsProject().findProductCmptType("prodCmptType")).thenReturn(getProductCmptType());
+        when(productCmpt.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        when(productCmptOther.findProductCmptType(getIpsProject())).thenReturn(productCmptTypeOther);
         when(getProductCmptType().isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(true);
         when(productCmptTypeOther.isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(false);
     }
