@@ -63,11 +63,16 @@ public class ModelObjectConfiguration {
      * Returns the product component generation that configures a policy component.
      */
     public IProductComponentGeneration getProductCmptGeneration(Calendar effectiveFrom) {
+        if (productCmpt == null) {
+            return null;
+        } else {
+            return getProductCmptGenerationInternal(effectiveFrom);
+        }
+    }
+
+    private IProductComponentGeneration getProductCmptGenerationInternal(Calendar effectiveFrom) {
         if (productCmptGeneration == null) {
-            if (productCmpt == null) {
-                return null;
-            }
-            productCmptGeneration = getProductComponentGenerationFromRepository(effectiveFrom);
+            productCmptGeneration = loadProductCmptGeneration(effectiveFrom);
         }
         return productCmptGeneration;
     }
@@ -75,20 +80,26 @@ public class ModelObjectConfiguration {
     /**
      * Gets the product component generation valid from the given date.
      */
-    protected IProductComponentGeneration getProductComponentGenerationFromRepository(Calendar effectiveFrom) {
+    private IProductComponentGeneration loadProductCmptGeneration(Calendar effectiveFrom) {
         return productCmpt.getGenerationBase(effectiveFrom);
     }
 
     /**
-     * Sets the new product component generation. Also changes the product component.
+     * Sets the new product component generation. Also changes the product component. If the
+     * argument is <code>null</code> however, both product component and product component
+     * generation are set to <code>null</code>.
      */
     public void setProductCmptGeneration(IProductComponentGeneration newGeneration) {
-        if (newGeneration != null) {
-            setProductComponent(newGeneration.getProductComponent());
-        } else {
+        if (newGeneration == null) {
             setProductComponent(null);
+        } else {
+            updateProductCmptAndGeneration(newGeneration);
         }
+    }
+
+    private void updateProductCmptAndGeneration(IProductComponentGeneration newGeneration) {
         productCmptGeneration = newGeneration;
+        setProductComponent(newGeneration.getProductComponent());
     }
 
     /**

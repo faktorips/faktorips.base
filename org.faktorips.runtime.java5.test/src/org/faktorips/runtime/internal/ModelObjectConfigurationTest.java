@@ -11,10 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Calendar;
@@ -27,13 +24,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
-/**
- * TODO Test Klasse in Runtime verschieben, {@link ConfVertrag} löschen
- */
 @RunWith(MockitoJUnitRunner.class)
 public class ModelObjectConfigurationTest {
 
@@ -45,71 +38,100 @@ public class ModelObjectConfigurationTest {
     private IRuntimeRepository repository;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Element element;
-
-    @Spy
-    private final ConfVertrag configurableMO = new ConfVertrag();
-
+    @Mock
     private Calendar calendar;
 
     @Before
     public void createAbstractConfigurableModelObject() throws Exception {
-        configurableMO.setProductComponent(productCmpt);
-        configurableMO.setProductCmptGeneration(productCmptGeneration);
-
-        doReturn(calendar).when(configurableMO).getEffectiveFromAsCalendar();
-        calendar = mock(Calendar.class);
-        doReturn(calendar).when(configurableMO).getEffectiveFromAsCalendar();
         when(productCmpt.getGenerationBase(calendar)).thenReturn(productCmptGeneration);
+        when(productCmptGeneration.getProductComponent()).thenReturn(productCmpt);
 
         when(element.getAttribute("productCmpt")).thenReturn("PC-ID");
         when(repository.getExistingProductComponent("PC-ID")).thenReturn(productCmpt);
-
-        assertNotNull(configurableMO.getProductCmptGeneration());
     }
 
     @Test
-    public void testEffectiveFromHasChanged_dontResetWhenDateIsNull() throws Exception {
-        doReturn(null).when(configurableMO).getEffectiveFromAsCalendar();
-
-        configurableMO.effectiveFromHasChanged();
-
-        assertNotNull(configurableMO.getProductCmptGeneration());
+    public void testConstructor() throws Exception {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration();
+        assertNull(modelObjectConfiguration.getProductComponent());
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
     }
 
     @Test
-    public void testEffectiveFromHasChanged() throws Exception {
-        configurableMO.effectiveFromHasChanged();
-
-        assertNull(configurableMO.getProductCmptGeneration());
+    public void testConstructor_withProductCmpt() throws Exception {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration(productCmpt);
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
     }
 
     @Test
-    public void testGetProductComponentGeneration() {
-        assertNotNull(configurableMO.getProductCmptGeneration());
+    public void testSetProductComponent() {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration();
+        assertNull(modelObjectConfiguration.getProductComponent());
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
+
+        modelObjectConfiguration.setProductComponent(productCmpt);
+
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
     }
 
     @Test
-    public void testGetProductComponentGeneration_returnNullIfProduCmptIsNull() {
-        configurableMO.setProductComponent(null);
+    public void testGetProductComponent() {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration(productCmpt);
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
 
-        assertNull(configurableMO.getProductCmptGeneration());
+        modelObjectConfiguration.setProductComponent(null);
+
+        assertNull(modelObjectConfiguration.getProductComponent());
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
+    }
+
+    @Test
+    public void testCopy() {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration(productCmpt);
+
+        ModelObjectConfiguration copy = new ModelObjectConfiguration();
+        copy.copy(modelObjectConfiguration);
+
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
     }
 
     @Test
     public void testInitFromXML() {
-        configurableMO.setProductComponent(null);
-        assertNull(configurableMO.getProductComponent());
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration();
+        assertNull(modelObjectConfiguration.getProductComponent());
 
-        configurableMO.initFromXml(element, true, repository, null, null, null);
+        modelObjectConfiguration.initFromXml(element, repository);
 
-        assertEquals(productCmpt, configurableMO.getProductComponent());
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
     }
 
     @Test
-    public void testResetProductCmptGeneration() {
-        assertNotNull(configurableMO.getProductCmptGeneration());
-        configurableMO.resetProductCmptGenerationAfterEffectiveFromHasChanged();
+    public void testSetProductCmptGeneration() {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration();
+        assertNull(modelObjectConfiguration.getProductComponent());
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
 
-        assertNull(configurableMO.getProductCmptGeneration());
+        modelObjectConfiguration.setProductCmptGeneration(productCmptGeneration);
+
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
     }
+
+    @Test
+    public void testSetProductCmptGeneration2() {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration(productCmpt);
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
+        when(productCmptGeneration.getProductComponent()).thenReturn(null);
+
+        modelObjectConfiguration.setProductCmptGeneration(productCmptGeneration);
+
+        assertNull(modelObjectConfiguration.getProductComponent());
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
+    }
+
 }

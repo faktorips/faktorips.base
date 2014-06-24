@@ -25,11 +25,7 @@ import org.faktorips.runtime.internal.ModelObjectConfiguration;
  */
 public class ModelObjectConfigurationXmlAdapter extends XmlAdapter<String, ModelObjectConfiguration> {
 
-    private IRuntimeRepository repository;
-
-    public ModelObjectConfigurationXmlAdapter() {
-        // nothing to do
-    }
+    private final IRuntimeRepository repository;
 
     public ModelObjectConfigurationXmlAdapter(IRuntimeRepository repository) {
         this.repository = repository;
