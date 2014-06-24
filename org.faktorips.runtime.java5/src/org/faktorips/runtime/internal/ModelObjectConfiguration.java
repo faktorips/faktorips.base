@@ -98,8 +98,8 @@ public class ModelObjectConfiguration {
     }
 
     private void updateProductCmptAndGeneration(IProductComponentGeneration newGeneration) {
-        productCmptGeneration = newGeneration;
         setProductComponent(newGeneration.getProductComponent());
+        productCmptGeneration = newGeneration;
     }
 
     /**

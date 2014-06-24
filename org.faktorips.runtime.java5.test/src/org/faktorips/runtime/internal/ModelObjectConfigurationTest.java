@@ -66,6 +66,13 @@ public class ModelObjectConfigurationTest {
     }
 
     @Test
+    public void testGetProductCmptGeneration_nullCalendar() throws Exception {
+        ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration(productCmpt);
+        assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(null));
+    }
+
+    @Test
     public void testSetProductComponent() {
         ModelObjectConfiguration modelObjectConfiguration = new ModelObjectConfiguration();
         assertNull(modelObjectConfiguration.getProductComponent());
@@ -119,7 +126,7 @@ public class ModelObjectConfigurationTest {
         modelObjectConfiguration.setProductCmptGeneration(productCmptGeneration);
 
         assertEquals(productCmpt, modelObjectConfiguration.getProductComponent());
-        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(calendar));
+        assertEquals(productCmptGeneration, modelObjectConfiguration.getProductCmptGeneration(null));
     }
 
     @Test
@@ -132,7 +139,7 @@ public class ModelObjectConfigurationTest {
         modelObjectConfiguration.setProductCmptGeneration(productCmptGeneration);
 
         assertNull(modelObjectConfiguration.getProductComponent());
-        assertNull(modelObjectConfiguration.getProductCmptGeneration(calendar));
+        assertNull(modelObjectConfiguration.getProductCmptGeneration(null));
     }
 
     @Test
