@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.ObjectProperty;
 
@@ -23,6 +24,10 @@ import org.faktorips.util.message.ObjectProperty;
  * @author Peter Erzberger
  */
 public class ProductCmptTypeValidations {
+
+    private ProductCmptTypeValidations() {
+        // do not instantiate
+    }
 
     /**
      * Validates the rule that if a policy component type is abstract then the configuring product
@@ -86,15 +91,16 @@ public class ProductCmptTypeValidations {
                         new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE) };
 
         if (superProductCmptType == null) {
-            if (superPolicyCmptType.length() > 0) {
+            IPolicyCmptType foundSuperPolicyCmptType = ipsProject.findPolicyCmptType(superPolicyCmptType);
+            if (foundSuperPolicyCmptType != null && foundSuperPolicyCmptType.isConfigurableByProductCmptType()) {
                 String text = Messages.ProductCmptType_MustInheritFromASupertype;
                 message = new Message(IProductCmptType.MSGCODE_MUST_HAVE_SUPERTYPE, text, Message.ERROR,
                         invalidObjectProperties);
             }
         } else {
             String policyCmptTypeOfSupertype = superProductCmptType.getPolicyCmptType();
-            if (!policyCmptType.equals(policyCmptTypeOfSupertype)
-                    && !superPolicyCmptType.equals(policyCmptTypeOfSupertype)) {
+            if (!isConsistentHierarchy(policyCmptType, superPolicyCmptType, policyCmptTypeOfSupertype,
+                    superProductCmptType, ipsProject)) {
                 String text = Messages.ProductCmptType_InconsistentTypeHierarchies;
                 message = new Message(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR,
                         invalidObjectProperties);
@@ -104,4 +110,17 @@ public class ProductCmptTypeValidations {
         return message;
     }
 
+    static boolean isConsistentHierarchy(String policyCmptType,
+            String superPolicyCmptType,
+            String policyCmptTypeOfSupertype,
+            IProductCmptType superProductCmptType,
+            IIpsProject ipsProject) throws CoreException {
+        if (policyCmptType.equals(policyCmptTypeOfSupertype) || superPolicyCmptType.equals(policyCmptTypeOfSupertype)) {
+            return true;
+        } else {
+            IPolicyCmptType foundSuperPolicyCmptType = ipsProject.findPolicyCmptType(superPolicyCmptType);
+            return (!superProductCmptType.isConfigurationForPolicyCmptType() && (foundSuperPolicyCmptType == null || !foundSuperPolicyCmptType
+                    .isConfigurableByProductCmptType()));
+        }
+    }
 }
