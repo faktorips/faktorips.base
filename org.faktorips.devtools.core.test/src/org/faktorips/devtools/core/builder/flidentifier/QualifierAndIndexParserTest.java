@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
@@ -62,9 +63,21 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     private IProductCmpt productCmpt;
 
     @Mock
+    private IProductCmpt productCmptOther;
+
+    @Mock
+    private IProductCmptType productCmptTypeOther;
+
+    @Mock
     private IIpsSrcFile productCmptIpsSrcFile;
 
+    @Mock
+    private IIpsSrcFile productCmptIpsSrcFileOther;
+
     private QualifierAndIndexParser qualifierAndIndexParser;
+
+    @Mock
+    private IdentifierNodeFactory nodeFactory;
 
     @Before
     public void initParser() {
@@ -95,16 +108,23 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(targetSubType, node.getDatatype());
+        assertEquals(productCmpt, node.getProductCmpt());
     }
 
     private void initProdCmptAndType() throws CoreException {
         ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        list.add(productCmptIpsSrcFileOther);
         list.add(productCmptIpsSrcFile);
+
         when(getIpsProject().findProductCmptByUnqualifiedName(MY_QUALIFIER)).thenReturn(list);
         when(productCmptIpsSrcFile.getIpsObject()).thenReturn(productCmpt);
+        when(productCmptIpsSrcFileOther.getIpsObject()).thenReturn(productCmptOther);
         when(productCmpt.getProductCmptType()).thenReturn("prodCmptType");
+        when(productCmptOther.getProductCmptType()).thenReturn("productCmptOther");
+        when(getIpsProject().findProductCmptType("productCmptOther")).thenReturn(productCmptTypeOther);
         when(getIpsProject().findProductCmptType("prodCmptType")).thenReturn(getProductCmptType());
         when(getProductCmptType().isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(true);
+        when(productCmptTypeOther.isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(false);
     }
 
     @Test
@@ -120,6 +140,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(new ListOfTypeDatatype(targetSubType), node.getDatatype());
+        assertEquals(productCmpt, node.getProductCmpt());
     }
 
     @Test
@@ -134,6 +155,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(new ListOfTypeDatatype(targetSubType), node.getDatatype());
+        assertEquals(productCmpt, node.getProductCmpt());
     }
 
     @Test
@@ -260,10 +282,5 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     private IdentifierNode createQualifierNode(boolean listOfTypes) {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(null, getIpsProject());
         return nodeFactory.createQualifierNode(productCmpt, QUALIFIER, listOfTypes);
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_sameUnqualifiedNameDifferentType() throws CoreException {
-        // TODO
     }
 }

@@ -60,6 +60,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -2230,5 +2231,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(1, result.size());
         assertEquals("target." + productCmptHausrat2013.getUnqualifiedName(), ((ArrayList<IIpsSrcFile>)result).get(0)
                 .getQualifiedNameType().getName());
+    }
+
+    public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() throws CoreException {
+        hausrat = newProductCmptType(ipsProject, "hausrat");
+        ProductCmptType kfz = newProductCmptType(ipsProject, "kfz");
+        newProductCmpt(kfz, "z.productCmptHausrat");
+        productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat");
+        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat");
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
     }
 }
