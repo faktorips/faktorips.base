@@ -55,9 +55,6 @@ IConfigurableModelObject(AbstractGeneratorModelNode this) :
 AbstractModelObject(AbstractGeneratorModelNode this) :
 	addImport(AbstractModelObject.name);
 	
-AbstractConfigurableModelObject(AbstractGeneratorModelNode this) :
-	addImport(AbstractConfigurableModelObject.name);
-
 ModelObjectConfiguration(AbstractGeneratorModelNode this) :
 	addImport(ModelObjectConfiguration.name);
 
