@@ -36,24 +36,27 @@ public class UnqualifiedNameCache {
     }
 
     public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName) {
-        Collection<IIpsSrcFile> result = prodCmptIpsSrcFilesMap.get(unqualifiedName);
-        if (result.isEmpty() || !checkAllIpsSrcFilesExists(result)) {
-            initProdCmptIpsSrcFilesMap();
-            result = prodCmptIpsSrcFilesMap.get(unqualifiedName);
+        if (requiresInit(unqualifiedName)) {
+            initMap();
         }
-        return result;
+        return prodCmptIpsSrcFilesMap.get(unqualifiedName);
     }
 
-    private boolean checkAllIpsSrcFilesExists(Collection<IIpsSrcFile> result) {
+    private boolean requiresInit(String unqualifiedName) {
+        Collection<IIpsSrcFile> result = prodCmptIpsSrcFilesMap.get(unqualifiedName);
+        return result.isEmpty() || containsNonexistentSrcFiles(result);
+    }
+
+    private boolean containsNonexistentSrcFiles(Collection<IIpsSrcFile> result) {
         for (IIpsSrcFile ipsSrcFile : result) {
             if (!ipsSrcFile.exists()) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
-    private void initProdCmptIpsSrcFilesMap() {
+    private void initMap() {
         prodCmptIpsSrcFilesMap.clear();
         List<IIpsSrcFile> allProdCmptIpsSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
         for (IIpsSrcFile ipsSrcFile : allProdCmptIpsSrcFiles) {
