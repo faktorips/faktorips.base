@@ -108,7 +108,6 @@ import org.faktorips.devtools.core.util.EclipseIOUtil;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
-import org.faktorips.util.MultiMap;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -123,8 +122,6 @@ import org.w3c.dom.Element;
 public class IpsProject extends IpsElement implements IIpsProject {
 
     public static final boolean TRACE_IPSPROJECT_PROPERTIES;
-
-    private MultiMap<String, IIpsSrcFile> multiMap = new MultiMap<String, IIpsSrcFile>();
 
     static {
         TRACE_IPSPROJECT_PROPERTIES = Boolean.valueOf(
@@ -149,6 +146,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IIpsProjectNamingConventions namingConventions = null;
 
     private IFile propertyFile;
+
+    private UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -770,29 +769,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName) {
-        Collection<IIpsSrcFile> result = multiMap.get(unqualifiedName);
-        if (result.isEmpty() || !allIpsSrcFileExists(result)) {
-            initProdCmptMap();
-            result = multiMap.get(unqualifiedName);
-        }
-        return result;
-    }
-
-    private boolean allIpsSrcFileExists(Collection<IIpsSrcFile> result) {
-        for (IIpsSrcFile ipsSrcFile : result) {
-            if (!ipsSrcFile.exists()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void initProdCmptMap() {
-        multiMap.clear();
-        List<IIpsSrcFile> allProdCmptIpsSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        for (IIpsSrcFile ipsSrcFile : allProdCmptIpsSrcFiles) {
-            multiMap.put(ipsSrcFile.getIpsObjectName(), ipsSrcFile);
-        }
+        return unqualifiedNameCache.findProductCmptByUnqualifiedName(unqualifiedName);
     }
 
     @Override

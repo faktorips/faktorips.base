@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -60,7 +59,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -92,7 +90,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
@@ -106,8 +103,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     private IpsProject ipsProject;
     private IpsProject baseProject;
     private IIpsPackageFragmentRoot root;
-    private IProductCmptType hausrat;
-    private IProductCmpt productCmptHausrat2013;
 
     @Override
     @Before
@@ -1103,12 +1098,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
 
-        @SuppressWarnings("unused")
-        ITestCaseType testType0 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true,
-                null).getIpsObject();
-        @SuppressWarnings("unused")
-        ITestCaseType testType1 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true,
-                null).getIpsObject();
+        pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true, null).getIpsObject();
+        pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true, null).getIpsObject();
 
         // create the following testcases: test0, test1, test2
         IIpsSrcFile testFile0 = pack.createIpsFile(IpsObjectType.TEST_CASE, "test0", true, null);
@@ -1143,9 +1134,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
 
-        @SuppressWarnings("unused")
-        ITestCaseType testTypeProj2 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2",
-                true, null).getIpsObject();
+        pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2", true, null).getIpsObject();
         IIpsSrcFile testFileProj2 = pack.createIpsFile(IpsObjectType.TEST_CASE, "testProj2", true, null);
         ITestCase testProj2 = (ITestCase)testFileProj2.getIpsObject();
         testProj2.setTestCaseType("pack.TestTypeProj2");
@@ -1170,8 +1159,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITableStructure ts1 = newTableStructure(ipsProject, "structure1");
 
         ITableContents tc0 = newTableContents(ts0, "contets0");
-        @SuppressWarnings("unused")
-        ITableContents tc1 = newTableContents(ts1, "contets1");
+        newTableContents(ts1, "contets1");
         ITableContents tc2 = newTableContents(ts0, "contets2");
 
         List<IIpsSrcFile> result = ipsProject.findAllTableContentsSrcFiles(ts0);
@@ -1204,9 +1192,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType enumType0 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null)
                 .getIpsObject();
-        @SuppressWarnings("unused")
-        IEnumType enumType1 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null)
-                .getIpsObject();
+        pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null).getIpsObject();
         IEnumType enumType2 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType2", true, null)
                 .getIpsObject();
         enumType0.setSuperEnumType("pack.EnumType2");
@@ -1251,9 +1237,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
 
-        @SuppressWarnings("unused")
-        IEnumType enumTypeProj2 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null)
-                .getIpsObject();
+        pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null).getIpsObject();
         IIpsSrcFile enumFileProj2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enumProj2", true, null);
         IEnumContent enumProj2 = (IEnumContent)enumFileProj2.getIpsObject();
         enumProj2.setEnumType("pack.EnumTypeProj2");
@@ -2166,82 +2150,5 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider = ipsProject.getVersionProvider();
 
         assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
-    }
-
-    private void initProdCmptAndType() throws CoreException {
-        hausrat = newProductCmptType(ipsProject, "hausrat");
-        productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat2013");
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_ValidInput() throws CoreException {
-        initProdCmptAndType();
-        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertTrue(result.contains(productCmptHausrat2013.getIpsSrcFile()));
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_InvalidInput() throws CoreException {
-        initProdCmptAndType();
-        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("invalidProductName");
-
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_removeProductCmpt() throws CoreException {
-        initProdCmptAndType();
-        Collection<IIpsSrcFile> oldResult = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
-
-        productCmptHausrat2013.delete();
-
-        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
-
-        assertNotNull(oldResult);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_renameProductCmptType() throws CoreException {
-        initProdCmptAndType();
-        performRenameRefactoring(productCmptHausrat2013, "newproductCmptHausrat2013");
-
-        Collection<IIpsSrcFile> resultWithNewName = ipsProject
-                .findProductCmptByUnqualifiedName("newproductCmptHausrat2013");
-        Collection<IIpsSrcFile> resultWithOldName = ipsProject
-                .findProductCmptByUnqualifiedName("productCmptHausrat2013");
-
-        assertNotNull(resultWithNewName);
-        assertTrue(resultWithOldName.isEmpty());
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_moveProdCmptType() throws CoreException {
-        initProdCmptAndType();
-        IIpsPackageFragmentRoot fragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
-        IIpsPackageFragment targetIpsPackageFragment = fragmentRoot.createPackageFragment("target", true, null);
-        performMoveRefactoring(productCmptHausrat2013, targetIpsPackageFragment);
-        IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, "target.productCmptHausrat2013");
-
-        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
-
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertTrue(result.contains(ipsSrcFile));
-    }
-
-    @Test
-    public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() throws CoreException {
-        hausrat = newProductCmptType(ipsProject, "hausrat");
-        ProductCmptType kfz = newProductCmptType(ipsProject, "kfz");
-        newProductCmpt(kfz, "z.productCmptHausrat");
-        productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat");
-        Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat");
-
-        assertNotNull(result);
-        assertEquals(2, result.size());
     }
 }
