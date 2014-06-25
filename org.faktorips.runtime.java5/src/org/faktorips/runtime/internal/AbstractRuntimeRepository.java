@@ -892,7 +892,6 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
                 }
             }
             classes.add(AbstractModelObject.class);
-            classes.add(AbstractConfigurableModelObject.class);
             JAXBContext ctx = JAXBContext.newInstance(classes.toArray(new Class[classes.size()]));
             return newJAXBContext(ctx);
         } catch (RuntimeException e) {

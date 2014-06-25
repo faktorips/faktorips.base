@@ -15,8 +15,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.IAnnotationGeneratorFactory;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 
 public class PolicyCmptImplClassJaxbAnnGenFactory implements IAnnotationGeneratorFactory {
@@ -33,6 +33,8 @@ public class PolicyCmptImplClassJaxbAnnGenFactory implements IAnnotationGenerato
                 return new PolicyCmptImplClassAssociationJaxbAnnGen();
             case POLICY_CMPT_IMPL_CLASS_ATTRIBUTE_FIELD:
                 return new PolicyCmptImplClassAttributeFieldJaxbGen();
+            case POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD:
+                return new PolicyCmptImplClassProductConfigurationJaxbGen();
             default:
                 return null;
         }

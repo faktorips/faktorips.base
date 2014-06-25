@@ -51,7 +51,6 @@ public abstract class AbstractModelObject implements IModelObject {
     protected static final boolean CONTINUE_VALIDATION = true;
 
     /** Uniquely identifies this model object within the object graph it belongs to. */
-    @SuppressWarnings("unused")
     @XmlAttribute(name = "object.id")
     @XmlID
     private String id = "id-" + UUID.randomUUID().toString();
@@ -190,18 +189,8 @@ public abstract class AbstractModelObject implements IModelObject {
         if (store != null && objectId != null) {
             store.putObject(objectId, this);
         }
-        HashMap<String, String> propMap = new HashMap<String, String>();
         NodeList nl = objectEl.getChildNodes();
-        for (int i = 0, max = nl.getLength(); i < max; i++) {
-            if (!(nl.item(i) instanceof Element)) {
-                continue;
-            }
-            Element el = (Element)nl.item(i);
-            String type = el.getAttribute("type");
-            if (type.equals("property")) {
-                initPropertyFromXml(el, propMap);
-            }
-        }
+        HashMap<String, String> propMap = createPropertiesMap(nl);
         initPropertiesFromXml(propMap, productRepository);
 
         // if the a callback class is given then perform further initialization using the property
@@ -210,19 +199,26 @@ public abstract class AbstractModelObject implements IModelObject {
         if (xmlCallback != null) {
             xmlCallback.initProperties(pathFromAggregateRoot, this, propMap);
         }
+        initAssociations(initWithProductDefaultsBeforeReadingXmlData, productRepository, store, xmlCallback, objectId,
+                nl, pathFromAggregateRoot);
+    }
 
-        // now init relations (including composites)
+    private void initAssociations(boolean initWithProductDefaultsBeforeReadingXmlData,
+            IRuntimeRepository productRepository,
+            IObjectReferenceStore store,
+            XmlCallback xmlCallback,
+            String objectId,
+            NodeList nl,
+            String pathFromAggregateRoot) {
         for (int i = 0, max = nl.getLength(); i < max; i++) {
             if (!(nl.item(i) instanceof Element)) {
                 continue;
             }
             Element el = (Element)nl.item(i);
             String type = el.getAttribute("type");
-            if (type.equals("property")) {
-                // already handled
-            } else if (type.equals("association")) {
+            if ("association".equals(type)) {
                 initAssociationFromXml(el, objectId, store);
-            } else if (type.equals("composite")) {
+            } else if ("composite".equals(type)) {
                 AbstractModelObject newChild = createChildFromXml(el);
                 if (newChild == null) {
                     throw new NullPointerException("Object: " + this + ", can't create child object, xml element: "
@@ -230,13 +226,28 @@ public abstract class AbstractModelObject implements IModelObject {
                 }
                 newChild.initFromXml(el, initWithProductDefaultsBeforeReadingXmlData, productRepository, store,
                         xmlCallback, pathFromAggregateRoot);
-            } else {
+            } else if (!("property".equals(type))) {
                 throw new RuntimeException("Unknown type " + type);
             }
         }
     }
 
-    private void initPropertyFromXml(Element el, HashMap<String, String> propMap) {
+    private HashMap<String, String> createPropertiesMap(NodeList nl) {
+        HashMap<String, String> propMap = new HashMap<String, String>();
+        for (int i = 0, max = nl.getLength(); i < max; i++) {
+            if (!(nl.item(i) instanceof Element)) {
+                continue;
+            }
+            Element el = (Element)nl.item(i);
+            String type = el.getAttribute("type");
+            if ("property".equals(type)) {
+                putPropertyFromXml(el, propMap);
+            }
+        }
+        return propMap;
+    }
+
+    private void putPropertyFromXml(Element el, HashMap<String, String> propMap) {
         String propName = el.getNodeName();
         propMap.put(propName, ValueToXmlHelper.getValueFromElement(el));
     }
@@ -266,8 +277,8 @@ public abstract class AbstractModelObject implements IModelObject {
                 throw new NullPointerException();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Object: " + this + ", can't create unresolved reference for xml element " + el,
-                    e);
+            throw new RuntimeException(
+                    "Object: " + this + ", cannot create unresolved reference for xml element " + el, e);
         }
         store.addUnresolvedReference(reference);
     }
