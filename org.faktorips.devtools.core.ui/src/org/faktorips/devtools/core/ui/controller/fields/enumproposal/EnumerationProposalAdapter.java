@@ -46,22 +46,37 @@ public class EnumerationProposalAdapter extends ContentProposalAdapter {
     }
 
     private void addListenerForOpenOnClick(final Text text, final Button button) {
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                /*
-                 * Workaround to let the context proposal work like a combo control.
-                 * 
-                 * When a combo is opened it shows ALL available entries. This is not how the
-                 * context proposal works. It normally only shows matching entries, depending on the
-                 * text already entered in the text field. To simulate combo-behavior, set the
-                 * cursor position to 0. Now there is no text to the left of the cursor. This forces
-                 * the context proposal to show all values, as it has no text to use as filter.
-                 */
-                text.setSelection(0);
-                openProposalPopup();
-            }
-        });
+        button.addSelectionListener(new ClickSelectionListener(text));
+    }
+
+    private final class ClickSelectionListener extends SelectionAdapter {
+        private final Text text;
+
+        private ClickSelectionListener(Text text) {
+            this.text = text;
+        }
+
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+            openProposals(text);
+        }
+
+        /**
+         * Workaround to let the context proposal work like a combo control.
+         * <p>
+         * When a combo is opened it shows ALL available entries. To get all available proposals the
+         * cursor must be set to the first position. To make clear that the whole text will be
+         * replaced it is also nice to have the whole text selected. To achieve both, the selection
+         * selection is set from last position to first position.
+         * <p>
+         * The focus is set to the text control which also leads the focus to the proposal pop-up to
+         * get the proper navigation and closing behavior of the pop-up.
+         */
+        private void openProposals(Text text) {
+            text.setSelection(text.getText().length(), 0);
+            text.setFocus();
+            openProposalPopup();
+        }
     }
 
 }
