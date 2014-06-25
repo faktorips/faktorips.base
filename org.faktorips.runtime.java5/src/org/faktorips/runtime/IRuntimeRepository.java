@@ -18,6 +18,7 @@ import javax.xml.bind.JAXBContext;
 
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.faktorips.runtime.internal.AbstractTocBasedRuntimeRepository;
+import org.faktorips.runtime.internal.ProductConfiguration;
 import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.test.IpsTest2;
@@ -411,5 +412,32 @@ public interface IRuntimeRepository {
      * @return the object identified by qName or {@code null}
      */
     public <T> T getCustomRuntimeObject(Class<T> type, String qName);
+
+    /**
+     * Returns the {@link IRuntimeRepositoryLookup} that was previously set using
+     * {@link #setRuntimeRepositoryLookup(IRuntimeRepositoryLookup)}. The
+     * {@link IRuntimeRepositoryLookup} is used for serialization of policy components especially
+     * for the {@link ProductConfiguration} in configured policy components.
+     * 
+     * @return A previously set {@link IRuntimeRepositoryLookup} that is serialized by a
+     *         {@link ProductConfiguration} and used to load the product component and its
+     *         generation after deserialization.
+     * 
+     * @see IRuntimeRepositoryLookup
+     * @see ProductConfiguration
+     */
+    public IRuntimeRepositoryLookup getRuntimeRepositoryLookup();
+
+    /**
+     * Setting a {@link IRuntimeRepositoryLookup} is needed to enable serialization of policy
+     * components. You need to set a {@link IRuntimeRepositoryLookup} before you could serialize any
+     * product configured policy component.
+     * 
+     * @param repositoryLookup The {@link IRuntimeRepositoryLookup} will provide an instance of this
+     *            {@link IRuntimeRepository} when deserializing a policy component.
+     * 
+     * @see IRuntimeRepositoryLookup
+     */
+    public void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup);
 
 }
