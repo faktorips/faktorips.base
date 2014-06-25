@@ -15,11 +15,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.util.Calendar;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepositoryLookup;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,24 +38,38 @@ import org.w3c.dom.Element;
 @RunWith(MockitoJUnitRunner.class)
 public class ProductConfigurationTest {
 
+    private static final String PODUCT_COMPONENT_ID = "My_PC-ID";
+
+    /**
+     * Needs to be static to have access from the {@link TestRuntimeRepositoryLookup}
+     */
+    @Mock
+    private static IRuntimeRepository repository;
+
     @Mock
     private IProductComponent productCmpt;
+
     @Mock
     private IProductComponentGeneration productCmptGeneration;
-    @Mock
-    private IRuntimeRepository repository;
+
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private Element element;
-    @Mock
-    private Calendar calendar;
+
+    private final Calendar calendar = Calendar.getInstance(ProductConfiguration.TIME_ZONE);
 
     @Before
     public void createAbstractConfigurableModelObject() throws Exception {
+        when(productCmpt.getId()).thenReturn(PODUCT_COMPONENT_ID);
+        when(productCmpt.getRepository()).thenReturn(repository);
         when(productCmpt.getGenerationBase(calendar)).thenReturn(productCmptGeneration);
         when(productCmptGeneration.getProductComponent()).thenReturn(productCmpt);
+        when(productCmptGeneration.getValidFrom(ProductConfiguration.TIME_ZONE)).thenReturn(calendar.getTime());
 
-        when(element.getAttribute("productCmpt")).thenReturn("PC-ID");
-        when(repository.getExistingProductComponent("PC-ID")).thenReturn(productCmpt);
+        when(element.getAttribute("productCmpt")).thenReturn(PODUCT_COMPONENT_ID);
+        when(repository.getExistingProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
+
+        when(repository.getProductComponent(PODUCT_COMPONENT_ID)).thenReturn(productCmpt);
+        when(repository.getProductComponentGeneration(PODUCT_COMPONENT_ID, calendar)).thenReturn(productCmptGeneration);
     }
 
     @Test
@@ -149,5 +170,119 @@ public class ProductConfigurationTest {
 
         productConfiguration.resetProductCmptGeneration();
         assertNotNull(productConfiguration.getProductCmptGeneration(calendar));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testSerialization_noLookup() throws Exception {
+        ProductConfiguration productConfiguration = initForSerialization();
+
+        serializeProductConfiguration(productConfiguration);
+    }
+
+    @Test
+    public void testSerialization() throws Exception {
+        when(repository.getRuntimeRepositoryLookup()).thenReturn(new TestRuntimeRepositoryLookup());
+        ProductConfiguration productConfiguration = initForSerialization();
+
+        byte[] serialize = serializeProductConfiguration(productConfiguration);
+        ProductConfiguration deserializedProductConfiguration = deserializeProductConfiguration(serialize);
+
+        assertEquals(productConfiguration.getProductComponent(), deserializedProductConfiguration.getProductComponent());
+        assertEquals(productConfiguration.getProductCmptGeneration(null),
+                deserializedProductConfiguration.getProductCmptGeneration(null));
+    }
+
+    @Test
+    public void testSerialization_noGeneration() throws Exception {
+        when(repository.getRuntimeRepositoryLookup()).thenReturn(new TestRuntimeRepositoryLookup());
+        ProductConfiguration productConfiguration = new ProductConfiguration();
+        productConfiguration.setProductComponent(productCmpt);
+
+        byte[] serialize = serializeProductConfiguration(productConfiguration);
+        ProductConfiguration deserializedProductConfiguration = deserializeProductConfiguration(serialize);
+
+        assertEquals(productConfiguration.getProductComponent(), deserializedProductConfiguration.getProductComponent());
+        assertNull(deserializedProductConfiguration.getProductCmptGeneration(null));
+    }
+
+    @Test
+    public void testSerialization_noProductCmpt() throws Exception {
+        when(repository.getRuntimeRepositoryLookup()).thenReturn(new TestRuntimeRepositoryLookup());
+        ProductConfiguration productConfiguration = new ProductConfiguration();
+
+        byte[] serialize = serializeProductConfiguration(productConfiguration);
+        ProductConfiguration deserializedProductConfiguration = deserializeProductConfiguration(serialize);
+
+        assertNull(deserializedProductConfiguration.getProductComponent());
+        assertNull(deserializedProductConfiguration.getProductCmptGeneration(null));
+    }
+
+    private ProductConfiguration initForSerialization() {
+        ProductConfiguration productConfiguration = new ProductConfiguration();
+        productConfiguration.setProductCmptGeneration(productCmptGeneration);
+        return productConfiguration;
+    }
+
+    private byte[] serializeProductConfiguration(ProductConfiguration productConfiguration) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(512);
+
+        ObjectOutputStream out = new ObjectOutputStream(baos);
+        out.writeObject(productConfiguration);
+
+        return baos.toByteArray();
+    }
+
+    private ProductConfiguration deserializeProductConfiguration(byte[] byteArray) throws IOException,
+            ClassNotFoundException {
+        OsgiObjectInputStream osgiCompatibleInputStream = new OsgiObjectInputStream(byteArray);
+        try {
+            ProductConfiguration deserializedProductConfiguration = (ProductConfiguration)osgiCompatibleInputStream
+                    .readObject();
+            return deserializedProductConfiguration;
+        } finally {
+            osgiCompatibleInputStream.close();
+        }
+
+    }
+
+    private static class TestRuntimeRepositoryLookup implements IRuntimeRepositoryLookup {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public IRuntimeRepository getRuntimeRepository() {
+            return repository;
+        }
+
+    }
+
+    /**
+     * Serialization in OSGi context is a bit tricky. The modularization mechanisms of OSGi leads to
+     * {@link ClassNotFoundException} when a class that should be deserialized is part of another
+     * plug-In. When this test cases are executed as Plug-In-Tests we have such a scenario.
+     * <p>
+     * This implementation of {@link ObjectInputStream} solves this problem by always loading
+     * classes using the current thread's context class loader. Using the equinox platform the
+     * context classloader is designed to load classes from different depending bundles.
+     */
+    private static class OsgiObjectInputStream extends ObjectInputStream {
+
+        public OsgiObjectInputStream(byte[] byteArray) throws IOException {
+            super(new ByteArrayInputStream(byteArray));
+        }
+
+        @Override
+        protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException, IOException {
+            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            try {
+                Class<?> c = contextClassLoader.loadClass(desc.getName());
+                if (c != null) {
+                    return c;
+                }
+            } catch (Exception e) {
+                return super.resolveClass(desc);
+            }
+            return super.resolveClass(desc);
+        }
     }
 }
