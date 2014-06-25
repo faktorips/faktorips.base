@@ -20,7 +20,6 @@ import java.util.HashMap;
  * putting a value to the collection regarding the specified key. If a value is requested by using
  * the key a Collection is returned.
  */
-
 public class MultiMap<K, V> {
 
     private HashMap<K, Collection<V>> internalMap;

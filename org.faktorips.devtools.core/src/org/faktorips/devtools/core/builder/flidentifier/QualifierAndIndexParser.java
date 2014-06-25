@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder.flidentifier;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -125,7 +126,11 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
         Collection<IIpsSrcFile> foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
         if (foundProductCmpt.isEmpty()) {
             IProductCmpt foundProductCmptByQName = getIpsProject().findProductCmpt(getQualifier());
-            return Arrays.asList(foundProductCmptByQName.getIpsSrcFile());
+            if (foundProductCmptByQName != null) {
+                return Arrays.asList(foundProductCmptByQName.getIpsSrcFile());
+            } else {
+                return Collections.emptyList();
+            }
         }
         return foundProductCmpt;
     }
