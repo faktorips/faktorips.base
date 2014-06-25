@@ -14,6 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -25,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.fl.ExprCompiler;
 import org.junit.Before;
@@ -58,7 +62,22 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     @Mock
     private IProductCmpt productCmpt;
 
+    @Mock
+    private IProductCmpt productCmptOther;
+
+    @Mock
+    private IProductCmptType productCmptTypeOther;
+
+    @Mock
+    private IIpsSrcFile productCmptIpsSrcFile;
+
+    @Mock
+    private IIpsSrcFile productCmptIpsSrcFileOther;
+
     private QualifierAndIndexParser qualifierAndIndexParser;
+
+    @Mock
+    private IdentifierNodeFactory nodeFactory;
 
     @Before
     public void initParser() {
@@ -81,20 +100,36 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     public void testParse_findAssociationQualified1To1IgnoringQualifier() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
         when(association.is1ToManyIgnoringQualifier()).thenReturn(false);
+        initProdCmptAndType();
         initSourceFile();
         getParsingContext().pushNode(createAssociationNode(association, false));
-
         QualifierNode node = (QualifierNode)qualifierAndIndexParser.parse(new TextRegion(QUALIFIER, 0, QUALIFIER
                 .length()));
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(targetSubType, node.getDatatype());
+        assertEquals(productCmpt, node.getProductCmpt());
+    }
+
+    private void initProdCmptAndType() throws CoreException {
+        ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        list.add(productCmptIpsSrcFileOther);
+        list.add(productCmptIpsSrcFile);
+
+        when(getIpsProject().findProductCmptByUnqualifiedName(MY_QUALIFIER)).thenReturn(list);
+        when(productCmptIpsSrcFile.getIpsObject()).thenReturn(productCmpt);
+        when(productCmptIpsSrcFileOther.getIpsObject()).thenReturn(productCmptOther);
+        when(productCmpt.findProductCmptType(getIpsProject())).thenReturn(getProductCmptType());
+        when(productCmptOther.findProductCmptType(getIpsProject())).thenReturn(productCmptTypeOther);
+        when(getProductCmptType().isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(true);
+        when(productCmptTypeOther.isSubtypeOrSameType(getProductCmptType(), getIpsProject())).thenReturn(false);
     }
 
     @Test
     public void testParse_findAssociationQualified1ToMany() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
         when(association.is1ToManyIgnoringQualifier()).thenReturn(true);
+        initProdCmptAndType();
         initSourceFile();
         getParsingContext().pushNode(createAssociationNode(association, false));
 
@@ -103,11 +138,13 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(new ListOfTypeDatatype(targetSubType), node.getDatatype());
+        assertEquals(productCmpt, node.getProductCmpt());
     }
 
     @Test
     public void testParse_findAssociationQualified1To1FromMany() throws Exception {
         when(association.is1ToManyIgnoringQualifier()).thenReturn(false);
+        initProdCmptAndType();
         initSourceFile();
         getParsingContext().pushNode(createAssociationNode(association, true));
 
@@ -116,12 +153,14 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
 
         assertEquals(RUNTIME_ID, node.getRuntimeId());
         assertEquals(new ListOfTypeDatatype(targetSubType), node.getDatatype());
+        assertEquals(productCmpt, node.getProductCmpt());
     }
 
     @Test
     public void testParse_findAssociationQualified_NoRuntimeID() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
         when(association.is1ToManyIgnoringQualifier()).thenReturn(false);
+        initProdCmptAndType();
         initSourceFileNoRuntimeID();
         getParsingContext().pushNode(createAssociationNode(association, false));
 
@@ -243,5 +282,4 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         IdentifierNodeFactory nodeFactory = new IdentifierNodeFactory(null, getIpsProject());
         return nodeFactory.createQualifierNode(productCmpt, QUALIFIER, listOfTypes);
     }
-
 }

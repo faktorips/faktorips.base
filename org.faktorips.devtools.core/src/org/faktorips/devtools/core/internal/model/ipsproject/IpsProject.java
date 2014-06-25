@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -145,6 +146,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     private IIpsProjectNamingConventions namingConventions = null;
 
     private IFile propertyFile;
+
+    private UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -762,6 +765,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException {
         return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_CMPT, qualifiedName);
+    }
+
+    @Override
+    public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName) {
+        return unqualifiedNameCache.findProductCmptByUnqualifiedName(unqualifiedName);
     }
 
     @Override

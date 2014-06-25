@@ -90,7 +90,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.AbstractIpsProjectMigrationOperation;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
@@ -1099,12 +1098,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IIpsPackageFragment pack = root.createPackageFragment("pack", true, null);
 
-        @SuppressWarnings("unused")
-        ITestCaseType testType0 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true,
-                null).getIpsObject();
-        @SuppressWarnings("unused")
-        ITestCaseType testType1 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true,
-                null).getIpsObject();
+        pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType0", true, null).getIpsObject();
+        pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestType1", true, null).getIpsObject();
 
         // create the following testcases: test0, test1, test2
         IIpsSrcFile testFile0 = pack.createIpsFile(IpsObjectType.TEST_CASE, "test0", true, null);
@@ -1139,9 +1134,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
 
-        @SuppressWarnings("unused")
-        ITestCaseType testTypeProj2 = (ITestCaseType)pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2",
-                true, null).getIpsObject();
+        pack.createIpsFile(IpsObjectType.TEST_CASE_TYPE, "TestTypeProj2", true, null).getIpsObject();
         IIpsSrcFile testFileProj2 = pack.createIpsFile(IpsObjectType.TEST_CASE, "testProj2", true, null);
         ITestCase testProj2 = (ITestCase)testFileProj2.getIpsObject();
         testProj2.setTestCaseType("pack.TestTypeProj2");
@@ -1166,8 +1159,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ITableStructure ts1 = newTableStructure(ipsProject, "structure1");
 
         ITableContents tc0 = newTableContents(ts0, "contets0");
-        @SuppressWarnings("unused")
-        ITableContents tc1 = newTableContents(ts1, "contets1");
+        newTableContents(ts1, "contets1");
         ITableContents tc2 = newTableContents(ts0, "contets2");
 
         List<IIpsSrcFile> result = ipsProject.findAllTableContentsSrcFiles(ts0);
@@ -1200,9 +1192,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         IEnumType enumType0 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType0", true, null)
                 .getIpsObject();
-        @SuppressWarnings("unused")
-        IEnumType enumType1 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null)
-                .getIpsObject();
+        pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType1", true, null).getIpsObject();
         IEnumType enumType2 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumType2", true, null)
                 .getIpsObject();
         enumType0.setSuperEnumType("pack.EnumType2");
@@ -1247,9 +1237,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         pack = ipsProject2.getIpsPackageFragmentRoots()[0].createPackageFragment("pack", true, null);
 
-        @SuppressWarnings("unused")
-        IEnumType enumTypeProj2 = (IEnumType)pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null)
-                .getIpsObject();
+        pack.createIpsFile(IpsObjectType.ENUM_TYPE, "EnumTypeProj2", true, null).getIpsObject();
         IIpsSrcFile enumFileProj2 = pack.createIpsFile(IpsObjectType.ENUM_CONTENT, "enumProj2", true, null);
         IEnumContent enumProj2 = (IEnumContent)enumFileProj2.getIpsObject();
         enumProj2.setEnumType("pack.EnumTypeProj2");
@@ -2163,5 +2151,4 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
     }
-
 }

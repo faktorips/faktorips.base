@@ -16,9 +16,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -102,6 +104,9 @@ public class IdentifierParserTest {
     private IProductCmpt productCmpt;
 
     @Mock
+    private IIpsSrcFile productCmptIpsSrcFile;
+
+    @Mock
     private IParameter parameter;
 
     @Mock
@@ -172,6 +177,7 @@ public class IdentifierParserTest {
 
     @Test
     public void testParse_multiParametersAssociationsAttributes() throws Exception {
+        initProdCmptAndType();
         ParameterNode parameterNode = (ParameterNode)identifierParser.parse(MY_IDENTIFIER);
 
         assertEquals(parameter, parameterNode.getParameter());
@@ -191,6 +197,16 @@ public class IdentifierParserTest {
         AttributeNode attributeNode = (AttributeNode)indexNode.getSuccessor();
         assertEquals(attribute, attributeNode.getAttribute());
         assertEquals(Datatype.GREGORIAN_CALENDAR, attributeNode.getDatatype());
+    }
+
+    private void initProdCmptAndType() throws CoreException {
+        ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
+        list.add(productCmptIpsSrcFile);
+
+        when(ipsProject.findProductCmptByUnqualifiedName(MY_QUALIFIER)).thenReturn(list);
+        when(productCmptIpsSrcFile.getIpsObject()).thenReturn(productCmpt);
+        when(productCmpt.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        when(productCmptType.isSubtypeOrSameType(productCmptType, ipsProject)).thenReturn(true);
     }
 
     @Test

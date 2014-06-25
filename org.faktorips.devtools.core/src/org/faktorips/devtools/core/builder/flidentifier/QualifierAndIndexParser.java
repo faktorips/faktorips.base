@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.builder.flidentifier;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -20,7 +23,6 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.builder.flidentifier.ast.QualifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.contextcollector.ContextProductCmptFinder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -108,20 +110,35 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
     }
 
     private IProductCmpt findProductCmpt() throws CoreException {
-        IProductCmptType productCmptType = findProductCmptType();
-        IIpsSrcFile[] allProductCmptSrcFiles = getIpsProject().findAllProductCmptSrcFiles(productCmptType, true);
-        IProductCmpt productCmpt = null;
-        for (IIpsSrcFile ipsSrcFile : allProductCmptSrcFiles) {
-            if (ipsSrcFile.getIpsObjectName().equals(getQualifier())
-                    || ipsSrcFile.getQualifiedNameType().getName().equals(getQualifier())) {
-                IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                if (ipsObject instanceof IProductCmpt) {
-                    productCmpt = (IProductCmpt)ipsObject;
-                    break;
+        Collection<IIpsSrcFile> foundProductCmpts = findProductCmptByName();
+        if (foundProductCmpts != null) {
+            for (IIpsSrcFile ipsSrcFile : foundProductCmpts) {
+                IProductCmpt foundProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                if (isMatchingProductCmptType(foundProductCmpt)) {
+                    return foundProductCmpt;
                 }
             }
         }
-        return productCmpt;
+        return null;
+    }
+
+    private Collection<IIpsSrcFile> findProductCmptByName() throws CoreException {
+        Collection<IIpsSrcFile> foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
+        if (foundProductCmpt.isEmpty()) {
+            IProductCmpt foundProductCmptByQName = getIpsProject().findProductCmpt(getQualifier());
+            if (foundProductCmptByQName != null) {
+                return Arrays.asList(foundProductCmptByQName.getIpsSrcFile());
+            } else {
+                return Collections.emptyList();
+            }
+        }
+        return foundProductCmpt;
+    }
+
+    private boolean isMatchingProductCmptType(IProductCmpt productCmpt) throws CoreException {
+        IProductCmptType foundProductCmptType = productCmpt.findProductCmptType(getIpsProject());
+        return foundProductCmptType.isSubtypeOrSameType(findProductCmptType(), getIpsProject());
+
     }
 
     private IProductCmptType findProductCmptType() throws CoreException {

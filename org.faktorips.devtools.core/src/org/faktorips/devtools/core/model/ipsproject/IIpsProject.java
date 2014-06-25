@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -462,6 +463,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException If an error occurs during the search.
      */
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
+
+    /**
+     * Returns a collection of ipsSrcfiles containing product components with the given unqualified
+     * name or an empty collection if no such product component exists.
+     * 
+     * @param unqualifiedName The unqualified name to find the ipsSrcFiles of product components
+     *            for.
+     * @return A collection containing ipsSrcfiles which names match the given unqualified name.
+     */
+    public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName);
 
     /**
      * Returns the enumeration type with the given qualified name or <code>null</code> if no such
