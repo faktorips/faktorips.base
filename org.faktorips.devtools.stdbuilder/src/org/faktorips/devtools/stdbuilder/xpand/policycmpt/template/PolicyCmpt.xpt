@@ -308,7 +308,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      	 *
 	     * @generated
 	     */
-	    «overrideAnnotationIf(hasConfiguredSupertype())»
+	    «overrideAnnotationIf(hasConfiguredSupertype())-»
 	    public void «effectiveFromHasChanged()» {
 	    	«IF hasConfiguredSupertype()-»
 	    		super.«effectiveFromHasChanged()»;
