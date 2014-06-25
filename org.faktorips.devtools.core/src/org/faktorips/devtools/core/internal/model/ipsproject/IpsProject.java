@@ -771,30 +771,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName) {
         Collection<IIpsSrcFile> result = multiMap.get(unqualifiedName);
-        if (result == null || !exists(result)) {
+        if (result.isEmpty() || !allIpsSrcFileExists(result)) {
             initProdCmptMap();
             result = multiMap.get(unqualifiedName);
         }
-        if (result != null) {
-            return result;
-        } else {
-            return null;
-        }
+        return result;
     }
 
-    private boolean exists(Collection<IIpsSrcFile> result) {
+    private boolean allIpsSrcFileExists(Collection<IIpsSrcFile> result) {
         for (IIpsSrcFile ipsSrcFile : result) {
-            if (ipsSrcFile.exists()) {
-                return true;
+            if (!ipsSrcFile.exists()) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private void initProdCmptMap() {
         multiMap.clear();
-        List<IIpsSrcFile> findAllIpsSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        for (IIpsSrcFile ipsSrcFile : findAllIpsSrcFiles) {
+        List<IIpsSrcFile> allProdCmptIpsSrcFiles = getIpsProject().findAllIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
+        for (IIpsSrcFile ipsSrcFile : allProdCmptIpsSrcFiles) {
             multiMap.put(ipsSrcFile.getIpsObjectName(), ipsSrcFile);
         }
     }

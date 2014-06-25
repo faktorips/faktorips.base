@@ -2180,7 +2180,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals(productCmptHausrat2013, ((ArrayList<IIpsSrcFile>)result).get(0).getIpsObject());
+        assertTrue(result.contains(productCmptHausrat2013.getIpsSrcFile()));
     }
 
     @Test
@@ -2188,7 +2188,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         initProdCmptAndType();
         Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("invalidProductName");
 
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -2201,7 +2201,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(oldResult);
-        assertNull(result);
+        assertTrue(result.isEmpty());
     }
 
     @Test
@@ -2215,7 +2215,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 .findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(resultWithNewName);
-        assertNull(resultWithOldName);
+        assertTrue(resultWithOldName.isEmpty());
     }
 
     @Test
@@ -2224,15 +2224,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot fragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = fragmentRoot.createPackageFragment("target", true, null);
         performMoveRefactoring(productCmptHausrat2013, targetIpsPackageFragment);
+        IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.PRODUCT_CMPT, "target.productCmptHausrat2013");
 
         Collection<IIpsSrcFile> result = ipsProject.findProductCmptByUnqualifiedName("productCmptHausrat2013");
 
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("target." + productCmptHausrat2013.getUnqualifiedName(), ((ArrayList<IIpsSrcFile>)result).get(0)
-                .getQualifiedNameType().getName());
+        assertTrue(result.contains(ipsSrcFile));
     }
 
+    @Test
     public void testFindProductCmptByUnqualifiedName_moreThanOneProdCmpt() throws CoreException {
         hausrat = newProductCmptType(ipsProject, "hausrat");
         ProductCmptType kfz = newProductCmptType(ipsProject, "kfz");

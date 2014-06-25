@@ -123,7 +123,7 @@ public class QualifierAndIndexParser extends TypeBasedIdentifierParser {
 
     private Collection<IIpsSrcFile> findProductCmptByName() throws CoreException {
         Collection<IIpsSrcFile> foundProductCmpt = getIpsProject().findProductCmptByUnqualifiedName(getQualifier());
-        if (foundProductCmpt == null) {
+        if (foundProductCmpt.isEmpty()) {
             IProductCmpt foundProductCmptByQName = getIpsProject().findProductCmpt(getQualifier());
             return Arrays.asList(foundProductCmptByQName.getIpsSrcFile());
         }

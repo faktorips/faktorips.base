@@ -465,12 +465,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
 
     /**
-     * Return a collection of ipsSrcfiles of product components with the given unqualified name or
-     * <code>null</code> if no such product component exists.
+     * Returns a collection of ipsSrcfiles containing product components with the given unqualified
+     * name or an empty collection if no such product component exists.
      * 
      * @param unqualifiedName The unqualified name to find the ipsSrcFiles of product components
      *            for.
-     * @return Collection<IIpsSrcFile> whose ipsSrcfiles possess the given unqualified name.
+     * @return A collection containing ipsSrcfiles which names match the given unqualified name.
      */
     public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName);
 

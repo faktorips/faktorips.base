@@ -160,6 +160,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
     public void testParse_findAssociationQualified_NoRuntimeID() throws Exception {
         when(association.is1ToMany()).thenReturn(true);
         when(association.is1ToManyIgnoringQualifier()).thenReturn(false);
+        initProdCmptAndType();
         initSourceFileNoRuntimeID();
         getParsingContext().pushNode(createAssociationNode(association, false));
 
