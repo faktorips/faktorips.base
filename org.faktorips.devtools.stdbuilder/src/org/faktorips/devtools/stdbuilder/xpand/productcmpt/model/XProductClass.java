@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -299,7 +300,12 @@ public abstract class XProductClass extends XType {
     }
 
     /**
-     * Returns the class hierarchy of the corresponding policy component type.
+     * Returns the class hierarchy of the corresponding (configured) policy component type. The
+     * resulting set contains only policy component types that are configured by a product component
+     * type.
+     * 
+     * As of version 3.13 Faktor-IPS supports configurable policy component types whose super
+     * classes are not configurable. These super classes are filtered out.
      * 
      * @return The policy component class hierarchy
      */
@@ -307,6 +313,12 @@ public abstract class XProductClass extends XType {
         if (isConfigurationForPolicyCmptType()) {
             XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
             Set<XPolicyCmptClass> result = policyCmptClass.getClassHierarchy();
+            for (Iterator<XPolicyCmptClass> iterator = result.iterator(); iterator.hasNext();) {
+                XPolicyCmptClass xPolicyCmptClass = iterator.next();
+                if (!xPolicyCmptClass.isConfigured()) {
+                    iterator.remove();
+                }
+            }
             return result;
         } else {
             return new LinkedHashSet<XPolicyCmptClass>();

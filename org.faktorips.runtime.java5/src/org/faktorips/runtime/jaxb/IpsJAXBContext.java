@@ -64,7 +64,7 @@ public class IpsJAXBContext extends JAXBContext {
     @Override
     public Marshaller createMarshaller() throws JAXBException {
         Marshaller marshaller = wrappedCtx.createMarshaller();
-        marshaller.setAdapter(new ProductComponentXmlAdapter(repository));
+        marshaller.setAdapter(new ProductConfigurationXmlAdapter(repository));
         for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             marshaller.setAdapter(xmlAdapter);
         }
@@ -74,7 +74,7 @@ public class IpsJAXBContext extends JAXBContext {
     @Override
     public Unmarshaller createUnmarshaller() throws JAXBException {
         Unmarshaller unmarshaller = wrappedCtx.createUnmarshaller();
-        unmarshaller.setAdapter(new ProductComponentXmlAdapter(repository));
+        unmarshaller.setAdapter(new ProductConfigurationXmlAdapter(repository));
         for (XmlAdapter<?, ?> xmlAdapter : enumXmlAdapters) {
             unmarshaller.setAdapter(xmlAdapter);
         }

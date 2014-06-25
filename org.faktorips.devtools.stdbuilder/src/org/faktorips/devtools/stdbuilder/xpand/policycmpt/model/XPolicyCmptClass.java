@@ -39,7 +39,6 @@ import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
 import org.faktorips.runtime.IVisitorSupport;
-import org.faktorips.runtime.internal.AbstractConfigurableModelObject;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
 public class XPolicyCmptClass extends XType {
@@ -88,6 +87,29 @@ public class XPolicyCmptClass extends XType {
         return getType().isConfigurableByProductCmptType();
     }
 
+    /**
+     * Returns <code>true</code> if this policy component type has super type that is configured by
+     * a product component type.
+     */
+    public boolean hasConfiguredSupertype() {
+        if (!hasSupertype()) {
+            return false;
+        }
+        return getSupertype().isConfigured();
+    }
+
+    /**
+     * Returns <code>true</code> if this policy component type has no super type that is configured
+     * by a product component type and is self configured by a product component type.
+     */
+    public boolean isFirstConfigurableInHierarchy() {
+        if (!hasConfiguredSupertype() && isConfigured()) {
+            return true;
+        }
+        return false;
+
+    }
+
     public boolean isAggregateRoot() {
         try {
             return getType().isAggregateRoot();
@@ -131,12 +153,10 @@ public class XPolicyCmptClass extends XType {
     @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<String>();
-        if (!hasSupertype()) {
-            if (isConfigured()) {
-                extendedInterfaces.add(addImport(IConfigurableModelObject.class));
-            } else {
-                extendedInterfaces.add(addImport(IModelObject.class));
-            }
+        if (isFirstConfigurableInHierarchy()) {
+            extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+        } else if (!hasSupertype()) {
+            extendedInterfaces.add(addImport(IModelObject.class));
         }
         extendedInterfaces.addAll(super.getExtendedInterfaces());
         return extendedInterfaces;
@@ -167,11 +187,7 @@ public class XPolicyCmptClass extends XType {
 
     @Override
     protected String getBaseSuperclassName() {
-        if (isConfigured()) {
-            return addImport(AbstractConfigurableModelObject.class);
-        } else {
-            return addImport(AbstractModelObject.class);
-        }
+        return addImport(AbstractModelObject.class);
     }
 
     @Override
@@ -336,6 +352,10 @@ public class XPolicyCmptClass extends XType {
      */
     public String getMethodNameGetProductCmptGeneration() {
         return getProductCmptGenerationNode().getMethodNameGetProductComponentGeneration();
+    }
+
+    public String getMethodNameSetProductCmptGeneration() {
+        return getProductCmptGenerationNode().getMethodNameSetProductComponentGeneration();
     }
 
     /**

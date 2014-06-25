@@ -58,10 +58,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ITypeHierarchy;
-import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -139,7 +139,6 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         msgList = type.validate(ipsProject);
         assertNull(msgList
                 .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE));
-
     }
 
     @Test
@@ -778,7 +777,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testSupertypeNotProductRelevantIfTheTypeIsProductRelevant() throws Exception {
+    public void testValidateSupertypeNotConfigurable() throws Exception {
         IPolicyCmptType superPcType = newPolicyCmptType(ipsProject, "Super");
         policyCmptType.setSupertype(superPcType.getQualifiedName());
 
@@ -790,7 +789,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
                 .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
 
         ml = policyCmptType.validate(ipsProject);
-        assertNotNull(ml
+        assertNull(ml
                 .getMessageByCode(IPolicyCmptType.MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT));
 
         superPcType.setConfigurableByProductCmptType(true);

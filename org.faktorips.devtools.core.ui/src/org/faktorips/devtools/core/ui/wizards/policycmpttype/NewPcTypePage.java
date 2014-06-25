@@ -116,7 +116,7 @@ public class NewPcTypePage extends NewTypePage {
                 configurableField.getCheckbox().setEnabled(false);
             } else {
                 configurableField.setValue(Boolean.FALSE);
-                configurableField.getCheckbox().setEnabled(false);
+                configurableField.getCheckbox().setEnabled(true);
             }
         } else {
             configurableField.getCheckbox().setEnabled(true);

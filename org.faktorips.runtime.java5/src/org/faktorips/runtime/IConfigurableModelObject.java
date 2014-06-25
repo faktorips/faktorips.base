@@ -23,12 +23,12 @@ public interface IConfigurableModelObject extends IModelObject {
     /**
      * The name of the property 'productComponent'.
      */
-    public final static String PROPERTY_PRODUCT_COMPONENT = "productComponent";
+    public static final String PROPERTY_PRODUCT_COMPONENT = "productComponent";
 
     /**
      * The name of the property 'productCmptGeneration'.
      */
-    public final static String PROPERTY_PRODUCT_CMPT_GENERATION = "productCmptGeneration";
+    public static final String PROPERTY_PRODUCT_CMPT_GENERATION = "productCmptGeneration";
 
     /**
      * Returns the product component this policy component is based on.
