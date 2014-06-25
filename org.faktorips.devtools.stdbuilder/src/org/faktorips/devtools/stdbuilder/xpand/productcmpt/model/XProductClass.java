@@ -300,10 +300,12 @@ public abstract class XProductClass extends XType {
     }
 
     /**
-     * Returns the class hierarchy of the corresponding policy component type. Only policy component
-     * types that are configured by a product component type will be part of the result. Since
-     * Faktor-IPS Version 3.13 there is the possibility to have policy component type super classes
-     * that are not configurable.
+     * Returns the class hierarchy of the corresponding (configured) policy component type. The
+     * resulting set contains only policy component types that are configured by a product component
+     * type.
+     * 
+     * As of version 3.13 Faktor-IPS supports configurable policy component types whose super
+     * classes are not configurable. These super classes are filtered out.
      * 
      * @return The policy component class hierarchy
      */

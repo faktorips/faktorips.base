@@ -98,8 +98,8 @@ public class ProductCmptTypeValidations {
                         invalidObjectProperties);
             }
         } else {
-            String policyCmptTypeOfSupertype = superProductCmptType.getPolicyCmptType();
-            if (!isConsistentHierarchy(policyCmptType, superPolicyCmptType, policyCmptTypeOfSupertype,
+            String policyCmptTypeOfProductSupertype = superProductCmptType.getPolicyCmptType();
+            if (!isConsistentHierarchy(policyCmptType, superPolicyCmptType, policyCmptTypeOfProductSupertype,
                     superProductCmptType, ipsProject)) {
                 String text = Messages.ProductCmptType_InconsistentTypeHierarchies;
                 message = new Message(IProductCmptType.MSGCODE_HIERARCHY_MISMATCH, text, Message.ERROR,
@@ -112,15 +112,37 @@ public class ProductCmptTypeValidations {
 
     static boolean isConsistentHierarchy(String policyCmptType,
             String superPolicyCmptType,
-            String policyCmptTypeOfSupertype,
+            String policyCmptTypeOfProductSupertype,
             IProductCmptType superProductCmptType,
             IIpsProject ipsProject) throws CoreException {
-        if (policyCmptType.equals(policyCmptTypeOfSupertype) || superPolicyCmptType.equals(policyCmptTypeOfSupertype)) {
+        if (isPCTypeConfiguredByConsistentProductCmptType(policyCmptType, superPolicyCmptType,
+                policyCmptTypeOfProductSupertype)) {
             return true;
         } else {
             IPolicyCmptType foundSuperPolicyCmptType = ipsProject.findPolicyCmptType(superPolicyCmptType);
-            return (!superProductCmptType.isConfigurationForPolicyCmptType() && (foundSuperPolicyCmptType == null || !foundSuperPolicyCmptType
-                    .isConfigurableByProductCmptType()));
+            return isPolicyAndProductCmptTypeNotConfigured(superProductCmptType, foundSuperPolicyCmptType);
         }
     }
+
+    /**
+     * Allow a product component type and its supertype to configure the same policy component type.
+     */
+    private static boolean isPCTypeConfiguredByConsistentProductCmptType(String policyCmptType,
+            String superPolicyCmptType,
+            String policyCmptTypeOfProductSupertype) {
+        return policyCmptType.equals(policyCmptTypeOfProductSupertype)
+                || superPolicyCmptType.equals(policyCmptTypeOfProductSupertype);
+    }
+
+    /**
+     * Ensure that if the product component type is not configured, the given policy component type
+     * is also not configured. The configured case is checked in
+     * {@link #isPCTypeConfiguredByConsistentProductCmptType(String, String, String)}.
+     */
+    private static boolean isPolicyAndProductCmptTypeNotConfigured(IProductCmptType superProductCmptType,
+            IPolicyCmptType foundSuperPolicyCmptType) {
+        return !superProductCmptType.isConfigurationForPolicyCmptType()
+                && (foundSuperPolicyCmptType == null || !foundSuperPolicyCmptType.isConfigurableByProductCmptType());
+    }
+
 }

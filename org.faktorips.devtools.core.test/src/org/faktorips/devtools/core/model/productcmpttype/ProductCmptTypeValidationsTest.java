@@ -56,35 +56,46 @@ public class ProductCmptTypeValidationsTest {
 
     @Test
     public void testIsConsistentHierarchy_configuredSuperPolicyType() throws Exception {
-        String policyCmptTypeOfSupertype = superPolicyCmptType;
+        String policyCmptTypeOfProductCmptSupertype = superPolicyCmptType;
         when(superProductCmptType.isConfigurationForPolicyCmptType()).thenReturn(true);
         when(foundSuperPolicyCmptType.isConfigurableByProductCmptType()).thenReturn(true);
 
         boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
-                policyCmptTypeOfSupertype, superProductCmptType, ipsProject);
+                policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);
 
         assertTrue(constistent);
     }
 
     @Test
-    public void testIsConsistentHierarchy_noPolicySuperType() throws Exception {
-        String policyCmptTypeOfSupertype = "";
-        foundSuperPolicyCmptType = null;
+    public void testIsConsistentHierarchy_configuredPolicyType() throws Exception {
+        String policyCmptTypeOfProductCmptSupertype = policyCmptType;
+        when(superProductCmptType.isConfigurationForPolicyCmptType()).thenReturn(true);
+        when(foundSuperPolicyCmptType.isConfigurableByProductCmptType()).thenReturn(true);
+
+        boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
+                policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);
+
+        assertTrue(constistent);
+    }
+
+    @Test
+    public void testIsConsistentHierarchy_superTypesDontConfigureEachOther() throws Exception {
+        String policyCmptTypeOfProductCmptSupertype = "";
         superPolicyCmptType = "";
         when(superProductCmptType.isConfigurationForPolicyCmptType()).thenReturn(false);
 
         boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
-                policyCmptTypeOfSupertype, superProductCmptType, ipsProject);
+                policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);
 
         assertTrue(constistent);
     }
 
     @Test
     public void testIsConsistentHierarchy_superTypeConfiguresSameType() throws Exception {
-        String policyCmptTypeOfSupertype = policyCmptType;
+        String policyCmptTypeOfProductCmptSupertype = policyCmptType;
 
         boolean constistent = ProductCmptTypeValidations.isConsistentHierarchy(policyCmptType, superPolicyCmptType,
-                policyCmptTypeOfSupertype, superProductCmptType, ipsProject);
+                policyCmptTypeOfProductCmptSupertype, superProductCmptType, ipsProject);
 
         assertTrue(constistent);
     }
