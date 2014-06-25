@@ -276,9 +276,12 @@ public abstract class AbstractModelObject implements IModelObject {
             if (reference == null) {
                 throw new NullPointerException();
             }
+            // CSOFF: IllegalCatch
+            // Any exception should be catched and wrapped in a new RuntimeException
         } catch (Exception e) {
             throw new RuntimeException(
                     "Object: " + this + ", cannot create unresolved reference for xml element " + el, e);
+            // CSON: IllegalCatch
         }
         store.addUnresolvedReference(reference);
     }
