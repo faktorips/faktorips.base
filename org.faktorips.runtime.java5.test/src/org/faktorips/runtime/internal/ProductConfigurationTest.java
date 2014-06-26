@@ -20,7 +20,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.ObjectStreamClass;
 import java.util.Calendar;
 
 import org.faktorips.runtime.IProductComponent;
@@ -234,7 +233,7 @@ public class ProductConfigurationTest {
 
     private ProductConfiguration deserializeProductConfiguration(byte[] byteArray) throws IOException,
             ClassNotFoundException {
-        OsgiObjectInputStream osgiCompatibleInputStream = new OsgiObjectInputStream(byteArray);
+        ObjectInputStream osgiCompatibleInputStream = new ObjectInputStream(new ByteArrayInputStream(byteArray));
         try {
             ProductConfiguration deserializedProductConfiguration = (ProductConfiguration)osgiCompatibleInputStream
                     .readObject();
@@ -256,33 +255,4 @@ public class ProductConfigurationTest {
 
     }
 
-    /**
-     * Serialization in OSGi context is a bit tricky. The modularization mechanisms of OSGi leads to
-     * {@link ClassNotFoundException} when a class that should be deserialized is part of another
-     * plug-In. When this test cases are executed as Plug-In-Tests we have such a scenario.
-     * <p>
-     * This implementation of {@link ObjectInputStream} solves this problem by always loading
-     * classes using the current thread's context class loader. Using the equinox platform the
-     * context classloader is designed to load classes from different depending bundles.
-     */
-    private static class OsgiObjectInputStream extends ObjectInputStream {
-
-        public OsgiObjectInputStream(byte[] byteArray) throws IOException {
-            super(new ByteArrayInputStream(byteArray));
-        }
-
-        @Override
-        protected Class<?> resolveClass(ObjectStreamClass desc) throws ClassNotFoundException, IOException {
-            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-            try {
-                Class<?> c = contextClassLoader.loadClass(desc.getName());
-                if (c != null) {
-                    return c;
-                }
-            } catch (Exception e) {
-                return super.resolveClass(desc);
-            }
-            return super.resolveClass(desc);
-        }
-    }
 }
