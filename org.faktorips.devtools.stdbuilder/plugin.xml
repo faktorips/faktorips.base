@@ -153,7 +153,7 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
                defaultValue="false"
-               description="Enables the generation of Serializable support on poliy components"
+               description="Enables the generation of Serializable support on policy components"
                disableValue="false"
                label="Generate Serializable Support"
                name="serializablePolicyCmpts"

@@ -151,4 +151,12 @@ public class AbstractGeneratorModelNodeTest {
         assertTrue(modelNode.isGenerateSerializablePolicyCmptsSupport());
     }
 
+    @Test
+    public void testIsGenerateSerializablePolicyCmptsSupport_Default() {
+        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
+
+        assertFalse(modelNode.isGenerateSerializablePolicyCmptsSupport());
+    }
+
 }
