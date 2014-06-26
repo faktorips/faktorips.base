@@ -78,9 +78,9 @@ public class EnumParser extends AbstractIdentifierNodeParser {
     private IdentifierNode parseEnumDatatype() {
         EnumDatatype enumType = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumType.getAllValueIds(true);
-        for (String enumValueName : valueIds) {
-            if (ObjectUtils.equals(enumValueName, getIdentifierPart())) {
-                return nodeFactory().createEnumValueNode(enumValueName, enumType);
+        for (String enumValueId : valueIds) {
+            if (ObjectUtils.equals(enumValueId, getIdentifierPart())) {
+                return nodeFactory().createEnumValueNode(enumValueId, enumType);
             }
         }
         return nodeFactory()
@@ -110,8 +110,8 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         }
     }
 
-    private String getLabel(String enumValueName, EnumDatatype enumDatatype) {
-        return enumValueName + "(" + enumDatatype.getValueName(enumValueName) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    private String getLabel(String enumValueId, EnumDatatype enumDatatype) {
+        return enumValueId + "(" + enumDatatype.getValueName(enumValueId) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getText(EnumDatatype enumDatatype) {
@@ -130,8 +130,8 @@ public class EnumParser extends AbstractIdentifierNodeParser {
     private void addEnumValueProposals(String prefix, IdentifierProposalCollector collector) {
         EnumDatatype enumDatatype = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumDatatype.getAllValueIds(false);
-        for (String enumValueName : valueIds) {
-            collector.addMatchingNode(enumValueName, getLabel(enumValueName, enumDatatype), StringUtils.EMPTY, prefix,
+        for (String enumValueId : valueIds) {
+            collector.addMatchingNode(enumValueId, getLabel(enumValueId, enumDatatype), StringUtils.EMPTY, prefix,
                     IdentifierNodeType.ENUM_VALUE);
         }
     }
