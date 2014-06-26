@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -143,6 +144,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * generated.
      */
     public static final String CONFIG_PROPERTY_TO_XML_SUPPORT = "toXMLSupport"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that enables/disables the generation of serializable support on policy
+     * components.
+     * 
+     * @see Serializable
+     */
+    public static final String CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT = "serializablePolicyCmpts"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether to generate camel case constant

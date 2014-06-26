@@ -151,6 +151,14 @@
                name="generatePublishedInterfaces"
                type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of Serializable support on poliy components"
+               disableValue="false"
+               label="Generate Serializable Support"
+               name="serializablePolicyCmpts"
+               type="boolean">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension
