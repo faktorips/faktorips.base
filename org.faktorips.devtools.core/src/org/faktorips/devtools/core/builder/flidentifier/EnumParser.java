@@ -110,6 +110,10 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         }
     }
 
+    private String getLabel(String enumValueName, EnumDatatype enumDatatype) {
+        return enumValueName + "(" + enumDatatype.getValueName(enumValueName) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+    }
+
     private String getText(EnumDatatype enumDatatype) {
         return enumDatatype.getName();
     }
@@ -127,7 +131,8 @@ public class EnumParser extends AbstractIdentifierNodeParser {
         EnumDatatype enumDatatype = ((EnumClass)getContextType()).getEnumDatatype();
         String[] valueIds = enumDatatype.getAllValueIds(false);
         for (String enumValueName : valueIds) {
-            collector.addMatchingNode(enumValueName, StringUtils.EMPTY, prefix, IdentifierNodeType.ENUM_VALUE);
+            collector.addMatchingNode(enumValueName, getLabel(enumValueName, enumDatatype), StringUtils.EMPTY, prefix,
+                    IdentifierNodeType.ENUM_VALUE);
         }
     }
 }
