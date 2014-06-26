@@ -25,6 +25,13 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	 «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS)-»
 	public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces»{
 
+		«IF generateSerializablePolicyCmptsSupport-»
+			/**
+			 * @generated
+	 		 */
+			private static final long serialVersionUID = 1L;
+		«ENDIF-»
+		
 		«IF firstConfigurableInHierarchy»
 			/**
 			 * «localizedJDoc("PRODUCTCONFIGURATION_FIELD")»

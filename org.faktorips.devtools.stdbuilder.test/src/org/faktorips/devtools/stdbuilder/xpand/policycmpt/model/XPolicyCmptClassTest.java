@@ -417,4 +417,22 @@ public class XPolicyCmptClassTest {
 
         assertFalse(policyCmptClass.isFirstConfigurableInHierarchy());
     }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_WithSerializableSupport() {
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        LinkedHashSet<String> extendedInterfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertThat(extendedInterfaces, hasItem("Serializable"));
+    }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_WithoutSerializableSupport() {
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        LinkedHashSet<String> extendedInterfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertFalse(extendedInterfaces.contains("Serializable"));
+    }
 }

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -177,6 +178,9 @@ public class XPolicyCmptClass extends XType {
             }
             if (isGenerateChangeSupport()) {
                 extendedInterfaces.add(addImport(INotificationSupport.class));
+            }
+            if (isGenerateSerializablePolicyCmptsSupport()) {
+                extendedInterfaces.add(addImport(Serializable.class));
             }
         }
         if (isDependantType() && (!hasSupertype() || !isSupertypeDependantType())) {
