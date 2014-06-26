@@ -174,6 +174,14 @@ public class ProductConfiguration implements Serializable {
         }
     }
 
+    private Date getValidFrom() {
+        if (productCmptGeneration != null) {
+            return productCmptGeneration.getValidFrom(TIME_ZONE);
+        } else {
+            return null;
+        }
+    }
+
     private IRuntimeRepositoryLookup getRepositoryLookup() {
         if (productCmpt != null) {
             IRuntimeRepositoryLookup runtimeRepositoryLookup = productCmpt.getRepository().getRuntimeRepositoryLookup();
@@ -188,14 +196,6 @@ public class ProductConfiguration implements Serializable {
         if (runtimeRepositoryLookup == null) {
             throw new IllegalStateException(
                     "For serialization of policy component classes you need to set a IRuntimeRepositoryLookup in your runtime repository.");
-        }
-    }
-
-    private Date getValidFrom() {
-        if (productCmptGeneration != null) {
-            return productCmptGeneration.getValidFrom(TIME_ZONE);
-        } else {
-            return null;
         }
     }
 
