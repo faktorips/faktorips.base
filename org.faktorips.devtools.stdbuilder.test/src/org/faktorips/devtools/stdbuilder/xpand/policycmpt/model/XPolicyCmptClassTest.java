@@ -417,4 +417,62 @@ public class XPolicyCmptClassTest {
 
         assertFalse(policyCmptClass.isFirstConfigurableInHierarchy());
     }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_noInterfaces() {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(false);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertTrue(interfaces.isEmpty());
+    }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces() throws CoreException {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(false);
+        when(type.isDependantType()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+        when(modelContext.isGenerateChangeSupport()).thenReturn(true);
+        when(modelContext.isGenerateCopySupport()).thenReturn(true);
+        when(modelContext.isGenerateDeltaSupport()).thenReturn(true);
+        when(modelContext.isGenerateVisitorSupport()).thenReturn(true);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertThat(interfaces, hasItem("INotificationSupport"));
+        assertThat(interfaces, hasItem("ICopySupport"));
+        assertThat(interfaces, hasItem("IDeltaSupport"));
+        assertThat(interfaces, hasItem("IVisitorSupport"));
+        assertThat(interfaces, hasItem("IDependantObject"));
+        assertThat(interfaces, hasItem("IConfigurableModelObject"));
+    }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_DependantSupertype() throws CoreException {
+        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        when(type.hasSupertype()).thenReturn(false);
+        when(type.isDependantType()).thenReturn(true);
+        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(superXType.isDependantType()).thenReturn(true);
+        when(superXType.isSupertypeDependantType()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(false);
+        when(modelContext.isGenerateChangeSupport()).thenReturn(false);
+        when(modelContext.isGenerateCopySupport()).thenReturn(false);
+        when(modelContext.isGenerateDeltaSupport()).thenReturn(false);
+        when(modelContext.isGenerateVisitorSupport()).thenReturn(false);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertEquals(1, interfaces.size());
+        assertThat(interfaces, hasItem("IDependantObject"));
+    }
+
 }
