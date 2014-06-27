@@ -78,6 +78,9 @@ public class XPolicyCmptClassTest {
     @Mock
     private IIpsProject ipsProject;
 
+    @Mock
+    private XPolicyCmptClass superXType;
+
     @Before
     public void initModelContext() {
         GeneratorModelCaches generatorModelCache = new GeneratorModelCaches();
@@ -154,7 +157,7 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void returnProdGenerationClassName() throws CoreException {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         IProductCmptType prodType = initProdType(policyCmptClass);
 
         XProductCmptGenerationClass xProdGenClass = mock(XProductCmptGenerationClass.class);
@@ -176,7 +179,7 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void returnProdClassName() throws CoreException {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         IProductCmptType prodType = initProdType(policyCmptClass);
 
         XProductCmptClass xProdClass = mock(XProductCmptClass.class);
@@ -208,7 +211,7 @@ public class XPolicyCmptClassTest {
     }
 
     private XPolicyCmptClass setUpAttrList(boolean init1, boolean init2, boolean init3) {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         Set<XPolicyAttribute> list = new HashSet<XPolicyAttribute>();
         XPolicyAttribute attr1 = mock(XPolicyAttribute.class);
         XPolicyAttribute attr2 = mock(XPolicyAttribute.class);
@@ -239,8 +242,7 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testGetAttributesToInitWithProductData() {
-        // Set up
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
         when(a1.isGenerateInitWithProductData()).thenReturn(true);
@@ -264,8 +266,7 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testGetAttributesToInitWithoutProductDataAndOverwritten() {
-        // Set up
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
         when(a1.isOverwrite()).thenReturn(true);
@@ -350,10 +351,8 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testHasConfiguredSupertype_NoConfiguredSupertype() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
-        doReturn(superXType).when(policyCmptClass).getSupertype();
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
         when(superXType.isConfigured()).thenReturn(false);
 
         assertFalse(policyCmptClass.hasConfiguredSupertype());
@@ -361,10 +360,8 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testHasConfiguredSupertype_WithConfiguredSupertype() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
-        doReturn(superXType).when(policyCmptClass).getSupertype();
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
         when(superXType.isConfigured()).thenReturn(true);
 
         assertTrue(policyCmptClass.hasConfiguredSupertype());
@@ -372,10 +369,8 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testIsFirstConfigurableInHierarchy_NoConfiguredSupertypeNotConfigured() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
-        doReturn(superXType).when(policyCmptClass).getSupertype();
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
         when(superXType.isConfigured()).thenReturn(false);
         when(type.isConfigurableByProductCmptType()).thenReturn(false);
 
@@ -384,10 +379,8 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testIsFirstConfigurableInHierarchy_NoConfiguredSupertypeConfigured() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
-        doReturn(superXType).when(policyCmptClass).getSupertype();
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
         when(superXType.isConfigured()).thenReturn(false);
         when(type.isConfigurableByProductCmptType()).thenReturn(true);
 
@@ -396,10 +389,8 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testIsFirstConfigurableInHierarchy_ConfiguredSupertypeNotConfigured() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
-        doReturn(superXType).when(policyCmptClass).getSupertype();
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
         when(superXType.isConfigured()).thenReturn(true);
         when(type.isConfigurableByProductCmptType()).thenReturn(false);
 
@@ -408,13 +399,73 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testIsFirstConfigurableInHierarchy_ConfiguredSupertypeConfigured() {
-        XPolicyCmptClass policyCmptClass = spy(new XPolicyCmptClass(type, modelContext, modelService));
-        when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass superXType = mock(XPolicyCmptClass.class);
-        doReturn(superXType).when(policyCmptClass).getSupertype();
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
         when(superXType.isConfigured()).thenReturn(true);
         when(type.isConfigurableByProductCmptType()).thenReturn(true);
 
         assertFalse(policyCmptClass.isFirstConfigurableInHierarchy());
     }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_noInterfaces() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        setUpReturnSupertype(policyCmptClass);
+        when(superXType.isConfigured()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(false);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertTrue(interfaces.isEmpty());
+    }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces() throws CoreException {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        when(type.hasSupertype()).thenReturn(false);
+        when(type.isDependantType()).thenReturn(true);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+        setUpGenerateSupport(true);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertThat(
+                interfaces,
+                hasItems("INotificationSupport", "ICopySupport", "IDeltaSupport", "IVisitorSupport",
+                        "IDependantObject", "IConfigurableModelObject"));
+    }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_DependantSupertype() throws CoreException {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        when(type.hasSupertype()).thenReturn(false);
+        when(type.isDependantType()).thenReturn(true);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
+        when(superXType.isDependantType()).thenReturn(true);
+        when(superXType.isSupertypeDependantType()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(false);
+        setUpGenerateSupport(false);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertEquals(1, interfaces.size());
+        assertThat(interfaces, hasItem("IDependantObject"));
+    }
+
+    private XPolicyCmptClass createXPolicyCmptClassSpy() {
+        return spy(new XPolicyCmptClass(type, modelContext, modelService));
+    }
+
+    private void setUpReturnSupertype(XPolicyCmptClass policyCmptClass) {
+        when(type.hasSupertype()).thenReturn(true);
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+    }
+
+    private void setUpGenerateSupport(boolean returnValue) {
+        when(modelContext.isGenerateChangeSupport()).thenReturn(returnValue);
+        when(modelContext.isGenerateCopySupport()).thenReturn(returnValue);
+        when(modelContext.isGenerateDeltaSupport()).thenReturn(returnValue);
+        when(modelContext.isGenerateVisitorSupport()).thenReturn(returnValue);
+    }
+
 }

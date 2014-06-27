@@ -182,6 +182,9 @@ public class XPolicyCmptClass extends XType {
         if (isDependantType() && (!hasSupertype() || !isSupertypeDependantType())) {
             extendedInterfaces.add(addImport(IDependantObject.class));
         }
+        if (isFirstConfigurableInHierarchy()) {
+            extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+        }
         return extendedInterfaces;
     }
 
