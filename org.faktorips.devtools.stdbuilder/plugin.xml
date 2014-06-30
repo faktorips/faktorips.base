@@ -92,7 +92,10 @@
                      value="None">
                </value>
                <value
-                     value="EclipseLink 2.3">
+                     value="EclipseLink 1.1">
+               </value>
+               <value
+                     value="EclipseLink 2.2">
                </value>
                <value
                      value="Generic JPA 2.0">
