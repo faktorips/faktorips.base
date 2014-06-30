@@ -815,19 +815,26 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatypeConverterClass);
         if (ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() != null
                 && ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingConverters()) {
-            final Text converterQualifiedName = getToolkit().createText(workArea);
+            Text converterQualifiedName = getToolkit().createText(workArea);
             getBindingContext().bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
                     IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
         } else {
-            final Text converterQualifiedName = getToolkit().createText(workArea);
+            Text converterQualifiedName = getToolkit().createText(workArea);
             converterQualifiedName.setEnabled(false);
             converterQualifiedName.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
         }
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelIndexName);
-        indexName = getToolkit().createText(workArea);
-        getBindingContext().bindContent(indexName, attribute.getPersistenceAttributeInfo(),
-                IPersistentAttributeInfo.PROPERTY_INDEX_NAME);
+        if (ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() == null
+                || ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingIndex()) {
+            indexName = getToolkit().createText(workArea);
+            getBindingContext().bindContent(indexName, attribute.getPersistenceAttributeInfo(),
+                    IPersistentAttributeInfo.PROPERTY_INDEX_NAME);
+        } else {
+            Text converterQualifiedName = getToolkit().createText(workArea);
+            converterQualifiedName.setEnabled(false);
+            converterQualifiedName.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
+        }
 
         // disable all tab page controls if policy component type shouldn't persist
         getBindingContext().add(
