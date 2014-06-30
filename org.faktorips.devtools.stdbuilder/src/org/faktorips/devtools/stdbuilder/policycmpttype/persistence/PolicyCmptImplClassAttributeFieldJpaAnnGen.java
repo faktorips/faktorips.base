@@ -39,10 +39,12 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
 
     private static final String ANNOTATION_COLUMN = "@Column";
     private static final String ANNOTATION_TEMPORAL = "@Temporal";
+    private static final String ANNOTATION_INDEX = "@Index";
 
     private static final String IMPORT_COLUMN = "javax.persistence.Column";
     private static final String IMPORT_TEMPORAL = "javax.persistence.Temporal";
     private static final String IMPORT_TEMPORAL_TYPE = "javax.persistence.TemporalType";
+    private static final String IMPORT_INDEX = "org.eclipse.persistence.annotations.Index";
 
     private static final String ATTRIBUTE_TEMPORAL_TYPE = "TemporalType";
 
@@ -89,7 +91,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             fragment.append(')').appendln();
             createTemporalAnnotationIfTemporalDatatype(fragment, jpaAttributeInfo, datatype);
             createConverterAnnotation(fragment, jpaAttributeInfo);
-
+            createIndexAnnotation(fragment, jpaAttributeInfo);
         }
 
         return fragment;
@@ -153,6 +155,18 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             fragment.append(jpaAttributeInfo.getTemporalMapping().toJpaTemporalType());
             fragment.append(')');
         }
+    }
+
+    private void createIndexAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
+        String indexName = jpaAttributeInfo.getIndexName();
+        if (!indexName.isEmpty()) {
+            fragment.addImport(IMPORT_INDEX);
+            fragment.append(ANNOTATION_INDEX);
+            fragment.append('(');
+            fragment.append("name=\"" + indexName + "\"");
+            fragment.append(')');
+        }
+
     }
 
     @Override

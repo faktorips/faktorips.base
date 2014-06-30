@@ -82,7 +82,7 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
                defaultValue="Generic JPA 2.0"
-               description="The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1' and 'Generic JPA 2.0'."
+               description="The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 2.3' and 'Generic JPA 2.0'."
                label="Persistence Provider"
                name="persistenceProvider"
                type="enum">
@@ -92,7 +92,7 @@
                      value="None">
                </value>
                <value
-                     value="EclipseLink 1.1">
+                     value="EclipseLink 2.3">
                </value>
                <value
                      value="Generic JPA 2.0">

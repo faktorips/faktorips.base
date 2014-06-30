@@ -15,7 +15,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.util.StringUtil;
 
 /**
- * Persistence provider for EclipseLink 1.1
+ * Persistence provider for EclipseLink 2.3
  * 
  * @author Joerg Ortmann
  */

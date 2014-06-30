@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  */
 public interface IPersistenceProvider {
 
-    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
+    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 2.3"; //$NON-NLS-1$
     public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "Generic JPA 2.0"; //$NON-NLS-1$
 
     /**
