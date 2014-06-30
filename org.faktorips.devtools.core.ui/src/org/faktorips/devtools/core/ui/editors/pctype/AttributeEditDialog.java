@@ -157,6 +157,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private Text sqlColumnDefinition;
 
+    private Text indexName;
+
     private Checkbox uniqueCheckbox;
 
     private Checkbox nullableCheckbox;
@@ -820,6 +822,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             converterQualifiedName.setEnabled(false);
             converterQualifiedName.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
         }
+
+        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelIndexName);
+        indexName = getToolkit().createText(workArea);
+        getBindingContext().bindContent(indexName, attribute.getPersistenceAttributeInfo(),
+                IPersistentAttributeInfo.PROPERTY_INDEX_NAME);
 
         // disable all tab page controls if policy component type shouldn't persist
         getBindingContext().add(

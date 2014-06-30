@@ -300,6 +300,7 @@ public class Messages extends NLS {
     public static String AttributeEditDialog_labelPrecision;
 
     public static String AttributeEditDialog_labelSqlColumnDefinition;
+    public static String AttributeEditDialog_labelIndexName;
     public static String AttributeEditDialog_labelTemporalType;
 
     public static String AttributeEditDialog_labelUnique;
