@@ -813,7 +813,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatypeConverterClass);
-        if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
+        if (ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() != null
+                && ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingConverters()) {
             final Text converterQualifiedName = getToolkit().createText(workArea);
             getBindingContext().bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
                     IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);

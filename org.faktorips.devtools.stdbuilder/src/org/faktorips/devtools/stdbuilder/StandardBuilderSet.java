@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -52,7 +53,6 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -419,22 +419,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
     }
 
-    @Override
-    public boolean isPersistentProviderSupportConverter() {
-        IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
-        return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingConverters();
-    }
-
-    @Override
-    public boolean isPersistentProviderSupportOrphanRemoval() {
-        IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
-        return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingOrphanRemoval();
-    }
-
     /**
      * Returns the persistence provider or <code>null</code> if no
      */
-    public IPersistenceProvider getPersistenceProviderImplementation() {
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
         if (allSupportedPersistenceProvider == null) {
             initSupportedPersistenceProviderMap();
         }

@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.persistence;
+package org.faktorips.devtools.core.builder;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
@@ -20,7 +20,10 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  */
 public interface IPersistenceProvider {
 
-    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 2.3"; //$NON-NLS-1$
+    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
+
+    public static final String PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_2_2 = "EclipseLink 2.2"; //$NON-NLS-1$
+
     public static final String PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0 = "Generic JPA 2.0"; //$NON-NLS-1$
 
     /**
@@ -51,6 +54,16 @@ public interface IPersistenceProvider {
      * If converters are supported then this method must be used to add the necessary annotation to
      * the given java code fragment.
      */
-    public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
-            IPersistentAttributeInfo persistentAttributeInfo);
+    public JavaCodeFragment getConverterAnnotations(IPersistentAttributeInfo persistentAttributeInfo);
+
+    /**
+     * Returns <code>true</code> if the persistent provider supports the @Index annotation
+     */
+    public boolean isSupportingIndex();
+
+    /**
+     * If index annotations are supported, this method returns the generated index annotation.
+     */
+    public JavaCodeFragment getIndexAnnotations(IPersistentAttributeInfo persistentAttributeInfo);
+
 }

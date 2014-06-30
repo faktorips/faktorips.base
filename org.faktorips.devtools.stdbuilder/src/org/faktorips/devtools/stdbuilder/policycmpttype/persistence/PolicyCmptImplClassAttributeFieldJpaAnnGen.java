@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -25,8 +26,6 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 
@@ -128,17 +127,9 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
             return;
         }
         IIpsArtefactBuilderSet builderSet = getBuilderSet(jpaAttributeInfo.getIpsProject());
-        if (builderSet instanceof StandardBuilderSet) {
-            IPersistenceProvider persistenceProviderImpl = ((StandardBuilderSet)builderSet)
-                    .getPersistenceProviderImplementation();
-            if (persistenceProviderImpl == null) {
-                return;
-            }
-            if (!persistenceProviderImpl.isSupportingConverters()) {
-                return;
-            }
-
-            persistenceProviderImpl.addAnnotationConverter(fragment, jpaAttributeInfo);
+        IPersistenceProvider persistenceProviderImpl = builderSet.getPersistenceProvider();
+        if (persistenceProviderImpl != null && persistenceProviderImpl.isSupportingConverters()) {
+            fragment.append(persistenceProviderImpl.getConverterAnnotations(jpaAttributeInfo));
         }
     }
 

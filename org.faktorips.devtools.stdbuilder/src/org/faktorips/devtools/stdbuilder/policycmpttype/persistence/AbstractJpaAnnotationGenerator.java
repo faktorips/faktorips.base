@@ -10,12 +10,11 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
 /**
@@ -31,12 +30,8 @@ public abstract class AbstractJpaAnnotationGenerator extends AbstractAnnotationG
 
     IPersistenceProvider getPersistenceProvider(IIpsElement ipsElement) {
         IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsElement.getIpsProject().getIpsArtefactBuilderSet();
-        if (ipsArtefactBuilderSet instanceof StandardBuilderSet) {
-            StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
-            IPersistenceProvider persistenceProviderImpl = standardBuilderSet.getPersistenceProviderImplementation();
-            return persistenceProviderImpl;
-        }
-        return null;
+        IPersistenceProvider persistenceProviderImpl = ipsArtefactBuilderSet.getPersistenceProvider();
+        return persistenceProviderImpl;
     }
 
     protected abstract boolean isGenerateAnnotationForInternal(IIpsElement ipsElement);

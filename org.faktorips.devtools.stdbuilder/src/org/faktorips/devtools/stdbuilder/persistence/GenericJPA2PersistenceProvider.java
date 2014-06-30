@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 
 /**
@@ -41,8 +42,17 @@ public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
     }
 
     @Override
-    public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
-            IPersistentAttributeInfo persistentAttributeInfo) {
+    public JavaCodeFragment getConverterAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isSupportingIndex() {
+        return false;
+    }
+
+    @Override
+    public JavaCodeFragment getIndexAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
         throw new UnsupportedOperationException();
     }
 

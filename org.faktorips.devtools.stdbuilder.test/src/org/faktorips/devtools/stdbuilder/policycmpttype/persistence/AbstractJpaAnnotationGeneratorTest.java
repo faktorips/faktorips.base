@@ -16,10 +16,10 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class AbstractJpaAnnotationGeneratorTest {
 
     @Test
     public void testgetPersistenceProvider() {
-        when(builderSet.getPersistenceProviderImplementation()).thenReturn(expectedPersistenceProvider);
+        when(builderSet.getPersistenceProvider()).thenReturn(expectedPersistenceProvider);
         IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer);
 
         assertEquals(expectedPersistenceProvider, persistenceProvider);
@@ -73,7 +73,7 @@ public class AbstractJpaAnnotationGeneratorTest {
 
     @Test
     public void testIsGenerateAnnotationFor_TrueForInternal() {
-        when(builderSet.getPersistenceProviderImplementation()).thenReturn(expectedPersistenceProvider);
+        when(builderSet.getPersistenceProvider()).thenReturn(expectedPersistenceProvider);
         doReturn(true).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsPartContainer);
 
         boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(modelNode);
@@ -83,7 +83,7 @@ public class AbstractJpaAnnotationGeneratorTest {
 
     @Test
     public void testIsGenerateAnnotationFor__FalseForInternal() {
-        when(builderSet.getPersistenceProviderImplementation()).thenReturn(expectedPersistenceProvider);
+        when(builderSet.getPersistenceProvider()).thenReturn(expectedPersistenceProvider);
         doReturn(false).when(jpaAnnotationGenerator).isGenerateAnnotationForInternal(ipsPartContainer);
 
         boolean result = jpaAnnotationGenerator.isGenerateAnnotationFor(modelNode);

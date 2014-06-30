@@ -850,7 +850,8 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
                     IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
 
             String labelText = Messages.AssociationEditDialog_labelOrphanRemoval;
-            if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportOrphanRemoval()) {
+            if (ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() != null
+                    && ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingOrphanRemoval()) {
                 createCheckbox(otherPropsComposite, labelText, IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL);
             } else {
                 Label label = getToolkit().createFormLabel(otherPropsComposite, labelText);
