@@ -154,7 +154,7 @@ public class XPolicyCmptClass extends XType {
     @Override
     public LinkedHashSet<String> getImplementedInterfaces() {
         LinkedHashSet<String> list = super.getImplementedInterfaces();
-        if (isGenerateSerializablePolicyCmptsSupport()) {
+        if (!hasSupertype() && isGenerateSerializablePolicyCmptsSupport()) {
             list.add(addImport(Serializable.class));
         }
         return list;

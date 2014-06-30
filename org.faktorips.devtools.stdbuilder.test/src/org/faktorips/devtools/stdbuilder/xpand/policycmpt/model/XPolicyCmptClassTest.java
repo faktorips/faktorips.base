@@ -419,8 +419,9 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetImplementedInterfaces_WithSerializableSupport() {
+    public void testGetImplementedInterfaces_WithSerializableSupportWithoutSupertype() {
         when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        when(type.hasSupertype()).thenReturn(false);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
@@ -428,8 +429,29 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetImplementedInterfaces_WithoutSerializableSupport() {
+    public void testGetImplementedInterfaces_WithSerializableSupportWithSupertype() {
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
+        assertFalse(interfaces.contains("Serializable"));
+    }
+
+    @Test
+    public void testGetImplementedInterfaces_WithoutSerializableSupportWithSupertype() {
         when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        when(type.hasSupertype()).thenReturn(true);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
+        assertFalse(interfaces.contains("Serializable"));
+    }
+
+    @Test
+    public void testGetImplementedInterfaces_WithoutSerializableSupportWithoutSupertype() {
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        when(type.hasSupertype()).thenReturn(false);
         XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
