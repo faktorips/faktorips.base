@@ -21,6 +21,8 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
  */
 public class GenericJPA2PersistenceProvider implements IPersistenceProvider {
 
+    public static final String ID_GENERIC_JPA_2 = "Generic JPA 2.0"; //$NON-NLS-1$
+
     @Override
     public boolean isSupportingConverters() {
         return false;

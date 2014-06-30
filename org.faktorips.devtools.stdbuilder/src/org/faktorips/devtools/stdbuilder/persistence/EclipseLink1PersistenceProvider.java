@@ -22,6 +22,8 @@ import org.faktorips.util.StringUtil;
  */
 public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
 
+    public static final String ID_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
+
     // orphanRemoval annotation constants
     private static final String IMPORT_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned"; //$NON-NLS-1$
     private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned"; //$NON-NLS-1$

@@ -59,14 +59,16 @@ public class AbstractJpaAnnotationGeneratorTest {
     @Test
     public void testgetPersistenceProvider() {
         when(builderSet.getPersistenceProvider()).thenReturn(expectedPersistenceProvider);
-        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer);
+        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer
+                .getIpsProject());
 
         assertEquals(expectedPersistenceProvider, persistenceProvider);
     }
 
     @Test
     public void testgetPersistentProvider_returnNull() {
-        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer);
+        IPersistenceProvider persistenceProvider = jpaAnnotationGenerator.getPersistenceProvider(ipsPartContainer
+                .getIpsProject());
 
         assertEquals(null, persistenceProvider);
     }
