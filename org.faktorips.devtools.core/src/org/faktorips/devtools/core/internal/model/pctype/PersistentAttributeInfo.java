@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistableTypeConverter;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -284,6 +285,17 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
             msgList.add(new Message(MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH, NLS.bind(
                     Messages.PersistentAttributeInfo_msgColumnNameLengthExceedsMaximumLength, tableColumnName.length(),
                     maxColumnNameLenght), Message.ERROR, this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+        }
+
+        validateIndexName(msgList);
+    }
+
+    private void validateIndexName(MessageList msgList) {
+        if (!StringUtils.isBlank(indexName)) {
+            if (!PersistenceUtil.isValidDatabaseIdentifier(indexName)) {
+                String text = NLS.bind(Messages.PersistentAttributeInfo_msgIndexNameIsInvalid, indexName);
+                msgList.add(Message.newError(MSGCODE_INDEX_NAME_INVALID, text, this, PROPERTY_INDEX_NAME));
+            }
         }
     }
 

@@ -240,6 +240,24 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         attribute.setOverwrite(true);
         ml = persAttrInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+    }
 
+    @Test
+    public void testValidateIndexName() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        pAttInfo.setIndexName("");
+
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName("INVALID INDEX_NAME");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName("INVALID_INDEX_NAME");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
     }
 }
