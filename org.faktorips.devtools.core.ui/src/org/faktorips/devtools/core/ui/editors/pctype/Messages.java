@@ -220,6 +220,8 @@ public class Messages extends NLS {
 
     public static String PersistentAttributeSection_labelConverter;
 
+    public static String PersistentAttributeSection_labelIndexName;
+
     public static String PersistentAttributeSection_labelNullable;
 
     public static String PersistentAttributeSection_labelPrecision;

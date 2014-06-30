@@ -52,9 +52,9 @@ import org.faktorips.util.message.MessageList;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
-    private ResourceManager resourceManager;
-
     private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
+
+    private ResourceManager resourceManager;
 
     static {
         columnProperties.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME,
@@ -75,6 +75,8 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 Messages.PersistentAttributeSection_labelColumnDefinition));
         columnProperties.put(8, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER,
                 Messages.PersistentAttributeSection_labelConverter));
+        columnProperties.put(9, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_INDEX_NAME,
+                Messages.PersistentAttributeSection_labelIndexName));
     }
 
     private static class AttrPropertyAndLabel {
@@ -260,7 +262,10 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                     result = StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER.equals(property)) {
                     result = StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
+                } else if (IPersistentAttributeInfo.PROPERTY_INDEX_NAME.equals(property)) {
+                    result = StringUtil.unqualifiedName(attributeInfo.getIndexName());
                 }
+
                 return (result == null ? "" : result); //$NON-NLS-1$
             }
 
