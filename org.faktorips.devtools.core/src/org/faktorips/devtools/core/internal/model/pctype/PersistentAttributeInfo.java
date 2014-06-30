@@ -51,6 +51,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
 
     private String converterQualifiedClassName = ""; //$NON-NLS-1$
     private String sqlColumnDefinition = ""; //$NON-NLS-1$
+    private String indexName = ""; //$NON-NLS-1$
 
     private DateTimeMapping temporalMapping = DateTimeMapping.DATE_ONLY;
 
@@ -104,6 +105,11 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     @Override
     public String getSqlColumnDefinition() {
         return sqlColumnDefinition;
+    }
+
+    @Override
+    public String getIndexName() {
+        return indexName;
     }
 
     @Override
@@ -178,6 +184,13 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     @Override
+    public void setIndexName(String newIndexName) {
+        String oldIndexName = indexName;
+        indexName = newIndexName;
+        valueChanged(oldIndexName, indexName);
+    }
+
+    @Override
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
         return (IPolicyCmptTypeAttribute)policyComponentTypeAttribute;
     }
@@ -219,6 +232,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         temporalMapping = DateTimeMapping.valueOf(element.getAttribute(PROPERTY_TEMPORAL_MAPPING));
         sqlColumnDefinition = element.getAttribute(PROPERTY_SQL_COLUMN_DEFINITION);
         converterQualifiedClassName = element.getAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
+        indexName = element.getAttribute(PROPERTY_INDEX_NAME);
     }
 
     @Override
@@ -234,6 +248,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         element.setAttribute(PROPERTY_TEMPORAL_MAPPING, "" + temporalMapping); //$NON-NLS-1$
         element.setAttribute(PROPERTY_SQL_COLUMN_DEFINITION, "" + sqlColumnDefinition); //$NON-NLS-1$
         element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, "" + converterQualifiedClassName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_INDEX_NAME, "" + indexName); //$NON-NLS-1$
     }
 
     @Override

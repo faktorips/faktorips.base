@@ -84,6 +84,11 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public final static String PROPERTY_SQL_COLUMN_DEFINITION = "sqlColumnDefinition"; //$NON-NLS-1$
 
     /**
+     * The name of a property that indicates the index name.
+     */
+    public final static String PROPERTY_INDEX_NAME = "indexName"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public final static String MSGCODE_PREFIX = "PERSISTENCEATTRIBUTE-"; //$NON-NLS-1$
@@ -205,6 +210,16 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * when generating the DDL for the column.
      */
     public void setSqlColumnDefinition(String sqlColumnDefinition);
+
+    /**
+     * Returns the name of the given index.
+     */
+    public String getIndexName();
+
+    /**
+     * Sets the oldIndexName to the value of the newIndexName.
+     */
+    public void setIndexName(String newIndexName);
 
     /**
      * Returns the qualified class name of the converter for this column.
