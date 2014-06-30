@@ -216,6 +216,11 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     @Override
+    public boolean isIndexNameDefined() {
+        return StringUtils.isNotEmpty(indexName);
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(XML_TAG);
     }
@@ -291,7 +296,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     private void validateIndexName(MessageList msgList) {
-        if (!StringUtils.isBlank(indexName)) {
+        if (isIndexNameDefined()) {
             if (!PersistenceUtil.isValidDatabaseIdentifier(indexName)) {
                 String text = NLS.bind(Messages.PersistentAttributeInfo_msgIndexNameIsInvalid, indexName);
                 msgList.add(Message.newError(MSGCODE_INDEX_NAME_INVALID, text, this, PROPERTY_INDEX_NAME));

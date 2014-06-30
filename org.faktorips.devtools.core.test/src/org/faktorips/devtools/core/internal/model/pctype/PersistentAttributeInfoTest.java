@@ -250,12 +250,22 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         MessageList ml = pAttInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
 
+        pAttInfo.setIndexName(" ");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
         pAttInfo.setIndexName("INVALID INDEX_NAME");
 
         ml = pAttInfo.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
 
-        pAttInfo.setIndexName("INVALID_INDEX_NAME");
+        pAttInfo.setIndexName(" INVALID_INDEX_NAME ");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName("VALID_INDEX_NAME");
 
         ml = pAttInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));

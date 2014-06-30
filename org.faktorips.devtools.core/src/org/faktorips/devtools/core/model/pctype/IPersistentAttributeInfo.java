@@ -275,6 +275,11 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public void setTransient(boolean transientAttribute);
 
     /**
+     * Returns <code>true</code> if the attribute has set an index name.
+     */
+    boolean isIndexNameDefined();
+
+    /**
      * Tags a temporal attribute for date only, time only or time-stamp (date and time) usage.
      */
     public enum DateTimeMapping {
