@@ -152,6 +152,15 @@ public class XPolicyCmptClass extends XType {
     }
 
     @Override
+    public LinkedHashSet<String> getImplementedInterfaces() {
+        LinkedHashSet<String> list = super.getImplementedInterfaces();
+        if (isGenerateSerializablePolicyCmptsSupport()) {
+            list.add(addImport(Serializable.class));
+        }
+        return list;
+    }
+
+    @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<String>();
         if (isFirstConfigurableInHierarchy()) {
@@ -178,9 +187,6 @@ public class XPolicyCmptClass extends XType {
             }
             if (isGenerateChangeSupport()) {
                 extendedInterfaces.add(addImport(INotificationSupport.class));
-            }
-            if (isGenerateSerializablePolicyCmptsSupport()) {
-                extendedInterfaces.add(addImport(Serializable.class));
             }
         }
         if (isDependantType() && (!hasSupertype() || !isSupertypeDependantType())) {
