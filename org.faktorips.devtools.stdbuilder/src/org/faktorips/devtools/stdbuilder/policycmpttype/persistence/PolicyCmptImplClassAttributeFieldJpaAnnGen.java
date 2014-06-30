@@ -13,6 +13,7 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -149,13 +150,14 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
     }
 
     private void createIndexAnnotation(JavaCodeFragment fragment, IPersistentAttributeInfo jpaAttributeInfo) {
-        String indexName = jpaAttributeInfo.getIndexName();
-        if (!indexName.isEmpty()) {
-            fragment.addImport(IMPORT_INDEX);
-            fragment.append(ANNOTATION_INDEX);
-            fragment.append('(');
-            fragment.append("name=\"" + indexName + "\"");
-            fragment.append(')');
+        IPersistenceProvider persistenceProvider = getPersistenceProvider(jpaAttributeInfo);
+        if (persistenceProvider.isSupportingIndex()) {
+            JavaCodeFragment indexAnnotations = persistenceProvider.getIndexAnnotations(jpaAttributeInfo);
+            Set<String> imports = indexAnnotations.getImportDeclaration().getImports();
+            for (String annotationImport : imports) {
+                fragment.addImport(annotationImport);
+            }
+            fragment.append(indexAnnotations.getSourcecode());
         }
 
     }
