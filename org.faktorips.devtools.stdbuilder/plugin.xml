@@ -29,7 +29,8 @@
                label="Use typesafe collections"
                name="useTypesafeCollections"
                type="boolean"/>
-         <builderSetPropertyDef               defaultValue="true"
+         <builderSetPropertyDef               
+         	   defaultValue="true"
                description="Enables the generation of a delta determining mechanism for model objects"
                disableValue="false"
                label="Generate delta support"
@@ -82,7 +83,7 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
                defaultValue="Generic JPA 2.0"
-               description="The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 2.3' and 'Generic JPA 2.0'."
+               description="The persistence provider, which will be used to generate special vendor specific features. Currently supported provider are 'EclipseLink 1.1', 'EclipseLink 2.5' and 'Generic JPA 2.0'."
                label="Persistence Provider"
                name="persistenceProvider"
                type="enum">
@@ -95,7 +96,7 @@
                      value="EclipseLink 1.1">
                </value>
                <value
-                     value="EclipseLink 2.2">
+                     value="EclipseLink 2.5">
                </value>
                <value
                      value="Generic JPA 2.0">

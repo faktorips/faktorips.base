@@ -52,7 +52,7 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
-import org.faktorips.devtools.stdbuilder.persistence.EclipseLink22PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
@@ -439,8 +439,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(2);
         allSupportedPersistenceProvider.put(EclipseLink1PersistenceProvider.ID_ECLIPSE_LINK_1_1,
                 new EclipseLink1PersistenceProvider());
-        allSupportedPersistenceProvider.put(EclipseLink22PersistenceProvider.ID_ECLIPSE_LINK_2_2,
-                new EclipseLink22PersistenceProvider());
+        allSupportedPersistenceProvider.put(EclipseLink25PersistenceProvider.ID_ECLIPSE_LINK_2_5,
+                new EclipseLink25PersistenceProvider());
         allSupportedPersistenceProvider.put(GenericJPA2PersistenceProvider.ID_GENERIC_JPA_2, new GenericJPA2PersistenceProvider());
     }
 

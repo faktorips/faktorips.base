@@ -24,16 +24,16 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class EclipseLink22PersistenceProviderTest {
+public class EclipseLink25PersistenceProviderTest {
 
-    private EclipseLink22PersistenceProvider provider;
+    private EclipseLink25PersistenceProvider provider;
 
     @Mock
     private IPersistentAttributeInfo persistentAttributeInfo;
 
     @Before
     public void setUp() {
-        provider = new EclipseLink22PersistenceProvider();
+        provider = new EclipseLink25PersistenceProvider();
     }
 
     @Test

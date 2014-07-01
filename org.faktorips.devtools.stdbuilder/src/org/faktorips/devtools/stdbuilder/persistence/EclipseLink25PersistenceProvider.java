@@ -13,13 +13,13 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
 
-public class EclipseLink22PersistenceProvider extends EclipseLink1PersistenceProvider {
+public class EclipseLink25PersistenceProvider extends EclipseLink1PersistenceProvider {
 
-    public static final String ID_ECLIPSE_LINK_2_2 = "EclipseLink 2.2"; //$NON-NLS-1$
+    public static final String ID_ECLIPSE_LINK_2_5 = "EclipseLink 2.5"; //$NON-NLS-1$
 
-    private static final String ANNOTATION_INDEX = "org.eclipse.persistence.annotations.Index";
+    private static final String ANNOTATION_INDEX = "org.eclipse.persistence.annotations.Index"; //$NON-NLS-1$
 
-    private static final String NAME_ATTRIBUTE = "name=\"";
+    private static final String NAME_ATTRIBUTE = "name=\""; //$NON-NLS-1$
 
     @Override
     public boolean isSupportingIndex() {
