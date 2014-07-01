@@ -419,9 +419,11 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testGetImplementedInterfaces_WithSerializableSupportWithSupertype() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
         when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        when(modelContext.isGeneratePublishedInterfaces()).thenReturn(true);
+        doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
         assertFalse(interfaces.contains("Serializable"));
@@ -429,9 +431,11 @@ public class XPolicyCmptClassTest {
 
     @Test
     public void testGetImplementedInterfaces_WithoutSerializableSupportWithSupertype() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
         when(type.hasSupertype()).thenReturn(true);
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        when(modelContext.isGeneratePublishedInterfaces()).thenReturn(true);
+        doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
         assertFalse(interfaces.contains("Serializable"));
