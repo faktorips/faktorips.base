@@ -85,7 +85,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
 
             try {
-                if (!association.getPersistenceAssociatonInfo().isValid(association.getIpsProject())) {
+                IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
+                if (!persistenceAssociatonInfo.isValid(association.getIpsProject())) {
                     return fragment;
                 }
 
@@ -96,18 +97,18 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
 
                 IIpsArtefactBuilderSet ipsArtefactBuilderSet = xPolicyAssociation.getIpsProject()
                         .getIpsArtefactBuilderSet();
-                IPersistenceProvider persistenceProviderImpl = ipsArtefactBuilderSet.getPersistenceProvider();
-                if (persistenceProviderImpl == null) {
+                IPersistenceProvider persistenceProvider = ipsArtefactBuilderSet.getPersistenceProvider();
+                if (persistenceProvider == null) {
                     return fragment;
                 }
 
                 // add import and annotation depending on the relationship type (e.g. oneToMany)
                 RelationshipType relationShip = RelationshipType.UNKNOWN;
                 if (xInverseAssociation != null) {
-                    relationShip = association.getPersistenceAssociatonInfo().evalBidirectionalRelationShipType(
-                            xInverseAssociation.getAssociation());
+                    relationShip = persistenceAssociatonInfo.evalBidirectionalRelationShipType(xInverseAssociation
+                            .getAssociation());
                 } else {
-                    relationShip = association.getPersistenceAssociatonInfo().evalUnidirectionalRelationShipType();
+                    relationShip = persistenceAssociatonInfo.evalUnidirectionalRelationShipType();
                 }
                 if (relationShip == RelationshipType.UNKNOWN) {
                     throw new RuntimeException("Error evaluation the relationship type!");
@@ -124,14 +125,15 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
                 addAnnotationAttributeCascadeType(fragment, attributesToAppend, association);
                 addAnnotationAttributeFetch(fragment, attributesToAppend, association);
                 addAnnotationAttributesTargetEntity(attributesToAppend, xPolicyAssociation);
-                addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend, association);
+                addAnnotationAttributeOrphanRemoval(persistenceProvider, attributesToAppend, association);
                 appendAllAttributes(fragment, attributesToAppend);
 
                 // evaluate further attributes depending on the relationship type
-                addAnnotationFor(persistenceProviderImpl, fragment, association);
+                addAnnotationFor(persistenceProvider, fragment, association);
 
                 // add special annotation in case of join table needed
                 addAnnotationJoinTable(fragment, association);
+                addAnnotationIndex(persistenceProvider, fragment, persistenceAssociatonInfo);
             } catch (CoreException e) {
                 StdBuilderPlugin.log(e);
             }
@@ -399,6 +401,14 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             return targetPolicyCmptType.isPersistentEnabled();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
+        }
+    }
+
+    private void addAnnotationIndex(IPersistenceProvider persistenceProvider,
+            JavaCodeFragment fragment,
+            IPersistentAssociationInfo persistenceAssociatonInfo) {
+        if (persistenceProvider.isSupportingIndex()) {
+            fragment.append(persistenceProvider.getIndexAnnotations(persistenceAssociatonInfo));
         }
     }
 

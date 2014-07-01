@@ -33,11 +33,8 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.pctype.PersistentAssociationInfo;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
-import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.FetchType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -51,19 +48,15 @@ import org.faktorips.devtools.core.ui.binding.ButtonTextBinding;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.EnableBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
-import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
-import org.faktorips.devtools.core.ui.controller.fields.ComboField;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
-import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.PcTypeRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.util.QNameUtil;
-import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -83,15 +76,14 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private final IPolicyCmptTypeAssociation association;
 
     private final ExtensionPropertyControlFactory extFactory;
-    private IPolicyCmptTypeAssociation inverseAssociation;
-    private Composite joinColumnComposite;
-    private Composite cascadeTypesComposite;
 
     // the association that matches this when the dialog is opened. We need to update this
     // association in case of changes to the matching association.
     private IProductCmptTypeAssociation oldMatchingAssociation;
 
     private final PmoPolicyCmptTypeAssociation pmoAssociation;
+
+    private AssociationPersistenceTab persistenceTabItem;
 
     public AssociationEditDialog(IPolicyCmptTypeAssociation relation2, Shell parentShell) {
         super(relation2, parentShell, Messages.AssociationEditDialog_title, true);
@@ -100,7 +92,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         initialPluralName = association.getTargetRolePlural();
         ipsProject = association.getIpsProject();
         extFactory = new ExtensionPropertyControlFactory(association);
-        searchInverseAssociation();
         pmoAssociation = new PmoPolicyCmptTypeAssociation(association, ipsProject);
 
         try {
@@ -130,14 +121,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         if (messageList.containsErrorMsg()) {
             messageList.add(new Message(StringUtils.EMPTY, Messages.AssociationEditDialog_info_dialogAutoFixErrors,
                     Message.INFO));
-        }
-    }
-
-    private void searchInverseAssociation() {
-        try {
-            inverseAssociation = association.findInverseAssociation(ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
         }
     }
 
@@ -223,10 +206,15 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {
-        if (!ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
-            return;
+        if (ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
+            persistenceTabItem = new AssociationPersistenceTab(tabFolder, association, getBindingContext(), getToolkit());
         }
-        new PersistenceTabItem(tabFolder, SWT.NONE);
+    }
+
+    @Override
+    protected void setDataChangeableThis(boolean changeable) {
+        super.setDataChangeableThis(changeable);
+        persistenceTabItem.setDataChangeable(changeable);
     }
 
     @Override
@@ -697,255 +685,6 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
             String[] input = associationsNames.toArray(new String[associationsNames.size()]);
             configuringAssociationField.setInput(input);
-        }
-    }
-
-    private class PersistenceTabItem {
-
-        private final TabItem tabItem;
-
-        public PersistenceTabItem(TabFolder parent, int style) {
-            tabItem = new TabItem(parent, style);
-            tabItem.setText(Messages.AssociationEditDialog_labelPersistence);
-            Composite c = createTabItemComposite(parent, 1, false);
-            tabItem.setControl(c);
-            createPersistenceTabItem(c);
-        }
-
-        private void createPersistenceTabItem(Composite c) {
-            if (!ipsProject.getReadOnlyProperties().isPersistenceSupportEnabled()) {
-                return;
-            }
-
-            final Checkbox checkTransient = getToolkit().createCheckbox(c,
-                    Messages.AssociationEditDialog_labelAssociationIsTransient);
-            checkTransient.setEnabled(false);
-            getBindingContext().bindContent(checkTransient, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_TRANSIENT);
-
-            final Composite allPersistentProps = getToolkit().createGridComposite(c, 1, true, true);
-
-            getToolkit().createVerticalSpacer(allPersistentProps, 12);
-            final Composite joinTableComposite = createGroupJoinTable(allPersistentProps);
-
-            getToolkit().createVerticalSpacer(allPersistentProps, 12);
-            final Group groupForeignKey = createGroupForeignKey(allPersistentProps);
-
-            getToolkit().createVerticalSpacer(allPersistentProps, 12);
-            createGroupOtherPersistentProps(allPersistentProps);
-
-            getToolkit().createVerticalSpacer(allPersistentProps, 12);
-            createGroupCascadeType(allPersistentProps);
-
-            // persistence is enabled initialize enable / disable bindings
-            // disable all persistent controls if attribute is marked as transient
-            getBindingContext().add(
-                    new PropertyChangeBinding<Boolean>(allPersistentProps, association.getPersistenceAssociatonInfo(),
-                            IPersistentAssociationInfo.PROPERTY_TRANSIENT, Boolean.TYPE) {
-                        @Override
-                        public void propertyChanged(Boolean old, Boolean newValue) {
-                            IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
-                            boolean persistEnabled = isPersistEnabled(associationInfo);
-                            if (!persistEnabled) {
-                                getToolkit().setDataChangeable(checkTransient, false);
-                                getToolkit().setDataChangeable(getControl(), false);
-                            } else {
-                                getToolkit().setDataChangeable(getControl(), !associationInfo.isTransient());
-                            }
-                        }
-                    });
-            // disable join table
-            getBindingContext().add(
-                    new PropertyChangeBinding<Boolean>(joinTableComposite, association.getPersistenceAssociatonInfo(),
-                            IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.TYPE) {
-                        @Override
-                        public void propertyChanged(Boolean old, Boolean newValue) {
-                            IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
-                            boolean persistEnabled = isPersistEnabled(associationInfo);
-                            if (associationInfo.isTransient()) {
-                                return;
-                            }
-                            boolean ownerOfManyToManyAssociation = associationInfo.isOwnerOfManyToManyAssociation();
-                            try {
-                                boolean joinTableRequired = associationInfo.isJoinTableRequired();
-                                getToolkit().setDataChangeable(groupForeignKey,
-                                        persistEnabled && ownerOfManyToManyAssociation && !joinTableRequired);
-                                enableOrDisableForeignKeyColumn();
-                            } catch (CoreException e) {
-                                IpsPlugin.logAndShowErrorDialog(e);
-                            }
-                        }
-                    });
-            // disable cascade type checkboxes
-            getBindingContext().add(
-                    new PropertyChangeBinding<Boolean>(cascadeTypesComposite, association
-                            .getPersistenceAssociatonInfo(),
-                            IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT, Boolean.TYPE) {
-                        @Override
-                        public void propertyChanged(Boolean old, Boolean newValue) {
-                            IPersistentAssociationInfo associationInfo = (IPersistentAssociationInfo)getObject();
-                            boolean persistEnabled = isPersistEnabled(associationInfo);
-                            if (!persistEnabled) {
-                                getToolkit().setDataChangeable(getControl(), false);
-                                return;
-                            }
-                            getToolkit().setDataChangeable(getControl(),
-                                    associationInfo.isCascadeTypeOverwriteDefault());
-                        }
-                    });
-        }
-
-        private boolean isPersistEnabled(IPersistentAssociationInfo associationInfo) {
-            if (!isDataChangeable()) {
-                return false;
-            }
-            return associationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType().isPersistentEnabled();
-        }
-
-        private Composite createGroupJoinTable(Composite allPersistentProps) {
-            Group groupJoinTable = getToolkit().createGroup(allPersistentProps,
-                    Messages.AssociationEditDialog_labelJoinTable);
-            GridData layoutData = (GridData)groupJoinTable.getLayoutData();
-            layoutData.grabExcessVerticalSpace = false;
-
-            Checkbox checkOwner = getToolkit().createCheckbox(groupJoinTable,
-                    Messages.AssociationEditDialog_labelAssociationIsOwningSideOfManyToMany);
-            getBindingContext().bindContent(checkOwner, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION);
-
-            Composite joinTableComposte = getToolkit().createLabelEditColumnComposite(groupJoinTable);
-            joinTableComposte.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-            getToolkit().createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelJoinTableName);
-            Text joinTableNameText = getToolkit().createText(joinTableComposte);
-            getBindingContext().bindContent(joinTableNameText, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME);
-
-            getToolkit().createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelSourceColumnName);
-            Text sourceColumnNameText = getToolkit().createText(joinTableComposte);
-            getBindingContext().bindContent(sourceColumnNameText, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME);
-
-            getToolkit().createFormLabel(joinTableComposte, Messages.AssociationEditDialog_labelTargetColumnName);
-            Text targetColumnNameText = getToolkit().createText(joinTableComposte);
-            getBindingContext().bindContent(targetColumnNameText, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME);
-
-            return joinTableComposte;
-        }
-
-        private Group createGroupOtherPersistentProps(Composite allPersistentProps) {
-            Group groupOtherProps = getToolkit().createGroup(allPersistentProps,
-                    Messages.AssociationEditDialog_labelProperties);
-            GridData layoutData = (GridData)groupOtherProps.getLayoutData();
-            layoutData.grabExcessVerticalSpace = false;
-
-            Composite otherPropsComposite = getToolkit().createLabelEditColumnComposite(groupOtherProps);
-            otherPropsComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-            getToolkit().createFormLabel(otherPropsComposite, Messages.AssociationEditDialog_labelFetchType);
-            Combo fetchTypeCombo = getToolkit().createCombo(otherPropsComposite);
-            ComboField<FetchType> fetchTypeField = new EnumField<FetchType>(fetchTypeCombo, FetchType.class);
-            getBindingContext().bindContent(fetchTypeField, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_FETCH_TYPE);
-
-            String labelText = Messages.AssociationEditDialog_labelOrphanRemoval;
-            if (ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() != null
-                    && ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingOrphanRemoval()) {
-                createCheckbox(otherPropsComposite, labelText, IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL);
-            } else {
-                Label label = getToolkit().createFormLabel(otherPropsComposite, labelText);
-                Label text = getToolkit().createLabel(otherPropsComposite,
-                        Messages.AssociationEditDialog_textNotSupportedByPersistenceProvider);
-                label.setEnabled(false);
-                text.setEnabled(false);
-            }
-
-            return groupOtherProps;
-        }
-
-        private void createCheckbox(Composite composite, String label, String property) {
-            getToolkit().createFormLabel(composite, label);
-            getBindingContext().bindContent(getToolkit().createCheckbox(composite),
-                    association.getPersistenceAssociatonInfo(), property);
-        }
-
-        private Group createGroupForeignKey(Composite allPersistentProps) {
-            Group groupJoinColumn = getToolkit().createGroup(allPersistentProps,
-                    Messages.AssociationEditDialog_labelForeignKeyJoinColumn);
-            GridData layoutData = (GridData)groupJoinColumn.getLayoutData();
-            layoutData.grabExcessVerticalSpace = false;
-
-            joinColumnComposite = getToolkit().createLabelEditColumnComposite(groupJoinColumn);
-            joinColumnComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-            getToolkit().createFormLabel(joinColumnComposite, Messages.AssociationEditDialog_labelForeignKeyColumnName);
-            Text joinColumnNameText = getToolkit().createText(joinColumnComposite);
-            getBindingContext().bindContent(joinColumnNameText, association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME);
-
-            String labelText = Messages.AssociationEditDialog_labelJoinColumnNameNullable;
-            createCheckbox(joinColumnComposite, labelText, IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE);
-
-            PersistentAssociationInfo persistentAssociationInfo = (PersistentAssociationInfo)association
-                    .getPersistenceAssociatonInfo();
-            if (!persistentAssociationInfo.isOwnerOfManyToManyAssociation()) {
-                // special information about foreign key column
-                if (persistentAssociationInfo.isForeignKeyColumnDefinedOnTargetSide(inverseAssociation)) {
-                    getToolkit().createLabel(groupJoinColumn,
-                            Messages.AssociationEditDialog_noteForeignKeyColumnDefinedInInverseAssociation);
-                } else if (persistentAssociationInfo.isForeignKeyColumnCreatedOnTargetSide(inverseAssociation)) {
-                    getToolkit().createLabel(
-                            groupJoinColumn,
-                            NLS.bind(Messages.AssociationEditDialog_noteForeignKeyIsColumnOfTheTargetEntity,
-                                    StringUtil.unqualifiedName(association.getTarget())));
-                }
-            }
-            return groupJoinColumn;
-        }
-
-        private void enableOrDisableForeignKeyColumn() {
-            PersistentAssociationInfo persistentAssociationInfo = (PersistentAssociationInfo)association
-                    .getPersistenceAssociatonInfo();
-            boolean foreignKeyDefinedOnTargetSide = persistentAssociationInfo
-                    .isForeignKeyColumnDefinedOnTargetSide(inverseAssociation);
-            if (persistentAssociationInfo.isOwnerOfManyToManyAssociation()) {
-                foreignKeyDefinedOnTargetSide = true;
-            }
-            try {
-                if (persistentAssociationInfo.isJoinTableRequired()) {
-                    return;
-                }
-            } catch (CoreException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            }
-            getToolkit().setDataChangeable(joinColumnComposite, !foreignKeyDefinedOnTargetSide);
-        }
-
-        private Group createGroupCascadeType(Composite parentComposite) {
-            Group group = getToolkit().createGroup(parentComposite, Messages.AssociationEditDialog_labelCascadeType);
-            GridData layoutData = (GridData)group.getLayoutData();
-            layoutData.grabExcessVerticalSpace = false;
-
-            getBindingContext().bindContent(
-                    getToolkit()
-                            .createCheckbox(group, Messages.AssociationEditDialog_labelOverwriteDefaultCascadeTypes),
-                    association.getPersistenceAssociatonInfo(),
-                    IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT);
-
-            cascadeTypesComposite = getToolkit().createLabelEditColumnComposite(group);
-            cascadeTypesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
-            createCheckbox(cascadeTypesComposite, Messages.AssociationEditDialog_labelCascadeTypePersist,
-                    IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_PERSIST);
-            createCheckbox(cascadeTypesComposite, Messages.AssociationEditDialog_labelCascadeTypeMerge,
-                    IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_MERGE);
-            createCheckbox(cascadeTypesComposite, Messages.AssociationEditDialog_labelCascadeTypeRemove,
-                    IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REMOVE);
-            createCheckbox(cascadeTypesComposite, Messages.AssociationEditDialog_labelCascadeTypeRefresh,
-                    IPersistentAssociationInfo.PROPERTY_CASCADE_TYPE_REFRESH);
-
-            return group;
         }
     }
 }

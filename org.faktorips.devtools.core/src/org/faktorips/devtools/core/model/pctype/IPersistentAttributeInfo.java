@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 
 /**
@@ -22,7 +21,8 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentAttributeInfo extends IIpsObjectPart {
+public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
+
     /** The XML tag for this IPS object part. */
     public static final String XML_TAG = "PersistenceAttribute"; //$NON-NLS-1$
 
@@ -84,11 +84,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public static final String PROPERTY_SQL_COLUMN_DEFINITION = "sqlColumnDefinition"; //$NON-NLS-1$
 
     /**
-     * The name of a property that indicates the index name.
-     */
-    public static final String PROPERTY_INDEX_NAME = "indexName"; //$NON-NLS-1$
-
-    /**
      * Prefix for all message codes of this class.
      */
     public static final String MSGCODE_PREFIX = "PERSISTENCEATTRIBUTE-"; //$NON-NLS-1$
@@ -118,11 +113,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      */
     public static final String MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY = MSGCODE_PREFIX
             + "PersistenceattrColnameMustBeEmpty"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the index name is invalid.
-     */
-    public static final String MSGCODE_INDEX_NAME_INVALID = MSGCODE_PREFIX + "IndexNameInvalid"; //$NON-NLS-1$
 
     /**
      * Returns the {@link IPolicyCmptTypeAttribute} this info object belongs to.
@@ -217,16 +207,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
     public void setSqlColumnDefinition(String sqlColumnDefinition);
 
     /**
-     * Returns the name of the given index.
-     */
-    public String getIndexName();
-
-    /**
-     * Sets the oldIndexName to the value of the newIndexName.
-     */
-    public void setIndexName(String newIndexName);
-
-    /**
      * Returns the qualified class name of the converter for this column.
      */
     public String getConverterQualifiedClassName();
@@ -273,11 +253,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * the policy component is not transient and will be persists.
      */
     public void setTransient(boolean transientAttribute);
-
-    /**
-     * Returns <code>true</code> if the attribute has set an index name.
-     */
-    boolean isIndexNameDefined();
 
     /**
      * Tags a temporal attribute for date only, time only or time-stamp (date and time) usage.

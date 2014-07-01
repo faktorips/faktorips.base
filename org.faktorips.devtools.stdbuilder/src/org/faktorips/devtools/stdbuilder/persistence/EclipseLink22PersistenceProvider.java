@@ -11,7 +11,7 @@ package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
 
 public class EclipseLink22PersistenceProvider extends EclipseLink1PersistenceProvider {
 
@@ -27,7 +27,7 @@ public class EclipseLink22PersistenceProvider extends EclipseLink1PersistencePro
     }
 
     @Override
-    public JavaCodeFragment getIndexAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
+    public JavaCodeFragment getIndexAnnotations(IPersistentTypePartInfo persistentAttributeInfo) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
         if (persistentAttributeInfo.isIndexNameDefined()) {
             String indexName = persistentAttributeInfo.getIndexName();

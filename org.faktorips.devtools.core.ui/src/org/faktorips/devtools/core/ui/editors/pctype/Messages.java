@@ -212,6 +212,8 @@ public class Messages extends NLS {
 
     public static String PersistentAssociationSection_titleAssociations;
 
+    public static String PersistentAssociationSection_labelIndexName;
+
     public static String PersistentAttributeSection_labelAttributeName;
 
     public static String PersistentAttributeSection_labelColumnDefinition;

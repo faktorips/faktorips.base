@@ -13,6 +13,7 @@ package org.faktorips.devtools.stdbuilder.persistence;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -83,7 +84,7 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     }
 
     @Override
-    public JavaCodeFragment getIndexAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
+    public JavaCodeFragment getIndexAnnotations(IPersistentTypePartInfo persistentAttributeInfo) {
         throw new UnsupportedOperationException();
     }
 }

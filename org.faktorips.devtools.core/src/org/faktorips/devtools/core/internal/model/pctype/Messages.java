@@ -45,7 +45,7 @@ public class Messages extends NLS {
     public static String PersistentAttributeInfo_msgColumnScaleExceedsTheLimit;
     public static String PersistentAttributeInfo_msgColumnSizeExceedsTheLimit;
     public static String PersistentAttributeInfo_msgEmptyColumnName;
-    public static String PersistentAttributeInfo_msgIndexNameIsInvalid;
+    public static String PersistentInfo_msgIndexNameIsInvalid;
 
     public static String PersistentTypeInfo_msgDiscriminatorAlreadyDefined;
     public static String PersistentTypeInfo_msgDiscriminatorColumnNameIsInvalid;

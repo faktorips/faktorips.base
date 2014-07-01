@@ -14,8 +14,6 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -23,11 +21,9 @@ import org.faktorips.devtools.core.model.pctype.IPersistableTypeConverter;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -38,7 +34,7 @@ import org.w3c.dom.Element;
  * 
  * @author Roman Grutza
  */
-public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPersistentAttributeInfo {
+public class PersistentAttributeInfo extends PersistentTypePartInfo implements IPersistentAttributeInfo {
 
     private boolean transientAttribute = false;
     private String tableColumnName = ""; //$NON-NLS-1$
@@ -51,16 +47,16 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     private int tableColumnScale = 2;
 
     private String converterQualifiedClassName = ""; //$NON-NLS-1$
+
     private String sqlColumnDefinition = ""; //$NON-NLS-1$
-    private String indexName = ""; //$NON-NLS-1$
 
     private DateTimeMapping temporalMapping = DateTimeMapping.DATE_ONLY;
 
-    private IIpsObjectPart policyComponentTypeAttribute;
+    private IPolicyCmptTypeAttribute policyComponentTypeAttribute;
 
-    public PersistentAttributeInfo(IIpsObjectPart ipsObject, String id) {
-        super(ipsObject, id);
-        policyComponentTypeAttribute = ipsObject;
+    public PersistentAttributeInfo(IPolicyCmptTypeAttribute policyComponentTypeAttribute, String id) {
+        super(policyComponentTypeAttribute, id);
+        this.policyComponentTypeAttribute = policyComponentTypeAttribute;
     }
 
     @Override
@@ -106,11 +102,6 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     @Override
     public String getSqlColumnDefinition() {
         return sqlColumnDefinition;
-    }
-
-    @Override
-    public String getIndexName() {
-        return indexName;
     }
 
     @Override
@@ -185,15 +176,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     @Override
-    public void setIndexName(String newIndexName) {
-        String oldIndexName = indexName;
-        indexName = newIndexName;
-        valueChanged(oldIndexName, indexName);
-    }
-
-    @Override
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute() {
-        return (IPolicyCmptTypeAttribute)policyComponentTypeAttribute;
+        return policyComponentTypeAttribute;
     }
 
     @Override
@@ -216,13 +200,8 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
     }
 
     @Override
-    public boolean isIndexNameDefined() {
-        return StringUtils.isNotEmpty(indexName);
-    }
-
-    @Override
-    protected Element createElement(Document doc) {
-        return doc.createElement(XML_TAG);
+    protected String getXmlTag() {
+        return XML_TAG;
     }
 
     @Override
@@ -238,23 +217,21 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
         temporalMapping = DateTimeMapping.valueOf(element.getAttribute(PROPERTY_TEMPORAL_MAPPING));
         sqlColumnDefinition = element.getAttribute(PROPERTY_SQL_COLUMN_DEFINITION);
         converterQualifiedClassName = element.getAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
-        indexName = element.getAttribute(PROPERTY_INDEX_NAME);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientAttribute));
-        element.setAttribute(PROPERTY_TABLE_COLUMN_NAME, "" + tableColumnName); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, "" + tableColumnSize); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, "" + tableColumnScale); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TABLE_COLUMN_PRECISION, "" + tableColumnPrecision); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, "" + tableColumnUnique); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, "" + tableColumnNullable); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TEMPORAL_MAPPING, "" + temporalMapping); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_SQL_COLUMN_DEFINITION, "" + sqlColumnDefinition); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, "" + converterQualifiedClassName); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_INDEX_NAME, "" + indexName); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_TABLE_COLUMN_NAME, tableColumnName);
+        element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, String.valueOf(tableColumnSize));
+        element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, String.valueOf(tableColumnScale));
+        element.setAttribute(PROPERTY_TABLE_COLUMN_PRECISION, String.valueOf(tableColumnPrecision));
+        element.setAttribute(PROPERTY_TABLE_COLUMN_UNIQE, String.valueOf(tableColumnUnique));
+        element.setAttribute(PROPERTY_TABLE_COLUMN_NULLABLE, String.valueOf(tableColumnNullable));
+        element.setAttribute(PROPERTY_TEMPORAL_MAPPING, String.valueOf(temporalMapping));
+        element.setAttribute(PROPERTY_SQL_COLUMN_DEFINITION, sqlColumnDefinition);
+        element.setAttribute(PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME, converterQualifiedClassName);
     }
 
     @Override
@@ -292,16 +269,7 @@ public class PersistentAttributeInfo extends AtomicIpsObjectPart implements IPer
                     maxColumnNameLenght), Message.ERROR, this, IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
 
-        validateIndexName(msgList);
-    }
-
-    private void validateIndexName(MessageList msgList) {
-        if (isIndexNameDefined()) {
-            if (!PersistenceUtil.isValidDatabaseIdentifier(indexName)) {
-                String text = NLS.bind(Messages.PersistentAttributeInfo_msgIndexNameIsInvalid, indexName);
-                msgList.add(Message.newError(MSGCODE_INDEX_NAME_INVALID, text, this, PROPERTY_INDEX_NAME));
-            }
-        }
+        super.validateThis(msgList, ipsProject);
     }
 
     private void validateUsingPersistentOptions(MessageList msgList, IIpsProject ipsProject) {

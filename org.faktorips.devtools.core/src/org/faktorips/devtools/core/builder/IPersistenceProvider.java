@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.builder;
 
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
 
 /**
  * Allows to specify several vendor specific JPA annotations.
@@ -58,6 +59,6 @@ public interface IPersistenceProvider {
     /**
      * If index annotations are supported, this method returns the generated index annotation.
      */
-    public JavaCodeFragment getIndexAnnotations(IPersistentAttributeInfo persistentAttributeInfo);
+    public JavaCodeFragment getIndexAnnotations(IPersistentTypePartInfo persistentAttributeInfo);
 
 }

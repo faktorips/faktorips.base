@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.JFaceResources;
@@ -53,38 +54,30 @@ import org.faktorips.util.message.MessageList;
  */
 public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
-    private ResourceManager resourceManager;
-
-    private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
+    private static final Map<Integer, AttrPropertyAndLabel> COLUMN_PROPERTIES = new HashMap<Integer, AttrPropertyAndLabel>();
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET,
+        COLUMN_PROPERTIES.put(0, new AttrPropertyAndLabel(IAssociation.PROPERTY_TARGET,
                 Messages.PersistentAssociationSection_labelAssociationTarget));
-        columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME,
+        COLUMN_PROPERTIES.put(1, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME,
                 Messages.PersistentAssociationSection_labelJoinTableName));
-        columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
+        COLUMN_PROPERTIES.put(2, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME,
                 Messages.PersistentAssociationSection_labelSourceColumnName));
-        columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
+        COLUMN_PROPERTIES.put(3, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME,
                 Messages.PersistentAssociationSection_labelTargetColumnName));
-        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
+        COLUMN_PROPERTIES.put(4, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME,
                 Messages.PersistentAssociationSection_labelJoinColumnName));
-        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE,
+        COLUMN_PROPERTIES.put(5, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE,
                 Messages.PersistentAssociationSection_labelJoinColumnNullable));
-        columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE,
+        COLUMN_PROPERTIES.put(6, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_FETCH_TYPE,
                 Messages.PersistentAssociationSection_labelFetchType));
-        columnProperties.put(7, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
+        COLUMN_PROPERTIES.put(7, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
                 Messages.PersistentAssociationSection_labelOrphanRemoval));
+        COLUMN_PROPERTIES.put(8, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_INDEX_NAME,
+                Messages.PersistentAssociationSection_labelIndexName));
     }
 
-    private static class AttrPropertyAndLabel {
-        private String property;
-        private String label;
-
-        public AttrPropertyAndLabel(String property, String label) {
-            this.property = property;
-            this.label = label;
-        }
-    }
+    private ResourceManager resourceManager;
 
     public PersistentAssociationSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
         super(ipsObject, parent, null, ExpandableComposite.TITLE_BAR,
@@ -101,6 +94,16 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
             resourceManager = new LocalResourceManager(JFaceResources.getResources());
         }
         return resourceManager;
+    }
+
+    private static class AttrPropertyAndLabel {
+        private String property;
+        private String label;
+
+        public AttrPropertyAndLabel(String property, String label) {
+            this.property = property;
+            this.label = label;
+        }
     }
 
     public class PersistenceAssociationsComposite extends PersistenceComposite {
@@ -126,11 +129,16 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
 
         @Override
         public String[] getColumnHeaders() {
-            String[] result = new String[columnProperties.size()];
-            for (int i = 0; i < columnProperties.size(); i++) {
-                result[i] = columnProperties.get(i).label;
+            String[] result = new String[COLUMN_PROPERTIES.size()];
+            for (int i = 0; i < COLUMN_PROPERTIES.size(); i++) {
+                result[i] = COLUMN_PROPERTIES.get(i).label;
             }
             return result;
+        }
+
+        @Override
+        public ILabelProvider createLabelProvider() {
+            return new PersistentAssociationLabelProvider();
         }
 
         private class PersistentAssociationContentProvider implements IStructuredContentProvider {
@@ -171,7 +179,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                     msgList = persistenceAssociationInfo.getPolicyComponentTypeAssociation().getPolicyCmptType()
                             .getPersistenceTypeInfo().validate(persistenceAssociationInfo.getIpsProject());
                     msgList.add(persistenceAssociationInfo.validate(persistenceAssociationInfo.getIpsProject()));
-                    String property = columnProperties.get(columnIndex).property;
+                    String property = COLUMN_PROPERTIES.get(columnIndex).property;
                     if (property == null) {
                         return null;
                     }
@@ -209,52 +217,63 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                 IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)element;
                 IPersistentAssociationInfo jpaAssociationInfo = association.getPersistenceAssociatonInfo();
 
-                String property = columnProperties.get(columnIndex).property;
-                String result = ""; //$NON-NLS-1$
+                String property = COLUMN_PROPERTIES.get(columnIndex).property;
 
                 boolean joinTableReq = false;
                 boolean foreignKeyColumnReq = false;
                 try {
                     joinTableReq = jpaAssociationInfo.isJoinTableRequired();
                     foreignKeyColumnReq = !jpaAssociationInfo.isForeignKeyColumnDefinedOnTargetSide();
-                } catch (Exception e) {
+                } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
 
-                if (IAssociation.PROPERTY_TARGET.equals(property)) {
-                    result = association.getTarget();
-                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME.equals(property)) {
-                    if (joinTableReq) {
-                        result = jpaAssociationInfo.getJoinTableName();
-                    }
-                } else if (IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME.equals(property)) {
-                    if (joinTableReq) {
-                        result = jpaAssociationInfo.getSourceColumnName();
-                    }
-                } else if (IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME.equals(property)) {
-                    if (joinTableReq) {
-                        result = jpaAssociationInfo.getTargetColumnName();
-                    }
-                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME.equals(property)) {
-                    if (!joinTableReq && foreignKeyColumnReq) {
-                        result = jpaAssociationInfo.getJoinColumnName();
-                    }
-                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE.equals(property)) {
-                    if (!joinTableReq && foreignKeyColumnReq) {
-                        result = Boolean.valueOf(jpaAssociationInfo.isJoinColumnNullable()).toString();
-                    }
-                } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
-                    result = jpaAssociationInfo.getFetchType().toString();
-                } else if (IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL.equals(property)) {
-                    result = Boolean.valueOf(jpaAssociationInfo.isOrphanRemoval()).toString();
-                }
+                String result = getColumnText(association, jpaAssociationInfo, property, joinTableReq,
+                        foreignKeyColumnReq);
                 return (result == null ? "" : result); //$NON-NLS-1$
             }
-        }
 
-        @Override
-        public ILabelProvider createLabelProvider() {
-            return new PersistentAssociationLabelProvider();
+            private String getColumnText(IPolicyCmptTypeAssociation association,
+                    IPersistentAssociationInfo jpaAssociationInfo,
+                    String property,
+                    boolean joinTableReq,
+                    boolean foreignKeyColumnReq) {
+                if (IAssociation.PROPERTY_TARGET.equals(property)) {
+                    return association.getTarget();
+                } else if (joinTableReq) {
+                    return getColumnTextJoinTableReq(jpaAssociationInfo, property);
+                } else if (!joinTableReq && foreignKeyColumnReq) {
+                    return getColumnTextForeignKeyColReq(jpaAssociationInfo, property);
+                } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
+                    return jpaAssociationInfo.getFetchType().toString();
+                } else if (IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL.equals(property)) {
+                    return Boolean.valueOf(jpaAssociationInfo.isOrphanRemoval()).toString();
+                } else {
+                    return StringUtils.EMPTY;
+                }
+            }
+
+            private String getColumnTextForeignKeyColReq(IPersistentAssociationInfo jpaAssociationInfo, String property) {
+                if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NAME.equals(property)) {
+                    return jpaAssociationInfo.getJoinColumnName();
+                } else if (IPersistentAssociationInfo.PROPERTY_JOIN_COLUMN_NULLABLE.equals(property)) {
+                    return Boolean.valueOf(jpaAssociationInfo.isJoinColumnNullable()).toString();
+                } else {
+                    return StringUtils.EMPTY;
+                }
+            }
+
+            private String getColumnTextJoinTableReq(IPersistentAssociationInfo jpaAssociationInfo, String property) {
+                if (IPersistentAssociationInfo.PROPERTY_JOIN_TABLE_NAME.equals(property)) {
+                    return jpaAssociationInfo.getJoinTableName();
+                } else if (IPersistentAssociationInfo.PROPERTY_SOURCE_COLUMN_NAME.equals(property)) {
+                    return jpaAssociationInfo.getSourceColumnName();
+                } else if (IPersistentAssociationInfo.PROPERTY_TARGET_COLUMN_NAME.equals(property)) {
+                    return jpaAssociationInfo.getTargetColumnName();
+                } else {
+                    return StringUtils.EMPTY;
+                }
+            }
         }
 
     }
