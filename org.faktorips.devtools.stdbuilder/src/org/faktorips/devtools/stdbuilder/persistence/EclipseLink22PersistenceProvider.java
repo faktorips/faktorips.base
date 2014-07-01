@@ -29,8 +29,8 @@ public class EclipseLink22PersistenceProvider extends EclipseLink1PersistencePro
     @Override
     public JavaCodeFragment getIndexAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
         JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder();
-        String indexName = persistentAttributeInfo.getIndexName();
         if (persistentAttributeInfo.isIndexNameDefined()) {
+            String indexName = persistentAttributeInfo.getIndexName();
             builder.annotationLn(ANNOTATION_INDEX, NAME_ATTRIBUTE + indexName + "\"");
         }
         return builder.getFragment();
