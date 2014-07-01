@@ -127,10 +127,12 @@ public class EnumParserTest extends AbstractParserTest {
         doReturn(new String[] {}).when(enumDatatypeAdapter).getAllValueIds(false);
         enumParser.setContextType(enumClass);
         when(enumClass.getEnumDatatype()).thenReturn(enumDatatype);
+        when(enumDatatype.getValueName(MY_ENUM_VALUE)).thenReturn(MY_LABEL);
 
         List<IdentifierProposal> proposals = enumParser.getProposals("my");
 
         assertEquals("myEnumValue", proposals.get(0).getText());
+        assertEquals("myEnumValue(" + MY_LABEL + ")", proposals.get(0).getLabel());
         assertEquals(1, proposals.size());
     }
 

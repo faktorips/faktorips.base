@@ -95,7 +95,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	     * @restrainedmodifiable
 	     */
 	     «overrideAnnotationIf(hasSupertype() || configured)»
-	    public void «initialize()» {
+	     public void «initialize()» {
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
 		    «ENDIF-»
