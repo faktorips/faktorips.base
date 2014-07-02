@@ -31,8 +31,6 @@ import org.w3c.dom.Element;
  */
 public class PersistentAssociationInfo extends PersistentTypePartInfo implements IPersistentAssociationInfo {
 
-    private boolean transientAssociation = false;
-
     private boolean ownerOfManyToManyAssociation = false;
 
     private boolean orphanRemoval;
@@ -95,11 +93,6 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     @Override
     public boolean isJoinColumnNullable() {
         return joinColumnNullable;
-    }
-
-    @Override
-    public boolean isTransient() {
-        return transientAssociation;
     }
 
     @Override
@@ -290,13 +283,6 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
         boolean oldValue = joinColumnNullable;
         joinColumnNullable = nullable;
         valueChanged(oldValue, joinColumnNullable);
-    }
-
-    @Override
-    public void setTransient(boolean transientAssociation) {
-        boolean oldValue = this.transientAssociation;
-        this.transientAssociation = transientAssociation;
-        valueChanged(oldValue, transientAssociation);
     }
 
     @Override
@@ -530,7 +516,6 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        transientAssociation = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
         ownerOfManyToManyAssociation = Boolean
                 .valueOf(element.getAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         sourceColumnName = element.getAttribute(PROPERTY_SOURCE_COLUMN_NAME);
@@ -555,7 +540,6 @@ public class PersistentAssociationInfo extends PersistentTypePartInfo implements
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientAssociation));
         element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.toString(ownerOfManyToManyAssociation));
         element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, sourceColumnName);
         element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, targetColumnName);

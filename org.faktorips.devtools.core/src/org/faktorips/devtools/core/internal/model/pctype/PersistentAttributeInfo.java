@@ -36,7 +36,6 @@ import org.w3c.dom.Element;
  */
 public class PersistentAttributeInfo extends PersistentTypePartInfo implements IPersistentAttributeInfo {
 
-    private boolean transientAttribute = false;
     private String tableColumnName = ""; //$NON-NLS-1$
 
     private boolean tableColumnNullable = true;
@@ -57,11 +56,6 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
     public PersistentAttributeInfo(IPolicyCmptTypeAttribute policyComponentTypeAttribute, String id) {
         super(policyComponentTypeAttribute, id);
         this.policyComponentTypeAttribute = policyComponentTypeAttribute;
-    }
-
-    @Override
-    public boolean isTransient() {
-        return transientAttribute;
     }
 
     @Override
@@ -153,13 +147,6 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
     }
 
     @Override
-    public void setTransient(boolean transientAttribute) {
-        boolean oldValue = this.transientAttribute;
-        this.transientAttribute = transientAttribute;
-        valueChanged(oldValue, transientAttribute);
-    }
-
-    @Override
     public void setConverterQualifiedClassName(String converterQualifiedClassName) {
         ArgumentCheck.notNull(converterQualifiedClassName);
         String oldValue = this.converterQualifiedClassName;
@@ -207,7 +194,6 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        transientAttribute = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
         tableColumnName = element.getAttribute(PROPERTY_TABLE_COLUMN_NAME);
         tableColumnSize = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SIZE));
         tableColumnScale = Integer.valueOf(element.getAttribute(PROPERTY_TABLE_COLUMN_SCALE));
@@ -222,7 +208,6 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientAttribute));
         element.setAttribute(PROPERTY_TABLE_COLUMN_NAME, tableColumnName);
         element.setAttribute(PROPERTY_TABLE_COLUMN_SIZE, String.valueOf(tableColumnSize));
         element.setAttribute(PROPERTY_TABLE_COLUMN_SCALE, String.valueOf(tableColumnScale));

@@ -194,6 +194,8 @@ public class Messages extends NLS {
 
     public static String PctEditor_title;
 
+    public static String PersistentSection_labelIndexName;
+
     public static String PersistentAssociationSection_labelAssociationTarget;
 
     public static String PersistentAssociationSection_labelFetchType;
@@ -212,8 +214,6 @@ public class Messages extends NLS {
 
     public static String PersistentAssociationSection_titleAssociations;
 
-    public static String PersistentAssociationSection_labelIndexName;
-
     public static String PersistentAttributeSection_labelAttributeName;
 
     public static String PersistentAttributeSection_labelColumnDefinition;
@@ -221,8 +221,6 @@ public class Messages extends NLS {
     public static String PersistentAttributeSection_labelColumnName;
 
     public static String PersistentAttributeSection_labelConverter;
-
-    public static String PersistentAttributeSection_labelIndexName;
 
     public static String PersistentAttributeSection_labelNullable;
 

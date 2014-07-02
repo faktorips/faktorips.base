@@ -60,11 +60,6 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
     public static final String PROPERTY_TARGET_COLUMN_NAME = "targetColumnName"; //$NON-NLS-1$
 
     /**
-     * The name of a property that indicates that the association is transient.
-     */
-    public static final String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
-
-    /**
      * The name of the fetch type (lazy / eager) property.
      */
     public static final String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
@@ -315,11 +310,6 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
     public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException;
 
     /**
-     * Returns true if the association is transient.
-     */
-    public boolean isTransient();
-
-    /**
      * Set to <code>true</code> if the association should be the owner of am many-to-many
      * association. set to <code>false</code> if the target side is the owner.
      */
@@ -392,12 +382,6 @@ public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
      * Set to <code>true</code> if the corresponding cascade type should be used.
      */
     public void setCascadeTypePersist(boolean cascadeTypePersist);
-
-    /**
-     * Set to <code>true</code> if the association should be transient. Set to <code>false</code> if
-     * the policy component is not transient and will be persists.
-     */
-    public void setTransient(boolean transientAssociation);
 
     /**
      * Initialize the default properties

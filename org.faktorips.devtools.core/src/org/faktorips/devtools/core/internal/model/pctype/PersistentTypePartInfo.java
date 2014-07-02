@@ -22,12 +22,30 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+/**
+ * Informations about the persistence properties that could be configured for any type part
+ * (attributes and associations).
+ */
 public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart implements IPersistentTypePartInfo {
+
+    private boolean transientPart = false;
 
     private String indexName = StringUtils.EMPTY;
 
     public PersistentTypePartInfo(IIpsObjectPart parent, String id) {
         super(parent, id);
+    }
+
+    @Override
+    public boolean isTransient() {
+        return transientPart;
+    }
+
+    @Override
+    public void setTransient(boolean transientPart) {
+        boolean oldValue = this.transientPart;
+        this.transientPart = transientPart;
+        valueChanged(oldValue, transientPart);
     }
 
     @Override
@@ -57,12 +75,14 @@ public abstract class PersistentTypePartInfo extends AtomicIpsObjectPart impleme
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        transientPart = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
         indexName = element.getAttribute(PROPERTY_INDEX_NAME);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_TRANSIENT, Boolean.toString(transientPart));
         element.setAttribute(PROPERTY_INDEX_NAME, indexName);
     }
 

@@ -244,17 +244,6 @@ public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
     public void setTemporalMapping(DateTimeMapping temporalType);
 
     /**
-     * Returns true if the attribute is transient.
-     */
-    public boolean isTransient();
-
-    /**
-     * Set to <code>true</code> if the attribute should be transient. Set to <code>false</code> if
-     * the policy component is not transient and will be persists.
-     */
-    public void setTransient(boolean transientAttribute);
-
-    /**
      * Tags a temporal attribute for date only, time only or time-stamp (date and time) usage.
      */
     public enum DateTimeMapping {

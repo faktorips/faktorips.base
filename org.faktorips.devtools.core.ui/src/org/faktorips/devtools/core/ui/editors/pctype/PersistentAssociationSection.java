@@ -74,7 +74,7 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
         COLUMN_PROPERTIES.put(7, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL,
                 Messages.PersistentAssociationSection_labelOrphanRemoval));
         COLUMN_PROPERTIES.put(8, new AttrPropertyAndLabel(IPersistentAssociationInfo.PROPERTY_INDEX_NAME,
-                Messages.PersistentAssociationSection_labelIndexName));
+                Messages.PersistentSection_labelIndexName));
     }
 
     private ResourceManager resourceManager;

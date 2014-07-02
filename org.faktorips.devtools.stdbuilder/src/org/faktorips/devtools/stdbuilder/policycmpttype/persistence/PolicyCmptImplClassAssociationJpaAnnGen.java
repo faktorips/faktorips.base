@@ -142,20 +142,19 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         return fragment;
     }
 
-    private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProviderImpl,
+    private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProvider,
             List<String> attributesToAppend,
             IPolicyCmptTypeAssociation association) {
         // note that depending on the JPA implementation (not JPA
         // 2.0) the orphan removal feature could be set as attribute or separate annotation
-        if (persistenceProviderImpl == null || !persistenceProviderImpl.isSupportingOrphanRemoval()) {
-            return;
-        }
-        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
-
-        if (persistenceAssociatonInfo.isOrphanRemoval()) {
-            String attributeOrphanRemoval = persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval();
-            if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
-                attributesToAppend.add(attributeOrphanRemoval);
+        if (persistenceProvider != null && persistenceProvider.isSupportingOrphanRemoval()) {
+            IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
+            if (persistenceAssociatonInfo.isOrphanRemoval()) {
+                String attributeOrphanRemoval = persistenceProvider
+                        .getRelationshipAnnotationAttributeOrphanRemoval();
+                if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
+                    attributesToAppend.add(attributeOrphanRemoval);
+                }
             }
         }
     }

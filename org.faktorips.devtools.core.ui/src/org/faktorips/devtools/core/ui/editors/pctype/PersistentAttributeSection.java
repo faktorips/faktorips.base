@@ -76,7 +76,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         COLUMN_PROPERTIES.put(8, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER,
                 Messages.PersistentAttributeSection_labelConverter));
         COLUMN_PROPERTIES.put(9, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_INDEX_NAME,
-                Messages.PersistentAttributeSection_labelIndexName));
+                Messages.PersistentSection_labelIndexName));
     }
 
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
@@ -108,7 +108,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
     private static class AttrPropertyAndLabel {
         private String property;
         private String label;
-    
+
         public AttrPropertyAndLabel(String property, String label) {
             this.property = property;
             this.label = label;
@@ -238,40 +238,50 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String property = COLUMN_PROPERTIES.get(columnIndex).property;
-                String result = ""; //$NON-NLS-1$
                 if (IIpsElement.PROPERTY_NAME.equals(property)) {
-                    result = attribute.getName();
+                    return attribute.getName();
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME.equals(property)) {
-                    result = attributeInfo.getTableColumnName();
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE.equals(property)) {
-                    if (!isUseSqlDefinition(attributeInfo)) {
-                        result = String.valueOf(attributeInfo.getTableColumnUnique());
-                    }
+                    return attributeInfo.getTableColumnName();
+                } else if (!isUseSqlDefinition(attributeInfo)) {
+                    return getColumnTextNoSqlDefinition(valueDatatype, attributeInfo, property);
+                } else if (IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION.equals(property)) {
+                    return StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
+                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER.equals(property)) {
+                    return StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
+                } else if (IPersistentAttributeInfo.PROPERTY_INDEX_NAME.equals(property)) {
+                    return StringUtil.unqualifiedName(attributeInfo.getIndexName());
+                }
+                return StringUtils.EMPTY;
+            }
+
+            private String getColumnTextNoSqlDefinition(ValueDatatype valueDatatype,
+                    IPersistentAttributeInfo attributeInfo,
+                    String property) {
+                if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE.equals(property)) {
+                    return String.valueOf(attributeInfo.getTableColumnUnique());
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE.equals(property)) {
-                    if (!isUseSqlDefinition(attributeInfo)) {
-                        result = String.valueOf(attributeInfo.getTableColumnNullable());
-                    }
+                    return String.valueOf(attributeInfo.getTableColumnNullable());
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE.equals(property)) {
-                    if (!isUseSqlDefinition(attributeInfo) && PersistenceUtil.isSupportingLenght(valueDatatype)) {
-                        result = String.valueOf(attributeInfo.getTableColumnSize());
+                    if (PersistenceUtil.isSupportingLenght(valueDatatype)) {
+                        return String.valueOf(attributeInfo.getTableColumnSize());
+                    } else {
+                        return StringUtils.EMPTY;
                     }
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION.equals(property)) {
-                    if (!isUseSqlDefinition(attributeInfo) && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
-                        result = String.valueOf(attributeInfo.getTableColumnPrecision());
+                    if (PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
+                        return String.valueOf(attributeInfo.getTableColumnPrecision());
+                    } else {
+                        return StringUtils.EMPTY;
                     }
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE.equals(property)) {
-                    if (!isUseSqlDefinition(attributeInfo) && PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
-                        result = String.valueOf(attributeInfo.getTableColumnScale());
+                    if (PersistenceUtil.isSupportingDecimalPlaces(valueDatatype)) {
+                        return String.valueOf(attributeInfo.getTableColumnScale());
+                    } else {
+                        return StringUtils.EMPTY;
                     }
-                } else if (IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION.equals(property)) {
-                    result = StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
-                } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER.equals(property)) {
-                    result = StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
-                } else if (IPersistentAttributeInfo.PROPERTY_INDEX_NAME.equals(property)) {
-                    result = StringUtil.unqualifiedName(attributeInfo.getIndexName());
+                } else {
+                    return StringUtils.EMPTY;
                 }
-
-                return (result == null ? "" : result); //$NON-NLS-1$
             }
 
             private boolean isUseSqlDefinition(IPersistentAttributeInfo attributeInfo) {

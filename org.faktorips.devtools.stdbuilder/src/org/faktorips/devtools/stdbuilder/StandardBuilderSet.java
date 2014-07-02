@@ -436,12 +436,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private void initSupportedPersistenceProviderMap() {
-        allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(2);
+        allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(3);
         allSupportedPersistenceProvider.put(EclipseLink1PersistenceProvider.ID_ECLIPSE_LINK_1_1,
                 new EclipseLink1PersistenceProvider());
         allSupportedPersistenceProvider.put(EclipseLink25PersistenceProvider.ID_ECLIPSE_LINK_2_5,
                 new EclipseLink25PersistenceProvider());
-        allSupportedPersistenceProvider.put(GenericJPA2PersistenceProvider.ID_GENERIC_JPA_2, new GenericJPA2PersistenceProvider());
+        allSupportedPersistenceProvider.put(GenericJPA2PersistenceProvider.ID_GENERIC_JPA_2,
+                new GenericJPA2PersistenceProvider());
     }
 
     public String getJavaClassName(Datatype datatype) {

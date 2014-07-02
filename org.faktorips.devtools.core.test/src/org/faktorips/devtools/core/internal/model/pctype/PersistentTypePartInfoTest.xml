@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Test data for PersistentTypeInfoTest.java
+-->
+<PolicyCmptType configurableByProductCmptType="true" productCmptType="Product" supertype="SuperType" abstract="true">
+    <Attribute id="0" name="premium" datatype="money" productRelevant="false" attributeType="comp" defaultValue="0EUR">
+        <PersistenceAttribute indexName="premiumIndex" transient="false" id="b6af2ed3-9471-464b-8121-eabd60f60e61" tableColumnSize="1" tableColumnScale="1" tableColumnPrecision="1" temporalMapping="DATE_ONLY">
+            <Description/>
+        </PersistenceAttribute>        
+    </Attribute>
+</PolicyCmptType>
