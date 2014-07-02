@@ -52,41 +52,31 @@ import org.faktorips.util.message.MessageList;
 
 public class PersistentAttributeSection extends SimpleIpsPartsSection {
 
-    private static final Map<Integer, AttrPropertyAndLabel> columnProperties = new HashMap<Integer, AttrPropertyAndLabel>();
+    private static final Map<Integer, AttrPropertyAndLabel> COLUMN_PROPERTIES = new HashMap<Integer, AttrPropertyAndLabel>();
 
     private ResourceManager resourceManager;
 
     static {
-        columnProperties.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME,
+        COLUMN_PROPERTIES.put(0, new AttrPropertyAndLabel(IIpsElement.PROPERTY_NAME,
                 Messages.PersistentAttributeSection_labelAttributeName));
-        columnProperties.put(1, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME,
+        COLUMN_PROPERTIES.put(1, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME,
                 Messages.PersistentAttributeSection_labelColumnName));
-        columnProperties.put(2, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE,
+        COLUMN_PROPERTIES.put(2, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_UNIQE,
                 Messages.PersistentAttributeSection_labelUnique));
-        columnProperties.put(3, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE,
+        COLUMN_PROPERTIES.put(3, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NULLABLE,
                 Messages.PersistentAttributeSection_labelNullable));
-        columnProperties.put(4, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE,
+        COLUMN_PROPERTIES.put(4, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SIZE,
                 Messages.PersistentAttributeSection_labelSize));
-        columnProperties.put(5, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION,
+        COLUMN_PROPERTIES.put(5, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_PRECISION,
                 Messages.PersistentAttributeSection_labelPrecision));
-        columnProperties.put(6, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE,
+        COLUMN_PROPERTIES.put(6, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_SCALE,
                 Messages.PersistentAttributeSection_labelScale));
-        columnProperties.put(7, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION,
+        COLUMN_PROPERTIES.put(7, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION,
                 Messages.PersistentAttributeSection_labelColumnDefinition));
-        columnProperties.put(8, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER,
+        COLUMN_PROPERTIES.put(8, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER,
                 Messages.PersistentAttributeSection_labelConverter));
-        columnProperties.put(9, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_INDEX_NAME,
+        COLUMN_PROPERTIES.put(9, new AttrPropertyAndLabel(IPersistentAttributeInfo.PROPERTY_INDEX_NAME,
                 Messages.PersistentAttributeSection_labelIndexName));
-    }
-
-    private static class AttrPropertyAndLabel {
-        private String property;
-        private String label;
-
-        public AttrPropertyAndLabel(String property, String label) {
-            this.property = property;
-            this.label = label;
-        }
     }
 
     public PersistentAttributeSection(IPolicyCmptType ipsObject, Composite parent, UIToolkit toolkit) {
@@ -115,19 +105,29 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         return resourceManager;
     }
 
-    class PersistenceAttributesComposite extends PersistenceComposite {
-
-        @Override
-        public String[] getColumnHeaders() {
-            String[] result = new String[columnProperties.size()];
-            for (int i = 0; i < columnProperties.size(); i++) {
-                result[i] = columnProperties.get(i).label;
-            }
-            return result;
+    private static class AttrPropertyAndLabel {
+        private String property;
+        private String label;
+    
+        public AttrPropertyAndLabel(String property, String label) {
+            this.property = property;
+            this.label = label;
         }
+    }
+
+    class PersistenceAttributesComposite extends PersistenceComposite {
 
         public PersistenceAttributesComposite(IIpsObject ipsObject, Composite parent, UIToolkit toolkit) {
             super(ipsObject, parent, toolkit);
+        }
+
+        @Override
+        public String[] getColumnHeaders() {
+            String[] result = new String[COLUMN_PROPERTIES.size()];
+            for (int i = 0; i < COLUMN_PROPERTIES.size(); i++) {
+                result[i] = COLUMN_PROPERTIES.get(i).label;
+            }
+            return result;
         }
 
         @Override
@@ -145,6 +145,11 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
         @Override
         protected IIpsObjectPart newIpsPart() {
             return ((IPolicyCmptType)getIpsObject()).newPolicyCmptTypeAttribute();
+        }
+
+        @Override
+        public ILabelProvider createLabelProvider() {
+            return new PersistentAttributeLabelProvider();
         }
 
         private class PersistentAttributeContentProvider implements IStructuredContentProvider {
@@ -189,7 +194,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                     msgList = persistenceAttributeInfo.getPolicyComponentTypeAttribute().getPolicyCmptType()
                             .getPersistenceTypeInfo().validate(persistenceAttributeInfo.getIpsProject());
                     msgList.add(persistenceAttributeInfo.validate(persistenceAttributeInfo.getIpsProject()));
-                    String property = columnProperties.get(columnIndex).property;
+                    String property = COLUMN_PROPERTIES.get(columnIndex).property;
                     if (property == null) {
                         return null;
                     }
@@ -232,7 +237,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                 }
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
-                String property = columnProperties.get(columnIndex).property;
+                String property = COLUMN_PROPERTIES.get(columnIndex).property;
                 String result = ""; //$NON-NLS-1$
                 if (IIpsElement.PROPERTY_NAME.equals(property)) {
                     result = attribute.getName();
@@ -272,11 +277,6 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
             private boolean isUseSqlDefinition(IPersistentAttributeInfo attributeInfo) {
                 return StringUtils.isNotEmpty(attributeInfo.getSqlColumnDefinition());
             }
-        }
-
-        @Override
-        public ILabelProvider createLabelProvider() {
-            return new PersistentAttributeLabelProvider();
         }
     }
 
