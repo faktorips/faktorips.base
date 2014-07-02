@@ -521,6 +521,13 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Returns whether or not serializable should be generated.
+     */
+    public boolean isGenerateSerializablePolicyCmptsSupport() {
+        return getContext().isGenerateSerializablePolicyCmptSupport();
+    }
+
+    /**
      * Returns whether to generate camel case constant names with underscore separator or without.
      * For example if this property is true, the constant for the property
      * checkAnythingAndDoSomething would be generated as CHECK_ANYTHING_AND_DO_SOMETHING, if the

@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepositoryLookup;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
@@ -106,6 +108,16 @@ public class AbstractRuntimeRepositoryTest {
         doReturn(null).when(repositoryD).getEnumValuesInternal(EnumTestClass.class);
     }
 
+    @Test
+    public void testSetGetRuntimeRepositoryLookup() throws Exception {
+        IRuntimeRepositoryLookup repositoryLookupMock = mock(IRuntimeRepositoryLookup.class);
+        repositoryA.setRuntimeRepositoryLookup(repositoryLookupMock);
+
+        IRuntimeRepositoryLookup runtimeRepositoryLookup = repositoryA.getRuntimeRepositoryLookup();
+
+        assertSame(repositoryLookupMock, runtimeRepositoryLookup);
+    }
+
     public static class EnumTestClass {
 
         public static final EnumTestClass VALUE1 = new EnumTestClass();
@@ -115,4 +127,5 @@ public class AbstractRuntimeRepositoryTest {
         public static final List<EnumTestClass> VALUES = Arrays.asList(VALUE1, VALUE2);
 
     }
+
 }

@@ -39,6 +39,7 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IRuntimeRepositoryLookup;
 import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.ProductCmptGenerationNotFoundException;
 import org.faktorips.runtime.ProductCmptNotFoundException;
@@ -78,6 +79,8 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     private Map<Class<?>, IEnumValueLookupService<?>> enumValueLookups = new ConcurrentHashMap<Class<?>, IEnumValueLookupService<?>>();
 
     private IFormulaEvaluatorFactory formulaEvaluatorFactory;
+
+    private IRuntimeRepositoryLookup runtimeRepositoryLookup;
 
     public AbstractRuntimeRepository(String name) {
         if (name == null) {
@@ -937,6 +940,14 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * and not the ones this repository depends on.
      */
     protected abstract <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName);
+
+    public IRuntimeRepositoryLookup getRuntimeRepositoryLookup() {
+        return runtimeRepositoryLookup;
+    }
+
+    public void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup) {
+        this.runtimeRepositoryLookup = repositoryLookup;
+    }
 
     /*
      * Comparator for IpsTest2 objects
