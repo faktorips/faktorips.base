@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -185,9 +184,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
                 }
             };
 
-            treeViewer.setAutoExpandLevel(AbstractTreeViewer.ALL_LEVELS);
-            treeViewer.expandAll();
-
             buildContextMenu();
 
             cardinalityPanel = new CardinalityPanel(relationRootPane, toolkit);
@@ -289,7 +285,6 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     protected void performRefresh() {
         if (treeViewer != null) {
             treeViewer.refresh(true);
-            treeViewer.expandAll();
         }
 
         if (cardinalityPanel != null) {
