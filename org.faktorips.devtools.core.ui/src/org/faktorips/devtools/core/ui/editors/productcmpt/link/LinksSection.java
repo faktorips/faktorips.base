@@ -49,6 +49,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
+import org.faktorips.devtools.core.ui.actions.ExpandAllAction;
 import org.faktorips.devtools.core.ui.commands.IpsObjectPartTester;
 import org.faktorips.devtools.core.ui.editors.ICompositeWithSelectableViewer;
 import org.faktorips.devtools.core.ui.editors.IpsObjectPartChangeRefreshHelper;
@@ -338,6 +340,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         super.populateToolBar(toolBarManager);
 
         if (treeViewer != null) {
+            toolBarManager.add(new ExpandAllAction(treeViewer));
+            toolBarManager.add(new CollapseAllAction(treeViewer));
             toolBarManager.add(filterEmptyAssociationAction);
         }
     }
