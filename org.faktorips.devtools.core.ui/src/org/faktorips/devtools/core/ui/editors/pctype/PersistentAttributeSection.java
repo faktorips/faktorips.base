@@ -242,14 +242,14 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
                     return attribute.getName();
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME.equals(property)) {
                     return attributeInfo.getTableColumnName();
-                } else if (!isUseSqlDefinition(attributeInfo)) {
-                    return getColumnTextNoSqlDefinition(valueDatatype, attributeInfo, property);
                 } else if (IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION.equals(property)) {
                     return StringUtil.unqualifiedName(attributeInfo.getSqlColumnDefinition());
                 } else if (IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_CONVERTER.equals(property)) {
                     return StringUtil.unqualifiedName(attributeInfo.getConverterQualifiedClassName());
                 } else if (IPersistentAttributeInfo.PROPERTY_INDEX_NAME.equals(property)) {
                     return StringUtil.unqualifiedName(attributeInfo.getIndexName());
+                } else if (!isUseSqlDefinition(attributeInfo)) {
+                    return getColumnTextNoSqlDefinition(valueDatatype, attributeInfo, property);
                 }
                 return StringUtils.EMPTY;
             }

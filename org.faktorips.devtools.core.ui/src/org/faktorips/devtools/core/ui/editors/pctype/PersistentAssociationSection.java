@@ -240,14 +240,16 @@ public class PersistentAssociationSection extends SimpleIpsPartsSection {
                     boolean foreignKeyColumnReq) {
                 if (IAssociation.PROPERTY_TARGET.equals(property)) {
                     return association.getTarget();
-                } else if (joinTableReq) {
-                    return getColumnTextJoinTableReq(jpaAssociationInfo, property);
-                } else if (!joinTableReq && foreignKeyColumnReq) {
-                    return getColumnTextForeignKeyColReq(jpaAssociationInfo, property);
                 } else if (IPersistentAssociationInfo.PROPERTY_FETCH_TYPE.equals(property)) {
                     return jpaAssociationInfo.getFetchType().toString();
                 } else if (IPersistentAssociationInfo.PROPERTY_ORPHAN_REMOVAL.equals(property)) {
                     return Boolean.valueOf(jpaAssociationInfo.isOrphanRemoval()).toString();
+                } else if (IPersistentAssociationInfo.PROPERTY_INDEX_NAME.equals(property)) {
+                    return jpaAssociationInfo.getIndexName();
+                } else if (joinTableReq) {
+                    return getColumnTextJoinTableReq(jpaAssociationInfo, property);
+                } else if (!joinTableReq && foreignKeyColumnReq) {
+                    return getColumnTextForeignKeyColReq(jpaAssociationInfo, property);
                 } else {
                     return StringUtils.EMPTY;
                 }
