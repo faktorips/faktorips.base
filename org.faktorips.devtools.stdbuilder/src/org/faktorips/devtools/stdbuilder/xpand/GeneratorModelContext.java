@@ -329,4 +329,9 @@ public class GeneratorModelContext {
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 
+    public boolean isGenerateSerializablePolicyCmptSupport() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
+    }
 }

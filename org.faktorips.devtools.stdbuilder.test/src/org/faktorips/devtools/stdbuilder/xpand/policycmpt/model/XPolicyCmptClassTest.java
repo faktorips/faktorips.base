@@ -408,6 +408,50 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
+    public void testGetImplementedInterfaces_WithSerializableSupportWithoutSupertype() {
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        when(type.hasSupertype()).thenReturn(false);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
+        assertThat(interfaces, hasItem("Serializable"));
+    }
+
+    @Test
+    public void testGetImplementedInterfaces_WithSerializableSupportWithSupertype() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
+        when(type.hasSupertype()).thenReturn(true);
+        when(modelContext.isGeneratePublishedInterfaces()).thenReturn(true);
+        doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
+        assertFalse(interfaces.contains("Serializable"));
+    }
+
+    @Test
+    public void testGetImplementedInterfaces_WithoutSerializableSupportWithSupertype() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        when(type.hasSupertype()).thenReturn(true);
+        when(modelContext.isGeneratePublishedInterfaces()).thenReturn(true);
+        doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
+        assertFalse(interfaces.contains("Serializable"));
+    }
+
+    @Test
+    public void testGetImplementedInterfaces_WithoutSerializableSupportWithoutSupertype() {
+        when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
+        when(type.hasSupertype()).thenReturn(false);
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
+        assertFalse(interfaces.contains("Serializable"));
+    }
+
+    @Test
     public void testGetExtendedOrImplementedInterfaces_noInterfaces() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         setUpReturnSupertype(policyCmptClass);
@@ -467,5 +511,4 @@ public class XPolicyCmptClassTest {
         when(modelContext.isGenerateDeltaSupport()).thenReturn(returnValue);
         when(modelContext.isGenerateVisitorSupport()).thenReturn(returnValue);
     }
-
 }

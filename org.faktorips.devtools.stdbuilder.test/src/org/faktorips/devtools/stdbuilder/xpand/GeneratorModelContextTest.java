@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.xpand;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
+import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,6 +65,27 @@ public class GeneratorModelContextTest {
         annotationGenerators = generatorModelContext
                 .getAnnotationGenerator(AnnotatedJavaElementType.POLICY_CMPT_IMPL_CLASS);
         assertEquals(policyCmptImplClassAnnotationGens, annotationGenerators);
+    }
+
+    @Test
+    public void testIsGenerateSerializablePolicyCmptSupport_Default() {
+        assertFalse(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
+    }
+
+    @Test
+    public void testIsGenerateSerializablePolicyCmptSupport_True() {
+        when(
+                config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT))
+                .thenReturn(true);
+        assertTrue(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
+    }
+
+    @Test
+    public void testIsGenerateSerializablePolicyCmptSupport_False() {
+        when(
+                config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT))
+                .thenReturn(false);
+        assertFalse(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
     }
 
 }
