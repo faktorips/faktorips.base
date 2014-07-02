@@ -50,7 +50,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
      * extension point of every specific builder. If it is not specified as a configuration
      * definition of any builder, the default value is <code>true</code>.
      */
-    public final static String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
 
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
@@ -148,6 +148,11 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public String getVersion() {
         return ""; //$NON-NLS-1$
+    }
+
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
+        return null;
     }
 
 }

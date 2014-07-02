@@ -13,8 +13,6 @@ package org.faktorips.devtools.core.internal.model.pctype;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo;
@@ -24,7 +22,6 @@ import org.faktorips.devtools.core.util.PersistenceUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -32,9 +29,7 @@ import org.w3c.dom.Element;
  * 
  * @author Roman Grutza
  */
-public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IPersistentAssociationInfo {
-
-    private boolean transientAssociation = false;
+public class PersistentAssociationInfo extends PersistentTypePartInfo implements IPersistentAssociationInfo {
 
     private boolean ownerOfManyToManyAssociation = false;
 
@@ -53,15 +48,16 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     private String sourceColumnName = ""; //$NON-NLS-1$
 
     private String joinColumnName = ""; //$NON-NLS-1$
+
     private boolean joinColumnNullable = true;
 
     private FetchType fetchType = FetchType.LAZY;
 
-    private IIpsObjectPart policyComponentTypeAssociation;
+    private IPolicyCmptTypeAssociation policyComponentTypeAssociation;
 
-    public PersistentAssociationInfo(IIpsObjectPart ipsObject, String id) {
-        super(ipsObject, id);
-        policyComponentTypeAssociation = ipsObject;
+    public PersistentAssociationInfo(IPolicyCmptTypeAssociation policyComponentTypeAssociation, String id) {
+        super(policyComponentTypeAssociation, id);
+        this.policyComponentTypeAssociation = policyComponentTypeAssociation;
 
         ITableColumnNamingStrategy tableColumnNamingStrategy = getIpsProject().getTableColumnNamingStrategy();
 
@@ -97,11 +93,6 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     public boolean isJoinColumnNullable() {
         return joinColumnNullable;
-    }
-
-    @Override
-    public boolean isTransient() {
-        return transientAssociation;
     }
 
     @Override
@@ -295,21 +286,14 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    public void setTransient(boolean transientAssociation) {
-        boolean oldValue = this.transientAssociation;
-        this.transientAssociation = transientAssociation;
-        valueChanged(oldValue, transientAssociation);
-    }
-
-    @Override
     public void setOwnerOfManyToManyAssociation(boolean ownerOfManyToManyAssociation) {
         // clear other columns to hold a consistent state
         if (!ownerOfManyToManyAssociation) {
-            setJoinTableName(""); //$NON-NLS-1$
-            setTargetColumnName("");//$NON-NLS-1$
-            setSourceColumnName("");//$NON-NLS-1$
+            setJoinTableName(StringUtils.EMPTY);
+            setTargetColumnName(StringUtils.EMPTY);
+            setSourceColumnName(StringUtils.EMPTY);
         } else {
-            setJoinColumnName("");//$NON-NLS-1$
+            setJoinColumnName(StringUtils.EMPTY);
         }
         boolean oldValue = this.ownerOfManyToManyAssociation;
         this.ownerOfManyToManyAssociation = ownerOfManyToManyAssociation;
@@ -428,15 +412,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
      * union or the inverse of a derived union association then return <code>false</code>.
      */
     public boolean isJoinColumnRequired(IPolicyCmptTypeAssociation inverseAssociation) {
-        if (getPolicyComponentTypeAssociation().isDerivedUnion()) {
-            // derived union association
-            return false;
-        }
-        if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
-            // inverse of a derived union association
-            return false;
-        }
-        if (isOwnerOfManyToManyAssociation()) {
+        if (isJoinColumnImpossible(inverseAssociation)) {
             return false;
         }
         if (isUnidirectional()) {
@@ -448,15 +424,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         }
         RelationshipType relType = evalBidirectionalRelationShipType(inverseAssociation);
         if (relType == RelationshipType.ONE_TO_ONE) {
-            if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail()) {
-                return false;
-            }
-            if (inverseAssociation != null && getPolicyComponentTypeAssociation().isAssoziation()
-                    && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
-                // target join column is defined on the target side
-                return false;
-            }
-            return true;
+            return isJoinColumnRequiredForOneToOne(inverseAssociation);
         }
         if (relType == RelationshipType.MANY_TO_MANY) {
             return false;
@@ -468,6 +436,28 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             return true;
         }
         throw new RuntimeException("'Unsupported relationship type: " + relType.toString()); //$NON-NLS-1$
+    }
+
+    private boolean isJoinColumnImpossible(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (getPolicyComponentTypeAssociation().isDerivedUnion()) {
+            return true;
+        } else if (inverseAssociation != null && inverseAssociation.isDerivedUnion()) {
+            return true;
+        } else {
+            return isOwnerOfManyToManyAssociation();
+        }
+    }
+
+    private boolean isJoinColumnRequiredForOneToOne(IPolicyCmptTypeAssociation inverseAssociation) {
+        if (getPolicyComponentTypeAssociation().isCompositionMasterToDetail()) {
+            return false;
+        }
+        if (inverseAssociation != null && getPolicyComponentTypeAssociation().isAssoziation()
+                && StringUtils.isNotEmpty(inverseAssociation.getPersistenceAssociatonInfo().getJoinColumnName())) {
+            // target join column is defined on the target side
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -502,7 +492,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
 
     @Override
     public IPolicyCmptTypeAssociation getPolicyComponentTypeAssociation() {
-        return (IPolicyCmptTypeAssociation)policyComponentTypeAssociation;
+        return policyComponentTypeAssociation;
     }
 
     @Override
@@ -519,14 +509,13 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     }
 
     @Override
-    protected Element createElement(Document doc) {
-        return doc.createElement(XML_TAG);
+    protected String getXmlTag() {
+        return XML_TAG;
     }
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        transientAssociation = Boolean.valueOf(element.getAttribute(PROPERTY_TRANSIENT));
         ownerOfManyToManyAssociation = Boolean
                 .valueOf(element.getAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION));
         sourceColumnName = element.getAttribute(PROPERTY_SOURCE_COLUMN_NAME);
@@ -551,14 +540,12 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_TRANSIENT, "" + Boolean.toString(transientAssociation)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, ""//$NON-NLS-1$
-                + Boolean.toString(ownerOfManyToManyAssociation));
-        element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, "" + sourceColumnName); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, "" + targetColumnName);//$NON-NLS-1$
-        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, "" + joinTableName);//$NON-NLS-1$
-        element.setAttribute(PROPERTY_FETCH_TYPE, "" + fetchType);//$NON-NLS-1$
-        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, "" + joinColumnName);//$NON-NLS-1$
+        element.setAttribute(PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION, Boolean.toString(ownerOfManyToManyAssociation));
+        element.setAttribute(PROPERTY_SOURCE_COLUMN_NAME, sourceColumnName);
+        element.setAttribute(PROPERTY_TARGET_COLUMN_NAME, targetColumnName);
+        element.setAttribute(PROPERTY_JOIN_TABLE_NAME, joinTableName);
+        element.setAttribute(PROPERTY_FETCH_TYPE, String.valueOf(fetchType));
+        element.setAttribute(PROPERTY_JOIN_COLUMN_NAME, joinColumnName);
         element.setAttribute(PROPERTY_JOIN_COLUMN_NULLABLE, Boolean.toString(joinColumnNullable));
         element.setAttribute(PROPERTY_ORPHAN_REMOVAL, Boolean.toString(orphanRemoval));
 
@@ -587,6 +574,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
         validateJoinColumn(msgList, inverseAssociation);
         validateJoinTable(msgList, inverseAssociation);
         validateLazyFetchOnSingleValuedAssociation(msgList, ipsProject, inverseAssociation);
+        super.validateThis(msgList, ipsProject);
     }
 
     private void validateLazyFetchOnSingleValuedAssociation(MessageList msgList,
@@ -667,15 +655,7 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             return;
         }
 
-        if (!isJoinTableRequired(inverseAssociation) || !isOwnerOfManyToManyAssociation()) {
-            // all join table details must be empty
-            validateJoinTableDetails(msgList, true);
-        }
-
-        if (isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()) {
-            // all join table details must not be empty
-            validateJoinTableDetails(msgList, false);
-        }
+        validateJoinTableDetails(msgList, inverseAssociation);
 
         // validate missing owner of relationship
         if (isJoinTableRequired(inverseAssociation) && !isOwnerOfManyToManyAssociation()
@@ -700,6 +680,11 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             validateMaxColumnNameLength(msgList, joinColumnName, Messages.PersistentAssociationInfo_joinColumnName,
                     MSGCODE_JOIN_COLUMN_NAME_INVALID, PROPERTY_JOIN_COLUMN_NAME);
         }
+    }
+
+    private void validateJoinTableDetails(MessageList msgList, IPolicyCmptTypeAssociation inverseAssociation) {
+        validateJoinTableDetails(msgList,
+                !(isJoinTableRequired(inverseAssociation) && isOwnerOfManyToManyAssociation()));
     }
 
     private void validateJoinTableDetails(MessageList msgList, boolean mustBeEmpty) {
@@ -771,4 +756,5 @@ public class PersistentAssociationInfo extends AtomicIpsObjectPart implements IP
             msgList.add(new Message(msgCodeInValid, invalidText, Message.ERROR, this, property));
         }
     }
+
 }

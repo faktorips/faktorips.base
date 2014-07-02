@@ -37,12 +37,12 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
      * provide values of this property via the IIpsArtefactBuilderSetConfig object that is provided
      * by the initialize method of an IIpsArtefactBuilderSet.
      */
-    public final static String CONFIG_PROPERTY_GENERATOR_LOCALE = "generatorLocale"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_GENERATOR_LOCALE = "generatorLocale"; //$NON-NLS-1$
 
     /**
      * Configuration property setting that none mergeable filed should be marked as derived filed.
      */
-    public final static String CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED = "markNoneMergeableResourcesAsDerived"; //$NON-NLS-1$
+    public static final String CONFIG_MARK_NONE_MERGEABLE_RESOURCES_AS_DERIVED = "markNoneMergeableResourcesAsDerived"; //$NON-NLS-1$
 
     private String id;
     private String label;
@@ -207,16 +207,6 @@ public abstract class AbstractBuilderSet implements IIpsArtefactBuilderSet {
     @Override
     public boolean isTableBasedEnumValidationRequired() {
         return true;
-    }
-
-    @Override
-    public boolean isPersistentProviderSupportConverter() {
-        return false;
-    }
-
-    @Override
-    public boolean isPersistentProviderSupportOrphanRemoval() {
-        return false;
     }
 
     @Override
