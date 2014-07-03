@@ -15,8 +15,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.junit.Before;
@@ -39,30 +43,58 @@ public class EmptyAssociationFilterTest {
     }
 
     @Test
-    public void testFiltering() {
-        IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
-
+    public void testSelect_normalAssociations() {
         String association = "TeilkaskoLvbArt";
-        AbstractAssociationViewItem viewItem = mock(AbstractAssociationViewItem.class);
-        when(viewItem.getAssociationName()).thenReturn(association);
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(association);
 
-        IProductCmptLink link = mock(IProductCmptLink.class);
+        IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
+        mockAssociationAndLinks(association, generation, mock(IProductCmptLink.class), mock(IProductCmptLink.class));
 
-        when(generation.getLinks(association)).thenReturn(new IProductCmptLink[] { link });
         assertTrue(filter.select(viewer, generation, viewItem));
     }
 
     @Test
-    public void testNotFiltering() {
-        IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
-
+    public void testSelect_filterEmptyAssociations() {
         String emptyAssociation = "EmptyArt";
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation);
 
-        AbstractAssociationViewItem viewItem = mock(AbstractAssociationViewItem.class);
-        when(viewItem.getAssociationName()).thenReturn(emptyAssociation);
-
-        when(generation.getLinks(emptyAssociation)).thenReturn(new IProductCmptLink[0]);
+        IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
+        mockAssociationAndLinks(emptyAssociation, generation);
 
         assertFalse(filter.select(viewer, generation, viewItem));
+    }
+
+    @Test
+    public void testSelect_staticAssociations() {
+        String association = "TeilkaskoLvbArt";
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(association);
+
+        IProductCmpt prodCmpt = mock(IProductCmpt.class);
+        mockAssociationAndLinks(association, prodCmpt, mock(IProductCmptLink.class), mock(IProductCmptLink.class));
+
+        assertTrue(filter.select(viewer, prodCmpt, viewItem));
+    }
+
+    @Test
+    public void testSelect_filterEmptyStaticAssociations() {
+        String emptyAssociation = "EmptyArt";
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation);
+
+        IProductCmpt prodCmpt = mock(IProductCmpt.class);
+        mockAssociationAndLinks(emptyAssociation, prodCmpt);
+
+        assertFalse(filter.select(viewer, prodCmpt, viewItem));
+    }
+
+    private void mockAssociationAndLinks(String association,
+            IProductCmptLinkContainer container,
+            IProductCmptLink... links) {
+        when(container.getLinksAsList(association)).thenReturn(Arrays.asList(links));
+    }
+
+    private AbstractAssociationViewItem mockViewItemWithAssociationName(String association) {
+        AbstractAssociationViewItem viewItem = mock(AbstractAssociationViewItem.class);
+        when(viewItem.getAssociationName()).thenReturn(association);
+        return viewItem;
     }
 }

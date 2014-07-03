@@ -10,8 +10,11 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import java.util.List;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
@@ -28,12 +31,21 @@ public class EmptyAssociationFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        if (parentElement instanceof IProductCmptGeneration && element instanceof AbstractAssociationViewItem) {
-            IProductCmptGeneration generation = (IProductCmptGeneration)parentElement;
-            AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
-            IProductCmptLink[] links = generation.getLinks(associationViewItem.getAssociationName());
-            return links.length != 0;
+        if (canSelect(parentElement, element)) {
+            List<IProductCmptLink> links = getLinks(parentElement, element);
+            return !links.isEmpty();
         }
         return true;
+    }
+
+    private List<IProductCmptLink> getLinks(Object parentElement, Object element) {
+        IProductCmptLinkContainer linkContainer = (IProductCmptLinkContainer)parentElement;
+        AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
+        List<IProductCmptLink> links = linkContainer.getLinksAsList(associationViewItem.getAssociationName());
+        return links;
+    }
+
+    private boolean canSelect(Object parentElement, Object element) {
+        return parentElement instanceof IProductCmptLinkContainer && element instanceof AbstractAssociationViewItem;
     }
 }
