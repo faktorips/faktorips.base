@@ -26,13 +26,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.DependencyDetail;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -47,46 +47,72 @@ public class ReferencesToIIpsObjectSearchQueryTest {
 
     @Mock
     private IIpsProject proj;
+
     @Mock
     private IIpsProject proj2;
+
     @Mock
     private IIpsProject proj3;
+
     @Mock
     private IIpsObject objectReferenced;
+
     @Mock
     private IIpsObject objectReferenced2;
+
     @Mock
     private IProductCmpt objectReferencedProductCmpt;
+
     @Mock
     private IIpsSrcFile srcFileReferenced;
+
     @Mock
     private IIpsSrcFile srcFile1;
+
     @Mock
     private IIpsSrcFile srcFileReferenced2;
+
     @Mock
     private IIpsSrcFile srcFileReferencedProdCmpt;
+
     @Mock
     private IIpsObject object1;
+
     @Mock
     private IProductCmpt prodCmpt;
+
     @Mock
     private QualifiedNameType prodCmptQualifiedNameType;
+
     @Mock
     private QualifiedNameType object1QualifiedNameType;
+
     @Mock
     private QualifiedNameType objectReferencedQualifiedNameType;
+
     @Mock
     private QualifiedNameType objectReferenced2QualifiedNameType;
+
     @Mock
     private QualifiedNameType objRefProdCmptQualifiedNameType;
+
     @Mock
     private IProductCmptGeneration prodCmptGeneration1;
+
     @Mock
     private IProductCmptGeneration prodCmptGeneration2;
+
     @Mock
-    private IIpsElement elementObject1ProdCmptGeneration1;
+    private IIpsObjectPartContainer objectContainer1;
+
     @Mock
-    private IIpsElement elementObject1ProdCmptGeneration2;
+    private IIpsObjectPartContainer objectContainer2;
+
+    @Mock
+    private IDependencyDetail detail1;
+
+    @Mock
+    private IDependencyDetail detail2;
 
     @Before
     public void initSrcFilesSetUp() throws CoreException {
@@ -220,7 +246,7 @@ public class ReferencesToIIpsObjectSearchQueryTest {
 
         verify(querySpy).findReferencingIpsObjTypes(proj);
         verify(querySpy).checkIIPsSrcFileDependencies(anySet(), eq(ipsScrFiles));
-        verify(querySpy).addProdCmpGenerations(anySet(), eq(objectReferencedProductCmpt),
+        verify(querySpy).addDependencyDetails(anySet(), eq(objectReferencedProductCmpt),
                 eq(dependencyRefProdCmptToObj1));
         verifyNoMoreInteractions(querySpy);
     }
@@ -231,7 +257,7 @@ public class ReferencesToIIpsObjectSearchQueryTest {
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(objectReferenced);
         Set<IIpsElement> resultList = new HashSet<IIpsElement>();
-        query.addProdCmpGenerations(resultList, prodCmpt, null);
+        query.addDependencyDetails(resultList, prodCmpt, null);
 
         assertTrue(resultList.isEmpty());
     }
@@ -241,21 +267,19 @@ public class ReferencesToIIpsObjectSearchQueryTest {
         IDependency dependencyObj1ToObjRef = IpsObjectDependency.create(prodCmpt.getQualifiedNameType(),
                 objectReferenced.getQualifiedNameType(), DependencyType.REFERENCE);
         when(prodCmpt.dependsOn()).thenReturn(new IDependency[] { dependencyObj1ToObjRef });
-        IDependencyDetail generation1 = new DependencyDetail(prodCmptGeneration1, "ProdCmpGeneration1");
-        IDependencyDetail generation2 = new DependencyDetail(prodCmptGeneration2, "ProdCmpGeneration2");
         List<IDependencyDetail> obj1ProdCmptGenerations = new ArrayList<IDependencyDetail>();
-        obj1ProdCmptGenerations.add(generation1);
-        obj1ProdCmptGenerations.add(generation2);
+        obj1ProdCmptGenerations.add(detail1);
+        obj1ProdCmptGenerations.add(detail2);
         when(prodCmpt.getDependencyDetails(dependencyObj1ToObjRef)).thenReturn(obj1ProdCmptGenerations);
-        when(generation1.getPart().getParent()).thenReturn(elementObject1ProdCmptGeneration1);
-        when(generation2.getPart().getParent()).thenReturn(elementObject1ProdCmptGeneration2);
+        when(detail1.getPart()).thenReturn(objectContainer1);
+        when(detail2.getPart()).thenReturn(objectContainer2);
 
         ReferencesToIpsObjectSearchQuery query = new ReferencesToIpsObjectSearchQuery(objectReferenced);
         Set<IIpsElement> resultList = new HashSet<IIpsElement>();
-        query.addProdCmpGenerations(resultList, prodCmpt, dependencyObj1ToObjRef);
+        query.addDependencyDetails(resultList, prodCmpt, dependencyObj1ToObjRef);
 
         assertEquals(2, resultList.size());
-        assertTrue(resultList.contains(elementObject1ProdCmptGeneration1));
-        assertTrue(resultList.contains(elementObject1ProdCmptGeneration2));
+        assertTrue(resultList.contains(objectContainer1));
+        assertTrue(resultList.contains(objectContainer2));
     }
 }
