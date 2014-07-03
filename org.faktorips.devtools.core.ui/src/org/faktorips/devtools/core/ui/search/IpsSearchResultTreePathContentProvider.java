@@ -28,12 +28,7 @@ import org.eclipse.search.ui.text.MatchEvent;
 import org.eclipse.search.ui.text.RemoveAllEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 
 /**
  * 
@@ -43,28 +38,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
  * @author Thorsten Guenther
  */
 public class IpsSearchResultTreePathContentProvider implements ITreeContentProvider, ISearchResultListener {
-
-    private static class IpsElementSearchTreeNode {
-
-        private final Set<IIpsElement> children;
-
-        protected IpsElementSearchTreeNode() {
-            this.children = new HashSet<IIpsElement>();
-        }
-
-        protected void addChild(IIpsElement child) {
-            children.add(child);
-        }
-
-        protected Set<IIpsElement> getChildren() {
-            return Collections.unmodifiableSet(children);
-        }
-
-        protected boolean hasChildren() {
-            return !children.isEmpty();
-        }
-
-    }
 
     private IpsElementsSearchViewPage page;
     private ISearchResult searchResult;
@@ -127,29 +100,11 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
         if (element instanceof IIpsProject) {
             return null;
         }
-        if (element instanceof IIpsObjectPart) {
-            IIpsObjectPart ipsObjectPart = (IIpsObjectPart)element;
-            return ipsObjectPart.getIpsObject();
-        }
-        if (element instanceof IProductCmptGeneration) {
-            return ((IProductCmptGeneration)element).getProductCmpt();
-        }
-        if (element instanceof IIpsSrcFile) {
-            IIpsSrcFile ipsSrcFile = (IIpsSrcFile)element;
-            return ipsSrcFile.getIpsPackageFragment();
-        }
-        if (element instanceof IIpsPackageFragmentRoot) {
-            return ((IIpsPackageFragmentRoot)element).getIpsProject();
-        }
-        if (element instanceof IIpsPackageFragment) {
-            return ((IIpsPackageFragment)element).getParent();
-        }
         if (element instanceof IIpsObject) {
             IIpsObject ipsSrcFile = (IIpsObject)element;
             return ipsSrcFile.getIpsPackageFragment();
         }
-
-        return null;
+        return element.getParent();
     }
 
     private synchronized void initialize(ISearchResult result) {
@@ -199,8 +154,8 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     @Override
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof AbstractTextSearchResult) {
-            AbstractTextSearchResult searchResult = (AbstractTextSearchResult)inputElement;
-            return searchResult.getElements();
+            AbstractTextSearchResult currentSearchResult = (AbstractTextSearchResult)inputElement;
+            return currentSearchResult.getElements();
         }
         // in Eclipse 3.3 this method will always return an empty array because the elementsChanged
         // Method populates the elements depending on the match filter to the view
@@ -254,17 +209,26 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
             }
         }
 
+        doRemove(viewer, toRemove);
+        doAdd(viewer, toAdd);
+        doUpdate(viewer, toUpdate);
+    }
+
+    private void doRemove(AbstractTreeViewer viewer, Set<Object> toRemove) {
         if (toRemove.size() > 0) {
             viewer.remove(searchResult, toRemove.toArray());
         }
+    }
 
-        for (IIpsElement element : toAdd) {
-
-            add(viewer, element);
-        }
-
+    private void doUpdate(AbstractTreeViewer viewer, Set<Object> toUpdate) {
         for (Object element : toUpdate) {
             viewer.refresh(element);
+        }
+    }
+
+    private void doAdd(AbstractTreeViewer viewer, Set<IIpsElement> toAdd) {
+        for (IIpsElement element : toAdd) {
+            add(viewer, element);
         }
     }
 
@@ -290,5 +254,27 @@ public class IpsSearchResultTreePathContentProvider implements ITreeContentProvi
     protected void clear() {
         initialize(searchResult);
         page.getViewer().refresh();
+    }
+
+    private static class IpsElementSearchTreeNode {
+
+        private final Set<IIpsElement> children;
+
+        protected IpsElementSearchTreeNode() {
+            this.children = new HashSet<IIpsElement>();
+        }
+
+        protected void addChild(IIpsElement child) {
+            children.add(child);
+        }
+
+        protected Set<IIpsElement> getChildren() {
+            return Collections.unmodifiableSet(children);
+        }
+
+        protected boolean hasChildren() {
+            return !children.isEmpty();
+        }
+
     }
 }

@@ -10,23 +10,15 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorPart;
-import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
 /**
  * Action for opening objects in the corresponding editor.
@@ -45,10 +37,7 @@ public class OpenEditorAction extends IpsAction {
 
     @Override
     public void run(IStructuredSelection selection) {
-        IEditorPart editor = openEditor(selection);
-        if (selection.getFirstElement() instanceof IIpsObjectPart && editor instanceof IGotoIpsObjectPart) {
-            ((IGotoIpsObjectPart)editor).gotoIpsObjectPart((IIpsObjectPart)selection.getFirstElement());
-        }
+        openEditor(selection);
     }
 
     public IEditorPart openEditor() {
@@ -68,48 +57,30 @@ public class OpenEditorAction extends IpsAction {
      * opened editor or <code>null</code> if no editor was opened.
      */
     public IEditorPart openEditor(IStructuredSelection selection) {
-        IStructuredSelection relevantSelection = openProductCmptEditorBySelectedGeneration(selection);
-
         // ignores IFiles even if the underlying object is an IpsSrcFile
-        IIpsSrcFile[] srcFiles = getIpsSrcFilesForSelection(relevantSelection);
-        IEditorPart result = null;
+        IIpsSrcFile[] srcFiles = getIpsSrcFilesForSelection(selection);
+        IEditorPart editor = null;
         for (IIpsSrcFile srcFile : srcFiles) {
-            result = IpsUIPlugin.getDefault().openEditor(srcFile);
+            editor = IpsUIPlugin.getDefault().openEditor(srcFile);
         }
-        for (Iterator<Object> iter = getSelectionIterator(relevantSelection); iter.hasNext();) {
-            Object selected = iter.next();
-            if (selected instanceof IFile) {
-                result = IpsUIPlugin.getDefault().openEditor((IFile)selected);
-            }
+        editor = openSelectedFiles(selection, editor);
+        if (selection.getFirstElement() instanceof IIpsObjectPart && editor instanceof IGotoIpsObjectPart) {
+            ((IGotoIpsObjectPart)editor).gotoIpsObjectPart((IIpsObjectPart)selection.getFirstElement());
         }
-        return result;
+        return editor;
     }
 
     /**
-     * Open product components via selected generations. Returns a new structured selection with all
-     * elements which wasn't open using this method.
+     * Open selected files that are no IPS files.
      */
-    private IStructuredSelection openProductCmptEditorBySelectedGeneration(IStructuredSelection selection) {
-        List<Object> newSelection = new ArrayList<Object>();
-        for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
-            Object object = iter.next();
-            if (object instanceof IProductCmptGeneration) {
-                IProductCmptGeneration generation = (IProductCmptGeneration)object;
-                IIpsSrcFile ipsSrcFile = generation.getIpsObject().getIpsSrcFile();
-                IEditorPart part = null;
-                if (!(ipsSrcFile instanceof LibraryIpsSrcFile)) {
-                    part = IpsUIPlugin.getDefault().openEditor(generation);
-                } else {
-                    part = IpsUIPlugin.getDefault().openEditor(ipsSrcFile);
-                }
-                if (part instanceof ProductCmptEditor) {
-                    ((ProductCmptEditor)part).showGenerationEffectiveOn(generation.getValidFrom());
-                }
-            } else {
-                newSelection.add(object);
+    private IEditorPart openSelectedFiles(IStructuredSelection selection, IEditorPart editor) {
+        IEditorPart lastEditor = editor;
+        for (Object selectedObject : selection.toArray()) {
+            if (selectedObject instanceof IFile) {
+                lastEditor = IpsUIPlugin.getDefault().openEditor((IFile)selectedObject);
             }
         }
-        return new StructuredSelection(newSelection);
+        return lastEditor;
     }
 
 }

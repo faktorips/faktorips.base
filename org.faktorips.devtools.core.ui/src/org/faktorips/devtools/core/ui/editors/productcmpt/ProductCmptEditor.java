@@ -26,9 +26,11 @@ import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -288,7 +290,23 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     @Override
     public void gotoIpsObjectPart(IIpsObjectPart part) {
+        setActiveGeneration(getGeneration(part));
         generationPropertiesPage.gotoIpsObjectPart(part);
+    }
+
+    private IIpsObjectGeneration getGeneration(IIpsObjectPart part) {
+        IIpsObjectPartContainer partContainer = part;
+        while (true) {
+            if (partContainer instanceof IIpsObjectGeneration) {
+                return (IIpsObjectGeneration)partContainer;
+            }
+            IIpsElement parent = partContainer.getParent();
+            if (parent instanceof IIpsObjectPartContainer) {
+                partContainer = (IIpsObjectPartContainer)parent;
+            } else {
+                return null;
+            }
+        }
     }
 
 }
