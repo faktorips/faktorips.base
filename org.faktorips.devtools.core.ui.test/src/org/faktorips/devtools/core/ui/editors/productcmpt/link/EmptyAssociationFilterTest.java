@@ -45,10 +45,9 @@ public class EmptyAssociationFilterTest {
     @Test
     public void testSelect_normalAssociations() {
         String association = "TeilkaskoLvbArt";
-        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(association);
-
         IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
         mockAssociationAndLinks(association, generation, mock(IProductCmptLink.class), mock(IProductCmptLink.class));
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(association, generation);
 
         assertTrue(filter.select(viewer, generation, viewItem));
     }
@@ -56,10 +55,9 @@ public class EmptyAssociationFilterTest {
     @Test
     public void testSelect_filterEmptyAssociations() {
         String emptyAssociation = "EmptyArt";
-        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation);
-
         IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
         mockAssociationAndLinks(emptyAssociation, generation);
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation, generation);
 
         assertFalse(filter.select(viewer, generation, viewItem));
     }
@@ -67,10 +65,9 @@ public class EmptyAssociationFilterTest {
     @Test
     public void testSelect_staticAssociations() {
         String association = "TeilkaskoLvbArt";
-        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(association);
-
         IProductCmpt prodCmpt = mock(IProductCmpt.class);
         mockAssociationAndLinks(association, prodCmpt, mock(IProductCmptLink.class), mock(IProductCmptLink.class));
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(association, prodCmpt);
 
         assertTrue(filter.select(viewer, prodCmpt, viewItem));
     }
@@ -78,10 +75,9 @@ public class EmptyAssociationFilterTest {
     @Test
     public void testSelect_filterEmptyStaticAssociations() {
         String emptyAssociation = "EmptyArt";
-        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation);
-
         IProductCmpt prodCmpt = mock(IProductCmpt.class);
         mockAssociationAndLinks(emptyAssociation, prodCmpt);
+        AbstractAssociationViewItem viewItem = mockViewItemWithAssociationName(emptyAssociation, prodCmpt);
 
         assertFalse(filter.select(viewer, prodCmpt, viewItem));
     }
@@ -92,9 +88,11 @@ public class EmptyAssociationFilterTest {
         when(container.getLinksAsList(association)).thenReturn(Arrays.asList(links));
     }
 
-    private AbstractAssociationViewItem mockViewItemWithAssociationName(String association) {
+    private AbstractAssociationViewItem mockViewItemWithAssociationName(String association,
+            IProductCmptLinkContainer linkContainer) {
         AbstractAssociationViewItem viewItem = mock(AbstractAssociationViewItem.class);
         when(viewItem.getAssociationName()).thenReturn(association);
+        when(viewItem.getLinkContainer()).thenReturn(linkContainer);
         return viewItem;
     }
 }

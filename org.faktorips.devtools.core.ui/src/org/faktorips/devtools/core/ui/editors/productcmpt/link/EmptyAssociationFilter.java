@@ -31,21 +31,24 @@ public class EmptyAssociationFilter extends ViewerFilter {
 
     @Override
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        if (canSelect(parentElement, element)) {
-            List<IProductCmptLink> links = getLinks(parentElement, element);
+        if (canSelect(element)) {
+            List<IProductCmptLink> links = getLinks(element);
             return !links.isEmpty();
         }
         return true;
     }
 
-    private List<IProductCmptLink> getLinks(Object parentElement, Object element) {
-        IProductCmptLinkContainer linkContainer = (IProductCmptLinkContainer)parentElement;
-        AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
+    private List<IProductCmptLink> getLinks(Object element) {
+        return getLinks((AbstractAssociationViewItem)element);
+    }
+
+    private List<IProductCmptLink> getLinks(AbstractAssociationViewItem associationViewItem) {
+        IProductCmptLinkContainer linkContainer = associationViewItem.getLinkContainer();
         List<IProductCmptLink> links = linkContainer.getLinksAsList(associationViewItem.getAssociationName());
         return links;
     }
 
-    private boolean canSelect(Object parentElement, Object element) {
-        return parentElement instanceof IProductCmptLinkContainer && element instanceof AbstractAssociationViewItem;
+    private boolean canSelect(Object element) {
+        return element instanceof AbstractAssociationViewItem;
     }
 }
