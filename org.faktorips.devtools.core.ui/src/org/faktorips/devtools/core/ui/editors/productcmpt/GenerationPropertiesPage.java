@@ -32,8 +32,10 @@ import org.eclipse.ui.forms.IMessage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -41,7 +43,9 @@ import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
+import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
@@ -52,7 +56,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionVie
  * @author Thorsten Guenther
  * @author Alexander Weickmann
  */
-public class GenerationPropertiesPage extends IpsObjectEditorPage {
+public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGotoIpsObjectPart {
 
     public static final String PAGE_ID = "Properties"; //$NON-NLS-1$
 
@@ -78,6 +82,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     private GotoGenerationAction gotoPreviousGenerationAction;
 
     private GotoGenerationAction gotoNextGenerationAction;
+
+    private LinksSection linksSection;
 
     public GenerationPropertiesPage(ProductCmptEditor editor) {
         super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
@@ -248,7 +254,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createLinksSection(Composite right) {
-        IpsSection linksSection = new LinksSection(getEditor(), getActiveGeneration(), right, toolkit);
+        linksSection = new LinksSection(getEditor(), getActiveGeneration(), right, toolkit);
         rightSections.add(linksSection);
     }
 
@@ -398,6 +404,15 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     boolean showsNotLatestGeneration() {
         return isActive() && !isNewestGeneration();
+    }
+
+    @Override
+    public void gotoIpsObjectPart(IIpsObjectPart part) {
+        if (part instanceof IProductCmptLink) {
+            IProductCmptLink link = (IProductCmptLink)part;
+            linksSection.setSelection(new LinkViewItem(link));
+            getEditor().setActivePage(PAGE_ID);
+        }
     }
 
     private final class NotLatestGenerationMessage implements IMessage {

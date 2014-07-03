@@ -28,10 +28,12 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
@@ -43,7 +45,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDesc
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
+public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport, IGotoIpsObjectPart {
 
     /**
      * Setting key for user's decision not to choose a new product component type, because the old
@@ -54,7 +56,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private GenerationPropertiesPage generationPropertiesPage;
 
     @Override
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+    protected void addPagesForParsableSrcFile() throws PartInitException {
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
@@ -282,6 +284,11 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return generationName;
         }
         return generationName + SystemUtils.LINE_SEPARATOR + headerMessage;
+    }
+
+    @Override
+    public void gotoIpsObjectPart(IIpsObjectPart part) {
+        generationPropertiesPage.gotoIpsObjectPart(part);
     }
 
 }

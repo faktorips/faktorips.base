@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
@@ -331,6 +332,14 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
             treeViewer.getTree().setMenu(emptyMenu);
         }
         cardinalityPanel.setEnabled(enabled);
+    }
+
+    /**
+     * Sets the Selection to the given {@link LinkViewItem}.
+     */
+    public void setSelection(LinkViewItem link) {
+        StructuredSelection selection = new StructuredSelection(link);
+        getViewer().setSelection(selection, true);
     }
 
     @Override
