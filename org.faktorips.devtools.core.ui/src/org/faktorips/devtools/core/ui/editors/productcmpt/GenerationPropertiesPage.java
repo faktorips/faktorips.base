@@ -96,8 +96,14 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         this.toolkit = toolkit;
         createStack();
         createPageContent();
-        linksSection.getViewer().expandAll();
+        expandLinkSection();
         createToolbar();
+    }
+
+    private void expandLinkSection() {
+        if (linksSection.getViewer() != null) {
+            linksSection.getViewer().expandAll();
+        }
     }
 
     /**
