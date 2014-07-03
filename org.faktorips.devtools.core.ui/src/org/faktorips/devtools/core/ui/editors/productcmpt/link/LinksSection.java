@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -204,20 +203,20 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
      */
     private void buildContextMenu() {
         MenuManager menuManager = new MenuManager();
-    
+
         editor.getSite().registerContextMenu(ID, menuManager, treeViewer);
-    
+
         // We use whitelist menu cleaner to avoid any other actions
         MenuCleaner menuCleaner = new MenuCleaner();
         menuCleaner.setWhiteListMode(true);
         menuCleaner.addFilteredPrefix("org.faktorips"); //$NON-NLS-1$
         menuCleaner.addFilteredPrefix("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
         menuManager.addMenuListener(menuCleaner);
-    
+
         treePopup = menuManager.createContextMenu(treeViewer.getControl());
-    
+
         treeViewer.getControl().setMenu(treePopup);
-    
+
         // create empty menu for later use
         emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
     }
@@ -363,7 +362,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     @Override
-    public Viewer getViewer() {
+    public TreeViewer getViewer() {
         return treeViewer;
     }
 
