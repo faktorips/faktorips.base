@@ -22,9 +22,6 @@ import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 
 /**
  * Action for opening objects in the corresponding editor.
- * 
- * @author Thorsten Guenther
- * @author Stefan Widmaier
  */
 public class OpenEditorAction extends IpsAction {
 
@@ -53,34 +50,60 @@ public class OpenEditorAction extends IpsAction {
     }
 
     /**
-     * Opens all corresponding editor for the given selection. Returns the editor input of the last
-     * opened editor or <code>null</code> if no editor was opened.
+     * Opens all corresponding editor for the given selection. Returns the most recently opened
+     * editor or <code>null</code> if no editor was opened.
      */
     public IEditorPart openEditor(IStructuredSelection selection) {
-        // ignores IFiles even if the underlying object is an IpsSrcFile
-        IIpsSrcFile[] srcFiles = getIpsSrcFilesForSelection(selection);
-        IEditorPart editor = null;
-        for (IIpsSrcFile srcFile : srcFiles) {
-            editor = IpsUIPlugin.getDefault().openEditor(srcFile);
-        }
-        editor = openSelectedFiles(selection, editor);
-        if (selection.getFirstElement() instanceof IIpsObjectPart && editor instanceof IGotoIpsObjectPart) {
-            ((IGotoIpsObjectPart)editor).gotoIpsObjectPart((IIpsObjectPart)selection.getFirstElement());
-        }
-        return editor;
+        IEditorPart ipsEditor = openEditorsForIpsSrcFiles(selection);
+        handleGotoIpsObjectPart(selection, ipsEditor);
+        IEditorPart fileEditor = openEditorsForIFiles(selection);
+        return fileEditor != null ? fileEditor : ipsEditor;
     }
 
     /**
-     * Open selected files that are no IPS files.
+     * Opens the respective editors for all IPSSrcFiles in the selection.
+     * 
+     * @return the most recently opened editor
+     * 
      */
-    private IEditorPart openSelectedFiles(IStructuredSelection selection, IEditorPart editor) {
-        IEditorPart lastEditor = editor;
+    private IEditorPart openEditorsForIpsSrcFiles(IStructuredSelection selection) {
+        // ignores IFiles even if the underlying object is an IpsSrcFile
+        IEditorPart mostRecentlyOpenedEditor = null;
+        IIpsSrcFile[] srcFiles = getIpsSrcFilesForSelection(selection);
+        for (IIpsSrcFile srcFile : srcFiles) {
+            mostRecentlyOpenedEditor = IpsUIPlugin.getDefault().openEditor(srcFile);
+        }
+        return mostRecentlyOpenedEditor;
+    }
+
+    /**
+     * Opens the respective editors for all IFiles in the selection.
+     * 
+     * @return the most recently opened editor
+     * 
+     */
+    private IEditorPart openEditorsForIFiles(IStructuredSelection selection) {
+        IEditorPart mostRecentlyOpenedEditor = null;
         for (Object selectedObject : selection.toArray()) {
             if (selectedObject instanceof IFile) {
-                lastEditor = IpsUIPlugin.getDefault().openEditor((IFile)selectedObject);
+                IpsUIPlugin.getDefault().openEditor((IFile)selectedObject);
             }
         }
-        return lastEditor;
+        return mostRecentlyOpenedEditor;
+    }
+
+    private void handleGotoIpsObjectPart(IStructuredSelection selection, IEditorPart editor) {
+        if (isFirstElementAPart(selection) && supportsGoto(editor)) {
+            ((IGotoIpsObjectPart)editor).gotoIpsObjectPart((IIpsObjectPart)selection.getFirstElement());
+        }
+    }
+
+    private boolean supportsGoto(IEditorPart editor) {
+        return editor instanceof IGotoIpsObjectPart;
+    }
+
+    private boolean isFirstElementAPart(IStructuredSelection selection) {
+        return selection.getFirstElement() instanceof IIpsObjectPart;
     }
 
 }
