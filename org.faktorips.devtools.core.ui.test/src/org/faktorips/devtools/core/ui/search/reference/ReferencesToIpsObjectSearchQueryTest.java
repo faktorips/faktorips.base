@@ -43,7 +43,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-public class ReferencesToIIpsObjectSearchQueryTest {
+public class ReferencesToIpsObjectSearchQueryTest {
 
     @Mock
     private IIpsProject proj;
