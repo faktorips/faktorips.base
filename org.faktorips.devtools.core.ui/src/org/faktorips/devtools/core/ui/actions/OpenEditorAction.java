@@ -86,7 +86,7 @@ public class OpenEditorAction extends IpsAction {
         IEditorPart mostRecentlyOpenedEditor = null;
         for (Object selectedObject : selection.toArray()) {
             if (selectedObject instanceof IFile) {
-                IpsUIPlugin.getDefault().openEditor((IFile)selectedObject);
+                mostRecentlyOpenedEditor = IpsUIPlugin.getDefault().openEditor((IFile)selectedObject);
             }
         }
         return mostRecentlyOpenedEditor;
