@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
@@ -27,9 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPersistentAssociationInfo.Relat
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAssociation;
 
@@ -86,7 +85,8 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             IPolicyCmptTypeAssociation association = xPolicyAssociation.getAssociation();
 
             try {
-                if (!association.getPersistenceAssociatonInfo().isValid(association.getIpsProject())) {
+                IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
+                if (!persistenceAssociatonInfo.isValid(association.getIpsProject())) {
                     return fragment;
                 }
 
@@ -97,44 +97,43 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
 
                 IIpsArtefactBuilderSet ipsArtefactBuilderSet = xPolicyAssociation.getIpsProject()
                         .getIpsArtefactBuilderSet();
-                if (ipsArtefactBuilderSet instanceof StandardBuilderSet) {
-                    StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
-                    IPersistenceProvider persistenceProviderImpl = standardBuilderSet
-                            .getPersistenceProviderImplementation();
-
-                    // add import and annotation depending on the relationship type (e.g. oneToMany)
-                    RelationshipType relationShip = RelationshipType.UNKNOWN;
-                    if (xInverseAssociation != null) {
-                        relationShip = association.getPersistenceAssociatonInfo().evalBidirectionalRelationShipType(
-                                xInverseAssociation.getAssociation());
-                    } else {
-                        relationShip = association.getPersistenceAssociatonInfo().evalUnidirectionalRelationShipType();
-                    }
-                    if (relationShip == RelationshipType.UNKNOWN) {
-                        throw new RuntimeException("Error evaluation the relationship type!");
-                    }
-
-                    fragment.addImport(importForRelationshipType.get(relationShip));
-                    fragment.append(annotationForRelationshipType.get(relationShip));
-
-                    // add attributes to relationship annotation
-                    List<String> attributesToAppend = new ArrayList<String>();
-                    if (xInverseAssociation != null) {
-                        addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association,
-                                xInverseAssociation);
-                    }
-                    addAnnotationAttributeCascadeType(fragment, attributesToAppend, association);
-                    addAnnotationAttributeFetch(fragment, attributesToAppend, association);
-                    addAnnotationAttributesTargetEntity(attributesToAppend, xPolicyAssociation);
-                    addAnnotationAttributeOrphanRemoval(persistenceProviderImpl, attributesToAppend, association);
-                    appendAllAttributes(fragment, attributesToAppend);
-
-                    // evaluate further attributes depending on the relationship type
-                    addAnnotationFor(persistenceProviderImpl, fragment, association);
-
-                    // add special annotation in case of join table needed
-                    addAnnotationJoinTable(fragment, association);
+                IPersistenceProvider persistenceProvider = ipsArtefactBuilderSet.getPersistenceProvider();
+                if (persistenceProvider == null) {
+                    return fragment;
                 }
+
+                // add import and annotation depending on the relationship type (e.g. oneToMany)
+                RelationshipType relationShip = RelationshipType.UNKNOWN;
+                if (xInverseAssociation != null) {
+                    relationShip = persistenceAssociatonInfo.evalBidirectionalRelationShipType(xInverseAssociation
+                            .getAssociation());
+                } else {
+                    relationShip = persistenceAssociatonInfo.evalUnidirectionalRelationShipType();
+                }
+                if (relationShip == RelationshipType.UNKNOWN) {
+                    throw new RuntimeException("Error evaluation the relationship type!");
+                }
+
+                fragment.addImport(importForRelationshipType.get(relationShip));
+                fragment.append(annotationForRelationshipType.get(relationShip));
+
+                // add attributes to relationship annotation
+                List<String> attributesToAppend = new ArrayList<String>();
+                if (xInverseAssociation != null) {
+                    addAnnotationAttributeMappedBy(relationShip, attributesToAppend, association, xInverseAssociation);
+                }
+                addAnnotationAttributeCascadeType(fragment, attributesToAppend, association);
+                addAnnotationAttributeFetch(fragment, attributesToAppend, association);
+                addAnnotationAttributesTargetEntity(attributesToAppend, xPolicyAssociation);
+                addAnnotationAttributeOrphanRemoval(persistenceProvider, attributesToAppend, association);
+                appendAllAttributes(fragment, attributesToAppend);
+
+                // evaluate further attributes depending on the relationship type
+                addAnnotationFor(persistenceProvider, fragment, association);
+
+                // add special annotation in case of join table needed
+                addAnnotationJoinTable(fragment, association);
+                addAnnotationIndex(persistenceProvider, fragment, persistenceAssociatonInfo);
             } catch (CoreException e) {
                 StdBuilderPlugin.log(e);
             }
@@ -143,20 +142,19 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         return fragment;
     }
 
-    private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProviderImpl,
+    private void addAnnotationAttributeOrphanRemoval(IPersistenceProvider persistenceProvider,
             List<String> attributesToAppend,
             IPolicyCmptTypeAssociation association) {
         // note that depending on the JPA implementation (not JPA
         // 2.0) the orphan removal feature could be set as attribute or separate annotation
-        if (persistenceProviderImpl == null || !persistenceProviderImpl.isSupportingOrphanRemoval()) {
-            return;
-        }
-        IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
-
-        if (persistenceAssociatonInfo.isOrphanRemoval()) {
-            String attributeOrphanRemoval = persistenceProviderImpl.getRelationshipAnnotationAttributeOrphanRemoval();
-            if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
-                attributesToAppend.add(attributeOrphanRemoval);
+        if (persistenceProvider != null && persistenceProvider.isSupportingOrphanRemoval()) {
+            IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
+            if (persistenceAssociatonInfo.isOrphanRemoval()) {
+                String attributeOrphanRemoval = persistenceProvider
+                        .getRelationshipAnnotationAttributeOrphanRemoval();
+                if (!StringUtils.isEmpty(attributeOrphanRemoval)) {
+                    attributesToAppend.add(attributeOrphanRemoval);
+                }
             }
         }
     }
@@ -256,28 +254,14 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             List<String> attributesToAppend,
             IPolicyCmptTypeAssociation association) {
         IPersistentAssociationInfo persistenceAssociatonInfo = association.getPersistenceAssociatonInfo();
-        List<String> cascadeTypes = new ArrayList<String>();
-        boolean needImport = false;
+        List<String> cascadeTypes = getCascadeTypes(persistenceAssociatonInfo);
+        if (cascadeTypes.size() > 0) {
+            fragment.addImport(IMPORT_CASCADE_TYPE);
+        }
         if (persistenceAssociatonInfo.isCascadeTypeMerge() && persistenceAssociatonInfo.isCascadeTypeRemove()
                 && persistenceAssociatonInfo.isCascadeTypePersist() && persistenceAssociatonInfo.isCascadeTypeRefresh()) {
             attributesToAppend.add("cascade=CascadeType.ALL");
-            needImport = true;
-        } else {
-            if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
-                cascadeTypes.add("CascadeType.MERGE");
-            }
-            if (persistenceAssociatonInfo.isCascadeTypeRemove()) {
-                cascadeTypes.add("CascadeType.REMOVE");
-            }
-            if (persistenceAssociatonInfo.isCascadeTypePersist()) {
-                cascadeTypes.add("CascadeType.PERSIST");
-            }
-            if (persistenceAssociatonInfo.isCascadeTypeRefresh()) {
-                cascadeTypes.add("CascadeType.REFRESH");
-            }
-        }
-        if (needImport || cascadeTypes.size() > 0) {
-            fragment.addImport(IMPORT_CASCADE_TYPE);
+            return;
         }
         if (cascadeTypes.size() == 0) {
             return;
@@ -291,6 +275,24 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
         }
         cascadeTypesAsString += "}";
         attributesToAppend.add(cascadeTypesAsString);
+    }
+
+    private List<String> getCascadeTypes(IPersistentAssociationInfo persistenceAssociatonInfo) {
+        List<String> cascadeTypes;
+        cascadeTypes = new ArrayList<String>();
+        if (persistenceAssociatonInfo.isCascadeTypeMerge()) {
+            cascadeTypes.add("CascadeType.MERGE");
+        }
+        if (persistenceAssociatonInfo.isCascadeTypeRemove()) {
+            cascadeTypes.add("CascadeType.REMOVE");
+        }
+        if (persistenceAssociatonInfo.isCascadeTypePersist()) {
+            cascadeTypes.add("CascadeType.PERSIST");
+        }
+        if (persistenceAssociatonInfo.isCascadeTypeRefresh()) {
+            cascadeTypes.add("CascadeType.REFRESH");
+        }
+        return cascadeTypes;
     }
 
     private void addAnnotationAttributeFetch(JavaCodeFragment fragment,
@@ -398,6 +400,14 @@ public class PolicyCmptImplClassAssociationJpaAnnGen extends AbstractJpaAnnotati
             return targetPolicyCmptType.isPersistentEnabled();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
+        }
+    }
+
+    private void addAnnotationIndex(IPersistenceProvider persistenceProvider,
+            JavaCodeFragment fragment,
+            IPersistentAssociationInfo persistenceAssociatonInfo) {
+        if (persistenceProvider.isSupportingIndex()) {
+            fragment.append(persistenceProvider.getIndexAnnotations(persistenceAssociatonInfo));
         }
     }
 

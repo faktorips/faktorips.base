@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.model.pctype;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 
 /**
@@ -23,7 +22,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentAssociationInfo extends IIpsObjectPart {
+public interface IPersistentAssociationInfo extends IPersistentTypePartInfo {
 
     public static enum RelationshipType {
         UNKNOWN,
@@ -34,91 +33,86 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     }
 
     /** The XML tag for this IPS object part. */
-    public final static String XML_TAG = "PersistenceAssociation"; //$NON-NLS-1$
+    public static final String XML_TAG = "PersistenceAssociation"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the association is transient.
      */
-    public final static String PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION = "ownerOfManyToManyAssociation"; //$NON-NLS-1$
+    public static final String PROPERTY_OWNER_OF_MANY_TO_MANY_ASSOCIATION = "ownerOfManyToManyAssociation"; //$NON-NLS-1$
 
     /**
      * The name of the join table name property.
      */
-    public final static String PROPERTY_JOIN_TABLE_NAME = "joinTableName"; //$NON-NLS-1$
+    public static final String PROPERTY_JOIN_TABLE_NAME = "joinTableName"; //$NON-NLS-1$
 
     /**
      * The name of the source column name property. In a many-to-many relationship this is the name
      * of the column in the join table which references the owning side (foreign key to the owning
      * side).
      */
-    public final static String PROPERTY_SOURCE_COLUMN_NAME = "sourceColumnName"; //$NON-NLS-1$
+    public static final String PROPERTY_SOURCE_COLUMN_NAME = "sourceColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the target column name property. In a many-to-many relationship this is the name
      * of the column in the join table which references the opposite of the owning side (foreign key
      * to the non-owning side).
      */
-    public final static String PROPERTY_TARGET_COLUMN_NAME = "targetColumnName"; //$NON-NLS-1$
-
-    /**
-     * The name of a property that indicates that the association is transient.
-     */
-    public final static String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
+    public static final String PROPERTY_TARGET_COLUMN_NAME = "targetColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the fetch type (lazy / eager) property.
      */
-    public final static String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
+    public static final String PROPERTY_FETCH_TYPE = "fetchType"; //$NON-NLS-1$
 
     /**
      * The name of the join column name property. In a one-to-many relationship this is the name of
      * the column which references the opposite of the owning side (foreign key to the non-owning
      * side).
      */
-    public final static String PROPERTY_JOIN_COLUMN_NAME = "joinColumnName"; //$NON-NLS-1$
+    public static final String PROPERTY_JOIN_COLUMN_NAME = "joinColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the "join column is nullable" property, allowing NULL values in the database.
      */
-    public final static String PROPERTY_JOIN_COLUMN_NULLABLE = "joinColumnNullable"; //$NON-NLS-1$
+    public static final String PROPERTY_JOIN_COLUMN_NULLABLE = "joinColumnNullable"; //$NON-NLS-1$
 
     /**
      * Specifies if the orphan removal (private owned) annotation should be used or not. The
      * property make only sense on the master to detail side of an one to many composition.
      */
-    public final static String PROPERTY_ORPHAN_REMOVAL = "orphanRemoval"; //$NON-NLS-1$
+    public static final String PROPERTY_ORPHAN_REMOVAL = "orphanRemoval"; //$NON-NLS-1$
 
     /**
      * Specifies if the default cascade should be ignored and the other cascade type propertied
      * should be used instead. The default for compositions is ALL for all other types the cascade
      * type will not be generated.
      */
-    public final static String PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT = "cascadeTypeOverwriteDefault"; //$NON-NLS-1$
+    public static final String PROPERTY_CASCADE_TYPE_OVERWRITE_DEFAULT = "cascadeTypeOverwriteDefault"; //$NON-NLS-1$
 
     /**
      * Specifies if the cascade type PERSIST should be added.
      */
-    public final static String PROPERTY_CASCADE_TYPE_PERSIST = "cascadeTypePersist"; //$NON-NLS-1$
+    public static final String PROPERTY_CASCADE_TYPE_PERSIST = "cascadeTypePersist"; //$NON-NLS-1$
 
     /**
      * Specifies if the cascade type MERGE should be added.
      */
-    public final static String PROPERTY_CASCADE_TYPE_MERGE = "cascadeTypeMerge"; //$NON-NLS-1$
+    public static final String PROPERTY_CASCADE_TYPE_MERGE = "cascadeTypeMerge"; //$NON-NLS-1$
 
     /**
      * Specifies if the cascade type REMOVE should be added.
      */
-    public final static String PROPERTY_CASCADE_TYPE_REMOVE = "cascadeTypeRemove"; //$NON-NLS-1$
+    public static final String PROPERTY_CASCADE_TYPE_REMOVE = "cascadeTypeRemove"; //$NON-NLS-1$
 
     /**
      * Specifies if the cascade type REFRESH should be added.
      */
-    public final static String PROPERTY_CASCADE_TYPE_REFRESH = "cascadeTypeRefresh"; //$NON-NLS-1$
+    public static final String PROPERTY_CASCADE_TYPE_REFRESH = "cascadeTypeRefresh"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PERSISTENCEASSOCIATION-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "PERSISTENCEASSOCIATION-"; //$NON-NLS-1$
 
     /**
      * Validation message code for empty join table name.
@@ -316,11 +310,6 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
     public boolean isForeignKeyColumnDefinedOnTargetSide() throws CoreException;
 
     /**
-     * Returns true if the association is transient.
-     */
-    public boolean isTransient();
-
-    /**
      * Set to <code>true</code> if the association should be the owner of am many-to-many
      * association. set to <code>false</code> if the target side is the owner.
      */
@@ -393,12 +382,6 @@ public interface IPersistentAssociationInfo extends IIpsObjectPart {
      * Set to <code>true</code> if the corresponding cascade type should be used.
      */
     public void setCascadeTypePersist(boolean cascadeTypePersist);
-
-    /**
-     * Set to <code>true</code> if the association should be transient. Set to <code>false</code> if
-     * the policy component is not transient and will be persists.
-     */
-    public void setTransient(boolean transientAssociation);
 
     /**
      * Initialize the default properties

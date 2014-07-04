@@ -23,9 +23,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.IPersistenceOptions;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo.DateTimeMapping;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.PersistentType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +81,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals(DateTimeMapping.DATE_ONLY, persistenceAttributeInfo.getTemporalMapping());
         assertEquals("sqlColumnDefinition1", persistenceAttributeInfo.getSqlColumnDefinition());
         assertEquals("converterQualifiedClassName1", persistenceAttributeInfo.getConverterQualifiedClassName());
+        assertEquals("premiumIndex", persistenceAttributeInfo.getIndexName());
     }
 
     @Test
@@ -96,6 +97,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         persistenceAttributeInfo.setTransient(true);
         persistenceAttributeInfo.setSqlColumnDefinition("sqlColumnDefinition0");
         persistenceAttributeInfo.setConverterQualifiedClassName("converterQualifiedClassName0");
+        persistenceAttributeInfo.setIndexName("XYZ");
         Element element = policyCmptType.toXml(newDocument());
 
         PolicyCmptType copyOfPcType = (PolicyCmptType)newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "Copy");
@@ -115,6 +117,7 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         assertEquals(DateTimeMapping.DATE_AND_TIME, persistenceAttributeInfoCopy.getTemporalMapping());
         assertEquals("sqlColumnDefinition0", persistenceAttributeInfo.getSqlColumnDefinition());
         assertEquals("converterQualifiedClassName0", persistenceAttributeInfo.getConverterQualifiedClassName());
+        assertEquals("XYZ", persistenceAttributeInfo.getIndexName());
     }
 
     @Test
@@ -237,6 +240,34 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
         attribute.setOverwrite(true);
         ml = persAttrInfo.validate(ipsProject);
         assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME));
+    }
 
+    @Test
+    public void testValidateIndexName() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+        pAttInfo.setIndexName("");
+
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName(" ");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName("INVALID INDEX_NAME");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName(" INVALID_INDEX_NAME ");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
+
+        pAttInfo.setIndexName("VALID_INDEX_NAME");
+
+        ml = pAttInfo.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IPersistentAttributeInfo.MSGCODE_INDEX_NAME_INVALID));
     }
 }

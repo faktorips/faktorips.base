@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -20,7 +19,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Association;
@@ -66,7 +64,7 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     private String matchingAssociationName = StringUtils.EMPTY;
 
-    private IIpsObjectPart persistenceAssociationInfo;
+    private IPersistentAssociationInfo persistenceAssociationInfo;
 
     public PolicyCmptTypeAssociation(IPolicyCmptType pcType, String id) {
         super(pcType, id);
@@ -757,13 +755,13 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IPersistentAssociationInfo getPersistenceAssociatonInfo() {
-        return (IPersistentAssociationInfo)persistenceAssociationInfo;
+        return persistenceAssociationInfo;
     }
 
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof PersistentAssociationInfo) {
-            persistenceAssociationInfo = part;
+        if (part instanceof IPersistentAssociationInfo) {
+            persistenceAssociationInfo = (IPersistentAssociationInfo)part;
             return true;
         }
         return false;
@@ -780,19 +778,11 @@ public class PolicyCmptTypeAssociation extends Association implements IPolicyCmp
 
     @Override
     public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        // TODO AW: I don't think this implementation is reasonable as it only should create those
-        // instances that can actually be part of the association.
-        try {
-            Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
-                    String.class);
-            IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
-            return result;
-            // CSOFF: IllegalCatch
-        } catch (Exception e) {
-            IpsPlugin.log(e);
-            // CSON: IllegalCatch
+        if (partType.isAssignableFrom(PersistentAssociationInfo.class)) {
+            return new PersistentAssociationInfo(this, getNextPartId());
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override

@@ -810,16 +810,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindContent(sqlColumnDefinition, attribute.getPersistenceAttributeInfo(),
                 IPersistentAttributeInfo.PROPERTY_SQL_COLUMN_DEFINITION);
 
-        getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_labelDatatypeConverterClass);
-        if (ipsProject.getIpsArtefactBuilderSet().isPersistentProviderSupportConverter()) {
-            final Text converterQualifiedName = getToolkit().createText(workArea);
-            getBindingContext().bindContent(converterQualifiedName, attribute.getPersistenceAttributeInfo(),
-                    IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
-        } else {
-            final Text converterQualifiedName = getToolkit().createText(workArea);
-            converterQualifiedName.setEnabled(false);
-            converterQualifiedName.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
-        }
+        addConverterText(workArea);
+        addIndexText(workArea);
 
         // disable all tab page controls if policy component type shouldn't persist
         getBindingContext().add(
@@ -877,6 +869,39 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             }
         });
 
+    }
+
+    private void addConverterText(Composite workArea) {
+        addText(workArea, isPersistenceProviderSupportingConverters(),
+                Messages.AttributeEditDialog_labelDatatypeConverterClass,
+                IPersistentAttributeInfo.PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME);
+    }
+
+    private void addIndexText(Composite workArea) {
+        addText(workArea, isPersistenceProviderSupportingIndex(), Messages.AttributeEditDialog_labelIndexName,
+                IPersistentAttributeInfo.PROPERTY_INDEX_NAME);
+    }
+
+    private void addText(Composite workArea, boolean supportedByProvider, String labelText, String bindingProperty) {
+        getToolkit().createFormLabel(workArea, labelText);
+        Text textField = getToolkit().createText(workArea);
+        if (supportedByProvider) {
+            getBindingContext().bindContent(textField, attribute.getPersistenceAttributeInfo(),
+                    bindingProperty);
+        } else {
+            textField.setEnabled(false);
+            textField.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
+        }
+    }
+
+    private boolean isPersistenceProviderSupportingIndex() {
+        return ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() == null
+                || ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingIndex();
+    }
+
+    private boolean isPersistenceProviderSupportingConverters() {
+        return ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider() != null
+                && ipsProject.getIpsArtefactBuilderSet().getPersistenceProvider().isSupportingConverters();
     }
 
     private boolean isPersistentEnabled() {

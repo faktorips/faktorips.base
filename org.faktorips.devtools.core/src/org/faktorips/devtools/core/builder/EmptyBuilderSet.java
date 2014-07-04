@@ -107,7 +107,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
         return null;
     }
 
-    private final class EmptyParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
+        return null;
+    }
+
+    private static final class EmptyParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {
 
         public EmptyParameterIdentifierResolver(IExpression expression, ExprCompiler<JavaCodeFragment> exprCompiler) {
             super(expression, exprCompiler);

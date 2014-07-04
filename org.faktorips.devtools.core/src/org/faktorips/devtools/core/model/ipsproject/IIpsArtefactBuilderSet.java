@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -44,7 +45,7 @@ import org.faktorips.fl.IdentifierResolver;
 public interface IIpsArtefactBuilderSet {
 
     /** The XML element name. */
-    public final static String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
+    public static final String XML_ELEMENT = "IpsArtefactBuilderSet"; //$NON-NLS-1$
 
     /**
      * Returns the <tt>IIpsArtefactBuilderSetConfig</tt> that configures this builder set. The
@@ -89,16 +90,14 @@ public interface IIpsArtefactBuilderSet {
     public boolean isTableBasedEnumValidationRequired();
 
     /**
-     * Returns <code>true</code> if the persistent provider supports converter. If no persistent
-     * provider is specified returns <code>false</code>.
+     * If there is any persistence provider configured for this builder set, this method returns it.
+     * May return <code>null</code>if there is no configured persistence provider or the build set
+     * does not support persistence providers.
+     * 
+     * @return The currently configured persistence provider.
+     * @see IPersistenceProvider
      */
-    public boolean isPersistentProviderSupportConverter();
-
-    /**
-     * Returns <code>true</code> if the persistent provider supports orphan removal. If no
-     * persistent provider is specified returns <code>false</code>.
-     */
-    public boolean isPersistentProviderSupportOrphanRemoval();
+    public IPersistenceProvider getPersistenceProvider();
 
     /**
      * Returns a compilation result that gives access to a table via the indicated function. Returns
