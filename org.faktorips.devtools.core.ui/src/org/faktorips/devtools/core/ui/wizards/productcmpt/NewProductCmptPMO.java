@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -39,7 +37,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
-import org.faktorips.devtools.core.ui.commands.NewResourceNameValidator;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 
 /**
@@ -150,16 +147,15 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
                     concreteTypes.add(ipsSrcFile);
                 }
             }
-            baseTypes = getBaseTypesFromConcreteTypes(concreteTypes, ipsProject);
+            baseTypes = new HashSet<IProductCmptType>();
+            addBaseTypesRecursive(concreteTypes, ipsProject);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
-    private Set<IProductCmptType> getBaseTypesFromConcreteTypes(Set<IIpsSrcFile> types, IIpsProject ipsProject)
-            throws CoreException {
+    private void addBaseTypesRecursive(Set<IIpsSrcFile> types, IIpsProject ipsProject) throws CoreException {
         Set<IIpsSrcFile> superTypes = new HashSet<IIpsSrcFile>();
-        Set<IProductCmptType> baseTypes = new HashSet<IProductCmptType>();
         for (IIpsSrcFile ipsSrcFile : types) {
             if (Boolean.parseBoolean(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_LAYER_SUPERTYPE))) {
                 continue;
@@ -179,9 +175,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             }
         }
         if (!superTypes.isEmpty()) {
-            baseTypes.addAll(getBaseTypesFromConcreteTypes(superTypes, ipsProject));
+            addBaseTypesRecursive(superTypes, ipsProject);
         }
-        return baseTypes;
     }
 
     /**
@@ -340,22 +335,18 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     public void initDefaults(IIpsPackageFragment defaultPackage,
             IProductCmptType defaultType,
             IProductCmpt defaultProductCmpt) {
-        try {
-            if (defaultPackage == null) {
-                return;
-            }
-            if (contextProductCmpt != null) {
-                contextProductCmpt = defaultProductCmpt;
-                setKindId(contextProductCmpt.getKindId().getName());
-            }
-            setIpsProject(defaultPackage.getIpsProject());
-            setPackageRoot(defaultPackage.getRoot());
-            setIpsPackage(defaultPackage);
-            if (defaultType != null) {
-                initDefaultType(defaultType, defaultPackage.getIpsProject());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (defaultPackage == null) {
+            return;
+        }
+        if (contextProductCmpt != null) {
+            contextProductCmpt = defaultProductCmpt;
+            setKindId(contextProductCmpt.getKindId().getName());
+        }
+        setIpsProject(defaultPackage.getIpsProject());
+        setPackageRoot(defaultPackage.getRoot());
+        setIpsPackage(defaultPackage);
+        if (defaultType != null) {
+            initDefaultType(defaultType, defaultPackage.getIpsProject());
         }
     }
 
@@ -432,11 +423,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     private void initializeNameForProductCmptCopy() {
-        IPath targetPath = copyProductCmpt.getIpsPackageFragment().getCorrespondingResource().getFullPath();
-        NewResourceNameValidator resourceNameValidator = new NewResourceNameValidator(targetPath, IResource.FILE,
-                '.' + IpsObjectType.PRODUCT_CMPT.getFileExtension(), copyProductCmpt.getIpsSrcFile());
-        String nameOfCopy = resourceNameValidator.getValidResourceName(copyProductCmpt.getName());
-        setKindId(copyProductCmpt.getIpsProject().getProductCmptNamingStrategy().getKindId(nameOfCopy));
+        setKindId(copyProductCmpt.getKindId().getName());
     }
 
     private void initializeTypeAndBaseTypeForProductCmptCopy(IProductCmpt productCmptToCopy) {

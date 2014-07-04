@@ -22,9 +22,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.SingletonMockHelper;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -41,7 +39,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.ui.commands.NewResourceNameValidator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -221,10 +218,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         pmo.setIpsProject(ipsProject);
         pmo.setCopyProductCmpt(productCmptToCopy);
 
-        IPath targetPath = productCmptToCopy.getIpsPackageFragment().getCorrespondingResource().getFullPath();
-        NewResourceNameValidator resourceNameValidator = new NewResourceNameValidator(targetPath, IResource.FILE,
-                '.' + IpsObjectType.PRODUCT_CMPT.getFileExtension(), productCmptToCopy.getIpsSrcFile());
-        assertEquals(resourceNameValidator.getValidResourceName(productCmptToCopy.getName()), pmo.getName());
+        assertEquals(productCmptToCopy.getName(), pmo.getName());
     }
 
     /**
