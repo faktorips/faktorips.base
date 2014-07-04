@@ -146,7 +146,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 } else {
                     result = false;
                 }
-                ((TreeViewer)getViewer()).expandToLevel(getCurrentTarget(), AbstractTreeViewer.ALL_LEVELS);
+                getViewer().expandToLevel(getCurrentTarget(), AbstractTreeViewer.ALL_LEVELS);
                 return result;
             }
 
@@ -393,6 +393,11 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
     public boolean performDropSingle(Object data) {
         // nothing to do
         return false;
+    }
+
+    @Override
+    protected TreeViewer getViewer() {
+        return (TreeViewer)super.getViewer();
     }
 
 }
