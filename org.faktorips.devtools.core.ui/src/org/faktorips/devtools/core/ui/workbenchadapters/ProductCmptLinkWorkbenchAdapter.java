@@ -23,6 +23,10 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 
 public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
+    private static final String OVERLAY_GIF = "LinkOverlay.gif"; //$NON-NLS-1$
+
+    private static final String PRODUCT_CMPT_LINK_GIF = "ProductCmptLink.gif"; //$NON-NLS-1$
+
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IProductCmptLink) {
@@ -31,7 +35,7 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
                 IProductCmpt findTarget = link.findTarget(ipsObjectPart.getIpsProject());
                 ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
                 ImageDescriptor imageDescTarget = imageHandling.getImageDescriptor(findTarget);
-                return imageHandling.getSharedOverlayImageDescriptor(imageDescTarget.createImage(), "LinkOverlay.gif", //$NON-NLS-1$
+                return imageHandling.getSharedOverlayImageDescriptor(imageDescTarget.createImage(), OVERLAY_GIF,
                         IDecoration.BOTTOM_LEFT);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
@@ -43,7 +47,7 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptLink.gif", true); //$NON-NLS-1$;
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(PRODUCT_CMPT_LINK_GIF, true);
     }
 
     @Override

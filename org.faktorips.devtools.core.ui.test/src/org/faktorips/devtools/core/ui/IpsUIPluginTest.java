@@ -47,6 +47,10 @@ import org.junit.Test;
 
 public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
+    private static final String LINK_GIF = "LinkOverlay.gif";
+
+    private static final String PRODUCT_GIF = "ProductCmptType.gif";
+
     private IExtensionPropertyEditFieldFactory editFieldFactory;
 
     private Map<String, String> editFieldFactoryAttributes;
@@ -215,11 +219,11 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImage() throws Exception {
-        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(
-                "ProductCmptType.gif", "LinkOverlay.gif", IDecoration.BOTTOM_LEFT);
-        Image sharedImage = IpsUIPlugin.getImageHandling().getSharedImage("ProductCmptType.gif", false);
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(PRODUCT_GIF,
+                LINK_GIF, IDecoration.BOTTOM_LEFT);
+        Image sharedImage = IpsUIPlugin.getImageHandling().getSharedImage(PRODUCT_GIF, false);
         ImageDescriptor sharedOverlayByImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(
-                sharedImage, "LinkOverlay.gif", IDecoration.BOTTOM_LEFT);
+                sharedImage, LINK_GIF, IDecoration.BOTTOM_LEFT);
 
         assertNotNull(sharedOverlayImage);
         assertSame(sharedOverlayByImage, sharedOverlayImage);
@@ -236,14 +240,13 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetSharedOverlayImageDescriptor() throws Exception {
-        IpsUIPlugin.getImageHandling().createImageDescriptor("LinkOverlay.gif");
-        ImageDescriptor prodCmptTypeGif = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif");
+        ImageDescriptor prodCmptTypeGif = IpsUIPlugin.getImageHandling().createImageDescriptor(PRODUCT_GIF);
         Image baseImage = IpsUIPlugin.getImageHandling().createImage(prodCmptTypeGif);
 
         ImageDescriptor resultImageD = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(baseImage,
-                "LinkOverlay.gif", IDecoration.BOTTOM_LEFT);
+                LINK_GIF, IDecoration.BOTTOM_LEFT);
         ImageDescriptor overlayedImageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
-                "LinkOverlay.gif" + "_" + baseImage.hashCode(), false);
+                LINK_GIF + "_" + baseImage.hashCode(), false);
 
         assertNotNull(resultImageD);
         assertSame(overlayedImageDescriptor, resultImageD);

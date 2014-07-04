@@ -1626,6 +1626,17 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             return getSharedOverlayImageDescriptor(baseImage, overlayImageName, quadrant);
         }
 
+        /**
+         * Returns the image with the indicated name from the <code>icons</code> folder and overlays
+         * it with the specified overlay image. If the given image is not found return the missing
+         * image overlaid with the product relevant image.
+         * 
+         * @param baseImage The image which will be overlaid with the overlay image
+         * @param overlayImageName The name of the overlay image
+         * @param quadrant the quadrant where the overlay is painted, one of
+         *            {@link IDecoration#TOP_LEFT} {@link IDecoration#TOP_RIGHT},
+         *            {@link IDecoration#BOTTOM_LEFT} or {@link IDecoration#BOTTOM_RIGHT}
+         */
         public ImageDescriptor getSharedOverlayImageDescriptor(Image baseImage, String overlayImageName, int quadrant) {
             String overlayedImageName = overlayImageName + "_" + baseImage.hashCode(); //$NON-NLS-1$
             ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
