@@ -1622,10 +1622,14 @@ public class IpsUIPlugin extends AbstractUIPlugin {
             if (StringUtils.isEmpty(overlayImageName)) {
                 return getSharedImageDescriptor(baseImageName, true);
             }
-            String overlayedImageName = overlayImageName + "_" + baseImageName; //$NON-NLS-1$
+            Image baseImage = getSharedImage(baseImageName, true);
+            return getSharedOverlayImageDescriptor(baseImage, overlayImageName, quadrant);
+        }
+
+        public ImageDescriptor getSharedOverlayImageDescriptor(Image baseImage, String overlayImageName, int quadrant) {
+            String overlayedImageName = overlayImageName + "_" + baseImage.hashCode(); //$NON-NLS-1$
             ImageDescriptor imageDescriptor = getSharedImageDescriptor(overlayedImageName, false);
             if (imageDescriptor == null) {
-                Image baseImage = getSharedImage(baseImageName, true);
                 ImageDescriptor overlay = createImageDescriptor(overlayImageName);
                 imageDescriptor = new DecorationOverlayIcon(baseImage, overlay, quadrant);
                 registerSharedImageDescriptor(overlayedImageName, imageDescriptor);

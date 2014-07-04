@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
@@ -20,12 +21,16 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestConfigurationElement;
@@ -206,6 +211,42 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
         IEclipsePreferences node = new InstanceScope().getNode(pluginId);
         node.remove(IpsUIPlugin.PREFERENCE_ID_DEFAULT_VALIDITY_DATE);
+    }
+
+    @Test
+    public void testGetSharedOverlayImage() throws Exception {
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(
+                "ProductCmptType.gif", "LinkOverlay.gif", IDecoration.BOTTOM_LEFT);
+        Image sharedImage = IpsUIPlugin.getImageHandling().getSharedImage("ProductCmptType.gif", false);
+        ImageDescriptor sharedOverlayByImage = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(
+                sharedImage, "LinkOverlay.gif", IDecoration.BOTTOM_LEFT);
+
+        assertNotNull(sharedOverlayImage);
+        assertSame(sharedOverlayByImage, sharedOverlayImage);
+    }
+
+    @Test
+    public void testGetSharedOverlayImage_Empty() throws Exception {
+        ImageDescriptor sharedOverlayImage = IpsUIPlugin.getImageHandling().getSharedOverlayImage(StringUtils.EMPTY,
+                StringUtils.EMPTY, IDecoration.BOTTOM_LEFT);
+
+        assertNotNull(sharedOverlayImage);
+        assertSame(IpsUIPlugin.getImageHandling().getSharedImageDescriptor(StringUtils.EMPTY, true), sharedOverlayImage);
+    }
+
+    @Test
+    public void testGetSharedOverlayImageDescriptor() throws Exception {
+        IpsUIPlugin.getImageHandling().createImageDescriptor("LinkOverlay.gif");
+        ImageDescriptor prodCmptTypeGif = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmptType.gif");
+        Image baseImage = IpsUIPlugin.getImageHandling().createImage(prodCmptTypeGif);
+
+        ImageDescriptor resultImageD = IpsUIPlugin.getImageHandling().getSharedOverlayImageDescriptor(baseImage,
+                "LinkOverlay.gif", IDecoration.BOTTOM_LEFT);
+        ImageDescriptor overlayedImageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor(
+                "LinkOverlay.gif" + "_" + baseImage.hashCode(), false);
+
+        assertNotNull(resultImageD);
+        assertSame(overlayedImageDescriptor, resultImageD);
     }
 
     // TODO test cases for loading extension points

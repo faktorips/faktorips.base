@@ -13,11 +13,13 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 
 public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
@@ -27,7 +29,10 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
             IProductCmptLink link = (IProductCmptLink)ipsObjectPart;
             try {
                 IProductCmpt findTarget = link.findTarget(ipsObjectPart.getIpsProject());
-                return IpsUIPlugin.getImageHandling().getImageDescriptor(findTarget);
+                ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
+                ImageDescriptor imageDescTarget = imageHandling.getImageDescriptor(findTarget);
+                return imageHandling.getSharedOverlayImageDescriptor(imageDescTarget.createImage(), "LinkOverlay.gif", //$NON-NLS-1$
+                        IDecoration.BOTTOM_LEFT);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return getDefaultImageDescriptor();
