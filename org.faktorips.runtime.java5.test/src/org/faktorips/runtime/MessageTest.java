@@ -204,7 +204,8 @@ public class MessageTest extends XmlAbstractTestCase {
         assertFalse(msg.equals(msg2));
 
         // different referenced object properties (different number of properties)
-        msg2 = new Message("1", "blabla", Message.ERROR, "object", "property");
+        msg2 = Message.error("blblbla").code("1").invalidObjects("object", "property").create();
+
         assertFalse(msg.equals(msg2));
 
         // no differences (no referenced object properties)
@@ -292,4 +293,21 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals(new Integer(18), msg.getReplacementValue("minAge"));
     }
 
+    @Test
+    public void testError() {
+        Message message = Message.error("text").code("1").create();
+        assertEquals(Severity.ERROR, message.getSeverity());
+    }
+
+    @Test
+    public void testInfo() {
+        Message message = Message.info("text").code("1").create();
+        assertEquals(Severity.INFO, message.getSeverity());
+    }
+
+    @Test
+    public void testWarning() {
+        Message message = Message.warning("text").code("1").create();
+        assertEquals(Severity.WARNING, message.getSeverity());
+    }
 }

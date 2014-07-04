@@ -17,7 +17,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.faktorips.runtime.Message.Severity;
 import org.junit.Test;
 
 public class MessageListTest {

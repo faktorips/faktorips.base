@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.faktorips.runtime.Message.Severity;
-
 /**
  * A list of <code>Message</code>s.
  * 
@@ -229,7 +227,7 @@ public class MessageList implements Serializable, Iterable<Message> {
      */
     public boolean containsErrorMsg() {
         for (int i = 0; i < getNoOfMessages(); i++) {
-            if (getMessage(i).getSeverity() == Message.Severity.ERROR) {
+            if (getMessage(i).getSeverity() == Severity.ERROR) {
                 return true;
             }
         }

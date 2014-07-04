@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.faktorips.values.ObjectUtil;
+
 /**
  * A human readable text message with an optional code that identifies the type of the message and a
  * severity that indicates if this is an error, warning or information.
@@ -25,37 +27,20 @@ import java.util.List;
  * invalid. This information can be used for example to mark controls in the UI that display this
  * property.
  * <p>
+ * If the provided message has replacement parameters that cannot be evaluated while creating the
+ * message text, it is possible to provide there parameters to the message object. Have a look at
+ * {@link MsgReplacementParameter} for further information.
+ * <p>
+ * If you need any further information stored with the message, it is possible to implement the
+ * IMarker object and provide some additional markers to the message. The exact use of the markers
+ * depends on the custom implementation.
+ * <p>
  * Message is an immutable value object. Two message objects are considered equal if they have the
  * same severity, code, text, "invalid properties" and replacement parameters.
  * 
- * @author Jan Ortmann
+ * @see MsgReplacementParameter
  */
 public class Message implements Serializable {
-
-    private static final long serialVersionUID = 7155891629458031466L;
-
-    public enum Severity {
-
-        /**
-         * Severity none.
-         */
-        NONE,
-
-        /**
-         * Severity info.
-         */
-        INFO,
-
-        /**
-         * Severity warning.
-         */
-        WARNING,
-
-        /**
-         * Severity error.
-         */
-        ERROR;
-    }
 
     /**
      * Severity none.
@@ -77,28 +62,273 @@ public class Message implements Serializable {
      */
     public static final Severity ERROR = Severity.ERROR;
 
+    private static final long serialVersionUID = 6538319330010542283L;
+
     /** One of the constants ERROR, WARNING or INFO. */
-    private Severity severity = Severity.ERROR;
+    private final Severity severity;
 
     /** The human readable text. */
-    private String text = "";
+    private final String text;
 
     /** Code to identify the type of message. */
-    private String code = "";
+    private final String code;
 
     /**
      * The object and their properties that are addressed in the message as having an error or that
      * a warning or information relates to.
      */
-    private List<ObjectProperty> invalidOp = null;
+    private final List<ObjectProperty> invalidOp;
 
-    private List<MsgReplacementParameter> replacementParameters = null;
+    private final List<MsgReplacementParameter> replacementParameters;
+
+    /**
+     * A list of {@link IMarker} containing additional information.
+     */
+    private final List<IMarker> markers;
+
+    /**
+     * Creates a new message by using the fields of a {@link Builder}.
+     * 
+     * @param builder the {@link Builder}
+     */
+    public Message(Builder builder) {
+        this(builder.code, builder.text, builder.severity, builder.invalidObjectProperties, builder.replacementParams,
+                builder.markers);
+    }
+
+    /**
+     * Creates a new message by copying everything of the given {@link Message}.
+     * 
+     * @param msg the {@link Message} to copy from
+     */
+    public Message(Message msg) {
+        this(msg.code, msg.text, msg.severity, msg.invalidOp, msg.replacementParameters, msg.markers);
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     */
+    public Message(String text, Severity severity) {
+        this(new Builder(text, severity));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     */
+    public Message(String code, String text, Severity severity) {
+        this(new Builder(text, severity).code(code));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObject An object properties the message refers to
+     */
+    public Message(String code, String text, Severity severity, Object invalidObject) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObject, (String)null));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperty An object property the message refers to
+     */
+    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperty));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}:
+     *            {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObject the Object of the ObjectProperty
+     * @param invalidObjectProperties An array of propertie's names the message refers to
+     */
+    public Message(String code, String text, Severity severity, Object invalidObject, String... invalidObjectProperties) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObject, invalidObjectProperties));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties An array of object properties the message refers to
+     */
+    public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties A list of object properties the message refers to
+     */
+    public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties A list of object properties the message refers to
+     */
+    public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties,
+            List<MsgReplacementParameter> replacementParameters) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties)
+                .replacements(replacementParameters).markers(Collections.<IMarker> emptyList()));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties A list of object properties the message refers to
+     * @param parameters an array of replacement parameters
+     */
+    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
+            MsgReplacementParameter... parameters) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+                .markers(Collections.<IMarker> emptyList()));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties An object properties the message refers to
+     * @param parameters a list of replacement parameters
+     */
+    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
+            List<MsgReplacementParameter> parameters) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+                .markers(Collections.<IMarker> emptyList()));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties An array of object properties the message refers to
+     * @param parameters an array of replacement parameters
+     */
+    public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties,
+            MsgReplacementParameter[] parameters) {
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+                .markers(Collections.<IMarker> emptyList()));
+    }
+
+    /**
+     * Creates a new message by defining the following parameters.
+     * 
+     * @param code A message code that identifies the kind of the message
+     * @param text The human readable text of this message
+     * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+     * @param invalidObjectProperties A list of object properties the message refers to
+     * @param parameters a list of replacement parameters
+     * @param markers a list of markers
+     */
+    public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties,
+            List<MsgReplacementParameter> parameters, List<IMarker> markers) {
+        this.code = code;
+        this.text = text;
+        this.severity = severity;
+        if (markers != null) {
+            this.markers = markers;
+        } else {
+            this.markers = Collections.emptyList();
+        }
+        if (invalidObjectProperties != null) {
+            invalidOp = new ArrayList<ObjectProperty>(invalidObjectProperties);
+        } else {
+            invalidOp = Collections.emptyList();
+        }
+        if (parameters != null) {
+            replacementParameters = new ArrayList<MsgReplacementParameter>(parameters);
+        } else {
+            replacementParameters = Collections.emptyList();
+        }
+    }
+
+    /**
+     * Creates a new {@link Builder} with {@link #ERROR} and the given message.
+     * <p>
+     * To create a new {@link Message} you can use for example:<br>
+     * <code>
+     * Message.error("MessageText").code("1").invalidObjects("object",
+     * "property").create();
+     * </code>
+     * 
+     * @param text The human readable text of this message
+     */
+    public static final Builder error(String text) {
+        return new Builder(text, ERROR);
+    }
+
+    /**
+     * Creates a new {@link Builder} with {@link #WARNING} and the given message.
+     * <p>
+     * To create a new {@link Message} you can use for example:<br>
+     * <code>
+     * Message.warning("MessageText").code("1").invalidObjects("object",
+     * "property").create();
+     * </code>
+     * 
+     * @param text The human readable text of this message
+     */
+    public static final Builder warning(String text) {
+        return new Builder(text, WARNING);
+    }
+
+    /**
+     * Creates a new {@link Builder} with {@link #INFO} and the given message.
+     * <p>
+     * To create a new {@link Message} you can use for example:<br>
+     * <code>
+     * Message.info("MessageText").code("1").invalidObjects("object",
+     * "property").create();
+     * </code>
+     * 
+     * @param text The human readable text of this message
+     */
+    public static final Builder info(String text) {
+        return new Builder(text, INFO);
+    }
 
     /**
      * Creates a copy from the message and replaces all references to the old object with the new
      * object.
      */
-    public final static Message createCopy(Message msg, Object oldObject, Object newObject) {
+    public static final Message createCopy(Message msg, Object oldObject, Object newObject) {
         List<ObjectProperty> op = msg.getInvalidObjectProperties();
         List<ObjectProperty> newOp = new ArrayList<ObjectProperty>(op.size());
         for (ObjectProperty objectProperty : op) {
@@ -114,166 +344,22 @@ public class Message implements Serializable {
     /**
      * Constructs a new information message.
      */
-    public final static Message newInfo(String code, String text) {
-        return new Message(code, text, Severity.INFO);
+    public static final Message newInfo(String code, String text) {
+        return new Message(code, text, INFO);
     }
 
     /**
      * Constructs a new warning message.
      */
-    public final static Message newWarning(String code, String text) {
-        return new Message(code, text, Severity.WARNING);
+    public static final Message newWarning(String code, String text) {
+        return new Message(code, text, WARNING);
     }
 
     /**
      * Constructs a new error message.
      */
-    public final static Message newError(String code, String text) {
-        return new Message(code, text, Severity.ERROR);
-    }
-
-    /**
-     * Copy constructor.
-     */
-    public Message(Message msg) {
-        this.code = msg.code;
-        this.severity = msg.severity;
-        this.text = msg.text;
-        if (msg.invalidOp != null) {
-            invalidOp = new ArrayList<ObjectProperty>();
-            invalidOp.addAll(msg.invalidOp);
-        }
-        if (msg.replacementParameters != null) {
-            replacementParameters = new ArrayList<MsgReplacementParameter>();
-            replacementParameters.addAll(msg.replacementParameters);
-        }
-    }
-
-    /**
-     * Creates a new message with the code text and severity, code is <code>null</code>.
-     */
-    public Message(String text, Severity severity) {
-        this(null, text, severity);
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity.
-     */
-    public Message(String code, String text, Severity severity) {
-        this.code = code;
-        this.text = text;
-        this.severity = severity;
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated object and it's property.
-     */
-    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty) {
-        this(code, text, severity, new ObjectProperty[] { invalidObjectProperty });
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated object and it's properties.
-     */
-    public Message(String code, String text, Severity severity, Object invalidObject) {
-
-        this(code, text, severity, new ObjectProperty(invalidObject, null));
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated object and it's properties.
-     */
-    public Message(String code, String text, Severity severity, Object invalidObject, String... invalidProperties) {
-        this(code, text, severity);
-        invalidOp = new ArrayList<ObjectProperty>(invalidProperties.length);
-        for (String invalidProperty : invalidProperties) {
-            invalidOp.add(new ObjectProperty(invalidObject, invalidProperty));
-        }
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated objects and their properties.
-     */
-    public Message(String code, String text, Severity severity, ObjectProperty[] refersTo) {
-        this(code, text, severity);
-        if (refersTo != null) {
-            invalidOp = new ArrayList<ObjectProperty>();
-            invalidOp.addAll(Arrays.asList(refersTo));
-        }
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated objects and their properties.
-     */
-    public Message(String code, String text, Severity severity, List<ObjectProperty> refersTo) {
-        this(code, text, severity, refersTo, (List<MsgReplacementParameter>)null);
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated objects and their properties. The message's contains the given replacement
-     * parameters.
-     */
-    public Message(String code, String text, Severity severity, List<ObjectProperty> refersTo,
-            List<MsgReplacementParameter> replacementParameters) {
-        this(code, text, severity);
-        if (refersTo != null) {
-            invalidOp = new ArrayList<ObjectProperty>(refersTo);
-        }
-        if (replacementParameters != null) {
-            this.replacementParameters = new ArrayList<MsgReplacementParameter>(replacementParameters);
-        }
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated objects and their properties. The message's contains the given replacement
-     * parameters.
-     */
-    public Message(String code, String text, Severity severity, ObjectProperty refersTo,
-            MsgReplacementParameter... parameters) {
-        this(code, text, severity);
-        if (refersTo != null) {
-            invalidOp = new ArrayList<ObjectProperty>(1);
-            invalidOp.add(refersTo);
-        }
-        if (parameters != null) {
-            replacementParameters = Arrays.asList(parameters);
-        }
-    }
-
-    /**
-     * Creates a new message with the indicated code, text and severity. The message refers to the
-     * indicated objects and their properties. The message's contains the given replacement
-     * parameters.
-     */
-    public Message(String code, String text, Severity severity, ObjectProperty[] refersTo,
-            MsgReplacementParameter[] parameters) {
-        this(code, text, severity);
-        if (refersTo != null) {
-            invalidOp = new ArrayList<ObjectProperty>(1);
-            invalidOp.addAll(Arrays.asList(refersTo));
-        }
-        if (parameters != null) {
-            replacementParameters = Arrays.asList(parameters);
-        }
-    }
-
-    public Message(String code, String text, Severity severity, ObjectProperty refersTo,
-            List<MsgReplacementParameter> parameters) {
-        this(code, text, severity);
-        if (refersTo != null) {
-            invalidOp = new ArrayList<ObjectProperty>(1);
-            invalidOp.add(refersTo);
-        }
-        if (parameters != null) {
-            replacementParameters = new ArrayList<MsgReplacementParameter>(parameters);
-        }
+    public static final Message newError(String code, String text) {
+        return new Message(code, text, ERROR);
     }
 
     /**
@@ -375,6 +461,14 @@ public class Message implements Serializable {
         return null;
     }
 
+    /**
+     * Returns a list of {@link IMarker}s associated with this class. Returns <code>null</code> if
+     * no markers where set.
+     */
+    public List<IMarker> getMarkers() {
+        return markers;
+    }
+
     @Override
     public String toString() {
         StringBuffer buffer = new StringBuffer();
@@ -422,31 +516,22 @@ public class Message implements Serializable {
             return false;
         }
         Message other = (Message)o;
-        if ((code != null && !code.equals(other.code)) || (code == null && other.code != null)) {
+        if (!ObjectUtil.equals(code, other.code)) {
             return false;
         }
-        if ((text != null && !text.equals(other.text)) || (text == null && other.text != null)) {
+        if (!ObjectUtil.equals(text, other.text)) {
             return false;
         }
         if (severity != other.severity) {
             return false;
         }
-        int numOfInvalidObjectProperties = getNumOfInvalidObjectProperties();
-        if (numOfInvalidObjectProperties != other.getNumOfInvalidObjectProperties()) {
+        if (!ObjectUtil.equals(invalidOp, other.invalidOp)) {
             return false;
         }
-        if (invalidOp == null) {
-            return other.invalidOp == null;
-        } else if (!invalidOp.equals(other.invalidOp)) {
+        if (!ObjectUtil.equals(replacementParameters, other.replacementParameters)) {
             return false;
         }
-        int numOfReplacementParams = getNumOfReplacementParameters();
-        if (numOfReplacementParams != other.getNumOfReplacementParameters()) {
-            return false;
-        }
-        if (replacementParameters == null) {
-            return other.replacementParameters == null;
-        } else if (!replacementParameters.equals(other.replacementParameters)) {
+        if (!ObjectUtil.equals(markers, other.markers)) {
             return false;
         }
         return true;
@@ -455,6 +540,165 @@ public class Message implements Serializable {
     @Override
     public int hashCode() {
         return text.hashCode();
+    }
+
+    /**
+     * A builder for the {@link Message} class. This builder has been designed due to heavy
+     * constructor overloading with many parameters. It helps instantiating global variables of
+     * {@link Message}.
+     * <p>
+     * To use the builder simply create an instance by calling the
+     * {@link #Message(String, Severity)} or by calling one of the static creation methods like
+     * {@link Message#error(String)}, {@link Message#warning(String)} or
+     * {@link Message#info(String)}. Afterwards add needed information to the builder for example
+     * call {@link #invalidObjects(ObjectProperty...)} to provide some invalid object properties.
+     * When the builder has every information that is needed to create a proper message call
+     * {@link #create()}.
+     * 
+     * @see Message#error(String)
+     * @see Message#warning(String)
+     * @see Message#info(String)
+     */
+    public static class Builder {
+
+        private final String text;
+
+        private final Severity severity;
+
+        private String code;
+
+        private List<ObjectProperty> invalidObjectProperties;
+
+        private List<MsgReplacementParameter> replacementParams;
+
+        private List<IMarker> markers;
+
+        /**
+         * Creates a new builder that is able to create a proper {@link Message} with all needed
+         * information.
+         * 
+         * @param text The human readable text of this message
+         * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
+         */
+        public Builder(String text, Severity severity) {
+            this.text = text;
+            this.severity = severity;
+        }
+
+        /**
+         * Set the message's code that identifies the kind of the message.
+         * 
+         * @param code A message code that identifies the kind of the message
+         * @return This builder instance to directly add further properties
+         */
+        public Builder code(String code) {
+            this.code = code;
+            return this;
+        }
+
+        /**
+         * Add a list of object properties the message refers to.
+         * 
+         * @param invalidObjectProperties A list of object properties the message refers to
+         * @return This builder instance to directly add further properties
+         */
+        public Builder invalidObjects(List<ObjectProperty> invalidObjectProperties) {
+            this.invalidObjectProperties = invalidObjectProperties;
+            return this;
+        }
+
+        /**
+         * Add some object properties the message refers to.
+         * 
+         * @param invalidObjectProperties Some object properties the message refers to
+         * @return This builder instance to directly add further properties
+         */
+        public Builder invalidObjects(ObjectProperty... invalidObjectProperties) {
+            this.invalidObjectProperties = Arrays.asList(invalidObjectProperties);
+            return this;
+        }
+
+        /**
+         * Add some object properties the message refers to by creating instances of
+         * {@link ObjectProperty} for every given property and the given object.
+         * 
+         * @param object The object the message refers to
+         * @param properties Some properties the message refers to
+         * @return This builder instance to directly add further properties
+         */
+        public Builder invalidObjects(Object object, String... properties) {
+            invalidObjectProperties = new ArrayList<ObjectProperty>();
+            for (String property : properties) {
+                invalidObjectProperties.add(new ObjectProperty(object, property));
+            }
+            return this;
+        }
+
+        /**
+         * A list of replacement parameters the message should reference.
+         * 
+         * @param replacementParams a list of replacement parameters
+         * @return This builder instance to directly add further properties
+         */
+        public Builder replacements(List<MsgReplacementParameter> replacementParams) {
+            this.replacementParams = replacementParams;
+            return this;
+        }
+
+        /**
+         * Some replacement parameters the message should reference.
+         * 
+         * @param replacementParams Some replacement parameters
+         * @return This builder instance to directly add further properties
+         */
+        public Builder replacements(MsgReplacementParameter... replacementParams) {
+            this.replacementParams = Arrays.asList(replacementParams);
+            return this;
+        }
+
+        /**
+         * Creates a new {@link MsgReplacementParameter} the message should reference
+         * 
+         * @param name The name of the {@link MsgReplacementParameter}
+         * @param value The value of the {@link MsgReplacementParameter}
+         * @return This builder instance to directly add further properties
+         */
+        public Builder replacements(String name, Object value) {
+            this.replacementParams = Arrays.asList(new MsgReplacementParameter(name, value));
+            return this;
+        }
+
+        /**
+         * Set a list of markers that should be provided to the new message.
+         * 
+         * @param markers a list of markers
+         * @return This builder instance to directly add further properties
+         */
+        public Builder markers(List<IMarker> markers) {
+            this.markers = markers;
+            return this;
+        }
+
+        /**
+         * Set some markers that should be provided to the new message.
+         * 
+         * @param markers Some markers
+         * @return This builder instance to directly add further properties
+         */
+        public Builder markers(IMarker... markers) {
+            this.markers = Arrays.asList(markers);
+            return this;
+        }
+
+        /**
+         * Creates a new {@link Message} with all previously given properties.
+         * 
+         * @return A new message that has the parameters of this builder.
+         */
+        public Message create() {
+            return new Message(this);
+        }
+
     }
 
 }
