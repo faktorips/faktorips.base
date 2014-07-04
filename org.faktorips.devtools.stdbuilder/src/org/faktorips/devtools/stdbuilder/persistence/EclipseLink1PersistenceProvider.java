@@ -11,7 +11,9 @@
 package org.faktorips.devtools.stdbuilder.persistence;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.devtools.core.model.pctype.IPersistentTypePartInfo;
 import org.faktorips.util.StringUtil;
 
 /**
@@ -20,6 +22,9 @@ import org.faktorips.util.StringUtil;
  * @author Joerg Ortmann
  */
 public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
+
+    public static final String ID_ECLIPSE_LINK_1_1 = "EclipseLink 1.1"; //$NON-NLS-1$
+
     // orphanRemoval annotation constants
     private static final String IMPORT_PRIVATE_OWNED = "org.eclipse.persistence.annotations.PrivateOwned"; //$NON-NLS-1$
     private static final String ANNOTATION_PRIVATE_OWNED = "@PrivateOwned"; //$NON-NLS-1$
@@ -53,8 +58,8 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
     }
 
     @Override
-    public void addAnnotationConverter(JavaCodeFragment javaCodeFragment,
-            IPersistentAttributeInfo persistentAttributeInfo) {
+    public JavaCodeFragment getConverterAnnotations(IPersistentAttributeInfo persistentAttributeInfo) {
+        JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         javaCodeFragment.addImport(IMPORT_CONVERTER);
         javaCodeFragment.addImport(IMPORT_CONVERT);
 
@@ -70,5 +75,16 @@ public class EclipseLink1PersistenceProvider implements IPersistenceProvider {
         javaCodeFragment.append("("); //$NON-NLS-1$
         javaCodeFragment.appendQuoted(converterName);
         javaCodeFragment.appendln(")"); //$NON-NLS-1$
+        return javaCodeFragment;
+    }
+
+    @Override
+    public boolean isSupportingIndex() {
+        return false;
+    }
+
+    @Override
+    public JavaCodeFragment getIndexAnnotations(IPersistentTypePartInfo persistentAttributeInfo) {
+        throw new UnsupportedOperationException();
     }
 }

@@ -10,12 +10,12 @@
 
 package org.faktorips.devtools.stdbuilder.policycmpttype.persistence;
 
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AbstractAnnotationGenerator;
-import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 
 /**
@@ -26,17 +26,14 @@ public abstract class AbstractJpaAnnotationGenerator extends AbstractAnnotationG
     @Override
     public boolean isGenerateAnnotationFor(AbstractGeneratorModelNode modelNode) {
         IIpsObjectPartContainer ipsElement = modelNode.getIpsObjectPartContainer();
-        return (getPersistenceProvider(ipsElement) != null) && isGenerateAnnotationForInternal(ipsElement);
+        return (getPersistenceProvider(ipsElement.getIpsProject()) != null)
+                && isGenerateAnnotationForInternal(ipsElement);
     }
 
-    IPersistenceProvider getPersistenceProvider(IIpsElement ipsElement) {
-        IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsElement.getIpsProject().getIpsArtefactBuilderSet();
-        if (ipsArtefactBuilderSet instanceof StandardBuilderSet) {
-            StandardBuilderSet standardBuilderSet = (StandardBuilderSet)ipsArtefactBuilderSet;
-            IPersistenceProvider persistenceProviderImpl = standardBuilderSet.getPersistenceProviderImplementation();
-            return persistenceProviderImpl;
-        }
-        return null;
+    protected IPersistenceProvider getPersistenceProvider(IIpsProject ipsProject) {
+        IIpsArtefactBuilderSet ipsArtefactBuilderSet = ipsProject.getIpsArtefactBuilderSet();
+        IPersistenceProvider persistenceProviderImpl = ipsArtefactBuilderSet.getPersistenceProvider();
+        return persistenceProviderImpl;
     }
 
     protected abstract boolean isGenerateAnnotationForInternal(IIpsElement ipsElement);

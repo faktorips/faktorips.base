@@ -12,8 +12,11 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -51,10 +54,21 @@ public class ValidationRuleConfigEditComposite extends
         Checkbox checkbox = getToolkit().createCheckbox(this);
         checkbox.setChecked(getPropertyValue().isActive());
         checkbox.setText(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
-
+        checkbox.setToolTipText(getValidationRuleDescription());
         CheckboxField editField = new CheckboxField(checkbox);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IValidationRuleConfig.PROPERTY_ACTIVE);
     }
 
+    private String getValidationRuleDescription() {
+        try {
+            IValidationRule validationRule = getPropertyValue().findValidationRule(getPropertyValue().getIpsProject());
+            if (validationRule != null) {
+                return IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(validationRule);
+            }
+        } catch (CoreException ex) {
+            throw new CoreRuntimeException(ex);
+        }
+        return StringUtils.EMPTY;
+    }
 }

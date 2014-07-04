@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
 
 /**
@@ -22,96 +21,97 @@ import org.faktorips.devtools.core.model.ipsproject.ITableColumnNamingStrategy;
  * 
  * @author Roman Grutza
  */
-public interface IPersistentAttributeInfo extends IIpsObjectPart {
+public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
+
     /** The XML tag for this IPS object part. */
-    public final static String XML_TAG = "PersistenceAttribute"; //$NON-NLS-1$
+    public static final String XML_TAG = "PersistenceAttribute"; //$NON-NLS-1$
 
     /**
      * The name of the column name property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_NAME = "tableColumnName"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_NAME = "tableColumnName"; //$NON-NLS-1$
 
     /**
      * The name of the column size property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_SIZE = "tableColumnSize"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_SIZE = "tableColumnSize"; //$NON-NLS-1$
 
     /**
      * The name of the "is unique column" property (in the sense that any two tuples cannot have the
      * same value in this column).
      */
-    public final static String PROPERTY_TABLE_COLUMN_UNIQE = "tableColumnUnique"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_UNIQE = "tableColumnUnique"; //$NON-NLS-1$
 
     /**
      * The name of the "column is nullable" property, allowing NULL values in the database.
      */
-    public final static String PROPERTY_TABLE_COLUMN_NULLABLE = "tableColumnNullable"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_NULLABLE = "tableColumnNullable"; //$NON-NLS-1$
 
     /**
      * The name of the column scale property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_SCALE = "tableColumnScale"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_SCALE = "tableColumnScale"; //$NON-NLS-1$
 
     /**
      * The name of the column precision property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_PRECISION = "tableColumnPrecision"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_PRECISION = "tableColumnPrecision"; //$NON-NLS-1$
 
     /**
      * The name of the column converter property.
      */
-    public final static String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLE_COLUMN_CONVERTER = "tableColumnConverter"; //$NON-NLS-1$
 
     /**
      * The name of the property which maps this attribute to an temporal type (date, time,
      * timestamp) if applicable.
      */
-    public final static String PROPERTY_TEMPORAL_MAPPING = "temporalMapping"; //$NON-NLS-1$
+    public static final String PROPERTY_TEMPORAL_MAPPING = "temporalMapping"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates that the attribute is transient.
      */
-    public final static String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
+    public static final String PROPERTY_TRANSIENT = "transient"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates the qualified class name of the converter if used.
      */
-    public final static String PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME = "converterQualifiedClassName"; //$NON-NLS-1$
+    public static final String PROPERTY_CONVERTER_QUALIFIED_CLASS_NAME = "converterQualifiedClassName"; //$NON-NLS-1$
 
     /**
      * The name of a property that indicates the SQL column definition.
      */
-    public final static String PROPERTY_SQL_COLUMN_DEFINITION = "sqlColumnDefinition"; //$NON-NLS-1$
+    public static final String PROPERTY_SQL_COLUMN_DEFINITION = "sqlColumnDefinition"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "PERSISTENCEATTRIBUTE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "PERSISTENCEATTRIBUTE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this persistence attribute info has invalid column
      * size/precision/scale values set.
      */
-    public final static String MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS = MSGCODE_PREFIX
+    public static final String MSGCODE_PERSISTENCEATTR_COL_OUT_OF_BOUNDS = MSGCODE_PREFIX
             + "PersistenceAttrColumnOutOfBounds"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this persistence attribute info has invalid column
      * name set.
      */
-    public final static String MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME = MSGCODE_PREFIX
+    public static final String MSGCODE_PERSISTENCEATTR_EMPTY_COLNAME = MSGCODE_PREFIX
             + "PersistenceAttrColumnNameEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the column name exceeds the max column size
      */
-    public final static String MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH = MSGCODE_PREFIX + "ColumnNameExceedsMaxLength"; //$NON-NLS-1$
+    public static final String MSGCODE_COLUMN_NAME_EXCEEDS_MAX_LENGTH = MSGCODE_PREFIX + "ColumnNameExceedsMaxLength"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the column name must be empty if the attribute is
      * derived.
      */
-    public final static String MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY = MSGCODE_PREFIX
+    public static final String MSGCODE_PERSISTENCEATTR_COLNAME_MUST_BE_EMPTY = MSGCODE_PREFIX
             + "PersistenceattrColnameMustBeEmpty"; //$NON-NLS-1$
 
     /**
@@ -242,17 +242,6 @@ public interface IPersistentAttributeInfo extends IIpsObjectPart {
      * and time information will be considered when dealing with this attribute.
      */
     public void setTemporalMapping(DateTimeMapping temporalType);
-
-    /**
-     * Returns true if the attribute is transient.
-     */
-    public boolean isTransient();
-
-    /**
-     * Set to <code>true</code> if the attribute should be transient. Set to <code>false</code> if
-     * the policy component is not transient and will be persists.
-     */
-    public void setTransient(boolean transientAttribute);
 
     /**
      * Tags a temporal attribute for date only, time only or time-stamp (date and time) usage.

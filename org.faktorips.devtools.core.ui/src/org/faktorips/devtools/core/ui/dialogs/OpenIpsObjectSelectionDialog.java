@@ -85,7 +85,6 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
      * @param parent the parent widget.
      */
     public OpenIpsObjectSelectionDialog(Shell parent, String title, ISelectIpsObjectContext context) {
-
         this(parent, title, context, false);
     }
 
@@ -140,9 +139,10 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
     @Override
     protected void fillContentProvider(AbstractContentProvider contentProvider,
             ItemsFilter itemsFilter,
-            IProgressMonitor progressMonitor) throws CoreException {
+            IProgressMonitor progressMonitorParam) throws CoreException {
 
-        if (progressMonitor == null) {
+        IProgressMonitor progressMonitor = progressMonitorParam;
+        if (progressMonitorParam == null) {
             progressMonitor = new NullProgressMonitor();
         }
         progressMonitor.beginTask(Messages.OpenIpsObjectSelectionDialog_processName, 100);
@@ -424,7 +424,9 @@ public class OpenIpsObjectSelectionDialog extends FilteredItemsSelectionDialog {
             IResource resource;
             try {
                 resource = root.getFile(path);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 // If the resource is invalid we return null, the object will be removed
                 return null;
             }

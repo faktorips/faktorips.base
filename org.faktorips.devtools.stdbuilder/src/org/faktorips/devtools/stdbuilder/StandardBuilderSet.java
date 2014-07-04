@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
+import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -52,8 +53,8 @@ import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumTypeBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumXmlAdapterBuilder;
 import org.faktorips.devtools.stdbuilder.persistence.EclipseLink1PersistenceProvider;
+import org.faktorips.devtools.stdbuilder.persistence.EclipseLink25PersistenceProvider;
 import org.faktorips.devtools.stdbuilder.persistence.GenericJPA2PersistenceProvider;
-import org.faktorips.devtools.stdbuilder.persistence.IPersistenceProvider;
 import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptBuilder;
 import org.faktorips.devtools.stdbuilder.productcmpt.ProductCmptXMLBuilder;
@@ -428,22 +429,11 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
     }
 
-    @Override
-    public boolean isPersistentProviderSupportConverter() {
-        IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
-        return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingConverters();
-    }
-
-    @Override
-    public boolean isPersistentProviderSupportOrphanRemoval() {
-        IPersistenceProvider persistenceProviderImpl = getPersistenceProviderImplementation();
-        return persistenceProviderImpl != null && getPersistenceProviderImplementation().isSupportingOrphanRemoval();
-    }
-
     /**
      * Returns the persistence provider or <code>null</code> if no
      */
-    public IPersistenceProvider getPersistenceProviderImplementation() {
+    @Override
+    public IPersistenceProvider getPersistenceProvider() {
         if (allSupportedPersistenceProvider == null) {
             initSupportedPersistenceProviderMap();
         }
@@ -455,10 +445,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private void initSupportedPersistenceProviderMap() {
-        allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(2);
-        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_ECLIPSE_LINK_1_1,
+        allSupportedPersistenceProvider = new HashMap<String, IPersistenceProvider>(3);
+        allSupportedPersistenceProvider.put(EclipseLink1PersistenceProvider.ID_ECLIPSE_LINK_1_1,
                 new EclipseLink1PersistenceProvider());
-        allSupportedPersistenceProvider.put(IPersistenceProvider.PROVIDER_IMPLEMENTATION_GENERIC_JPA_2_0,
+        allSupportedPersistenceProvider.put(EclipseLink25PersistenceProvider.ID_ECLIPSE_LINK_2_5,
+                new EclipseLink25PersistenceProvider());
+        allSupportedPersistenceProvider.put(GenericJPA2PersistenceProvider.ID_GENERIC_JPA_2,
                 new GenericJPA2PersistenceProvider());
     }
 

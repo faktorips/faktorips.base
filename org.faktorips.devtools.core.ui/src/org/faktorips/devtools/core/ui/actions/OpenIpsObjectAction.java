@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.actions;
 
+import java.util.ArrayList;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
@@ -53,19 +55,16 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
         try {
             boolean onlyProdDefs = IpsPlugin.getDefault().isProductDefinitionPerspective();
             OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
-                    Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs));
+                    Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs), true);
             String selectedText = getSelectedText(activeWorkbenchWindow);
             dialog.setFilter(StringUtil.unqualifiedName(selectedText));
             if (dialog.open() == Window.OK) {
-                IIpsElement object = dialog.getSelectedObject();
-                if (object != null) {
-                    if (object instanceof IIpsSrcFile) {
-                        IIpsObject ipsObject = ((IIpsSrcFile)object).getIpsObject();
+                ArrayList<IIpsElement> objects = dialog.getSelectedObjects();
+                for (IIpsElement ipsElement : objects) {
+                    if (ipsElement instanceof IIpsSrcFile) {
+                        IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
                         IpsUIPlugin.getDefault().openEditor(ipsObject);
                     }
-
-                } else {
-                    return;
                 }
             }
         } catch (CoreException e) {

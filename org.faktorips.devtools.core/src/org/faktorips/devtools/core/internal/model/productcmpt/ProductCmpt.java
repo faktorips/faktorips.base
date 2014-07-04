@@ -118,7 +118,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IProductCmptKind getKindId() throws CoreException {
+    public IProductCmptKind getKindId() {
         return ProductCmptKind.createProductCmptKind(getName(), getIpsProject());
     }
 

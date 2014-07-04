@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +59,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     private String computationMethodSignature = ""; //$NON-NLS-1$
 
-    private IIpsObjectPart persistenceAttributeInfo;
+    private IPersistentAttributeInfo persistenceAttributeInfo;
 
     /**
      * Creates a new attribute.
@@ -230,12 +228,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
+        validateProductRelevant(result, ipsProject);
+        validateOverwrite(result, ipsProject);
+    }
+
+    private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (isProductRelevant() && !getPolicyCmptType().isConfigurableByProductCmptType()) {
             String text = Messages.Attribute_msgAttributeCantBeProductRelevantIfTypeIsNot;
             result.add(new Message(MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT, text, Message.ERROR,
                     this, PROPERTY_PRODUCT_RELEVANT));
         }
-
         if (isDerived() && isProductRelevant()) {
             if (StringUtils.isEmpty(computationMethodSignature)) {
                 String text = NLS.bind(Messages.PolicyCmptTypeAttribute_msg_ComputationMethodSignatureIsMissing,
@@ -259,6 +261,9 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 }
             }
         }
+    }
+
+    private void validateOverwrite(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (isOverwrite()) {
             IPolicyCmptTypeAttribute superAttr = (IPolicyCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
@@ -323,7 +328,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
             return true;
 
         } else if (part instanceof IPersistentAttributeInfo) {
-            persistenceAttributeInfo = part;
+            persistenceAttributeInfo = (IPersistentAttributeInfo)part;
             return true;
         }
         return false;
@@ -346,30 +351,13 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return persistenceAttributeInfo;
     }
 
-    // TODO Joerg Merge Persistence Branch: warum ueber Reflection und nicht
-    // instanceof wie z.B. in
-    // org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType.newPartThis(Class)
     @Override
     public IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        try {
-            Constructor<? extends IIpsObjectPart> constructor = partType.getConstructor(IIpsObjectPart.class,
-                    String.class);
-            IIpsObjectPart result = constructor.newInstance(this, getNextPartId());
-            return result;
-        } catch (IllegalArgumentException e) {
-            IpsPlugin.log(e);
-        } catch (InstantiationException e) {
-            IpsPlugin.log(e);
-        } catch (IllegalAccessException e) {
-            IpsPlugin.log(e);
-        } catch (InvocationTargetException e) {
-            IpsPlugin.log(e);
-        } catch (SecurityException e) {
-            IpsPlugin.log(e);
-        } catch (NoSuchMethodException e) {
-            IpsPlugin.log(e);
+        if (partType.isAssignableFrom(PersistentAttributeInfo.class)) {
+            return new PersistentAttributeInfo(this, getNextPartId());
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
@@ -445,7 +433,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public IPersistentAttributeInfo getPersistenceAttributeInfo() {
-        return (IPersistentAttributeInfo)persistenceAttributeInfo;
+        return persistenceAttributeInfo;
     }
 
     @Override
