@@ -36,7 +36,7 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
                 ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
                 ImageDescriptor imageDescTarget = imageHandling.getImageDescriptor(findTarget);
                 return imageHandling.getSharedOverlayImageDescriptor(imageDescTarget.createImage(), OVERLAY_GIF,
-                        IDecoration.BOTTOM_LEFT);
+                        IDecoration.BOTTOM_RIGHT);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return getDefaultImageDescriptor();
