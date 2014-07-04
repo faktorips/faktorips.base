@@ -12,9 +12,14 @@ package org.faktorips.runtime;
 
 import java.io.Serializable;
 
+import org.faktorips.values.ObjectUtil;
+
 /**
  * An instance of this class identifies a property in an object, e.g. the name property of a
  * specific person.
+ * <p>
+ * To add custom information that additionally qualifies the object property, it is possible to
+ * implement and use an {@link IPropertyQualifier}.
  */
 public class ObjectProperty implements Serializable {
 
@@ -23,10 +28,31 @@ public class ObjectProperty implements Serializable {
      */
     private static final long serialVersionUID = -3407760096164658253L;
 
-    private Object object;
-    private String property;
-    private int index;
-    private int hashCode;
+    private final Object object;
+
+    private final String property;
+
+    private final int index;
+
+    private final int hashCode;
+
+    private final IPropertyQualifier qualifier;
+
+    /**
+     * Creates a new ObjectProperty. If the property is a list or an array the index can specify the
+     * position within the property. An index smaller than 0 indicates that it is not an indexed
+     * property.
+     * <p>
+     * It is possible to provide additional information using the qualifier and implementing the
+     * interface {@link IPropertyQualifier}.
+     */
+    public ObjectProperty(Object object, String property, int index, IPropertyQualifier qualifier) {
+        this.object = object;
+        this.property = property;
+        this.index = index;
+        this.qualifier = qualifier;
+        hashCode = createHashCode();
+    }
 
     /**
      * Creates a new ObjectProperty. If the property is a list or an array the index can specify the
@@ -34,17 +60,12 @@ public class ObjectProperty implements Serializable {
      * property.
      */
     public ObjectProperty(Object object, String property, int index) {
-        this.object = object;
-        this.property = property;
-        this.index = index;
-        createHashCode();
+        this(object, property, index, null);
     }
 
-    private void createHashCode() {
-        hashCode = object.hashCode() + index;
-        hashCode = property == null ? hashCode : hashCode + property.hashCode();
-    }
-
+    /**
+     * Creates an ObjectProperty that characterizes the object and the name of the property.
+     */
     public ObjectProperty(Object object, String property) {
         this(object, property, -1);
     }
@@ -57,18 +78,61 @@ public class ObjectProperty implements Serializable {
         this(object, null, -1);
     }
 
+    private int createHashCode() {
+        int hash = object.hashCode() + index;
+        hash = property == null ? hash : 31 * hash + property.hashCode();
+        hash = qualifier == null ? hash : 31 * hash + qualifier.hashCode();
+        return hash;
+    }
+
+    /**
+     * The object that is identified by this {@link ObjectProperty}.
+     * 
+     */
     public Object getObject() {
         return object;
     }
 
+    /**
+     * The name of the property that is identified by this {@link ObjectProperty}. The property name
+     * should be available as bean property in the given object.
+     * 
+     */
     public String getProperty() {
         return property;
     }
 
+    /**
+     * In case of {@link #getObject()} is an array or list this index defines which object of the
+     * index is referenced.
+     * 
+     * @return The index of the referenced object in the array/list that is referenced by
+     *         {@link #getObject()}. Returns -1 if there is no index available.
+     * 
+     * @see #hasIndex()
+     */
     public int getIndex() {
         return index;
     }
 
+    /**
+     * Returns the {@link IPropertyQualifier} defined at the instantiation of this
+     * {@link ObjectProperty}.
+     * 
+     * @return an {@link IPropertyQualifier} containing additional information or <code>null</code>
+     *         if no qualifier exists.
+     */
+    public IPropertyQualifier getQualifier() {
+        return qualifier;
+    }
+
+    /**
+     * Returns whether this {@link ObjectProperty} has an index that identifies an object in an
+     * array or list.
+     * 
+     * @return <code>true</code> if this {@link ObjectProperty} references an index, false if there
+     *         is no index available.
+     */
     public boolean hasIndex() {
         return index >= 0;
     }
@@ -77,10 +141,8 @@ public class ObjectProperty implements Serializable {
     public boolean equals(Object obj) {
         if (obj instanceof ObjectProperty) {
             ObjectProperty other = (ObjectProperty)obj;
-            return object.equals(other.object)
-                    && index == other.index
-                    && ((property == null && other.property == null) || (property != null && other.property != null && property
-                            .equals(other.property)));
+            return ObjectUtil.equals(object, other.object) && index == other.index
+                    && ObjectUtil.equals(property, other.property) && ObjectUtil.equals(qualifier, other.qualifier);
         }
         return false;
     }
@@ -92,10 +154,7 @@ public class ObjectProperty implements Serializable {
 
     @Override
     public String toString() {
-        if (object == null) {
-            return "null." + property;
-        }
-        return object.toString() + "." + property;
+        return String.valueOf(object) + "." + property;
     }
 
 }
