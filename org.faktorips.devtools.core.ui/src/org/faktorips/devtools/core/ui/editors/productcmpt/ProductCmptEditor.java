@@ -26,12 +26,16 @@ import org.eclipse.ui.part.IPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
@@ -43,7 +47,7 @@ import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDesc
  * @author Jan Ortmann
  * @author Thorsten Guenther
  */
-public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport {
+public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDescriptionSupport, IGotoIpsObjectPart {
 
     /**
      * Setting key for user's decision not to choose a new product component type, because the old
@@ -54,7 +58,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private GenerationPropertiesPage generationPropertiesPage;
 
     @Override
-    protected void addPagesForParsableSrcFile() throws PartInitException, CoreException {
+    protected void addPagesForParsableSrcFile() throws PartInitException {
         generationPropertiesPage = new GenerationPropertiesPage(this);
         addPage(generationPropertiesPage);
         addPage(new ProductCmptPropertiesPage(this));
@@ -282,6 +286,27 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return generationName;
         }
         return generationName + SystemUtils.LINE_SEPARATOR + headerMessage;
+    }
+
+    @Override
+    public void gotoIpsObjectPart(IIpsObjectPart part) {
+        setActiveGeneration(getGeneration(part));
+        generationPropertiesPage.gotoIpsObjectPart(part);
+    }
+
+    private IIpsObjectGeneration getGeneration(IIpsObjectPart part) {
+        IIpsObjectPartContainer partContainer = part;
+        while (true) {
+            if (partContainer instanceof IIpsObjectGeneration) {
+                return (IIpsObjectGeneration)partContainer;
+            }
+            IIpsElement parent = partContainer.getParent();
+            if (parent instanceof IIpsObjectPartContainer) {
+                partContainer = (IIpsObjectPartContainer)parent;
+            } else {
+                return null;
+            }
+        }
     }
 
 }
