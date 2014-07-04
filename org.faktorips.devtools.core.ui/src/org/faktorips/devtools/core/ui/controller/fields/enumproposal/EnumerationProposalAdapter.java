@@ -73,7 +73,7 @@ public class EnumerationProposalAdapter extends ContentProposalAdapter {
          * get the proper navigation and closing behavior of the pop-up.
          */
         private void openProposals(Text text) {
-            text.setSelection(text.getText().length(), 0);
+            text.setSelection(0);
             text.setFocus();
             openProposalPopup();
         }
