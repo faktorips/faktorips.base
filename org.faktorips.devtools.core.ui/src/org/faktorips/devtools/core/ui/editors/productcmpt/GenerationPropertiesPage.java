@@ -79,6 +79,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
 
     private GotoGenerationAction gotoNextGenerationAction;
 
+    private LinksSection linksSection;
+
     public GenerationPropertiesPage(ProductCmptEditor editor) {
         super(editor, PAGE_ID, ""); // Title will be updated based on selected generation //$NON-NLS-1$
     }
@@ -94,7 +96,14 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
         this.toolkit = toolkit;
         createStack();
         createPageContent();
+        expandLinkSection();
         createToolbar();
+    }
+
+    private void expandLinkSection() {
+        if (linksSection.getViewer() != null) {
+            linksSection.getViewer().expandAll();
+        }
     }
 
     /**
@@ -248,7 +257,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage {
     }
 
     private void createLinksSection(Composite right) {
-        IpsSection linksSection = new LinksSection(getEditor(), getActiveGeneration(), right, toolkit);
+        linksSection = new LinksSection(getEditor(), getActiveGeneration(), right, toolkit);
         rightSections.add(linksSection);
     }
 
