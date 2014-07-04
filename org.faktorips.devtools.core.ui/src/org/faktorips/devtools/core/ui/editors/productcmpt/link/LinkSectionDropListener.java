@@ -15,9 +15,10 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -58,7 +59,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private final LinkCreatorUtil linkCreatorUtil = new LinkCreatorUtil(false);
 
-    public LinkSectionDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
+    public LinkSectionDropListener(ProductCmptEditor editor, TreeViewer viewer, IProductCmptGeneration generation) {
         super(viewer);
         this.editor = editor;
         this.generation = generation;
@@ -145,6 +146,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
                 } else {
                     result = false;
                 }
+                ((TreeViewer)getViewer()).expandToLevel(getCurrentTarget(), AbstractTreeViewer.ALL_LEVELS);
                 return result;
             }
 

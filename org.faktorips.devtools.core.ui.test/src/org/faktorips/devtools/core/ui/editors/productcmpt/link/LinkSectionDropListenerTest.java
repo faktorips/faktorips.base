@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -454,7 +453,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         private int operation;
         private int location;
 
-        public TestDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
+        public TestDropListener(ProductCmptEditor editor, TreeViewer viewer, IProductCmptGeneration generation) {
             super(editor, viewer, generation);
         }
 
