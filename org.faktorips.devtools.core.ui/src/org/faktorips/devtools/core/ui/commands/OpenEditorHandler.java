@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -55,8 +56,14 @@ public class OpenEditorHandler extends AbstractHandler {
         try {
             IProductCmpt targetProductCmpt = link.findTarget(link.getIpsProject());
             if (targetProductCmpt != null) {
-                targetProductCmptGeneration = targetProductCmpt.getBestMatchingGenerationEffectiveOn(link
-                        .getProductCmptGeneration().getValidFrom());
+                IProductCmptLinkContainer productCmptLinkContainer = link.getProductCmptLinkContainer();
+                if (productCmptLinkContainer instanceof IProductCmptGeneration) {
+                    IProductCmptGeneration productCmptGeneration = (IProductCmptGeneration)productCmptLinkContainer;
+                    targetProductCmptGeneration = targetProductCmpt
+                            .getBestMatchingGenerationEffectiveOn(productCmptGeneration.getValidFrom());
+                } else {
+                    targetProductCmptGeneration = targetProductCmpt.getLatestProductCmptGeneration();
+                }
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
