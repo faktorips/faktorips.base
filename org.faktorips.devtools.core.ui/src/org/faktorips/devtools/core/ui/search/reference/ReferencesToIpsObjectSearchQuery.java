@@ -21,8 +21,6 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
 /**
  * Query to search the references of a given {@link IIpsObject}.
@@ -72,19 +70,16 @@ public class ReferencesToIpsObjectSearchQuery extends ReferenceSearchQuery {
 
     private void fillResultSet(Set<IIpsElement> resultSet, IIpsObject object, IDependency dependency)
             throws CoreException {
-        if (object instanceof IProductCmpt && !(referenced instanceof IProductCmptType)) {
-            addProdCmpGenerations(resultSet, object, dependency);
-        } else {
-            resultSet.add(object);
-        }
+        addDependencyDetails(resultSet, object, dependency);
+        resultSet.add(object);
     }
 
-    protected void addProdCmpGenerations(Set<IIpsElement> set, IIpsObject object, IDependency dependency)
+    protected void addDependencyDetails(Set<IIpsElement> set, IIpsObject object, IDependency dependency)
             throws CoreException {
-        List<IDependencyDetail> dependencyDetails = ((IProductCmpt)object).getDependencyDetails(dependency);
+        List<IDependencyDetail> dependencyDetails = object.getDependencyDetails(dependency);
 
         for (IDependencyDetail dependencyIPSObjPart : dependencyDetails) {
-            set.add(dependencyIPSObjPart.getPart().getParent());
+            set.add(dependencyIPSObjPart.getPart());
         }
     }
 

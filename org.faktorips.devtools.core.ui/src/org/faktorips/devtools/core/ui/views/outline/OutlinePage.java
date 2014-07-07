@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -25,6 +29,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 
 public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChangeListener {
 
@@ -38,11 +43,22 @@ public class OutlinePage extends ContentOutlinePage implements IIpsSrcFilesChang
     @Override
     public void createControl(Composite gParent) {
         super.createControl(gParent);
-        TreeViewer treeView = super.getTreeViewer();
+        final TreeViewer treeView = super.getTreeViewer();
         treeView.setContentProvider(new OutlineContentProvider());
         treeView.setLabelProvider(new WorkbenchLabelProvider());
         treeView.setInput(ipsSrcFile);
         treeView.expandAll();
+        treeView.addDoubleClickListener(new IDoubleClickListener() {
+
+            @Override
+            public void doubleClick(DoubleClickEvent event) {
+                ISelection selection = event.getSelection();
+                if (selection instanceof IStructuredSelection) {
+                    new OpenEditorAction(treeView).run((IStructuredSelection)selection);
+                    return;
+                }
+            }
+        });
     }
 
     @Override

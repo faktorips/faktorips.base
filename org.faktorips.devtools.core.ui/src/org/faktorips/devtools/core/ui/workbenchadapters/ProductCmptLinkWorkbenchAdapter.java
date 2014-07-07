@@ -13,13 +13,19 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.IDecoration;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 
 public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
+
+    private static final String OVERLAY_GIF = "LinkOverlay.gif"; //$NON-NLS-1$
+
+    private static final String PRODUCT_CMPT_LINK_GIF = "ProductCmptLink.gif"; //$NON-NLS-1$
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
@@ -27,7 +33,10 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
             IProductCmptLink link = (IProductCmptLink)ipsObjectPart;
             try {
                 IProductCmpt findTarget = link.findTarget(ipsObjectPart.getIpsProject());
-                return IpsUIPlugin.getImageHandling().getImageDescriptor(findTarget);
+                ImageHandling imageHandling = IpsUIPlugin.getImageHandling();
+                ImageDescriptor imageDescTarget = imageHandling.getImageDescriptor(findTarget);
+                return imageHandling.getSharedOverlayImageDescriptor(imageDescTarget.createImage(), OVERLAY_GIF,
+                        IDecoration.BOTTOM_RIGHT);
             } catch (CoreException e) {
                 IpsPlugin.log(e);
                 return getDefaultImageDescriptor();
@@ -38,7 +47,7 @@ public class ProductCmptLinkWorkbenchAdapter extends IpsObjectPartWorkbenchAdapt
 
     @Override
     public ImageDescriptor getDefaultImageDescriptor() {
-        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor("ProductCmptLink.gif", true); //$NON-NLS-1$;
+        return IpsUIPlugin.getImageHandling().getSharedImageDescriptor(PRODUCT_CMPT_LINK_GIF, true);
     }
 
     @Override

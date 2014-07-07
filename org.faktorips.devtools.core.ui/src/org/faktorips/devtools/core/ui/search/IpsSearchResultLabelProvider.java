@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
@@ -24,7 +25,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  * 
  * @author dicker
  */
-public class IpsSearchResultLabelProvider implements ILabelProvider {
+public class IpsSearchResultLabelProvider extends DefaultLabelProvider {
 
     private List<ILabelProviderListener> listeners = new ArrayList<ILabelProviderListener>();
 
@@ -61,14 +62,4 @@ public class IpsSearchResultLabelProvider implements ILabelProvider {
             return IpsUIPlugin.getImageHandling().getImage((IIpsElement)element);
         }
     }
-
-    @Override
-    public String getText(Object element) {
-        if (element instanceof Object[]) {
-            return ((IIpsElement)((Object[])element)[0]).getName();
-        } else {
-            return ((IIpsElement)element).getName();
-        }
-    }
-
 }
