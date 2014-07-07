@@ -73,4 +73,8 @@ public class EditFieldCellEditor extends IpsCellEditor {
     public boolean isMappedValue() {
         return false;
     }
+
+    public EditField<String> getEditField() {
+        return editField;
+    }
 }

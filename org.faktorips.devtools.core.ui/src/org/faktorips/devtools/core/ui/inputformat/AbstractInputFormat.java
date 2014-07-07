@@ -18,6 +18,7 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -155,17 +156,10 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
      */
     @Override
     public void verifyText(VerifyEvent e) {
-        Text textControl = (Text)e.getSource();
         String insertedText = e.text;
 
         if (insertedText.length() > 0) {
-            /*
-             * Always use the VerifyEvent's start and end indices instead of the text control's
-             * selection. During a replace operation (via setText()) the events start and end values
-             * may differ from the selection's. Using the selection caused problems in GTK (calls of
-             * setText() were ignored).
-             */
-            String resultingText = getResultingText(textControl.getText(), e);
+            String resultingText = getResultingText(e);
             if (isPotentialNullPresentation(resultingText)) {
                 e.doit = true;
             } else {
@@ -179,8 +173,28 @@ public abstract class AbstractInputFormat<T> implements VerifyListener, IInputFo
         return nullStringRepresentation.startsWith(resultingText);
     }
 
-    private String getResultingText(String currentText, VerifyEvent e) {
+    /**
+     * Returns the resulting text from the control that is currently changed.
+     * <p>
+     * Always use the VerifyEvent's start and end indices instead of the text control's selection.
+     * During a replace operation (via setText()) the events start and end values may differ from
+     * the selection's. Using the selection caused problems in GTK (calls of setText() were
+     * ignored).
+     */
+    private String getResultingText(VerifyEvent e) {
+        String currentText = getTextFromControl(e);
         return currentText.substring(0, e.start) + e.text + currentText.substring(e.end, currentText.length());
+    }
+
+    private String getTextFromControl(VerifyEvent e) {
+        Object source = e.getSource();
+        if (source instanceof Text) {
+            return ((Text)source).getText();
+        } else if (source instanceof Combo) {
+            return ((Combo)source).getText();
+        } else {
+            return StringUtils.EMPTY;
+        }
     }
 
     /**

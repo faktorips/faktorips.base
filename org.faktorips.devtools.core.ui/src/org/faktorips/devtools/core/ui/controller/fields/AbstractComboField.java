@@ -10,53 +10,53 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Abstract Field that handles a {@link Text} component.
+ * Abstract Field that handles a {@link Combo} component.
  * 
  * @see EditField for details about generic type T
- * 
- * @author dirmeier
  */
-public abstract class AbstractTextField<T> extends DefaultEditField<T> {
+public abstract class AbstractComboField<T> extends DefaultEditField<T> {
 
-    private Text text;
+    private Combo combo;
     private boolean immediatelyNotifyListener = false;
 
-    public AbstractTextField() {
+    public AbstractComboField() {
         super();
     }
 
-    public AbstractTextField(Text text) {
+    public AbstractComboField(Combo combo) {
         this();
-        ArgumentCheck.notNull(text);
-        this.text = text;
+        ArgumentCheck.notNull(combo);
+        this.combo = combo;
     }
 
     @Override
     public Control getControl() {
-        return text;
+        return combo;
     }
 
     /**
      * Returns the text control this is an edit field for.
      */
-    public Text getTextControl() {
-        return text;
+    public Combo getComboControl() {
+        return combo;
     }
 
     @Override
     public String getText() {
-        return text.getText();
+        return combo.getText();
     }
 
     @Override
@@ -64,27 +64,31 @@ public abstract class AbstractTextField<T> extends DefaultEditField<T> {
         immediatelyNotifyListener = true;
         try {
             if (newText == null) {
-                // AbstractNumberFormats call this method with null values
-                if (supportsNullStringRepresentation()) {
-                    newText = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-                } else {
-                    newText = ""; //$NON-NLS-1$
-                }
+                combo.setText(getNullStringRepresentation());
+            } else {
+                combo.setText(newText);
             }
-            text.setText(newText);
         } finally {
             immediatelyNotifyListener = false;
         }
     }
 
+    private String getNullStringRepresentation() {
+        if (supportsNullStringRepresentation()) {
+            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        } else {
+            return StringUtils.EMPTY;
+        }
+    }
+
     @Override
     public void insertText(String insertText) {
-        text.insert(insertText);
+        // cannot insert text into combo
     }
 
     @Override
     public void selectAll() {
-        text.selectAll();
+        combo.setSelection(new Point(0, getText().length()));
     }
 
     @Override
@@ -92,15 +96,15 @@ public abstract class AbstractTextField<T> extends DefaultEditField<T> {
         final ModifyListener modifyListener = new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                notifyChangeListeners(new FieldValueChangedEvent(AbstractTextField.this), immediatelyNotifyListener);
+                notifyChangeListeners(new FieldValueChangedEvent(AbstractComboField.this), immediatelyNotifyListener);
             }
         };
-        text.addModifyListener(modifyListener);
-        text.addDisposeListener(new DisposeListener() {
+        combo.addModifyListener(modifyListener);
+        combo.addDisposeListener(new DisposeListener() {
 
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                text.removeModifyListener(modifyListener);
+                combo.removeModifyListener(modifyListener);
             }
         });
     }
