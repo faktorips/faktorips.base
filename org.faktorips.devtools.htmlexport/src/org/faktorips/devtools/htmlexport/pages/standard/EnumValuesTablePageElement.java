@@ -79,15 +79,17 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
 
     private void addEnumAttributeValue(List<String> valueData, IEnumValue rowData, IEnumAttribute enumAttribute) {
         IEnumAttributeValue enumAttributeValue = rowData.getEnumAttributeValue(enumAttribute);
-        String value = enumAttributeValue.getValue().getDefaultLocalizedContent(enumAttribute.getIpsProject());
-        try {
-            ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
-            valueData.add(getContext().getDatatypeFormatter().formatValue(datatype, value));
-        } catch (CoreException e) {
-            IpsStatus status = new IpsStatus(IStatus.WARNING,
-                    "Could not format " + enumAttributeValue.getName() + " " + value, e); //$NON-NLS-1$ //$NON-NLS-2$
-            getContext().addStatus(status);
-            valueData.add(value);
+        if (enumAttributeValue != null && enumAttributeValue.getValue() != null) {
+            String value = enumAttributeValue.getValue().getDefaultLocalizedContent(enumAttribute.getIpsProject());
+            try {
+                ValueDatatype datatype = enumAttribute.findDatatype(getContext().getIpsProject());
+                valueData.add(getContext().getDatatypeFormatter().formatValue(datatype, value));
+            } catch (CoreException e) {
+                IpsStatus status = new IpsStatus(IStatus.WARNING,
+                        "Could not format " + enumAttributeValue.getName() + " " + value, e); //$NON-NLS-1$ //$NON-NLS-2$
+                getContext().addStatus(status);
+                valueData.add(value);
+            }
         }
 
     }
