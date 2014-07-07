@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -45,7 +46,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
-import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkViewItem;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
@@ -417,7 +417,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     public void gotoIpsObjectPart(IIpsObjectPart part) {
         if (part instanceof IProductCmptLink) {
             IProductCmptLink link = (IProductCmptLink)part;
-            linksSection.setSelection(new LinkViewItem(link));
+            linksSection.setSelection(Arrays.asList(link));
             getEditor().setActivePage(PAGE_ID);
         }
     }

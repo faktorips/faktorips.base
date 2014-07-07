@@ -89,24 +89,22 @@ public class LinksContentProvider implements ITreeContentProvider {
         for (IProductCmptTypeAssociation association : associations) {
             if (association.isRelevant()) {
                 IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
-                AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
+                AssociationViewItem associationViewItem = createAssociationViewItem(container, association);
                 items.add(associationViewItem);
             }
         }
         return items.toArray(new AssociationViewItem[items.size()]);
     }
 
-    @Override
-    public void dispose() {
-        // Nothing to do
+    private AssociationViewItem createAssociationViewItem(IProductCmptLinkContainer container,
+            IProductCmptTypeAssociation association) {
+        AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
+        return associationViewItem;
     }
 
     @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        /*
-         * No need to implement. Input is given in #getElements() and needs to be recalculated every
-         * time anyways.
-         */
+    public void dispose() {
+        // Nothing to do
     }
 
     @Override
@@ -120,15 +118,30 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        /*
-         * No need to implement. Would be needed if a single item had to be expanded in the tree.
-         */
+        if (element instanceof LinkViewItem) {
+            LinkViewItem linkViewItem = (LinkViewItem)element;
+            IProductCmptLink link = linkViewItem.getLink();
+            try {
+                IProductCmptTypeAssociation association = link.findAssociation(link.getIpsProject());
+                return createAssociationViewItem(link.getProductCmptLinkContainer(), association);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
         return null;
     }
 
     @Override
     public boolean hasChildren(Object element) {
         return getChildren(element).length > 0;
+    }
+
+    @Override
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        /*
+         * No need to implement. Input is given in #getElements() and needs to be recalculated every
+         * time anyways.
+         */
     }
 
 }
