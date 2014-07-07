@@ -26,8 +26,8 @@ import org.faktorips.runtime.modeltype.IModelType;
 import org.faktorips.runtime.modeltype.IModelTypeAttribute;
 
 /**
- * 
- * @author Daniel Hohenberger
+ * A {@link ModelTypeAttribute} represent an attribute from the PolicyCmptType or the
+ * ProductCmptType.
  */
 public class ModelTypeAttribute extends AbstractModelElement implements IModelTypeAttribute {
 
@@ -176,6 +176,7 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         return sb.toString();
     }
 
+    @Override
     public Object getValue(IModelObject source) {
         try {
             if (AttributeType.CONSTANT == attributeType) {
@@ -207,11 +208,18 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
 
     private String getGetterName() {
         if (getterName == null) {
-            getterName = "get" + getName().substring(0, 1).toUpperCase() + getName().substring(1);
+            String prefix = "";
+            if (boolean.class.getName().equals(datatypeName)) {
+                prefix = "is";
+            } else {
+                prefix = "get";
+            }
+            getterName = prefix + getName().substring(0, 1).toUpperCase() + getName().substring(1);
         }
         return getterName;
     }
 
+    @Override
     public void setValue(IModelObject source, Object value) {
         try {
             PropertyDescriptor propertyDescriptor = new PropertyDescriptor(getName(), source.getClass());
