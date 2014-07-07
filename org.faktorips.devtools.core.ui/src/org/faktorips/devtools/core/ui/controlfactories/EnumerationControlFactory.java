@@ -10,8 +10,12 @@
 
 package org.faktorips.devtools.core.ui.controlfactories;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -20,7 +24,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
+import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingComboField;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalAdapter;
+import org.faktorips.devtools.core.ui.controller.fields.enumproposal.EnumerationProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
 /**
@@ -67,6 +74,32 @@ public class EnumerationControlFactory extends DefaultControlFactory {
      */
     private boolean requiresEnumValueProposal(IValueSet valueSet) {
         return valueSet == null || !valueSet.isEnum();
+    }
+
+    @Override
+    protected EditField<String> createEditFieldForTable(UIToolkit toolkit,
+            Composite parent,
+            ValueDatatype datatype,
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
+        IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet, ipsProject);
+        String[] proposalsAsString = getProposals(datatype, inputFormat);
+
+        Combo combo = new Combo(parent, SWT.NONE);
+        combo.setItems(proposalsAsString);
+
+        return new FormattingComboField<String>(combo, inputFormat);
+    }
+
+    private String[] getProposals(ValueDatatype datatype, IInputFormat<String> inputFormat) {
+        EnumerationProposalProvider enumerationProposalProvider = new EnumerationProposalProvider(datatype, null,
+                inputFormat, EnumerationProposalAdapter.PROPOSAL_REPLACE);
+        IContentProposal[] proposals = enumerationProposalProvider.getProposals(StringUtils.EMPTY, 0);
+        String[] proposalsAsString = new String[proposals.length];
+        for (int i = 0; i < proposals.length; i++) {
+            proposalsAsString[i] = proposals[i].getLabel();
+        }
+        return proposalsAsString;
     }
 
     @Override

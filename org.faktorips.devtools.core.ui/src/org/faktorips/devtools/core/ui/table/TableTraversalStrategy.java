@@ -14,6 +14,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.TraverseEvent;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingComboField;
 
 /**
  * Supports the navigation in a <tt>Table</tt> / <tt>TableViewer</tt> using the
@@ -50,10 +51,7 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        // FS#1585: if this cell editor is a ComboCellEditor then the arrow down and up
-        // feature to create or delete rows are not supported, because otherwise the
-        // selection of a new value inside the drop down doesn't work correctly
-        if (getCellEditor() instanceof ComboCellEditor) {
+        if (avoidArrowUpDownForRowTraversal()) {
             return;
         }
         if (e.keyCode == SWT.ARROW_DOWN) {
@@ -63,6 +61,16 @@ public abstract class TableTraversalStrategy extends AbstractTraversalStrategy {
             editPreviousRow();
             e.doit = false;
         }
+    }
+
+    /**
+     * If this cell editor is a Combo-based cell editor, let arrow up and down be used for selecting
+     * values inside the drop down. Thus avoid creating or deleting rows, as this closes the
+     * combo.(FS#1585 and JIRA-3371)
+     */
+    private boolean avoidArrowUpDownForRowTraversal() {
+        return getCellEditor() instanceof EditFieldCellEditor
+                && ((EditFieldCellEditor)getCellEditor()).getEditField() instanceof FormattingComboField;
     }
 
     @Override
