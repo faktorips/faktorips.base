@@ -72,9 +72,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     /**
      * The builders extension id.
      */
-    public final static String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
+    public static final String BUILDER_ID = IpsPlugin.PLUGIN_ID + ".ipsbuilder"; //$NON-NLS-1$
 
-    public final static boolean TRACE_BUILDER_TRACE;
+    public static final boolean TRACE_BUILDER_TRACE;
 
     static {
         TRACE_BUILDER_TRACE = Boolean
@@ -99,6 +99,13 @@ public class IpsBuilder extends IncrementalProjectBuilder {
     @SuppressWarnings("rawtypes")
     @Override
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+        /*
+         * There will be no code generation or validation when in browse mode.
+         */
+        if (isBrowseModeOn()) {
+            return null;
+        }
+        int currentKind = kind;
         MultiStatus buildStatus = createInitialMultiStatus();
         try {
             monitor.beginTask("build", 100000); //$NON-NLS-1$
@@ -117,17 +124,17 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             monitor.worked(100);
             monitor.subTask(Messages.IpsBuilder_preparingBuild);
             IIpsArtefactBuilderSet ipsArtefactBuilderSet = getBuilderSetReInitialisedIfNecessary(getIpsProject());
-            boolean isFullBuildRequired = isFullBuildRequired(kind);
+            boolean isFullBuildRequired = isFullBuildRequired(currentKind);
             if (isFullBuildRequired) {
-                kind = IncrementalProjectBuilder.FULL_BUILD;
+                currentKind = IncrementalProjectBuilder.FULL_BUILD;
             }
-            beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, kind);
-            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(kind, getIpsProject()),
-                    monitor);
+            beforeBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
+            applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new BeforeBuildProcessCommand(currentKind,
+                    getIpsProject()), monitor);
             monitor.worked(100);
             try {
                 if (isFullBuildRequired) {
-                    kind = IncrementalProjectBuilder.FULL_BUILD;
+                    currentKind = IncrementalProjectBuilder.FULL_BUILD;
                     monitor.subTask(Messages.IpsBuilder_startFullBuild);
                     fullBuild(ipsArtefactBuilderSet, buildStatus, new SubProgressMonitor(monitor, 99700));
                 } else {
@@ -136,9 +143,9 @@ public class IpsBuilder extends IncrementalProjectBuilder {
                 }
             } finally {
                 monitor.subTask(Messages.IpsBuilder_finishBuild);
-                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(kind,
+                applyBuildCommand(ipsArtefactBuilderSet, buildStatus, new AfterBuildProcessCommand(currentKind,
                         getIpsProject()), monitor);
-                afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, kind);
+                afterBuildForBuilderSet(ipsArtefactBuilderSet, buildStatus, currentKind);
             }
             monitor.worked(100);
             if (buildStatus.getSeverity() == IStatus.OK) {
@@ -163,6 +170,10 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             monitor.done();
         }
         return getProject().getReferencedProjects();
+    }
+
+    private boolean isBrowseModeOn() {
+        return IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
     }
 
     private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) throws CoreException {
