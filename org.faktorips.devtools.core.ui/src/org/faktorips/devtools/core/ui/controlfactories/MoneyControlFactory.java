@@ -41,8 +41,8 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype,
             IValueSet valueSet,
             IIpsProject ipsProject) {
-        Text control = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
-        return setUpFieldForTextControl(datatype, valueSet, control);
+        Text control = createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet, ipsProject);
+        return setUpFieldForTextControl(datatype, valueSet, control, ipsProject);
     }
 
     @Override
@@ -57,11 +57,14 @@ public class MoneyControlFactory extends ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text control = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return setUpFieldForTextControl(datatype, valueSet, control);
+        return setUpFieldForTextControl(datatype, valueSet, control, ipsProject);
     }
 
-    private EditField<String> setUpFieldForTextControl(ValueDatatype datatype, IValueSet valueSet, Text control) {
-        MoneyFormat inputFormat = (MoneyFormat)getInputFormat(datatype, valueSet);
+    private EditField<String> setUpFieldForTextControl(ValueDatatype datatype,
+            IValueSet valueSet,
+            Text control,
+            IIpsProject ipsProject) {
+        MoneyFormat inputFormat = (MoneyFormat)getInputFormat(datatype, valueSet, ipsProject);
         control.addPaintListener(new CurrencySymbolPainter(inputFormat));
         return new FormattingTextField<String>(control, inputFormat);
     }

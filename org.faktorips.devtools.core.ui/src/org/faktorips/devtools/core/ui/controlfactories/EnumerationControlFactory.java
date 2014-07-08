@@ -16,6 +16,7 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -41,11 +42,12 @@ public class EnumerationControlFactory extends DefaultControlFactory {
     protected void adaptEnumValueProposal(UIToolkit toolkit,
             Text textControl,
             IValueSet valueSet,
-            ValueDatatype datatype) {
-        super.adaptEnumValueProposal(toolkit, textControl, valueSet, datatype);
+            ValueDatatype datatype,
+            IIpsProject ipsProject) {
+        super.adaptEnumValueProposal(toolkit, textControl, valueSet, datatype, ipsProject);
         if (requiresEnumValueProposal(valueSet)) {
             // always create a proposal provider at this point as this is an enum datatype
-            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
+            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet, ipsProject);
             Button button = createArrowDownButton(toolkit, textControl.getParent());
             EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, button, datatype, null, inputFormat);
         }
@@ -59,8 +61,8 @@ public class EnumerationControlFactory extends DefaultControlFactory {
      * <li>
      * the value set is not an enum</li>
      * </ul>
-     * For enum value sets, content propsal will be added by the super implementation:
-     * {@link ValueDatatypeControlFactory#adaptEnumValueProposal(UIToolkit, Text, IValueSet, ValueDatatype)}
+     * For enum value sets, content proposal will be added by the super implementation:
+     * {@link ValueDatatypeControlFactory#adaptEnumValueProposal(UIToolkit, Text, IValueSet, ValueDatatype, IIpsProject)}
      * .
      */
     private boolean requiresEnumValueProposal(IValueSet valueSet) {
