@@ -91,12 +91,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
      * Returns the product component for the source file edited with this editor.
      */
     public IProductCmpt getProductCmpt() {
-        try {
-            return (IProductCmpt)getIpsObject();
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            throw new RuntimeException(e);
-        }
+        return (IProductCmpt)getIpsObject();
     }
 
     // The method is overridden, to enable access from classes in same package.
@@ -146,8 +141,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
-        if ((event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED && event.getPart() instanceof IProductCmptGeneration)
-                || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)) {
+        if (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.syncExec(new Runnable() {
 
@@ -156,6 +150,16 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                     refreshIncludingStructuralChanges();
                 }
             });
+        }
+    }
+
+    private boolean isGenerationAdded(ContentChangeEvent event) {
+        if (event.getEventType() == ContentChangeEvent.TYPE_PART_ADDED
+                && event.getPart() instanceof IProductCmptGeneration) {
+            IProductCmptGeneration cmptGeneration = (IProductCmptGeneration)event.getPart();
+            return cmptGeneration.getProductCmpt().equals(getProductCmpt());
+        } else {
+            return false;
         }
     }
 

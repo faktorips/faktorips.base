@@ -100,14 +100,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         this.toolkit = toolkit;
         createStack();
         createPageContent();
-        expandLinkSection();
         createToolbar();
-    }
-
-    private void expandLinkSection() {
-        if (linksSection.getViewer() != null) {
-            linksSection.getViewer().expandAll();
-        }
     }
 
     /**

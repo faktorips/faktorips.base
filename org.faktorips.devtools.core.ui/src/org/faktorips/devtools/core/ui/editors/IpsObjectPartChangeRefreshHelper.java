@@ -96,7 +96,9 @@ public class IpsObjectPartChangeRefreshHelper {
 
     protected void handleEvent(ContentChangeEvent event) {
         if (event.isAffected(ipsObject)) {
-            viewerToRefresh.refresh();
+            if (!viewerToRefresh.getControl().isDisposed()) {
+                viewerToRefresh.refresh();
+            }
         }
     }
 

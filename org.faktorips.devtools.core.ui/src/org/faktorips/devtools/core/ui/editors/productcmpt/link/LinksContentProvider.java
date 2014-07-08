@@ -47,14 +47,8 @@ public class LinksContentProvider implements ITreeContentProvider {
 
             IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
             if (pcType == null) {
-                /*
-                 * Type can't be found in case product component is loaded from a VCS repository.
-                 * Extract the association names from the links in the generation and product
-                 * component.
-                 */
                 return getDetachedAssociationViewItems(generation);
             } else {
-                // find association using the product cmpt's project
                 return getAssociationItems(pcType, pc.getIpsProject(), generation);
             }
         } catch (CoreException e) {
@@ -62,6 +56,10 @@ public class LinksContentProvider implements ITreeContentProvider {
         }
     }
 
+    /**
+     * Type can't be found in case product component is loaded from a VCS repository. Extract the
+     * association names from the links in the generation and product component.
+     */
     protected DetachedAssociationViewItem[] getDetachedAssociationViewItems(IProductCmptGeneration gen) {
         List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
         items.addAll(getAssociationItemsForLinkContainer(gen.getProductCmpt()));
@@ -69,6 +67,9 @@ public class LinksContentProvider implements ITreeContentProvider {
         return items.toArray(new DetachedAssociationViewItem[items.size()]);
     }
 
+    /**
+     * find association using the product cmpt's project
+     */
     protected List<DetachedAssociationViewItem> getAssociationItemsForLinkContainer(IProductCmptLinkContainer linkContainer) {
         List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
         Set<String> associations = new LinkedHashSet<String>();
@@ -84,7 +85,7 @@ public class LinksContentProvider implements ITreeContentProvider {
     protected AssociationViewItem[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
             IProductCmptGeneration generation) {
-        List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
+        ArrayList<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
         List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
         for (IProductCmptTypeAssociation association : associations) {
             if (association.isRelevant()) {
@@ -132,7 +133,12 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public boolean hasChildren(Object element) {
-        return getChildren(element).length > 0;
+        if (element instanceof AbstractAssociationViewItem) {
+            AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
+            return associationViewItem.hasChildren();
+        } else {
+            return false;
+        }
     }
 
     @Override

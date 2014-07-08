@@ -177,6 +177,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         createTreeMessageHoverService(createLabelProvider());
 
         treeViewer.setInput(generation);
+        treeViewer.expandAll();
     }
 
     private void buildGridLayout(Composite relationRootPanel) {
