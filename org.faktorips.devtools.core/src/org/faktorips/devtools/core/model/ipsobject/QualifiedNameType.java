@@ -29,6 +29,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class QualifiedNameType implements Serializable, Comparable<QualifiedNameType> {
 
+    public static final char FILE_EXTENSION_SEPERATOR = '.';
+
     private static final long serialVersionUID = -5891585006868536302L;
 
     private String qualifiedName;
@@ -60,18 +62,18 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         if (!representsQualifiedNameType(pathToFile)) {
             throw new IllegalArgumentException("Path " + pathToFile + " does not specifiy an ips object type."); //$NON-NLS-1$ //$NON-NLS-2$
         }
-    
-        int index = pathToFile.lastIndexOf('.');
-    
+
+        int index = pathToFile.lastIndexOf(FILE_EXTENSION_SEPERATOR);
+
         IpsObjectType type = IpsObjectType.getTypeForExtension(pathToFile.substring(index + 1));
-    
+
         String qName = pathToFile.substring(0, index).replace(IPath.SEPARATOR, IIpsPackageFragment.SEPARATOR);
-    
+
         return new QualifiedNameType(qName, type);
     }
 
     public static final boolean representsQualifiedNameType(String pathToFile) {
-        int index = pathToFile.lastIndexOf('.');
+        int index = pathToFile.lastIndexOf(FILE_EXTENSION_SEPERATOR);
         if (index == -1 || index == pathToFile.length() - 1) {
             return false;
         }
@@ -83,7 +85,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         if (qName.equals(StringUtils.EMPTY)) {
             return false;
         }
-    
+
         return true;
     }
 
@@ -105,7 +107,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
      * Returns the package name part of the qualified name.
      */
     public String getPackageName() {
-        int index = qualifiedName.lastIndexOf('.');
+        int index = qualifiedName.lastIndexOf(IIpsPackageFragment.SEPARATOR);
         if (index == -1) {
             return ""; //$NON-NLS-1$
         }
@@ -116,7 +118,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
      * Returns the unqualified name.
      */
     public String getUnqualifiedName() {
-        int index = qualifiedName.lastIndexOf('.');
+        int index = qualifiedName.lastIndexOf(IIpsPackageFragment.SEPARATOR);
         if (index == -1) {
             return qualifiedName;
         }
@@ -132,8 +134,8 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
      */
     public IPath toPath() {
         if (path == null) {
-            path = new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR) + '.'
-                    + type.getFileExtension());
+            path = new Path(qualifiedName.replace(IIpsPackageFragment.SEPARATOR, IPath.SEPARATOR)
+                    + FILE_EXTENSION_SEPERATOR + type.getFileExtension());
         }
         return path;
     }

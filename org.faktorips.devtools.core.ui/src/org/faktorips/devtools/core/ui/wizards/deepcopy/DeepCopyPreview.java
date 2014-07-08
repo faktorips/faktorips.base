@@ -18,25 +18,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -125,12 +123,11 @@ public class DeepCopyPreview {
             int segmentsToIgnore,
             IIpsPackageFragmentRoot root,
             IIpsPackageFragment base) {
-        if (root == null || base == null || !base.getRoot().exists()) {
+        if (isNullOrNotExists(root, base)) {
             return;
         }
         IIpsObject correspondingIpsObject = modified.getWrappedIpsObject();
 
-        StringBuffer message = new StringBuffer();
         String packageName = buildTargetPackageName(base, correspondingIpsObject, segmentsToIgnore);
         IIpsPackageFragment targetPackage = root.getIpsPackageFragment(packageName);
 
@@ -141,49 +138,60 @@ public class DeepCopyPreview {
         }
         // we put all new names to this map to preview also names that have not changed
         oldObject2newNameMap.put(correspondingIpsObject, newName);
+        IpsObjectType ipsObjectType = getIpsObjectType(modified);
+        validateAlreadyExistingFile(packageName, newName, ipsObjectType.getFileExtension(), modified);
         if (targetPackage.exists()) {
-            IpsObjectType ipsObjectType;
-            if (modified instanceof IProductCmptReference) {
-                ipsObjectType = IpsObjectType.PRODUCT_CMPT;
-            } else if (modified instanceof IProductCmptStructureTblUsageReference) {
-                ipsObjectType = IpsObjectType.TABLE_CONTENTS;
-            } else {
-                throw new RuntimeException("Not supported product cmpt structure reference: " + modified.getClass()); //$NON-NLS-1$
-            }
-            IIpsSrcFile file = targetPackage.getIpsSrcFile(ipsObjectType.getFileName(newName));
-            if (file.exists()) {
-                message = new StringBuffer();
-                message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName);
-                if (!packageName.equals("")) { //$NON-NLS-1$
-                    message.append("."); //$NON-NLS-1$
-                }
-                message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);
-                addMessage(modified, message.toString());
-            }
-            String name = file.getEnclosingResource().getFullPath().toString();
-            IProductCmptStructureReference node = filename2referenceMap.get(name);
-            if (node instanceof IProductCmptReference) {
-                if (((IProductCmptReference)node).getProductCmpt() != correspondingIpsObject) {
+            IIpsSrcFile newIpsSrcFile = targetPackage.getIpsSrcFile(ipsObjectType.getFileName(newName));
+            String newFileName = newIpsSrcFile.getEnclosingResource().getFullPath().toString();
+            IProductCmptStructureReference node = filename2referenceMap.get(newFileName);
+            if (node != null) {
+                IIpsObject wrappedIpsObject = node.getWrappedIpsObject();
+                if (wrappedIpsObject != correspondingIpsObject) {
                     addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
-                    addMessage(filename2referenceMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
-                }
-            } else if (node instanceof IProductCmptStructureTblUsageReference) {
-                ITableContentUsage tableContentUsage = ((IProductCmptStructureTblUsageReference)node)
-                        .getTableContentUsage();
-                ITableContents tableContents;
-                try {
-                    tableContents = tableContentUsage.findTableContents(presentationModel.getIpsProject());
-                    if ((tableContents != correspondingIpsObject)) {
-                        addMessage(modified, Messages.ReferenceAndPreviewPage_msgNameCollision);
-                        addMessage(filename2referenceMap.get(name), Messages.ReferenceAndPreviewPage_msgNameCollision);
-                    }
-                } catch (CoreException e) {
-                    // should be displayed as validation error before
-                    IpsPlugin.log(e);
+                    addMessage(filename2referenceMap.get(newFileName),
+                            Messages.ReferenceAndPreviewPage_msgNameCollision);
                 }
             } else {
-                filename2referenceMap.put(name, modified);
+                filename2referenceMap.put(newFileName, modified);
             }
+        }
+    }
+
+    private boolean isNullOrNotExists(IIpsPackageFragmentRoot root, IIpsPackageFragment base) {
+        return root == null || base == null || !base.getRoot().exists();
+    }
+
+    private IpsObjectType getIpsObjectType(IProductCmptStructureReference modified) {
+        IIpsObject wrappedIpsObject = modified.getWrappedIpsObject();
+        return wrappedIpsObject.getIpsObjectType();
+    }
+
+    /* private */void validateAlreadyExistingFile(String packageName,
+            String newName,
+            String fileExtension,
+            IProductCmptStructureReference modified) {
+        if (isExistingIpsSrcFile(packageName, newName, fileExtension)) {
+            StringBuffer message = new StringBuffer();
+            message.append(Messages.ReferenceAndPreviewPage_msgCanNotCreateFile).append(packageName);
+            if (!packageName.isEmpty()) {
+                message.append(QualifiedNameType.FILE_EXTENSION_SEPERATOR);
+            }
+            message.append(newName).append(Messages.ReferenceAndPreviewPage_msgFileAllreadyExists);
+            addMessage(modified, message.toString());
+        }
+
+    }
+
+    private boolean isExistingIpsSrcFile(String packageName, String ipsSrcFileName, String fileExtension) {
+        try {
+            String qualifiedName = packageName + IIpsPackageFragment.SEPARATOR + ipsSrcFileName
+                    + QualifiedNameType.FILE_EXTENSION_SEPERATOR + fileExtension;
+            QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(qualifiedName);
+            IIpsProject ipsProject = presentationModel.getIpsProject();
+            IIpsSrcFile fileInProjects = ipsProject.findIpsSrcFile(qualifedNameType);
+            return fileInProjects != null && fileInProjects.exists();
+        } catch (CoreException e) {
+            return false;
         }
     }
 
@@ -237,15 +245,15 @@ public class DeepCopyPreview {
      */
     String buildTargetPackageName(IIpsPackageFragment targetBase, IIpsObject source, int segmentsToIgnore) {
         if (targetBase == null || !targetBase.getRoot().exists()) {
-            return ""; //$NON-NLS-1$
+            return StringUtils.EMPTY;
         }
         IPath subPath = source.getIpsPackageFragment().getRelativePath().removeFirstSegments(segmentsToIgnore);
-        String toAppend = subPath.toString().replace('/', '.');
+        String toAppend = subPath.toString().replace('/', IIpsPackageFragment.SEPARATOR);
 
         String base = targetBase.getName();
 
-        if (!base.equals("") && !toAppend.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
-            base = base + "."; //$NON-NLS-1$
+        if (!base.isEmpty() && !toAppend.isEmpty()) {
+            base = base + QualifiedNameType.FILE_EXTENSION_SEPERATOR;
         }
 
         return base + toAppend;
@@ -260,8 +268,7 @@ public class DeepCopyPreview {
         if (alreadyMappedName != null) {
             return alreadyMappedName;
         }
-        String newName = getNewNameInternal(targetPackage, correspondingIpsObject, 0);
-        return newName;
+        return getNewNameInternal(targetPackage, correspondingIpsObject, 0);
     }
 
     private String getNewNameInternal(IIpsPackageFragment targetPackage,
@@ -310,18 +317,21 @@ public class DeepCopyPreview {
         // the copy product feature supports pattern replace
         String searchPattern = presentationModel.getSearchInput();
         String replaceText = presentationModel.getReplaceInput();
-        if (!"".equals(replaceText) && !"".equals(searchPattern)) { //$NON-NLS-1$ //$NON-NLS-2$
+        String newNameReplace = newName;
+        if (!StringUtils.EMPTY.equals(replaceText) && !StringUtils.EMPTY.equals(searchPattern)) {
 
             Pattern pattern = presentationModel.getSearchPattern();
             try {
                 Matcher matcher = pattern.matcher(newName);
-                newName = matcher.replaceAll(replaceText);
+                newNameReplace = matcher.replaceAll(replaceText);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 throw new IllegalArgumentException(NLS.bind(Messages.SourcePage_msgInvalidPattern, replaceText)
                         + e.getLocalizedMessage());
             }
         }
-        return newName;
+        return newNameReplace;
     }
 
     /**
