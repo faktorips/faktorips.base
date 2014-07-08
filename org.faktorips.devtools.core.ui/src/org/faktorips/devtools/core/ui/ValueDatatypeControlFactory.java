@@ -83,15 +83,16 @@ public abstract class ValueDatatypeControlFactory {
             ValueDatatype datatype,
             @Deprecated IValueSet valueSet,
             IIpsProject ipsProject) {
-        return createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet);
+        return createTextAndAdaptEnumProposal(toolkit, parent, datatype, valueSet, ipsProject);
     }
 
     protected Text createTextAndAdaptEnumProposal(UIToolkit toolkit,
             Composite parent,
             ValueDatatype datatype,
-            IValueSet valueSet) {
+            IValueSet valueSet,
+            IIpsProject ipsProject) {
         Text text = createPotentialEnumTextControl(toolkit, parent, getDefaultAlignment());
-        adaptEnumValueProposal(toolkit, text, valueSet, datatype);
+        adaptEnumValueProposal(toolkit, text, valueSet, datatype, ipsProject);
         return text;
     }
 
@@ -104,14 +105,16 @@ public abstract class ValueDatatypeControlFactory {
      * @param valueSet the value set that provides the values
      * @param datatype the data type of the field. May also provide enumeration values if it is an
      *            enum data type.
+     * @param ipsProject The current project
      */
     protected void adaptEnumValueProposal(UIToolkit toolkit,
             Text textControl,
             IValueSet valueSet,
-            ValueDatatype datatype) {
+            ValueDatatype datatype,
+            IIpsProject ipsProject) {
         if (requiresEnumValueProposal(valueSet)) {
             IValueSetOwner valueSetOwner = valueSet.getValueSetOwner();
-            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet);
+            IInputFormat<String> inputFormat = getInputFormat(datatype, valueSet, ipsProject);
             Button button = createArrowDownButton(toolkit, textControl.getParent());
             EnumerationProposalAdapter.createAndActivateOnAnyKey(textControl, button, datatype, valueSetOwner,
                     inputFormat);
@@ -134,11 +137,7 @@ public abstract class ValueDatatypeControlFactory {
         return valueSet != null && valueSet.isEnum();
     }
 
-    protected IInputFormat<String> getInputFormat(ValueDatatype datatype, IValueSet valueSet) {
-        IIpsProject ipsProject = null;
-        if (valueSet != null) {
-            ipsProject = valueSet.getIpsProject();
-        }
+    protected IInputFormat<String> getInputFormat(ValueDatatype datatype, IValueSet valueSet, IIpsProject ipsProject) {
         IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(datatype, ipsProject);
         setNewNullString(valueSet, datatype, inputFormat);
         return inputFormat;
@@ -277,7 +276,7 @@ public abstract class ValueDatatypeControlFactory {
             IValueSet valueSet,
             IIpsProject ipsProject) {
         Text text = toolkit.createTextAppendStyle(parent, getDefaultAlignment());
-        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet));
+        return new FormattingTextField<String>(text, getInputFormat(datatype, valueSet, ipsProject));
     }
 
     public abstract int getDefaultAlignment();
