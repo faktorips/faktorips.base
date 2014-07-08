@@ -222,13 +222,11 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean validateDropSingle(Object target, int operation, TransferData data) {
-        // nothing to do
         return false;
     }
 
     @Override
     public boolean performDropSingle(Object data) {
-        // nothing to do
         return false;
     }
 
@@ -353,7 +351,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             if (!canCreateLinks(draggedCmpts, target)) {
                 return Collections.emptyList();
             }
-        
+
             ArrayList<IProductCmptLink> createdCmptLinks = new ArrayList<IProductCmptLink>();
             for (IProductCmpt draggedCmpt : draggedCmpts) {
                 createdCmptLinks.add(createLink(draggedCmpt.getQualifiedName(), generation, target));
@@ -363,7 +361,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
         private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target)
                 throws CoreException {
-        
+
             IProductCmptTypeAssociation association = getAssociation(target);
             if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
                 IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName);

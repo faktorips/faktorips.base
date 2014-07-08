@@ -98,8 +98,7 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     private AssociationViewItem createAssociationViewItem(IProductCmptLinkContainer container,
             IProductCmptTypeAssociation association) {
-        AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
-        return associationViewItem;
+        return new AssociationViewItem(container, association);
     }
 
     @Override
