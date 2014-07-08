@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -35,7 +34,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -59,7 +57,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     private IProductCmptGeneration cmptAGeneration;
     private ProductCmpt cmptC4;
     private TreeViewer treeViewer;
-    private ProductCmptEditor productCmptEditor;
+    private LinksSection linkSection;
     private IProductCmptTypeAssociation staticAssociationToB;
     private IProductCmptTypeAssociation staticAssociationToC;
     private IProductCmptLink b1Link1;
@@ -119,13 +117,14 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         treeViewer.setContentProvider(contentProvider);
         treeViewer.setInput(cmptAGeneration);
 
-        productCmptEditor = mock(ProductCmptEditor.class);
-        dropListener = spy(new TestDropListener(productCmptEditor, treeViewer, cmptAGeneration));
+        linkSection = mock(LinksSection.class);
+        when(linkSection.getViewer()).thenReturn(treeViewer);
+        dropListener = spy(new TestDropListener(linkSection, cmptAGeneration));
     }
 
     @Test
     public void testValidateDropNewLink() {
-        when(productCmptEditor.isDataChangeable()).thenReturn(true);
+        when(linkSection.isDataChangeable()).thenReturn(true);
 
         int operation = DND.DROP_LINK;
 
@@ -144,7 +143,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateDrop_editorEditable() throws Exception {
-        when(productCmptEditor.isDataChangeable()).thenReturn(true);
+        when(linkSection.isDataChangeable()).thenReturn(true);
 
         int operation = DND.DROP_LINK;
 
@@ -152,7 +151,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         link.setTarget(cmptB1.getQualifiedName());
         assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
 
-        when(productCmptEditor.isDataChangeable()).thenReturn(false);
+        when(linkSection.isDataChangeable()).thenReturn(false);
         assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
     }
 
@@ -234,7 +233,7 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
     }
 
     private void setUpLinksAndSetEditorChangeable() {
-        when(productCmptEditor.isDataChangeable()).thenReturn(true);
+        when(linkSection.isDataChangeable()).thenReturn(true);
 
         b1Link1 = cmptAGeneration.newLink(associationToB1);
         b1Link1.setTarget(cmptB1.getQualifiedName());
@@ -454,8 +453,8 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         private int operation;
         private int location;
 
-        public TestDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
-            super(editor, viewer, generation);
+        public TestDropListener(LinksSection section, IProductCmptGeneration generation) {
+            super(section, generation);
         }
 
         public void setTarget(Object target) {

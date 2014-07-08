@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
@@ -174,6 +177,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         createTreeMessageHoverService(createLabelProvider());
 
         treeViewer.setInput(generation);
+        treeViewer.expandAll();
     }
 
     private void buildGridLayout(Composite relationRootPanel) {
@@ -191,6 +195,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         layoutData.widthHint = 50;
         tree.setLayoutData(layoutData);
         treeViewer = new TreeViewer(tree);
+        treeViewer.setUseHashlookup(true);
     }
 
     private void buildCardinalityPanel(UIToolkit toolkit, Composite relationRootPanel) {
@@ -248,7 +253,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void addDragAndDropSupport() {
-        dropListener = new LinkSectionDropListener(editor, treeViewer, generation);
+        dropListener = new LinkSectionDropListener(this, generation);
         treeViewer.addDropSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance(),
                 TextTransfer.getInstance() }, dropListener);
         MoveLinkDragListener dragListener = dropListener.new MoveLinkDragListener(treeViewer);
@@ -363,10 +368,19 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     /**
-     * Sets the Selection to the given {@link LinkViewItem}.
+     * Sets the selection to all links contained in the given list of {@link IProductCmptLink}s.It
+     * expands all ancestors so that the given links become visible.
+     * 
+     * @param links A list of {@link IProductCmptLink}s that will be selected.
      */
-    public void setSelection(LinkViewItem link) {
-        StructuredSelection selection = new StructuredSelection(link);
+    public void setSelection(List<IProductCmptLink> links) {
+        List<LinkViewItem> linkViewItems = new ArrayList<LinkViewItem>();
+        for (IProductCmptLink productCmptLink : links) {
+            LinkViewItem viewItem = new LinkViewItem(productCmptLink);
+            linkViewItems.add(viewItem);
+            getViewer().expandToLevel(viewItem, 0);
+        }
+        StructuredSelection selection = new StructuredSelection(linkViewItems);
         getViewer().setSelection(selection, true);
     }
 

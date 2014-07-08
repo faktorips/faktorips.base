@@ -47,14 +47,8 @@ public class LinksContentProvider implements ITreeContentProvider {
 
             IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
             if (pcType == null) {
-                /*
-                 * Type can't be found in case product component is loaded from a VCS repository.
-                 * Extract the association names from the links in the generation and product
-                 * component.
-                 */
                 return getDetachedAssociationViewItems(generation);
             } else {
-                // find association using the product cmpt's project
                 return getAssociationItems(pcType, pc.getIpsProject(), generation);
             }
         } catch (CoreException e) {
@@ -62,6 +56,10 @@ public class LinksContentProvider implements ITreeContentProvider {
         }
     }
 
+    /**
+     * Type can't be found in case product component is loaded from a VCS repository. Extract the
+     * association names from the links in the generation and product component.
+     */
     protected DetachedAssociationViewItem[] getDetachedAssociationViewItems(IProductCmptGeneration gen) {
         List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
         items.addAll(getAssociationItemsForLinkContainer(gen.getProductCmpt()));
@@ -69,6 +67,9 @@ public class LinksContentProvider implements ITreeContentProvider {
         return items.toArray(new DetachedAssociationViewItem[items.size()]);
     }
 
+    /**
+     * find association using the product cmpt's project
+     */
     protected List<DetachedAssociationViewItem> getAssociationItemsForLinkContainer(IProductCmptLinkContainer linkContainer) {
         List<DetachedAssociationViewItem> items = new ArrayList<DetachedAssociationViewItem>();
         Set<String> associations = new LinkedHashSet<String>();
@@ -84,29 +85,26 @@ public class LinksContentProvider implements ITreeContentProvider {
     protected AssociationViewItem[] getAssociationItems(IProductCmptType type,
             IIpsProject ipsProject,
             IProductCmptGeneration generation) {
-        List<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
+        ArrayList<AssociationViewItem> items = new ArrayList<AssociationViewItem>();
         List<IProductCmptTypeAssociation> associations = type.findAllNotDerivedAssociations(ipsProject);
         for (IProductCmptTypeAssociation association : associations) {
             if (association.isRelevant()) {
                 IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(generation, association);
-                AssociationViewItem associationViewItem = new AssociationViewItem(container, association);
+                AssociationViewItem associationViewItem = createAssociationViewItem(container, association);
                 items.add(associationViewItem);
             }
         }
         return items.toArray(new AssociationViewItem[items.size()]);
     }
 
-    @Override
-    public void dispose() {
-        // Nothing to do
+    private AssociationViewItem createAssociationViewItem(IProductCmptLinkContainer container,
+            IProductCmptTypeAssociation association) {
+        return new AssociationViewItem(container, association);
     }
 
     @Override
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-        /*
-         * No need to implement. Input is given in #getElements() and needs to be recalculated every
-         * time anyways.
-         */
+    public void dispose() {
+        // Nothing to do
     }
 
     @Override
@@ -120,15 +118,35 @@ public class LinksContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        /*
-         * No need to implement. Would be needed if a single item had to be expanded in the tree.
-         */
+        if (element instanceof LinkViewItem) {
+            LinkViewItem linkViewItem = (LinkViewItem)element;
+            IProductCmptLink link = linkViewItem.getLink();
+            try {
+                IProductCmptTypeAssociation association = link.findAssociation(link.getIpsProject());
+                return createAssociationViewItem(link.getProductCmptLinkContainer(), association);
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
         return null;
     }
 
     @Override
     public boolean hasChildren(Object element) {
-        return getChildren(element).length > 0;
+        if (element instanceof AbstractAssociationViewItem) {
+            AbstractAssociationViewItem associationViewItem = (AbstractAssociationViewItem)element;
+            return associationViewItem.hasChildren();
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        /*
+         * No need to implement. Input is given in #getElements() and needs to be recalculated every
+         * time anyways.
+         */
     }
 
 }

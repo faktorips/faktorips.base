@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
@@ -20,6 +21,8 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptLink;
@@ -28,6 +31,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +57,8 @@ public class LinksContentProviderTest {
     private IProductCmptType type;
     @Mock
     private IIpsProject ipsProject;
+    @Mock
+    private LinkViewItem linkViewItem;
 
     private LinksContentProvider provider;
     private List<ProductCmptLink> links;
@@ -109,5 +115,37 @@ public class LinksContentProviderTest {
         AssociationViewItem[] associationItems = provider.getAssociationItems(type, ipsProject, gen);
         assertTrue(associationItems.length == 1);
         assertEquals(asso2, associationItems[0].getAssociation());
+    }
+
+    @Test
+    public void testGetParent() throws CoreException {
+        IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
+        when(asso1.isRelevant()).thenReturn(true);
+        when(linkViewItem.getLink()).thenReturn(link1);
+        when(link1.getIpsProject()).thenReturn(ipsProject);
+        when(link1.findAssociation(ipsProject)).thenReturn(asso1);
+        IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(gen, asso1);
+        when(link1.getProductCmptLinkContainer()).thenReturn(container);
+
+        AssociationViewItem expectedAssoViewItem = new AssociationViewItem(container, asso1);
+        Object parent = provider.getParent(linkViewItem);
+
+        assertTrue(parent instanceof AssociationViewItem);
+        assertEquals(expectedAssoViewItem, parent);
+    }
+
+    @Test
+    public void testGetParent_ParameterIsNotALinkViewItem() throws CoreException {
+        IProductCmptTypeAssociation asso1 = mock(IProductCmptTypeAssociation.class);
+        when(asso1.isRelevant()).thenReturn(true);
+        when(linkViewItem.getLink()).thenReturn(link1);
+        when(link1.getIpsProject()).thenReturn(ipsProject);
+        when(link1.findAssociation(ipsProject)).thenReturn(asso1);
+        IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(gen, asso1);
+        when(link1.getProductCmptLinkContainer()).thenReturn(container);
+
+        Object parent = provider.getParent(asso1);
+
+        assertNull(parent);
     }
 }

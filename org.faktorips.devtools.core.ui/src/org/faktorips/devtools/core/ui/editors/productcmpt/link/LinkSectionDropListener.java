@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.DragSourceListener;
@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Item;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -37,7 +38,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
 import org.faktorips.devtools.core.ui.IpsFileTransferViewerDropAdapter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.LinkDropListener;
-import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.util.LinkCreatorUtil;
 
 /**
@@ -54,13 +54,13 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     private List<IProductCmptLink> movedCmptLinks;
     private final IProductCmptGeneration generation;
-    private final ProductCmptEditor editor;
 
     private final LinkCreatorUtil linkCreatorUtil = new LinkCreatorUtil(false);
+    private final LinksSection linksSection;
 
-    public LinkSectionDropListener(ProductCmptEditor editor, Viewer viewer, IProductCmptGeneration generation) {
-        super(viewer);
-        this.editor = editor;
+    public LinkSectionDropListener(LinksSection linksSection, IProductCmptGeneration generation) {
+        super(linksSection.getViewer());
+        this.linksSection = linksSection;
         this.generation = generation;
     }
 
@@ -81,7 +81,7 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
-        if (target == null | !editor.isDataChangeable()) {
+        if (target == null | !linksSection.isDataChangeable()) {
             return false;
         }
         if (movedCmptLinks != null) {
@@ -113,49 +113,12 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
 
     @Override
     public boolean performDrop(final Object data) {
-        SingleEventModification<Boolean> modification = new SingleEventModification<Boolean>(generation.getIpsSrcFile()) {
-
-            boolean result = false;
-
-            @Override
-            protected boolean execute() throws CoreException {
-                if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
-                    Object target = getCurrentTarget();
-                    List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
-                    /*
-                     * If you drop a set of components you expect them in the same order as they
-                     * were selected. To achieve this, we need to inverse the list, if insertion is
-                     * after a component.
-                     */
-                    if (getCurrentLocation() == LOCATION_AFTER) {
-                        Collections.reverse(listCopy);
-                    }
-                    result = moveLinks(listCopy, target);
-                } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
-                    List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
-                    /*
-                     * If you drop a set of components you expect them in the same order as they
-                     * were selected. To achieve this, we need to inverse the list, if insertion is
-                     * after a component.
-                     */
-                    if (getCurrentLocation() == LOCATION_AFTER) {
-                        Collections.reverse(droppedCmpts);
-                    }
-                    result = createLinks(droppedCmpts, getCurrentTarget());
-                } else {
-                    result = false;
-                }
-                return result;
-            }
-
-            @Override
-            protected Boolean getResult() {
-                return result;
-            }
-
-        };
+        SingleEventModification<List<IProductCmptLink>> modification = new LinkCreator(generation.getIpsSrcFile(), data);
         try {
-            return IpsPlugin.getDefault().getIpsModel().executeModificationsWithSingleEvent(modification);
+            List<IProductCmptLink> result = IpsPlugin.getDefault().getIpsModel()
+                    .executeModificationsWithSingleEvent(modification);
+            linksSection.setSelection(result);
+            return !result.isEmpty();
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return false;
@@ -188,54 +151,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         }
     }
 
-    private boolean moveLinks(List<IProductCmptLink> links, Object target) {
-        if (!canMove(target)) {
-            return false;
-        } else {
-            for (IProductCmptLink movedLink : links) {
-                moveLink(movedLink, target);
-            }
-            return true;
-        }
-    }
-
-    private boolean moveLink(IProductCmptLink link, Object target) {
-        if (target instanceof AbstractAssociationViewItem) {
-            String associationName = ((AbstractAssociationViewItem)target).getAssociationName();
-            // move to first position of this association
-            boolean result = false;
-            IProductCmptLinkContainer linkContainer = link.getProductCmptLinkContainer();
-            for (IProductCmptLink firstTarget : linkContainer.getLinksAsList()) {
-                if (firstTarget.getAssociation().equals(associationName)) {
-                    // first link of correct association type, move after this and break
-                    result = linkContainer.moveLink(link, firstTarget, true);
-                    break;
-                }
-            }
-            // no link of this association type found, move to first position (if there is any)
-            if (linkContainer.getLinksAsList().size() > 0) {
-                result = linkContainer.moveLink(link, linkContainer.getLinksAsList().get(0), true);
-            } else {
-                // if there is no element yet, move is ok
-                return true;
-            }
-            if (result) {
-                // setting correct asscociation
-                link.setAssociation(associationName);
-            }
-            return result;
-        } else if (target instanceof LinkViewItem) {
-            return moveLink(link, ((LinkViewItem)target).getLink());
-        } else if (target instanceof IProductCmptLink) {
-            IProductCmptLink targetLink = (IProductCmptLink)target;
-            IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
-            boolean before = getCurrentLocation() == LOCATION_BEFORE;
-            return linkContainer.moveLink(link, targetLink, before);
-        } else {
-            return false;
-        }
-    }
-
     private boolean canCreateLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
         // should only return true if all dragged cmpts are valid
         IProductCmptTypeAssociation association = getAssociation(target);
@@ -252,30 +167,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             }
         }
         return result;
-    }
-
-    private boolean createLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
-        if (!canCreateLinks(draggedCmpts, target)) {
-            return false;
-        }
-
-        for (IProductCmpt draggedCmpt : draggedCmpts) {
-            createLink(draggedCmpt.getQualifiedName(), generation, target);
-        }
-        return true;
-    }
-
-    private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target)
-            throws CoreException {
-
-        IProductCmptTypeAssociation association = getAssociation(target);
-        if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
-            IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName);
-            moveLink(newLink, target);
-            return newLink;
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -329,13 +220,173 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         return (IProductCmptTypeAssociation)type.findAssociation(associationName, generation.getIpsProject());
     }
 
+    @Override
+    public boolean validateDropSingle(Object target, int operation, TransferData data) {
+        return false;
+    }
+
+    @Override
+    public boolean performDropSingle(Object data) {
+        return false;
+    }
+
+    @Override
+    protected TreeViewer getViewer() {
+        return (TreeViewer)super.getViewer();
+    }
+
+    /**
+     * This class helps creating or moving {@link IProductCmptLink}s at the link section.
+     * <p>
+     * Creating means dragging new {@link IProductCmptLink}s to the links section.
+     * <p>
+     * Moving means dragging existing {@link IProductCmptLink}s from an {@link AssociationViewItem}
+     * to another.
+     */
+    private final class LinkCreator extends SingleEventModification<List<IProductCmptLink>> {
+
+        private final Object data;
+        private List<IProductCmptLink> result;
+
+        private LinkCreator(IIpsSrcFile ipsSrcFile, Object data) {
+            super(ipsSrcFile);
+            this.data = data;
+        }
+
+        @Override
+        protected boolean execute() throws CoreException {
+            if (getCurrentOperation() == DND.DROP_MOVE && movedCmptLinks != null) {
+                return moveLinks();
+            } else if (getCurrentOperation() == DND.DROP_LINK && data instanceof String[]) {
+                return createLinks();
+            } else {
+                return false;
+            }
+        }
+
+        private boolean moveLinks() {
+            Object target = getCurrentTarget();
+            List<IProductCmptLink> listCopy = new ArrayList<IProductCmptLink>(movedCmptLinks);
+            /*
+             * If you drop a set of components you expect them in the same order as they were
+             * selected. To achieve this, we need to inverse the list, if insertion is after a
+             * component.
+             */
+            if (getCurrentLocation() == LOCATION_AFTER) {
+                Collections.reverse(listCopy);
+            }
+            boolean moveResult = moveLinks(listCopy, target);
+            if (moveResult) {
+                result = movedCmptLinks;
+            } else {
+                result = Collections.emptyList();
+            }
+            return moveResult;
+        }
+
+        private boolean moveLinks(List<IProductCmptLink> links, Object target) {
+            if (!canMove(target)) {
+                return false;
+            } else {
+                for (IProductCmptLink movedLink : links) {
+                    moveLink(movedLink, target);
+                }
+                return true;
+            }
+        }
+
+        private boolean moveLink(IProductCmptLink link, Object target) {
+            if (target instanceof AbstractAssociationViewItem) {
+                String associationName = ((AbstractAssociationViewItem)target).getAssociationName();
+                // move to first position of this association
+                boolean moveResult = false;
+                IProductCmptLinkContainer linkContainer = link.getProductCmptLinkContainer();
+                for (IProductCmptLink firstTarget : linkContainer.getLinksAsList()) {
+                    if (firstTarget.getAssociation().equals(associationName)) {
+                        // first link of correct association type, move after this and break
+                        moveResult = linkContainer.moveLink(link, firstTarget, true);
+                        break;
+                    }
+                }
+                // no link of this association type found, move to first position (if there is any)
+                if (linkContainer.getLinksAsList().size() > 0) {
+                    moveResult = linkContainer.moveLink(link, linkContainer.getLinksAsList().get(0), true);
+                } else {
+                    // if there is no element yet, move is ok
+                    return true;
+                }
+                if (moveResult) {
+                    // setting correct asscociation
+                    link.setAssociation(associationName);
+                }
+                return moveResult;
+            } else if (target instanceof LinkViewItem) {
+                return moveLink(link, ((LinkViewItem)target).getLink());
+            } else if (target instanceof IProductCmptLink) {
+                IProductCmptLink targetLink = (IProductCmptLink)target;
+                IProductCmptLinkContainer linkContainer = targetLink.getProductCmptLinkContainer();
+                boolean before = getCurrentLocation() == LOCATION_BEFORE;
+                return linkContainer.moveLink(link, targetLink, before);
+            } else {
+                return false;
+            }
+        }
+
+        private boolean createLinks() throws CoreException {
+            List<IProductCmpt> droppedCmpts = getProductCmpts((String[])data);
+            /*
+             * If you drop a set of components you expect them in the same order as they were
+             * selected. To achieve this, we need to inverse the list, if insertion is after a
+             * component.
+             */
+            if (getCurrentLocation() == LOCATION_AFTER) {
+                Collections.reverse(droppedCmpts);
+            }
+            List<IProductCmptLink> createdCmptLinks = createLinks(droppedCmpts, getCurrentTarget());
+            result = createdCmptLinks;
+            return !createdCmptLinks.isEmpty();
+        }
+
+        private List<IProductCmptLink> createLinks(List<IProductCmpt> draggedCmpts, Object target) throws CoreException {
+            if (!canCreateLinks(draggedCmpts, target)) {
+                return Collections.emptyList();
+            }
+
+            ArrayList<IProductCmptLink> createdCmptLinks = new ArrayList<IProductCmptLink>();
+            for (IProductCmpt draggedCmpt : draggedCmpts) {
+                createdCmptLinks.add(createLink(draggedCmpt.getQualifiedName(), generation, target));
+            }
+            return createdCmptLinks;
+        }
+
+        private IProductCmptLink createLink(String droppedCmptQName, IProductCmptGeneration generation, Object target)
+                throws CoreException {
+
+            IProductCmptTypeAssociation association = getAssociation(target);
+            if (generation != null && association != null && IpsUIPlugin.isEditable(generation.getIpsSrcFile())) {
+                IProductCmptLink newLink = linkCreatorUtil.createLink(association, generation, droppedCmptQName);
+                moveLink(newLink, target);
+                return newLink;
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        protected List<IProductCmptLink> getResult() {
+            return result;
+        }
+
+    }
+
     /**
      * Listener to handle the move of relations.
      * 
      * @author Cornelius Dirmeier
      */
     public class MoveLinkDragListener implements DragSourceListener {
-        ISelectionProvider selectionProvider;
+
+        private ISelectionProvider selectionProvider;
 
         public MoveLinkDragListener(ISelectionProvider selectionProvider) {
             this.selectionProvider = selectionProvider;
@@ -379,18 +430,6 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
             setToMove(null);
         }
 
-    }
-
-    @Override
-    public boolean validateDropSingle(Object target, int operation, TransferData data) {
-        // nothing to do
-        return false;
-    }
-
-    @Override
-    public boolean performDropSingle(Object data) {
-        // nothing to do
-        return false;
     }
 
 }
