@@ -15,8 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.Differencer;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
@@ -29,7 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +35,7 @@ import org.junit.Test;
 public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new TableContentsCompareItemCreator();
-    private ITableContentsGeneration generation;
+    private ITableRows generation;
     private IIpsSrcFile srcFile;
     private IFile correspondingFile;
     private IIpsPackageFragmentRoot root;
@@ -61,8 +59,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         table.newColumn("2");
         table.newColumn("3");
 
-        GregorianCalendar calendar = new GregorianCalendar();
-        generation = (ITableContentsGeneration)table.newGeneration(calendar);
+        generation = table.newTableRows();
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
         row1.setValue(1, "r1_c2");
@@ -130,8 +127,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
-        GregorianCalendar calendar = new GregorianCalendar();
-        ITableContentsGeneration generation2 = (ITableContentsGeneration)table2.newGeneration(calendar);
+        ITableRows generation2 = table2.newTableRows();
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");
@@ -210,8 +206,7 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
-        GregorianCalendar calendar = new GregorianCalendar();
-        ITableContentsGeneration generation2 = (ITableContentsGeneration)table2.newGeneration(calendar);
+        ITableRows generation2 = table2.newTableRows();
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");

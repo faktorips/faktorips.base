@@ -18,8 +18,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.GregorianCalendar;
-
 import org.eclipse.compare.ResourceNode;
 import org.eclipse.compare.structuremergeviewer.IStructureCreator;
 import org.eclipse.core.resources.IFile;
@@ -32,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.team.compare.tablecontents.TableContentsCompareItem;
@@ -43,7 +41,7 @@ import org.junit.Test;
 public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
 
     private IStructureCreator structureCreator = new TableContentsCompareItemCreator();
-    private ITableContentsGeneration generation;
+    private ITableRows generation;
     private IIpsSrcFile srcFile;
     private IFile correspondingFile;
     private IIpsPackageFragmentRoot root;
@@ -69,8 +67,7 @@ public class TestAbstractCompareItemTest extends AbstractIpsPluginTest {
         table.newColumn("2");
         table.newColumn("3");
 
-        GregorianCalendar calendar = new GregorianCalendar();
-        generation = (ITableContentsGeneration)table.newGeneration(calendar);
+        generation = table.newTableRows();
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
         row1.setValue(1, "r1_c2");

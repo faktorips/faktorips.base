@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,12 +28,12 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.values.DateUtil;
 import org.junit.Before;
@@ -53,7 +54,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testUniqueKeysTwoRanges() throws CoreException {
-        ITableContentsGeneration gen1 = createTwoRangeTable("T1");
+        ITableRows gen1 = createTwoRangeTable("T1");
 
         createRow(gen1, new String[] { "7", "7", "1", "999" });
         createRow(gen1, new String[] { "1", "2", "500", "999" });
@@ -66,7 +67,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testUniqueKeysTwoRangesSameFrom() throws CoreException {
-        ITableContentsGeneration gen1 = createTwoRangeTable("T2");
+        ITableRows gen1 = createTwoRangeTable("T2");
         createRow(gen1, new String[] { "405", "405", "101", "101" });
         createRow(gen1, new String[] { "1", "1", "111", "111" });
         createRow(gen1, new String[] { "2", "2", "1", "999" });
@@ -80,7 +81,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertNotNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
-    private ITableContentsGeneration createTwoRangeTable(String name) throws CoreException {
+    private ITableRows createTwoRangeTable(String name) throws CoreException {
         ITableStructure structure = (ITableStructure)newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, name);
         table.setTableStructure(structure.getQualifiedName());
 
@@ -113,7 +114,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setToColumn("end2");
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("start1");
         table.newColumn("end1");
         table.newColumn("start2");
@@ -139,7 +140,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("b");
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("b");
 
@@ -190,7 +191,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem("age");
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("1");
         table.newColumn("2");
 
@@ -280,7 +281,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("2b");
 
@@ -355,7 +356,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("b");
 
@@ -416,7 +417,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         structure.validate(project);
         assertEquals(0, structure.validate(project).size());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("b");
         table.newColumn("aString");
@@ -542,7 +543,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setToColumn("e");
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("b");
         table.newColumn("c");
@@ -609,7 +610,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         range.setToColumn("d");
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("b");
         table.newColumn("c");
@@ -667,7 +668,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         IIndex uniqueKey = structure.newIndex();
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("a");
         table.newColumn("b");
 
@@ -751,7 +752,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem("mandant");
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
@@ -799,8 +800,8 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
     }
 
     private void assertRowInValidationMsg(MessageList messageList, int row) throws CoreException {
-        assertEquals(table.getNumOfGenerations(), 1);
-        assertEquals(1, messageList.getMessagesFor((table.getGeneration(0).getChildren())[row - 1]).size());
+        assertTrue(table.hasTableRows());
+        assertEquals(1, messageList.getMessagesFor((table.getTableRows().getChildren())[row - 1]).size());
     }
 
     /**
@@ -834,7 +835,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         uniqueKey.addKeyItem("mandant");
         uniqueKey.addKeyItem(range.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
@@ -971,9 +972,9 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         newRange.setToColumn("bString");
         uniqueKey.addKeyItem(newRange.getName());
 
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.newGeneration();
+        ITableRows gen1 = table.newTableRows();
         if (!withUniqueKeyValidation) {
-            ((TableContentsGeneration)gen1).initUniqueKeyValidator(null, null);
+            ((TableRows)gen1).initUniqueKeyValidator(null, null);
         }
         table.newColumn("a");
         table.newColumn("b");
@@ -1005,7 +1006,7 @@ public class UniqueKeyValidatorTest extends AbstractIpsPluginTest {
         assertNull(messageList.getMessageByCode(ITableContents.MSGCODE_UNIQUE_KEY_VIOLATION));
     }
 
-    private IRow createRow(ITableContentsGeneration gen, String[] values) {
+    private IRow createRow(ITableRows gen, String[] values) {
         IRow row = gen.newRow();
         for (int i = 0; i < values.length; i++) {
             row.setValue(i, values[i]);

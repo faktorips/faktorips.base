@@ -18,11 +18,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -55,13 +54,13 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         private ITableStructure tableStructure;
         private ValueDatatype[] datatypes;
 
-        public ContentTablePageElement(ITableContentsGeneration tableContentsGeneration) throws CoreException {
+        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreException {
             super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
             this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
             initDatatypes(tableContentsGeneration);
         }
 
-        private void initDatatypes(ITableContentsGeneration tableContentsGeneration) throws CoreException {
+        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreException {
             datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
             for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
                 datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());
@@ -140,34 +139,28 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.TableContentsContentPageElement_content), TextType.HEADING_2));
 
-        if (getTableContent().getNumOfGenerations() == 0) {
+        if (!getTableContent().hasTableRows()) {
             wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                     "TableContentsContentPageElement_noGenerations"))); //$NON-NLS-1$
             addPageElements(wrapper);
             return;
         }
 
-        IIpsObjectGeneration[] objectGenerations = getTableContent().getGenerationsOrderedByValidDate();
-
-        for (IIpsObjectGeneration ipsObjectGeneration : objectGenerations) {
-            ITableContentsGeneration tableContentsGeneration = (ITableContentsGeneration)ipsObjectGeneration;
-
-            wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                    "TableContentsContentPageElement_generation") //$NON-NLS-1$
-                    + " " + getContext().getLabel(tableContentsGeneration), //$NON-NLS-1$
-                    TextType.HEADING_3));
-            ContentTablePageElement contentTablePageElement = null;
-            try {
-                contentTablePageElement = new ContentTablePageElement(tableContentsGeneration);
-            } catch (CoreException e) {
-                getContext().addStatus(
-                        new IpsStatus(IStatus.WARNING,
-                                "Could not create ContentTable of " + ipsObjectGeneration.getName(), e)); //$NON-NLS-1$
-            }
-
-            wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
-                    getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_noContent)));
+        ITableRows tableRows = getTableContent().getTableRows();
+        wrapper.addPageElements(new TextPageElement(getContext().getMessage(
+                "TableContentsContentPageElement_generation") //$NON-NLS-1$
+                + " " + getContext().getLabel(tableRows), //$NON-NLS-1$
+                TextType.HEADING_3));
+        ContentTablePageElement contentTablePageElement = null;
+        try {
+            contentTablePageElement = new ContentTablePageElement(tableRows);
+        } catch (CoreException e) {
+            getContext().addStatus(
+                    new IpsStatus(IStatus.WARNING, "Could not create ContentTable of " + tableRows.getName(), e)); //$NON-NLS-1$
         }
+
+        wrapper.addPageElements(getTableOrAlternativeText(contentTablePageElement,
+                getContext().getMessage(HtmlExportMessages.TableContentsContentPageElement_noContent)));
         IPageElement createContentTable = wrapper;
         addPageElements(createContentTable);
     }

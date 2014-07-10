@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.Arrays;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,20 +33,18 @@ import org.faktorips.devtools.core.model.extproperties.ExtensionPropertyDefiniti
 import org.faktorips.devtools.core.model.extproperties.StringExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.values.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -124,10 +121,10 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testNewColumn() {
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.getFirstGeneration();
+        ITableRows gen1 = table.getFirstGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
-        table.newGeneration();
+        table.newTableRows();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
 
@@ -154,10 +151,10 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testDeleteColumn() {
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.getFirstGeneration();
+        ITableRows gen1 = table.getFirstGeneration();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
-        table.newGeneration();
+        table.newTableRows();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
 
@@ -184,10 +181,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("blabla", table.getDescriptionText(Locale.GERMAN));
         assertEquals("RateTableStructure", table.getTableStructure());
+        assertTrue(table.hasTableRows());
         assertEquals(2, table.getNumOfColumns());
-        assertEquals(2, table.getNumOfGenerations());
-        assertEquals("2008-01-01", DateUtil.dateToIsoDateString(table.getGeneration(0).getValidFrom().getTime()));
-        assertEquals("2008-02-01", DateUtil.dateToIsoDateString(table.getGeneration(1).getValidFrom().getTime()));
     }
 
     private void addExtensionPropertyDefinition(String propId) {
@@ -217,9 +212,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(2, table.getNumOfColumns());
-        assertEquals(2, table.getNumOfGenerations());
-        ITableContentsGeneration generation = (ITableContentsGeneration)table.getFirstGeneration();
-        assertEquals("2008-01-01", DateUtil.dateToIsoDateString(generation.getValidFrom().getTime()));
+        ITableRows generation = table.getFirstGeneration();
         IRow[] rows = generation.getRows();
         assertEquals(2, rows.length);
         assertEquals("18", rows[0].getValue(0));
@@ -227,19 +220,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("19", rows[1].getValue(0));
         assertEquals("0.6", rows[1].getValue(1));
 
-        generation = (ITableContentsGeneration)generation.getNextByValidDate();
-        assertEquals("2008-02-01", DateUtil.dateToIsoDateString(generation.getValidFrom().getTime()));
-        rows = generation.getRows();
-        assertEquals(2, rows.length);
-        assertEquals("180", rows[0].getValue(0));
-        assertEquals("0.05", rows[0].getValue(1));
-        assertEquals("190", rows[1].getValue(0));
-        assertEquals("0.06", rows[1].getValue(1));
-
-        assertEquals(2, table.getNumOfGenerations());
-
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
-        assertEquals(2, table.getNumOfGenerations());
+        assertTrue(table.hasTableRows());
     }
 
     /**
@@ -275,8 +257,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         description.setText("blabla");
         table.setTableStructure(structure.getQualifiedName());
         table.newColumn("");
-        ITableContentsGeneration gen1 = (ITableContentsGeneration)table.getFirstGeneration();
-        IIpsObjectGeneration gen2 = table.newGeneration();
+        ITableRows gen1 = table.getFirstGeneration();
+        ITableRows gen2 = table.newTableRows();
         IRow row = gen1.newRow();
         row.setValue(0, "value");
 
@@ -290,8 +272,8 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("blabla", description.getText());
         assertEquals(structure.getQualifiedName(), table.getTableStructure());
         assertEquals(1, table.getNumOfColumns());
-        assertEquals(2, table.getNumOfGenerations());
-        ITableContentsGeneration gen = (ITableContentsGeneration)table.getGenerationsOrderedByValidDate()[0];
+        assertTrue(table.hasTableRows());
+        ITableRows gen = table.getTableRows();
         assertEquals(1, gen.getRows().length);
         row = gen.getRows()[0];
         assertEquals("value", row.getValue(0));
@@ -320,7 +302,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         structure.newIndex().addKeyItem(range.getName());
 
         table.setTableStructure(structure.getQualifiedName());
-        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        ITableRows tableGen = table.newTableRows();
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
@@ -361,7 +343,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         structure.newIndex().addKeyItem(range.getName());
 
         table.setTableStructure(structure.getQualifiedName());
-        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        ITableRows tableGen = table.newTableRows();
         table.newColumn("fromColumn");
         table.newColumn("toColumn");
         IRow newRow = tableGen.newRow();
@@ -395,7 +377,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         key.addKeyItem("third");
 
         table.setTableStructure(structure.getQualifiedName());
-        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        ITableRows tableGen = table.newTableRows();
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
@@ -430,35 +412,4 @@ public class TableContentsTest extends AbstractDependencyTest {
         IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);
         assertEquals(structure.getIpsSrcFile(), typeSrcFile);
     }
-
-    @Test
-    public void testGetGenerationEffectiveOn() throws Exception {
-        assertEquals(1, table.getNumOfGenerations());
-
-        IIpsObjectGeneration generation = table.getGenerationEffectiveOn(null);
-        assertEquals(table.getFirstGeneration(), generation);
-
-        generation = table.getGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
-        assertEquals(table.getFirstGeneration(), generation);
-
-        table.setValidTo(null);
-        generation = table.getGenerationEffectiveOn((GregorianCalendar)GregorianCalendar.getInstance());
-        assertEquals(table.getFirstGeneration(), generation);
-    }
-
-    @Test
-    public void testGetGenerationByEffectiveDate() throws Exception {
-        assertEquals(1, table.getNumOfGenerations());
-
-        IIpsObjectGeneration generation = table.getGenerationByEffectiveDate(null);
-        assertEquals(table.getFirstGeneration(), generation);
-
-        generation = table.getGenerationByEffectiveDate((GregorianCalendar)GregorianCalendar.getInstance());
-        assertEquals(table.getFirstGeneration(), generation);
-
-        table.setValidTo(null);
-        generation = table.getGenerationByEffectiveDate((GregorianCalendar)GregorianCalendar.getInstance());
-        assertEquals(table.getFirstGeneration(), generation);
-    }
-
 }

@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
-import java.util.GregorianCalendar;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,7 +18,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
@@ -37,9 +35,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
         if (ipsObject instanceof ITableContents) {
             ITableContents table = (ITableContents)ipsObject;
             table.setTableStructure(getPmo().getSelectedStructure().getQualifiedName());
-            GregorianCalendar date = getPmo().getEffectiveDate();
-            ITableContentsGeneration generation = (ITableContentsGeneration)table.newGeneration();
-            generation.setValidFrom(date);
+            ITableRows tabeleRows = table.newTableRows();
             ITableStructure structure = getPmo().getSelectedStructure();
             if (structure != null) {
                 for (int i = 0; i < structure.getNumOfColumns(); i++) {
@@ -47,7 +43,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
                 }
             }
             if (getPmo().isOpenEditor()) {
-                generation.newRow();
+                tabeleRows.newRow();
             }
         } else {
             throw new RuntimeException("Invalid object type created"); //$NON-NLS-1$

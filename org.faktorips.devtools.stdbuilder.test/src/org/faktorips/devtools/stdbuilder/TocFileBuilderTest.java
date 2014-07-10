@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
@@ -104,7 +104,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
         ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
-        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        ITableRows tableGen = (ITableRows)table.newGeneration();
         tableGen.setValidFrom(validFrom);
         table.setTableStructure(structure.getQualifiedName());
         structure.getIpsSrcFile().save(true, null);
@@ -130,7 +130,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         ITableStructure structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "motor.RateTableStructure");
         ITableContents table = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "motor.RateTable");
-        ITableContentsGeneration tableGen = (ITableContentsGeneration)table.newGeneration();
+        ITableRows tableGen = (ITableRows)table.newGeneration();
         tableGen.setValidFrom(validFrom);
         table.setTableStructure(structure.getQualifiedName());
         structure.getIpsSrcFile().save(true, null);
@@ -139,7 +139,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         // create another table content based on the same structure => 5
         ITableContents table2 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "motor.RateTable2");
-        tableGen = (ITableContentsGeneration)table2.newGeneration();
+        tableGen = (ITableRows)table2.newGeneration();
         tableGen.setValidFrom(validFrom);
         table2.setTableStructure(structure.getQualifiedName());
         table2.getIpsSrcFile().save(true, null);
@@ -224,7 +224,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         // create table content
         ITableContents tableEnum = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "motor.RateTableEnum");
-        tableGen = (ITableContentsGeneration)tableEnum.newGeneration();
+        tableGen = (ITableRows)tableEnum.newGeneration();
         tableGen.setValidFrom(validFrom);
         tableEnum.setTableStructure(structure.getQualifiedName());
         tableEnum.newColumn("");

@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItem;
 
 /**
@@ -246,9 +246,9 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */
     private void initColumnWidths(ITableContents table) {
         columnWidthsInTabs = new int[table.getNumOfColumns() + 1];
-        IIpsObjectGeneration[] gens = table.getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration gen : gens) {
-            IRow[] rows = ((ITableContentsGeneration)gen).getRows();
+        if (table.hasTableRows()) {
+            ITableRows tableRows = table.getTableRows();
+            IRow[] rows = tableRows.getRows();
             for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
                 int maxWidth = 0;
                 for (IRow row : rows) {

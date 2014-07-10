@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
@@ -133,14 +133,14 @@ public class UniqueKeyValidator {
     /**
      * If a row has changed then this method updates the underlying unique key cache for this row
      */
-    public void handleRowChanged(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
+    public void handleRowChanged(ITableRows tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
         updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_CHANGED, uniqueKeys);
     }
 
     /**
      * If a row has removed then this method updates the underlying unique key cache for this row
      */
-    public void handleRowRemoved(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
+    public void handleRowRemoved(ITableRows tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
         updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_REMOVED, uniqueKeys);
     }
 
@@ -149,7 +149,7 @@ public class UniqueKeyValidator {
      * calculated key value of the given row.
      * 
      */
-    private void updateAllUniqueKeysCache(ITableContentsGeneration tableContentsGeneration,
+    private void updateAllUniqueKeysCache(ITableRows tableContentsGeneration,
             Row row,
             int operation,
             IIndex[] uniqueKeys) {
@@ -345,16 +345,16 @@ public class UniqueKeyValidator {
     /**
      * Store (cache) the table structure and value datatype's of all columns
      */
-    void cacheTableStructureAndValueDatatypes(ITableContentsGeneration tableContentsGeneration) {
+    void cacheTableStructureAndValueDatatypes(ITableRows tableContentsGeneration) {
         if (cachedTableStructure == null) {
-            updateCachedTableStructure((TableContentsGeneration)tableContentsGeneration);
+            updateCachedTableStructure((TableRows)tableContentsGeneration);
         }
         if (cachedValueDatatypes == null) {
-            updateCachedValueDatatypes((TableContentsGeneration)tableContentsGeneration);
+            updateCachedValueDatatypes((TableRows)tableContentsGeneration);
         }
     }
 
-    private void updateCachedValueDatatypes(TableContentsGeneration tableContentsGeneration) {
+    private void updateCachedValueDatatypes(TableRows tableContentsGeneration) {
         if (cachedTableStructure == null) {
             return;
         }
@@ -369,7 +369,7 @@ public class UniqueKeyValidator {
         }
     }
 
-    private void updateCachedTableStructure(TableContentsGeneration tableContentsGeneration) {
+    private void updateCachedTableStructure(TableRows tableContentsGeneration) {
         try {
             cachedTableStructure = tableContentsGeneration.getTableContents().findTableStructure(
                     tableContentsGeneration.getIpsProject());

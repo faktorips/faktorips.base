@@ -28,10 +28,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
-public class TableContentsGenerationTest extends AbstractIpsPluginTest {
+public class TableRowsTest extends AbstractIpsPluginTest {
 
     private ITableContents table;
-    private TableContentsGeneration generation;
+    private TableRows generation;
     private IIpsProject project;
 
     @Override
@@ -43,7 +43,7 @@ public class TableContentsGenerationTest extends AbstractIpsPluginTest {
                 "StructureTable");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         table.setTableStructure(structure.getQualifiedName());
-        generation = (TableContentsGeneration)table.newGeneration();
+        generation = (TableRows)table.newTableRows();
         table.newColumn(null);
         table.newColumn(null);
         table.newColumn(null);

@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.values.DateUtil;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;
@@ -44,10 +43,10 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String ATTRIBUTE_NUMOFCOLUMNS = ITableContents.PROPERTY_NUMOFCOLUMNS;
 
     // extension properties support
-    private static final String EXTENSIONPROPERTIES = TableContentsGeneration.getXmlExtPropertiesElementName();
-    private static final String EXTENSIONPROPERTIES_VALUE = TableContentsGeneration.getXmlValueElement();
-    private static final String EXTENSIONPROPERTIES_ID = TableContentsGeneration.getXmlAttributeExtpropertyid();
-    private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableContentsGeneration.getXmlAttributeIsnull();
+    private static final String EXTENSIONPROPERTIES = TableRows.getXmlExtPropertiesElementName();
+    private static final String EXTENSIONPROPERTIES_VALUE = TableRows.getXmlValueElement();
+    private static final String EXTENSIONPROPERTIES_ID = TableRows.getXmlAttributeExtpropertyid();
+    private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableRows.getXmlAttributeIsnull();
 
     /** the table which will be filled */
     private ITableContents tableContents;
@@ -78,7 +77,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private String currentDescriptionLocale;
 
-    private TableContentsGeneration currentGeneration;
+    private TableRows currentTableRows;
 
     public TableContentsSaxHandler(ITableContents tableContents) {
         this.tableContents = tableContents;
@@ -88,7 +87,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
             insideRowNode = false;
-            currentGeneration.newRow(columns);
+            currentTableRows.newRow(columns);
             columns.clear();
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
@@ -110,7 +109,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             textBuffer = null;
         } else if (isExtensionPropertiesValueNode(qName)) {
             insideValueNode = false;
-            if (currentGeneration == null) {
+            if (currentTableRows == null) {
                 tableContents.addExtensionProperty(idValue, getText());
             } else {
                 throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
@@ -130,9 +129,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             ((TableContents)tableContents).setNumOfColumnsInternal(Integer.parseInt(attributes
                     .getValue(ATTRIBUTE_NUMOFCOLUMNS)));
         } else if (GENERATION.equals(qName)) {
-            currentGeneration = (TableContentsGeneration)((TableContents)tableContents)
-                    .createNewGenerationInternal(DateUtil.parseIsoDateStringToGregorianCalendar(attributes
-                            .getValue(ATTRIBUTE_VALIDFROM)));
+            currentTableRows = (TableRows)((TableContents)tableContents).createNewTableRows();
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
             currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);

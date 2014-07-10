@@ -13,11 +13,10 @@ package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.ui.team.compare.AbstractCompareItemCreator;
 
 /**
@@ -63,11 +62,11 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
                 ITableContents table = (ITableContents)file.getIpsObject();
                 TableContentsCompareItem ipsObject = new TableContentsCompareItem(root, table);
                 // Generations for table
-                IIpsObjectGeneration[] gens = table.getGenerationsOrderedByValidDate();
-                for (IIpsObjectGeneration gen : gens) {
+                if (table.hasTableRows()) {
+                    ITableRows gen = table.getTableRows();
                     TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gen);
                     // rows for each generation
-                    IRow[] rows = ((ITableContentsGeneration)gen).getRows();
+                    IRow[] rows = gen.getRows();
                     for (IRow row : rows) {
                         new TableContentsCompareItem(generation, row);
                     }

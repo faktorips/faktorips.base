@@ -25,10 +25,9 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -75,17 +74,15 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         }
 
         ITableContents contents = getTableContents(typeToExport);
-        IIpsObjectGeneration[] gens = contents.getGenerationsOrderedByValidDate();
-        if (gens.length == 0) {
+        if (!contents.hasTableRows()) {
             String text = NLS.bind(Messages.TableExportOperation_errNoGenerations, contents.getName());
             messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
             return;
         }
 
-        // currently, there is only one generation per table contents
-        ITableContentsGeneration currentGeneration = (ITableContentsGeneration)gens[0];
+        ITableRows currentTableRows = contents.getTableRows();
 
-        localMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + currentGeneration.getNumOfRows());
+        localMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 4 + currentTableRows.getNumOfRows());
 
         // first of all, check if the environment allows an export...
         ITableStructure structure = contents.findTableStructure(contents.getIpsProject());
@@ -125,7 +122,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
 
                 localMonitor.worked(1);
 
-                exportDataCells(writer, contents, currentGeneration, structure, localMonitor, exportColumnHeaderRow);
+                exportDataCells(writer, contents, currentTableRows, structure, localMonitor, exportColumnHeaderRow);
                 writer.close();
             }
         } catch (IOException e) {
@@ -184,7 +181,7 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
      */
     private void exportDataCells(CSVWriter writer,
             ITableContents contents,
-            ITableContentsGeneration generation,
+            ITableRows generation,
             ITableStructure structure,
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException {

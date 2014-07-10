@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -27,19 +26,21 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
-import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
@@ -47,32 +48,40 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 
-public class TableContents extends TimedIpsObject implements ITableContents {
+public class TableContents extends IpsObject implements ITableContents {
     // Performance Potential Tabellen: Datentypen der Columns cachen
     private String structure = ""; //$NON-NLS-1$
+
+    private ITableRows tableRows;
+
     private int numOfColumns = 0;
 
     public TableContents(IIpsSrcFile file) {
         super(file);
     }
 
-    IpsObjectGeneration createNewGenerationInternal(GregorianCalendar validFrom) {
-        TableContentsGeneration generation = (TableContentsGeneration)super.newGenerationInternal(getNextPartId());
-        generation.setValidFromInternal(validFrom);
-        return generation;
+    @Override
+    public ITableRows newTableRows() {
+        tableRows = createNewTableRows();
+        partWasAdded(tableRows);
+        return tableRows;
     }
 
-    @Override
-    protected IpsObjectGeneration createNewGeneration(String id) {
-        TableContentsGeneration tableContentsGeneration = new TableContentsGeneration(this, id);
-        initUniqueKeyValidator(tableContentsGeneration);
-        return tableContentsGeneration;
+    protected ITableRows createNewTableRows() {
+        tableRows = createNewTableRowsInternal(getNextPartId());
+        return tableRows;
+    }
+
+    protected ITableRows createNewTableRowsInternal(String id) {
+        TableRows newTableRows = new TableRows(this, id);
+        initUniqueKeyValidator(newTableRows);
+        return newTableRows;
     }
 
     /**
      * Creates an unique key validator for the given table contents generation
      */
-    private void initUniqueKeyValidator(TableContentsGeneration tableContentsGeneration) {
+    private void initUniqueKeyValidator(TableRows tableContentsGeneration) {
         ITableStructure tableStructure;
         try {
             tableStructure = findTableStructure(getIpsProject());
@@ -127,10 +136,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 
     @Override
     public void newColumnAt(int index, String defaultValue) {
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            ((TableContentsGeneration)generation).newColumn(index, defaultValue);
-        }
+        ((TableRows)tableRows).newColumn(index, defaultValue);
         numOfColumns++;
         objectHasChanged();
     }
@@ -140,10 +146,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         if (columnIndex < 0 || columnIndex >= numOfColumns) {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            ((TableContentsGeneration)generation).removeColumn(columnIndex);
-        }
+        ((TableRows)tableRows).removeColumn(columnIndex);
         numOfColumns--;
         objectHasChanged();
     }
@@ -313,26 +316,75 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return getTableStructure();
     }
 
-    /**
-     * As far Tables only have one generation and the valid from date may no be specified correctly
-     * we always return the same generation.
-     * 
-     * {@inheritDoc}
-     */
     @Override
-    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date) {
-        return getFirstGeneration();
+    protected boolean removePartThis(IIpsObjectPart part) {
+        if (part instanceof ITableRows) {
+            tableRows = null;
+            return true;
+        }
+        return false;
     }
 
-    /**
-     * As far Tables only have one generation and the valide from date may no be specified correctly
-     * we always return the same generation.
-     * 
-     * {@inheritDoc}
-     */
     @Override
-    public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
-        return getFirstGeneration();
+    protected IIpsElement[] getChildrenThis() {
+        if (hasTableRows()) {
+            return new IIpsElement[] { tableRows };
+        } else {
+            return new IIpsElement[] {};
+        }
     }
 
+    @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        if (part instanceof ITableRows) {
+            if (!hasTableRows()) {
+                tableRows = ((ITableRows)part);
+                return true;
+            } else {
+                throw new IllegalStateException("TODO already set");
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
+        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
+            return createNewTableRowsInternal(id);
+        }
+        return null;
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        IIpsObjectPart part;
+        if (ITableRows.class.isAssignableFrom(partType)) {
+            part = createNewTableRowsInternal(getNextPartId());
+            return part;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        tableRows = null;
+    }
+
+    @Override
+    public ITableRows getTableRows() {
+        return tableRows;
+    }
+
+    @Override
+    public boolean hasTableRows() {
+        return tableRows != null;
+    }
+
+    @Override
+    public ITableRows getFirstGeneration() {
+        return getTableRows();
+    }
 }
