@@ -104,6 +104,11 @@ public class IpsPreferences {
     public static final String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
 
     /**
+     * Constant that identifies the preference for the loading and validation of tables
+     */
+    public static final String VALIDATION_OF_TABLES = IpsPlugin.PLUGIN_ID + ".validationOfTables"; //$NON-NLS-1$
+
+    /**
      * Constant that identifies the number of sections in type editors preference.
      */
     public static final String SECTIONS_IN_TYPE_EDITORS = IpsPlugin.PLUGIN_ID + ".sectionsInTypeEditors"; //$NON-NLS-1$
@@ -152,6 +157,7 @@ public class IpsPreferences {
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
+        prefStore.setDefault(VALIDATION_OF_TABLES, true);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
 
         setDefaultForDatatypeFormatting(prefStore);
@@ -392,6 +398,14 @@ public class IpsPreferences {
 
     public void setSimpleContextMenuEnabled(boolean enabled) {
         prefStore.setValue(SIMPLE_CONTEXT_MENU, enabled);
+    }
+
+    public boolean isValidationOfTablesEnabled() {
+        return prefStore.getBoolean(VALIDATION_OF_TABLES);
+    }
+
+    public void setValidationOfTablesEnabled(boolean enabled) {
+        prefStore.setValue(VALIDATION_OF_TABLES, enabled);
     }
 
     /**

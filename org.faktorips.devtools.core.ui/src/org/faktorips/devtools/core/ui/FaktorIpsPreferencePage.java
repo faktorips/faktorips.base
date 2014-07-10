@@ -16,6 +16,7 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.faktorips.devtools.core.EnumTypeDisplay;
@@ -42,6 +43,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createCanNavigateToModelField();
         createAdvancedTeamFunctionInProductDefExplorerField();
         createEasyContextMenuField();
+        createValidationOfTablesField();
 
         createWorkingModeField();
         createSectionsInTypeEditorsField();
@@ -123,6 +125,14 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     private void createEasyContextMenuField() {
         BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.SIMPLE_CONTEXT_MENU,
                 Messages.FaktorIpsPreferencePage_simpleContextMenu, getFieldEditorParent());
+        addField(field);
+    }
+
+    private void createValidationOfTablesField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.VALIDATION_OF_TABLES,
+                Messages.FaktorIpsPreferencePage_validationOfTables, getFieldEditorParent());
+        Control descriptionControl = field.getDescriptionControl(getFieldEditorParent());
+        descriptionControl.setToolTipText(Messages.FaktorIpsPreferencePage_tooltipValidationOfTables);
         addField(field);
     }
 
