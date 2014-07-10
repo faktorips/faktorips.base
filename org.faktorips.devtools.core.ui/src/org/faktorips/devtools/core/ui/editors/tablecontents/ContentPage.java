@@ -469,7 +469,7 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private ITableRows getActiveGeneration() {
-        return (ITableRows)getTableEditor().getTableContents().getFirstGeneration();
+        return getTableEditor().getTableContents().getTableRows();
     }
 
     /**

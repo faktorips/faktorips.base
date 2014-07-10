@@ -118,12 +118,17 @@ public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
      */
     public void deleteColumn(int columnIndex);
 
-    ITableRows newTableRows();
+    /**
+     * TODO
+     * 
+     * @return
+     */
+    public ITableRows newTableRows();
 
-    ITableRows getTableRows();
-
-    boolean hasTableRows();
-
-    public ITableRows getFirstGeneration();
+    /**
+     * 
+     * @return
+     */
+    public ITableRows getTableRows();
 
 }

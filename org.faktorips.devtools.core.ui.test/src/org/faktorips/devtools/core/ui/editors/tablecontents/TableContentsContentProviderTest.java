@@ -51,7 +51,7 @@ public class TableContentsContentProviderTest extends AbstractIpsPluginTest {
 
         tableContents = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "TestTableContents");
         tableContents.setTableStructure(structure.getQualifiedName());
-        ITableRows gen = (ITableRows)tableContents.newTableRows();
+        ITableRows gen = tableContents.newTableRows();
         rowValid = gen.newRow();
         rowInvalid = gen.newRow();
         rowNull = gen.newRow();

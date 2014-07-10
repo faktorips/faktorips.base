@@ -129,7 +129,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(Row.TAG_NAME)) {
+        if (Row.TAG_NAME.equals(xmlTagName)) {
             return newRowInternal(id);
         }
         return null;

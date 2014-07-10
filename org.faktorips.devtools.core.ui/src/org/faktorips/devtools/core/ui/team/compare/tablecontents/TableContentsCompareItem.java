@@ -246,16 +246,14 @@ public class TableContentsCompareItem extends AbstractCompareItem {
      */
     private void initColumnWidths(ITableContents table) {
         columnWidthsInTabs = new int[table.getNumOfColumns() + 1];
-        if (table.hasTableRows()) {
-            ITableRows tableRows = table.getTableRows();
-            IRow[] rows = tableRows.getRows();
-            for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
-                int maxWidth = 0;
-                for (IRow row : rows) {
-                    maxWidth = Math.max(maxWidth, getRowValueAt(row, colCounter).length());
-                }
-                columnWidthsInTabs[colCounter + 1] = getColumnTabWidthForLength(maxWidth);
+        ITableRows tableRows = table.getTableRows();
+        IRow[] rows = tableRows.getRows();
+        for (int colCounter = 0; colCounter < table.getNumOfColumns(); colCounter++) {
+            int maxWidth = 0;
+            for (IRow row : rows) {
+                maxWidth = Math.max(maxWidth, getRowValueAt(row, colCounter).length());
             }
+            columnWidthsInTabs[colCounter + 1] = getColumnTabWidthForLength(maxWidth);
         }
         // calculate width of the rowNumber column
         String maxRowNumberString = String.valueOf(table.getNumOfColumns()) + COLON_BLANK;

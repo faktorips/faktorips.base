@@ -17,7 +17,7 @@ public interface ITableRows extends IIpsObjectPart {
     /**
      * The name of the XML tag used if this object is saved to XML.
      */
-    public final static String TAG_NAME = "Generation"; //$NON-NLS-1$
+    public final static String TAG_NAME = "Rows"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.

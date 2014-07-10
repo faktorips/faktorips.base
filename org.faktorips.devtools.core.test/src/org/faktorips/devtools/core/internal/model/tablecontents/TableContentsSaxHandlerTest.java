@@ -33,7 +33,7 @@ public class TableContentsSaxHandlerTest {
 
     @Before
     public void createTableContentsSaxHandler() throws Exception {
-        tableContentsSaxHandler = new TableContentsSaxHandler(tableContents);
+        tableContentsSaxHandler = new TableContentsSaxHandler(tableContents, true);
     }
 
     @Test

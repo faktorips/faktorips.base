@@ -139,13 +139,6 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.TableContentsContentPageElement_content), TextType.HEADING_2));
 
-        if (!getTableContent().hasTableRows()) {
-            wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                    "TableContentsContentPageElement_noGenerations"))); //$NON-NLS-1$
-            addPageElements(wrapper);
-            return;
-        }
-
         ITableRows tableRows = getTableContent().getTableRows();
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 "TableContentsContentPageElement_generation") //$NON-NLS-1$

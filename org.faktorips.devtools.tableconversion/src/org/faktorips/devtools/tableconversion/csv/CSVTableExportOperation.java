@@ -74,11 +74,6 @@ public class CSVTableExportOperation extends AbstractTableExportOperation {
         }
 
         ITableContents contents = getTableContents(typeToExport);
-        if (!contents.hasTableRows()) {
-            String text = NLS.bind(Messages.TableExportOperation_errNoGenerations, contents.getName());
-            messageList.add(new Message("", text, Message.ERROR)); //$NON-NLS-1$
-            return;
-        }
 
         ITableRows currentTableRows = contents.getTableRows();
 

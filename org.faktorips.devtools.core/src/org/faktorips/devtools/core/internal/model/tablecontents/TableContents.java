@@ -10,12 +10,14 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -27,6 +29,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
+import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -43,10 +47,12 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 public class TableContents extends IpsObject implements ITableContents {
     // Performance Potential Tabellen: Datentypen der Columns cachen
@@ -62,14 +68,14 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     public ITableRows newTableRows() {
-        tableRows = createNewTableRows();
-        partWasAdded(tableRows);
-        return tableRows;
+        setTableRowsInternal(createNewTableRows());
+        partWasAdded(getTableRowsInternal());
+        return getTableRowsInternal();
     }
 
     protected ITableRows createNewTableRows() {
-        tableRows = createNewTableRowsInternal(getNextPartId());
-        return tableRows;
+        setTableRowsInternal(createNewTableRowsInternal(getNextPartId()));
+        return getTableRowsInternal();
     }
 
     protected ITableRows createNewTableRowsInternal(String id) {
@@ -136,7 +142,7 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     public void newColumnAt(int index, String defaultValue) {
-        ((TableRows)tableRows).newColumn(index, defaultValue);
+        ((TableRows)getTableRowsInternal()).newColumn(index, defaultValue);
         numOfColumns++;
         objectHasChanged();
     }
@@ -146,7 +152,7 @@ public class TableContents extends IpsObject implements ITableContents {
         if (columnIndex < 0 || columnIndex >= numOfColumns) {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
-        ((TableRows)tableRows).removeColumn(columnIndex);
+        ((TableRows)getTableRowsInternal()).removeColumn(columnIndex);
         numOfColumns--;
         objectHasChanged();
     }
@@ -213,12 +219,53 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     @Override
+    public void initFromInputStream(InputStream is) throws CoreException {
+        initTableContentFromStream(is, false);
+    }
+
+    private void initTableContentFromStream(InputStream is, boolean readWholeContent) throws CoreException {
+        try {
+            reinitPartCollections();
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this, readWholeContent));
+        } catch (SAXException e) {
+            handleSaxException(e);
+        } catch (ParserConfigurationException e) {
+            throw new CoreException(new IpsStatus(e));
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }
+
+    /**
+     * {@link SAXException} may be thrown by out {@link TableContentsSaxHandler} when we not want to
+     * read the whole table contents ({@link TableRows}). This is the only way to stop the SAX
+     * parser and not reading the whole file. If there is another exception included in the
+     * {@link SAXException} we want to throw this as {@link CoreException}.
+     * 
+     */
+    private void handleSaxException(SAXException e) throws CoreException {
+        if (e.getCause() != null) {
+            throw new CoreException(new IpsStatus(e.getCause()));
+        }
+    }
+
+    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
         newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$ 
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The reading of XML for {@link TableContents} is normally done by
+     * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
+     * XML DOM parser.
+     * 
+     * @see #initFromInputStream(InputStream)
+     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -226,15 +273,72 @@ public class TableContents extends IpsObject implements ITableContents {
         numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The reading of XML for {@link TableContents} is normally done by
+     * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
+     * XML DOM parser.
+     * <p>
+     * Up to version 3.12 the {@link TableContents} was derived from {@link TimedIpsObject} and
+     * hence the {@link TableRows} were table generations derived from {@link IpsObjectGeneration}.
+     * Because of these circumstances the old XML format had the tag name "Generations". We still
+     * needs to read the old format in this method.
+     * <p>
+     * 
+     * @see #initFromInputStream(InputStream)
+     */
     @Override
-    public void initFromInputStream(InputStream is) throws CoreException {
-        try {
-            reinitPartCollections();
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this));
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
+        if (TableRows.TAG_NAME.equals(xmlTagName) || IIpsObjectGeneration.TAG_NAME.equals(xmlTagName)) {
+            return createNewTableRowsInternal(id);
         }
+        return null;
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        IIpsObjectPart part;
+        if (ITableRows.class.isAssignableFrom(partType)) {
+            part = createNewTableRowsInternal(getNextPartId());
+            return part;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected IIpsElement[] getChildrenThis() {
+        return new IIpsElement[] { getTableRowsInternal() };
+    }
+
+    @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        if (part instanceof ITableRows) {
+            if (getTableRowsInternal() != null) {
+                setTableRowsInternal(((ITableRows)part));
+                return true;
+            } else {
+                throw new IllegalStateException("TableRows object already set for " + this); //$NON-NLS-1$
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        setTableRowsInternal(null);
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        if (part instanceof ITableRows) {
+            setTableRowsInternal(null);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -317,74 +421,30 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     @Override
-    protected boolean removePartThis(IIpsObjectPart part) {
-        if (part instanceof ITableRows) {
-            tableRows = null;
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    protected IIpsElement[] getChildrenThis() {
-        if (hasTableRows()) {
-            return new IIpsElement[] { tableRows };
-        } else {
-            return new IIpsElement[] {};
-        }
-    }
-
-    @Override
-    protected boolean addPartThis(IIpsObjectPart part) {
-        if (part instanceof ITableRows) {
-            if (!hasTableRows()) {
-                tableRows = ((ITableRows)part);
-                return true;
-            } else {
-                throw new IllegalStateException("TODO already set");
-            }
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
-        String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(IIpsObjectGeneration.TAG_NAME)) {
-            return createNewTableRowsInternal(id);
-        }
-        return null;
-    }
-
-    @Override
-    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
-        IIpsObjectPart part;
-        if (ITableRows.class.isAssignableFrom(partType)) {
-            part = createNewTableRowsInternal(getNextPartId());
-            return part;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    protected void reinitPartCollectionsThis() {
-        tableRows = null;
-    }
-
-    @Override
     public ITableRows getTableRows() {
+        return getTableRowsInternal();
+    }
+
+    private ITableRows getTableRowsInternal() {
+        if (tableRows == null) {
+            readTableRows();
+        }
         return tableRows;
     }
 
-    @Override
-    public boolean hasTableRows() {
-        return tableRows != null;
+    private void readTableRows() {
+        InputStream inputStream = null;
+        try {
+            inputStream = getIpsSrcFile().getContentFromEnclosingResource();
+            initTableContentFromStream(inputStream, true);
+        } catch (CoreException e) {
+            e.printStackTrace();
+        } finally {
+            IoUtil.close(inputStream);
+        }
     }
 
-    @Override
-    public ITableRows getFirstGeneration() {
-        return getTableRows();
+    private void setTableRowsInternal(ITableRows tableRows) {
+        this.tableRows = tableRows;
     }
 }

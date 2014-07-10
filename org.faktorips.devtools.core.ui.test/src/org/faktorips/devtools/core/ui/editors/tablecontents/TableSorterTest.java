@@ -51,7 +51,7 @@ public class TableSorterTest extends AbstractIpsPluginTest {
 
         tableContents = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "TestTableContents");
         tableContents.setTableStructure(structure.getQualifiedName());
-        ITableRows gen = (ITableRows)tableContents.newTableRows();
+        ITableRows gen = tableContents.newTableRows();
         rowValid = gen.newRow();
         rowInvalid = gen.newRow();
         rowNull = gen.newRow();
@@ -83,7 +83,7 @@ public class TableSorterTest extends AbstractIpsPluginTest {
         assertEquals(1, sorter.compare(null, rowNull, rowInvalid));
 
         rowInvalid.delete();
-        IRow newRow = ((ITableRows)tableContents.getFirstGeneration()).newRow();
+        IRow newRow = tableContents.getTableRows().newRow();
 
         /*
          * Order: rowValid rowNull newRow

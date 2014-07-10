@@ -102,7 +102,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
         newTableContentsOperation.finishIpsSrcFile(tableContents.getIpsSrcFile(), monitor);
 
-        ITableRows generation = tableContents.getFirstGeneration();
+        ITableRows generation = tableContents.getTableRows();
         assertNotNull(generation);
     }
 
@@ -120,7 +120,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         newTableContentsOperation.finishIpsSrcFile(tableContents.getIpsSrcFile(), monitor);
 
         assertEquals("TestTableStructure", tableContents.getTableStructure());
-        ITableRows generation = tableContents.getFirstGeneration();
+        ITableRows generation = tableContents.getTableRows();
         assertEquals(1, generation.getNumOfRows());
     }
 
@@ -138,7 +138,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         newTableContentsOperation.finishIpsSrcFile(tableContents.getIpsSrcFile(), monitor);
 
         assertEquals("TestTableStructure", tableContents.getTableStructure());
-        ITableRows generation = tableContents.getFirstGeneration();
+        ITableRows generation = tableContents.getTableRows();
         assertEquals(0, generation.getNumOfRows());
     }
 

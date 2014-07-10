@@ -121,7 +121,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testNewColumn() {
-        ITableRows gen1 = table.getFirstGeneration();
+        ITableRows gen1 = table.getTableRows();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
         table.newTableRows();
@@ -151,7 +151,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     @Test
     public void testDeleteColumn() {
-        ITableRows gen1 = table.getFirstGeneration();
+        ITableRows gen1 = table.getTableRows();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
         table.newTableRows();
@@ -181,7 +181,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("blabla", table.getDescriptionText(Locale.GERMAN));
         assertEquals("RateTableStructure", table.getTableStructure());
-        assertTrue(table.hasTableRows());
         assertEquals(2, table.getNumOfColumns());
     }
 
@@ -212,7 +211,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
         assertEquals("RateTableStructure", table.getTableStructure());
         assertEquals(2, table.getNumOfColumns());
-        ITableRows generation = table.getFirstGeneration();
+        ITableRows generation = table.getTableRows();
         IRow[] rows = generation.getRows();
         assertEquals(2, rows.length);
         assertEquals("18", rows[0].getValue(0));
@@ -221,7 +220,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("0.6", rows[1].getValue(1));
 
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
-        assertTrue(table.hasTableRows());
+        assertTrue(table.getTableRows().hasChildren());
     }
 
     /**
@@ -257,7 +256,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         description.setText("blabla");
         table.setTableStructure(structure.getQualifiedName());
         table.newColumn("");
-        ITableRows gen1 = table.getFirstGeneration();
+        ITableRows gen1 = table.getTableRows();
         ITableRows gen2 = table.newTableRows();
         IRow row = gen1.newRow();
         row.setValue(0, "value");
@@ -272,7 +271,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("blabla", description.getText());
         assertEquals(structure.getQualifiedName(), table.getTableStructure());
         assertEquals(1, table.getNumOfColumns());
-        assertTrue(table.hasTableRows());
         ITableRows gen = table.getTableRows();
         assertEquals(1, gen.getRows().length);
         row = gen.getRows()[0];

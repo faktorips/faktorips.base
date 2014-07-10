@@ -51,7 +51,7 @@ public class NewRowAction extends IpsAction {
     public void run(IStructuredSelection selection) {
         ITableContents tableContents = (ITableContents)tableViewer.getInput();
 
-        ITableRows tableContentsGeneration = (ITableRows)tableContents.getFirstGeneration();
+        ITableRows tableContentsGeneration = tableContents.getTableRows();
 
         IRow newRow = null;
         int position = Integer.MAX_VALUE;

@@ -62,14 +62,12 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
                 ITableContents table = (ITableContents)file.getIpsObject();
                 TableContentsCompareItem ipsObject = new TableContentsCompareItem(root, table);
                 // Generations for table
-                if (table.hasTableRows()) {
-                    ITableRows gen = table.getTableRows();
-                    TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gen);
-                    // rows for each generation
-                    IRow[] rows = gen.getRows();
-                    for (IRow row : rows) {
-                        new TableContentsCompareItem(generation, row);
-                    }
+                ITableRows gen = table.getTableRows();
+                TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gen);
+                // rows for each generation
+                IRow[] rows = gen.getRows();
+                for (IRow row : rows) {
+                    new TableContentsCompareItem(generation, row);
                 }
                 // initialize name, root-document and ranges for all nodes
                 root.init();

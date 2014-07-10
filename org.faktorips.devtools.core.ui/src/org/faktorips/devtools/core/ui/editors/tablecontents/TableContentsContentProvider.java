@@ -20,9 +20,7 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof ITableContents) {
             ITableContents table = (ITableContents)inputElement;
-            if (table.hasTableRows()) {
-                return table.getFirstGeneration().getRows();
-            }
+            return table.getTableRows().getRows();
         }
         return new Object[0];
     }

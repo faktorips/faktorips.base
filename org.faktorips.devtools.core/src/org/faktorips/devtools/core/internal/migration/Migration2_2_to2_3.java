@@ -52,10 +52,9 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
-import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.ArgumentCheck;
@@ -341,7 +340,7 @@ public class Migration2_2_to2_3 {
             }
 
             // Create the enumeration values.
-            for (IRow currentRow : ((ITableRows)currentTableContents.getFirstGeneration()).getRows()) {
+            for (IRow currentRow : currentTableContents.getTableRows().getRows()) {
                 IEnumValue newEnumValue = newEnumType.newEnumValue();
                 List<IEnumAttributeValue> enumAttributeValues = newEnumValue.getEnumAttributeValues();
                 for (int i = 0; i < enumAttributeValues.size(); i++) {
