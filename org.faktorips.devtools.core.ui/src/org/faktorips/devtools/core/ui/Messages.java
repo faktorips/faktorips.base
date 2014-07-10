@@ -36,9 +36,9 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_simpleContextMenu;
 
-    public static String FaktorIpsPreferencePage_validationOfTables;
+    public static String FaktorIpsPreferencePage_autoValidationTables;
 
-    public static String FaktorIpsPreferencePage_tooltipValidationOfTables;
+    public static String FaktorIpsPreferencePage_tooltipAutoValidationTables;
 
     public static String FaktorIpsPreferencePage_label_fourSections;
 

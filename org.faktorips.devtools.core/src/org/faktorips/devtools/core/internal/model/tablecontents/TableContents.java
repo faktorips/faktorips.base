@@ -236,7 +236,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
 
     @Override
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
-        if (IpsPlugin.getDefault().getIpsPreferences().isValidationOfTablesEnabled()) {
+        if (IpsPlugin.getDefault().getIpsPreferences().isAutoValidateTablesEnabled()) {
             super.validateChildren(result, ipsProject);
         }
     }

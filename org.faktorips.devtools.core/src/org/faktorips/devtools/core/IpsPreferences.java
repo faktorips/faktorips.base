@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.util.ArgumentCheck;
 
@@ -104,9 +105,9 @@ public class IpsPreferences {
     public static final String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies the preference for the loading and validation of tables
+     * Constant that identifies the preference for loading and validating {@link TableContents}
      */
-    public static final String VALIDATION_OF_TABLES = IpsPlugin.PLUGIN_ID + ".validationOfTables"; //$NON-NLS-1$
+    public static final String AUTO_VALIDATE_TABLES = IpsPlugin.PLUGIN_ID + ".autoValidateTables"; //$NON-NLS-1$
 
     /**
      * Constant that identifies the number of sections in type editors preference.
@@ -157,7 +158,7 @@ public class IpsPreferences {
         prefStore.setDefault(ENUM_TYPE_DISPLAY, EnumTypeDisplay.NAME_AND_ID.getId());
         prefStore.setDefault(ADVANCED_TEAM_FUNCTIONS_IN_PRODUCT_DEF_EXPLORER, false);
         prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
-        prefStore.setDefault(VALIDATION_OF_TABLES, true);
+        prefStore.setDefault(AUTO_VALIDATE_TABLES, true);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
 
         setDefaultForDatatypeFormatting(prefStore);
@@ -400,12 +401,20 @@ public class IpsPreferences {
         prefStore.setValue(SIMPLE_CONTEXT_MENU, enabled);
     }
 
-    public boolean isValidationOfTablesEnabled() {
-        return prefStore.getBoolean(VALIDATION_OF_TABLES);
+    /**
+     * Returns whether the automatic validation of {@link TableContents} is active (
+     * <code>true</code>) or not.
+     */
+    public boolean isAutoValidateTablesEnabled() {
+        return prefStore.getBoolean(AUTO_VALIDATE_TABLES);
     }
 
-    public void setValidationOfTablesEnabled(boolean enabled) {
-        prefStore.setValue(VALIDATION_OF_TABLES, enabled);
+    /**
+     * Activates (<code>true</code>) or deactivate(<code>false</code>) automatic validation of
+     * {@link TableContents}, according to the given parameter <code>enabled</code>.
+     */
+    public void setAutoValidateTablesEnabled(boolean enabled) {
+        prefStore.setValue(AUTO_VALIDATE_TABLES, enabled);
     }
 
     /**

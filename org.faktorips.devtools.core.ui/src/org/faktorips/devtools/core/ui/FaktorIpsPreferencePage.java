@@ -43,7 +43,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         createCanNavigateToModelField();
         createAdvancedTeamFunctionInProductDefExplorerField();
         createEasyContextMenuField();
-        createValidationOfTablesField();
+        createAutoValidateTableField();
 
         createWorkingModeField();
         createSectionsInTypeEditorsField();
@@ -128,11 +128,11 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         addField(field);
     }
 
-    private void createValidationOfTablesField() {
-        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.VALIDATION_OF_TABLES,
-                Messages.FaktorIpsPreferencePage_validationOfTables, getFieldEditorParent());
+    private void createAutoValidateTableField() {
+        BooleanFieldEditor field = new BooleanFieldEditor(IpsPreferences.AUTO_VALIDATE_TABLES,
+                Messages.FaktorIpsPreferencePage_autoValidationTables, getFieldEditorParent());
         Control descriptionControl = field.getDescriptionControl(getFieldEditorParent());
-        descriptionControl.setToolTipText(Messages.FaktorIpsPreferencePage_tooltipValidationOfTables);
+        descriptionControl.setToolTipText(Messages.FaktorIpsPreferencePage_tooltipAutoValidationTables);
         addField(field);
     }
 
