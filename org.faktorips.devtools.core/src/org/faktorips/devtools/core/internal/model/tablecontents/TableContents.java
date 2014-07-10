@@ -235,6 +235,21 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     @Override
+    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        if (IpsPlugin.getDefault().getIpsPreferences().isValidationOfTablesEnabled()) {
+            return super.validate(ipsProject);
+        }
+        return new MessageList();
+    }
+
+    @Override
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
+        if (IpsPlugin.getDefault().getIpsPreferences().isValidationOfTablesEnabled()) {
+            super.validateChildren(result, ipsProject);
+        }
+    }
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
 
