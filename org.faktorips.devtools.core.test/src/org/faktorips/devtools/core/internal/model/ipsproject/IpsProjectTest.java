@@ -20,6 +20,10 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -97,12 +101,26 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class IpsProjectTest extends AbstractIpsPluginTest {
 
+    private static final String ROOT_NAME = "myRootName";
+
     private IpsProject ipsProject;
+
     private IpsProject baseProject;
+
     private IIpsPackageFragmentRoot root;
+
+    @Mock
+    private IIpsPackageFragmentRoot root2;
+
+    @Mock
+    private IIpsPackageFragmentRoot root3;
 
     @Override
     @Before
@@ -118,13 +136,62 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsPackageFragmentRoot() {
+    public void testFindIpsPackageFragmentRoot() throws Exception {
         assertEquals(root, ipsProject.findIpsPackageFragmentRoot(root.getName()));
         assertNull(ipsProject.findIpsPackageFragmentRoot("Unknown"));
+    }
 
+    @Test
+    public void testFindIpsPackageFragmentRoot_nonExistingProject() throws Exception {
         IIpsProject notExistingProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("NotExistingProject");
+
         assertFalse(notExistingProject.exists());
         assertNull(notExistingProject.findIpsPackageFragmentRoot("src"));
+    }
+
+    @Test
+    public void testgetIpsPackageFragmentRoots_containerEntry() throws Exception {
+        mockPathAndContainerEntry();
+
+        IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+
+        assertEquals(2, ipsPackageFragmentRoots.length);
+        assertEquals(root2, ipsPackageFragmentRoots[0]);
+        assertEquals(root3, ipsPackageFragmentRoots[1]);
+    }
+
+    @Test
+    public void testFindIpsPackageFragmentRoot_containerEntry() throws Exception {
+        mockPathAndContainerEntry();
+
+        IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsProject.findIpsPackageFragmentRoot(ROOT_NAME);
+
+        assertEquals(root2, ipsPackageFragmentRoot);
+    }
+
+    /**
+     * Mocking an {@link IIpsPackageFragmentRoot} and introduce it as part of an
+     * {@link IpsContainerEntry}. The {@link #ipsProject} is configured to reference this
+     * {@link IpsContainerEntry} in its IPS object path.
+     */
+    private void mockPathAndContainerEntry() throws Exception {
+        when(root2.getName()).thenReturn(ROOT_NAME);
+
+        IpsObjectPath path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+
+        IpsContainerEntry containerEntry = spy(new IpsContainerEntry(path));
+        path.setEntries(new IIpsObjectPathEntry[] { containerEntry });
+
+        IIpsObjectPathEntry entry = mock(IIpsObjectPathEntry.class);
+        when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
+        IIpsObjectPathEntry entry2 = mock(IIpsObjectPathEntry.class);
+        when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
+
+        List<IIpsObjectPathEntry> entries = Arrays.asList(entry, entry2);
+        doReturn(entries).when(containerEntry).resolveEntries();
+
+        ipsProject = spy(ipsProject);
+        doReturn(path).when(ipsProject).getIpsObjectPathInternal();
     }
 
     @Test
