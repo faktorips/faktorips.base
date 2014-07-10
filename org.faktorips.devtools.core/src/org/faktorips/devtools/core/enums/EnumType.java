@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,10 +12,12 @@ package org.faktorips.devtools.core.enums;
 
 /**
  * An EnumType is a data type that represents an enumeration of values e.g. gender, payment mode.
- * 
- * @deprecated Deprecated since we use Java 5 enums
- * 
- * @author Jan Ortmann
+ *
+ * @deprecated Deprecated since we use Java 5 enums. <br>
+ *             Important notice: To migrate enums using this interface to native Java 5 enums, you
+ *             need to provide an additional ID. Be careful with the refactoring because some
+ *             framework components may use the ID for example to persist the enum value to XML.
+ *
  */
 @Deprecated
 public interface EnumType {
@@ -43,10 +45,10 @@ public interface EnumType {
 
     /**
      * Returns the <tt>EnumValue</tt> at the given index.
-     * 
+     *
      * @throws IllegalArgumentException If the index is out of bounds.
      */
-    public EnumValue getEnumValue(int index) throws IndexOutOfBoundsException;
+    public EnumValue getEnumValue(int index);
 
     /**
      * Returns the number of values.

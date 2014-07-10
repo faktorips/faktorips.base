@@ -16,6 +16,9 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 /**
  * An edit field for the Combo control whose items are derived from an Java Enum (introduced in Java
  * 5.0).
+ * <p>
+ * Instead of using this {@link EnumField} it is better to use a {@link ComboViewerField}, because
+ * there can be used a labelProvider.
  * 
  * @see EditField for details about generic type T
  * 
