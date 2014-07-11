@@ -105,7 +105,7 @@ public class IpsPreferences {
     public static final String SIMPLE_CONTEXT_MENU = IpsPlugin.PLUGIN_ID + ".simpleContextMenu"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies the preference for loading and validating {@link TableContents}
+     * Constant that identifies the preference for loading and validating {@link TableContents}.
      */
     public static final String AUTO_VALIDATE_TABLES = IpsPlugin.PLUGIN_ID + ".autoValidateTables"; //$NON-NLS-1$
 
@@ -403,9 +403,13 @@ public class IpsPreferences {
 
     /**
      * Returns whether the automatic validation of {@link TableContents} is active (
-     * <code>true</code>) or not.
+     * <code>true</code>) or not. The automatic validation is set to true by default. Turning the
+     * automatic table validation off results in faster refresh- and build times. As Errors in
+     * tables might not be noticed, the ability to disable the automatic validation should be used
+     * carefully. Turning the automatic validation off is useful for example if data in big tables
+     * won't change.
      */
-    public boolean isAutoValidateTablesEnabled() {
+    public boolean isAutoValidateTables() {
         return prefStore.getBoolean(AUTO_VALIDATE_TABLES);
     }
 
@@ -413,7 +417,7 @@ public class IpsPreferences {
      * Activates (<code>true</code>) or deactivate(<code>false</code>) automatic validation of
      * {@link TableContents}, according to the given parameter <code>enabled</code>.
      */
-    public void setAutoValidateTablesEnabled(boolean enabled) {
+    public void setAutoValidateTables(boolean enabled) {
         prefStore.setValue(AUTO_VALIDATE_TABLES, enabled);
     }
 
