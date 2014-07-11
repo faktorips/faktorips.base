@@ -23,7 +23,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -45,10 +45,10 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
     /**
      * Generation of the table contents the import has to be inserted.
      */
-    private ITableContentsGeneration targetGeneration;
+    private ITableRows targetGeneration;
 
     public ExcelTableImportOperation(ITableStructure structure, String sourceFile,
-            ITableContentsGeneration targetGeneration, ExcelTableFormat format, String nullRepresentationString,
+            ITableRows targetGeneration, ExcelTableFormat format, String nullRepresentationString,
             boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
 
         super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
@@ -100,7 +100,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         }
     }
 
-    private void fillGeneration(ITableContentsGeneration generation, Sheet sheet, IProgressMonitor monitor) {
+    private void fillGeneration(ITableRows generation, Sheet sheet, IProgressMonitor monitor) {
         // Row 0 is the header if ignoreColumnHeaderRow is true, otherwise row 0 contains data.
         int startRow = ignoreColumnHeaderRow ? 1 : 0;
         for (int i = startRow;; i++) {
@@ -118,7 +118,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
         }
     }
 
-    private void writeRow(Row sheetRow, int rowIndex, ITableContentsGeneration generation) {
+    private void writeRow(Row sheetRow, int rowIndex, ITableRows generation) {
         IRow genRow = generation.newRow();
         for (int j = 0; j < structure.getNumOfColumns(); j++) {
             Cell cell = sheetRow.getCell(j);

@@ -33,17 +33,17 @@ public class TableContentsSaxHandlerTest {
 
     @Before
     public void createTableContentsSaxHandler() throws Exception {
-        tableContentsSaxHandler = new TableContentsSaxHandler(tableContents);
+        tableContentsSaxHandler = new TableContentsSaxHandler(tableContents, true);
     }
 
     @Test
     public void testEndElement_extensionProperty() throws Exception {
-        tableContentsSaxHandler.startElement("", "", TableContentsGeneration.getXmlExtPropertiesElementName(), null);
+        tableContentsSaxHandler.startElement("", "", TableRows.getXmlExtPropertiesElementName(), null);
         Attributes attributes = mock(Attributes.class);
-        when(attributes.getValue(TableContentsGeneration.getXmlAttributeExtpropertyid())).thenReturn(MY_ID);
-        tableContentsSaxHandler.startElement("", "", TableContentsGeneration.getXmlValueElement(), attributes);
+        when(attributes.getValue(TableRows.getXmlAttributeExtpropertyid())).thenReturn(MY_ID);
+        tableContentsSaxHandler.startElement("", "", TableRows.getXmlValueElement(), attributes);
 
-        tableContentsSaxHandler.endElement("", "", TableContentsGeneration.getXmlValueElement());
+        tableContentsSaxHandler.endElement("", "", TableRows.getXmlValueElement());
 
         verify(tableContents).addExtensionProperty(MY_ID, "");
     }

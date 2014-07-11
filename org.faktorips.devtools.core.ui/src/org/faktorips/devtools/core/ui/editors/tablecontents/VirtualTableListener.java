@@ -16,7 +16,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
 public class VirtualTableListener implements Listener {
 
@@ -40,7 +39,7 @@ public class VirtualTableListener implements Listener {
         TableItem item = (TableItem)event.item;
         // event.index (since eclipse3.2) not used in favour of backwardscompatability
         int index = table.indexOf(item);
-        IRow requestedRow = ((ITableContentsGeneration)tableContents.getFirstGeneration()).getRow(index);
+        IRow requestedRow = tableContents.getTableRows().getRow(index);
         item.setData(requestedRow);
     }
 

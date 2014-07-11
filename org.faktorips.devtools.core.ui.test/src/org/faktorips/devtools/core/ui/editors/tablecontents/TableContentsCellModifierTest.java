@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
@@ -53,7 +53,7 @@ public class TableContentsCellModifierTest extends AbstractIpsPluginTest {
         ITableContents tableContents = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS,
                 "TestTableContents");
         tableContents.setTableStructure(structure.getQualifiedName());
-        ITableContentsGeneration gen = (ITableContentsGeneration)tableContents.newGeneration();
+        ITableRows gen = tableContents.newTableRows();
         rowValid = gen.newRow();
         rowInvalid = gen.newRow();
         rowNull = gen.newRow();

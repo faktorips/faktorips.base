@@ -21,7 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.values.DateUtil;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;
@@ -37,17 +37,15 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String TABLECONTENTS = IpsObjectType.TABLE_CONTENTS.getXmlElementName();
     private static final String VALUE = Row.VALUE_TAG_NAME;
     private static final String ROW = Row.TAG_NAME;
-    private static final String GENERATION = IIpsObjectGeneration.TAG_NAME;
     private static final String DESCRIPTION = DescriptionHelper.XML_ELEMENT_NAME;
-    private static final String ATTRIBUTE_VALIDFROM = IIpsObjectGeneration.PROPERTY_VALID_FROM;
     private static final String ATTRIBUTE_TABLESTRUCTURE = ITableContents.PROPERTY_TABLESTRUCTURE;
     private static final String ATTRIBUTE_NUMOFCOLUMNS = ITableContents.PROPERTY_NUMOFCOLUMNS;
 
     // extension properties support
-    private static final String EXTENSIONPROPERTIES = TableContentsGeneration.getXmlExtPropertiesElementName();
-    private static final String EXTENSIONPROPERTIES_VALUE = TableContentsGeneration.getXmlValueElement();
-    private static final String EXTENSIONPROPERTIES_ID = TableContentsGeneration.getXmlAttributeExtpropertyid();
-    private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableContentsGeneration.getXmlAttributeIsnull();
+    private static final String EXTENSIONPROPERTIES = TableRows.getXmlExtPropertiesElementName();
+    private static final String EXTENSIONPROPERTIES_VALUE = TableRows.getXmlValueElement();
+    private static final String EXTENSIONPROPERTIES_ID = TableRows.getXmlAttributeExtpropertyid();
+    private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableRows.getXmlAttributeIsnull();
 
     /** the table which will be filled */
     private ITableContents tableContents;
@@ -78,17 +76,20 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private String currentDescriptionLocale;
 
-    private TableContentsGeneration currentGeneration;
+    private TableRows currentTableRows;
 
-    public TableContentsSaxHandler(ITableContents tableContents) {
+    private boolean readWholeContent;
+
+    public TableContentsSaxHandler(ITableContents tableContents, boolean readWholeContent) {
         this.tableContents = tableContents;
+        this.readWholeContent = readWholeContent;
     }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (ROW.equals(qName)) {
             insideRowNode = false;
-            currentGeneration.newRow(columns);
+            currentTableRows.newRow(columns);
             columns.clear();
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = false;
@@ -110,7 +111,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
             textBuffer = null;
         } else if (isExtensionPropertiesValueNode(qName)) {
             insideValueNode = false;
-            if (currentGeneration == null) {
+            if (currentTableRows == null) {
                 tableContents.addExtensionProperty(idValue, getText());
             } else {
                 throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
@@ -129,14 +130,15 @@ public class TableContentsSaxHandler extends DefaultHandler {
             ((TableContents)tableContents).setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
             ((TableContents)tableContents).setNumOfColumnsInternal(Integer.parseInt(attributes
                     .getValue(ATTRIBUTE_NUMOFCOLUMNS)));
-        } else if (GENERATION.equals(qName)) {
-            currentGeneration = (TableContentsGeneration)((TableContents)tableContents)
-                    .createNewGenerationInternal(DateUtil.parseIsoDateStringToGregorianCalendar(attributes
-                            .getValue(ATTRIBUTE_VALIDFROM)));
+        } else if (ITableRows.TAG_NAME.equals(qName) || IIpsObjectGeneration.TAG_NAME.equals(qName)) {
+            if (readWholeContent) {
+                currentTableRows = (TableRows)((TableContents)tableContents).createNewTableRows();
+            } else {
+                throw new SAXException("Skip reading table content"); //$NON-NLS-1$
+            }
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
             currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);
-
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
             insideExtensionPropertiesNode = true;
         } else if (ROW.equals(qName)) {

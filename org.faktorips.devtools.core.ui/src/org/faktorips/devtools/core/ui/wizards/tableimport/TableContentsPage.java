@@ -151,12 +151,12 @@ public class TableContentsPage extends IpsObjectPage {
 
         ITableContents table = (ITableContents)newIpsObject;
         table.setTableStructure(getTableStructureName());
-        table.newGeneration(IpsUIPlugin.getDefault().getDefaultValidityDate());
+        table.newTableRows();
         ITableStructure structure = (ITableStructure)table.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE,
                 table.getTableStructure());
         if (structure != null) {
             for (int i = 0; i < structure.getNumOfColumns(); i++) {
-                table.newColumn(""); //$NON-NLS-1$
+                table.newColumn(StringUtils.EMPTY);
             }
         }
     }

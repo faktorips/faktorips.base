@@ -37,7 +37,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -102,9 +102,8 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
         newTableContentsOperation.finishIpsSrcFile(tableContents.getIpsSrcFile(), monitor);
 
-        ITableContentsGeneration generation = (ITableContentsGeneration)tableContents.getFirstGeneration();
+        ITableRows generation = tableContents.getTableRows();
         assertNotNull(generation);
-        assertEquals(new GregorianCalendar(2013, 0, 1), generation.getValidFrom());
     }
 
     @Test
@@ -121,7 +120,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         newTableContentsOperation.finishIpsSrcFile(tableContents.getIpsSrcFile(), monitor);
 
         assertEquals("TestTableStructure", tableContents.getTableStructure());
-        ITableContentsGeneration generation = (ITableContentsGeneration)tableContents.getFirstGeneration();
+        ITableRows generation = tableContents.getTableRows();
         assertEquals(1, generation.getNumOfRows());
     }
 
@@ -139,7 +138,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         newTableContentsOperation.finishIpsSrcFile(tableContents.getIpsSrcFile(), monitor);
 
         assertEquals("TestTableStructure", tableContents.getTableStructure());
-        ITableContentsGeneration generation = (ITableContentsGeneration)tableContents.getFirstGeneration();
+        ITableRows generation = tableContents.getTableRows();
         assertEquals(0, generation.getNumOfRows());
     }
 

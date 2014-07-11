@@ -16,7 +16,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.util.GregorianCalendar;
 
 import au.com.bytecode.opencsv.CSVWriter;
 
@@ -25,7 +24,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
@@ -36,7 +35,7 @@ import org.junit.Test;
 
 public class CSVTableImportOperationTest extends AbstractTableTest {
 
-    ITableContentsGeneration importTarget;
+    ITableRows importTarget;
     AbstractExternalTableFormat format;
 
     File file;
@@ -71,6 +70,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        importTarget = contents.newTableRows();
         contents.setTableStructure(structure2.getQualifiedName());
         contents.newColumn(null);
         contents.newColumn(null);
@@ -80,7 +80,6 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         contents.newColumn(null);
         contents.newColumn(null);
         contents.newColumn(null);
-        importTarget = (ITableContentsGeneration)contents.newGeneration(new GregorianCalendar());
 
         file = new File("table" + format.getDefaultExtension());
         file.delete();

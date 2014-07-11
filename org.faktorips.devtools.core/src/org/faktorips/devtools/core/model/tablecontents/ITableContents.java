@@ -13,11 +13,10 @@ package org.faktorips.devtools.core.model.tablecontents;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsMetaObject;
 import org.faktorips.devtools.core.model.XmlSaxSupport;
-import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 
-public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxSupport {
+public interface ITableContents extends IIpsMetaObject, XmlSaxSupport {
 
     public static final String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
     public static final String PROPERTY_NUMOFCOLUMNS = "numOfColumns"; //$NON-NLS-1$
@@ -119,4 +118,15 @@ public interface ITableContents extends IIpsMetaObject, ITimedIpsObject, XmlSaxS
      */
     public void deleteColumn(int columnIndex);
 
+    /**
+     * Creates a new {@link ITableRows}
+     */
+    public ITableRows newTableRows();
+
+    /**
+     * Returns the table content.
+     * <p>
+     * Reads the whole Content only on the first call of this method.
+     */
+    public ITableRows getTableRows();
 }

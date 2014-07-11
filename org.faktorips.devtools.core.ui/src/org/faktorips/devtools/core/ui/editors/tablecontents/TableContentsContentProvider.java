@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
 public class TableContentsContentProvider implements IStructuredContentProvider {
 
@@ -21,7 +20,7 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
     public Object[] getElements(Object inputElement) {
         if (inputElement instanceof ITableContents) {
             ITableContents table = (ITableContents)inputElement;
-            return ((ITableContentsGeneration)table.getFirstGeneration()).getRows();
+            return table.getTableRows().getRows();
         }
         return new Object[0];
     }
