@@ -346,7 +346,7 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
-        if (IpsPlugin.getDefault().getIpsPreferences().isAutoValidateTablesEnabled()) {
+        if (IpsPlugin.getDefault().getIpsPreferences().isAutoValidateTables()) {
             super.validateChildren(result, ipsProject);
         }
     }
