@@ -53,12 +53,12 @@ public class TableContentsCompareItemCreatorTest extends AbstractIpsPluginTest {
         root = proj.getIpsPackageFragmentRoots()[0];
         ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
+        generation = table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
 
-        generation = table.newTableRows();
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
         row1.setValue(1, "r1_c2");

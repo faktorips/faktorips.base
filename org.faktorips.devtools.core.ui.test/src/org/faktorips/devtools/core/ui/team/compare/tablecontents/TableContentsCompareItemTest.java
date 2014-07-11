@@ -54,12 +54,12 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         root = proj.getIpsPackageFragmentRoots()[0];
         ITableStructure structure = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE, "StructureTable");
         table = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table1");
+        generation = table.newTableRows();
         table.setTableStructure(structure.getQualifiedName());
         table.newColumn("1");
         table.newColumn("2");
         table.newColumn("3");
 
-        generation = table.newTableRows();
         row1 = generation.newRow();
         row1.setValue(0, "r1_c1");
         row1.setValue(1, "r1_c2");
@@ -123,11 +123,11 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
         ITableStructure structure2 = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        ITableRows generation2 = table2.newTableRows();
         table2.setTableStructure(structure2.getQualifiedName());
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
-        ITableRows generation2 = table2.newTableRows();
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");
@@ -202,11 +202,11 @@ public class TableContentsCompareItemTest extends AbstractIpsPluginTest {
         ITableContents table2 = (ITableContents)newIpsObject(root, IpsObjectType.TABLE_CONTENTS, "Table2");
         ITableStructure structure2 = (ITableStructure)newIpsObject(proj, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        ITableRows generation2 = table2.newTableRows();
         table2.setTableStructure(structure2.getQualifiedName());
         table2.newColumn("1");
         table2.newColumn("2");
         table2.newColumn("3");
-        ITableRows generation2 = table2.newTableRows();
         IRow row2 = generation2.newRow();
         row2.setValue(0, "6");
         row2.setValue(1, "569");

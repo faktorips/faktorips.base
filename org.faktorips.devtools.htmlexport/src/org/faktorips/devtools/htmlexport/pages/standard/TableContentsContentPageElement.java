@@ -45,58 +45,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectP
 public class TableContentsContentPageElement extends AbstractIpsObjectContentPageElement<ITableContents> {
 
     /**
-     * a table for the content of the given tableContentsGeneration
-     * 
-     * @author dicker
-     * 
-     */
-    public class ContentTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IRow> {
-        private ITableStructure tableStructure;
-        private ValueDatatype[] datatypes;
-
-        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreException {
-            super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
-            this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
-            initDatatypes(tableContentsGeneration);
-        }
-
-        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreException {
-            datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
-            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
-                datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());
-            }
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(IRow rowData) {
-            return Arrays.asList(new PageElementUtils().createTextPageElements(getRowData(rowData)));
-        }
-
-        private List<String> getRowData(IRow row) {
-            List<String> rowData = new ArrayList<String>();
-
-            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
-                String value = row.getValue(i);
-                rowData.add(getContext().getDatatypeFormatter().formatValue(datatypes[i], value));
-            }
-
-            return rowData;
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            IColumn[] columns = tableStructure.getColumns();
-
-            List<String> headline = new ArrayList<String>();
-            for (IColumn column : columns) {
-                headline.add(getContext().getLabel(column));
-            }
-            return headline;
-        }
-
-    }
-
-    /**
      * creates a page for the given {@link ITableContents} with the context
      * 
      */
@@ -164,5 +112,57 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      */
     private ITableContents getTableContent() {
         return getDocumentedIpsObject();
+    }
+
+    /**
+     * a table for the content of the given tableContentsGeneration
+     * 
+     * @author dicker
+     * 
+     */
+    public class ContentTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IRow> {
+        private ITableStructure tableStructure;
+        private ValueDatatype[] datatypes;
+    
+        public ContentTablePageElement(ITableRows tableContentsGeneration) throws CoreException {
+            super(Arrays.asList(tableContentsGeneration.getRows()), TableContentsContentPageElement.this.getContext());
+            this.tableStructure = getDocumentedIpsObject().findTableStructure(getContext().getIpsProject());
+            initDatatypes(tableContentsGeneration);
+        }
+    
+        private void initDatatypes(ITableRows tableContentsGeneration) throws CoreException {
+            datatypes = new ValueDatatype[tableStructure.getNumOfColumns()];
+            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
+                datatypes[i] = tableStructure.getColumn(i).findValueDatatype(tableContentsGeneration.getIpsProject());
+            }
+        }
+    
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(IRow rowData) {
+            return Arrays.asList(new PageElementUtils().createTextPageElements(getRowData(rowData)));
+        }
+    
+        private List<String> getRowData(IRow row) {
+            List<String> rowData = new ArrayList<String>();
+    
+            for (int i = 0; i < tableStructure.getNumOfColumns(); i++) {
+                String value = row.getValue(i);
+                rowData.add(getContext().getDatatypeFormatter().formatValue(datatypes[i], value));
+            }
+    
+            return rowData;
+        }
+    
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            IColumn[] columns = tableStructure.getColumns();
+    
+            List<String> headline = new ArrayList<String>();
+            for (IColumn column : columns) {
+                headline.add(getContext().getLabel(column));
+            }
+            return headline;
+        }
+    
     }
 }

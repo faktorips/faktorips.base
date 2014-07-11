@@ -17,12 +17,12 @@ public interface ITableRows extends IIpsObjectPart {
     /**
      * The name of the XML tag used if this object is saved to XML.
      */
-    public final static String TAG_NAME = "Rows"; //$NON-NLS-1$
+    public static final String TAG_NAME = "Rows"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
 
     /**
      * Returns the rows that make up the table.

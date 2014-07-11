@@ -70,6 +70,7 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        importTarget = contents.newTableRows();
         contents.setTableStructure(structure2.getQualifiedName());
         contents.newColumn(null);
         contents.newColumn(null);
@@ -79,7 +80,6 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
         contents.newColumn(null);
         contents.newColumn(null);
         contents.newColumn(null);
-        importTarget = contents.newTableRows();
 
         file = new File("table" + format.getDefaultExtension());
         file.delete();

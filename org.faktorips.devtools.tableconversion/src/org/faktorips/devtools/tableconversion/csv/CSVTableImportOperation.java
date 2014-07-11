@@ -49,9 +49,9 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
      */
     private ITableRows targetGeneration;
 
-    public CSVTableImportOperation(ITableStructure structure, String sourceFile,
-            ITableRows targetGeneration, ITableFormat format, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
+    public CSVTableImportOperation(ITableStructure structure, String sourceFile, ITableRows targetGeneration,
+            ITableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list,
+            boolean importIntoExisting) {
 
         super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
 
@@ -155,8 +155,8 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
 
                     if (tableField == null) {
                         Object[] objects = new Object[3];
-                        objects[0] = new Integer(rowNumber);
-                        objects[1] = new Integer(j);
+                        objects[0] = Integer.valueOf(rowNumber);
+                        objects[1] = Integer.valueOf(j);
                         objects[2] = IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
                         String msg = NLS
                                 .bind("In row {0}, column {1} no value is set - imported {2} instead.", objects); //$NON-NLS-1$
