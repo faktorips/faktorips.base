@@ -413,7 +413,6 @@ public class TableContentsTest extends AbstractDependencyTest {
     @Test
     public void testGetTableRows() throws Exception {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        // table = spy(newTableContents(structure, "Tc2"));
         when(ipsSrcFile.exists()).thenReturn(true);
         TableContents tableContents = spy(table);
         when(tableContents.getIpsSrcFile()).thenReturn(ipsSrcFile);
