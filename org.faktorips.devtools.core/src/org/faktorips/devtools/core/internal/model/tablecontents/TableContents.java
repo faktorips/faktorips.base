@@ -53,6 +53,7 @@ import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotSupportedException;
 
 public class TableContents extends IpsObject implements ITableContents {
     // Performance Potential Tabellen: Datentypen der Columns cachen
@@ -68,7 +69,7 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     public ITableRows newTableRows() {
-        setTableRowsInternal(createNewTableRows());
+        createNewTableRows();
         partWasAdded(getTableRowsInternal());
         return getTableRowsInternal();
     }
@@ -87,7 +88,7 @@ public class TableContents extends IpsObject implements ITableContents {
     /**
      * Creates an unique key validator for the given table contents generation
      */
-    private void initUniqueKeyValidator(TableRows tableContentsGeneration) {
+    private void initUniqueKeyValidator(TableRows tableRows) {
         ITableStructure tableStructure;
         try {
             tableStructure = findTableStructure(getIpsProject());
@@ -96,7 +97,7 @@ public class TableContents extends IpsObject implements ITableContents {
             IpsPlugin.log(e);
             return;
         }
-        tableContentsGeneration.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
+        tableRows.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
     }
 
     @Override
@@ -228,6 +229,8 @@ public class TableContents extends IpsObject implements ITableContents {
             reinitPartCollections();
             SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
             saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this, readWholeContent));
+        } catch (SAXNotSupportedException e) {
+            throw new CoreException(new IpsStatus(e));
         } catch (SAXException e) {
             handleSaxException(e);
         } catch (ParserConfigurationException e) {
@@ -316,7 +319,7 @@ public class TableContents extends IpsObject implements ITableContents {
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof ITableRows) {
-            if (getTableRowsInternal() != null) {
+            if (getTableRowsInternal() == null) {
                 setTableRowsInternal(((ITableRows)part));
                 return true;
             } else {
@@ -433,6 +436,10 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     private void readTableRows() {
+        if (!getIpsSrcFile().exists()) {
+            newTableRows();
+            return;
+        }
         InputStream inputStream = null;
         try {
             inputStream = getIpsSrcFile().getContentFromEnclosingResource();
@@ -444,7 +451,7 @@ public class TableContents extends IpsObject implements ITableContents {
         }
     }
 
-    private void setTableRowsInternal(ITableRows tableRows) {
+    protected void setTableRowsInternal(ITableRows tableRows) {
         this.tableRows = tableRows;
     }
 }

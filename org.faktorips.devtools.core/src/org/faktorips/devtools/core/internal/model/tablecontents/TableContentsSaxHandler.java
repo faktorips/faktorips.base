@@ -139,7 +139,6 @@ public class TableContentsSaxHandler extends DefaultHandler {
         } else if (DESCRIPTION.equals(qName)) {
             insideDescriptionNode = true;
             currentDescriptionLocale = attributes.getValue(IDescription.PROPERTY_LOCALE);
-
         } else if (EXTENSIONPROPERTIES.equals(qName)) {
             insideExtensionPropertiesNode = true;
         } else if (ROW.equals(qName)) {

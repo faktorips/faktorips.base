@@ -3,13 +3,13 @@
 <!--
  Test data for TableContentsTest.java
 -->
-<TableContents tableStructure="RateTableStructure" numOfColumns="2">
+<TableContents tableStructure="Ts" numOfColumns="2">
 	<Description locale="de">blabla</Description>
     <ExtensionProperties>
         <Value id="prop1" isNull="false"><![CDATA[XYZ]]></Value>
         <Value id="prop2" isNull="false"><![CDATA[ABC]]></Value>
     </ExtensionProperties> 	
-	<Generation id="0" validFrom="2008-01-01">
+	<Generation id="0">
     	<Row id="0" c0="18" c1="0.5">
     		<Value isNull="false">18</Value>
     		<Value isNull="false">0.5</Value>
@@ -19,5 +19,4 @@
     		<Value isNull="false">0.6</Value>
     	</Row>
 	</Generation>
-	
 </TableContents>

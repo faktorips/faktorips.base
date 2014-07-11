@@ -16,6 +16,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +56,7 @@ public class TableContentsTest extends AbstractDependencyTest {
 
     private IIpsProject project;
     private IIpsSrcFile pdSrcFile;
-    private ITableContents table;
+    private TableContents table;
     private ITableStructure structure;
     private IDependency structureDependency;
 
@@ -124,7 +127,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         ITableRows gen1 = table.getTableRows();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
-        table.newTableRows();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
 
@@ -154,7 +156,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         ITableRows gen1 = table.getTableRows();
         IRow row11 = gen1.newRow();
         IRow row12 = gen1.newRow();
-        table.newTableRows();
         IRow row21 = gen1.newRow();
         IRow row22 = gen1.newRow();
 
@@ -180,7 +181,7 @@ public class TableContentsTest extends AbstractDependencyTest {
     public void testInitFromXml() {
         table.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("blabla", table.getDescriptionText(Locale.GERMAN));
-        assertEquals("RateTableStructure", table.getTableStructure());
+        assertEquals("Ts", table.getTableStructure());
         assertEquals(2, table.getNumOfColumns());
     }
 
@@ -209,25 +210,19 @@ public class TableContentsTest extends AbstractDependencyTest {
     public void testInitFromInputStream() throws CoreException {
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "RateTableStructure");
         table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
-        assertEquals("RateTableStructure", table.getTableStructure());
-        assertEquals(2, table.getNumOfColumns());
-        ITableRows generation = table.getTableRows();
-        IRow[] rows = generation.getRows();
-        assertEquals(2, rows.length);
-        assertEquals("18", rows[0].getValue(0));
-        assertEquals("0.5", rows[0].getValue(1));
-        assertEquals("19", rows[1].getValue(0));
-        assertEquals("0.6", rows[1].getValue(1));
 
-        table.initFromInputStream(getClass().getResourceAsStream(getXmlResourceName()));
-        assertTrue(table.getTableRows().hasChildren());
+        assertEquals("Ts", table.getTableStructure());
+        assertEquals(2, table.getNumOfColumns());
+        ITableRows tableRows = table.getTableRows();
+        IRow[] rows = tableRows.getRows();
+        assertEquals(0, rows.length);
     }
 
     /**
      * Test init via SAX
      */
     @Test
-    public void testInitFromInputStreamWithExtensionProperties() throws CoreException {
+    public void testInitFromInputStream_WithExtensionProperties() throws CoreException {
         addExtensionPropertyDefinition("prop1");
         addExtensionPropertyDefinition("prop2");
 
@@ -236,17 +231,21 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         assertEquals("XYZ", table.getExtPropertyValue("prop1"));
         assertEquals("ABC", table.getExtPropertyValue("prop2"));
+    }
 
-        // test invalid XML table content with extension properties inside generation node
-        boolean exception = false;
-        try {
-            table.initFromInputStream(getClass().getResourceAsStream("TableContentsTest2.xml"));
-        } catch (CoreException e) {
-            exception = true;
-        }
-        assertTrue(
-                "Expected RuntimeException because extension properties inside generations are not supported using SAX",
-                exception);
+    /**
+     * test invalid XML table content with extension properties inside generation node
+     */
+    @Test(expected = CoreException.class)
+    public void testgetTableRows_WithExtensionPropertiesError() throws CoreException {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        table = spy(newTableContents(structure, "Tc"));
+        when(table.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getContentFromEnclosingResource()).thenReturn(
+                getClass().getResourceAsStream("TableContentsTest2.xml"));
+
+        table.setTableRowsInternal(null);
+        table.getTableRows();
     }
 
     @Test
@@ -257,7 +256,6 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.setTableStructure(structure.getQualifiedName());
         table.newColumn("");
         ITableRows gen1 = table.getTableRows();
-        ITableRows gen2 = table.newTableRows();
         IRow row = gen1.newRow();
         row.setValue(0, "value");
 
@@ -266,16 +264,9 @@ public class TableContentsTest extends AbstractDependencyTest {
         table.setTableStructure("");
         table.deleteColumn(0);
         gen1.delete();
-        gen2.delete();
         table.initFromXml(element);
         assertEquals("blabla", description.getText());
         assertEquals(structure.getQualifiedName(), table.getTableStructure());
-        assertEquals(1, table.getNumOfColumns());
-        ITableRows gen = table.getTableRows();
-        assertEquals(1, gen.getRows().length);
-        row = gen.getRows()[0];
-        assertEquals("value", row.getValue(0));
-
     }
 
     @Test
@@ -409,5 +400,35 @@ public class TableContentsTest extends AbstractDependencyTest {
 
         IIpsSrcFile typeSrcFile = table.findMetaClassSrcFile(project);
         assertEquals(structure.getIpsSrcFile(), typeSrcFile);
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testAddPartThis() {
+        ITableRows rows = table.getTableRows();
+        assertNotNull(rows);
+
+        table.addPartThis(rows);
+    }
+
+    @Test
+    public void testGetTableRows() throws Exception {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        // table = spy(newTableContents(structure, "Tc2"));
+        when(ipsSrcFile.exists()).thenReturn(true);
+        TableContents tableContents = spy(table);
+        when(tableContents.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        when(ipsSrcFile.getContentFromEnclosingResource()).thenReturn(
+                getClass().getResourceAsStream(getXmlResourceName()));
+
+        tableContents.setTableRowsInternal(null);
+        ITableRows tableRows = tableContents.getTableRows();
+
+        IRow[] rows = tableRows.getRows();
+
+        assertEquals(2, rows.length);
+        assertEquals("18", rows[0].getValue(0));
+        assertEquals("0.5", rows[0].getValue(1));
+        assertEquals("19", rows[1].getValue(0));
+        assertEquals("0.6", rows[1].getValue(1));
     }
 }
