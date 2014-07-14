@@ -57,6 +57,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestAttribute;
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -294,15 +295,22 @@ public class TestCaseDetailArea {
         Composite attributeComposite = toolkit.createLabelEditColumnComposite(section);
 
         // create text edit fields for each attribute
+        createAttributeEditFields(testPolicyCmpt, uniqueKey, attributeComposite);
+        section.setClient(attributeComposite);
+
+        toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
+    }
+
+    private void createAttributeEditFields(final ITestPolicyCmpt testPolicyCmpt,
+            String uniqueKey,
+            Composite attributeComposite) throws CoreException {
         ITestAttributeValue[] testAttributeValues = testPolicyCmpt.getTestAttributeValues();
         boolean firstEditField = true;
         for (final ITestAttributeValue attributeValue : testAttributeValues) {
             // Create the edit field only if the content provider provides the type of the test
             // attribute object
-            if (testCaseSection.getContentProvider().isCombined()
-                    || (testCaseSection.getContentProvider().isInput() && attributeValue.isInputAttribute(ipsProject))
-                    || testCaseSection.getContentProvider().isExpectedResult()
-                    && attributeValue.isExpextedResultAttribute(ipsProject)) {
+            if (isResultAndInputAttribute(attributeValue.isInputAttribute(ipsProject),
+                    attributeValue.isExpextedResultAttribute(ipsProject))) {
                 EditField<?> editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
                         attributeValue);
 
@@ -313,9 +321,13 @@ public class TestCaseDetailArea {
                 }
             }
         }
-        section.setClient(attributeComposite);
+    }
 
-        toolkit.createVerticalSpacer(details, 10).setBackground(details.getBackground());
+    private boolean isResultAndInputAttribute(boolean isInputAttribute, boolean isExpectedResultAttribute) {
+        TestCaseContentProvider testCaseContentProvider = testCaseSection.getContentProvider();
+        Boolean isInput = testCaseContentProvider.isInput() && isInputAttribute;
+        Boolean isExpectedResult = testCaseContentProvider.isExpectedResult() && isExpectedResultAttribute;
+        return testCaseContentProvider.isCombined() || isInput || isExpectedResult;
     }
 
     private EditField<?> createAttributeEditField(final ITestPolicyCmpt testPolicyCmpt,
@@ -323,55 +335,73 @@ public class TestCaseDetailArea {
             Composite attributeComposite,
             final ITestAttributeValue attributeValue) throws CoreException {
 
-        EditField<?> editField = null;
-
         // get the ctrlFactory to create the edit field
-        ValueDatatype datatype = null;
-        ValueDatatypeControlFactory ctrlFactory = null;
-        ITestAttribute testAttribute = null;
-        try {
-            testAttribute = attributeValue.findTestAttribute(ipsProject);
-            if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()) {
-                // the attribute is an extension attribute
-                datatype = testAttribute.findDatatype(ipsProject);
-                ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-            } else {
-                IAttribute attribute = attributeValue.findAttribute(ipsProject);
-                if (attribute != null) {
-                    datatype = attribute.findDatatype(ipsProject);
-                    ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
-                } else {
-                    if (StringUtils.isNotEmpty(attributeValue.getValue())) {
-                        ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
-                    } else {
-                        // if the attribute wasn't found and no value is stored then no controls
-                        // will be displayed
-                        // maybe this attributes are not available in subtype test policy cmpt's
-                        return null;
-                    }
-                }
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-
-        if (ctrlFactory == null) {
-            ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(Datatype.STRING);
-        }
+        ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
+        IAttribute attribute = attributeValue.findAttribute(ipsProject);
+        ValueDatatype datatype = findDatatype(attributeValue, testAttribute);
 
         Label label = toolkit.createFormLabel(attributeComposite,
                 StringUtils.capitalize(attributeValue.getTestAttribute()));
+
+        if (testAttribute == null || testAttribute.isBasedOnModelAttribute()) {
+            if (attribute == null && attributeValue.getValue().isEmpty()) {
+                return null;
+            }
+        }
+        ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+
         if (testAttribute != null) {
-            // use description of parameter as tooltip
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
             label.setToolTipText(localizedDescription);
         }
+
         addSectionSelectionListeners(null, label, testPolicyCmptForSelection);
 
-        editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null, ipsProject);
+        EditField<?> editField = createEditField(attributeComposite, ctrlFactory, datatype, attribute);
+        storeAndMarkEditField(testPolicyCmpt, testPolicyCmptForSelection, attributeValue, editField);
+        addBindingFor(editField, attributeValue, ITestAttributeValue.PROPERTY_VALUE);
 
-        // store the edit field
+        return editField;
+    }
+
+    private ValueDatatype findDatatype(final ITestAttributeValue attributeValue, ITestAttribute testAttribute)
+            throws CoreException {
+        if (testAttribute != null && !testAttribute.isBasedOnModelAttribute()) {
+            // the attribute is an extension attribute
+            return testAttribute.findDatatype(ipsProject);
+        } else {
+            IAttribute attribute = attributeValue.findAttribute(ipsProject);
+            if (attribute != null) {
+                return attribute.findDatatype(ipsProject);
+            } else {
+                if (StringUtils.isNotEmpty(attributeValue.getValue())) {
+                    return Datatype.STRING;
+                }
+            }
+        }
+        return null;
+    }
+
+    private EditField<?> createEditField(Composite attributeComposite,
+            ValueDatatypeControlFactory ctrlFactory,
+            ValueDatatype datatype,
+            IAttribute attribute) throws CoreException {
+        EditField<?> editField = null;
+        if (attribute != null) {
+            IValueSet valueSet = attribute.getValueSet();
+            editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, valueSet, ipsProject);
+        } else {
+            editField = ctrlFactory.createEditField(toolkit, attributeComposite, datatype, null, ipsProject);
+        }
+        return editField;
+    }
+
+    private void storeAndMarkEditField(final ITestPolicyCmpt testPolicyCmpt,
+            final ITestPolicyCmpt testPolicyCmptForSelection,
+            final ITestAttributeValue attributeValue,
+            EditField<?> editField) throws CoreException {
         String testPolicyCmptTypeParamPath = TestCaseHierarchyPath.evalTestPolicyCmptParamPath(testPolicyCmpt);
+        // store the edit field
         putEditField(testPolicyCmptTypeParamPath + attributeValue.getTestAttribute(), editField);
         editField2ModelObject.put(editField, attributeValue);
         addSectionSelectionListeners(editField, null, testPolicyCmptForSelection);
@@ -381,6 +411,12 @@ public class TestCaseDetailArea {
             markAsExpected(editField);
         }
         // mark as failure
+        markAsFailure(attributeValue, editField, testPolicyCmptTypeParamPath);
+    }
+
+    private void markAsFailure(final ITestAttributeValue attributeValue,
+            EditField<?> editField,
+            String testPolicyCmptTypeParamPath) {
         String failureLastTestRun = failureMessageCache.get(testPolicyCmptTypeParamPath
                 + attributeValue.getTestAttribute());
         if (failureLastTestRun != null) {
@@ -396,10 +432,6 @@ public class TestCaseDetailArea {
                 testCaseSection.postSetOverriddenValueBackgroundAndToolTip(editField, failureLastTestRun, false);
             }
         }
-
-        addBindingFor(editField, attributeValue, ITestAttributeValue.PROPERTY_VALUE);
-
-        return editField;
     }
 
     /**
@@ -649,15 +681,13 @@ public class TestCaseDetailArea {
      * Return <code>true</code> if the given test object is visible or not <code>false</code>.
      */
     private boolean isVisibleForContentFilter(ITestObject testObject) {
-        try {
-            if (!((testCaseSection.getContentProvider().isInput() && testObject.isInput()) || (testCaseSection
-                    .getContentProvider().isExpectedResult() && testObject.isExpectedResult()))
-                    && !testCaseSection.getContentProvider().isCombined()) {
-                return false;
-            }
-        } catch (Exception e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        // try {
+        if (!isResultAndInputAttribute(testObject.isInput(), testObject.isExpectedResult())) {
+            return false;
         }
+        // } catch (Exception e) {
+        // IpsPlugin.logAndShowErrorDialog(e);
+        // }
         return true;
     }
 
