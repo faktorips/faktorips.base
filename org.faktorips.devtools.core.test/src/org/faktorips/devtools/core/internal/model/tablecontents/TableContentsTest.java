@@ -16,8 +16,13 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -27,6 +32,8 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.DependencyType;
@@ -429,5 +436,61 @@ public class TableContentsTest extends AbstractDependencyTest {
         assertEquals("0.5", rows[0].getValue(1));
         assertEquals("19", rows[1].getValue(0));
         assertEquals("0.6", rows[1].getValue(1));
+    }
+
+    @Test
+    public void testValidateChildren() throws CoreException {
+        TableContents tableContents = spy(table);
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        ipsPreferences.setAutoValidateTables(true);
+        TableRows tableRows = spy(new TableRows(tableContents, "Test"));
+        tableContents.setTableRowsInternal(tableRows);
+        MessageList list = new MessageList();
+
+        tableContents.validateChildren(list, project);
+
+        verify(tableRows).validateThis((MessageList)any(), eq(project));
+    }
+
+    @Test
+    public void testValidateChildren_TableRowNull() throws CoreException {
+        TableContents tableContents = spy(table);
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        ipsPreferences.setAutoValidateTables(true);
+        TableRows tableRows = spy(new TableRows(tableContents, "Test"));
+        tableContents.setTableRowsInternal(null);
+        MessageList list = new MessageList();
+
+        tableContents.validateChildren(list, project);
+
+        verifyZeroInteractions(tableRows);
+    }
+
+    @Test
+    public void testValidateChildren_AutoValidateTablesFalse() throws CoreException {
+        TableContents tableContents = spy(table);
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        ipsPreferences.setAutoValidateTables(false);
+        TableRows tableRows = spy(new TableRows(tableContents, "Test"));
+        tableContents.setTableRowsInternal(tableRows);
+        MessageList list = new MessageList();
+
+        tableContents.validateChildren(list, project);
+
+        verify(tableRows).validateThis((MessageList)any(), eq(project));
+    }
+
+    @Test
+    public void testValidateChildren_NotCall() throws CoreException {
+        TableContents tableContents = spy(table);
+        IpsPreferences ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        ipsPreferences.setAutoValidateTables(false);
+        TableRows tableRows = spy(new TableRows(tableContents, "Test"));
+        tableContents.setTableRowsInternal(null);
+        MessageList list = new MessageList();
+
+        tableContents.validateChildren(list, project);
+
+        verify(tableRows, never()).validateThis((MessageList)any(), eq(project));
     }
 }
