@@ -30,6 +30,8 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
 
     private String datatype = ""; //$NON-NLS-1$
 
+    private ValueDatatype valueDatatype;
+
     Column(TableStructure table, String id) {
         super(table, id);
     }
@@ -105,9 +107,15 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
         return new IColumn[] { this };
     }
 
+    /**
+     * {@inheritDoc} For better performance the result of this methods can be cached.
+     */
     @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
-        return ipsProject.findValueDatatype(datatype);
+        if (valueDatatype == null || !(valueDatatype.getQualifiedName().equals(getDatatype()))) {
+            valueDatatype = ipsProject.findValueDatatype(datatype);
+        }
+        return valueDatatype;
     }
 
 }
