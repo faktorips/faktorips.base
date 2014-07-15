@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -13,7 +13,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,7 @@ public class TableContentsSaxHandlerTest {
     private static final String MY_ID = "myID";
 
     @Mock
-    private ITableContents tableContents;
+    private TableContents tableContents;
 
     private TableContentsSaxHandler tableContentsSaxHandler;
 

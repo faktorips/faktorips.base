@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -74,8 +74,8 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     /**
      * This method is used by the table contents sax handler, after finishing a row node
      */
-    Row newRow(List<String> columns) {
-        Row newRow = newRowInternal(getNextPartId());
+    Row newRow(List<String> columns, String id) {
+        Row newRow = newRowInternal(id);
         int column = 0;
         for (String value : columns) {
             newRow.setValueInternal(column++, value);
@@ -302,7 +302,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
 
     /**
      * Updates the unique key cache for the given row
-     * 
+     *
      */
     void updateUniqueKeyCacheFor(Row row, IIndex[] uniqueKeys) {
         if (isUniqueKeyValidationEnabled()) {

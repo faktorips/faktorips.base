@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -69,13 +70,8 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     public ITableRows newTableRows() {
-        createNewTableRows();
-        partWasAdded(getTableRowsInternal());
-        return getTableRowsInternal();
-    }
-
-    protected ITableRows createNewTableRows() {
         setTableRowsInternal(createNewTableRowsInternal(getNextPartId()));
+        partWasAdded(getTableRowsInternal());
         return getTableRowsInternal();
     }
 
@@ -139,6 +135,16 @@ public class TableContents extends IpsObject implements ITableContents {
     public int newColumn(String defaultValue) {
         newColumnAt(numOfColumns, defaultValue);
         return numOfColumns;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Method is overwritten in TableContents to make it visible for {@link TableContentsSaxHandler}.
+     */
+    @Override
+    protected IDescription newDescription(String id) {
+        return super.newDescription(id);
     }
 
     @Override
@@ -245,7 +251,7 @@ public class TableContents extends IpsObject implements ITableContents {
      * read the whole table contents ({@link TableRows}). This is the only way to stop the SAX
      * parser and not reading the whole file. If there is another exception included in the
      * {@link SAXException} we want to throw this as {@link CoreException}.
-     * 
+     *
      */
     private void handleSaxException(SAXException e) throws CoreException {
         if (e.getCause() != null) {
@@ -257,7 +263,7 @@ public class TableContents extends IpsObject implements ITableContents {
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
-        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$ 
+        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$
     }
 
     /**
@@ -266,7 +272,7 @@ public class TableContents extends IpsObject implements ITableContents {
      * The reading of XML for {@link TableContents} is normally done by
      * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
      * XML DOM parser.
-     * 
+     *
      * @see #initFromInputStream(InputStream)
      */
     @Override
@@ -288,7 +294,7 @@ public class TableContents extends IpsObject implements ITableContents {
      * Because of these circumstances the old XML format had the tag name "Generations". We still
      * needs to read the old format in this method.
      * <p>
-     * 
+     *
      * @see #initFromInputStream(InputStream)
      */
     @Override
@@ -319,7 +325,7 @@ public class TableContents extends IpsObject implements ITableContents {
     @Override
     protected boolean addPartThis(IIpsObjectPart part) {
         if (part instanceof ITableRows) {
-            if (getTableRowsInternal() == null) {
+            if (!isRowsInitialized()) {
                 setTableRowsInternal(((ITableRows)part));
                 return true;
             } else {
@@ -346,7 +352,7 @@ public class TableContents extends IpsObject implements ITableContents {
 
     @Override
     protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
-        if (tableRows != null || IpsPlugin.getDefault().getIpsPreferences().isAutoValidateTables()) {
+        if (isRowsInitialized() || IpsPlugin.getDefault().getIpsPreferences().isAutoValidateTables()) {
             super.validateChildren(result, ipsProject);
         }
     }
@@ -429,10 +435,18 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     private ITableRows getTableRowsInternal() {
-        if (tableRows == null) {
+        if (!isRowsInitialized()) {
             readTableRows();
         }
         return tableRows;
+    }
+
+    /**
+     * Returns whether the {@link TableRows} object is already initialized. The rows object is lazy
+     * initialized when needed. Use this method to check if they are already present.
+     */
+    private boolean isRowsInitialized() {
+        return tableRows != null;
     }
 
     private void readTableRows() {

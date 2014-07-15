@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.Description;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
@@ -29,7 +30,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * SAX event handler class for ips table contents.<br>
- * 
+ *
  * @author Joerg Ortmann
  */
 public class TableContentsSaxHandler extends DefaultHandler {
@@ -48,7 +49,7 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableRows.getXmlAttributeIsnull();
 
     /** the table which will be filled */
-    private ITableContents tableContents;
+    private TableContents tableContents;
 
     /** contains all column values */
     private List<String> columns = new ArrayList<String>(20);
@@ -71,8 +72,8 @@ public class TableContentsSaxHandler extends DefaultHandler {
     /** true if the current value node represents the null value */
     private boolean nullValue;
 
-    /** contains the id of the value node */
-    private String idValue;
+    /** contains the id of the extension property node */
+    private String extensionPropertyId;
 
     private String currentDescriptionLocale;
 
@@ -80,59 +81,23 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private boolean readWholeContent;
 
-    public TableContentsSaxHandler(ITableContents tableContents, boolean readWholeContent) {
+    private String currentId;
+
+    public TableContentsSaxHandler(TableContents tableContents, boolean readWholeContent) {
         this.tableContents = tableContents;
         this.readWholeContent = readWholeContent;
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (ROW.equals(qName)) {
-            insideRowNode = false;
-            currentTableRows.newRow(columns);
-            columns.clear();
-        } else if (DESCRIPTION.equals(qName)) {
-            insideDescriptionNode = false;
-            if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
-                Locale locale = new Locale(currentDescriptionLocale);
-                Description description = (Description)tableContents.getDescription(locale);
-                if (description == null) {
-                    description = (Description)tableContents.newDescription();
-                    description.setLocaleWithoutChangeEvent(locale);
-                }
-                description.setTextWithoutChangeEvent(getText());
-            }
-            textBuffer = null;
-        } else if (EXTENSIONPROPERTIES.equals(qName)) {
-            insideExtensionPropertiesNode = false;
-        } else if (isColumnValueNode(qName)) {
-            insideValueNode = false;
-            columns.add(getText());
-            textBuffer = null;
-        } else if (isExtensionPropertiesValueNode(qName)) {
-            insideValueNode = false;
-            if (currentTableRows == null) {
-                tableContents.addExtensionProperty(idValue, getText());
-            } else {
-                throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
-            }
-            textBuffer = null;
-        }
-    }
-
-    private String getText() {
-        return textBuffer == null && nullValue ? null : textBuffer == null ? StringUtils.EMPTY : textBuffer.toString();
-    }
-
-    @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+        updateCurrentId(attributes);
         if (TABLECONTENTS.equals(qName)) {
-            ((TableContents)tableContents).setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
-            ((TableContents)tableContents).setNumOfColumnsInternal(Integer.parseInt(attributes
-                    .getValue(ATTRIBUTE_NUMOFCOLUMNS)));
+            tableContents.setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
+            tableContents.setNumOfColumnsInternal(Integer.parseInt(attributes.getValue(ATTRIBUTE_NUMOFCOLUMNS)));
         } else if (ITableRows.TAG_NAME.equals(qName) || IIpsObjectGeneration.TAG_NAME.equals(qName)) {
             if (readWholeContent) {
-                currentTableRows = (TableRows)((TableContents)tableContents).createNewTableRows();
+                currentTableRows = (TableRows)tableContents.createNewTableRowsInternal(currentId);
+                tableContents.setTableRowsInternal(currentTableRows);
             } else {
                 throw new SAXException("Skip reading table content"); //$NON-NLS-1$
             }
@@ -149,8 +114,56 @@ public class TableContentsSaxHandler extends DefaultHandler {
         } else if (isExtensionPropertiesValueNode(qName)) {
             insideValueNode = true;
             nullValue = Boolean.valueOf(attributes.getValue(EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL)).booleanValue();
-            idValue = attributes.getValue(EXTENSIONPROPERTIES_ID);
+            extensionPropertyId = attributes.getValue(EXTENSIONPROPERTIES_ID);
         }
+    }
+
+    private void updateCurrentId(Attributes attributes) {
+        if (attributes != null) {
+            String idValue = attributes.getValue(IIpsObjectPart.PROPERTY_ID);
+            if (idValue != null) {
+                currentId = idValue;
+            }
+        }
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException {
+        if (ROW.equals(qName)) {
+            insideRowNode = false;
+            currentTableRows.newRow(columns, currentId);
+            columns.clear();
+        } else if (DESCRIPTION.equals(qName)) {
+            insideDescriptionNode = false;
+            if (!(StringUtils.isEmpty(currentDescriptionLocale))) {
+                Locale locale = new Locale(currentDescriptionLocale);
+                Description description = (Description)tableContents.getDescription(locale);
+                if (description == null) {
+                    description = (Description)tableContents.newDescription(currentId);
+                    description.setLocaleWithoutChangeEvent(locale);
+                }
+                description.setTextWithoutChangeEvent(getText());
+            }
+            textBuffer = null;
+        } else if (EXTENSIONPROPERTIES.equals(qName)) {
+            insideExtensionPropertiesNode = false;
+        } else if (isColumnValueNode(qName)) {
+            insideValueNode = false;
+            columns.add(getText());
+            textBuffer = null;
+        } else if (isExtensionPropertiesValueNode(qName)) {
+            insideValueNode = false;
+            if (currentTableRows == null) {
+                tableContents.addExtensionProperty(extensionPropertyId, getText());
+            } else {
+                throw new SAXNotSupportedException("Extension properties inside a generation node are not supported!"); //$NON-NLS-1$
+            }
+            textBuffer = null;
+        }
+    }
+
+    private String getText() {
+        return textBuffer == null && nullValue ? null : textBuffer == null ? StringUtils.EMPTY : textBuffer.toString();
     }
 
     @Override
