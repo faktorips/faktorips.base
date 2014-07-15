@@ -340,15 +340,17 @@ public class TestCaseDetailArea {
         IAttribute attribute = attributeValue.findAttribute(ipsProject);
         ValueDatatype datatype = findDatatype(attributeValue, testAttribute);
 
-        Label label = toolkit.createFormLabel(attributeComposite,
-                StringUtils.capitalize(attributeValue.getTestAttribute()));
 
         if (testAttribute == null || testAttribute.isBasedOnModelAttribute()) {
-            if (attribute == null && attributeValue.getValue().isEmpty()) {
+            if (attribute == null && StringUtils.isEmpty(attributeValue.getValue())) {
                 return null;
             }
         }
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+
+        Label label = toolkit.createFormLabel(attributeComposite,
+                StringUtils.capitalize(attributeValue.getTestAttribute()));
+
 
         if (testAttribute != null) {
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
@@ -681,14 +683,7 @@ public class TestCaseDetailArea {
      * Return <code>true</code> if the given test object is visible or not <code>false</code>.
      */
     private boolean isVisibleForContentFilter(ITestObject testObject) {
-        // try {
-        if (!isResultAndInputAttribute(testObject.isInput(), testObject.isExpectedResult())) {
-            return false;
-        }
-        // } catch (Exception e) {
-        // IpsPlugin.logAndShowErrorDialog(e);
-        // }
-        return true;
+        return isResultAndInputAttribute(testObject.isInput(), testObject.isExpectedResult());
     }
 
     /**
