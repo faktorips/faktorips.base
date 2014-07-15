@@ -15,31 +15,61 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**
- * Implementation of </code>IExtensionPropertyDefinition</code> for extension properties of type
+ * Implementation of <code>IExtensionPropertyDefinition</code> for extension properties of type
  * EnumType.
  * 
- * @author Faktor Zehn AG, Juergen Niedernhuber
+ * @deprecated Since 3.13 use {@link EnumExtensionPropertyDefinition2} instead as this class
+ *             represents an extension property for the deprecated type {@link EnumType}.
+ * 
+ * @see EnumType How to migrate to new Java enum.
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyDefinition {
 
     private EnumType enumType;
 
+    /**
+     * @deprecated Since 3.13 as this class is designed for an {@link EnumType} and as the type
+     *             {@link EnumType} is deprecated the instantiation of this class is deprecated,
+     *             too.
+     */
+    @Deprecated
     public EnumExtensionPropertyDefinition(EnumType enumType) {
         super();
         this.enumType = enumType;
     }
 
+    /**
+     * @deprecated Since 3.13 as this class is designed for an {@link EnumType} and as the type
+     *             {@link EnumType} is deprecated this method is deprecated, too. Use
+     *             {@link EnumExtensionPropertyDefinition2}. {@link #setDefaultValue(String s)}
+     *             instead.
+     */
+    @Deprecated
     @Override
     public void setDefaultValue(String s) {
         defaultValue = enumType.getEnumValue(s);
     }
 
+    /**
+     * @deprecated Since 3.13 as this class is designed for an {@link EnumType} and as the type
+     *             {@link EnumType} is deprecated this method is deprecated, too. Use
+     *             {@link EnumExtensionPropertyDefinition2}.
+     *             {@link #getValueFromString(String value)} instead.
+     */
+    @Deprecated
     @Override
     public Object getValueFromString(String value) {
         return enumType.getEnumValue(value);
     }
 
+    /**
+     * @deprecated Since 3.13 as this class is designed for an {@link EnumType} and as the type
+     *             {@link EnumType} is deprecated this method is deprecated, too. Use
+     *             {@link EnumExtensionPropertyDefinition2}.
+     *             {@link #getValueFromXml(Element valueElement)} instead.
+     */
+    @Deprecated
     @Override
     public Object getValueFromXml(Element valueElement) {
         String content = XmlUtil.getCDATAorTextContent(valueElement);
@@ -60,7 +90,10 @@ public abstract class EnumExtensionPropertyDefinition extends ExtensionPropertyD
      * Returns this ExtensionProperty's {@link EnumType}.
      * 
      * @return the {@link EnumType}
+     * @deprecated Since 3.13 as this class is designed for an {@link EnumType} and as the type
+     *             {@link EnumType} is deprecated this method is deprecated, too.
      */
+    @Deprecated
     public EnumType getEnumType() {
         return enumType;
     }

@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -78,6 +79,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
+import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -544,18 +546,30 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * 
+     */
     @Override
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() {
         List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
+        addPackageFragmentRoots(Arrays.asList(entries), roots);
+        return roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
+    }
+
+    private void addPackageFragmentRoots(List<IIpsObjectPathEntry> entries, List<IIpsPackageFragmentRoot> roots) {
         for (IIpsObjectPathEntry entry : entries) {
+            if (entry instanceof IIpsContainerEntry) {
+                IIpsContainerEntry containerEntry = (IIpsContainerEntry)entry;
+                addPackageFragmentRoots(containerEntry.resolveEntries(), roots);
+            }
             IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
             if (root != null) {
                 roots.add(root);
             }
         }
-
-        return roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
     }
 
     @Override
