@@ -32,7 +32,7 @@ import org.faktorips.util.ArgumentCheck;
 
 public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
-    private IFolder folder;
+    private IFolder correspondingResourceFolder;
 
     /**
      * Creates a new ips package fragment root with the indicated parent and name.
@@ -177,11 +177,11 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
     @Override
     public IResource getCorrespondingResource() {
-        if (this.folder == null) {
+        if (this.correspondingResourceFolder == null) {
             IProject project = (IProject)getParent().getCorrespondingResource();
-            this.folder = project.getFolder(getName());
+            this.correspondingResourceFolder = project.getFolder(getName());
         }
-        return this.folder;
+        return this.correspondingResourceFolder;
     }
 
     @Override

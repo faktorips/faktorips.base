@@ -33,7 +33,7 @@ import org.w3c.dom.Document;
  */
 public class IpsSrcFile extends AbstractIpsSrcFile {
 
-    private IFile file;
+    private IFile correspondingFile;
 
     public IpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
@@ -41,11 +41,11 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public IFile getCorrespondingFile() {
-        if (file == null) {
+        if (correspondingFile == null) {
             IFolder folder = (IFolder)getParent().getCorrespondingResource();
-            file = folder.getFile(getName());
+            correspondingFile = folder.getFile(getName());
         }
-        return file;
+        return correspondingFile;
     }
 
     @Override
