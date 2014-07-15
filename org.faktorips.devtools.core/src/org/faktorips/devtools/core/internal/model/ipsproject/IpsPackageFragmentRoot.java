@@ -32,6 +32,8 @@ import org.faktorips.util.ArgumentCheck;
 
 public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
+    private IFolder folder;
+
     /**
      * Creates a new ips package fragment root with the indicated parent and name.
      */
@@ -175,8 +177,11 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
 
     @Override
     public IResource getCorrespondingResource() {
-        IProject project = (IProject)getParent().getCorrespondingResource();
-        return project.getFolder(getName());
+        if (this.folder == null) {
+            IProject project = (IProject)getParent().getCorrespondingResource();
+            this.folder = project.getFolder(getName());
+        }
+        return this.folder;
     }
 
     @Override
@@ -255,4 +260,8 @@ public class IpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoot {
         getCorrespondingResource().delete(true, null);
     }
 
+    @Override
+    public void setName(String name) {
+        throw new UnsupportedOperationException("Package fragment root names cannot be changed."); //$NON-NLS-1$
+    }
 }

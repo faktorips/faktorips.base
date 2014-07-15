@@ -33,14 +33,19 @@ import org.w3c.dom.Document;
  */
 public class IpsSrcFile extends AbstractIpsSrcFile {
 
+    private IFile file;
+
     public IpsSrcFile(IIpsElement parent, String name) {
         super(parent, name);
     }
 
     @Override
     public IFile getCorrespondingFile() {
-        IFolder folder = (IFolder)getParent().getCorrespondingResource();
-        return folder.getFile(getName());
+        if (file == null) {
+            IFolder folder = (IFolder)getParent().getCorrespondingResource();
+            file = folder.getFile(getName());
+        }
+        return file;
     }
 
     @Override
@@ -143,4 +148,8 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
         ((IpsModel)getIpsModel()).removeIpsSrcFileContent(this);
     }
 
+    @Override
+    public void setName(String name) {
+        throw new UnsupportedOperationException("IpsSrcFile names cannot be changed."); //$NON-NLS-1$};
+    }
 }

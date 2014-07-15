@@ -62,6 +62,7 @@ import org.w3c.dom.Element;
 public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     private final IPath path;
+    private IFolder folder;
 
     IpsPackageFragment(IIpsElement parent, String name) {
         super(parent, name);
@@ -70,8 +71,11 @@ public class IpsPackageFragment extends AbstractIpsPackageFragment {
 
     @Override
     public IResource getCorrespondingResource() {
-        IFolder folder = (IFolder)getParent().getCorrespondingResource();
-        return folder.getFolder(path);
+        if (this.folder == null) {
+            IFolder folder = (IFolder)getParent().getCorrespondingResource();
+            this.folder = folder.getFolder(path);
+        }
+        return this.folder;
     }
 
     @Override
