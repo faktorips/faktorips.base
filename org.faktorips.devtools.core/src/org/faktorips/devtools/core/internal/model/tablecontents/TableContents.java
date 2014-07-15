@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- *
+ * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- *
+ * 
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -251,7 +251,7 @@ public class TableContents extends IpsObject implements ITableContents {
      * read the whole table contents ({@link TableRows}). This is the only way to stop the SAX
      * parser and not reading the whole file. If there is another exception included in the
      * {@link SAXException} we want to throw this as {@link CoreException}.
-     *
+     * 
      */
     private void handleSaxException(SAXException e) throws CoreException {
         if (e.getCause() != null) {
@@ -272,7 +272,7 @@ public class TableContents extends IpsObject implements ITableContents {
      * The reading of XML for {@link TableContents} is normally done by
      * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
      * XML DOM parser.
-     *
+     * 
      * @see #initFromInputStream(InputStream)
      */
     @Override
@@ -294,7 +294,7 @@ public class TableContents extends IpsObject implements ITableContents {
      * Because of these circumstances the old XML format had the tag name "Generations". We still
      * needs to read the old format in this method.
      * <p>
-     *
+     * 
      * @see #initFromInputStream(InputStream)
      */
     @Override
@@ -442,8 +442,8 @@ public class TableContents extends IpsObject implements ITableContents {
     }
 
     /**
-     * Returns whether the {@link TableRows} object is already initialized. The rows object is lazy
-     * initialized when needed. Use this method to check if they are already present.
+     * Returns whether the {@link TableRows} object has already been initialized. The rows object is
+     * lazily initialized when needed. Use this method to check if it is present.
      */
     private boolean isRowsInitialized() {
         return tableRows != null;

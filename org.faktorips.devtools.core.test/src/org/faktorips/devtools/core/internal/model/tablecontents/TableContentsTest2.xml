@@ -4,7 +4,7 @@
  Test data for TableContentsTest.java with unsupported extension property inside generation
 -->
 <TableContents description="blabla" tableStructure="RateTableStructure" numOfColumns="2">
-	<Generation id="0">
+	<Rows id="0">
 	    <ExtensionProperties>
 	        <Value id="prop1" isNull="false"><![CDATA[Generation.XYZ]]></Value>
 	        <Value id="prop2" isNull="false"><![CDATA[Generation.ABC]]></Value>
@@ -17,5 +17,5 @@
     		<Value isNull="false">19</Value>
     		<Value isNull="false">0.6</Value>
     	</Row>
-	</Generation>
+	</Rows>
 </TableContents>

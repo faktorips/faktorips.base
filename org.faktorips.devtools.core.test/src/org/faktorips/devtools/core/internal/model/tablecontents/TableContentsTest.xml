@@ -9,7 +9,7 @@
         <Value id="prop1" isNull="false"><![CDATA[XYZ]]></Value>
         <Value id="prop2" isNull="false"><![CDATA[ABC]]></Value>
     </ExtensionProperties> 	
-	<Generation id="0">
+	<Rows id="0">
     	<Row id="0" c0="18" c1="0.5">
     		<Value isNull="false">18</Value>
     		<Value isNull="false">0.5</Value>
@@ -18,5 +18,5 @@
     		<Value isNull="false">19</Value>
     		<Value isNull="false">0.6</Value>
     	</Row>
-	</Generation>
+	</Rows>
 </TableContents>
