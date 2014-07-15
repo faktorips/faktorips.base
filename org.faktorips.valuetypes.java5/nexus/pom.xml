@@ -1,0 +1,42 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.faktorips</groupId>
+	<artifactId>org.faktorips.valuetypes</artifactId>
+	<version>3.13.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<properties>
+		<updateMavenVersion>true</updateMavenVersion>
+	</properties>
+
+	<name>Faktor-IPS Valuetypes</name>
+	<description>Valuetypes libraries for Faktor-IPS</description>
+	<url>http://faktorzehn.org</url>
+
+	<scm>
+		<url>https://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</url>
+		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>GNU Public License Version 3 with additional permissions</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://projekte.faktorzehn.de/projekte/faktorips/org.faktorips.build.git</url>
+		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/org.faktorips.build</connection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>dirmeier</id>
+			<name>Cornelius Dirmeier</name>
+			<email>Cornelius.dirmeier@faktorzehn.de</email>
+		</developer>
+	</developers>
+
+</project>
