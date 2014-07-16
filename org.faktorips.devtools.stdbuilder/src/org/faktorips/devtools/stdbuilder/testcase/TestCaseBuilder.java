@@ -442,7 +442,7 @@ public class TestCaseBuilder extends AbstractArtefactBuilder {
                 continue;
             }
             if (testAttrValues[i].isInputAttribute(ipsProject) && isInput
-                    || testAttrValues[i].isExpextedResultAttribute(ipsProject) && !isInput) {
+                    || testAttrValues[i].isExpectedResultAttribute(ipsProject) && !isInput) {
                 ITestAttribute testAttribute = testAttrValues[i].findTestAttribute(ipsProject);
                 if (testAttribute == null) {
                     throw new CoreException(new IpsStatus(NLS.bind(

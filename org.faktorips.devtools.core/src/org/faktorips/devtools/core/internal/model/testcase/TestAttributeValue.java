@@ -165,7 +165,7 @@ public class TestAttributeValue extends AtomicIpsObjectPart implements ITestAttr
     }
 
     @Override
-    public boolean isExpextedResultAttribute(IIpsProject ipsProject) {
+    public boolean isExpectedResultAttribute(IIpsProject ipsProject) {
         return isTypeOrDefault(TestParameterType.EXPECTED_RESULT, DEFAULT_TYPE, ipsProject);
     }
 
