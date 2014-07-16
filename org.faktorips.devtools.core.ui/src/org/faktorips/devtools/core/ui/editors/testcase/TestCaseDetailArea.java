@@ -80,7 +80,7 @@ public class TestCaseDetailArea {
 
     private IIpsProject ipsProject;
 
-    /** Contains all edit sections the key is the name of the correspondin test parameter */
+    /** Contains all edit sections the key is the name of the corresponding test parameter */
     private HashMap<String, Section> sectionControls = new HashMap<String, Section>();
 
     /** Container holds all edit fields for test values and test attribute values */
@@ -310,7 +310,7 @@ public class TestCaseDetailArea {
             // Create the edit field only if the content provider provides the type of the test
             // attribute object
             if (isResultAndInputAttribute(attributeValue.isInputAttribute(ipsProject),
-                    attributeValue.isExpextedResultAttribute(ipsProject))) {
+                    attributeValue.isExpectedResultAttribute(ipsProject))) {
                 EditField<?> editField = createAttributeEditField(testPolicyCmpt, testPolicyCmpt, attributeComposite,
                         attributeValue);
 
@@ -338,19 +338,18 @@ public class TestCaseDetailArea {
         // get the ctrlFactory to create the edit field
         ITestAttribute testAttribute = attributeValue.findTestAttribute(ipsProject);
         IAttribute attribute = attributeValue.findAttribute(ipsProject);
-        ValueDatatype datatype = findDatatype(attributeValue, testAttribute);
-
 
         if (testAttribute == null || testAttribute.isBasedOnModelAttribute()) {
             if (attribute == null && StringUtils.isEmpty(attributeValue.getValue())) {
                 return null;
             }
         }
+
+        ValueDatatype datatype = findDatatype(attributeValue, testAttribute);
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
 
         Label label = toolkit.createFormLabel(attributeComposite,
                 StringUtils.capitalize(attributeValue.getTestAttribute()));
-
 
         if (testAttribute != null) {
             String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(testAttribute);
@@ -409,7 +408,7 @@ public class TestCaseDetailArea {
         addSectionSelectionListeners(editField, null, testPolicyCmptForSelection);
 
         // mark as expected result
-        if (attributeValue.isExpextedResultAttribute(ipsProject)) {
+        if (attributeValue.isExpectedResultAttribute(ipsProject)) {
             markAsExpected(editField);
         }
         // mark as failure
@@ -893,6 +892,13 @@ public class TestCaseDetailArea {
         return editField;
     }
 
+    public void selectSection(String uniquePath) {
+        Section sectionCtrl = getSection(uniquePath);
+        if (sectionCtrl != null) {
+            sectionCtrl.setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
+        }
+    }
+
     /**
      * Mouse listener class to select the section if the mouse button is clicked
      */
@@ -938,13 +944,6 @@ public class TestCaseDetailArea {
         @Override
         public void mouseUp(MouseEvent e) {
             // nothing to do
-        }
-    }
-
-    public void selectSection(String uniquePath) {
-        Section sectionCtrl = getSection(uniquePath);
-        if (sectionCtrl != null) {
-            sectionCtrl.setBackground(testCaseSection.getDisplay().getSystemColor(SWT.COLOR_WIDGET_LIGHT_SHADOW));
         }
     }
 }

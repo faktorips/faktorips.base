@@ -97,7 +97,7 @@ public interface ITestAttributeValue extends IIpsObjectPart {
      * 
      * @param ipsProject The IPS project which object path is used to search the attribute.
      */
-    public boolean isExpextedResultAttribute(IIpsProject ipsProject);
+    public boolean isExpectedResultAttribute(IIpsProject ipsProject);
 
     /**
      * Updates the default for the test attribute value. The default will be retrieved from the
