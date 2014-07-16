@@ -28,7 +28,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
 
     static final String TAG_NAME = "Column"; //$NON-NLS-1$
 
-    private String datatype = ""; //$NON-NLS-1$
+    private String datatype = StringUtils.EMPTY;
 
     private ValueDatatype valueDatatype;
 
@@ -112,10 +112,16 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
      */
     @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
-        if (valueDatatype == null || !(valueDatatype.getQualifiedName().equals(getDatatype()))) {
-            valueDatatype = ipsProject.findValueDatatype(datatype);
+        if (datatypeChanged(ipsProject)) {
+            valueDatatype = ipsProject.findValueDatatype(getDatatype());
         }
         return valueDatatype;
+    }
+
+    private boolean datatypeChanged(IIpsProject ipsProject) {
+        return ipsProject != null
+                && (valueDatatype == null || valueDatatype.getQualifiedName() != null
+                        && !(valueDatatype.getQualifiedName().equals(getDatatype())));
     }
 
 }

@@ -135,14 +135,25 @@ public class ColumnTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindValueDatatype_UsesCache() throws CoreException {
-        IIpsProject ipsProject = column.getIpsProject();
-        IIpsProject spyProject = spy(ipsProject);
+        IIpsProject spyProject = spy(column.getIpsProject());
 
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         column.findValueDatatype(spyProject);
 
-        column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
         column.findValueDatatype(spyProject);
         verify(spyProject, times(1)).findValueDatatype(Datatype.BOOLEAN.getQualifiedName());
+    }
+
+    @Test
+    public void testFindValueDatatype_NullDatatype() throws CoreException {
+        IIpsProject spyProject = spy(column.getIpsProject());
+
+        column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
+        column.findValueDatatype(spyProject);
+        column.setDatatype(null);
+
+        column.findValueDatatype(spyProject);
+        verify(spyProject, times(1)).findValueDatatype(Datatype.BOOLEAN.getQualifiedName());
+        verify(spyProject, times(1)).findValueDatatype(null);
     }
 }

@@ -150,6 +150,6 @@ public class IpsSrcFile extends AbstractIpsSrcFile {
 
     @Override
     public void setName(String name) {
-        throw new UnsupportedOperationException("IpsSrcFile names cannot be changed."); //$NON-NLS-1$};
+        throw new UnsupportedOperationException("IpsSrcFile names cannot be changed."); //$NON-NLS-1$
     }
 }
