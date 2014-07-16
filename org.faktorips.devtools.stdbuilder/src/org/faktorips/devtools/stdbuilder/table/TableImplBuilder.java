@@ -414,7 +414,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(i);
             methodBody.append(");");
             IColumn column = columns[i];
-            Datatype columnDatatype = column.findValueDatatype(column.getIpsProject());
+            Datatype columnDatatype = findDatatype(column.getDatatype(), column.getIpsProject());
             DatatypeHelper helper = getTableStructure().getIpsProject().getDatatypeHelper(columnDatatype);
 
             methodBody.appendClassName(columnDatatype.getJavaClassName());
@@ -970,7 +970,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private Datatype getDatatypeForKeyName(String keyName) throws CoreException {
         IColumn column = getTableStructure().getColumn(keyName);
         if (column != null) {
-            return column.findValueDatatype(column.getIpsProject());
+            return findDatatype(column.getDatatype(), column.getIpsProject());
         }
         IColumnRange range = getTableStructure().getRange(keyName);
         if (range != null) {

@@ -63,7 +63,7 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
             IColumn[] columns = structure.getColumns();
             datatypes = new Datatype[columns.length];
             for (int i = 0; i < columns.length; i++) {
-                datatypes[i] = columns[i].findValueDatatype(structure.getIpsProject());
+                datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);

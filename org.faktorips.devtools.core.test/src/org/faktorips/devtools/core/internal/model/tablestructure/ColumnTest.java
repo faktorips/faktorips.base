@@ -15,14 +15,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -32,11 +28,11 @@ import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
-@RunWith(MockitoJUnitRunner.class)
+/**
+ *
+ */
 public class ColumnTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
@@ -120,40 +116,9 @@ public class ColumnTest extends AbstractIpsPluginTest {
     @Test
     public void testFindValueDatatype() throws CoreException {
         column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
-        IIpsProject spyProject = spy(column.getIpsProject());
-        ValueDatatype validValueDatatype = column.findValueDatatype(spyProject);
-
-        verify(spyProject).findValueDatatype(Datatype.BOOLEAN.getQualifiedName());
-        assertEquals(Datatype.BOOLEAN, validValueDatatype);
+        assertEquals(Datatype.BOOLEAN, column.findValueDatatype(column.getIpsProject()));
 
         column.setDatatype("NotADatatype");
-        ValueDatatype invalidValueDatatype = column.findValueDatatype(spyProject);
-
-        verify(spyProject).findValueDatatype("NotADatatype");
-        assertNull(invalidValueDatatype);
-    }
-
-    @Test
-    public void testFindValueDatatype_UsesCache() throws CoreException {
-        IIpsProject spyProject = spy(column.getIpsProject());
-
-        column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
-        column.findValueDatatype(spyProject);
-
-        column.findValueDatatype(spyProject);
-        verify(spyProject, times(1)).findValueDatatype(Datatype.BOOLEAN.getQualifiedName());
-    }
-
-    @Test
-    public void testFindValueDatatype_NullDatatype() throws CoreException {
-        IIpsProject spyProject = spy(column.getIpsProject());
-
-        column.setDatatype(Datatype.BOOLEAN.getQualifiedName());
-        column.findValueDatatype(spyProject);
-        column.setDatatype(null);
-
-        column.findValueDatatype(spyProject);
-        verify(spyProject, times(1)).findValueDatatype(Datatype.BOOLEAN.getQualifiedName());
-        verify(spyProject, times(1)).findValueDatatype(null);
+        assertNull(column.findValueDatatype(column.getIpsProject()));
     }
 }

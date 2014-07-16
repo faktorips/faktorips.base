@@ -151,7 +151,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         IColumn[] columns = structure.getColumns();
         Datatype[] datatypes = new Datatype[columns.length];
         for (int i = 0; i < columns.length; i++) {
-            datatypes[i] = columns[i].findValueDatatype(structure.getIpsProject());
+            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
         }
         return datatypes;
     }

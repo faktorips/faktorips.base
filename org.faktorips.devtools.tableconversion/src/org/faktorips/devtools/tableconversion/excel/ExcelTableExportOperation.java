@@ -143,7 +143,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         // init datatypes
         Datatype[] datatypes = new Datatype[contents.getNumOfColumns()];
         for (int i = 0; i < datatypes.length; i++) {
-            datatypes[i] = structure.getColumns()[i].findValueDatatype(structure.getIpsProject());
+            datatypes[i] = structure.getIpsProject().findDatatype(structure.getColumns()[i].getDatatype());
         }
 
         IRow[] contentRows = generation.getRows();
