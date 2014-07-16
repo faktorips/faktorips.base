@@ -13,7 +13,6 @@ package org.faktorips.devtools.tableconversion;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -28,7 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.value.ValueFactory;
@@ -62,7 +61,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      */
     protected ITableContents createValidTableContents(IIpsProject ipsProject) throws CoreException {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "ExportSource");
-        ITableContentsGeneration exportSource = createExportSource(ipsProject, contents);
+        ITableRows exportSource = createExportSource(ipsProject, contents);
 
         IRow row1 = exportSource.newRow();
         row1.setValue(0, "true");
@@ -94,7 +93,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row3.setValue(6, null);
         row3.setValue(7, null);
 
-        exportSource.getTimedIpsObject().getIpsSrcFile().save(true, null);
+        exportSource.getIpsObject().getIpsSrcFile().save(true, null);
 
         return contents;
     }
@@ -104,7 +103,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
      */
     protected ITableContents createInvalidTableContents(IIpsProject ipsProject) throws CoreException {
         ITableContents contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "ExportSource");
-        ITableContentsGeneration exportSource = createExportSource(ipsProject, contents);
+        ITableRows exportSource = createExportSource(ipsProject, contents);
 
         IRow row1 = exportSource.newRow();
         row1.setValue(0, "INVALID"); // BOOLEAN
@@ -116,7 +115,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row1.setValue(6, "INVALID"); // MONEY
         row1.setValue(7, "invalid is impossible"); // STRING
 
-        exportSource.getTimedIpsObject().getIpsSrcFile().save(true, null);
+        exportSource.getIpsObject().getIpsSrcFile().save(true, null);
 
         return contents;
     }
@@ -179,8 +178,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
                 exportColumnHeaderRow, new MessageList());
     }
 
-    private ITableContentsGeneration createExportSource(IIpsProject ipsProject, ITableContents contents)
-            throws CoreException {
+    private ITableRows createExportSource(IIpsProject ipsProject, ITableContents contents) throws CoreException {
 
         contents.newColumn(null);
         contents.newColumn(null);
@@ -194,7 +192,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         structure = createTableStructure(ipsProject);
         contents.setTableStructure(structure.getQualifiedName());
 
-        return (ITableContentsGeneration)contents.newGeneration(new GregorianCalendar());
+        return contents.newTableRows();
     }
 
     /**

@@ -46,7 +46,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
 
     private int rowNumber = 0;
 
-    Row(TableContentsGeneration parent, String id) {
+    Row(TableRows parent, String id) {
         super(parent, id);
         initValues();
     }
@@ -59,8 +59,8 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     /**
      * Returns the table contents generation this row belongs to
      */
-    public TableContentsGeneration getTableContentsGeneration() {
-        return (TableContentsGeneration)getParent();
+    public TableRows getTableContentsGeneration() {
+        return (TableRows)getParent();
     }
 
     private int getNumOfColumnsViaTableContents() {

@@ -19,6 +19,7 @@ public class Messages extends NLS {
     public static String Migration_3_9_0_description;
     public static String Migration_3_11_0_description;
     public static String Migration_3_12_0_description;
+    public static String Migration_3_13_0_description;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

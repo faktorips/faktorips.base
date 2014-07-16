@@ -45,11 +45,11 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsGeneration;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableRows;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -468,8 +468,8 @@ public class ContentPage extends IpsObjectEditorPage {
         return getTableContents().findTableStructure(getTableContents().getIpsProject());
     }
 
-    private ITableContentsGeneration getActiveGeneration() {
-        return (ITableContentsGeneration)getTableEditor().getTableContents().getFirstGeneration();
+    private ITableRows getActiveGeneration() {
+        return getTableEditor().getTableContents().getTableRows();
     }
 
     /**
@@ -480,7 +480,7 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     private boolean wasUniqueKeyErrorStateChanged() {
-        return ((TableContentsGeneration)getActiveGeneration()).wasUniqueKeyErrorStateChange();
+        return ((TableRows)getActiveGeneration()).wasUniqueKeyErrorStateChange();
     }
 
     public void refreshTable(final IRow row) {
@@ -498,7 +498,7 @@ public class ContentPage extends IpsObjectEditorPage {
     }
 
     IRow getRow(int rowIndex) {
-        return ((TableContentsGeneration)getActiveGeneration()).getRow(rowIndex);
+        return ((TableRows)getActiveGeneration()).getRow(rowIndex);
     }
 
     private class TableImportExportActionInEditor extends TableImportExportAction {

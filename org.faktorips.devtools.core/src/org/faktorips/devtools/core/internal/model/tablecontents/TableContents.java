@@ -10,13 +10,14 @@
 
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -27,52 +28,63 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
+import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotSupportedException;
 
-public class TableContents extends TimedIpsObject implements ITableContents {
+public class TableContents extends IpsObject implements ITableContents {
     // Performance Potential Tabellen: Datentypen der Columns cachen
     private String structure = ""; //$NON-NLS-1$
+
+    private ITableRows tableRows;
+
     private int numOfColumns = 0;
 
     public TableContents(IIpsSrcFile file) {
         super(file);
     }
 
-    IpsObjectGeneration createNewGenerationInternal(GregorianCalendar validFrom) {
-        TableContentsGeneration generation = (TableContentsGeneration)super.newGenerationInternal(getNextPartId());
-        generation.setValidFromInternal(validFrom);
-        return generation;
+    @Override
+    public ITableRows newTableRows() {
+        setTableRowsInternal(createNewTableRowsInternal(getNextPartId()));
+        partWasAdded(getTableRowsInternal());
+        return getTableRowsInternal();
     }
 
-    @Override
-    protected IpsObjectGeneration createNewGeneration(String id) {
-        TableContentsGeneration tableContentsGeneration = new TableContentsGeneration(this, id);
-        initUniqueKeyValidator(tableContentsGeneration);
-        return tableContentsGeneration;
+    protected ITableRows createNewTableRowsInternal(String id) {
+        TableRows newTableRows = new TableRows(this, id);
+        initUniqueKeyValidator(newTableRows);
+        return newTableRows;
     }
 
     /**
      * Creates an unique key validator for the given table contents generation
      */
-    private void initUniqueKeyValidator(TableContentsGeneration tableContentsGeneration) {
+    private void initUniqueKeyValidator(TableRows tableRows) {
         ITableStructure tableStructure;
         try {
             tableStructure = findTableStructure(getIpsProject());
@@ -81,7 +93,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
             IpsPlugin.log(e);
             return;
         }
-        tableContentsGeneration.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
+        tableRows.initUniqueKeyValidator(tableStructure, new UniqueKeyValidator());
     }
 
     @Override
@@ -125,12 +137,19 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return numOfColumns;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Method is overwritten in TableContents to make it visible for {@link TableContentsSaxHandler}.
+     */
+    @Override
+    protected IDescription newDescription(String id) {
+        return super.newDescription(id);
+    }
+
     @Override
     public void newColumnAt(int index, String defaultValue) {
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            ((TableContentsGeneration)generation).newColumn(index, defaultValue);
-        }
+        ((TableRows)getTableRowsInternal()).newColumn(index, defaultValue);
         numOfColumns++;
         objectHasChanged();
     }
@@ -140,10 +159,7 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         if (columnIndex < 0 || columnIndex >= numOfColumns) {
             throw new IllegalArgumentException("Illegal column index " + columnIndex); //$NON-NLS-1$
         }
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            ((TableContentsGeneration)generation).removeColumn(columnIndex);
-        }
+        ((TableRows)getTableRowsInternal()).removeColumn(columnIndex);
         numOfColumns--;
         objectHasChanged();
     }
@@ -210,12 +226,55 @@ public class TableContents extends TimedIpsObject implements ITableContents {
     }
 
     @Override
+    public void initFromInputStream(InputStream is) throws CoreException {
+        initTableContentFromStream(is, false);
+    }
+
+    private void initTableContentFromStream(InputStream is, boolean readWholeContent) throws CoreException {
+        try {
+            reinitPartCollections();
+            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
+            saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this, readWholeContent));
+        } catch (SAXNotSupportedException e) {
+            throw new CoreException(new IpsStatus(e));
+        } catch (SAXException e) {
+            handleSaxException(e);
+        } catch (ParserConfigurationException e) {
+            throw new CoreException(new IpsStatus(e));
+        } catch (IOException e) {
+            throw new CoreException(new IpsStatus(e));
+        }
+    }
+
+    /**
+     * {@link SAXException} may be thrown by out {@link TableContentsSaxHandler} when we not want to
+     * read the whole table contents ({@link TableRows}). This is the only way to stop the SAX
+     * parser and not reading the whole file. If there is another exception included in the
+     * {@link SAXException} we want to throw this as {@link CoreException}.
+     * 
+     */
+    private void handleSaxException(SAXException e) throws CoreException {
+        if (e.getCause() != null) {
+            throw new CoreException(new IpsStatus(e.getCause()));
+        }
+    }
+
+    @Override
     protected void propertiesToXml(Element newElement) {
         super.propertiesToXml(newElement);
         newElement.setAttribute(PROPERTY_TABLESTRUCTURE, structure);
-        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$ 
+        newElement.setAttribute(PROPERTY_NUMOFCOLUMNS, "" + numOfColumns); //$NON-NLS-1$
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The reading of XML for {@link TableContents} is normally done by
+     * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
+     * XML DOM parser.
+     * 
+     * @see #initFromInputStream(InputStream)
+     */
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
@@ -223,14 +282,78 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         numOfColumns = Integer.parseInt(element.getAttribute(PROPERTY_NUMOFCOLUMNS));
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * The reading of XML for {@link TableContents} is normally done by
+     * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
+     * XML DOM parser.
+     * <p>
+     * Up to version 3.12 the {@link TableContents} was derived from {@link TimedIpsObject} and
+     * hence the {@link TableRows} were table generations derived from {@link IpsObjectGeneration}.
+     * Because of these circumstances the old XML format had the tag name "Generations". We still
+     * needs to read the old format in this method.
+     * <p>
+     * 
+     * @see #initFromInputStream(InputStream)
+     */
     @Override
-    public void initFromInputStream(InputStream is) throws CoreException {
-        try {
-            reinitPartCollections();
-            SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
-            saxParser.parse(new InputSource(is), new TableContentsSaxHandler(this));
-        } catch (Exception e) {
-            throw new CoreException(new IpsStatus(e));
+    protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
+        String xmlTagName = xmlTag.getNodeName();
+        if (TableRows.TAG_NAME.equals(xmlTagName) || IIpsObjectGeneration.TAG_NAME.equals(xmlTagName)) {
+            return createNewTableRowsInternal(id);
+        }
+        return null;
+    }
+
+    @Override
+    protected IIpsObjectPart newPartThis(Class<? extends IIpsObjectPart> partType) {
+        IIpsObjectPart part;
+        if (ITableRows.class.isAssignableFrom(partType)) {
+            part = createNewTableRowsInternal(getNextPartId());
+            return part;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected IIpsElement[] getChildrenThis() {
+        return new IIpsElement[] { getTableRowsInternal() };
+    }
+
+    @Override
+    protected boolean addPartThis(IIpsObjectPart part) {
+        if (part instanceof ITableRows) {
+            if (!isRowsInitialized()) {
+                setTableRowsInternal(((ITableRows)part));
+                return true;
+            } else {
+                throw new IllegalStateException("TableRows object already set for " + this); //$NON-NLS-1$
+            }
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    protected void reinitPartCollectionsThis() {
+        setTableRowsInternal(null);
+    }
+
+    @Override
+    protected boolean removePartThis(IIpsObjectPart part) {
+        if (part instanceof ITableRows) {
+            setTableRowsInternal(null);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected void validateChildren(MessageList result, IIpsProject ipsProject) throws CoreException {
+        if (isRowsInitialized() || IpsPlugin.getDefault().getIpsPreferences().isAutoValidateTables()) {
+            super.validateChildren(result, ipsProject);
         }
     }
 
@@ -306,26 +429,43 @@ public class TableContents extends TimedIpsObject implements ITableContents {
         return getTableStructure();
     }
 
-    /**
-     * As far Tables only have one generation and the valid from date may no be specified correctly
-     * we always return the same generation.
-     * 
-     * {@inheritDoc}
-     */
     @Override
-    public IIpsObjectGeneration getGenerationEffectiveOn(GregorianCalendar date) {
-        return getFirstGeneration();
+    public ITableRows getTableRows() {
+        return getTableRowsInternal();
+    }
+
+    private ITableRows getTableRowsInternal() {
+        if (!isRowsInitialized()) {
+            readTableRows();
+        }
+        return tableRows;
     }
 
     /**
-     * As far Tables only have one generation and the valide from date may no be specified correctly
-     * we always return the same generation.
-     * 
-     * {@inheritDoc}
+     * Returns whether the {@link TableRows} object has already been initialized. The rows object is
+     * lazily initialized when needed. Use this method to check if it is present.
      */
-    @Override
-    public IIpsObjectGeneration getGenerationByEffectiveDate(GregorianCalendar date) {
-        return getFirstGeneration();
+    private boolean isRowsInitialized() {
+        return tableRows != null;
     }
 
+    private void readTableRows() {
+        if (!getIpsSrcFile().exists()) {
+            newTableRows();
+            return;
+        }
+        InputStream inputStream = null;
+        try {
+            inputStream = getIpsSrcFile().getContentFromEnclosingResource();
+            initTableContentFromStream(inputStream, true);
+        } catch (CoreException e) {
+            e.printStackTrace();
+        } finally {
+            IoUtil.close(inputStream);
+        }
+    }
+
+    protected void setTableRowsInternal(ITableRows tableRows) {
+        this.tableRows = tableRows;
+    }
 }

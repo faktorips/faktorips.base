@@ -22,10 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablecontents.Messages;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
@@ -66,11 +65,10 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         IProgressMonitor progressMonitor = initProgressMonitor(monitor);
         // Currently, there is only one generation per table contents
         ITableContents contents = getTableContents(typeToExport);
-        IIpsObjectGeneration[] gens = contents.getGenerationsOrderedByValidDate();
-        ITableContentsGeneration currentGeneration = (ITableContentsGeneration)gens[0];
+        ITableRows currentTableRows = contents.getTableRows();
 
         progressMonitor
-                .beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentGeneration.getNumOfRows());
+                .beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentTableRows.getNumOfRows());
 
         initWorkbookAndSheet();
         progressMonitor.worked(1);
@@ -82,7 +80,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
             return;
         }
 
-        exportDataCells(getSheet(), currentGeneration, structure, progressMonitor, exportColumnHeaderRow);
+        exportDataCells(getSheet(), currentTableRows, structure, progressMonitor, exportColumnHeaderRow);
         if (progressMonitor.isCanceled()) {
             return;
         }
@@ -135,7 +133,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
      *             structure.
      */
     private void exportDataCells(Sheet sheet,
-            ITableContentsGeneration generation,
+            ITableRows generation,
             ITableStructure structure,
             IProgressMonitor monitor,
             boolean exportColumnHeaderRow) throws CoreException {

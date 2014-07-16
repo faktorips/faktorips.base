@@ -157,7 +157,6 @@ public interface HtmlExportMessages {
     public static final String TableContentsContentPageElement_description = "TableContentsContentPageElement_description";
     public static final String TableContentsContentPageElement_generation = "TableContentsContentPageElement_generation";
     public static final String TableContentsContentPageElement_noContent = "TableContentsContentPageElement_noContent";
-    public static final String TableContentsContentPageElement_noGenerations = "TableContentsContentPageElement_noGenerations";
 
     public static final String TableStructureContentPageElement_noUniqueKeys = "TableStructureContentPageElement_noUniqueKeys";
     public static final String TableStructureContentPageElement_columnRangeName = "TableStructureContentPageElement_columnRangeName";

@@ -62,76 +62,76 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * The id of the Faktor-IPS project nature.
      */
-    public final static String NATURE_ID = IpsPlugin.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
+    public static final String NATURE_ID = IpsPlugin.PLUGIN_ID + ".ipsnature"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "IPSPROJECT-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the project's property file is missing.
      */
-    public final static String MSGCODE_MISSING_PROPERTY_FILE = MSGCODE_PREFIX + "MissingPropertyFile"; //$NON-NLS-1$
+    public static final String MSGCODE_MISSING_PROPERTY_FILE = MSGCODE_PREFIX + "MissingPropertyFile"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the project's property file's contents is not
      * parsable.
      */
-    public final static String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
+    public static final String MSGCODE_UNPARSABLE_PROPERTY_FILE = MSGCODE_PREFIX + "UnparsablePropertyFile"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that no version manager was installed for a required
      * feature.
      */
-    public final static String MSGCODE_NO_VERSIONMANAGER = MSGCODE_PREFIX + "NoVersionManager"; //$NON-NLS-1$
+    public static final String MSGCODE_NO_VERSIONMANAGER = MSGCODE_PREFIX + "NoVersionManager"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the version of the required feature is too low.
      */
-    public final static String MSGCODE_VERSION_TOO_LOW = MSGCODE_PREFIX + "VersionTooLow"; //$NON-NLS-1$
+    public static final String MSGCODE_VERSION_TOO_LOW = MSGCODE_PREFIX + "VersionTooLow"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the version of the required feature is only
      * compatible
      */
-    public final static String MSGCODE_COMPATIBLE_VERSIONS = MSGCODE_PREFIX + "CompatibleVersions"; //$NON-NLS-1$
+    public static final String MSGCODE_COMPATIBLE_VERSIONS = MSGCODE_PREFIX + "CompatibleVersions"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the version of the required feature is *not*
      * compatible.
      */
-    public final static String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
+    public static final String MSGCODE_INCOMPATIBLE_VERSIONS = MSGCODE_PREFIX + "IncompatibleVersions"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the migration information for this project for a
      * feature is invalid.
      */
-    public final static String MSGCODE_INVALID_MIGRATION_INFORMATION = MSGCODE_PREFIX + "InvalidMigrationInformation"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_MIGRATION_INFORMATION = MSGCODE_PREFIX + "InvalidMigrationInformation"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the corresponding Java Project has build path
      * errors.
      */
-    public final static String MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS = MSGCODE_PREFIX
+    public static final String MSGCODE_JAVA_PROJECT_HAS_BUILDPATH_ERRORS = MSGCODE_PREFIX
             + "JavaProjectHasBuildPathErrors"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the base package generated name is duplicated
      * specified in different projects.
      */
-    public final static String MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
+    public static final String MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS = MSGCODE_PREFIX
             + "DuplicateTocFilePathInDifferentProjects"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there is a cycle in the ips object path.
      */
-    public final static String MSGCODE_CYCLE_IN_IPS_OBJECT_PATH = MSGCODE_PREFIX + "CycleInIpsObjectPath"; //$NON-NLS-1$
+    public static final String MSGCODE_CYCLE_IN_IPS_OBJECT_PATH = MSGCODE_PREFIX + "CycleInIpsObjectPath"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that there exist two runtime ids which collide.
      */
-    public final static String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
+    public static final String MSGCODE_RUNTIME_ID_COLLISION = MSGCODE_PREFIX + "RuntimeIdCollision"; //$NON-NLS-1$
 
     /**
      * Returns the corresponding platform project.
@@ -400,6 +400,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns the project's package fragment roots or an empty array if none is found.
+     * <p>
+     * If the project references {@link IIpsContainerEntry container entries} in its IPS object path
+     * the result also contains resolved {@link IIpsPackageFragmentRoot roots} that are included in
+     * the container.
+     * <p>
+     * The {@link IIpsPackageFragmentRoot package fragment roots} of referenced projects are not
+     * resolved.
+     * 
      */
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots();
 

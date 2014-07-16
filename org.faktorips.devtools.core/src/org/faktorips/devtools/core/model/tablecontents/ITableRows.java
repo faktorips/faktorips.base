@@ -10,14 +10,19 @@
 
 package org.faktorips.devtools.core.model.tablecontents;
 
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
-public interface ITableContentsGeneration extends IIpsObjectGeneration {
+public interface ITableRows extends IIpsObjectPart {
+
+    /**
+     * The name of the XML tag used if this object is saved to XML.
+     */
+    public static final String TAG_NAME = "Rows"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "TABLECONTENTSGENERATION-"; //$NON-NLS-1$
 
     /**
      * Returns the rows that make up the table.
