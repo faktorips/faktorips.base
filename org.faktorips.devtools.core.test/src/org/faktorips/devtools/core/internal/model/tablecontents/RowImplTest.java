@@ -13,14 +13,13 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
 
     private IIpsSrcFile ipsSrcFile;
     private ITableContents table;
-    private ITableContentsGeneration generation;
+    private ITableRows generation;
     private Row row;
     private Row row2;
 
@@ -43,7 +42,7 @@ public class RowImplTest extends AbstractIpsPluginTest {
                 "StructureTable");
         table = (ITableContents)newIpsObject(project, IpsObjectType.TABLE_CONTENTS, "TestTable");
         table.setTableStructure(structure.getQualifiedName());
-        generation = (ITableContentsGeneration)table.newGeneration();
+        generation = table.newTableRows();
         table.newColumn(null);
         table.newColumn(null);
         table.newColumn(null);
@@ -59,12 +58,11 @@ public class RowImplTest extends AbstractIpsPluginTest {
         row.setValue(1, "newValue1");
         assertEquals("newValue1", row.getValue(1));
         assertTrue(ipsSrcFile.isDirty());
+    }
 
-        try {
-            row.setValue(4, "newValue2");
-            fail();
-        } catch (RuntimeException e) {
-        }
+    @Test(expected = RuntimeException.class)
+    public void testSetValue_Exception() {
+        row.setValue(4, "newValue2");
     }
 
     @Test

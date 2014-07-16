@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
@@ -147,12 +147,11 @@ public class TableImportWizard extends IpsObjectImportWizard {
             final ITableFormat format = startingPage.getFormat();
             final ITableStructure structure = getTableStructure();
             ITableContents contents = getTableContents();
-            final ITableContentsGeneration generation = (ITableContentsGeneration)contents
-                    .getGenerationsOrderedByValidDate()[0];
+            final ITableRows tableRows = contents.getTableRows();
 
             // no append, so remove any existing content
             if (!startingPage.isImportExistingAppend()) {
-                generation.clear();
+                tableRows.clear();
             }
 
             final MessageList messageList = new MessageList();
@@ -162,7 +161,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                 IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
                     @Override
                     public void run(IProgressMonitor monitor) throws CoreException {
-                        format.executeTableImport(structure, new Path(filename), generation, nullRepresentation,
+                        format.executeTableImport(structure, new Path(filename), tableRows, nullRepresentation,
                                 ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
                     }
                 };

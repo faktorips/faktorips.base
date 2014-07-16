@@ -19,7 +19,6 @@ import org.eclipse.swt.events.FocusEvent;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
 
 /**
  * Supports the navigation in a <tt>Table</tt> / <tt>TableViewer</tt> using the
@@ -234,7 +233,7 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     private void appendTableRow() {
         if (tableViewer.getInput() instanceof ITableContents) {
             ITableContents tableContents = (ITableContents)tableViewer.getInput();
-            IRow newRow = ((ITableContentsGeneration)tableContents.getFirstGeneration()).newRow();
+            IRow newRow = tableContents.getTableRows().newRow();
             tableViewer.add(newRow);
 
         } else if (tableViewer.getInput() instanceof IEnumValueContainer) {
