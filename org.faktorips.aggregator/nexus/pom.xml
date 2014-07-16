@@ -16,6 +16,7 @@
 	<packaging>pom</packaging>
 
 	<modules>
+		<module>../../org.faktorips.runtime.java5/nexus</module>
 		<module>../../org.faktorips.valuetypes.java5/nexus</module>
 	</modules>
 
