@@ -1154,7 +1154,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * {@inheritDoc}
      * <p>
      * Returns <code>true</code> if the generated artifact is not published and we do generate
-     * published interfaces. No internal artifactsIf if no generate published interfaces generated.
+     * published interfaces. If we do not generate published interfaces, there are not internal
+     * artifacts at all.
      * 
      * @see #isBuildingPublishedSourceFile()
      */
