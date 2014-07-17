@@ -10,7 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.enumtype;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -40,7 +40,7 @@ public class EnumXmlAdapterBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testGetGeneratedJavaElements() {
         generatedJavaElements = builder.getGeneratedJavaElements(enumType);
-        assertTrue(generatedJavaElements.contains(getGeneratedJavaXmlAdapter()));
+        assertFalse(generatedJavaElements.contains(getGeneratedJavaXmlAdapter()));
     }
 
     private IType getGeneratedJavaXmlAdapter() {

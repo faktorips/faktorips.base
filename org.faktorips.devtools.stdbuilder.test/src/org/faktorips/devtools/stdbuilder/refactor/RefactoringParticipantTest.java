@@ -106,7 +106,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
         assertFalse(getJavaType(originalPackageName, originalName + "XmlAdapter", false, true, ipsProject).exists());
 
         assertTrue(getJavaType(targetPackageName, newName, true, false, ipsProject).exists());
-        assertTrue(getJavaType(targetPackageName, newName + "XmlAdapter", false, true, ipsProject).exists());
+        assertTrue(getJavaType(targetPackageName, newName + "XmlAdapter", false, false, ipsProject).exists());
     }
 
     protected void checkJavaSourceFilesTableStructure(String originalPackageName,
