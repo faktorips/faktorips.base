@@ -1046,7 +1046,7 @@ public class TestCase extends IpsObject implements ITestCase {
             ITestAttributeValue[] testAttributeValues = element.getTestAttributeValues();
             for (ITestAttributeValue testAttributeValue : testAttributeValues) {
                 if ((input && testAttributeValue.isInputAttribute(getIpsProject()))
-                        || (!input && testAttributeValue.isExpextedResultAttribute(getIpsProject()))) {
+                        || (!input && testAttributeValue.isExpectedResultAttribute(getIpsProject()))) {
                     testAttributeValue.setDefaultValue();
                 }
             }
