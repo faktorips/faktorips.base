@@ -148,9 +148,9 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
 
     private MessageList getErrorMessagesFor(IAssociation association) {
         try {
-            MessageList list = association.validate(ipsProject);
-            list = list.getMessages(Message.ERROR);
-            return list;
+            MessageList errorList = association.validate(ipsProject);
+            errorList = errorList.getMessages(Message.ERROR);
+            return errorList;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
