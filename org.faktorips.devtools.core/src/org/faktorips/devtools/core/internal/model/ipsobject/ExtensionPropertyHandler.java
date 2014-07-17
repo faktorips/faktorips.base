@@ -251,6 +251,10 @@ public class ExtensionPropertyHandler {
         return internalDocument;
     }
 
+    public void removeObsoleteExtensionProperties() {
+        extPropertiyValuesMap.removeObsoleteExtensionProperties(ipsObjectPartContainer);
+    }
+
     /**
      * Validates the extension property values.
      * 
@@ -330,6 +334,15 @@ public class ExtensionPropertyHandler {
             return Collections.synchronizedMap(new LinkedHashMap<String, ExtensionPropertyValue>(4));
         }
 
+        public void removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
+            for (Entry<String, ExtensionPropertyValue> entry : internalMap.entrySet()) {
+                String propertyId = entry.getKey();
+                IExtensionPropertyDefinition propertyDefinition = ipsObjectPartContainer
+                        .getExtensionPropertyDefinition(propertyId);
+                if (propertyDefinition == null) {
+                    internalMap.remove(propertyId);
+                }
+            }
+        }
     }
-
 }

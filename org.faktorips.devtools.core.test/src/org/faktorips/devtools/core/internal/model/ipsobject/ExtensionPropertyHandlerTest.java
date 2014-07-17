@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -480,6 +481,19 @@ public class ExtensionPropertyHandlerTest {
         assertEquals(invalidExtensionProperty, iterator.next());
         assertEquals(invalidExtensionProperty2, iterator.next());
         assertEquals(invalidExtensionProperty3, iterator.next());
+    }
+
+    @Test
+    public void testRemoveObsoleteExtensionPropertiesExtensionProperties() {
+        doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(INVALID_ID);
+        doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(INVALID_ID + 2);
+        initMaps();
+
+        extensionPropertyHandler.removeObsoleteExtensionProperties();
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
+
+        assertEquals(2, map.values().size());
+        assertNull(map.get(INVALID_ID + 3));
     }
 
 }
