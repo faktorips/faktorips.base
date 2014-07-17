@@ -140,12 +140,17 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
     }
 
     protected void addMessageIfAssociationHasValidationMessages(IAssociation association, MessageList messageList) {
+        MessageList relMessages = getErrorMessagesFor(association);
+        if (!relMessages.isEmpty()) {
+            messageList.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
+        }
+    }
+
+    private MessageList getErrorMessagesFor(IAssociation association) {
         try {
-            // get all messages for the relation types and add them
-            MessageList relMessages = association.validate(ipsProject);
-            if (!relMessages.isEmpty()) {
-                messageList.add(relMessages, new ObjectProperty(association.getTargetRoleSingular(), null), true);
-            }
+            MessageList list = association.validate(ipsProject);
+            list = list.getMessages(Message.ERROR);
+            return list;
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

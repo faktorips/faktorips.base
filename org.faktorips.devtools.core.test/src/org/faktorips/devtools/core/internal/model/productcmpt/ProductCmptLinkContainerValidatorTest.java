@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -28,7 +28,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,42 +41,38 @@ import org.mockito.verification.VerificationMode;
 public class ProductCmptLinkContainerValidatorTest {
 
     @Mock
-    IIpsProject ipsProject;
+    private IIpsProject ipsProject;
     @Mock
-    IProductCmptLinkContainer linkContainer;
+    private IProductCmptLinkContainer linkContainer;
     @Mock
-    IProductCmptType prodCmptType;
+    private IProductCmptType prodCmptType;
     @Mock
-    IProductCmptLink link1;
-    @Mock
-    IProductCmptLink link2;
+    private IProductCmptTypeAssociation association;
+
     private ProductCmptLinkContainerValidator validator;
 
     @Before
-    public void setUp() {
+    public void setUp() throws CoreException {
+        MessageList messageList = new MessageList();
+        messageList.add(Message.newError("code1", "errorText"));
+        messageList.add(Message.newWarning("code2", "warningText"));
+        messageList.add(Message.newError("code3", "errorText2"));
+        when(association.validate(any(IIpsProject.class))).thenReturn(messageList);
+
+        List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
+        associations.add(association);
+        when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
+
+        when(association.isDerivedUnion()).thenReturn(false);
+        when(linkContainer.isContainerFor(association)).thenReturn(true);
+
         validator = new ProductCmptLinkContainerValidator(ipsProject, linkContainer);
     }
 
     private MessageList callValidator() {
         MessageList list = new MessageList();
-        validator.start(prodCmptType);
+        validator.startAndAddMessagesToList(prodCmptType, list);
         return list;
-    }
-
-    @Test
-    public void testVisitIgnoresDerivedUnions() {
-        IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
-        when(assoc.isDerivedUnion()).thenReturn(true);
-
-        List<IAssociation> associations = new ArrayList<IAssociation>();
-        associations.add(assoc);
-        when(prodCmptType.getAssociations()).thenReturn(associations);
-
-        validator = spy(validator);
-        callValidator();
-
-        verifyAddMessagesCalled(assoc, never());
-
     }
 
     private void verifyAddMessagesCalled(IProductCmptTypeAssociation assoc, VerificationMode mode) {
@@ -91,37 +87,46 @@ public class ProductCmptLinkContainerValidatorTest {
     }
 
     @Test
-    public void testVisitIgnoresOppositeChangingOverTimeAssociations() {
-        IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
-        when(linkContainer.isContainerFor(assoc)).thenReturn(false);
-
-        List<IAssociation> associations = new ArrayList<IAssociation>();
-        associations.add(assoc);
-        when(prodCmptType.getAssociations()).thenReturn(associations);
+    public void testVisitIgnoresDerivedUnions() {
+        when(association.isDerivedUnion()).thenReturn(true);
 
         validator = spy(validator);
         callValidator();
 
-        verifyAddMessagesCalled(assoc, never());
+        verifyAddMessagesCalled(association, never());
+
     }
 
     @Test
-    public void testVisitCallsAddMessageMethods() throws CoreException {
-        IProductCmptTypeAssociation assoc = mock(IProductCmptTypeAssociation.class);
-        when(assoc.isDerivedUnion()).thenReturn(false);
-        when(linkContainer.isContainerFor(assoc)).thenReturn(true);
-        MessageList messageList = mock(MessageList.class);
-        when(messageList.isEmpty()).thenReturn(true);
-        when(assoc.validate(any(IIpsProject.class))).thenReturn(messageList);
-
-        List<IProductCmptTypeAssociation> associations = new ArrayList<IProductCmptTypeAssociation>();
-        associations.add(assoc);
-        when(prodCmptType.getProductCmptTypeAssociations()).thenReturn(associations);
+    public void testVisitIgnoresOppositeChangingOverTimeAssociations() {
+        when(linkContainer.isContainerFor(association)).thenReturn(false);
 
         validator = spy(validator);
         callValidator();
 
-        verifyAddMessagesCalled(assoc, times(1));
+        verifyAddMessagesCalled(association, never());
+    }
+
+    @Test
+    public void testVisitCallsAddMessageMethods() {
+        validator = spy(validator);
+        callValidator();
+
+        verifyAddMessagesCalled(association, times(1));
+    }
+
+    @Test
+    public void testAddErrorsFromAssociation() {
+        MessageList messageList = callValidator();
+
+        assertTrue(messageList.containsErrorMsg());
+    }
+
+    @Test
+    public void testNotAddWarningsFromAssociation() {
+        MessageList messageList = callValidator();
+
+        assertTrue(messageList.getMessages(Message.WARNING).isEmpty());
     }
 
 }
