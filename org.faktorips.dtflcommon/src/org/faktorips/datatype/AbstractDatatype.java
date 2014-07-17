@@ -23,10 +23,12 @@ public abstract class AbstractDatatype implements Datatype {
         return new MessageList();
     }
 
+    @Override
     public boolean isVoid() {
         return false;
     }
 
+    @Override
     public boolean isEnum() {
         return this instanceof EnumDatatype;
     }
@@ -70,11 +72,13 @@ public abstract class AbstractDatatype implements Datatype {
     /**
      * Compares the two type's alphabetically by their name.
      */
+    @Override
     public int compareTo(Datatype o) {
         Datatype type = o;
         return getQualifiedName().compareTo(type.getQualifiedName());
     }
 
+    @Override
     public boolean hasNullObject() {
         return false;
     }

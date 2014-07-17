@@ -19,6 +19,7 @@ public class PrimitiveIntToLongCg extends AbstractSingleConversionCg {
         super(Datatype.PRIMITIVE_INT, Datatype.LONG);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("new "); //$NON-NLS-1$

@@ -37,10 +37,12 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         return Integer.valueOf(s);
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }
 
+    @Override
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
             throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
@@ -50,6 +52,7 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         return Integer.toString(result);
     }
 
+    @Override
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
@@ -71,6 +74,7 @@ public class IntegerDatatype extends ValueClassDatatype implements NumericDataty
         return b == 0 ? false : a % b == 0;
     }
 
+    @Override
     public boolean hasDecimalPlaces() {
         return false;
     }

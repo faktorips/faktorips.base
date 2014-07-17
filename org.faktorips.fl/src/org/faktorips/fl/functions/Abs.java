@@ -36,6 +36,7 @@ public class Abs extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         argResults[0].getCodeFragment().append(".abs()"); //$NON-NLS-1$

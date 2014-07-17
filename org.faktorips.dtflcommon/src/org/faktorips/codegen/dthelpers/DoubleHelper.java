@@ -40,6 +40,7 @@ public class DoubleHelper extends AbstractDatatypeHelper {
         return newInstance(expression);
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();

@@ -1,4 +1,7 @@
 #!/bin/bash
+# creates a composite repository
+# $1: the name of the highest directory where the composite should start, e.g. /var/update/faktorips/v3_12/3.12.1-rfinal
+# $2: the name of the lowest directory where the composite should end, e.g. /var/update/faktorips/
 
 IGNORE="downloads"
 
@@ -45,7 +48,6 @@ printf "$footer" >> $artifactFile
 }
 
 set -e
-set -x
 
 BASEDIR=`readlink -f $1`
 REPOSITORYDIR=`readlink -f $2`

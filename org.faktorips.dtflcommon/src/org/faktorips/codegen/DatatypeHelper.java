@@ -73,18 +73,21 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
     /**
      * Returns the datatype this is a helper for.
      */
+    @Override
     public Datatype getDatatype();
 
     /**
      * Sets the datatype this is a helper for. Introduced to enable setter based dependency
      * injection, needed for example for Eclipse's extension point mechanism.
      */
+    @Override
     public void setDatatype(Datatype datatype);
 
     /**
      * Returns a JavaCodeFragment with sourcecode that is either the String "null" or the sourcecode
      * to get an instance of the apropriate null object.
      */
+    @Override
     public JavaCodeFragment nullExpression();
 
     /**
@@ -92,6 +95,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      * class with the given value. If the value is null the fragment's sourcecode is either the
      * String "null" or the sourcecode to get an instance of the apropriate null object.
      */
+    @Override
     public JavaCodeFragment newInstance(String value);
 
     /**
@@ -104,6 +108,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            String like <code>"FOO"</code>, a variable like <code>foo</code> or a method call
      *            like <code>getÍd()</code>.
      */
+    @Override
     public JavaCodeFragment newInstanceFromExpression(String expression);
 
     /**
@@ -119,6 +124,7 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            can yield <code>null</code> or the empty string. Can be used to generate simpler
      *            code, if the null check is not necessary.
      */
+    @Override
     public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull);
 
     /**
@@ -209,5 +215,6 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
      *            string
      * @return a {@link JavaCodeFragment} containing the toString() code.
      */
+    @Override
     public JavaCodeFragment getToStringExpression(String fieldName);
 }

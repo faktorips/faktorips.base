@@ -23,6 +23,7 @@
 		<deploy.agpl>agpl-3.0.txt</deploy.agpl>
 		<deploy.downloadDir>${deploy.basedir}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
 		<deploy.repositoryDir>${deploy.basedir}/${qualifiedVersion}</deploy.repositoryDir>
+		<deploy.script.maven-central>${project.basedir}/scripts/deployToMavenCentral.sh</deploy.script.maven-central>
 	</properties>
 
 
@@ -197,6 +198,17 @@
 								<configuration>
 									<executable>${project.basedir}/callSSH.sh</executable>
 									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.basedir} ${deploy.repositoryDir} ${deploy.skript.buildComposites}</commandlineArgs>
+								</configuration>
+							</execution>
+							<execution>
+								<id>deploy-to-maven-central</id>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<phase>deploy</phase>
+								<configuration>
+									<executable>${project.basedir}/callSSH.sh</executable>
+									<commandlineArgs>${deploy.user}@${deploy.server} ${unqialifiedVersion} ${project.build.directory}/repository/plugins ${deploy.script.maven-central}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>

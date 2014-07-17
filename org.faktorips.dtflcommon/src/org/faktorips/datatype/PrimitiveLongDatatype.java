@@ -15,22 +15,27 @@ package org.faktorips.datatype;
  */
 public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements NumericDatatype {
 
+    @Override
     public String getName() {
         return "long"; //$NON-NLS-1$
     }
 
+    @Override
     public String getQualifiedName() {
         return "long"; //$NON-NLS-1$
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return Datatype.LONG;
     }
 
+    @Override
     public String getJavaClassName() {
         return "long"; //$NON-NLS-1$
     }
 
+    @Override
     public String getDefaultValue() {
         return "0"; //$NON-NLS-1$
     }
@@ -40,10 +45,12 @@ public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements 
         return Long.valueOf(value);
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }
 
+    @Override
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
             throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
@@ -52,6 +59,7 @@ public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements 
         return Long.toString(result);
     }
 
+    @Override
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
@@ -61,6 +69,7 @@ public class PrimitiveLongDatatype extends AbstractPrimitiveDatatype implements 
         return b == 0 ? false : a % b == 0;
     }
 
+    @Override
     public boolean hasDecimalPlaces() {
         return false;
     }

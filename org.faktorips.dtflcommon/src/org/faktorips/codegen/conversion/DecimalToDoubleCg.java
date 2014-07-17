@@ -19,11 +19,12 @@ public class DecimalToDoubleCg extends AbstractSingleConversionCg {
         super(Datatype.DECIMAL, Datatype.DOUBLE);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // Decimal.valueOf(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(fromValue) //
-                .append(".doubleValue()"); //$NON-NLS-1$ 
+        .append(".doubleValue()"); //$NON-NLS-1$ 
         return fragment;
     }
 

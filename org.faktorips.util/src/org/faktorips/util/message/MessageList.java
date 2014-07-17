@@ -412,6 +412,7 @@ public class MessageList implements Iterable<Message> {
         messages.clear();
     }
 
+    @Override
     public Iterator<Message> iterator() {
         return messages.iterator();
     }
@@ -482,6 +483,7 @@ public class MessageList implements Iterable<Message> {
          */
         private static final long serialVersionUID = 3947147318451484963L;
 
+        @Override
         public int compare(Message o1, Message o2) {
             if (o1.getSeverity() > o2.getSeverity()) {
                 return -1;

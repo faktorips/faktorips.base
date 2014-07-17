@@ -21,6 +21,7 @@ public class PrimitiveLongToBigDecimalCg extends AbstractSingleConversionCg {
         super(Datatype.PRIMITIVE_LONG, Datatype.BIG_DECIMAL);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(BigDecimal.class);

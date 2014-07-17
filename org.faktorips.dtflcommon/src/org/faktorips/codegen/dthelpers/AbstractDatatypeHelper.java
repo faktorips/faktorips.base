@@ -42,10 +42,12 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         this.datatype = datatype;
     }
 
+    @Override
     public Datatype getDatatype() {
         return datatype;
     }
 
+    @Override
     public void setDatatype(Datatype datatype) {
         this.datatype = datatype;
     }
@@ -63,10 +65,12 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      */
     protected abstract JavaCodeFragment valueOfExpression(String expression);
 
+    @Override
     public JavaCodeFragment newInstanceFromExpression(String expression) {
         return newInstanceFromExpression(expression, true);
     }
 
+    @Override
     public JavaCodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
         if (expression == null || expression.length() == 0) {
             return nullExpression();
@@ -85,21 +89,24 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     private JavaCodeFragment generateNewInstanceWithStringUtils(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(IpsStringUtils.class).append(".isEmpty(") //$NON-NLS-1$
-                .append(expression).append(") ? "); //$NON-NLS-1$
+        .append(expression).append(") ? "); //$NON-NLS-1$
         fragment.append(nullExpression());
         fragment.append(" : "); //$NON-NLS-1$
         fragment.append(valueOfExpression(expression));
         return fragment;
     }
 
+    @Override
     public String getJavaClassName() {
         return datatype.getJavaClassName();
     }
 
+    @Override
     public String getRangeJavaClassName(boolean useTypesafeCollections) {
         return null;
     }
 
+    @Override
     public JavaCodeFragment newRangeInstance(JavaCodeFragment lowerBoundExp,
             JavaCodeFragment upperBoundExp,
             JavaCodeFragment stepExp,
@@ -130,6 +137,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      *      GeneratedGender.getGeneratedGender(new Integer(2)));
      * </pre>
      */
+    @Override
     public JavaCodeFragment newEnumValueSetInstance(String[] values,
             boolean containsNull,
             boolean useTypesafeCollections) {
@@ -151,6 +159,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         return frag;
     }
 
+    @Override
     public JavaCodeFragment newEnumValueSetInstance(JavaCodeFragment valueCollection,
             JavaCodeFragment containsNullExpression,
             boolean useTypesafeCollections) {
@@ -171,6 +180,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
         return frag;
     }
 
+    @Override
     public JavaCodeFragment referenceOrSafeCopyIfNeccessary(String expression) {
         if (datatype.isValueDatatype() && ((ValueDatatype)datatype).isMutable()) {
             return newSafeCopy(expression);
@@ -190,6 +200,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
                 + " does not override the method newSafeCopy!"); //$NON-NLS-1$
     }
 
+    @Override
     public JavaCodeFragment getToStringExpression(String fieldName) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(fieldName);
@@ -204,6 +215,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * 
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment nullExpression() {
         return new JavaCodeFragment("null"); //$NON-NLS-1$
     }

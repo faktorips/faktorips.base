@@ -42,6 +42,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public PropertyDatatype getProperty(String name) {
         return properties.get(name);
     }
@@ -49,6 +50,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -56,6 +58,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getQualifiedName() {
         return name;
     }
@@ -63,6 +66,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPrimitive() {
         return false;
     }
@@ -70,6 +74,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAbstract() {
         return false;
     }
@@ -77,6 +82,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValueDatatype() {
         return false;
     }
@@ -84,6 +90,7 @@ public class TestBeanDatatype extends AbstractDatatype implements BeanDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getJavaClassName() {
         return javaClassName;
     }

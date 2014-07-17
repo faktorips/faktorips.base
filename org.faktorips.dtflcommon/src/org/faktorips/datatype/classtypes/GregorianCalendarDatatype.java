@@ -73,6 +73,7 @@ public class GregorianCalendarDatatype extends ValueClassDatatype {
                 + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }

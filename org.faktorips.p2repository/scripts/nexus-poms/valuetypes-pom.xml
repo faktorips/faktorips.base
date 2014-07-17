@@ -1,16 +1,11 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
-	<artifactId>org.faktorips.runtime</artifactId>
-	<version>3.13.0-SNAPSHOT</version>
+	<artifactId>org.faktorips.valuetypes</artifactId>
 	<packaging>jar</packaging>
 	
-	<properties>
-		<updateMavenVersion>true</updateMavenVersion>
-	</properties>
-
-	<name>Faktor-IPS Runtime</name>
-	<description>Runtime library for Faktor-IPS</description>
+	<name>Faktor-IPS Valuetypes</name>
+	<description>Valuetypes libraries for Faktor-IPS</description>
 	<url>http://faktorzehn.org</url>
 
 	<scm>
@@ -26,10 +21,6 @@
 		</license>
 	</licenses>
 
-	<scm>
-		<url>https://projekte.faktorzehn.de/projekte/faktorips/org.faktorips.build.git</url>
-		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/org.faktorips.build</connection>
-	</scm>
 
 	<developers>
 		<developer>

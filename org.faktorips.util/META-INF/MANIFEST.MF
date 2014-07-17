@@ -7,5 +7,5 @@ Bundle-Vendor: Faktor Zehn AG
 Export-Package: org.faktorips.util,org.faktorips.util.memento,org.fakt
  orips.util.message
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

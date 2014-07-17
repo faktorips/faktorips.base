@@ -37,6 +37,7 @@ public class StringHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return nullExpression();

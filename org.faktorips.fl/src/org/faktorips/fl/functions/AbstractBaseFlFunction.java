@@ -26,7 +26,7 @@ import org.faktorips.util.ArgumentCheck;
 // Should be renamed to AbstractFlFunction, but that might break the API because old code relies
 // on that class handling JavaCodeFragments
 public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends FunctionSignatureImpl implements
-        FlFunction<T> {
+FlFunction<T> {
 
     private ExprCompiler<T> compiler;
     private String description;
@@ -63,6 +63,7 @@ public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends Fun
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setCompiler(ExprCompiler<T> compiler) {
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
@@ -73,6 +74,7 @@ public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends Fun
      * 
      * @see org.faktorips.fl.FlFunction#getCompiler()
      */
+    @Override
     public ExprCompiler<T> getCompiler() {
         return compiler;
     }
@@ -82,6 +84,7 @@ public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends Fun
      * 
      * @see org.faktorips.fl.FlFunction#getDescription()
      */
+    @Override
     public String getDescription() {
         return description;
     }
@@ -91,6 +94,7 @@ public abstract class AbstractBaseFlFunction<T extends CodeFragment> extends Fun
      * 
      * @see org.faktorips.fl.FlFunction#setDescription(java.lang.String)
      */
+    @Override
     public void setDescription(String description) {
         this.description = description;
     }

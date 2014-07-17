@@ -20,11 +20,12 @@ public class GregorianCalendarToLocalDateCg extends AbstractSingleConversionCg {
         super(Datatype.GREGORIAN_CALENDAR, LocalDateDatatype.DATATYPE);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // LocalDate.fromCalendarFields(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(LocalDateDatatype.ORG_JODA_TIME_LOCAL_DATE) //
-                .append(".fromCalendarFields(").append(fromValue).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+        .append(".fromCalendarFields(").append(fromValue).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         return fragment;
     }
 

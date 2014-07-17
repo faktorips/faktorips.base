@@ -36,6 +36,7 @@ public class MinMaxComparableDatatypes extends AbstractFlFunction {
      * <p>
      * Min: (p1.compareTo(p2) < 0 ? p1 : p2)
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment p1 = argResults[0].getCodeFragment();

@@ -15,6 +15,10 @@
 
 	<packaging>eclipse-plugin</packaging>
 
+	<!-- <build> <plugins> <plugin> <groupId>org.eclipse.tycho.extras</groupId> 
+		<artifactId>tycho-document-bundle-plugin</artifactId> <version>${tycho-extras-version}</version> 
+		<executions> <execution> <id>generate-javadoc</id> <goals> <goal>javadoc</goal> 
+		</goals> </execution> </executions> </plugin> </plugins> </build> -->
 	<build>
 		<plugins>
 			<plugin>

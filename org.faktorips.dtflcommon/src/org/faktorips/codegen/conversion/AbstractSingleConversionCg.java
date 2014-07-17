@@ -35,6 +35,7 @@ public abstract class AbstractSingleConversionCg implements SingleConversionCg<J
      * 
      * @see org.faktorips.codegen.SingleConversionCg#getFrom()
      */
+    @Override
     public Datatype getFrom() {
         return from;
     }
@@ -44,6 +45,7 @@ public abstract class AbstractSingleConversionCg implements SingleConversionCg<J
      * 
      * @see org.faktorips.codegen.SingleConversionCg#getTo()
      */
+    @Override
     public Datatype getTo() {
         return to;
     }

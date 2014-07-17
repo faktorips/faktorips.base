@@ -35,10 +35,12 @@ public class PrimitiveIntegerHelper extends AbstractPrimitiveDatatypeHelper {
         super(datatype);
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         return new JavaCodeFragment(value);
     }
 
+    @Override
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Integer.class);

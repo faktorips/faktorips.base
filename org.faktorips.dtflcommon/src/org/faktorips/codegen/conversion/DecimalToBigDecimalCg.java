@@ -19,11 +19,12 @@ public class DecimalToBigDecimalCg extends AbstractSingleConversionCg {
         super(Datatype.DECIMAL, Datatype.BIG_DECIMAL);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // Decimal.valueOf(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append(fromValue) //
-                .append(".bigDecimalValue()"); //$NON-NLS-1$ 
+        .append(".bigDecimalValue()"); //$NON-NLS-1$ 
         return fragment;
     }
 

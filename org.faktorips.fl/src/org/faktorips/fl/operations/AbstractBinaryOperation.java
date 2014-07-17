@@ -52,6 +52,7 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setCompiler(ExprCompiler<T> compiler) {
         ArgumentCheck.notNull(compiler);
         this.compiler = compiler;
@@ -60,6 +61,7 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public ExprCompiler<T> getCompiler() {
         return compiler;
     }
@@ -69,6 +71,7 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
      * 
      * @see org.faktorips.fl.BinaryOperation#getOperator()
      */
+    @Override
     public String getOperator() {
         return operator;
     }
@@ -78,6 +81,7 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
      * 
      * @see org.faktorips.fl.BinaryOperation#getLhsDatatype()
      */
+    @Override
     public Datatype getLhsDatatype() {
         return lhsDatatype;
     }
@@ -87,6 +91,7 @@ public abstract class AbstractBinaryOperation<T extends CodeFragment> implements
      * 
      * @see org.faktorips.fl.BinaryOperation#getRhsDatatype()
      */
+    @Override
     public Datatype getRhsDatatype() {
         return rhsDatatype;
     }

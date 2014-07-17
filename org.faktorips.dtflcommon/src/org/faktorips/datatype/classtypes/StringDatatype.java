@@ -46,6 +46,7 @@ public class StringDatatype extends ValueClassDatatype {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean supportsCompare() {
         return true;
     }

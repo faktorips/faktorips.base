@@ -49,6 +49,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
     private boolean nullObjectDefined = false;
     private String nullObjectId = null;
 
+    @Override
     public String getDefaultValue() {
         return null;
     }
@@ -66,6 +67,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      */
     public abstract String getAdaptedClassName();
 
+    @Override
     public MessageList checkReadyToUse() {
         MessageList list = new MessageList();
         if (getAdaptedClass() == null) {
@@ -137,6 +139,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
      * Returns <code>true</code> if the datatype has a special instance representing null. (This is
      * known as the NullObject pattern).
      */
+    @Override
     public boolean hasNullObject() {
         return nullObjectDefined;
     }
@@ -184,10 +187,12 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         this.qualifiedName = qualifiedName;
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
+    @Override
     public boolean isParsable(String value) {
         if (value == null) {
             return true;
@@ -236,6 +241,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return isParsableMethod;
     }
 
+    @Override
     public Object getValue(String value) {
         if (!nullObjectDefined && value == null) {
             return null;
@@ -302,6 +308,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return toStringMethod;
     }
 
+    @Override
     public boolean isNull(String value) {
         if (value == null) {
             return true;
@@ -312,14 +319,17 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return value.equals(getValue(nullObjectId));
     }
 
+    @Override
     public boolean isEnum() {
         return this instanceof EnumDatatype;
     }
 
+    @Override
     public String getName() {
         return StringUtil.unqualifiedName(qualifiedName);
     }
 
+    @Override
     public String getQualifiedName() {
         return qualifiedName;
     }
@@ -340,27 +350,33 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return getQualifiedName().equals(((Datatype)o).getQualifiedName());
     }
 
+    @Override
     public boolean isVoid() {
         return false;
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
 
+    @Override
     public String getJavaClassName() {
         return getAdaptedClass().getName();
     }
 
     // TODO pk: this cannot be right
+    @Override
     public int compareTo(Datatype o) {
         return 0;
     }
@@ -376,6 +392,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         toStringMethod = null;
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
 
         if (valueA == null && valueB == null) {
@@ -387,6 +404,7 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return getValue(valueA).equals(getValue(valueB));
     }
 
+    @Override
     public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("The class " + getAdaptedClassName() + " does not implement " //$NON-NLS-1$ //$NON-NLS-2$
@@ -400,14 +418,17 @@ public abstract class GenericValueDatatype implements ValueDatatype {
         return value.compareTo(value2);
     }
 
+    @Override
     public boolean supportsCompare() {
         return Comparable.class.isAssignableFrom(getAdaptedClass());
     }
 
+    @Override
     public boolean isImmutable() {
         return true;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }

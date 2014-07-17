@@ -20,6 +20,7 @@ public class IntegerToDecimalCg extends AbstractSingleConversionCg {
         super(Datatype.INTEGER, Datatype.DECIMAL);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);

@@ -11,5 +11,5 @@ Export-Package: org.faktorips.codegen,org.faktorips.codegen.conversion
  ,org.faktorips.codegen.dthelpers,org.faktorips.codegen.dthelpers.joda
  ,org.faktorips.datatype,org.faktorips.datatype.classtypes,org.faktori
  ps.datatype.joda,org.faktorips.util
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"

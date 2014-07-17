@@ -46,6 +46,7 @@ public abstract class AbstractUnaryOperation<T extends CodeFragment> implements 
      * 
      * @see org.faktorips.fl.UnaryOperation#getDatatype()
      */
+    @Override
     public Datatype getDatatype() {
         return datatype;
     }
@@ -55,6 +56,7 @@ public abstract class AbstractUnaryOperation<T extends CodeFragment> implements 
      * 
      * @see org.faktorips.fl.UnaryOperation#getOperator()
      */
+    @Override
     public String getOperator() {
         return operator;
     }

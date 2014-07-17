@@ -92,36 +92,44 @@ public class ParseTreeVisitorTest {
 
     private class DummyDatatypeHelperProvider implements DatatypeHelperProvider<CodeFragment> {
 
+        @Override
         public BaseDatatypeHelper<CodeFragment> getDatatypeHelper(Datatype datatype) {
             BaseDatatypeHelper<CodeFragment> datatypeHelper = new BaseDatatypeHelper<CodeFragment>() {
 
                 @SuppressWarnings("hiding")
                 private Datatype datatype;
 
+                @Override
                 public Datatype getDatatype() {
                     return datatype;
                 }
 
+                @Override
                 public void setDatatype(Datatype datatype) {
                     this.datatype = datatype;
                 }
 
+                @Override
                 public CodeFragment nullExpression() {
                     return new CodeFragment("null");
                 }
 
+                @Override
                 public CodeFragment newInstance(String value) {
                     return new CodeFragment("CONSTANT " + value);
                 }
 
+                @Override
                 public CodeFragment newInstanceFromExpression(String expression) {
                     return new CodeFragment("CONSTANT " + expression);
                 }
 
+                @Override
                 public CodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
                     return new CodeFragment("CONSTANT " + expression);
                 }
 
+                @Override
                 public CodeFragment getToStringExpression(String fieldName) {
                     return new CodeFragment(fieldName);
                 }
@@ -529,7 +537,7 @@ public class ParseTreeVisitorTest {
         DummyCompilationResultImpl result2 = new DummyCompilationResultImpl(Message.newError("ERROR", "failed"));
         @SuppressWarnings("unchecked")
         AbstractCompilationResult<CodeFragment>[] compilationResultImpls = new AbstractCompilationResult[] { result1,
-                result2 };
+            result2 };
         SimpleNode childNode = mockChildNode(node, 0, data, compilationResultImpls);
 
         @SuppressWarnings("unchecked")

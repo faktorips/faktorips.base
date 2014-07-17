@@ -90,6 +90,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isSupportingNames() {
         return isSupportingNames;
     }
@@ -102,6 +103,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     /**
      * {@inheritDoc}
      */
+    @Override
     public String[] getAllValueIds(boolean includeNull) {
         try {
             String[] ids = getAllValueIdsFromCache();
@@ -130,7 +132,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
      * Returns the value id's from the underlying enum class' via it's getAllValuesMethod().
      */
     private String[] getAllValueIdsFromClass() throws IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException {
+    InvocationTargetException {
         Object[] values = (Object[])getGetAllValuesMethod().invoke(null, new Object[0]);
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
@@ -191,11 +193,12 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getValueName(String id) {
         if (!isSupportingNames) {
             throw new UnsupportedOperationException(
                     "This enumeration type does not support a getName(String) method, enumeration type class: " //$NON-NLS-1$
-                            + getAdaptedClass());
+                    + getAdaptedClass());
         }
         String[] ids = getAllValueIdsFromCache();
         if (ids != null) {

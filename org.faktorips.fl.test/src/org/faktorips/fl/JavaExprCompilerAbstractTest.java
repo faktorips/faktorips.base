@@ -76,6 +76,7 @@ public abstract class JavaExprCompilerAbstractTest {
             parameterMap.put(parameterNames[i], parameterTypes[i]);
         }
         IdentifierResolver<JavaCodeFragment> resolver = new IdentifierResolver<JavaCodeFragment>() {
+            @Override
             public CompilationResult<JavaCodeFragment> compile(String identifier,
                     ExprCompiler<JavaCodeFragment> exprCompiler,
                     Locale locale) {

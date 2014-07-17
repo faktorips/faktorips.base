@@ -25,6 +25,7 @@ public class Date extends AbstractFlFunction {
         super(name, description, FunctionSignatures.DATE);
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 3);
         JavaCodeFragment year = argResults[0].getCodeFragment();

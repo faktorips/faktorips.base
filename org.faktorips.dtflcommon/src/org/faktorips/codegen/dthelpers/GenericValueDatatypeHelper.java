@@ -60,6 +60,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         return code;
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return nullExpression();

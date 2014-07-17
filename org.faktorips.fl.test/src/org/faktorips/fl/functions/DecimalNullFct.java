@@ -29,6 +29,7 @@ public class DecimalNullFct extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment();
         code.appendClassName(Decimal.class);

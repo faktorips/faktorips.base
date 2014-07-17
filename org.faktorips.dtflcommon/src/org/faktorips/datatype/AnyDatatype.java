@@ -29,42 +29,52 @@ public class AnyDatatype implements Datatype {
         return new MessageList();
     }
 
+    @Override
     public String getName() {
         return "any"; //$NON-NLS-1$
     }
 
+    @Override
     public String getQualifiedName() {
         return "any"; //$NON-NLS-1$
     }
 
+    @Override
     public boolean isVoid() {
         return false;
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return false;
     }
 
+    @Override
     public boolean isEnum() {
         return false;
     }
 
+    @Override
     public String getJavaClassName() {
         return null;
     }
 
+    @Override
     public int compareTo(Datatype o) {
         return 0;
     }
 
+    @Override
     public boolean hasNullObject() {
         return false;
     }

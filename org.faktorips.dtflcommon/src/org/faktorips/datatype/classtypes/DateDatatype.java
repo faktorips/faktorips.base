@@ -56,7 +56,7 @@ public class DateDatatype extends ValueClassDatatype {
         } catch (Exception e) {
             IllegalArgumentException ill = new IllegalArgumentException(
                     "Unable to convert the provided string parameter: \"" + value + "\"  into a " + Date.class //$NON-NLS-1$ //$NON-NLS-2$
-                            + " instance"); //$NON-NLS-1$
+                    + " instance"); //$NON-NLS-1$
             ill.initCause(e);
             throw ill;
         }
@@ -82,6 +82,7 @@ public class DateDatatype extends ValueClassDatatype {
         return (Date)getValue(value);
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }

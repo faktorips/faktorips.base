@@ -265,14 +265,14 @@ public enum FunctionSignatures {
 
     DATE(LocalDateDatatype.DATATYPE, new Datatype[] { ValueDatatype.PRIMITIVE_INT, ValueDatatype.PRIMITIVE_INT,
             ValueDatatype.PRIMITIVE_INT }),
-    DAYS360(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
+            DAYS360(PRIMITIVE_INT, new Datatype[] { LocalDateDatatype.DATATYPE, LocalDateDatatype.DATATYPE }),
 
-    /**
-     * Returns the textual representation of the given argument
-     * 
-     * @see AnyDatatype
-     */
-    TextFunction(AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE });
+            /**
+             * Returns the textual representation of the given argument
+             * 
+             * @see AnyDatatype
+             */
+            TextFunction(AnyDatatype.INSTANCE, new Datatype[] { AnyDatatype.INSTANCE });
 
     private final Datatype type;
     private final Datatype[] argTypes;

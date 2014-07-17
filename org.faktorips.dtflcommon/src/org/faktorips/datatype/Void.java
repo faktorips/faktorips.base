@@ -19,10 +19,12 @@ import org.apache.commons.lang.ObjectUtils;
  */
 public class Void extends AbstractDatatype implements ValueDatatype {
 
+    @Override
     public String getName() {
         return "void"; //$NON-NLS-1$
     }
 
+    @Override
     public String getQualifiedName() {
         return "void"; //$NON-NLS-1$
     }
@@ -32,38 +34,47 @@ public class Void extends AbstractDatatype implements ValueDatatype {
         return true;
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isImmutable() {
         return true;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
+    @Override
     public String getJavaClassName() {
         return "void"; //$NON-NLS-1$
     }
 
+    @Override
     public String getDefaultValue() {
         throw new UnsupportedOperationException("Can't get a default value for Datatype void."); //$NON-NLS-1$
     }
 
+    @Override
     public boolean isParsable(String value) {
         return false;
     }
@@ -73,23 +84,28 @@ public class Void extends AbstractDatatype implements ValueDatatype {
         return false;
     }
 
+    @Override
     public boolean isNull(String value) {
         return value == null;
     }
 
+    @Override
     public boolean supportsCompare() {
         return false;
     }
 
+    @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("The datatype " + getQualifiedName() //$NON-NLS-1$
                 + " does not support comparison for values"); //$NON-NLS-1$
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return ObjectUtils.equals(valueA, valueB);
     }
 
+    @Override
     public Object getValue(String value) {
         throw new RuntimeException("Operation getValue not supported for void"); //$NON-NLS-1$
     }

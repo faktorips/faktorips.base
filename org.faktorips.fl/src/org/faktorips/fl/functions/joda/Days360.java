@@ -40,17 +40,18 @@ public class Days360 extends AbstractFlFunction {
      * ((d2.getYear() - d1.getYear()) * 360 + (d2.getMonthOfYear() - d1.getMonthOfYear()) * 30 +
      * (Math.min(d2.getDayOfMonth(), 30) - Math.min(d1.getDayOfMonth(), 30)))
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment d1 = argResults[0].getCodeFragment();
         JavaCodeFragment d2 = argResults[1].getCodeFragment();
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("((").append(d2).append(GET_YEAR).append(" - ").append(d1).append(GET_YEAR)
-                .append(") * 360 + ");
+        .append(") * 360 + ");
         fragment.append("(").append(d2).append(GET_MONTH).append(" - ").append(d1).append(GET_MONTH)
-                .append(") * 30 + ");
+        .append(") * 30 + ");
         fragment.append("(Math.min(").append(d2).append(GET_DAYS).append(", 30)").append(" - ").append("Math.min(")
-                .append(d1).append(GET_DAYS).append(", 30)))");
+        .append(d1).append(GET_DAYS).append(", 30)))");
         return new CompilationResultImpl(fragment, getType());
     }
 }

@@ -36,6 +36,7 @@ public class NotTest extends FunctionAbstractTest {
         registerFunction(new NotBoolean("NOT", ""));
         compiler.setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
 
+            @Override
             public CompilationResult<JavaCodeFragment> compile(String identifier,
                     ExprCompiler<JavaCodeFragment> exprCompiler,
                     Locale locale) {

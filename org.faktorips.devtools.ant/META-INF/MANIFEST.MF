@@ -12,5 +12,5 @@ Require-Bundle: org.apache.ant,
  org.eclipse.jdt,
  org.eclipse.jdt.core;bundle-version="3.4.0",
  org.faktorips.devtools.core
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: ant_tasks/ant-tasks.jar

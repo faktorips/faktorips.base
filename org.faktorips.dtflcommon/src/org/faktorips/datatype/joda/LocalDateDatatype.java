@@ -32,6 +32,7 @@ public class LocalDateDatatype extends ValueClassNameDatatype {
         return value;
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }

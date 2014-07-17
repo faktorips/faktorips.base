@@ -220,6 +220,7 @@ public class ClassToInstancesMap<T> {
         ArrayList<Class<? extends T>> sortedKeySet = new ArrayList<Class<? extends T>>(keySet);
         Collections.sort(sortedKeySet, new Comparator<Class<? extends T>>() {
 
+            @Override
             public int compare(Class<? extends T> o1, Class<? extends T> o2) {
                 return o1.getName().compareTo(o2.getName());
             }

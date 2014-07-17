@@ -44,26 +44,32 @@ public class JavaClass2DatatypeAdaptor extends AbstractDatatype {
         this(clazz.getName());
     }
 
+    @Override
     public String getJavaClassName() {
         return javaClassName;
     }
 
+    @Override
     public String getName() {
         return StringUtil.unqualifiedName(qualifiedName);
     }
 
+    @Override
     public String getQualifiedName() {
         return qualifiedName;
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return false;
     }

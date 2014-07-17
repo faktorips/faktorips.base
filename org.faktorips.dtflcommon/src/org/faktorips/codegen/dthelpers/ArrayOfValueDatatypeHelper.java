@@ -45,6 +45,7 @@ public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
      * 
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newInstance(String value) {
         return nullExpression();
     }

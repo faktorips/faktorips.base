@@ -51,14 +51,17 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         return basicType;
     }
 
+    @Override
     public boolean isImmutable() {
         return true;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public String getName() {
         StringBuffer buffer = new StringBuffer("List"); //$NON-NLS-1$
         buffer.append('<');
@@ -67,26 +70,32 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         return buffer.toString();
     }
 
+    @Override
     public String getQualifiedName() {
         return getJavaClassName();
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public String getDefaultValue() {
         return null;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
 
+    @Override
     public String getJavaClassName() {
         StringBuffer buffer = new StringBuffer(List.class.getName());
         buffer.append('<');
@@ -106,6 +115,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         }
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
@@ -113,6 +123,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     /**
      * <strong>Not supported yet.</strong> Always returns {@code false}.
      */
+    @Override
     public boolean isParsable(String value) {
         if (value == null) {
             return true;
@@ -126,6 +137,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
      * 
      * @throws UnsupportedOperationException always
      */
+    @Override
     public Object getValue(String value) {
         throw new UnsupportedOperationException("Not supported yet."); //$NON-NLS-1$
     }
@@ -146,10 +158,12 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         return false;
     }
 
+    @Override
     public boolean isNull(String value) {
         return value == null;
     }
 
+    @Override
     public boolean supportsCompare() {
         if (basicType.isValueDatatype() && ((ValueDatatype)basicType).supportsCompare()) {
             return true;
@@ -157,6 +171,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         return false;
     }
 
+    @Override
     public int compare(String valueA, String valueB) throws UnsupportedOperationException {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("The basicType " + basicType.getQualifiedName() //$NON-NLS-1$
@@ -166,6 +181,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
         return ((ValueDatatype)basicType).compare(valueA, valueB);
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         if (basicType.isValueDatatype()) {
             return ((ValueDatatype)basicType).areValuesEqual(valueA, valueB);

@@ -25,12 +25,13 @@ public class Years extends AbstractFlFunction {
         super(name, description, FunctionSignatures.YEARS);
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(YEARS_HELPER_CLASS);
         fragment.append(".yearsBetween(").append(argResults[0].getCodeFragment()).append(", ")
-                .append(argResults[1].getCodeFragment()).append(")").append(".getYears()");
+        .append(argResults[1].getCodeFragment()).append(")").append(".getYears()");
         return new CompilationResultImpl(fragment, getType());
     }
 

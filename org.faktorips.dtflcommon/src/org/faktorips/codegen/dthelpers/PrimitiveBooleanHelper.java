@@ -35,6 +35,7 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         super(datatype);
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         Boolean booleanValue = Boolean.valueOf(value);
         if (booleanValue.booleanValue()) {
@@ -44,6 +45,7 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
         }
     }
 
+    @Override
     public JavaCodeFragment toWrapper(JavaCodeFragment expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Boolean.class);

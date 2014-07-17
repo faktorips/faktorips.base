@@ -71,6 +71,7 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
      * 
      * {@inheritDoc}
      */
+    @Override
     public JavaCodeFragment newInstance(String expression) {
         return valueOfExpression(expression);
     }

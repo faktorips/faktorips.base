@@ -19,6 +19,7 @@ public class IntegerToLongCg extends AbstractSingleConversionCg {
         super(Datatype.INTEGER, Datatype.LONG);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // new Long(new Integer(1).intValue())
         JavaCodeFragment fragment = new JavaCodeFragment();
