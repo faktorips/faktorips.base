@@ -48,9 +48,10 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
             return 0;
         }
         int dimension = 0;
-        while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
+        String datatypeNameTemp = datatypeName;
+        while (datatypeNameTemp.endsWith("[]")) { //$NON-NLS-1$
             dimension++;
-            datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
+            datatypeNameTemp = datatypeNameTemp.substring(0, datatypeNameTemp.length() - 2);
         }
         return dimension;
     }
@@ -63,10 +64,14 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * specifies basic datatype Money.
      */
     public static final String getBasicDatatypeName(String datatypeName) {
-        while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
-            datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
+        if (datatypeName == null) {
+            return null;
         }
-        return datatypeName;
+        String datatypeNameTemp = datatypeName;
+        while (datatypeNameTemp.endsWith("[]")) { //$NON-NLS-1$
+            datatypeNameTemp = datatypeNameTemp.substring(0, datatypeNameTemp.length() - 2);
+        }
+        return datatypeNameTemp;
     }
 
     /**
