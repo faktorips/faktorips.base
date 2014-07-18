@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.actions.IpsAction;
 
@@ -51,7 +51,7 @@ public class NewRowAction extends IpsAction {
     public void run(IStructuredSelection selection) {
         ITableContents tableContents = (ITableContents)tableViewer.getInput();
 
-        ITableContentsGeneration tableContentsGeneration = (ITableContentsGeneration)tableContents.getFirstGeneration();
+        ITableRows tableContentsGeneration = tableContents.getTableRows();
 
         IRow newRow = null;
         int position = Integer.MAX_VALUE;

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,37 +11,37 @@
 package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class TableContentsGeneration extends IpsObjectGeneration implements ITableContentsGeneration {
+public class TableRows extends IpsObjectPart implements ITableRows {
 
     private List<Row> rows = new ArrayList<Row>(100);
 
     private UniqueKeyValidator uniqueKeyValidator;
 
-    public TableContentsGeneration(TableContents parent, String id) {
+    public TableRows(TableContents parent, String id) {
         super(parent, id);
     }
 
     @Override
-    protected void setValidFromInternal(GregorianCalendar validFrom) {
-        super.setValidFromInternal(validFrom);
+    protected Element createElement(Document doc) {
+        return doc.createElement(TAG_NAME);
     }
 
     @Override
@@ -74,8 +74,8 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     /**
      * This method is used by the table contents sax handler, after finishing a row node
      */
-    Row newRow(List<String> columns) {
-        Row newRow = newRowInternal(getNextPartId());
+    Row newRow(List<String> columns, String id) {
+        Row newRow = newRowInternal(id);
         int column = 0;
         for (String value : columns) {
             newRow.setValueInternal(column++, value);
@@ -129,7 +129,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
     @Override
     protected IIpsObjectPart newPartThis(Element xmlTag, String id) {
         String xmlTagName = xmlTag.getNodeName();
-        if (xmlTagName.equals(Row.TAG_NAME)) {
+        if (Row.TAG_NAME.equals(xmlTagName)) {
             return newRowInternal(id);
         }
         return null;
@@ -302,7 +302,7 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
 
     /**
      * Updates the unique key cache for the given row
-     * 
+     *
      */
     void updateUniqueKeyCacheFor(Row row, IIndex[] uniqueKeys) {
         if (isUniqueKeyValidationEnabled()) {
@@ -328,5 +328,4 @@ public class TableContentsGeneration extends IpsObjectGeneration implements ITab
             updateUniqueKeyCache(tableStructure);
         }
     }
-
 }

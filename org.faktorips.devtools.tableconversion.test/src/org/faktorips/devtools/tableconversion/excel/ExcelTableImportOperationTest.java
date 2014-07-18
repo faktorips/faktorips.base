@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractTableTest;
 import org.faktorips.util.message.MessageList;
@@ -36,7 +36,7 @@ import org.junit.Test;
 
 public class ExcelTableImportOperationTest extends AbstractTableTest {
 
-    ITableContentsGeneration importTarget;
+    ITableRows importTarget;
     ExcelTableFormat format;
     ITableStructure structure;
 
@@ -72,6 +72,7 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         contents = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS, "importTarget");
         ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
                 "StructureTable2");
+        importTarget = contents.newTableRows();
         contents.setTableStructure(structure2.getQualifiedName());
         contents.newColumn(null);
         contents.newColumn(null);
@@ -81,7 +82,6 @@ public class ExcelTableImportOperationTest extends AbstractTableTest {
         contents.newColumn(null);
         contents.newColumn(null);
         contents.newColumn(null);
-        importTarget = (ITableContentsGeneration)contents.newGeneration(new GregorianCalendar());
 
         file = new File("table" + format.getDefaultExtension());
         file.delete();

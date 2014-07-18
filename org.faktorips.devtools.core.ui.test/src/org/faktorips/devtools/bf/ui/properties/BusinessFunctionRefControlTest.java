@@ -60,7 +60,7 @@ public class BusinessFunctionRefControlTest extends AbstractIpsPluginTest {
                 BusinessFunctionIpsObjectType.getInstance(), "bf2");
         IBusinessFunction bf3 = (IBusinessFunction)newIpsObject(ipsProject,
                 BusinessFunctionIpsObjectType.getInstance(), "bf3");
-        control.setIpsProject(ipsProject);
+        control.setIpsProjects(ipsProject);
         assertEquals(3, control.getIpsSrcFiles().length);
 
         control.setCurrentBusinessFunction(bf1);

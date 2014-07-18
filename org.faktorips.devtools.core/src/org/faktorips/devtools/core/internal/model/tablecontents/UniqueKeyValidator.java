@@ -12,9 +12,11 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -24,7 +26,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
@@ -65,7 +67,7 @@ public class UniqueKeyValidator {
     }
 
     /** cache to validate simple column unique keys */
-    private Map<IIndex, Map<AbstractKeyValue, List<Row>>> uniqueKeyMapColumn = new HashMap<IIndex, Map<AbstractKeyValue, List<Row>>>();
+    private Map<IIndex, Map<AbstractKeyValue, Set<Row>>> uniqueKeyMapColumn = new HashMap<IIndex, Map<AbstractKeyValue, Set<Row>>>();
 
     /**
      * caches to validate column ranges of type TWO_COLUMN_RANGE note that the unique key validation
@@ -133,14 +135,14 @@ public class UniqueKeyValidator {
     /**
      * If a row has changed then this method updates the underlying unique key cache for this row
      */
-    public void handleRowChanged(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
+    public void handleRowChanged(ITableRows tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
         updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_CHANGED, uniqueKeys);
     }
 
     /**
      * If a row has removed then this method updates the underlying unique key cache for this row
      */
-    public void handleRowRemoved(ITableContentsGeneration tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
+    public void handleRowRemoved(ITableRows tableContentsGeneration, Row row, IIndex[] uniqueKeys) {
         updateAllUniqueKeysCache(tableContentsGeneration, row, HANDLE_UNIQUEKEY_ROW_REMOVED, uniqueKeys);
     }
 
@@ -149,7 +151,7 @@ public class UniqueKeyValidator {
      * calculated key value of the given row.
      * 
      */
-    private void updateAllUniqueKeysCache(ITableContentsGeneration tableContentsGeneration,
+    private void updateAllUniqueKeysCache(ITableRows tableContentsGeneration,
             Row row,
             int operation,
             IIndex[] uniqueKeys) {
@@ -173,11 +175,11 @@ public class UniqueKeyValidator {
      * column range keys.
      */
     private void updateUniqueKeysCacheColumn(Row row, int operation, IIndex uniqueKey) {
-        Map<AbstractKeyValue, List<Row>> keyValueMap = uniqueKeyMapColumn.get(uniqueKey);
+        Map<AbstractKeyValue, Set<Row>> keyValueMap = uniqueKeyMapColumn.get(uniqueKey);
 
         // if not exist, create a new cache (map) for the given unique key first
         if (keyValueMap == null) {
-            keyValueMap = new HashMap<AbstractKeyValue, List<Row>>();
+            keyValueMap = new HashMap<AbstractKeyValue, Set<Row>>();
             uniqueKeyMapColumn.put(uniqueKey, keyValueMap);
         }
 
@@ -200,16 +202,16 @@ public class UniqueKeyValidator {
     /**
      * Updates the key value and the given row in the given map (cache)
      */
-    static void updateKeyValueInMap(Map<AbstractKeyValue, List<Row>> keyValueMap,
+    static void updateKeyValueInMap(Map<AbstractKeyValue, Set<Row>> keyValueMap,
             AbstractKeyValue keyValue,
             Row row,
             int operation) {
 
-        List<Row> rowsForKeyValue = keyValueMap.get(keyValue);
+        Set<Row> rowsForKeyValue = keyValueMap.get(keyValue);
 
         // key value dosn't exists in cache
         if (rowsForKeyValue == null) {
-            rowsForKeyValue = new ArrayList<Row>();
+            rowsForKeyValue = new HashSet<Row>(2);
             keyValueMap.put(keyValue, rowsForKeyValue);
         }
         // key value exists, update the cache
@@ -268,13 +270,13 @@ public class UniqueKeyValidator {
      * map of key value objects. This method validates the key values for column key values only -
      * not key value ranges (two column key value objects)
      */
-    private void validateUniqueKeys(MessageList list, Map<IIndex, Map<AbstractKeyValue, List<Row>>> uniqueKeyMap2) {
+    private void validateUniqueKeys(MessageList list, Map<IIndex, Map<AbstractKeyValue, Set<Row>>> uniqueKeyMap2) {
         // iterate all unique keys, specified in the table structure
-        for (Map<AbstractKeyValue, List<Row>> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
+        for (Map<AbstractKeyValue, Set<Row>> keyValuesForUniqueKeyCache : uniqueKeyMap2.values()) {
             List<AbstractKeyValue> invalidkeyValues = new ArrayList<AbstractKeyValue>();
 
             // iterate all key values and check if there is a unique key violation
-            for (Entry<AbstractKeyValue, List<Row>> keyValueEntry : keyValuesForUniqueKeyCache.entrySet()) {
+            for (Entry<AbstractKeyValue, Set<Row>> keyValueEntry : keyValuesForUniqueKeyCache.entrySet()) {
                 validateKeyValue(list, keyValueEntry, invalidkeyValues, keyValuesForUniqueKeyCache);
             }
 
@@ -296,14 +298,14 @@ public class UniqueKeyValidator {
      * are left then the key value is invalid.
      */
     void validateKeyValue(MessageList list,
-            Entry<AbstractKeyValue, List<Row>> keyValueEntry,
+            Entry<AbstractKeyValue, Set<Row>> keyValueEntry,
             List<AbstractKeyValue> invalidkeyValues,
-            Map<AbstractKeyValue, List<Row>> keyValuesForUniqueKeyCache) {
+            Map<AbstractKeyValue, Set<Row>> keyValuesForUniqueKeyCache) {
 
         AbstractKeyValue keyValue = keyValueEntry.getKey();
 
-        List<Row> rows = keyValueEntry.getValue();
-        List<Row> rowsChecked = new ArrayList<Row>(rows.size());
+        Set<Row> rows = keyValueEntry.getValue();
+        Set<Row> rowsChecked = new HashSet<Row>(rows.size());
 
         /*
          * auto-fix invalid rows check if the row value matches the key value, if not remove the row
@@ -345,16 +347,16 @@ public class UniqueKeyValidator {
     /**
      * Store (cache) the table structure and value datatype's of all columns
      */
-    void cacheTableStructureAndValueDatatypes(ITableContentsGeneration tableContentsGeneration) {
+    void cacheTableStructureAndValueDatatypes(ITableRows tableContentsGeneration) {
         if (cachedTableStructure == null) {
-            updateCachedTableStructure((TableContentsGeneration)tableContentsGeneration);
+            updateCachedTableStructure((TableRows)tableContentsGeneration);
         }
         if (cachedValueDatatypes == null) {
-            updateCachedValueDatatypes((TableContentsGeneration)tableContentsGeneration);
+            updateCachedValueDatatypes((TableRows)tableContentsGeneration);
         }
     }
 
-    private void updateCachedValueDatatypes(TableContentsGeneration tableContentsGeneration) {
+    private void updateCachedValueDatatypes(TableRows tableContentsGeneration) {
         if (cachedTableStructure == null) {
             return;
         }
@@ -363,20 +365,20 @@ public class UniqueKeyValidator {
                     cachedTableStructure, tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin
-                    .log(new IpsStatus(
-                            "Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
+            .log(new IpsStatus(
+                    "Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
             return;
         }
     }
 
-    private void updateCachedTableStructure(TableContentsGeneration tableContentsGeneration) {
+    private void updateCachedTableStructure(TableRows tableContentsGeneration) {
         try {
             cachedTableStructure = tableContentsGeneration.getTableContents().findTableStructure(
                     tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin
-                    .log(new IpsStatus(
-                            "Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
+            .log(new IpsStatus(
+                    "Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
             return;
         }
     }

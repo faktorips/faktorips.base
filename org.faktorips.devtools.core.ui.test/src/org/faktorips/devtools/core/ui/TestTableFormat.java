@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
-import org.faktorips.devtools.core.model.tablecontents.ITableContentsGeneration;
+import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.tableconversion.AbstractExternalTableFormat;
 import org.faktorips.util.message.MessageList;
@@ -53,7 +53,7 @@ class TestTableFormat extends AbstractExternalTableFormat {
     @Override
     public void executeTableImport(ITableStructure structure,
             IPath filename,
-            ITableContentsGeneration targetGeneration,
+            ITableRows targetGeneration,
             String nullRepresentationString,
             boolean ignoreColumnHeaderRow,
             MessageList list,

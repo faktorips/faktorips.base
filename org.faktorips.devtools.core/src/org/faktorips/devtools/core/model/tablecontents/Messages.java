@@ -25,7 +25,6 @@ public class Messages extends NLS {
     }
 
     public static String AbstractXlsTableImportOperation_errRead;
-    public static String TableExportOperation_errNoGenerations;
     public static String TableExportOperation_labelMonitorTitle;
     public static String TableExportOperation_errStructureNotFound;
     public static String TableExportOperation_errWrite;

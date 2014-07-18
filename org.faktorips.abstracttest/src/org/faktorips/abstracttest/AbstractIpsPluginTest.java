@@ -952,7 +952,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
                 IpsObjectType.TABLE_CONTENTS, qualifiedName);
         tableContents.setTableStructure(ts0.getQualifiedName());
-        tableContents.newGeneration(new GregorianCalendar());
+        tableContents.newTableRows();
         tableContents.getIpsSrcFile().save(true, null);
         return tableContents;
     }
