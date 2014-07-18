@@ -65,7 +65,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private static final String GET_INSTANCE_JAVADOC = "TABLE_IMPL_BUILDER_GET_INSTANCE_JAVADOC";
     private static final String KEY_CLASS_EQUALS_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_EQUALS_JAVADOC";
     private static final String KEY_CLASS_HASHCODE_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_HASHCODE_JAVADOC";
-    private static final String FIND_JAVADOC = "TABLE_IMPL_BUILDER_FIND_JAVADOC";
+    private static final String FIND_ROW_JAVADOC = "TABLE_IMPL_BUILDER_FIND_ROW_JAVADOC";
+    private static final String FIND_ROWS_JAVADOC = "TABLE_IMPL_BUILDER_FIND_ROWS_JAVADOC";
     private static final String FIND_RETURN_NULL_ROW_JAVADOC = "TABLE_IMPL_BUILDER_FIND_RETURN_NULL_ROW_JAVADOC";
     private static final String KEY_CLASS_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS";
     private static final String KEY_CLASS_CONSTRUCTOR_JAVADOC = "TABLE_IMPL_BUILDER_KEY_CLASS_CONSTRUCTOR_JAVADOC";
@@ -835,7 +836,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         IndexCodePart indexCodePart = indexCodeParts.get(index);
         String methodName = getMethodNameFindRow(methodNameSuffix, index.isUniqueKey());
         JavaCodeFragment methodBody = createFindMethodBody(methodName, index, "null");
-        String javaDoc = getLocalizedText(FIND_JAVADOC);
+        String javaDoc = getJavaDocText(index.isUniqueKey());
         String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(index, getBuilderSet());
         codeBuilder.method(Modifier.PUBLIC, getFinderMethodReturnType(index), methodName,
                 toArray(indexCodePart.getAllItemParameterNames()), toArray(indexCodePart.getAllItemParameterTypes()),
@@ -844,6 +845,13 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     String getMethodNameFindRow(String methodNameSuffix, boolean unique) {
         return METHOD_NAME_FIND_ROW + (unique ? "" : "s") + methodNameSuffix;
+    }
+
+    private String getJavaDocText(boolean unique) {
+        if (unique) {
+            return getLocalizedText(FIND_ROW_JAVADOC);
+        }
+        return getLocalizedText(FIND_ROWS_JAVADOC);
     }
 
     private void createFindMethodWithNullValueRow(String methodNameSuffix,
