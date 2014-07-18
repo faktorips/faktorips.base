@@ -89,7 +89,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
     private JavaCodeFragment generateNewInstanceWithStringUtils(String expression) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(IpsStringUtils.class).append(".isEmpty(") //$NON-NLS-1$
-        .append(expression).append(") ? "); //$NON-NLS-1$
+                .append(expression).append(") ? "); //$NON-NLS-1$
         fragment.append(nullExpression());
         fragment.append(" : "); //$NON-NLS-1$
         fragment.append(valueOfExpression(expression));

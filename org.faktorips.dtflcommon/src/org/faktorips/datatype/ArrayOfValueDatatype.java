@@ -27,13 +27,23 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     private int dimension;
 
     /**
+     * Constructs a new array datatype based on the given underlying datatype and the dimension.
+     */
+    public ArrayOfValueDatatype(Datatype datatype, int dimension) {
+        super();
+        ArgumentCheck.notNull(datatype);
+        this.datatype = datatype;
+        this.dimension = dimension;
+    }
+
+    /**
      * Returns the number of dimensions specified in the given datatypeName.
      * <p>
      * Examples:<br>
      * "Money" specifies 0 dimensions. "Money[]" specifies 1 dimension. "Money[][]" specifies 2
      * dimensions.
      */
-    public final static int getDimension(String datatypeName) {
+    public static final int getDimension(String datatypeName) {
         if (datatypeName == null) {
             return 0;
         }
@@ -52,7 +62,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * "Money" specifies basic datatype Money. "Money[]" specifies basic datatype Money. "Money[][]"
      * specifies basic datatype Money.
      */
-    public final static String getBasicDatatypeName(String datatypeName) {
+    public static final String getBasicDatatypeName(String datatypeName) {
         while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
             datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
         }
@@ -62,18 +72,8 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * Returns if the provided string represents an ArrayDatatype.
      */
-    public final static boolean isArrayDatatype(String datatypeName) {
+    public static final boolean isArrayDatatype(String datatypeName) {
         return getDimension(datatypeName) != 0;
-    }
-
-    /**
-     * Constructs a new array datatype based on the given underlying datatype and the dimension.
-     */
-    public ArrayOfValueDatatype(Datatype datatype, int dimension) {
-        super();
-        ArgumentCheck.notNull(datatype);
-        this.datatype = datatype;
-        this.dimension = dimension;
     }
 
     /**
@@ -200,7 +200,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     }
 
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("The datatype " + datatype.getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison for values."); //$NON-NLS-1$

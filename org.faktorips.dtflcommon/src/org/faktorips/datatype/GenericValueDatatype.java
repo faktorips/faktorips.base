@@ -78,6 +78,22 @@ public abstract class GenericValueDatatype implements ValueDatatype {
             list.add(Message.newError(MSGCODE_JAVACLASS_NOT_FOUND, text));
             return list;
         }
+        checkParsableMethodName(list);
+        checkStringMethodName(list);
+        try {
+            getValueOfMethod();
+            // CSOFF: Illegal Catch
+        } catch (RuntimeException e) {
+            // CSON: Illegal Catch
+            String text = "The Java class hasn't got a method " + getValueOfMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
+            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
+            return list;
+        }
+        checkNullObjectDefined(list);
+        return list;
+    }
+
+    private void checkParsableMethodName(MessageList list) {
         if (isParsableMethodName != null) {
             try {
                 getIsParsableMethod();
@@ -88,6 +104,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 list.add(Message.newError(MSGCODE_ISPARSABLE_METHOD_NOT_FOUND, text));
             }
         }
+    }
+
+    private void checkStringMethodName(MessageList list) {
         if (toStringMethodName != null) {
             try {
                 getToStringMethod();
@@ -98,15 +117,9 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 list.add(Message.newError(MSGCODE_TOSTRING_METHOD_NOT_FOUND, text));
             }
         }
-        try {
-            getValueOfMethod();
-            // CSOFF: Illegal Catch
-        } catch (RuntimeException e) {
-            // CSON: Illegal Catch
-            String text = "The Java class hasn't got a method " + getValueOfMethodName() + "(String)"; //$NON-NLS-1$ //$NON-NLS-2$
-            list.add(Message.newError(MSGCODE_GETVALUE_METHOD_NOT_FOUND, text));
-            return list;
-        }
+    }
+
+    private void checkNullObjectDefined(MessageList list) {
         if (nullObjectDefined) {
             try {
                 Object value = getValue(nullObjectId);
@@ -123,7 +136,6 @@ public abstract class GenericValueDatatype implements ValueDatatype {
                 list.add(Message.newError(MSGCODE_SPECIALCASE_NULL_NOT_FOUND, text));
             }
         }
-        return list;
     }
 
     public String getIsParsableMethodName() {

@@ -102,8 +102,11 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         Object value;
         try {
             value = getValue(valueString);
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
-            return false; // => value can't be parsed, so it's also not null
+            // CSON: Illegal Catch
+            // => value can't be parsed, so it's also not null
+            return false;
         }
         if (value == null) {
             return true;
@@ -140,7 +143,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
     }
 
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison of values"); //$NON-NLS-1$

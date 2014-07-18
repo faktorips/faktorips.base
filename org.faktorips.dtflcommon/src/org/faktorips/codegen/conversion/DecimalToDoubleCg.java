@@ -23,8 +23,7 @@ public class DecimalToDoubleCg extends AbstractSingleConversionCg {
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // Decimal.valueOf(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append(fromValue) //
-        .append(".doubleValue()"); //$NON-NLS-1$ 
+        fragment.append(fromValue).append(".doubleValue()"); //$NON-NLS-1$
         return fragment;
     }
 

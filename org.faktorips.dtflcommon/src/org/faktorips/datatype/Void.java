@@ -95,7 +95,7 @@ public class Void extends AbstractDatatype implements ValueDatatype {
     }
 
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         throw new UnsupportedOperationException("The datatype " + getQualifiedName() //$NON-NLS-1$
                 + " does not support comparison for values"); //$NON-NLS-1$
     }

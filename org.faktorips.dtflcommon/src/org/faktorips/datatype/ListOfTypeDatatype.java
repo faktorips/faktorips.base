@@ -172,7 +172,7 @@ public class ListOfTypeDatatype extends AbstractDatatype implements ValueDatatyp
     }
 
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("The basicType " + basicType.getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison for values."); //$NON-NLS-1$

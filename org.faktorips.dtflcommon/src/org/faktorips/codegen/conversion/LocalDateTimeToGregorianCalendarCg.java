@@ -25,7 +25,7 @@ public class LocalDateTimeToGregorianCalendarCg extends AbstractSingleConversion
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // JodaUtil.toGregorianCalendar(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(BaseJodaDatatypeHelper.ORG_FAKTORIPS_UTIL_JODA_UTIL) //
+        fragment.appendClassName(BaseJodaDatatypeHelper.ORG_FAKTORIPS_UTIL_JODA_UTIL)
         .append(".toGregorianCalendar(").append(fromValue).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         return fragment;
     }

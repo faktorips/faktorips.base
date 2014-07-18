@@ -24,8 +24,7 @@ public class BigDecimalToDecimalCg extends AbstractSingleConversionCg {
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // Decimal.valueOf(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(Decimal.class) //
-        .append(".valueOf(").append(fromValue).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
+        fragment.appendClassName(Decimal.class).append(".valueOf(").append(fromValue).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         return fragment;
     }
 

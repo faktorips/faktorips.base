@@ -75,13 +75,14 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         return ObjectUtils.equals(getValue(valueA), getValue(valueB));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison of values"); //$NON-NLS-1$
         }
-        return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
+        return ((Comparable<Object>)getValue(valueA)).compareTo(getValue(valueB));
     }
 
     @Override

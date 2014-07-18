@@ -24,7 +24,7 @@ public class GregorianCalendarToLocalDateTimeCg extends AbstractSingleConversion
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // LocalDateTime.fromCalendarFields(fromValue)
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(LocalDateTimeDatatype.ORG_JODA_TIME_LOCAL_DATE_TIME) //
+        fragment.appendClassName(LocalDateTimeDatatype.ORG_JODA_TIME_LOCAL_DATE_TIME)
         .append(".fromCalendarFields(").append(fromValue).append(")"); //$NON-NLS-1$ //$NON-NLS-2$
         return fragment;
     }

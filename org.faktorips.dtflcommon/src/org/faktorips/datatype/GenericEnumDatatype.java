@@ -24,16 +24,15 @@ import org.apache.commons.lang.ObjectUtils;
  */
 public abstract class GenericEnumDatatype extends GenericValueDatatype implements EnumDatatype {
 
+    private Method getAllValuesMethod;
+
+    private Method getNameMethod;
+
     private String getAllValuesMethodName = "getAllValues"; //$NON-NLS-1$
 
     private String getNameMethodName = "getName"; //$NON-NLS-1$
 
     private boolean isSupportingNames = false;
-
-    protected Method getAllValuesMethod;
-
-    protected Method getNameMethod;
-
     private boolean cacheData = false;
     private String[] cachedValueIds = null;
     private String[] cachedValueNames = null;
@@ -107,7 +106,8 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
     public String[] getAllValueIds(boolean includeNull) {
         try {
             String[] ids = getAllValueIdsFromCache();
-            if (ids == null) { // caching disabled
+            // caching disabled
+            if (ids == null) {
                 ids = getAllValueIdsFromClass();
             }
             int indexOfNull = getIndeoxOfNullOrNullObject(ids);
@@ -123,16 +123,19 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                 }
             }
             return result.toArray(new String[result.size()]);
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
+            // CSON: Illegal Catch
             throw new RuntimeException("Error invoking method " + getAllValuesMethodName, e); //$NON-NLS-1$
         }
     }
 
     /**
      * Returns the value id's from the underlying enum class' via it's getAllValuesMethod().
+     * 
+     * throws IllegalArgumentException
      */
-    private String[] getAllValueIdsFromClass() throws IllegalArgumentException, IllegalAccessException,
-    InvocationTargetException {
+    private String[] getAllValueIdsFromClass() throws IllegalAccessException, InvocationTargetException {
         Object[] values = (Object[])getGetAllValuesMethod().invoke(null, new Object[0]);
         String[] ids = new String[values.length];
         for (int i = 0; i < ids.length; i++) {
@@ -141,7 +144,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         return ids;
     }
 
-    private int getIndeoxOfNullOrNullObject(String valueIds[]) {
+    private int getIndeoxOfNullOrNullObject(String[] valueIds) {
         for (int i = 0; i < valueIds.length; i++) {
             if (valueIds[i] == null) {
                 return i;
@@ -165,7 +168,9 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
                 if (getAllValuesMethod == null) {
                     throw new NullPointerException();
                 }
+                // CSOFF: Illegal Catch
             } catch (Exception e) {
+                // CSON: Illegal Catch
                 throw new RuntimeException("Can't get method getAllValues(), Class: " + getAdaptedClass() //$NON-NLS-1$
                         + ", Methodname: " + getAllValuesMethodName); //$NON-NLS-1$
             }
@@ -182,7 +187,9 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         if (getNameMethod == null && getNameMethodName != null) {
             try {
                 getNameMethod = getAdaptedClass().getMethod(getNameMethodName, new Class[0]);
+                // CSOFF: Illegal Catch
             } catch (Exception e) {
+                // CSON: Illegal Catch
                 throw new RuntimeException("Unable to access the method " + getNameMethodName //$NON-NLS-1$
                         + " on the adapted class " + getAdaptedClass(), e); //$NON-NLS-1$
             }
@@ -198,7 +205,7 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         if (!isSupportingNames) {
             throw new UnsupportedOperationException(
                     "This enumeration type does not support a getName(String) method, enumeration type class: " //$NON-NLS-1$
-                    + getAdaptedClass());
+                            + getAdaptedClass());
         }
         String[] ids = getAllValueIdsFromCache();
         if (ids != null) {
@@ -220,7 +227,9 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
             }
             return (String)getGetNameMethod().invoke(value, new Object[0]);
 
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
+            // CSON: Illegal Catch
             throw new RuntimeException("Unable to invoke the method to get the value name " + getNameMethodName //$NON-NLS-1$
                     + " on the class: " + getAdaptedClass(), e); //$NON-NLS-1$
         }
@@ -290,7 +299,9 @@ public abstract class GenericEnumDatatype extends GenericValueDatatype implement
         String[] ids;
         try {
             ids = getAllValueIdsFromClass();
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
+            // CSON: Illegal Catch
             throw new RuntimeException("Error initializing cache for datatype " + this, e); //$NON-NLS-1$
         }
         cachedValueIds = new String[ids.length];
