@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ClassToInstancesMap<T> {
 
-    private final Map<Class<? extends T>, List<? extends T>> internalMap = new ConcurrentHashMap<Class<? extends T>, List<? extends T>>();
+    private final ConcurrentHashMap<Class<? extends T>, List<? extends T>> internalMap = new ConcurrentHashMap<Class<? extends T>, List<? extends T>>();
 
     /**
      * Getting the list of instances stored of the type given by the key. If there is no element for
@@ -234,25 +234,42 @@ public class ClassToInstancesMap<T> {
     }
 
     /**
-     * Getting the list that is stored for the given key. This method does create the list if it is
-     * absent. Before creating the list, the double checking ideom is implemented to avoid
-     * concurrency problems. The double checking ideom works because we use a
-     * {@link ConcurrentHashMap}.
+     * Gets the set of list of instances stored for the given key. Creates a new list if absent.
+     * <p>
+     * Returns the very list instance that is stored in the map for the given key (not a defensive
+     * copy). Thus adding values to that list changes this map.
+     * <p>
+     * This method is thread safe. Ensures that only a single list instance is created for each key,
+     * and that multiple threads will share these instances (and not overwrite each other's values).
+     * 
+     * @param key The class to return a list of instances for.
+     * 
+     * @type K a sub class of the key
      */
     private <K extends T> List<K> getInstanceList(Class<K> key) {
         List<? extends T> list = internalMap.get(key);
         if (list == null) {
-            synchronized (internalMap) {
-                list = internalMap.get(key);
-                if (list == null) {
-                    list = new ArrayList<T>();
-                    internalMap.put(key, list);
-                }
-            }
+            list = putNewListIfAbsent(key);
         }
         @SuppressWarnings("unchecked")
         List<K> castedList = (List<K>)list;
         return castedList;
+    }
+
+    /**
+     * Returns the list instance that is mapped to by the given key in the internal map. Even if
+     * multiple threads create new lists concurrently, the one list instance in the map is returned.
+     * 
+     * @param key the key that should map to the new set instance
+     */
+    private <K extends T> List<? extends T> putNewListIfAbsent(Class<K> key) {
+        List<? extends T> newlyCreatedList = new ArrayList<T>();
+        List<? extends T> existentList = internalMap.putIfAbsent(key, newlyCreatedList);
+        if (existentList != null) {
+            return existentList;
+        } else {
+            return newlyCreatedList;
+        }
     }
 
 }

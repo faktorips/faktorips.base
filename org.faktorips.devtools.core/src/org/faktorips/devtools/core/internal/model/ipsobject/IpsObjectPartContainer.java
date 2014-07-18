@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.CustomValidationsResolver;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValidationResultCache;
@@ -719,11 +720,28 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
 
     private void execCustomValidations(MessageList result, IIpsProject ipsProject) throws CoreException {
         Class<? extends IpsObjectPartContainer> thisClass = getClass();
-        Set<ICustomValidation<IpsObjectPartContainer>> customValidations = getIpsModel().getCustomModelExtensions()
-                .getCustomValidations(thisClass);
-        for (ICustomValidation<IpsObjectPartContainer> validation : customValidations) {
-            result.add(validation.validate(this, ipsProject));
+        Set<ICustomValidation<? extends IIpsObjectPartContainer>> customValidations = getIpsModel()
+                .getCustomModelExtensions().getCustomValidations(thisClass);
+        for (ICustomValidation<? extends IIpsObjectPartContainer> validation : customValidations) {
+            MessageList msgList = getValidationMessages(ipsProject, validation);
+            result.add(msgList);
         }
+    }
+
+    /**
+     * Unsafe cast required. We only use the casted object for calling
+     * {@link ICustomValidation#validate(IIpsObjectPartContainer, IIpsProject)}.
+     * 
+     * The {@link CustomValidationsResolver} can only provide custom validations of arbitrary type
+     * ("?"). This is due to the fact, that it would require a type parameter that is both a
+     * subclass of IIpsObjectPartContainer and at the same time a superclass of the requested class.
+     * This is not possible. We'll have to content ourselves with the unsafe cast.
+     */
+    private MessageList getValidationMessages(IIpsProject ipsProject,
+            ICustomValidation<? extends IIpsObjectPartContainer> validation) throws CoreException {
+        @SuppressWarnings("unchecked")
+        MessageList msgList = ((ICustomValidation<IIpsObjectPartContainer>)validation).validate(this, ipsProject);
+        return msgList;
     }
 
     /**
