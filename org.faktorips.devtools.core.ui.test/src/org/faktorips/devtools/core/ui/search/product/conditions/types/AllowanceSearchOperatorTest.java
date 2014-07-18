@@ -51,6 +51,7 @@ public class AllowanceSearchOperatorTest {
 
         IPolicyCmptTypeAttribute valueSetOwner = mock(IPolicyCmptTypeAttribute.class);
         when(valueSetOwner.findValueDatatype(any(IIpsProject.class))).thenReturn(new IntegerDatatype());
+        when(valueSetOwner.getIpsProject()).thenReturn(ipsProject);
 
         String partId = "PART_ID";
         IValueSet fittingValueSet = new RangeValueSet(valueSetOwner, partId, "7000", "12000", "1000");

@@ -20,6 +20,8 @@ import static org.junit.Assert.fail;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.beans.PropertyChangeEvent;
@@ -39,6 +41,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersion;
@@ -481,6 +484,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateDescriptionCount_UsingOwnProject() throws CoreException {
+        IpsProject superProject = mock(IpsProject.class);
+
+        container.validate(superProject);
+
+        verify(superProject, never()).getReadOnlyProperties();
+    }
+
+    @Test
     public void testValidateLabelCountOk() throws CoreException {
         MessageList validationMessageList = container.validate(ipsProject);
         assertNull(validationMessageList.getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT));
@@ -504,6 +516,15 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         Message expectedMessage = validationMessageList
                 .getMessageByCode(IIpsObjectPartContainer.MSGCODE_INVALID_LABEL_COUNT);
         assertEquals(Message.WARNING, expectedMessage.getSeverity());
+    }
+
+    @Test
+    public void testValidateLabelCount_UsingOwnProject() throws CoreException {
+        IpsProject superProject = mock(IpsProject.class);
+
+        container.validate(superProject);
+
+        verify(superProject, never()).getReadOnlyProperties();
     }
 
     @Test
