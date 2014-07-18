@@ -7,4 +7,5 @@ URL=$1
 shift
 SCRIPT_NAME=$1
 shift
-ssh $URL bash -s -- $@ < $SCRIPT_NAME
+
+ssh $URL bash -s -- "$@" < $SCRIPT_NAME

@@ -16,14 +16,16 @@
 		<!-- currently only one word groupId supported (e.g. not org.faktorips) -->
 		<deploy.module>faktorips</deploy.module>
 		<deploy.moduleVersion>v${parsedVersion.majorVersion}_${parsedVersion.minorVersion}</deploy.moduleVersion>
-		<deploy.skript.buildComposites>${project.basedir}/buildComposites.sh</deploy.skript.buildComposites>
 		<deploy.basedir>${deploy.dir}/${deploy.module}/${deploy.moduleVersion}</deploy.basedir>
-		<deploy.deployedRepositoryZip>${deploy.basedir}/${qualifiedVersion}/${deploy.moduleVersion}-${qualifiedVersion}.zip</deploy.deployedRepositoryZip>
 		<deploy.license>LICENSE.txt</deploy.license>
 		<deploy.agpl>agpl-3.0.txt</deploy.agpl>
 		<deploy.downloadDir>${deploy.basedir}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
 		<deploy.repositoryDir>${deploy.basedir}/${qualifiedVersion}</deploy.repositoryDir>
-		<deploy.script.maven-central>${project.basedir}/scripts/deployToMavenCentral.sh</deploy.script.maven-central>
+		<deploy.scriptsdir>${project.basedir}/scripts</deploy.scriptsdir>
+		<deploy.script.buildComposites>${deploy.scriptsdir}/buildComposites.sh</deploy.script.buildComposites>
+		<deploy.script.callssh>${deploy.scriptsdir}/callSSH.sh</deploy.script.callssh>
+		<deploy.script.maven-central>${deploy.scriptsdir}/deployToMavenCentral.sh</deploy.script.maven-central>
+		<deploy.release>false</deploy.release>
 	</properties>
 
 
@@ -47,6 +49,17 @@
 	</build>
 
 	<profiles>
+		<profile>
+			<activation>
+				<property>
+					<name>version.kind</name>
+					<value>rfinal</value>
+				</property>
+			</activation>
+			<properties>
+				<deploy.release>true</deploy.release>
+			</properties>
+		</profile>
 		<profile>
 			<id>release</id>
 			<activation>
@@ -181,6 +194,33 @@
 									<toDir>${deploy.downloadDir}</toDir>
 								</configuration>
 							</execution>
+							<execution>
+								<id>upload-nexus-poms</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<configuration>
+									<fromDir>${project.basedir}/scripts/nexus-poms</fromDir>
+									<includes>*.xml</includes>
+									<url>scp://${deploy.user}@${deploy.server}</url>
+									<toDir>${deploy.repositoryDir}/plugins</toDir>
+								</configuration>
+							</execution>
+							<!-- Deploy fake javadoc until the correct javadoc jars are created by tycho-extra 0.21.0 -->
+							<execution>
+								<id>upload-fake-javadoc</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<configuration>
+									<fromDir>${project.basedir}/scripts/fake-java-doc</fromDir>
+									<includes>*.jar</includes>
+									<url>scp://${deploy.user}@${deploy.server}</url>
+									<toDir>${deploy.repositoryDir}/plugins</toDir>
+								</configuration>
+							</execution>
 						</executions>
 					</plugin>
 
@@ -196,8 +236,8 @@
 								</goals>
 								<phase>deploy</phase>
 								<configuration>
-									<executable>${project.basedir}/callSSH.sh</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.basedir} ${deploy.repositoryDir} ${deploy.skript.buildComposites}</commandlineArgs>
+									<executable>${deploy.script.callssh}</executable>
+									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.buildComposites} ${deploy.basedir} ${deploy.repositoryDir}</commandlineArgs>
 								</configuration>
 							</execution>
 							<execution>
@@ -207,8 +247,8 @@
 								</goals>
 								<phase>deploy</phase>
 								<configuration>
-									<executable>${project.basedir}/callSSH.sh</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} ${unqialifiedVersion} ${deploy.repositoryDir}/plugins ${deploy.script.maven-central}</commandlineArgs>
+									<executable>${deploy.script.callssh}</executable>
+									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.maven-central} ${unqualifiedVersion} ${deploy.release} ${deploy.repositoryDir}/plugins</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
