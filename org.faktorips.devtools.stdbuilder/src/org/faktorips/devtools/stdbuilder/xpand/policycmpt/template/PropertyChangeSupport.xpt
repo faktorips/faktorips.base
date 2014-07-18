@@ -10,7 +10,7 @@
 	     * 
 	     * @generated
 	     */
-	     «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)»
+	     «getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_TRANSIENT_FIELD)-»
 	    protected final «IpsPropertyChangeSupport()» propertyChangeSupport = new «IpsPropertyChangeSupport()»(this);
 	«ENDIF»
 «ENDDEFINE»
