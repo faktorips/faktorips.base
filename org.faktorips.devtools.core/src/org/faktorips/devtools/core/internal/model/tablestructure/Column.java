@@ -28,7 +28,7 @@ public class Column extends AtomicIpsObjectPart implements IColumn {
 
     static final String TAG_NAME = "Column"; //$NON-NLS-1$
 
-    private String datatype = ""; //$NON-NLS-1$
+    private String datatype = StringUtils.EMPTY;
 
     Column(TableStructure table, String id) {
         super(table, id);
