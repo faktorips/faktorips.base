@@ -251,6 +251,9 @@ public class ExtensionPropertyHandler {
         return internalDocument;
     }
 
+    /**
+     * Removes all obsolete extension properties from the {@link ExtensionPropertyMap}.
+     */
     public void removeObsoleteExtensionProperties() {
         extPropertiyValuesMap.removeObsoleteExtensionProperties(ipsObjectPartContainer);
     }
@@ -334,7 +337,7 @@ public class ExtensionPropertyHandler {
             return Collections.synchronizedMap(new LinkedHashMap<String, ExtensionPropertyValue>(4));
         }
 
-        public void removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
+        private void removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
             for (Entry<String, ExtensionPropertyValue> entry : internalMap.entrySet()) {
                 String propertyId = entry.getKey();
                 IExtensionPropertyDefinition propertyDefinition = ipsObjectPartContainer

@@ -70,4 +70,8 @@ public interface IExtensionPropertyAccess {
      */
     public void setExtPropertyValue(String propertyId, Object value);
 
+    /**
+     * Removes all obsolete extension properties.
+     */
+    public void removeObsoleteExtensionProperties();
 }
