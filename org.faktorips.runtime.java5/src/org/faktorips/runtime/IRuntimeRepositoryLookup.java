@@ -14,8 +14,9 @@ import java.io.Serializable;
 import org.faktorips.runtime.internal.ProductConfiguration;
 
 /**
- * A runtime repository is an interface for a class that is able to provide a runtime repository. It
- * is used to serialize policy components especially the {@link ProductConfiguration}.
+ * A {@link IRuntimeRepositoryLookup} is an interface for a class that is able to provide a runtime
+ * repository. It is used to serialize policy components especially the {@link ProductConfiguration}
+ * .
  * <p>
  * An implementation needs to be serializable hence this interface already implements the
  * Serializable interface. After serializing and deserializing an object of this type the method
