@@ -107,6 +107,7 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         fromToConversionMap.add(conversion);
     }
 
+    @Override
     public boolean canConvert(Datatype from, Datatype to) {
         return isNoConversionNeccessary(from, to) || isListToListConversionAvailable(from, to)
                 || isSingleConversionAvailable(from, to);

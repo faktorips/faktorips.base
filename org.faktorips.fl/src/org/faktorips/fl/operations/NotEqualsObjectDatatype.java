@@ -11,8 +11,8 @@
 package org.faktorips.fl.operations;
 
 import org.faktorips.datatype.Datatype;
-import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 
 /**
  * Equals operation for none primitive datatypes that are tested for equality with the equals()

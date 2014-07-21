@@ -25,9 +25,9 @@ import org.faktorips.values.DateUtil;
  */
 public class DateDatatype extends ValueClassDatatype {
 
-    private final static String format = "yyyy-MM-dd"; //$NON-NLS-1$
+    private static final String DATE_FORMAT = "yyyy-MM-dd"; //$NON-NLS-1$
 
-    private static SimpleDateFormat formatter = new SimpleDateFormat(format);
+    private static SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
 
     /**
      * Creates a new DateDatatype where the name is the short class name.
@@ -50,10 +50,12 @@ public class DateDatatype extends ValueClassDatatype {
         }
         try {
             if (!DateUtil.isIsoDate(value)) {
-                throw new IllegalArgumentException("Date value must have the format " + format); //$NON-NLS-1$
+                throw new IllegalArgumentException("Date value must have the format " + DATE_FORMAT); //$NON-NLS-1$
             }
             return formatter.parse(value);
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
+            // CSON: Illegal Catch
             IllegalArgumentException ill = new IllegalArgumentException(
                     "Unable to convert the provided string parameter: \"" + value + "\"  into a " + Date.class //$NON-NLS-1$ //$NON-NLS-2$
                             + " instance"); //$NON-NLS-1$
@@ -82,6 +84,7 @@ public class DateDatatype extends ValueClassDatatype {
         return (Date)getValue(value);
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }

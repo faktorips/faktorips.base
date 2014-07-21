@@ -36,6 +36,7 @@ public class EqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
         compiler.setBinaryOperations(toArray(new EqualsObjectDatatype(AnyDatatype.INSTANCE)));
         compiler.setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
 
+            @Override
             public CompilationResult<JavaCodeFragment> compile(String identifier,
                     ExprCompiler<JavaCodeFragment> exprCompiler,
                     Locale locale) {

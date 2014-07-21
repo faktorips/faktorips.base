@@ -64,6 +64,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * 
      * @see org.faktorips.fl.FunctionSignature#getType()
      */
+    @Override
     public Datatype getType() {
         return type;
     }
@@ -73,6 +74,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * 
      * @see org.faktorips.fl.FunctionSignature#getName()
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -82,6 +84,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * 
      * @see org.faktorips.fl.FunctionSignature#getArgTypes()
      */
+    @Override
     public Datatype[] getArgTypes() {
         return argTypes;
     }
@@ -91,6 +94,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * 
      * @see org.faktorips.fl.FunctionSignature#isSame(org.faktorips.fl.FunctionSignature)
      */
+    @Override
     public boolean match(String name, Datatype[] otherArgTypes) {
         if (!this.name.equals(name)) {
             return false;
@@ -135,6 +139,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
      * @see org.faktorips.fl.FunctionSignature#matchUsingConversion(java.lang.String,
      *      org.faktorips.datatype.Datatype[], org.faktorips.datatype.ConversionMatrix)
      */
+    @Override
     public boolean matchUsingConversion(String name, Datatype[] otherArgTypes, ConversionMatrix matrix) {
         if (!this.name.equals(name)) {
             return false;
@@ -158,6 +163,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
         return true;
     }
 
+    @Override
     public boolean isSame(FunctionSignature fctSignature) {
         // this check is also done in #match(name, datatypes) but for performance issue we do it
         // before getting the argTypes of fctSignature
@@ -190,6 +196,7 @@ public class FunctionSignatureImpl implements FunctionSignature {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasVarArgs() {
         return hasVarArgs;
     }

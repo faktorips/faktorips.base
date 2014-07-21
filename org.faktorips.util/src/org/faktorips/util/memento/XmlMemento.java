@@ -31,6 +31,7 @@ public class XmlMemento implements Memento {
         this.state = state;
     }
 
+    @Override
     public Object getOriginator() {
         return originator;
     }

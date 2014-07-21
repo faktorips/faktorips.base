@@ -46,6 +46,7 @@ public abstract class AbstractVarArgFunction extends AbstractBaseVarArgFunction<
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
 
         ConversionCodeGenerator<JavaCodeFragment> ccg = getCompiler().getConversionCodeGenerator();

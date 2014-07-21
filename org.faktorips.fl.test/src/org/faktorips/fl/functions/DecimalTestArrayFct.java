@@ -42,6 +42,7 @@ public class DecimalTestArrayFct extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.fl.CompilationResult[])
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         if (values == null) {

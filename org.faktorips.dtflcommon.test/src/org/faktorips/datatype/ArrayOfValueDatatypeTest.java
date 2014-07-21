@@ -11,6 +11,7 @@
 package org.faktorips.datatype;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
@@ -29,6 +30,7 @@ public class ArrayOfValueDatatypeTest {
 
     @Test
     public void testGetBasicDatatypeName() {
+        assertNull(ArrayOfValueDatatype.getBasicDatatypeName(null));
         assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[]")); //$NON-NLS-1$ //$NON-NLS-2$
         assertEquals("Money", ArrayOfValueDatatype.getBasicDatatypeName("Money[][]")); //$NON-NLS-1$ //$NON-NLS-2$

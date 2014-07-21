@@ -58,6 +58,7 @@ public class DefaultFunctionResolverTest {
             super(name, "", type, argTypes);
         }
 
+        @Override
         public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
             return result;
         }

@@ -25,12 +25,13 @@ public class Days extends AbstractFlFunction {
         super(name, description, FunctionSignatures.DAYS);
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(DAYS_HELPER_CLASS);
         fragment.append(".daysBetween(").append(argResults[0].getCodeFragment()).append(", ")
-                .append(argResults[1].getCodeFragment()).append(")").append(".getDays()");
+        .append(argResults[1].getCodeFragment()).append(")").append(".getDays()");
         return new CompilationResultImpl(fragment, getType());
     }
 

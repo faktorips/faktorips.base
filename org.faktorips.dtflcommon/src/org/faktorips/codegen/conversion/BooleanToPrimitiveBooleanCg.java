@@ -19,6 +19,7 @@ public class BooleanToPrimitiveBooleanCg extends AbstractSingleConversionCg {
         super(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         fromValue.append(".booleanValue()"); //$NON-NLS-1$
         return fromValue;

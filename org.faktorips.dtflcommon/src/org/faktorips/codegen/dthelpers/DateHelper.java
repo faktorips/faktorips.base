@@ -51,6 +51,7 @@ public class DateHelper extends AbstractDatatypeHelper {
         return fragment;
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return valueOfExpression(value);

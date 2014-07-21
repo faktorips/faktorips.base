@@ -25,12 +25,13 @@ public class Months extends AbstractFlFunction {
         super(name, description, FunctionSignatures.MONTHS);
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(MONTHS_HELPER_CLASS);
         fragment.append(".monthsBetween(").append(argResults[0].getCodeFragment()).append(", ")
-                .append(argResults[1].getCodeFragment()).append(")").append(".getMonths()");
+        .append(argResults[1].getCodeFragment()).append(")").append(".getMonths()");
         return new CompilationResultImpl(fragment, getType());
     }
 

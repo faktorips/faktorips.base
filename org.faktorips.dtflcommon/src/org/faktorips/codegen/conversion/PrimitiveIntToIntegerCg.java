@@ -21,6 +21,7 @@ public class PrimitiveIntToIntegerCg extends AbstractSingleConversionCg {
         super(Datatype.PRIMITIVE_INT, Datatype.INTEGER);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)Datatype.PRIMITIVE_INT).toWrapper(fromValue);
     }

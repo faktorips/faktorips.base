@@ -40,34 +40,42 @@ public class InternationalStringDatatype extends AbstractDatatype implements Val
         }
     }
 
+    @Override
     public String getName() {
         return wrappedClass.getName();
     }
 
+    @Override
     public String getQualifiedName() {
         return getJavaClassName();
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
 
+    @Override
     public String getJavaClassName() {
         return wrappedClass.getCanonicalName();
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
+    @Override
     public boolean isParsable(String value) {
         if (value == null) {
             return true;
@@ -76,34 +84,42 @@ public class InternationalStringDatatype extends AbstractDatatype implements Val
         return false;
     }
 
+    @Override
     public boolean isNull(String value) {
         return false;
     }
 
+    @Override
     public boolean isMutable() {
         return true;
     }
 
+    @Override
     public boolean isImmutable() {
         return false;
     }
 
+    @Override
     public String getDefaultValue() {
         return null;
     }
 
+    @Override
     public Object getValue(String value) {
         throw new UnsupportedOperationException("Not supported yet."); //$NON-NLS-1$
     }
 
+    @Override
     public boolean supportsCompare() {
         return false;
     }
 
+    @Override
     public int compare(String valueA, String valueB) {
         return 0;
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return false;
     }

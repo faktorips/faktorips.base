@@ -29,6 +29,7 @@ public class Not extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         JavaCodeFragment code = new JavaCodeFragment("!(");
         code.append(argResults[0].getCodeFragment());

@@ -74,6 +74,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     /**
      * Returns the generated source code.
      */
+    @Override
     public T getCodeFragment() {
         return codeFragment;
     }
@@ -109,6 +110,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     /**
      * Returns the compiled expression's data type.
      */
+    @Override
     public Datatype getDatatype() {
         return datatype;
     }
@@ -116,6 +118,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     /**
      * Returns the messages generated during compilation.
      */
+    @Override
     public MessageList getMessages() {
         return messages;
     }
@@ -141,6 +144,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean successfull() {
         return !messages.containsErrorMsg();
     }
@@ -148,6 +152,7 @@ public abstract class AbstractCompilationResult<T extends CodeFragment> implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean failed() {
         return messages.containsErrorMsg();
     }

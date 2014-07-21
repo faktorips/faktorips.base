@@ -34,6 +34,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public Datatype getDatatype() {
         return null;
     }
@@ -41,6 +42,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getGetterMethod() {
         return "get" + StringUtils.capitalize(name);
     }
@@ -48,6 +50,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -55,6 +58,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getQualifiedName() {
         return name;
     }
@@ -62,6 +66,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isPrimitive() {
         return false;
     }
@@ -69,6 +74,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isAbstract() {
         return false;
     }
@@ -76,6 +82,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValueDatatype() {
         return false;
     }
@@ -83,6 +90,7 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
     /**
      * {@inheritDoc}
      */
+    @Override
     public String getJavaClassName() {
         return null;
     }

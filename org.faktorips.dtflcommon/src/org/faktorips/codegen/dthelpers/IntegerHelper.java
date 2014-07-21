@@ -37,6 +37,7 @@ public class IntegerHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();

@@ -21,6 +21,7 @@ public class PrimitiveBooleanToBooleanCg extends AbstractSingleConversionCg {
         super(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)Datatype.PRIMITIVE_BOOLEAN).toWrapper(fromValue);
     }

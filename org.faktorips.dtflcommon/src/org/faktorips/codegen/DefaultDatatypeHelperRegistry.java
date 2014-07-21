@@ -32,6 +32,7 @@ public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public DatatypeHelper getHelper(Datatype datatype) {
         return helpers.get(datatype);
     }
@@ -39,6 +40,7 @@ public class DefaultDatatypeHelperRegistry implements DatatypeHelperRegistry {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void register(DatatypeHelper helper) {
         helpers.put(helper.getDatatype(), helper);
     }

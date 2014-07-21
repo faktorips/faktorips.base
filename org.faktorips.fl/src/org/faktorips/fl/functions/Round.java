@@ -60,6 +60,7 @@ public class Round extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(CompilationResult[])
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();

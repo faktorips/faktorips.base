@@ -20,6 +20,7 @@ public class LongToDecimalCg extends AbstractSingleConversionCg {
         super(Datatype.LONG, Datatype.DECIMAL);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(Decimal.class);

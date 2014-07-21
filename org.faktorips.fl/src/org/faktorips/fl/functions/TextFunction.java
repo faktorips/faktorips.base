@@ -28,6 +28,7 @@ public class TextFunction extends AbstractFlFunction {
         super(name, description, FunctionSignatures.TextFunction);
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment argumentFragment = argResults[0].getCodeFragment();

@@ -29,6 +29,7 @@ public class NotBoolean extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         CompilationResultImpl result = (CompilationResultImpl)argResults[0];
         JavaCodeFragment code = result.getCodeFragment();

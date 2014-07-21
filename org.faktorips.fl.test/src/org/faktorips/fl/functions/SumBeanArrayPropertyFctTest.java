@@ -56,6 +56,7 @@ public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
 
     class BeanIdentifierResolver implements IdentifierResolver<JavaCodeFragment> {
 
+        @Override
         public CompilationResult<JavaCodeFragment> compile(String identifier,
                 ExprCompiler<JavaCodeFragment> exprCompiler,
                 Locale locale) {

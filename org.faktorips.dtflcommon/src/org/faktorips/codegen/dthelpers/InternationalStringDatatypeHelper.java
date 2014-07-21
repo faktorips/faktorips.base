@@ -30,6 +30,7 @@ public class InternationalStringDatatypeHelper extends AbstractDatatypeHelper {
         // do nothing
     }
 
+    @Override
     public JavaCodeFragment newInstance(String value) {
         return valueOfExpression(value);
     }

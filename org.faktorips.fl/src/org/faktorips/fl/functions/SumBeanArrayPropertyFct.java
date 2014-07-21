@@ -45,6 +45,7 @@ public class SumBeanArrayPropertyFct extends AbstractFlFunction {
      * 
      * @see org.faktorips.fl.FlFunction#compile(org.faktorips.fl.CompilationResult[])
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.notNull(argResults[0]);
         ArgumentCheck.notNull(argResults[1]);

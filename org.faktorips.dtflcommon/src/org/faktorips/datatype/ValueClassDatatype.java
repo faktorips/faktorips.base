@@ -10,7 +10,6 @@
 
 package org.faktorips.datatype;
 
-
 /**
  * A datatype that represents a Java class representing a value, for example java.lang.String.
  * 

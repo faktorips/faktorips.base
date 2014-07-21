@@ -34,42 +34,52 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         this(javaClassName, StringUtil.unqualifiedName(javaClassName));
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public String getQualifiedName() {
         return name;
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public final boolean isImmutable() {
         return !isMutable();
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
 
+    @Override
     public String getDefaultValue() {
         return null;
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
 
+    @Override
     public String getJavaClassName() {
         return javaClassName;
     }
@@ -87,12 +97,16 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         return value.toString();
     }
 
+    @Override
     public boolean isNull(String valueString) {
         Object value;
         try {
             value = getValue(valueString);
+            // CSOFF: Illegal Catch
         } catch (Exception e) {
-            return false; // => value can't be parsed, so it's also not null
+            // CSON: Illegal Catch
+            // => value can't be parsed, so it's also not null
+            return false;
         }
         if (value == null) {
             return true;
@@ -104,6 +118,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         return ((NullObjectSupport)value).isNull();
     }
 
+    @Override
     public boolean isParsable(String value) {
         try {
             if (isNull(value)) {
@@ -122,11 +137,13 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
         return false;
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return ObjectUtils.equals(getValue(valueA), getValue(valueB));
     }
 
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    @Override
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison of values"); //$NON-NLS-1$
@@ -158,6 +175,7 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
      * @see #valueToString(Object)
      * 
      */
+    @Override
     public abstract Object getValue(String value);
 
 }

@@ -27,20 +27,31 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     private int dimension;
 
     /**
+     * Constructs a new array datatype based on the given underlying datatype and the dimension.
+     */
+    public ArrayOfValueDatatype(Datatype datatype, int dimension) {
+        super();
+        ArgumentCheck.notNull(datatype);
+        this.datatype = datatype;
+        this.dimension = dimension;
+    }
+
+    /**
      * Returns the number of dimensions specified in the given datatypeName.
      * <p>
      * Examples:<br>
      * "Money" specifies 0 dimensions. "Money[]" specifies 1 dimension. "Money[][]" specifies 2
      * dimensions.
      */
-    public final static int getDimension(String datatypeName) {
+    public static final int getDimension(String datatypeName) {
         if (datatypeName == null) {
             return 0;
         }
         int dimension = 0;
-        while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
+        String datatypeNameTemp = datatypeName;
+        while (datatypeNameTemp.endsWith("[]")) { //$NON-NLS-1$
             dimension++;
-            datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
+            datatypeNameTemp = datatypeNameTemp.substring(0, datatypeNameTemp.length() - 2);
         }
         return dimension;
     }
@@ -52,28 +63,22 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
      * "Money" specifies basic datatype Money. "Money[]" specifies basic datatype Money. "Money[][]"
      * specifies basic datatype Money.
      */
-    public final static String getBasicDatatypeName(String datatypeName) {
-        while (datatypeName.endsWith("[]")) { //$NON-NLS-1$
-            datatypeName = datatypeName.substring(0, datatypeName.length() - 2);
+    public static final String getBasicDatatypeName(String datatypeName) {
+        if (datatypeName == null) {
+            return null;
         }
-        return datatypeName;
+        String datatypeNameTemp = datatypeName;
+        while (datatypeNameTemp.endsWith("[]")) { //$NON-NLS-1$
+            datatypeNameTemp = datatypeNameTemp.substring(0, datatypeNameTemp.length() - 2);
+        }
+        return datatypeNameTemp;
     }
 
     /**
      * Returns if the provided string represents an ArrayDatatype.
      */
-    public final static boolean isArrayDatatype(String datatypeName) {
+    public static final boolean isArrayDatatype(String datatypeName) {
         return getDimension(datatypeName) != 0;
-    }
-
-    /**
-     * Constructs a new array datatype based on the given underlying datatype and the dimension.
-     */
-    public ArrayOfValueDatatype(Datatype datatype, int dimension) {
-        super();
-        ArgumentCheck.notNull(datatype);
-        this.datatype = datatype;
-        this.dimension = dimension;
     }
 
     /**
@@ -91,14 +96,17 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return dimension;
     }
 
+    @Override
     public boolean isImmutable() {
         return true;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public String getName() {
         StringBuffer buffer = new StringBuffer(datatype.getName());
         for (int i = 0; i < dimension; i++) {
@@ -107,6 +115,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return buffer.toString();
     }
 
+    @Override
     public String getQualifiedName() {
         StringBuffer buffer = new StringBuffer(datatype.getQualifiedName());
         for (int i = 0; i < dimension; i++) {
@@ -115,22 +124,27 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return buffer.toString();
     }
 
+    @Override
     public boolean isPrimitive() {
         return false;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public String getDefaultValue() {
         return null;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
 
+    @Override
     public String getJavaClassName() {
         StringBuffer buffer = new StringBuffer(datatype.getJavaClassName());
         for (int i = 0; i < dimension; i++) {
@@ -139,6 +153,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return buffer.toString();
     }
 
+    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }
@@ -146,6 +161,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * Null is parsable. Other values are not supported yet. {@inheritDoc}
      */
+    @Override
     public boolean isParsable(String value) {
         if (value == null) {
             return true;
@@ -157,6 +173,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     /**
      * If the value is null, null will be returned. Other values are not supported yet.
      */
+    @Override
     public Object getValue(String value) {
         if (value == null) {
             return null;
@@ -174,10 +191,12 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         throw new RuntimeException("No supported yet."); //$NON-NLS-1$
     }
 
+    @Override
     public boolean isNull(String value) {
         return value == null;
     }
 
+    @Override
     public boolean supportsCompare() {
         if (datatype.isValueDatatype() && ((ValueDatatype)datatype).supportsCompare()) {
             return true;
@@ -185,7 +204,8 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return false;
     }
 
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    @Override
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("The datatype " + datatype.getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison for values."); //$NON-NLS-1$
@@ -194,6 +214,7 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
         return ((ValueDatatype)datatype).compare(valueA, valueB);
     }
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         if (datatype.isValueDatatype()) {
             return ((ValueDatatype)datatype).areValuesEqual(valueA, valueB);

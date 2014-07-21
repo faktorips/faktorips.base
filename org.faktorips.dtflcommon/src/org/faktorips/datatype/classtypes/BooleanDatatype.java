@@ -41,6 +41,7 @@ public class BooleanDatatype extends ValueClassDatatype {
         throw new IllegalArgumentException("Can't parse " + s + " to Boolean!"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }

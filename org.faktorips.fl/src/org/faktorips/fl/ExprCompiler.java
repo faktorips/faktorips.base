@@ -743,6 +743,7 @@ public abstract class ExprCompiler<T extends CodeFragment> {
          */
         private static final long serialVersionUID = -6448576956808509752L;
 
+        @Override
         public int compare(FlFunction<?> o1, FlFunction<?> o2) {
             return o1.getName().compareTo(o2.getName());
         }

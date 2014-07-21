@@ -45,6 +45,7 @@ public class DefaultIdentifierResolver implements IdentifierResolver<JavaCodeFra
         identifiers.put(identifier, new FragmentDatatypeWrapper(defensiveCopy, datatype));
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(String identifier,
             ExprCompiler<JavaCodeFragment> exprCompiler,
             Locale locale) {

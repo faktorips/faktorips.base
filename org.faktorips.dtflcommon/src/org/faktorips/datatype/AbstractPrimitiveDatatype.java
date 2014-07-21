@@ -24,14 +24,17 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         super();
     }
 
+    @Override
     public boolean isPrimitive() {
         return true;
     }
 
+    @Override
     public boolean isAbstract() {
         return false;
     }
 
+    @Override
     public boolean isValueDatatype() {
         return true;
     }
@@ -45,6 +48,7 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
      * 
      * {@inheritDoc}
      */
+    @Override
     public boolean isParsable(String value) {
         if (StringUtils.isEmpty(value)) {
             return false;
@@ -63,28 +67,35 @@ public abstract class AbstractPrimitiveDatatype extends AbstractDatatype impleme
         return false;
     }
 
+    @Override
     public abstract Object getValue(String value);
 
+    @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         return ObjectUtils.equals(getValue(valueA), getValue(valueB));
     }
 
-    public int compare(String valueA, String valueB) throws UnsupportedOperationException {
+    @SuppressWarnings("unchecked")
+    @Override
+    public int compare(String valueA, String valueB) {
         if (!supportsCompare()) {
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison of values"); //$NON-NLS-1$
         }
-        return ((Comparable)getValue(valueA)).compareTo(getValue(valueB));
+        return ((Comparable<Object>)getValue(valueA)).compareTo(getValue(valueB));
     }
 
+    @Override
     public boolean isNull(String value) {
         return false;
     }
 
+    @Override
     public boolean isMutable() {
         return false;
     }
 
+    @Override
     public boolean isImmutable() {
         return true;
     }

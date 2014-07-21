@@ -54,6 +54,7 @@ public class DefaultFunctionResolver<T extends CodeFragment> implements Function
         functions.remove(function);
     }
 
+    @Override
     public FlFunction<T>[] getFunctions() {
         @SuppressWarnings("unchecked")
         FlFunction<T>[] flFunctions = new FlFunction[functions.size()];

@@ -19,6 +19,7 @@ public class DecimalToIntegerCg extends AbstractSingleConversionCg {
         super(Datatype.DECIMAL, Datatype.INTEGER);
     }
 
+    @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
         // Integer.valueOf(Decimal.valueOf("").intValue());
         JavaCodeFragment fragment = new JavaCodeFragment();

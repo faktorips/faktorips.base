@@ -70,10 +70,12 @@ public class PaymentMode implements NullObjectSupport {
         return id;
     }
 
+    @Override
     public boolean isNull() {
         return this == PaymentMode.NULL;
     }
 
+    @Override
     public boolean isNotNull() {
         return !isNotNull();
     }

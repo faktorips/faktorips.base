@@ -124,32 +124,40 @@ public class ExprCompilerTest {
         compiler.setLocale(Locale.ENGLISH);
         compiler.setDatatypeHelperProvider(new DatatypeHelperProvider<CodeFragment>() {
 
+            @Override
             public BaseDatatypeHelper<CodeFragment> getDatatypeHelper(final Datatype datatype) {
                 return new BaseDatatypeHelper<CodeFragment>() {
 
+                    @Override
                     public Datatype getDatatype() {
                         return datatype;
                     }
 
+                    @Override
                     public void setDatatype(Datatype datatype) {
                     }
 
+                    @Override
                     public CodeFragment nullExpression() {
                         return new CodeFragment("null");
                     }
 
+                    @Override
                     public CodeFragment newInstance(String value) {
                         return new CodeFragment(value);
                     }
 
+                    @Override
                     public CodeFragment newInstanceFromExpression(String expression) {
                         return new CodeFragment(expression);
                     }
 
+                    @Override
                     public CodeFragment newInstanceFromExpression(String expression, boolean checkForNull) {
                         return new CodeFragment(expression);
                     }
 
+                    @Override
                     public CodeFragment getToStringExpression(String fieldName) {
                         return new CodeFragment(fieldName);
                     }
@@ -274,6 +282,7 @@ public class ExprCompilerTest {
     private void setFailingIdentifierResolver() {
         compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
 
+            @Override
             public CompilationResult<CodeFragment> compile(String identifier,
                     ExprCompiler<CodeFragment> exprCompiler,
                     Locale locale) {
@@ -290,6 +299,7 @@ public class ExprCompilerTest {
     public void testIdentifierResolvingSuccessfull() {
         compiler.setIdentifierResolver(new IdentifierResolver<CodeFragment>() {
 
+            @Override
             public CompilationResult<CodeFragment> compile(String identifier,
                     ExprCompiler<CodeFragment> exprCompiler,
                     Locale locale) {
@@ -305,6 +315,7 @@ public class ExprCompilerTest {
     private void registerAddIntInt() {
         compiler.register(new AbstractBinaryOperation<CodeFragment>("+", Datatype.PRIMITIVE_INT, Datatype.PRIMITIVE_INT) {
 
+            @Override
             public CompilationResult<CodeFragment> generate(CompilationResult<CodeFragment> lhs,
                     CompilationResult<CodeFragment> rhs) {
                 lhs.getCodeFragment().append(" + "); //$NON-NLS-1$

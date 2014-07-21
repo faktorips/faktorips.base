@@ -25,12 +25,13 @@ public class Weeks extends AbstractFlFunction {
         super(name, description, FunctionSignatures.WEEKS);
     }
 
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.appendClassName(WEEKS_HELPER_CLASS);
         fragment.append(".weeksBetween(").append(argResults[0].getCodeFragment()).append(", ")
-                .append(argResults[1].getCodeFragment()).append(")").append(".getWeeks()");
+        .append(argResults[1].getCodeFragment()).append(")").append(".getWeeks()");
         return new CompilationResultImpl(fragment, getType());
     }
 

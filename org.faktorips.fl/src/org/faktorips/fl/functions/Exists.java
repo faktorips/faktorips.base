@@ -34,6 +34,7 @@ public class Exists extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         Datatype argType = argResults[0].getDatatype();
         if (argType.isPrimitive()) {

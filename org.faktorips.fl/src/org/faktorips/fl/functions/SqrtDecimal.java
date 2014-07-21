@@ -45,6 +45,7 @@ public class SqrtDecimal extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
         JavaCodeFragment fragment = new JavaCodeFragment();

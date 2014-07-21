@@ -32,6 +32,7 @@ public class MinMaxMoney extends AbstractFlFunction {
     /**
      * {@inheritDoc}
      */
+    @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 2);
         // value1.max(value2)

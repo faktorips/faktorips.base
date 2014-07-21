@@ -41,10 +41,12 @@ public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype
         return true;
     }
 
+    @Override
     public boolean supportsCompare() {
         return true;
     }
 
+    @Override
     public String subtract(String minuend, String subtrahend) {
         if (minuend == null || subtrahend == null) {
             throw new NullPointerException("Minuend and subtrahend both can not be null."); //$NON-NLS-1$
@@ -52,6 +54,7 @@ public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype
         return Money.valueOf(minuend).subtract(Money.valueOf(subtrahend)).toString();
     }
 
+    @Override
     public boolean divisibleWithoutRemainder(String dividend, String divisor) {
         if (dividend == null || divisor == null) {
             throw new NullPointerException("dividend and divisor both can not be null."); //$NON-NLS-1$
@@ -66,6 +69,7 @@ public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype
         return true;
     }
 
+    @Override
     public boolean hasDecimalPlaces() {
         return true;
     }
