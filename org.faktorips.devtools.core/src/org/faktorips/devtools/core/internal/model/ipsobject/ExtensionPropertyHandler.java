@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -252,6 +253,15 @@ public class ExtensionPropertyHandler {
     }
 
     /**
+     * Removes all obsolete extension properties from the {@link ExtensionPropertyMap}.
+     */
+    public void removeObsoleteExtensionProperties() {
+        if (extPropertiyValuesMap.removeObsoleteExtensionProperties(ipsObjectPartContainer)) {
+            ipsObjectPartContainer.objectHasChanged();
+        }
+    }
+
+    /**
      * Validates the extension property values.
      * 
      * @throws CoreException if an error occurs while validating the extension properties.
@@ -330,6 +340,20 @@ public class ExtensionPropertyHandler {
             return Collections.synchronizedMap(new LinkedHashMap<String, ExtensionPropertyValue>(4));
         }
 
+        private boolean removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
+            boolean hasChanged = false;
+            if (!isEmpty()) {
+                for (Iterator<String> iterator = internalMap.keySet().iterator(); iterator.hasNext();) {
+                    String propertyId = iterator.next();
+                    IExtensionPropertyDefinition propertyDefinition = ipsObjectPartContainer
+                            .getExtensionPropertyDefinition(propertyId);
+                    if (propertyDefinition == null) {
+                        iterator.remove();
+                        hasChanged = true;
+                    }
+                }
+            }
+            return hasChanged;
+        }
     }
-
 }

@@ -942,6 +942,36 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         assertEquals(ANY_ID, attribute);
     }
 
+    @Test
+    public void testRemoveObsoleteExtensionProperties() {
+        ExtensionPropertyDefinition extProp0 = new StringExtensionPropertyDefinition();
+        extProp0.setPropertyId("org.foo.prop0");
+        extProp0.setExtendedType(TestIpsObjectPartContainer.class);
+        extProp0.setDefaultValue("default0");
+
+        model.addIpsObjectExtensionProperty(extProp0);
+
+        // test whether property values were loaded even without their ExtensionPropertyDefinitions
+        Element docEl = getTestDocument().getDocumentElement();
+        container.initFromXml(docEl);
+        assertEquals("value0", container.getExtPropertyValue("org.foo.prop0"));
+
+        Element containerElement = container.toXml(newDocument());
+        containsExtPropValueForId(containerElement, "org.foo.prop0");
+        containsExtPropValueForId(containerElement, "org.foo.prop1");
+        containsExtPropValueForId(containerElement, "org.foo.prop2");
+        containsExtPropValueForId(containerElement, "org.foo.prop3");
+
+        // now remove obsolete extension properties
+        container.removeObsoleteExtensionProperties();
+
+        containerElement = container.toXml(newDocument());
+        containsExtPropValueForId(containerElement, "org.foo.prop0");
+        assertFalse(container.isExtPropertyDefinitionAvailable("org.foo.prop1"));
+        assertFalse(container.isExtPropertyDefinitionAvailable("org.foo.prop2"));
+        assertFalse(container.isExtPropertyDefinitionAvailable("org.foo.prop3"));
+    }
+
     private static class TestUnlabeledIpsObjectPartContainer extends IpsObjectPartContainer {
 
         private int numOfUpdateSrcFileCalls;

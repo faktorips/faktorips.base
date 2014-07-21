@@ -200,6 +200,19 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         extensionProperties.setExtPropertyValue(propertyId, value);
     }
 
+    @Override
+    public void removeObsoleteExtensionProperties() {
+        extensionProperties.removeObsoleteExtensionProperties();
+        removeObsoleteExtensionPropertiesOfChilden();
+    }
+
+    private void removeObsoleteExtensionPropertiesOfChilden() {
+        IIpsElement[] children = getChildren();
+        for (IIpsElement child : children) {
+            ((IIpsObjectPartContainer)child).removeObsoleteExtensionProperties();
+        }
+    }
+
     /**
      * Informs the entire system that this model object has been changed. Subclasses should fire
      * this event if any property of the object changes.

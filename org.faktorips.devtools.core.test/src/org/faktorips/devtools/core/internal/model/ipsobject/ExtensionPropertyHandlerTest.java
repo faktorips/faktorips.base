@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doReturn;
@@ -87,13 +88,13 @@ public class ExtensionPropertyHandlerTest {
     private IpsObjectPartContainer ipsObjectPartContainer;
 
     @Mock
-    private ExtensionPropertyValue invalidExtensionProperty;
+    private ExtensionPropertyValue extensionProperty;
 
     @Mock
-    private ExtensionPropertyValue invalidExtensionProperty2;
+    private ExtensionPropertyValue extensionProperty2;
 
     @Mock
-    private ExtensionPropertyValue invalidExtensionProperty3;
+    private ExtensionPropertyValue extensionProperty3;
 
     @Mock
     private StringExtensionPropertyDefinition stringPropDef;
@@ -436,23 +437,23 @@ public class ExtensionPropertyHandlerTest {
     public void testToXML_saveInvalidPropertiesToXML() {
         doReturn(new ArrayList<IExtensionPropertyDefinition>()).when(ipsObjectPartContainer)
                 .getExtensionPropertyDefinitions();
-        when(invalidExtensionProperty.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
-        when(invalidExtensionProperty2.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
-        when(invalidExtensionProperty3.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
-        initMaps();
+        when(extensionProperty.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
+        when(extensionProperty2.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
+        when(extensionProperty3.getPreviouslyStoredXml(xmlDocument)).thenReturn(xmlValueElement);
+        initMaps(MY_ID);
 
         extensionPropertyHandler.toXml(xmlRootElement);
 
-        verify(invalidExtensionProperty).appendToXml(xmlExtPropElement);
-        verify(invalidExtensionProperty2).appendToXml(xmlExtPropElement);
-        verify(invalidExtensionProperty3).appendToXml(xmlExtPropElement);
+        verify(extensionProperty).appendToXml(xmlExtPropElement);
+        verify(extensionProperty2).appendToXml(xmlExtPropElement);
+        verify(extensionProperty3).appendToXml(xmlExtPropElement);
     }
 
-    private void initMaps() {
+    private void initMaps(String id) {
         ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
-        map.put(INVALID_ID, invalidExtensionProperty);
-        map.put(INVALID_ID + 2, invalidExtensionProperty2);
-        map.put(INVALID_ID + 3, invalidExtensionProperty3);
+        map.put(id, extensionProperty);
+        map.put(id + 2, extensionProperty2);
+        map.put(id + 3, extensionProperty3);
     }
 
     @Test
@@ -472,14 +473,37 @@ public class ExtensionPropertyHandlerTest {
      */
     @Test
     public void testGetExtPropertyValuesMap() throws Exception {
-        initMaps();
+        initMaps(INVALID_ID);
 
         ExtensionPropertyMap extPropertyValuesMap = extensionPropertyHandler.getExtPropertyValuesMap();
 
         Iterator<ExtensionPropertyValue> iterator = extPropertyValuesMap.values().iterator();
-        assertEquals(invalidExtensionProperty, iterator.next());
-        assertEquals(invalidExtensionProperty2, iterator.next());
-        assertEquals(invalidExtensionProperty3, iterator.next());
+        assertEquals(extensionProperty, iterator.next());
+        assertEquals(extensionProperty2, iterator.next());
+        assertEquals(extensionProperty3, iterator.next());
     }
 
+    @Test
+    public void testRemoveObsoleteExtensionProperties() {
+        doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
+        doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID + 2);
+        initMaps(MY_ID);
+
+        extensionPropertyHandler.removeObsoleteExtensionProperties();
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
+
+        assertEquals(2, map.values().size());
+        assertNull(map.get(MY_ID + 3));
+    }
+
+    @Test
+    public void testRemoveObsoleteExtensionProperties_noNPE() {
+        doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
+        doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID + 2);
+
+        extensionPropertyHandler.removeObsoleteExtensionProperties();
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
+
+        assertEquals(0, map.values().size());
+    }
 }
