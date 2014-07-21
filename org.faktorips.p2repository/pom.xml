@@ -50,6 +50,7 @@
 
 	<profiles>
 		<profile>
+			<id>deployRelease</id>
 			<activation>
 				<property>
 					<name>version.kind</name>
@@ -61,9 +62,13 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>release</id>
+			<id>deploy</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>version.kind</name>
+					<value>rfinal</value>
+				</property>
 			</activation>
 			<build>
 				<plugins>
