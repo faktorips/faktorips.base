@@ -305,7 +305,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
-            if (generation.getValidFrom().after(validTo)) {
+            if (generation.getValidFrom() != null && generation.getValidFrom().after(validTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String params[] = new String[4];
                 params[0] = prefs.getDateFormat().format(validTo.getTime());

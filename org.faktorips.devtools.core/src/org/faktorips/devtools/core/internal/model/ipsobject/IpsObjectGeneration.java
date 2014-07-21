@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
@@ -197,26 +198,42 @@ public abstract class IpsObjectGeneration extends IpsObjectPart implements IIpsO
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
 
-        if (parentValidTo != null && getValidFrom() != null && getValidFrom().after(parentValidTo)) {
-            IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-            String[] params = new String[3];
-            params[0] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
-            DateFormat format = prefs.getDateFormat();
-            params[1] = format.format(getValidFrom().getTime());
-            params[2] = format.format(parentValidTo.getTime());
-            String msg = NLS.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
+        if (getValidFrom() == null) {
+            list.add(Message.newError(MSGCODE_INVALID_FORMAT_VALID_FROM,
+                    Messages.IpsObjectGeneration_msgInvalidFormatFromDate + getDefaultDateFormat(), this,
+                    PROPERTY_VALID_FROM));
+        } else {
+            GregorianCalendar parentValidTo = getTimedIpsObject().getValidTo();
+            if (parentValidTo != null && getValidFrom().after(parentValidTo)) {
+                IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
+                String[] params = new String[3];
+                params[0] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
+                DateFormat format = prefs.getDateFormat();
+                params[1] = format.format(getValidFrom().getTime());
+                params[2] = format.format(parentValidTo.getTime());
+                String msg = NLS.bind(Messages.IpsObjectGeneration_msgInvalidFromDate, params);
 
-            list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
-        }
-        if (validFrom != null) {
-            IIpsObjectGeneration duplicateGeneration = getTimedIpsObject().getGenerationByEffectiveDate(validFrom);
+                list.add(Message.newError(MSGCODE_INVALID_VALID_FROM, msg, this, PROPERTY_VALID_FROM));
+            }
+
+            IIpsObjectGeneration duplicateGeneration = getTimedIpsObject().getGenerationByEffectiveDate(getValidFrom());
             if (duplicateGeneration != this) {
                 String msg = NLS.bind(Messages.IpsObjectGeneration_msgDuplicateGeneration, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-                list.add(new Message(MSGCODE_INVALID_VALID_FROM, msg, Message.ERROR, this, PROPERTY_VALID_FROM));
+                list.add(Message.newError(MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION, msg, this,
+                        PROPERTY_VALID_FROM));
             }
         }
+
+    }
+
+    private String getDefaultDateFormat() {
+        DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+        String formatDescription = dateFormat.format(new GregorianCalendar().getTime());
+        if (dateFormat instanceof SimpleDateFormat) {
+            formatDescription = ((SimpleDateFormat)dateFormat).toPattern();
+        }
+        return formatDescription;
     }
 }

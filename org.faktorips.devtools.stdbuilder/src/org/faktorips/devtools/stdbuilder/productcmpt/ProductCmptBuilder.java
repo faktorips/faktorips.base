@@ -91,10 +91,12 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            if (mustFileBeBuild((IProductCmptGeneration)generation)) {
-                build((IProductCmptGeneration)generation);
+        if (productCmpt.isValid(getIpsProject())) {
+            IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
+            for (IIpsObjectGeneration generation : generations) {
+                if (mustFileBeBuild((IProductCmptGeneration)generation)) {
+                    build((IProductCmptGeneration)generation);
+                }
             }
         }
     }
@@ -144,10 +146,12 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         // name
         // instead we delete all file that start with the common prefix.
         String prefix = getJavaSrcFilePrefix(deletedFile);
-        IFile file = generationBuilder.getJavaFile(deletedFile); // get a file handle in the
+        // get a file handle in the
+        IFile file = generationBuilder.getJavaFile(deletedFile);
         // target folder
         IContainer folder = file.getParent();
-        IResource[] members = folder.members(); // now delete all files that start with the common
+        // now delete all files that start with the common
+        IResource[] members = folder.members();
         // prefix
         for (IResource member : members) {
             if (member.getType() == IResource.FILE && member.getName().startsWith(prefix)) {

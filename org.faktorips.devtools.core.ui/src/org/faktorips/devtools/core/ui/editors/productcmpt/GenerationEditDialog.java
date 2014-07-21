@@ -10,10 +10,9 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -21,6 +20,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
@@ -36,6 +36,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
 
     private static final String DIALOG_MSG_CODE = "VALID_FROM_MSG"; //$NON-NLS-1$
 
+    private final GenerationEditDialogPMO pmo;
     private EditField<GregorianCalendar> dateField;
 
     private IProductCmptGeneration previous;
@@ -59,6 +60,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         this.previous = (IProductCmptGeneration)generation.getPreviousByValidDate();
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
         this.newGenerationDialog = newGenerationDialog;
+        this.pmo = new GenerationEditDialogPMO(generation);
     }
 
     @Override
@@ -81,13 +83,19 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         Text textControl = dateControl.getTextControl();
 
         dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
-
-        bindModel();
         return workArea;
+    }
+
+    @Override
+    protected void createButtonsForButtonBar(Composite parent) {
+        super.createButtonsForButtonBar(parent);
+        bindModel();
     }
 
     private void bindModel() {
         getBindingContext().bindContent(dateField, getIpsPart(), IProductCmptGeneration.PROPERTY_VALID_FROM);
+        getBindingContext().bindEnabled(getButton(IDialogConstants.OK_ID), pmo,
+                GenerationEditDialogPMO.PROPERTY_OK_BUTTON_ENABLED);
     }
 
     @Override
@@ -96,27 +104,38 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         // to be done during normal validation of a generation.
         GregorianCalendar value = getIpsPart().getValidFrom();
 
-        if (value == null) {
-            DateFormat format = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
-            String formatDescription = format.format(new GregorianCalendar().getTime());
-            if (format instanceof SimpleDateFormat) {
-                formatDescription = ((SimpleDateFormat)format).toPattern();
+        if (value != null) {
+            if (previous != null && !value.after(previous.getValidFrom()) && !newGenerationDialog) {
+                String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+                messageList.add(Message.newWarning(DIALOG_MSG_CODE, msg, getIpsPart(),
+                        IProductCmptGeneration.PROPERTY_VALID_FROM));
+
+            } else if (next != null && !next.getValidFrom().after(value) && !newGenerationDialog) {
+                String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
+                messageList.add(Message.newWarning(DIALOG_MSG_CODE, msg, getIpsPart(),
+                        IProductCmptGeneration.PROPERTY_VALID_FROM));
+
             }
-            messageList.add(Message.newError(DIALOG_MSG_CODE, Messages.GenerationEditDialog_msgInvalidFormat
-                    + formatDescription, getIpsPart(), IProductCmptGeneration.PROPERTY_VALID_FROM));
+        }
+    }
 
-        } else if (previous != null && !value.after(previous.getValidFrom()) && !newGenerationDialog) {
-            String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToEarly, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-            messageList.add(Message.newWarning(DIALOG_MSG_CODE, msg, getIpsPart(),
-                    IProductCmptGeneration.PROPERTY_VALID_FROM));
+    /**
+     * Pmo for OK-Button
+     */
+    public static class GenerationEditDialogPMO extends PresentationModelObject {
 
-        } else if (next != null && !next.getValidFrom().after(value) && !newGenerationDialog) {
-            String msg = NLS.bind(Messages.GenerationEditDialog_msgDateToLate, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNameSingular());
-            messageList.add(Message.newWarning(DIALOG_MSG_CODE, msg, getIpsPart(),
-                    IProductCmptGeneration.PROPERTY_VALID_FROM));
+        public static final String PROPERTY_OK_BUTTON_ENABLED = "okButtonEnabled"; //$NON-NLS-1$
 
+        private final IProductCmptGeneration generation;
+
+        public GenerationEditDialogPMO(IProductCmptGeneration currentGeneration) {
+            this.generation = currentGeneration;
+        }
+
+        public boolean isOkButtonEnabled() {
+            return generation.getValidFrom() != null;
         }
     }
 }

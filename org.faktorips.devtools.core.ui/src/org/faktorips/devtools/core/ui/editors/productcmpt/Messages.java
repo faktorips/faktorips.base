@@ -120,8 +120,6 @@ public class Messages extends NLS {
 
     public static String GenerationEditDialog_labelValidFrom;
 
-    public static String GenerationEditDialog_msgInvalidFormat;
-
     public static String GenerationEditDialog_msgDateToEarly;
 
     public static String GenerationEditDialog_msgDateToLate;

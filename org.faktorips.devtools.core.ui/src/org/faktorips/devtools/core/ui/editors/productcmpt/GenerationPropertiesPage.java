@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
@@ -295,7 +296,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .showView(ModelDescriptionView.EXTENSION_ID);
+                    .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -343,7 +344,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                .getNumOfGenerations() - 1];
+                                                                                                    .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }
@@ -357,12 +358,19 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     String getGenerationName(IIpsObjectGeneration generation) {
-        DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
         String generationConceptName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
                 .getGenerationConceptNameSingular();
-        String validRange = dateFormat.format(generation.getValidFrom().getTime())
-                + " - " + getValidToString(generation); //$NON-NLS-1$
+        String validRange = getValidFromString(generation) + " - " + getValidToString(generation); //$NON-NLS-1$
         return generationConceptName + ' ' + validRange;
+    }
+
+    private String getValidFromString(IIpsObjectGeneration generation) {
+        if (generation.getValidFrom() == null) {
+            return StringUtils.EMPTY;
+        } else {
+            DateFormat dateFormat = IpsPlugin.getDefault().getIpsPreferences().getDateFormat();
+            return dateFormat.format(generation.getValidFrom().getTime());
+        }
     }
 
     private String getValidToString(IIpsObjectGeneration generation) {
