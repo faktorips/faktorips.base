@@ -807,7 +807,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         IIpsProjectProperties properties = ipsProject.getProperties();
         Set<ISupportedLanguage> supportedLanguages = properties.getSupportedLanguages();
         ISupportedLanguage[] languageArray = supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages
-                                                                                               .size()]);
+                .size()]);
         properties.removeSupportedLanguage(languageArray[0]);
         properties.removeSupportedLanguage(languageArray[1]);
         properties.addSupportedLanguage(languageArray[1].getLocale());
@@ -941,7 +941,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         containsExtPropValueForId(containerElement, "org.foo.prop2");
         containsExtPropValueForId(containerElement, "org.foo.prop3");
 
-        // now remove obsolte extension properties
+        // now remove obsolete extension properties
         container.removeObsoleteExtensionProperties();
 
         containerElement = container.toXml(newDocument());
@@ -1075,7 +1075,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     private static class TestIpsObjectPartContainerWithVersion extends TestIpsObjectPartContainer implements
-    IVersionControlledElement {
+            IVersionControlledElement {
 
         public TestIpsObjectPartContainerWithVersion(IIpsElement parent) {
             super(parent);
@@ -1083,7 +1083,7 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     private static class TestIpsObjectPartContainer extends IpsObjectPartContainer implements IDescribedElement,
-    ILabeledElement {
+            ILabeledElement {
 
         private int numOfUpdateSrcFileCalls;
 

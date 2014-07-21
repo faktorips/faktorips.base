@@ -256,7 +256,9 @@ public class ExtensionPropertyHandler {
      * Removes all obsolete extension properties from the {@link ExtensionPropertyMap}.
      */
     public void removeObsoleteExtensionProperties() {
-        extPropertiyValuesMap.removeObsoleteExtensionProperties(ipsObjectPartContainer);
+        if (extPropertiyValuesMap.removeObsoleteExtensionProperties(ipsObjectPartContainer)) {
+            ipsObjectPartContainer.objectHasChanged();
+        }
     }
 
     /**
@@ -338,7 +340,8 @@ public class ExtensionPropertyHandler {
             return Collections.synchronizedMap(new LinkedHashMap<String, ExtensionPropertyValue>(4));
         }
 
-        private void removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
+        private boolean removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
+            boolean hasChanged = false;
             if (!isEmpty()) {
                 for (Iterator<String> iterator = internalMap.keySet().iterator(); iterator.hasNext();) {
                     String propertyId = iterator.next();
@@ -346,9 +349,11 @@ public class ExtensionPropertyHandler {
                             .getExtensionPropertyDefinition(propertyId);
                     if (propertyDefinition == null) {
                         iterator.remove();
+                        hasChanged = true;
                     }
                 }
             }
+            return hasChanged;
         }
     }
 }
