@@ -338,15 +338,14 @@ public class ExtensionPropertyHandler {
         }
 
         private void removeObsoleteExtensionProperties(IpsObjectPartContainer ipsObjectPartContainer) {
-            if (isEmpty()) {
-                return;
-            }
-            for (Entry<String, ExtensionPropertyValue> entry : internalMap.entrySet()) {
-                String propertyId = entry.getKey();
-                IExtensionPropertyDefinition propertyDefinition = ipsObjectPartContainer
-                        .getExtensionPropertyDefinition(propertyId);
-                if (propertyDefinition == null) {
-                    internalMap.remove(propertyId);
+            if (!isEmpty()) {
+                for (Entry<String, ExtensionPropertyValue> entry : internalMap.entrySet()) {
+                    String propertyId = entry.getKey();
+                    IExtensionPropertyDefinition propertyDefinition = ipsObjectPartContainer
+                            .getExtensionPropertyDefinition(propertyId);
+                    if (propertyDefinition == null) {
+                        internalMap.remove(propertyId);
+                    }
                 }
             }
         }

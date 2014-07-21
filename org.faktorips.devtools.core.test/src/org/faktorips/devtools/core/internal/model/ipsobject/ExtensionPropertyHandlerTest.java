@@ -496,4 +496,14 @@ public class ExtensionPropertyHandlerTest {
         assertNull(map.get(MY_ID + 3));
     }
 
+    @Test
+    public void testRemoveObsoleteExtensionProperties_noNPE() {
+        doReturn(extPropDef).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID);
+        doReturn(extPropDef2).when(ipsObjectPartContainer).getExtensionPropertyDefinition(MY_ID + 2);
+
+        extensionPropertyHandler.removeObsoleteExtensionProperties();
+        ExtensionPropertyMap map = extensionPropertyHandler.getExtPropertyValuesMap();
+
+        assertEquals(0, map.values().size());
+    }
 }
