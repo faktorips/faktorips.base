@@ -203,6 +203,16 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
     @Override
     public void removeObsoleteExtensionProperties() {
         extensionProperties.removeObsoleteExtensionProperties();
+        removeObsoleteExtensionPropertiesOfChilden();
+    }
+
+    private void removeObsoleteExtensionPropertiesOfChilden() {
+        IIpsElement[] children = getChildren();
+        for (IIpsElement child : children) {
+            if (child instanceof IIpsObjectPartContainer) {
+                ((IIpsObjectPartContainer)child).removeObsoleteExtensionProperties();
+            }
+        }
     }
 
     /**
