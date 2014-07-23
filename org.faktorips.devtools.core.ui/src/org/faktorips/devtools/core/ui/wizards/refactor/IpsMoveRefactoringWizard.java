@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -25,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -108,8 +110,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             treeViewer.setLabelProvider(new MoveLabelProvider());
             treeViewer.setContentProvider(new MoveContentProvider());
             treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
-            treeViewer.setInput(new IIpsProject[] { getIpsRefactoring().getIpsProject() });
-
+            setInput();
             treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
@@ -128,6 +129,16 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
                     initialSelectionOccurred = true;
                 }
             });
+        }
+
+        private void setInput() {
+            try {
+                IIpsProject ipsProject = getIpsRefactoring().getIpsProject();
+                IIpsProject[] referencingProjects = ipsProject.findReferencingProjects(true);
+                treeViewer.setInput(ArrayUtils.add(referencingProjects, 0, ipsProject));
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
         }
 
         private void setInitialTreeViewerSelection(IIpsPackageFragment ipsPackageFragment) {
