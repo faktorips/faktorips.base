@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -108,9 +108,9 @@ import org.xml.sax.SAXException;
 
 /**
  * Implementation of <tt>IIpsModel</tt>.
- * 
+ *
  * @see IIpsModel
- * 
+ *
  * @author Jan Ortmann
  */
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
@@ -868,7 +868,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * provided IpsProject doesn't exist or if it isn't a valid <code>IpsProject</code>
      * <code>null</code> will be returned by this method. This method is not part of the published
      * interface.
-     * 
+     *
      * @throws CoreException will be thrown if an error occurs while trying to validated the
      *             provided IpsProject.
      * @throws NullPointerException if the argument is null
@@ -952,7 +952,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Clears caches for a given project. Affects only caches whose objects depend on project
      * settings, e.g. IPS project properties or manifest files.
-     * 
+     *
      * @param ipsProject whose properties and or settings changed
      */
     public void clearProjectSpecificCaches(IIpsProject ipsProject) {
@@ -1039,7 +1039,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Forces to reload the the cached IPS source file contents of a single project or the whole
      * workspace. This is done by setting -1 as modification stamp in each content object.
-     * 
+     *
      * @param project The project that should considered or <code>null</code> if the whole workspace
      *            should be considered.
      */
@@ -1061,7 +1061,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * set the modification stamp invalid and force a reload on next access.
      * <p>
      * Only alternative would be to use a soft reference cache.
-     * 
+     *
      * @param srcFile The {@link IIpsSrcFile} you want to release from the cache.
      */
     private void releaseInCache(IIpsSrcFile srcFile) {
@@ -1098,24 +1098,34 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
      *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
+     *             <p>
+     *             If you are interested in all extension properties regardless of their
+     *             applicability to specific objects, use
+     *             {@link #getExtensionPropertyDefinitionsForClass(Class, boolean)} explicitly.
      */
     @Override
     @Deprecated
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
-        Set<IExtensionPropertyDefinition> props = customModelExtensions.getExtensionPropertyDefinitions(type,
+        Set<IExtensionPropertyDefinition> props = getExtensionPropertyDefinitionsForClass(type,
                 includeSupertypesAndInterfaces);
         return props.toArray(new IExtensionPropertyDefinition[props.size()]);
     }
 
+    @Override
+    public Set<IExtensionPropertyDefinition> getExtensionPropertyDefinitionsForClass(Class<?> type,
+            boolean includeSupertypesAndInterfaces) {
+        return customModelExtensions.getExtensionPropertyDefinitions(type, includeSupertypesAndInterfaces);
+    }
+
     /**
      * {@inheritDoc}
-     * 
+     *
      * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
@@ -1280,9 +1290,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns the ClassLoaderProvider for the given ips project. Uses the System class loader as
      * parent of the class loader that is provided by the returned provider.
-     * 
+     *
      * @throws NullPointerException if ipsProject is <code>null</code>.
-     * 
+     *
      * @see ClassLoader#getSystemClassLoader()
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
@@ -1302,7 +1312,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns the cache for all function resolvers (registered via extension point) for the given
      * IPS project.
-     * 
+     *
      * @param ipsProject the project to return a cache for
      */
     @Override
@@ -1351,9 +1361,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * resource does not exist, the method returns <code>null</code>. If loadCompleteContent is
      * <code>true</code> then the complete content will be read from the source file, if
      * <code>false</code> then only the properties of the ips object will be read.
-     * 
+     *
      * @param file the file to read
-     * 
+     *
      * @param loadCompleteContent <code>true</code> if the completely file should be read,
      *            <code>false</code> if only the properties will be read
      */
@@ -1539,7 +1549,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Add the key/value pair to the cache: key = IIpsPackageFragment; value =
      * IIpsPackageFragmentSortDefinition
-     * 
+     *
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @param sortDefinition Value of the hash table entry.
      */
@@ -1555,7 +1565,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment. Returns the object
      * from the cache if the file exists and didn't change, otherwise update sort order from the
      * file system.
-     * 
+     *
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @return A IIpsPackageFragmentSortDefinition implementation. THe return value should always be
      *         not <code>null</code>.
