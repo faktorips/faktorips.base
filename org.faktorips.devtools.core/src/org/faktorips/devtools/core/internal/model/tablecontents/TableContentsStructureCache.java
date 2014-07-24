@@ -110,11 +110,7 @@ public class TableContentsStructureCache {
     }
 
     private IIpsProject[] getIpsProjects() {
-        try {
-            return ipsModel.getIpsProjects();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ipsModel.getIpsProjects();
     }
 
     /**

@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.controls.contentproposal;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -46,14 +45,9 @@ class IpsSrcFileContentProposal implements IContentProposal {
 
     @Override
     public String getDescription() {
-        try {
-            String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
-                    getIpsSrcFile().getIpsObject());
-            return localizedDescription.isEmpty() ? null : localizedDescription;
-        } catch (CoreException e) {
-            // ignore errors - just show no description
-        }
-        return null;
+        String localizedDescription = IpsPlugin.getMultiLanguageSupport().getLocalizedDescription(
+                getIpsSrcFile().getIpsObject());
+        return localizedDescription.isEmpty() ? null : localizedDescription;
     }
 
     /**

@@ -60,8 +60,9 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Util;
-import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
@@ -389,12 +390,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IIpsProject[] getIpsProjects() throws CoreException {
+    public IIpsProject[] getIpsProjects() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IIpsProject[] ipsProjects = new IIpsProject[projects.length];
         int counter = 0;
         for (IProject project : projects) {
-            if (project.isOpen() && project.hasNature(IIpsProject.NATURE_ID)) {
+            if (project.isOpen() && hasIpsNature(project)) {
                 ipsProjects[counter] = getIpsProject(project.getName());
                 counter++;
             }
@@ -405,6 +406,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject[] shrinked = new IIpsProject[counter];
         System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
         return shrinked;
+    }
+
+    private boolean hasIpsNature(IProject project) {
+        try {
+            return project.hasNature(IIpsProject.NATURE_ID);
+        } catch (CoreException e) {
+            return false;
+        }
     }
 
     @Override
@@ -869,13 +878,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <code>null</code> will be returned by this method. This method is not part of the published
      * interface.
      * 
-     * @throws CoreException will be thrown if an error occurs while trying to validated the
-     *             provided IpsProject.
      * @throws NullPointerException if the argument is null
      */
     // TODO the resource change listener method of this IpsModel needs to update
     // the dependencyGraphForProjectsMap
-    public DependencyGraph getDependencyGraph(IIpsProject ipsProject) throws CoreException {
+    public DependencyGraph getDependencyGraph(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject, this);
         DependencyGraph graph = getIpsProjectData(ipsProject).getDependencyGraph();
         if (graph == null) {
@@ -901,7 +908,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <p>
      * This method is not part of the published interface.
      */
-    public DependencyGraph[] getCachedDependencyGraphs() {
+    public IDependencyGraph[] getCachedDependencyGraphs() {
         ArrayList<DependencyGraph> graphs = new ArrayList<DependencyGraph>();
         for (IpsProjectData projectData : ipsProjectDatas.values()) {
             if (projectData.getDependencyGraph() != null) {

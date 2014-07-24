@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -290,7 +291,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                             ((ITimedIpsObject)file.getIpsObject()).retainOnlyGeneration(oldValidFrom, newValidFrom);
                         }
                     }
-                } catch (CoreException e) {
+                } catch (CoreRuntimeException e) {
                     // exception occurred thus create empty file below
                     createEmptyFile = true;
                 }
@@ -358,7 +359,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 IProductCmptStructureReference parent = parentTypeRel.getParent();
                 tblContentUsageAndLinkDataRefer.add(new LinkData((IProductCmpt)parent.getWrappedIpsObject(),
                         (IProductCmpt)productCmptStructureReference.getWrappedIpsObject(), parentTypeRel
-                                .getAssociation()));
+                        .getAssociation()));
             }
         }
         return tblContentUsageAndLinkDataRefer;

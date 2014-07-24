@@ -44,13 +44,8 @@ public class IpsElementInIIpsPackageFilter implements IIpsElementFilter {
 
         if (ipsElement instanceof IIpsSrcFile) {
 
-            try {
-                IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
-                return acceptIpsObject(ipsObject);
-            } catch (CoreException e) {
-                context.addStatus(new IpsStatus(IStatus.WARNING, "Could not filter package", e)); //$NON-NLS-1$
-                return false;
-            }
+            IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+            return acceptIpsObject(ipsObject);
         }
         if (ipsElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)ipsElement;

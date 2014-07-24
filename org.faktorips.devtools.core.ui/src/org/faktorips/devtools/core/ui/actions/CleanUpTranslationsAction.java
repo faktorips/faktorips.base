@@ -169,15 +169,11 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
             public void run(IProgressMonitor monitor) throws CoreException {
                 for (IIpsProject ipsProject : ipsProjects) {
                     List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>();
-                    try {
-                        IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
-                        for (IIpsPackageFragmentRoot root : fragmentRoots) {
-                            for (IIpsPackageFragment fragment : root.getIpsPackageFragments()) {
-                                ipsSrcFiles.addAll(Arrays.asList(fragment.getIpsSrcFiles()));
-                            }
+                    IIpsPackageFragmentRoot[] fragmentRoots = ipsProject.getIpsPackageFragmentRoots();
+                    for (IIpsPackageFragmentRoot root : fragmentRoots) {
+                        for (IIpsPackageFragment fragment : root.getIpsPackageFragments()) {
+                            ipsSrcFiles.addAll(Arrays.asList(fragment.getIpsSrcFiles()));
                         }
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
                     }
 
                     Set<Locale> supportedLocales = getSupportedLocales(ipsProject);
@@ -185,17 +181,9 @@ public class CleanUpTranslationsAction extends IpsAction implements IObjectActio
                     int totalWork = ipsSrcFiles.size();
                     monitor.beginTask(NLS.bind(Messages.CleanUpTranslationsAction_progressTask, ipsProject), totalWork);
                     for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-                        try {
-                            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-                            cleanUp(ipsObject, supportedLocales);
-                        } catch (CoreException e) {
-                            throw new RuntimeException(e);
-                        }
-                        try {
-                            ipsSrcFile.save(true, null);
-                        } catch (CoreException e) {
-                            throw new RuntimeException(e);
-                        }
+                        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+                        cleanUp(ipsObject, supportedLocales);
+                        ipsSrcFile.save(true, null);
                         monitor.worked(1);
                     }
                     monitor.done();

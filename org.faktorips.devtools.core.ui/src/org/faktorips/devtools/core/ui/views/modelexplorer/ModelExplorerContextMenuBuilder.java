@@ -406,12 +406,8 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
                  * the IpsSrcFile.
                  */
                 IEnumType enumType = (IEnumType)selected;
-                try {
-                    enumType = (IEnumType)enumType.getIpsSrcFile().getIpsObject();
-                    show = enumType.isCapableOfContainingValues();
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
-                }
+                enumType = (IEnumType)enumType.getIpsSrcFile().getIpsObject();
+                show = enumType.isCapableOfContainingValues();
             }
             if (show) {
                 manager.add(EnumImportExportAction.createEnumImportAction(viewSite.getShell(), treeViewer));

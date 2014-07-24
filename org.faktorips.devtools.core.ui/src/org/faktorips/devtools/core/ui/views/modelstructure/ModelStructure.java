@@ -279,8 +279,8 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
 
             };
             openParentAssociationTypeEditorAction
-                    .setText(Messages.ModelStructure_contextMenuOpenAssociationTargetingTypeEditor
-                            + ((AssociationComponentNode)node).getTargetingType().getName());
+            .setText(Messages.ModelStructure_contextMenuOpenAssociationTargetingTypeEditor
+                    + ((AssociationComponentNode)node).getTargetingType().getName());
             manager.appendToGroup(CONTEXT_MENU_GROUP_OPEN, openParentAssociationTypeEditorAction);
         }
     }
@@ -858,13 +858,9 @@ public final class ModelStructure extends AbstractShowInSupportingViewPart imple
             }
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
-                try {
-                    IIpsObject selected = ipsSrcFile.getIpsObject();
-                    if (InstanceExplorer.supports(selected)) {
-                        event.detail = DND.DROP_LINK;
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                IIpsObject selected = ipsSrcFile.getIpsObject();
+                if (InstanceExplorer.supports(selected)) {
+                    event.detail = DND.DROP_LINK;
                 }
             }
         }

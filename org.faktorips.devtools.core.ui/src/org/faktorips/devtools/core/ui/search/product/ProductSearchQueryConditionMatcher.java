@@ -94,11 +94,7 @@ class ProductSearchQueryConditionMatcher {
     }
 
     private IProductCmpt getProdCmptFrom(IIpsSrcFile srcFile) {
-        try {
-            return (IProductCmpt)srcFile.getIpsObject();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return (IProductCmpt)srcFile.getIpsObject();
     }
 
     private void addMatchingProdCmpt(Set<IProductPartsContainer> productPartsContainers, IProductCmpt productComponent) {

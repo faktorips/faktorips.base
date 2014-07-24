@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.preferencepages;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -149,12 +148,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
     /** add new project references to current IPS project, based on items selected in dialog */
     private void addIpsProjects() {
         IIpsProject[] ipsProjects = null;
-        try {
-            ipsProjects = getSelectableIpsProjects();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return;
-        }
+        ipsProjects = getSelectableIpsProjects();
 
         ListSelectionDialog dialog = new ListSelectionDialog(null, ipsProjects, new ArrayContentProvider(),
                 new TableLabelProvider(), Messages.ReferencedProjectsComposite_select_projects_label);
@@ -197,7 +191,7 @@ public class ReferencedProjectsComposite extends DataChangeableComposite {
      * Get open IPS projects from the current workspace. Skip already referenced projects and the
      * current project.
      */
-    private IIpsProject[] getSelectableIpsProjects() throws CoreException {
+    private IIpsProject[] getSelectableIpsProjects() {
         ArrayList<IIpsProject> resultList = new ArrayList<IIpsProject>();
         IIpsProjectRefEntry[] projectRefEntries = ipsObjectPath.getProjectRefEntries();
         ArrayList<IIpsProject> references = new ArrayList<IIpsProject>();

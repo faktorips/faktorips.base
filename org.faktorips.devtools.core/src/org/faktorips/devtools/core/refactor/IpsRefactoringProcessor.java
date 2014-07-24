@@ -71,7 +71,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     @Override
     public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    OperationCanceledException {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
@@ -289,12 +289,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         }
         if (ipsElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)ipsElement;
-            try {
-                // this would reload the content or simply returns the existing one
-                return ipsObject.getIpsSrcFile().getIpsObject();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            // this would reload the content or simply returns the existing one
+            return ipsObject.getIpsSrcFile().getIpsObject();
         }
         ArrayList<String> ids = new ArrayList<String>();
         IIpsElement element = ipsElement;

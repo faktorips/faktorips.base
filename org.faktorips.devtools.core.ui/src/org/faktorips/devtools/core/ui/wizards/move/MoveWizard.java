@@ -205,7 +205,7 @@ public class MoveWizard extends Wizard {
      * Returns the selected product component if exactly one product component (or the ips source
      * file containing the component) is selected. Returns <code>null</code> otherwise.
      */
-    private IProductCmpt getSelectedProductCmpt() throws CoreException {
+    private IProductCmpt getSelectedProductCmpt() {
         if (selectedObjects.length != 1) {
             return null;
         }
@@ -229,7 +229,7 @@ public class MoveWizard extends Wizard {
 
         @Override
         protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                InterruptedException {
+        InterruptedException {
 
             move.run(monitor);
         }

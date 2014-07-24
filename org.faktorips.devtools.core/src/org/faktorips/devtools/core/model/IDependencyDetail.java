@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
  * Instances are created by the {@link IIpsObject#getDependencyDetails(IDependency)}
  * <p>
  * Dependency details are not part of {@link IDependency} because the {@link IDependency} is used by
- * the {@link org.faktorips.devtools.core.builder.DependencyGraph} and is serialized. The details
+ * the {@link org.faktorips.devtools.core.internal.builder.DependencyGraph} and is serialized. The details
  * are not needed by the dependency graph because the builder using the graph only needs to know
  * which files are affected and not, which detail is causing this dependency. To keep the graph as
  * small as possible the details are not part of the dependency itself.

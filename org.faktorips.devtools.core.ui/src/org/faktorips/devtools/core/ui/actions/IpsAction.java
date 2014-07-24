@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
@@ -23,7 +22,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -87,11 +85,7 @@ public abstract class IpsAction extends Action {
         for (Iterator<Object> iter = getSelectionIterator(selection); iter.hasNext();) {
             Object select = iter.next();
             if (select instanceof IIpsSrcFile) {
-                try {
-                    selectedIpsObjects.add(((IIpsSrcFile)select).getIpsObject());
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
+                selectedIpsObjects.add(((IIpsSrcFile)select).getIpsObject());
             } else {
                 selectedIpsObjects.add(select);
             }
@@ -175,11 +169,7 @@ public abstract class IpsAction extends Action {
             return (IIpsObject)selectedObject;
         }
         if (selectedObject instanceof IIpsSrcFile) {
-            try {
-                return ((IIpsSrcFile)selectedObject).getIpsObject();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            return ((IIpsSrcFile)selectedObject).getIpsObject();
         }
         if (selectedObject instanceof IIpsObjectPart) {
             return ((IIpsObjectPart)selectedObject).getIpsObject();
@@ -188,11 +178,7 @@ public abstract class IpsAction extends Action {
             IAdaptable adaptable = (IAdaptable)selectedObject;
             IIpsSrcFile adaptedSrcFile = (IIpsSrcFile)adaptable.getAdapter(IIpsSrcFile.class);
             if (adaptedSrcFile != null) {
-                try {
-                    return adaptedSrcFile.getIpsObject();
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                return adaptedSrcFile.getIpsObject();
             }
         }
         return null;

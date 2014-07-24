@@ -74,14 +74,10 @@ public class AggregateRootFinder {
 
     protected List<IProductCmpt> getProductCmpts(List<IIpsSrcFile> prodCmptSrcFiles) {
         List<IProductCmpt> prodCmpts = new ArrayList<IProductCmpt>();
-        try {
-            for (IIpsSrcFile srcFile : prodCmptSrcFiles) {
-                IProductCmpt productCmpt;
-                productCmpt = (IProductCmpt)srcFile.getIpsObject();
-                prodCmpts.add(productCmpt);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        for (IIpsSrcFile srcFile : prodCmptSrcFiles) {
+            IProductCmpt productCmpt;
+            productCmpt = (IProductCmpt)srcFile.getIpsObject();
+            prodCmpts.add(productCmpt);
         }
         return prodCmpts;
     }

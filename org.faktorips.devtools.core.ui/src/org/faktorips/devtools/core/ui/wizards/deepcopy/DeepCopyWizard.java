@@ -83,7 +83,7 @@ public class DeepCopyWizard extends ResizableWizard {
      * @throws CycleInProductStructureException when the structure have a cyle
      */
     public DeepCopyWizard(IProductCmptGeneration productGeneration, int type) throws IllegalArgumentException,
-            CycleInProductStructureException {
+    CycleInProductStructureException {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         setNeedsProgressMonitor(true);
@@ -167,14 +167,10 @@ public class DeepCopyWizard extends ResizableWizard {
         IIpsPackageFragmentRoot packRoot = defaultPackageRoot;
         if (!packRoot.isBasedOnSourceFolder()) {
             IIpsPackageFragmentRoot srcRoots[];
-            try {
-                srcRoots = getPresentationModel().getIpsProject().getSourceIpsPackageFragmentRoots();
-                if (srcRoots.length > 0) {
-                    packRoot = srcRoots[0];
-                } else {
-                    packRoot = null;
-                }
-            } catch (CoreException e1) {
+            srcRoots = getPresentationModel().getIpsProject().getSourceIpsPackageFragmentRoots();
+            if (srcRoots.length > 0) {
+                packRoot = srcRoots[0];
+            } else {
                 packRoot = null;
             }
         }
@@ -225,7 +221,7 @@ public class DeepCopyWizard extends ResizableWizard {
 
                 @Override
                 protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                        InterruptedException {
+                InterruptedException {
                     monitor.beginTask("", 2); //$NON-NLS-1$
                     final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview.getHandles(
                             new SubProgressMonitor(monitor, 1), toCopy);
@@ -261,11 +257,7 @@ public class DeepCopyWizard extends ResizableWizard {
      */
     public IProductCmpt getCopyResultRoot() {
         if (copyResultRoot != null && copyResultRoot.exists()) {
-            try {
-                return (IProductCmpt)copyResultRoot.getIpsObject();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            return (IProductCmpt)copyResultRoot.getIpsObject();
         }
         return null;
     }

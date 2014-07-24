@@ -13,9 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 import java.beans.PropertyChangeEvent;
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -63,11 +61,7 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
     public void setIpsProject(IIpsProject ipsProject) {
         IIpsProject oldProject = this.ipsProject;
         this.ipsProject = ipsProject;
-        try {
-            setPackageRoot(ipsProject.getSourceIpsPackageFragmentRoots()[0]);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        setPackageRoot(ipsProject.getSourceIpsPackageFragmentRoots()[0]);
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_PROJECT, oldProject, ipsProject));
     }
 

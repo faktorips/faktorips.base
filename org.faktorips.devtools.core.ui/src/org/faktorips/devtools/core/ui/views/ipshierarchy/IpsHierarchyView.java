@@ -153,11 +153,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             linkWithEditor.setChecked(true);
             IEditorPart editorPart = getSite().getPage().getActiveEditor();
             if (editorPart != null) {
-                try {
-                    editorActivated(editorPart);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                editorActivated(editorPart);
             }
         }
         editorActivationListener = new ActivationListener(getSite().getPage());
@@ -214,11 +210,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
             @Override
             public void run() {
-                try {
-                    setLinkingEnabled(isChecked());
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                setLinkingEnabled(isChecked());
             }
 
             @Override
@@ -404,7 +396,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    private void setLinkingEnabled(boolean linkingEnabled) throws CoreException {
+    private void setLinkingEnabled(boolean linkingEnabled) {
         this.linkingEnabled = linkingEnabled;
 
         if (linkingEnabled) {
@@ -415,7 +407,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    private void editorActivated(IEditorPart editorPart) throws CoreException {
+    private void editorActivated(IEditorPart editorPart) {
         if (!linkingEnabled || editorPart == null) {
             return;
         }
@@ -479,21 +471,13 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         @Override
         public void partActivated(IWorkbenchPart part) {
             if (part instanceof IEditorPart) {
-                try {
-                    editorActivated((IEditorPart)part);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                editorActivated((IEditorPart)part);
             }
         }
 
         @Override
         public void windowActivated(IWorkbenchWindow window) {
-            try {
-                editorActivated(window.getActivePage().getActiveEditor());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            editorActivated(window.getActivePage().getActiveEditor());
         }
 
         @Override
@@ -569,11 +553,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         public void drop(DropTargetEvent event) {
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
-                try {
-                    showHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                showHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
             }
         }
 
@@ -589,13 +569,9 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             }
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
-                try {
-                    IIpsObject selected = ipsSrcFile.getIpsObject();
-                    if (selected instanceof IType) {
-                        event.detail = DND.DROP_LINK;
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                IIpsObject selected = ipsSrcFile.getIpsObject();
+                if (selected instanceof IType) {
+                    event.detail = DND.DROP_LINK;
                 }
 
             }

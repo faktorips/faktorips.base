@@ -45,6 +45,7 @@ import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -63,7 +64,7 @@ import org.faktorips.devtools.core.ui.views.IpsProblemsLabelDecorator;
  * @author Peter Erzberger
  */
 public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette implements ContentsChangeListener,
-        ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEditor {
+ITabbedPropertySheetPageContributor, IIpsProblemChangedListener, IIpsSrcFileEditor {
 
     private IIpsSrcFile ipsSrcFile;
     private IBusinessFunction businessFunction;
@@ -208,7 +209,7 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
         try {
             businessFunction = (IBusinessFunction)ipsSrcFile.getIpsObject();
             ipsSrcFile.getIpsModel().addChangeListener(this);
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             throw new PartInitException("Unable to create a business function object from the provided ips source file"); //$NON-NLS-1$
         }
         paletteRoot = new PaletteBuilder().buildPalette();
@@ -310,8 +311,8 @@ public class BusinessFunctionEditor extends GraphicalEditorWithFlyoutPalette imp
                 MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
                         Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
                         Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
-                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
-                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
+                    Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                    Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
                 dlg.open();
                 if (dlg.getReturnCode() == 0) {
                     try {

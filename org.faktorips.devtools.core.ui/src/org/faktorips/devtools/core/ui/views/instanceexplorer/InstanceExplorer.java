@@ -552,13 +552,9 @@ public class InstanceExplorer extends AbstractShowInSupportingViewPart implement
             }
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
-                try {
-                    IIpsObject selected = ipsSrcFile.getIpsObject();
-                    if (InstanceExplorer.supports(selected)) {
-                        event.detail = DND.DROP_LINK;
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                IIpsObject selected = ipsSrcFile.getIpsObject();
+                if (InstanceExplorer.supports(selected)) {
+                    event.detail = DND.DROP_LINK;
                 }
             }
         }

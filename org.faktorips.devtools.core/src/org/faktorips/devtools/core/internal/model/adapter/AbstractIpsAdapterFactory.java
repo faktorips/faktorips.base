@@ -10,9 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.adapter;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -34,7 +34,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
         }
         try {
             return file.getIpsObject();
-        } catch (CoreException e) {
+        } catch (CoreRuntimeException e) {
             IpsPlugin.log(e);
             return null;
         }
@@ -52,7 +52,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
         if (type.equals(IpsObjectType.PRODUCT_CMPT_TYPE) || type.equals(IpsObjectType.POLICY_CMPT_TYPE)) {
             try {
                 return (IType)file.getIpsObject();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return null;
             }
@@ -71,7 +71,7 @@ public abstract class AbstractIpsAdapterFactory implements IAdapterFactory {
         if (file.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
             try {
                 return (IProductCmpt)file.getIpsObject();
-            } catch (CoreException e) {
+            } catch (CoreRuntimeException e) {
                 IpsPlugin.log(e);
                 return null;
             }

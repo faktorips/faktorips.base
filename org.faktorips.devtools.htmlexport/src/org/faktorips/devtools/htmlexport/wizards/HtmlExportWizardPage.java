@@ -18,7 +18,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -61,7 +60,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 public class HtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
-        ICheckStateListener {
+ICheckStateListener {
 
     private static final String PAGE_NAME = "IpsProjectHtmlExportWizardPage"; //$NON-NLS-1$
 
@@ -227,11 +226,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
     }
 
     private void initIpsProjects() {
-        try {
-            ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
     }
 
     private void updateSelectedProject() {

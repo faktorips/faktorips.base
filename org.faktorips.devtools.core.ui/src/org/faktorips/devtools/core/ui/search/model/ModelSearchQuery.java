@@ -123,7 +123,7 @@ public class ModelSearchQuery extends AbstractIpsSearchQuery<ModelSearchPresenta
         return false;
     }
 
-    private Set<IType> getTypes(Set<IIpsSrcFile> searchedSrcFiles) throws CoreException {
+    private Set<IType> getTypes(Set<IIpsSrcFile> searchedSrcFiles) {
         Set<IType> types = new HashSet<IType>(searchedSrcFiles.size());
 
         for (IIpsSrcFile srcFile : searchedSrcFiles) {

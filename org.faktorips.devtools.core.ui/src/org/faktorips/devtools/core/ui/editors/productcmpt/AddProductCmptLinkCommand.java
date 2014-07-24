@@ -183,17 +183,13 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
         if (!typedSelection.isValid()) {
             return;
         }
-        try {
-            IIpsProject ipsProject = null;
-            IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
-            ipsProject = structureReference.getIpsProject();
-            if (ipsProject != null) {
-                List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference,
-                        HandlerUtil.getActiveShell(event));
-                linkCreator.createLinks(selectedResults, structureReference);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        IIpsProject ipsProject = null;
+        IProductCmptStructureReference structureReference = typedSelection.getFirstElement();
+        ipsProject = structureReference.getIpsProject();
+        if (ipsProject != null) {
+            List<IProductCmpt> selectedResults = selectProductCmpt(ipsProject, structureReference,
+                    HandlerUtil.getActiveShell(event));
+            linkCreator.createLinks(selectedResults, structureReference);
         }
     }
 
@@ -202,7 +198,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
      */
     private List<IProductCmpt> selectProductCmpt(IIpsProject ipsProject,
             IProductCmptStructureReference linkTarget,
-            Shell shell) throws CoreException {
+            Shell shell) {
 
         List<IProductCmpt> selectedResults = new ArrayList<IProductCmpt>();
         OpenIpsObjectSelectionDialog dialog = getSelectDialog(ipsProject, linkTarget, shell);

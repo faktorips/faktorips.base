@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.core.internal.builder;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -18,6 +18,8 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -42,7 +44,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
 
     private IIpsPackageFragmentRoot root;
     private IIpsProject ipsProject;
-    private DependencyGraph graph;
+    private IDependencyGraph graph;
     private IPolicyCmptType a;
     private IPolicyCmptType b;
     private IPolicyCmptType c;

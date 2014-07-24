@@ -114,13 +114,7 @@ public class ProjectSelectionPage extends WizardPage {
         public Object[] getElements(Object inputElement) {
             List<IIpsProject> result = new ArrayList<IIpsProject>();
             IIpsProject[] projects;
-            try {
-                projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                setMessage("An internal error occurred while reading the projects", IMessageProvider.ERROR); //$NON-NLS-1$
-                return new Object[0];
-            }
+            projects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
             for (int i = 0; i < projects.length; i++) {
                 try {
                     if (!IpsPlugin.getDefault().getMigrationOperation(projects[i]).isEmpty()) {

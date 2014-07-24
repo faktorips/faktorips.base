@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 
 public abstract class AbstractModelStructureContentProvider extends DeferredStructuredContentProvider implements
-        ITreeContentProvider {
+ITreeContentProvider {
 
     /**
      * Provides information about the currently shown {@link IType}s. It will be set by the
@@ -284,11 +284,7 @@ public abstract class AbstractModelStructureContentProvider extends DeferredStru
 
         List<IType> components = new ArrayList<IType>(srcFiles.size());
         for (IIpsSrcFile file : srcFiles) {
-            try {
-                components.add((IType)file.getIpsObject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            components.add((IType)file.getIpsObject());
         }
         return components;
     }

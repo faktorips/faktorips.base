@@ -134,14 +134,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
     private void addSubType(List<IPageElement> subTypes, IIpsSrcFile srcFile) {
         IType type;
-        try {
-            type = (IType)srcFile.getIpsObject();
-        } catch (CoreException e) {
-            IpsStatus status = new IpsStatus(IStatus.WARNING,
-                    "Error finding Supertype of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
-            getContext().addStatus(status);
-            return;
-        }
+        type = (IType)srcFile.getIpsObject();
 
         if (type == null) {
             return;

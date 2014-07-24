@@ -96,7 +96,7 @@ import org.faktorips.util.message.MessageList;
  * @see ICompositeWithSelectableViewer
  */
 public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener,
-        IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
+IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
 
     public static final boolean TRACE = IpsPlugin.TRACE_UI;
 
@@ -173,15 +173,10 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
      * ips package).
      */
     public IIpsObject getIpsObject() {
-        try {
-            if (getIpsSrcFile().exists()) {
-                return getIpsSrcFile().getIpsObject();
-            } else {
-                return null;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            throw new RuntimeException(e);
+        if (getIpsSrcFile().exists()) {
+            return getIpsSrcFile().getIpsObject();
+        } else {
+            return null;
         }
     }
 
@@ -646,8 +641,8 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                 MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
                         Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
                         Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
-                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
-                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
+                    Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                    Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
                 dlg.open();
                 if (dlg.getReturnCode() == 0) {
                     try {

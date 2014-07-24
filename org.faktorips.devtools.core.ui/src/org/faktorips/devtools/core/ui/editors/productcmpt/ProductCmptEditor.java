@@ -223,12 +223,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     @Override
     protected void refreshIncludingStructuralChanges() {
-        try {
-            // Updates cache
-            getIpsSrcFile().getIpsObject();
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        getIpsSrcFile().getIpsObject();
         if (getGenerationPropertiesPage() != null) {
             generationPropertiesPage.rebuildInclStructuralChanges();
         }

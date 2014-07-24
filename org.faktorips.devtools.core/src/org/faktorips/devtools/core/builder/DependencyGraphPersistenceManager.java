@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
@@ -44,11 +45,9 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
      * Returns the last persisted dependency graph for the provided IpsProject if available.
      * Otherwise <code>null</code> will be returned.
      * 
-     * @throws CoreException if any exceptions occur while trying to load the dependency graph from
-     *             the file system
      * @throws NullPointerException if the provided project is <code>null</code>
      */
-    public DependencyGraph getDependencyGraph(IIpsProject project) throws CoreException {
+    public DependencyGraph getDependencyGraph(IIpsProject project) {
         ArgumentCheck.notNull(project, this);
         File file = getDependencyGraphFile(project);
         if (file == null || !file.exists()) {
@@ -102,8 +101,8 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
         if (context.getKind() == ISaveContext.FULL_SAVE) {
             IpsPlugin plugin = IpsPlugin.getDefault();
             IpsModel model = (IpsModel)plugin.getIpsModel();
-            DependencyGraph[] graphs = model.getCachedDependencyGraphs();
-            for (DependencyGraph graph : graphs) {
+            IDependencyGraph[] graphs = model.getCachedDependencyGraphs();
+            for (IDependencyGraph graph : graphs) {
                 save(graph);
             }
         }
@@ -117,7 +116,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
         return "dependencygraph." + project.getName(); //$NON-NLS-1$
     }
 
-    private void save(DependencyGraph graph) {
+    private void save(IDependencyGraph graph) {
         ObjectOutputStream os = null;
         File file = getDependencyGraphFile(graph.getIpsProject());
         try {

@@ -13,8 +13,7 @@ package org.faktorips.devtools.stdbuilder;
 import static org.junit.Assert.assertEquals;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.builder.DependencyGraph;
-import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -44,7 +43,7 @@ public class UpdateDependencyGraphTest extends AbstractStdBuilderTest {
 
         // B depends on A
         fullBuild();
-        DependencyGraph graph = ((IpsModel)project.getIpsModel()).getDependencyGraph(project);
+        IDependencyGraph graph = project.getDependencyGraph();
         IDependency[] dependency = graph.getDependants(typeA.getQualifiedNameType());
         assertEquals(1, dependency.length);
         assertEquals(

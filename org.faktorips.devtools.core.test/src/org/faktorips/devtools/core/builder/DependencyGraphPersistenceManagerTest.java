@@ -41,7 +41,7 @@ public class DependencyGraphPersistenceManagerTest extends AbstractIpsPluginTest
                 .getDependencyGraphPersistenceManager();
         assertNull(persistenceManager.getDependencyGraph(ipsProject));
         persistenceManager.saving(new TestSaveContext());
-        DependencyGraph graph = persistenceManager.getDependencyGraph(ipsProject);
+        IDependencyGraph graph = persistenceManager.getDependencyGraph(ipsProject);
         assertNotNull(graph);
         IDependency[] dependencies = graph.getDependants(a.getQualifiedNameType());
         assertEquals(1, dependencies.length);

@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -559,12 +560,16 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Adds all source files found in <code>IpsSrcFolderEntry</code>s on the path to the result
      * list.
      */
-    public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) throws CoreException {
+    public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) {
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         for (IIpsObjectPathEntry entrie : entries) {
             if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
-                    ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
+                    try {
+                        ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
+                    } catch (CoreException e) {
+                        throw new CoreRuntimeException(e);
+                    }
                 }
             }
         }

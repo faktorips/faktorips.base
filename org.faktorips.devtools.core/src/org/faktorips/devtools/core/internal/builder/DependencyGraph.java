@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.builder;
+package org.faktorips.devtools.core.internal.builder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -34,7 +36,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Jan Ortmann, Peter Erzberger
  */
-public class DependencyGraph implements Serializable {
+public class DependencyGraph implements Serializable, IDependencyGraph {
 
     private static final long serialVersionUID = 5692023485881401223L;
 
@@ -55,18 +57,22 @@ public class DependencyGraph implements Serializable {
      * @param ipsProject the IPS project this dependency graph administers the dependencies of the
      *            IPS objects for.
      */
-    public DependencyGraph(IIpsProject ipsProject) throws CoreException {
+    public DependencyGraph(IIpsProject ipsProject) {
         super();
         ArgumentCheck.notNull(ipsProject, this);
         this.ipsProject = ipsProject;
         init();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public IIpsProject getIpsProject() {
         return ipsProject;
     }
 
-    public void setIpsProject(IIpsProject ipsProject) throws CoreException {
+    public void setIpsProject(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject, this);
         if (this.ipsProject == null) {
             this.ipsProject = ipsProject;
@@ -78,11 +84,12 @@ public class DependencyGraph implements Serializable {
         }
     }
 
-    public void reInit() throws CoreException {
+    @Override
+    public void reInit() {
         init();
     }
 
-    private void init() throws CoreException {
+    private void init() {
         dependantsForMap = new HashMap<Object, List<IDependency>>();
         dependsOnMap = new HashMap<QualifiedNameType, List<IDependency>>();
         List<IIpsSrcFile> allSrcFiles = new ArrayList<IIpsSrcFile>();
@@ -92,7 +99,12 @@ public class DependencyGraph implements Serializable {
                 continue;
             }
             IIpsObject ipsObject = file.getIpsObject();
-            IDependency[] dependsOn = ipsObject.dependsOn();
+            IDependency[] dependsOn;
+            try {
+                dependsOn = ipsObject.dependsOn();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
             if (dependsOn == null || dependsOn.length == 0) {
                 continue;
             }
@@ -117,13 +129,9 @@ public class DependencyGraph implements Serializable {
     }
 
     /**
-     * Returns the qualified names of the IPS objects that depend on the object identified by the
-     * given qualified name.
-     * 
-     * @param id the identifier for an IPS object or data type for which the dependent objects
-     *            should be returned. Identifier for IpsObjects are QualifiedNameType instances for
-     *            data types qualified name strings.
+     * {@inheritDoc}
      */
+    @Override
     public IDependency[] getDependants(QualifiedNameType id) {
         List<IDependency> qualfiedNameTypes = getDependantsAsList(id);
         if (id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
@@ -148,30 +156,23 @@ public class DependencyGraph implements Serializable {
     }
 
     /**
-     * Updates the graph with the new dependency information for the given object. For an updated
-     * IPS object the method works as follows:
-     * <ol>
-     * <li>Delete all relations for the node identified by the given qName.</li>
-     * <li>Get the IPS object identified by the qName.</li>
-     * <li>Determine the new dependencies by calling the the dependsOn() method on the IPS object
-     * identified by qName.</li>
-     * <li>Create new relations between the node identified by the qName and the nodes identified by
-     * the dependencies. If one of the nodes doesn't exist it will be created.</li>
-     * </ol>
-     * For a new IPS object step one is omitted. For deleted IPS object only step one is executed.
-     * 
-     * @param qName The fully qualified name type of the IPS object.
+     * {@inheritDoc}
      */
-    public void update(QualifiedNameType qName) throws CoreException {
+    @Override
+    public void update(QualifiedNameType qName) {
         if (qName == null) {
             return;
         }
-        removeDependency(qName);
-        IIpsObject ipsObject = ipsProject.findIpsObject(qName);
-        if (ipsObject != null) {
-            IDependency[] newDependOnNameTypes = ipsObject.dependsOn();
-            addEntriesToDependsOnMap(newDependOnNameTypes, qName);
-            addEntryToDependantsForMap(newDependOnNameTypes);
+        try {
+            removeDependency(qName);
+            IIpsObject ipsObject = ipsProject.findIpsObject(qName);
+            if (ipsObject != null) {
+                IDependency[] newDependOnNameTypes = ipsObject.dependsOn();
+                addEntriesToDependsOnMap(newDependOnNameTypes, qName);
+                addEntryToDependantsForMap(newDependOnNameTypes);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 

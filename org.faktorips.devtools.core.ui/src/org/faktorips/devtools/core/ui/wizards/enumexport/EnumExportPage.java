@@ -127,24 +127,20 @@ public class EnumExportPage extends IpsObjectExportPage {
             setEnum(null);
             return;
         }
-        try {
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
-            if (element == null) {
-                setEnum(null);
-                return;
-            }
-            setIpsProject(element.getIpsProject());
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile src = (IIpsSrcFile)element;
-                IpsObjectType ipsObjectType = src.getIpsObjectType();
-                setDefaultByEnumValueContainer(src, ipsObjectType);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        if (element == null) {
+            setEnum(null);
+            return;
+        }
+        setIpsProject(element.getIpsProject());
+        if (element instanceof IIpsSrcFile) {
+            IIpsSrcFile src = (IIpsSrcFile)element;
+            IpsObjectType ipsObjectType = src.getIpsObjectType();
+            setDefaultByEnumValueContainer(src, ipsObjectType);
         }
     }
 
-    private void setDefaultByEnumValueContainer(IIpsSrcFile src, IpsObjectType ipsObjectType) throws CoreException {
+    private void setDefaultByEnumValueContainer(IIpsSrcFile src, IpsObjectType ipsObjectType) {
         if (ipsObjectType.equals(IpsObjectType.ENUM_TYPE)) {
             IEnumType enumType = (IEnumType)src.getIpsObject();
             if (enumType.isCapableOfContainingValues()) {
