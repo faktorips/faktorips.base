@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -206,7 +207,7 @@ public class MoveOperation implements IRunnableWithProgress {
         for (int i = 0; i < sources.length; i++) {
             if (sources[i] instanceof IIpsElement) {
                 String prefix = target;
-                if (!prefix.equals("")) { //$NON-NLS-1$
+                if (!prefix.equals(StringUtils.EMPTY)) {
                     prefix += "."; //$NON-NLS-1$
                 }
                 if (sources[i] instanceof IIpsPackageFragment) {
@@ -270,6 +271,39 @@ public class MoveOperation implements IRunnableWithProgress {
     }
 
     /**
+     * Checks if the move operation is applicable for the given source to target.
+     */
+    private static boolean canMoveToTarget(Object[] sources, Object target) {
+        if (target instanceof IIpsElement) {
+            if (!isSelfOrReferencedProject(sources, target)) {
+                return false;
+            }
+        }
+        return isValidTargetType(target);
+    }
+
+    /**
+     * Returns <code>true</code> if the target project is same as source project or a target
+     * referencing source project.
+     */
+    private static boolean isSelfOrReferencedProject(Object[] sources, Object target) {
+        IIpsProject targetIpsProject = ((IIpsElement)target).getIpsProject();
+        for (Object source : sources) {
+            if (source instanceof IIpsElement) {
+                try {
+                    IIpsProject ipsProject = ((IIpsElement)source).getIpsProject();
+                    if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true))) {
+                        return false;
+                    }
+                } catch (CoreException e) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * If target object is of type:
      * <ul>
      * <li><code>IIpsObject</code>
@@ -278,20 +312,9 @@ public class MoveOperation implements IRunnableWithProgress {
      * <li><code>ArchiveIpsPackageFragment</code>
      * <li><code>ArchiveIpsPackageFragmentRoot</code>
      * </ul>
-     * false is returned. For all other types true is returned if all sources originate from the
-     * target IPS project.
+     * false is returned.
      */
-    private static boolean canMoveToTarget(Object[] sources, Object target) {
-        if (target instanceof IIpsElement) {
-            IIpsProject targetIpsProject = ((IIpsElement)target).getIpsProject();
-            for (Object source : sources) {
-                if (source instanceof IIpsElement) {
-                    if (!((IIpsElement)source).getIpsProject().equals(targetIpsProject)) {
-                        return false;
-                    }
-                }
-            }
-        }
+    private static boolean isValidTargetType(Object target) {
         return !(target instanceof IIpsObject) & !(target instanceof IIpsObjectPart) & !(target instanceof IFile)
                 & !(target instanceof IIpsSrcFile) & !(target instanceof LibraryIpsPackageFragment)
                 & !(target instanceof LibraryIpsPackageFragmentRoot);
@@ -551,19 +574,19 @@ public class MoveOperation implements IRunnableWithProgress {
     private String buildPackageName(String prefix, String middle, String postfix) {
         String result = prefix;
 
-        if (!result.equals("") && !middle.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!result.equals(StringUtils.EMPTY) && !middle.equals(StringUtils.EMPTY)) {
             result += "."; //$NON-NLS-1$
         }
 
-        if (!middle.equals("")) { //$NON-NLS-1$
+        if (!middle.equals(StringUtils.EMPTY)) {
             result += middle;
         }
 
-        if (!result.equals("") && !postfix.equals("")) { //$NON-NLS-1$ //$NON-NLS-2$
+        if (!result.equals(StringUtils.EMPTY) && !postfix.equals(StringUtils.EMPTY)) {
             result += "."; //$NON-NLS-1$
         }
 
-        if (!postfix.equals("")) { //$NON-NLS-1$
+        if (!postfix.equals(StringUtils.EMPTY)) {
             result += postfix;
 
         }

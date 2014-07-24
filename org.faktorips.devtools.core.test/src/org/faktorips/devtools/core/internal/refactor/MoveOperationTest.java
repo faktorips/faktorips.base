@@ -378,7 +378,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testMoveEnumContentToPackageWithEnumTypeSameNames() throws CoreException, InvocationTargetException,
-            InterruptedException {
+    InterruptedException {
 
         IEnumType enumType = newEnumType(ipsRoot, "model.EnumType");
         enumType.setExtensible(true);
@@ -666,8 +666,8 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         assertTrue(folderTarget.exists());
 
         MoveOperation operation = new MoveOperation(folderTarget.getProject(), new Object[] {
-                file1.getLocation().toOSString(), file2.getLocation().toOSString() }, folderTarget.getLocation()
-                .toOSString());
+            file1.getLocation().toOSString(), file2.getLocation().toOSString() }, folderTarget.getLocation()
+            .toOSString());
         operation.run(null);
 
         assertTrue(folderTarget.getFile("file1").exists());
@@ -693,4 +693,52 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         return targetRoot;
     }
 
+    @Test
+    public void testCanMove_WithReferencedProject() throws Exception {
+        IIpsProject ipsProject2 = newIpsProject();
+        IProject project2 = ipsProject2.getProject();
+        IFolder folderTarget = project2.getFolder("target");
+        folderTarget.create(true, true, null);
+        IIpsObjectPath path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject);
+        ipsProject2.setIpsObjectPath(path);
+        assertTrue(ipsProject2.isReferencing(ipsProject));
+        IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
+
+        assertTrue(MoveOperation.canMove(new Object[] { productA }, newEntry.getIpsPackageFragmentRoot()));
+    }
+
+    @Test
+    public void testCanMove_WithoutReferencedProject() throws Exception {
+        IIpsProject ipsProject2 = newIpsProject();
+        IProject project2 = ipsProject2.getProject();
+        IFolder folderTarget = project2.getFolder("target");
+        folderTarget.create(true, true, null);
+        IIpsObjectPath path = ipsProject2.getIpsObjectPath();
+        assertFalse(ipsProject2.isReferencing(ipsProject));
+        IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
+
+        assertFalse(MoveOperation.canMove(new Object[] { productA }, newEntry.getIpsPackageFragmentRoot()));
+    }
+
+    @Test
+    public void testCanMove_OtherProductCmpt() throws Exception {
+        IIpsProject ipsProject2 = newIpsProject();
+        IProject project2 = ipsProject2.getProject();
+        IFolder folderTarget = project2.getFolder("target");
+        folderTarget.create(true, true, null);
+
+        assertFalse(MoveOperation.canMove(new Object[] { productA }, productB));
+    }
+
+    @Test
+    public void testCanMove_SameProject() throws Exception {
+        IProject project = ipsProject.getProject();
+        IFolder folderTarget = project.getFolder("target");
+        folderTarget.create(true, true, null);
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
+
+        assertTrue(MoveOperation.canMove(new Object[] { productA }, newEntry.getIpsPackageFragmentRoot()));
+    }
 }
