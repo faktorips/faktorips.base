@@ -150,6 +150,20 @@ public class MultiMap<K, V> {
     }
 
     /**
+     * Returns the count of objects contained in this multi map. That means the sum of the size of
+     * all value collections.
+     * 
+     * @return The count of objects in this multi map;
+     */
+    public int count() {
+        int count = 0;
+        for (Collection<V> collection : internalMap.values()) {
+            count += collection.size();
+        }
+        return count;
+    }
+
+    /**
      * Removes all mappings from this map.
      */
     public void clear() {

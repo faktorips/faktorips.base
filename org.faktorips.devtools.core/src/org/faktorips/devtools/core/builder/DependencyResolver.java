@@ -51,8 +51,6 @@ public class DependencyResolver {
 
     private final MultiMap<IIpsProject, IDependency> dependenciesForProjectMap = MultiMap.createWithSetsAsValues();
 
-    private final Counter counter = new Counter(0);
-
     /**
      * Creates a new {@link DependencyResolver} for the specified project. If there are other
      * projects that depends on this project and hence needs to be searched for dependencies, this
@@ -78,13 +76,13 @@ public class DependencyResolver {
      * 
      * @return The number of found dependencies.
      */
-    public int collectDependenciesForIncrementalBuild(List<IIpsSrcFile> addedOrChangesIpsSrcFiles,
+    public MultiMap<IIpsProject, IDependency> collectDependenciesForIncrementalBuild(List<IIpsSrcFile> addedOrChangesIpsSrcFiles,
             List<IIpsSrcFile> removedIpsSrcFiles) {
         if (canCollectDependencies()) {
             collectDependenciesFor(addedOrChangesIpsSrcFiles);
             collectDependenciesFor(removedIpsSrcFiles);
         }
-        return counter.getCounts();
+        return dependenciesForProjectMap;
     }
 
     private boolean canCollectDependencies() {
@@ -176,23 +174,6 @@ public class DependencyResolver {
      */
     public MultiMap<IIpsProject, IDependency> getCollectedDependencies() {
         return dependenciesForProjectMap;
-    }
-
-    private static class Counter {
-
-        private int counts = 0;
-
-        private Counter(int offSet) {
-            counts = offSet;
-        }
-
-        private void increment() {
-            counts++;
-        }
-
-        private int getCounts() {
-            return counts;
-        }
     }
 
 }

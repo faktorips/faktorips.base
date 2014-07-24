@@ -536,12 +536,11 @@ public class IpsBuilder extends IncrementalProjectBuilder {
             IncBuildVisitor visitor = new IncBuildVisitor();
             delta.accept(visitor);
             DependencyResolver dependencyResolver = new DependencyResolver(getIpsProject());
-            int numberOfBuildCandidates = dependencyResolver.collectDependenciesForIncrementalBuild(
-                    visitor.changedAndAddedIpsSrcFiles, visitor.removedIpsSrcFiles)
-                    + visitor.removedIpsSrcFiles.size()
-                    + visitor.changedAndAddedIpsSrcFiles.size();
             MultiMap<IIpsProject, IDependency> dependenciesForProjectsMap = dependencyResolver
-                    .getCollectedDependencies();
+                    .collectDependenciesForIncrementalBuild(visitor.changedAndAddedIpsSrcFiles,
+                            visitor.removedIpsSrcFiles);
+            int numberOfBuildCandidates = dependenciesForProjectsMap.count() + visitor.removedIpsSrcFiles.size()
+                    + visitor.changedAndAddedIpsSrcFiles.size();
             monitor.beginTask("build incremental", numberOfBuildCandidates); //$NON-NLS-1$
             for (IIpsSrcFile iIpsSrcFile : visitor.removedIpsSrcFiles) {
                 if (monitor.isCanceled()) {
