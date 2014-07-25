@@ -40,9 +40,9 @@ import org.w3c.dom.Element;
  */
 public class TableStructureUsage extends TypePart implements ITableStructureUsage {
 
-    final static String TAG_NAME = "TableStructureUsage"; //$NON-NLS-1$
+    static final String TAG_NAME = "TableStructureUsage"; //$NON-NLS-1$
 
-    final static String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
+    static final String TAG_NAME_TABLE_STRUCTURE = "TableStructure"; //$NON-NLS-1$
 
     private boolean mandatoryTableContent = false;
 
@@ -300,7 +300,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
-    public class TableStructureReference extends AtomicIpsObjectPart {
+    public static class TableStructureReference extends AtomicIpsObjectPart {
 
         private String tableStructure = ""; //$NON-NLS-1$
 
@@ -336,7 +336,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
          * Sets the table structure.
          */
         public void setTableStructure(String tableStructure) {
+            String oldStructure = this.tableStructure;
             this.tableStructure = tableStructure;
+            valueChanged(oldStructure, tableStructure);
         }
 
         @Override

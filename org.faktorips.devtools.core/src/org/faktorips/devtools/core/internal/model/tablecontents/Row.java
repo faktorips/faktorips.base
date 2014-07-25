@@ -59,7 +59,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     /**
      * Returns the table contents generation this row belongs to
      */
-    public TableRows getTableContentsGeneration() {
+    public TableRows getTableRows() {
         return (TableRows)getParent();
     }
 
@@ -112,7 +112,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     @Override
     public void setValue(int column, String newValue) {
         setValueInternal(column, newValue);
-        getTableContentsGeneration().updateUniqueKeyCacheFor(this, getUniqueKeys());
+        getTableRows().updateUniqueKeyCacheFor(this, getUniqueKeys());
         objectHasChanged();
     }
 
@@ -140,8 +140,6 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     }
 
     void removeColumn(int column) {
-        column = Math.max(0, column);
-        column = Math.min(values.size(), column);
         values.remove(column);
     }
 
@@ -194,7 +192,7 @@ public class Row extends AtomicIpsObjectPart implements IRow {
     private void validateUniqueKey(MessageList list, ITableStructure tableStructure, ValueDatatype[] datatypes) {
         MessageList uniqueKeyList = new MessageList();
         if (tableStructure.getUniqueKeys().length > 0) {
-            getTableContentsGeneration().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
+            getTableRows().validateUniqueKeys(uniqueKeyList, tableStructure, datatypes);
         }
         list.add(uniqueKeyList.getMessagesFor(this));
     }
