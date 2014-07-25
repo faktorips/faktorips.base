@@ -19,6 +19,7 @@ import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
 import org.faktorips.devtools.core.internal.refactor.Messages;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -38,11 +39,11 @@ public abstract class IpsMoveProcessor extends IpsRefactoringProcessor {
     private IIpsPackageFragment originalIpsPackageFragment;
 
     /**
-     * @param ipsObject The {@link IIpsObject} to be moved
+     * @param ipsElement The {@link IIpsElement} to be moved
      */
-    protected IpsMoveProcessor(IIpsObject ipsObject) {
-        super(ipsObject);
-        originalIpsPackageFragment = ipsObject.getIpsPackageFragment();
+    protected IpsMoveProcessor(IIpsElement ipsElement, IIpsPackageFragment originalIpsPackageFragment) {
+        super(ipsElement);
+        this.originalIpsPackageFragment = originalIpsPackageFragment;
     }
 
     /**

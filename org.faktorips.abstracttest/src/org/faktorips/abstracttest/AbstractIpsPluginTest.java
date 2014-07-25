@@ -88,6 +88,7 @@ import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -886,7 +887,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new product component that is based on the given product component type and has one
-     * generation with it's valid from date set 2012-07-18, 01:01:01. The product component is
+     * generation with it's valid from date set 2012-07-18, 00:00:00. The product component is
      * stored in the same package fragment root as the type. If the qualifiedName includes a package
      * name, the package is created if it does not already exists.
      */
@@ -894,7 +895,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
                 IpsObjectType.PRODUCT_CMPT, qualifiedName);
         productCmpt.setProductCmptType(type.getQualifiedName());
-        productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 1, 1, 1));
+        productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 0, 0, 0));
         productCmpt.getIpsSrcFile().save(true, null);
         return (ProductCmpt)productCmpt;
     }
@@ -1353,12 +1354,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Performs a composite Faktor-IPS 'Move' refactoring for the given {@link IIpsObject}s and
      * provided target {@link IIpsPackageFragment}.
      */
-    protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
+    protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsElement> ipsObjects,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
-        for (IIpsObject ipsObject : ipsObjects) {
-            printValidationResult(ipsObject);
-            ipsObject.getIpsSrcFile().save(true, null);
+        for (IIpsElement ipsObject : ipsObjects) {
+            printValidationResult((IIpsObject)ipsObject);
+            ((IIpsObject)ipsObject).getIpsSrcFile().save(true, null);
         }
 
         IIpsRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()

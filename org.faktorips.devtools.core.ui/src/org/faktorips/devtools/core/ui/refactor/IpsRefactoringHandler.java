@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.refactor;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -23,8 +22,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.ltk.ui.refactoring.resource.RenameResourceWizard;
 import org.eclipse.swt.widgets.Shell;
@@ -36,7 +33,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
 
 /**
@@ -51,6 +47,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
 
     public static ContributionItem getContributionItem(String commandId, String label) {
         // @formatter:off
+        // CSOFF: TrailingCommentCheck
         CommandContributionItemParameter parameters = new CommandContributionItemParameter(
                 PlatformUI.getWorkbench(),              // serviceLocator
                 null,                                   // id
@@ -65,7 +62,8 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
                 CommandContributionItem.STYLE_PUSH,     // style
                 null,                                   // helpContextId
                 false                                   // visibleEnabled
-        );
+                );
+        // CSON: TrailingCommentCheck
         // @formatter:on
         return new CommandContributionItem(parameters);
     }
@@ -77,12 +75,6 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
      * Won't be called if {@link #getRefactoring(Set)} returns null.
      */
     protected abstract IpsRefactoringWizard getRefactoringWizard(IIpsRefactoring refactoring);
-
-    /**
-     * Must return the old move wizard that is still used if the new refactoring support cannot
-     * handle a specific situation.
-     */
-    protected abstract MoveWizard getMoveWizard(IStructuredSelection selection);
 
     /**
      * Must return the refactoring instance for the selected IPS elements.
@@ -131,16 +123,9 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
             }
         }
 
-        /*
-         * Old refactoring code kicking in if the new refactoring support didn't work properly (the
-         * function has not returned by this point).
-         */
+        // all other sources
         Object selected = structuredSelection.getFirstElement();
-        if (!selectedIpsElements.isEmpty()) {
-            WizardDialog wd = new WizardDialog(shell, getMoveWizard(new StructuredSelection(new ArrayList<IIpsElement>(
-                    selectedIpsElements))));
-            wd.open();
-        } else if (selected instanceof IResource) {
+        if (selected instanceof IResource) {
             RenameResourceWizard refactoringWizard = new RenameResourceWizard((IResource)selected);
             RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(refactoringWizard);
             try {

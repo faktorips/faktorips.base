@@ -21,17 +21,16 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.refactor.MoveOperation;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.internal.refactor.NonIPSMoveOperation;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -93,22 +92,20 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             if (sources == null) {
                 return;
             }
-
             // The new refactoring support goes from here
             if (target instanceof IIpsPackageFragment) {
-                Set<IIpsObject> ipsObjects = new LinkedHashSet<IIpsObject>(sources.length);
-                boolean allIpsSrcFiles = true;
+                Set<IIpsElement> ipsElement = new LinkedHashSet<IIpsElement>(sources.length);
                 for (Object source : sources) {
-                    if (!(source instanceof IIpsSrcFile)) {
-                        allIpsSrcFiles = false;
-                        break;
+                    if ((source instanceof IIpsSrcFile)) {
+                        ipsElement.add(((IIpsSrcFile)source).getIpsObject());
+                    } else if (source instanceof IIpsPackageFragment) {
+                        ipsElement.add((IIpsPackageFragment)source);
                     }
-                    ipsObjects.add(((IIpsSrcFile)source).getIpsObject());
                 }
 
-                if (allIpsSrcFiles) {
+                if (!ipsElement.isEmpty()) {
                     IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                            .createCompositeMoveRefactoring(ipsObjects);
+                            .createCompositeMoveRefactoring(ipsElement);
                     ipsCompositeMoveRefactoring.setTargetIpsPackageFragment((IIpsPackageFragment)target);
                     IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(
                             ipsCompositeMoveRefactoring, shell);
@@ -117,25 +114,11 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                 }
             }
 
-            // If the situation could not be handled by the new refactoring support the old code
-            // is called.
-            for (Object source : sources) {
-                if (source instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment fragment = (IIpsPackageFragment)source;
-                    if (!(packageValid(fragment))) {
-                        MessageDialog.openError(Display.getCurrent().getActiveShell(),
-                                Messages.ModelExplorerDropListener_titleMove, NLS.bind(
-                                        Messages.ModelExplorerDropListener_errorPackageContainsInvalidObjects,
-                                        fragment.getName()));
-                        return;
-                    }
-                }
-            }
-            MoveOperation moveOp = null;
+            NonIPSMoveOperation moveOp = null;
             if (target instanceof IIpsPackageFragment) {
-                moveOp = new MoveOperation(sources, (IIpsPackageFragment)target);
+                moveOp = new NonIPSMoveOperation(sources, (IIpsPackageFragment)target);
             } else if (target instanceof IContainer) {
-                moveOp = new MoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
+                moveOp = new NonIPSMoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
                         .getLocation().toOSString());
             }
 
@@ -160,23 +143,6 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         }
     }
 
-    // TODO AW: Awkward and duplicate code in MoveWizard, will be automatically
-    // removed when enabling invalid objects to be refactored
-    private boolean packageValid(IIpsPackageFragment fragment) throws CoreException {
-        for (IIpsPackageFragment childFragment : fragment.getChildIpsPackageFragments()) {
-            if (!(packageValid(childFragment))) {
-                return false;
-            }
-        }
-        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
-            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-            if (!(ipsObject.isValid(ipsSrcFile.getIpsProject()))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     private Object getTarget(DropTargetEvent event) {
         if (event.item == null) {
             return null;
@@ -195,27 +161,27 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         // Nothing to do.
     }
 
-    private class ModifyOperation extends WorkspaceModifyOperation {
-
-        private MoveOperation move;
-
-        public ModifyOperation(MoveOperation toExecute) {
-            super();
-            move = toExecute;
-        }
-
-        @Override
-        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                InterruptedException {
-
-            move.run(monitor);
-        }
-
-    }
-
     @Override
     public int getSupportedOperations() {
         return DND.DROP_MOVE;
+    }
+
+    private class ModifyOperation extends WorkspaceModifyOperation {
+    
+        private NonIPSMoveOperation move;
+    
+        public ModifyOperation(NonIPSMoveOperation toExecute) {
+            super();
+            move = toExecute;
+        }
+    
+        @Override
+        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
+                InterruptedException {
+    
+            move.run(monitor);
+        }
+    
     }
 
 }

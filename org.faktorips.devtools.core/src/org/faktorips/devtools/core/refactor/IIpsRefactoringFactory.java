@@ -61,35 +61,35 @@ public interface IIpsRefactoringFactory {
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
      *            {@link IIpsObject} to
      */
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsObject ipsObject,
+    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsObject,
             IIpsPackageFragment targetIpsPackageFragment);
 
     /**
      * Creates a Faktor-IPS "Move" refactoring that is capable of moving the given
-     * {@link IIpsObject}.
+     * {@link IIpsElement}.
      * 
-     * @param ipsObject The {@link IIpsObject} to move
+     * @param ipsElement The {@link IIpsElement} to move
      */
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsObject ipsObject);
+    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement);
 
     /**
      * Creates a fully configured composite Faktor-IPS refactoring that is capable of batch-moving
      * all given {@link IIpsObject}s.
      * 
-     * @param ipsObjects The {@link IIpsObject}s to move
+     * @param ipsElement The {@link IIpsElement}s to move
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
      *            {@link IIpsElement}s to
      */
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
+    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement,
             IIpsPackageFragment targetIpsPackageFragment);
 
     /**
      * Creates a composite Faktor-IPS refactoring that is capable of batch-moving all given
      * {@link IIpsObject}s.
      * 
-     * @param ipsObjects The {@link IIpsObject}s to move
+     * @param ipsElement The {@link IIpsElement}s to move
      */
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects);
+    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement);
 
     /**
      * Creates a Faktor-IPS "Pull Up" refactoring capable of pulling up the given

@@ -70,6 +70,8 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
             ipsRenameProcessor = new RenameAssociationProcessor((IAssociation)ipsElement);
         } else if (ipsElement instanceof IIpsObject) {
             ipsRenameProcessor = new RenameIpsObjectProcessor((IIpsObject)ipsElement);
+        } else if (ipsElement instanceof IIpsPackageFragment) {
+            ipsRenameProcessor = new RenameIpsPackageFragmentProcessor((IIpsPackageFragment)ipsElement);
         } else {
             return null;
         }
@@ -77,33 +79,44 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
     }
 
     @Override
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsObject ipsObject,
+    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement,
             IIpsPackageFragment targetIpsPackageFragment) {
 
-        IIpsProcessorBasedRefactoring ipsMoveRefactoring = createMoveRefactoring(ipsObject);
-        IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
-        ipsMoveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
+        IIpsProcessorBasedRefactoring ipsMoveRefactoring = createMoveRefactoring(ipsElement);
+        if (targetIpsPackageFragment != null) {
+            if (ipsMoveRefactoring.getIpsRefactoringProcessor() instanceof IpsMoveProcessor) {
+                IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
+                ipsMoveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
+            }
+        }
         return ipsMoveRefactoring;
     }
 
     @Override
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsObject ipsObject) {
-        IpsMoveProcessor ipsMoveProcessor = new MoveIpsObjectProcessor(ipsObject);
-        return new IpsProcessorBasedRefactoring(ipsMoveProcessor);
+    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement) {
+        if (ipsElement instanceof IIpsObject) {
+            IpsMoveProcessor ipsMoveProcessor = new MoveIpsObjectProcessor((IIpsObject)ipsElement);
+            return new IpsProcessorBasedRefactoring(ipsMoveProcessor);
+        } else if (ipsElement instanceof IIpsPackageFragment) {
+            IpsMoveProcessor ipsMoveProcessor = new MoveIpsPackageFragmentProcessor((IIpsPackageFragment)ipsElement);
+            return new IpsProcessorBasedRefactoring(ipsMoveProcessor);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
+    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement,
             IIpsPackageFragment targetIpsPackageFragment) {
 
-        IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = createCompositeMoveRefactoring(ipsObjects);
+        IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = createCompositeMoveRefactoring(ipsElement);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
         return ipsCompositeMoveRefactoring;
     }
 
     @Override
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsObject> ipsObjects) {
-        return new IpsCompositeMoveRefactoring(ipsObjects);
+    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement) {
+        return new IpsCompositeMoveRefactoring(ipsElement);
     }
 
     @Override
@@ -128,5 +141,4 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
         ipsPullUpProcessor.setTarget(targetIpsObjectPartContainer);
         return ipsPullUpRefactoring;
     }
-
 }

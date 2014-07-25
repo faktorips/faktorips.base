@@ -115,7 +115,6 @@ public final class MoveRenameIpsObjectHelper {
     public void validateIpsModel(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             MessageList validationMessageList) throws CoreException {
-
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
             if (sourceFileName.equals(newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension())) {

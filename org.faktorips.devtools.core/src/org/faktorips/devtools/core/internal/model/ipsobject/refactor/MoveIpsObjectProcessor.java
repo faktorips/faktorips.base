@@ -37,7 +37,7 @@ public final class MoveIpsObjectProcessor extends IpsMoveProcessor {
     private final MoveRenameIpsObjectHelper renameMoveHelper;
 
     public MoveIpsObjectProcessor(IIpsObject toBeMoved) {
-        super(toBeMoved);
+        super(toBeMoved, toBeMoved.getIpsPackageFragment());
         renameMoveHelper = new MoveRenameIpsObjectHelper(toBeMoved);
         renameMoveHelper.addIgnoredValidationMessageCodes(getIgnoredValidationMessageCodes());
     }
