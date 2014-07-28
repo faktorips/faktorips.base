@@ -15,11 +15,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
-import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -104,7 +102,7 @@ public class DependencyGraphTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDependants2() throws CoreException {
+    public void testGetDependants2() {
         // c has a datatype dependency to e and a reference dependency to e
         IAssociation aToE = a.newAssociation();
         aToE.setAssociationType(AssociationType.ASSOCIATION);

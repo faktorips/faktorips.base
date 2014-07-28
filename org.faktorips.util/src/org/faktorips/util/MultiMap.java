@@ -11,6 +11,7 @@
 package org.faktorips.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -53,34 +54,52 @@ public class MultiMap<K, V> {
     }
 
     /**
-     * Adds the specified value to the collection the key maps to.
+     * Adds the specified values to the collection the key maps to.
      * 
      * @param key key indicating the target Collection of the specified value that is to be
      *            associated
-     * @param value to be integrated in the Collection of the associated key
+     * @param values to be integrated in the Collection of the associated key
      */
-    public void put(K key, V value) {
+    public void put(K key, V... values) {
         Collection<V> collection = getCollectionInternal(key);
-        collection.add(value);
+        collection.addAll(Arrays.asList(values));
     }
 
     /**
-     * Adds the collection of values to the collection the key maps to.
+     * Adds the specified values to the collection the key maps to.
      * 
      * @param key key indicating the target Collection of the specified value that is to be
      *            associated
-     * @param values The collection of values that should be merged to the maybe existing values
-     *            that are mapped by the key.
+     * @param values to be integrated in the Collection of the associated key
      */
-    public void putAll(K key, Collection<V> values) {
+    public void put(K key, Collection<V> values) {
         Collection<V> collection = getCollectionInternal(key);
         collection.addAll(values);
     }
 
-    public void putAll(MultiMap<K, V> otherMultiMap) {
+    /**
+     * Merges the specified multi map to this multi map. That means: for every entry in the other
+     * multi map call {@link #put(Object, Collection)}.
+     * 
+     * @param otherMultiMap The map that should be merged into this multi map
+     */
+    public void merge(MultiMap<K, V> otherMultiMap) {
         for (Entry<K, Collection<V>> entry : otherMultiMap.internalMap.entrySet()) {
-            putAll(entry.getKey(), entry.getValue());
+            put(entry.getKey(), entry.getValue());
         }
+    }
+
+    /**
+     * Put the collection of values into the map, identified by the specified key. If the key
+     * already maps another collection, the old collection is replaced.
+     * 
+     * @param key key indicating the specified values in the map
+     * @param values The collection of values that should be associated with the key
+     */
+    public void putReplace(K key, Collection<V> values) {
+        Collection<V> newCollection = collectionFactory.createCollection();
+        newCollection.addAll(values);
+        internalMap.put(key, newCollection);
     }
 
     private Collection<V> getCollectionInternal(K key) {
@@ -103,24 +122,31 @@ public class MultiMap<K, V> {
     }
 
     /**
-     * Removes the value in the collection the key maps to. If the Collection in the
-     * <code>internalMap</code> is empty after the removal, the key will be removed too.
-     * <p>
-     * The method needs to be manually synchronized because it would delete the collection if it is
-     * empty after removing the value.
+     * Removes the value in the collection the key maps to.
      * 
      * @param key to which the Collection is mapped
      * @param value to be removed from the collection the key maps to
      */
     public void remove(Object key, Object value) {
-        synchronized (this) {
-            Collection<V> collection = internalMap.get(key);
-            if (collection != null) {
-                collection.remove(value);
-                if (collection.isEmpty()) {
-                    internalMap.remove(key);
-                }
-            }
+        Collection<V> collection = internalMap.get(key);
+        if (collection != null) {
+            collection.remove(value);
+        }
+    }
+
+    /**
+     * Removes key and its associated collection from the map.
+     * 
+     * @param key to which the Collection is mapped
+     * @return The collection that was stored in the list. Returns an empty collection if there was
+     *         no such key.
+     */
+    public Collection<V> remove(Object key) {
+        Collection<V> removedCollection = internalMap.remove(key);
+        if (removedCollection != null) {
+            return removedCollection;
+        } else {
+            return Collections.emptyList();
         }
     }
 

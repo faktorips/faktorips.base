@@ -157,7 +157,7 @@ public class DependencyResolver {
             if (!visitedProjects.contains(dependantProject)) {
                 DependencyResolver dependencyResolver = new DependencyResolver(dependantProject);
                 dependencyResolver.collectDependencies(root, visitedProjects, searchInstanceOfDependencyOnly);
-                dependenciesForProjectMap.putAll(dependencyResolver.getCollectedDependencies());
+                dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
             } else {
                 break;
             }

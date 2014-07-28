@@ -12,10 +12,9 @@ package org.faktorips.devtools.core.internal.builder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
@@ -27,8 +26,8 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.util.CollectionUtil;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.MultiMap;
 
 /**
  * The dependency graph stores IPS object dependencies. It is supposed to be used in a way that it
@@ -38,17 +37,17 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class DependencyGraph implements Serializable, IDependencyGraph {
 
-    private static final long serialVersionUID = 5692023485881401223L;
+    public static final boolean TRACE_DEPENDENCY_GRAPH_MANAGEMENT;
 
-    public final static boolean TRACE_DEPENDENCY_GRAPH_MANAGEMENT;
+    private static final long serialVersionUID = 5692023485881401223L;
 
     static {
         TRACE_DEPENDENCY_GRAPH_MANAGEMENT = Boolean.valueOf(
                 Platform.getDebugOption("org.faktorips.devtools.core/trace/dependencygraphmanagement")).booleanValue(); //$NON-NLS-1$
     }
 
-    private Map<Object, List<IDependency>> dependantsForMap;
-    private Map<QualifiedNameType, List<IDependency>> dependsOnMap;
+    private final MultiMap<Object, IDependency> dependantsForMap = MultiMap.createWithSetsAsValues();
+    private final MultiMap<QualifiedNameType, IDependency> dependsOnMap = MultiMap.createWithSetsAsValues();
     private transient IIpsProject ipsProject;
 
     /**
@@ -90,8 +89,8 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     }
 
     private void init() {
-        dependantsForMap = new HashMap<Object, List<IDependency>>();
-        dependsOnMap = new HashMap<QualifiedNameType, List<IDependency>>();
+        dependantsForMap.clear();
+        dependsOnMap.clear();
         List<IIpsSrcFile> allSrcFiles = new ArrayList<IIpsSrcFile>();
         ipsProject.collectAllIpsSrcFilesOfSrcFolderEntries(allSrcFiles);
         for (IIpsSrcFile file : allSrcFiles) {
@@ -99,32 +98,27 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
                 continue;
             }
             IIpsObject ipsObject = file.getIpsObject();
-            IDependency[] dependsOn;
+            IDependency[] dependencies;
             try {
-                dependsOn = ipsObject.dependsOn();
+                dependencies = ipsObject.dependsOn();
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
-            if (dependsOn == null || dependsOn.length == 0) {
+            if (dependencies == null || dependencies.length == 0) {
                 continue;
             }
-            addEntriesToDependsOnMap(dependsOn, ipsObject.getQualifiedNameType());
-            addEntryToDependantsForMap(dependsOn);
+            addEntriesToDependsOnMap(ipsObject.getQualifiedNameType(), dependencies);
+            addEntryToDependantsForMap(dependencies);
         }
     }
 
-    private void addEntriesToDependsOnMap(IDependency[] dependsOn, QualifiedNameType requestedNameType) {
-        dependsOnMap.put(requestedNameType, CollectionUtil.toArrayList(dependsOn));
+    private void addEntriesToDependsOnMap(QualifiedNameType requestedNameType, IDependency[] dependsOn) {
+        dependsOnMap.putReplace(requestedNameType, Arrays.asList(dependsOn));
     }
 
     private void addEntryToDependantsForMap(IDependency[] dependsOn) {
         for (IDependency element : dependsOn) {
-            List<IDependency> dependants = getDependantsAsList(element.getTarget());
-            if (dependants == null) {
-                dependants = new ArrayList<IDependency>(0);
-                dependantsForMap.put(element.getTarget(), dependants);
-            }
-            dependants.add(element);
+            dependantsForMap.put(element.getTarget(), element);
         }
     }
 
@@ -133,11 +127,9 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
      */
     @Override
     public IDependency[] getDependants(QualifiedNameType id) {
-        List<IDependency> qualfiedNameTypes = getDependantsAsList(id);
-        if (id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
-                || id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)
-                || id.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE)) {
-            List<IDependency> additionalNameTypes = getDependantsAsList(id.getName());
+        Collection<IDependency> qualfiedNameTypes = getDependantsAsList(id);
+        if (isUsedAsDatatype(id)) {
+            Collection<IDependency> additionalNameTypes = getDependantsAsList(id.getName());
             if (qualfiedNameTypes == null) {
                 qualfiedNameTypes = additionalNameTypes;
             } else if (additionalNameTypes != null) {
@@ -151,8 +143,14 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
         return qualfiedNameTypes.toArray(new IDependency[qualfiedNameTypes.size()]);
     }
 
-    private List<IDependency> getDependantsAsList(Object target) {
-        return dependantsForMap.get(target);
+    private boolean isUsedAsDatatype(QualifiedNameType id) {
+        return id.getIpsObjectType().equals(IpsObjectType.POLICY_CMPT_TYPE)
+                || id.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)
+                || id.getIpsObjectType().equals(IpsObjectType.ENUM_TYPE);
+    }
+
+    private Collection<IDependency> getDependantsAsList(Object target) {
+        return new ArrayList<IDependency>(dependantsForMap.get(target));
     }
 
     /**
@@ -168,7 +166,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
             IIpsObject ipsObject = ipsProject.findIpsObject(qName);
             if (ipsObject != null) {
                 IDependency[] newDependOnNameTypes = ipsObject.dependsOn();
-                addEntriesToDependsOnMap(newDependOnNameTypes, qName);
+                addEntriesToDependsOnMap(qName, newDependOnNameTypes);
                 addEntryToDependantsForMap(newDependOnNameTypes);
             }
         } catch (CoreException e) {
@@ -177,16 +175,15 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     }
 
     private void removeDependency(QualifiedNameType qName) {
-        List<IDependency> dependsOnList = dependsOnMap.remove(qName);
+        Collection<IDependency> dependsOnList = dependsOnMap.remove(qName);
         if (dependsOnList != null && !dependsOnList.isEmpty()) {
 
             for (IDependency dependency : dependsOnList) {
-                List<IDependency> dependants = getDependantsAsList(dependency.getTarget());
+                Collection<IDependency> dependants = getDependantsAsList(dependency.getTarget());
                 if (dependants != null) {
-                    for (Iterator<IDependency> itDependants = dependants.iterator(); itDependants.hasNext();) {
-                        IDependency dependency2 = itDependants.next();
-                        if (dependency2.getSource().equals(qName)) {
-                            itDependants.remove();
+                    for (IDependency dependant : dependants) {
+                        if (dependant.getSource().equals(qName)) {
+                            dependantsForMap.remove(dependency.getTarget(), dependant);
                         }
                     }
                 }
