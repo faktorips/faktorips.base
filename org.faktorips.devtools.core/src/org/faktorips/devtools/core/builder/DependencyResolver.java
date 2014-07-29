@@ -23,25 +23,27 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.MultiMap;
 
 /**
- * A {@link DependencyResolver} resolves the dependencies for any object using the
- * {@link DependencyGraph}. The dependency resolver searches always in the context of a single
- * project and hence a single dependency graph. However it would create new dependency resolver
- * instances for dependent projects if it is necessary. All dependencies are collected per project.
- * The result is a map with projects as key and a set of the corresponding dependencies as value.
- * The resulting map is returned by the method {@link #getCollectedDependencies()}.
- * <p>
+ * Resolves the dependencies for any object using the {@link DependencyGraph}. Even though the scope
+ * of each {@link DependencyGraph} instance is a single project, the dependency resolver creates
+ * {@link DependencyResolver} instances for dependent projects where necessary and searches them
+ * recursively.
+ * 
+ * The method {@link #getCollectedDependencies()} provides all dependencies in a map. That map
+ * contains projects as keys and sets of the corresponding dependencies as values. Thus dependencies
+ * a categorized by the project they come from.
+ * 
  * Normally only direct dependencies are resolved. Transitive dependencies are only resolved in the
  * following cases:
  * 
- * 1. For Dependency of type {@link DependencyType#SUBTYPE} all transitive dependencies are found
+ * 1. For dependencies of type {@link DependencyType#SUBTYPE} all transitive dependencies are taken
+ * into account
  * 
- * 2. For Dependency of type {@link DependencyType#DATATYPE} or {@link DependencyType#REFERENCE}
- * only transitive dependencies of type {@link DependencyType#INSTANCEOF} are found
+ * 2. For dependencies of type {@link DependencyType#DATATYPE} and {@link DependencyType#REFERENCE}
+ * only transitive dependencies of type {@link DependencyType#INSTANCEOF} are taken into account
  * 
- * 3. For Dependency of type {@link DependencyType#REFERENCE_COMPOSITION_MASTER_DETAIL} all
- * transitive dependencies are found iff the method
- * {@link IIpsArtefactBuilderSet#containsAggregateRootBuilder()} returns true.
- * 
+ * 3. For dependencies of type {@link DependencyType#REFERENCE_COMPOSITION_MASTER_DETAIL} all
+ * transitive dependencies are taken into account if the method
+ * {@link IIpsArtefactBuilderSet#containsAggregateRootBuilder()} returns <code>true</code>.
  */
 public class DependencyResolver {
 
@@ -71,15 +73,15 @@ public class DependencyResolver {
      * This method collects all the dependencies for the given list of {@link IIpsSrcFile}. To get
      * the resulting map of dependent objects, call {@link #getCollectedDependencies()}.
      * 
-     * @param addedOrChangesIpsSrcFiles Source files that are changed or added
+     * @param addedOrChangedIpsSrcFiles Source files that are changed or added
      * @param removedIpsSrcFiles Source files that are removed
      * 
      * @return The number of found dependencies.
      */
-    public MultiMap<IIpsProject, IDependency> collectDependenciesForIncrementalBuild(List<IIpsSrcFile> addedOrChangesIpsSrcFiles,
+    public MultiMap<IIpsProject, IDependency> collectDependenciesForIncrementalBuild(List<IIpsSrcFile> addedOrChangedIpsSrcFiles,
             List<IIpsSrcFile> removedIpsSrcFiles) {
         if (canCollectDependencies()) {
-            collectDependenciesFor(addedOrChangesIpsSrcFiles);
+            collectDependenciesFor(addedOrChangedIpsSrcFiles);
             collectDependenciesFor(removedIpsSrcFiles);
         }
         return dependenciesForProjectMap;
@@ -89,8 +91,8 @@ public class DependencyResolver {
         return graph != null && ipsProject.canBeBuild();
     }
 
-    private void collectDependenciesFor(List<IIpsSrcFile> addedOrChangesIpsSrcFiles) {
-        for (IIpsSrcFile ipsSrcFile : addedOrChangesIpsSrcFiles) {
+    private void collectDependenciesFor(List<IIpsSrcFile> addedOrChangedIpsSrcFiles) {
+        for (IIpsSrcFile ipsSrcFile : addedOrChangedIpsSrcFiles) {
             collectDependencies(ipsSrcFile.getQualifiedNameType(), new HashSet<IIpsProject>(), false);
         }
     }
@@ -101,10 +103,11 @@ public class DependencyResolver {
      * 
      * @param root The object for which the method should return every dependencies, that means
      *            dependencies that have this root as target.
-     * @param visitedProjects Projects that were already visited to avoid cycle lookups
-     * @param searchInstanceOfDependencyOnly <code>true</code> to only consider instance of
-     *            dependencies. This switch is necessary to no resolve every transitive dependencies
-     *            but resolve transitive instance of dependencies.
+     * @param visitedProjects Projects that were already visited to avoid cycles during lookup
+     * @param searchInstanceOfDependencyOnly <code>true</code> to only consider instance-of
+     *            dependencies. This switch is necessary to toggle between a mode where all
+     *            transitive dependencies are resolved, and a mode where only transitive instance-of
+     *            dependencies are resolved.
      */
     void collectDependencies(QualifiedNameType root,
             Set<IIpsProject> visitedProjects,

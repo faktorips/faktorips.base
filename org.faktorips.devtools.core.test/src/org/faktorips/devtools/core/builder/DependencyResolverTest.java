@@ -191,8 +191,7 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
         dependencyResolver = new DependencyResolver(ipsProject1);
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(0, collectedDependencies.keySet().size());
         assertEquals(0, collectedDependencies.get(ipsProject1).size());
@@ -204,8 +203,7 @@ public class DependencyResolverTest {
         when(ipsProject1.canBeBuild()).thenReturn(false);
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(0, collectedDependencies.keySet().size());
         assertEquals(0, collectedDependencies.get(ipsProject1).size());
@@ -216,8 +214,7 @@ public class DependencyResolverTest {
     public void testCollectDependencies_INSTANCEOF() {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
@@ -278,8 +275,7 @@ public class DependencyResolverTest {
     public void testCollectDependencies_DATATYPE() {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
@@ -351,8 +347,7 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(4, collectedDependencies.get(ipsProject1).size());
@@ -368,8 +363,7 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(4, collectedDependencies.get(ipsProject1).size());
@@ -381,20 +375,11 @@ public class DependencyResolverTest {
 
     @Test
     public void testCollectDependencies_DependentProjects() {
+        setUpObjectDependencies_forDependentProjects();
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
-        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
-        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
-        when(dependencyGraph2.getDependants(enumType)).thenReturn(
-                new IDependency[] { depInstanceOfEnum, depReferenceSubProductCmptTypeToEnumType });
-        when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType2 });
-        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, });
-        dependencyResolver = new DependencyResolver(ipsProject1);
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(3, collectedDependencies.keySet().size());
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
@@ -407,20 +392,12 @@ public class DependencyResolverTest {
 
     @Test
     public void testCollectDependencies_MultiDependentProjects() {
+        setUpObjectDependencies_forDependentProjects();
+
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2, ipsProject3 });
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
-        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
-        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
-        when(dependencyGraph2.getDependants(enumType)).thenReturn(
-                new IDependency[] { depInstanceOfEnum, depReferenceSubProductCmptTypeToEnumType });
-        when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType2 });
-        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, });
-        dependencyResolver = new DependencyResolver(ipsProject1);
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(3, collectedDependencies.keySet().size());
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
@@ -433,21 +410,13 @@ public class DependencyResolverTest {
 
     @Test
     public void testCollectDependencies_LoopDependentProjects() {
+        setUpObjectDependencies_forDependentProjects();
+
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
         when(ipsProject3.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject1 });
-        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
-        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
-        when(dependencyGraph2.getDependants(enumType)).thenReturn(
-                new IDependency[] { depInstanceOfEnum, depReferenceSubProductCmptTypeToEnumType });
-        when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType2 });
-        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, });
-        dependencyResolver = new DependencyResolver(ipsProject1);
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(3, collectedDependencies.keySet().size());
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
@@ -458,6 +427,18 @@ public class DependencyResolverTest {
         assertThat(collectedDependencies.get(ipsProject3), hasItems(depInstanceOfProductCmpt));
     }
 
+    private void setUpObjectDependencies_forDependentProjects() {
+        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
+        when(dependencyGraph2.getDependants(enumType)).thenReturn(
+                new IDependency[] { depInstanceOfEnum, depReferenceSubProductCmptTypeToEnumType });
+        when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depReferenceProductCmptType2 });
+        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt, });
+        dependencyResolver = new DependencyResolver(ipsProject1);
+    }
+
     @Test
     public void testCollectDependencies_DependentProjects_INSTANCEOF() {
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
@@ -465,8 +446,7 @@ public class DependencyResolverTest {
         when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
         dependencyResolver = new DependencyResolver(ipsProject1);
 
-        dependencyResolver.collectDependencies(enumType, new HashSet<IIpsProject>(), false);
-        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(0, collectedDependencies.get(ipsProject1).size());
@@ -487,5 +467,11 @@ public class DependencyResolverTest {
         assertEquals(0, collectedDependencies.get(ipsProject1).size());
         assertEquals(1, collectedDependencies.get(ipsProject2).size());
         assertThat(collectedDependencies.get(ipsProject2), hasItem(depReferencePolicy));
+    }
+
+    private MultiMap<IIpsProject, IDependency> collectDependenciesOf(QualifiedNameType objectNameType) {
+        dependencyResolver.collectDependencies(objectNameType, new HashSet<IIpsProject>(), false);
+        MultiMap<IIpsProject, IDependency> collectedDependencies = dependencyResolver.getCollectedDependencies();
+        return collectedDependencies;
     }
 }

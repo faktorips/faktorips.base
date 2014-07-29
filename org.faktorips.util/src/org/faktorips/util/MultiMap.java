@@ -23,7 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A data structure that maps a key to a collection of values. Adding a value to the map is like
  * putting a value to the collection regarding the specified key. If a value is requested by using
- * the key a Collection is returned.
+ * the key a collection is returned.
+ * <p>
+ * Different kinds of {@link MultiMap multi maps} can be created using different
+ * {@link CollectionFactory collection factories}, or by calling the creator methods
+ * {@link #createWithListsAsValues()} and {@link #createWithSetsAsValues()}. The map then contains
+ * only lists or only sets respectively, depending on the use case.
  */
 public class MultiMap<K, V> {
 
@@ -32,7 +37,7 @@ public class MultiMap<K, V> {
     private final CollectionFactory<V> collectionFactory;
 
     /**
-     * Creates a new MultiMap with ArrayList as value collections.
+     * Creates a new {@link MultiMap} with {@link ArrayList} instances as values.
      */
     public MultiMap() {
         this(new ArrayListFactory<V>());
@@ -197,21 +202,19 @@ public class MultiMap<K, V> {
     }
 
     /**
-     * An implementation of this interface creates a collection for the value of the
-     * {@link MultiMap}.
+     * Factory for creating collection instances to be used as values in a {@link MultiMap}.
      */
     public static interface CollectionFactory<V> {
 
         /**
-         * Create a new collection for the multi map value.
+         * Creates collections that are used as values in a {@link MultiMap}
          */
         public Collection<V> createCollection();
 
     }
 
     /**
-     * This implementation of CollectionFactory creates {@link ArrayList} instances.
-     * 
+     * Creates {@link ArrayList} instances as {@link MultiMap} values.
      */
     public static class ArrayListFactory<V> implements CollectionFactory<V> {
 
@@ -223,8 +226,7 @@ public class MultiMap<K, V> {
     }
 
     /**
-     * This implementation of CollectionFactory creates {@link HashSet} instances.
-     * 
+     * Creates {@link HashSet} instances as {@link MultiMap} values.
      */
     public static class HashSetFactory<V> implements CollectionFactory<V> {
 
