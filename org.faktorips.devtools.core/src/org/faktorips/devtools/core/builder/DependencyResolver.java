@@ -129,7 +129,8 @@ public class DependencyResolver {
     }
 
     private boolean isProperDependency(IDependency dependency, boolean searchInstanceOfOnly) {
-        return DependencyType.INSTANCEOF.equals(dependency.getType()) || !searchInstanceOfOnly;
+        return DependencyType.INSTANCEOF.equals(dependency.getType()) || !searchInstanceOfOnly
+                || (DependencyType.SUBTYPE.equals(dependency.getType()) && searchInstanceOfOnly);
     }
 
     private void considerTransitiveDependencies(IDependency dependency, boolean searchInstanceOfDependencyOnly) {
@@ -143,6 +144,8 @@ public class DependencyResolver {
                     || dependency.getType().equals(DependencyType.DATATYPE)) {
                 collectTransitivDependencies(dependency, true);
             }
+        } else if (dependency.getType().equals(DependencyType.SUBTYPE)) {
+            collectTransitivDependencies(dependency, true);
         }
     }
 
