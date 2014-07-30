@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
- * 
+ *
  * Alle Rechte vorbehalten.
- * 
+ *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
+ *
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
@@ -25,20 +25,41 @@ import java.util.regex.Pattern;
  * A collection of utility methods for Date to String and String to Date handling. Strings are
  * expected to be in ISO format yyyy-mm-dd (or any single-digit m or d). Generated Strings are
  * returned in the same format.
- * 
+ *
  * @author Thorsten Waertel
  */
 public class DateUtil {
 
-    private static final SimpleDateFormat ISO_DATE_TIME_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
-    private static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
-    private static final SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yy-MM-dd");
+    private static final ThreadLocal<SimpleDateFormat> ISO_DATE_TIME_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> ISO_TIME_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("HH:mm:ss");
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> ISO_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yy-MM-dd");
+        }
+    };
+
+    private DateUtil() {
+        // do not instantiate
+    }
 
     /**
      * Creates an ISO String of the date the given GregorianCalendar is set to or an empty String if
      * calendar is <code>null</code>.
      */
-    public final static String gregorianCalendarToIsoDateString(GregorianCalendar calendar) {
+    public static final String gregorianCalendarToIsoDateString(GregorianCalendar calendar) {
         if (calendar == null) {
             return "";
         }
@@ -48,7 +69,7 @@ public class DateUtil {
     /**
      * Creates an ISO date String of the given Date or an empty String if date is <code>null</code>.
      */
-    public final static String dateToIsoDateString(Date date) {
+    public static final String dateToIsoDateString(Date date) {
         if (date == null) {
             return "";
         }
@@ -61,7 +82,7 @@ public class DateUtil {
      * Creates an ISO date/time String of the given Date or an empty String if date is
      * <code>null</code>.
      */
-    public final static String dateToIsoDateTimeString(Date date) {
+    public static final String dateToIsoDateTimeString(Date date) {
         if (date == null) {
             return "";
         }
@@ -71,7 +92,7 @@ public class DateUtil {
     /**
      * Creates an ISO time String of the given Date or an empty String if date is <code>null</code>.
      */
-    public final static String dateToIsoTimeString(Date date) {
+    public static final String dateToIsoTimeString(Date date) {
         if (date == null) {
             return "";
         }
@@ -81,24 +102,20 @@ public class DateUtil {
     /**
      * Parses the given ISO-formatted date String to a Gregorian calendar.
      */
-    public final static GregorianCalendar parseIsoDateStringToGregorianCalendar(String s) {
-        if (s == null || s.equals("")) {
+    public static final GregorianCalendar parseIsoDateStringToGregorianCalendar(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
-        try {
-            GregorianCalendar calendar = new GregorianCalendar();
-            calendar.setTime(parseIsoDateStringToDate(s));
-            return calendar;
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Can't parse " + s + " to a date!");
-        }
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(parseIsoDateStringToDate(s));
+        return calendar;
     }
 
     /**
      * Returns <code>true</code> if the String value is conform to the ISO standard (YYYY-MM-DD),
      * otherwise <code>false</code>.
      */
-    public final static boolean isIsoDate(String value) {
+    public static final boolean isIsoDate(String value) {
         if (value == null) {
             return false;
         }
@@ -109,12 +126,12 @@ public class DateUtil {
     /**
      * Parses the given ISO-formattted date String to a Date.
      */
-    public final static Date parseIsoDateStringToDate(String s) {
-        if (s == null || s.equals("")) {
+    public static final Date parseIsoDateStringToDate(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
         try {
-            return ISO_DATE_FORMAT.parse(s);
+            return ISO_DATE_FORMAT.get().parse(s);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a date!");
         }
@@ -123,12 +140,12 @@ public class DateUtil {
     /**
      * Parses the given ISO-formattted date/time String to a Date.
      */
-    public final static Date parseIsoDateTimeStringToDate(String s) {
-        if (s == null || s.equals("")) {
+    public static final Date parseIsoDateTimeStringToDate(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
         try {
-            return ISO_DATE_TIME_FORMAT.parse(s);
+            return ISO_DATE_TIME_FORMAT.get().parse(s);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a date and time!");
         }
@@ -137,12 +154,12 @@ public class DateUtil {
     /**
      * Parses the given ISO-formattted time String to a Date.
      */
-    public final static Date parseIsoTimeStringToDate(String s) {
-        if (s == null || s.equals("")) {
+    public static final Date parseIsoTimeStringToDate(String s) {
+        if (s == null || "".equals(s)) {
             return null;
         }
         try {
-            return ISO_TIME_FORMAT.parse(s);
+            return ISO_TIME_FORMAT.get().parse(s);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a time!");
         }
@@ -156,12 +173,12 @@ public class DateUtil {
      * <li>the difference between 1980-01-01 and 2012-01-01 is 32 years</li>
      * <li>the difference between 1980-01-01 and 1960-11-11 is 19 years</li>
      * </ul>
-     * 
+     *
      * @param start the start of the period
      * @param end the end of the period
      * @return the length of the period
      */
-    public final static int getDifferenceInYears(Calendar start, Calendar end) {
+    public static final int getDifferenceInYears(Calendar start, Calendar end) {
         if (start == null) {
             throw new IllegalArgumentException("The start date may not be null");
         }
@@ -193,12 +210,12 @@ public class DateUtil {
      * <li>the difference between 1980-01-01 and 2012-01-01 is 32 years</li>
      * <li>the difference between 1980-01-01 and 1960-11-11 is 19 years</li>
      * </ul>
-     * 
+     *
      * @param start the start of the period
      * @param end the end of the period
      * @return the length of the period
      */
-    public final static int getDifferenceInYears(Date start, Date end) {
+    public static final int getDifferenceInYears(Date start, Date end) {
         if (start == null) {
             throw new IllegalArgumentException("The start date may not be null");
         }
