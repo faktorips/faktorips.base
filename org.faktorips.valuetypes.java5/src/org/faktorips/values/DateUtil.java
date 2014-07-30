@@ -27,9 +27,26 @@ import java.util.regex.Pattern;
  */
 public class DateUtil {
 
-    private static final SimpleDateFormat ISO_DATE_TIME_FORMAT = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
-    private static final SimpleDateFormat ISO_TIME_FORMAT = new SimpleDateFormat("HH:mm:ss");
-    private static final SimpleDateFormat ISO_DATE_FORMAT = new SimpleDateFormat("yy-MM-dd");
+    private static final ThreadLocal<SimpleDateFormat> ISO_DATE_TIME_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> ISO_TIME_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("HH:mm:ss");
+        }
+    };
+
+    private static final ThreadLocal<SimpleDateFormat> ISO_DATE_FORMAT = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yy-MM-dd");
+        }
+    };
 
     private static final String REGEX_ISO_DATE = "\\d{4}-\\d{1,2}-\\d{1,2}";
     private static final String REGEX_ISO_TIME = "([01]\\d|[2][1-3]):([0-5]\\d):([0-5]\\d)";
@@ -138,7 +155,7 @@ public class DateUtil {
             return null;
         }
         try {
-            return ISO_DATE_FORMAT.parse(s);
+            return ISO_DATE_FORMAT.get().parse(s);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a date!");
         }
@@ -152,7 +169,7 @@ public class DateUtil {
             return null;
         }
         try {
-            return ISO_DATE_TIME_FORMAT.parse(s);
+            return ISO_DATE_TIME_FORMAT.get().parse(s);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a date and time!");
         }
@@ -166,7 +183,7 @@ public class DateUtil {
             return null;
         }
         try {
-            return ISO_TIME_FORMAT.parse(s);
+            return ISO_TIME_FORMAT.get().parse(s);
         } catch (ParseException e) {
             throw new IllegalArgumentException("Can't parse " + s + " to a time!");
         }
