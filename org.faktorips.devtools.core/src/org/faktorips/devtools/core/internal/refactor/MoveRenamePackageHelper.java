@@ -26,6 +26,7 @@ import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -122,8 +123,8 @@ public final class MoveRenamePackageHelper {
                 String targetName = targetPackage.getName() + '.' + targetFile.getIpsObjectName();
                 RefactoringStatus status = moveIpsObject(ipsObject, targetName, currTargetRoot, monitor);
                 if (!status.isOK()) {
-                    // TODO Hier gibt es Meldungen, wohin damit?
-                    System.out.println("Status NOK:" + sourceFile.getName() + "\n" + status.toString());
+                    IpsPlugin.log(new IpsStatus(NLS.bind("Error moving file {0}.\n{1}", sourceFile.getName(), //$NON-NLS-1$
+                            status.toString())));
                 }
             } else {
                 moveOtherFiles(sourcePackage, targetPackage, fileInfos, monitor);
@@ -305,6 +306,10 @@ public final class MoveRenamePackageHelper {
         return true;
     }
 
+    /**
+     * 
+     * @param status
+     */
     public void checkFinalConditions(RefactoringStatus status) {
         // TODO hier auch packageValid Testen mit dem Target?
     }

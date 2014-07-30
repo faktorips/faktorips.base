@@ -62,7 +62,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
      * Provides a tree viewer that enables the user to choose a target destination for the
      * {@link IIpsElement} to move.
      */
-    private final static class MoveUserInputPage extends IpsRefactoringUserInputPage {
+    private static final class MoveUserInputPage extends IpsRefactoringUserInputPage {
 
         /**
          * The {@link TreeViewer} that allows the user to select the target
@@ -110,7 +110,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             treeViewer.setLabelProvider(new MoveLabelProvider());
             treeViewer.setContentProvider(new MoveContentProvider());
             treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
-            setInput();
+            setReferencingProjectsAsInput();
             treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
@@ -131,7 +131,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             });
         }
 
-        private void setInput() {
+        private void setReferencingProjectsAsInput() {
             try {
                 IIpsProject ipsProject = getIpsRefactoring().getIpsProject();
                 IIpsProject[] referencingProjects = ipsProject.findReferencingProjects(true);

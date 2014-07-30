@@ -111,14 +111,11 @@ public abstract class MoveOperation {
             if (source.equals(target)) {
                 return false;
             }
-            if (source instanceof IIpsPackageFragment || source instanceof IIpsPackageFragmentRoot) {
-                if (source instanceof IIpsPackageFragment) {
-                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)source;
-                    if (packageFragment.isDefaultPackage()) {
-                        return false;
-                    }
+            if (representsFolder(source)) {
+                if (isDefaultPackageFragement(source)) {
+                    return false;
                 }
-                if (target instanceof IIpsPackageFragment || target instanceof IIpsPackageFragmentRoot) {
+                if (representsFolder(target)) {
                     IFolder sourceFolder = (IFolder)((IIpsElement)source).getCorrespondingResource();
                     IResource targetResource = ((IIpsElement)target).getCorrespondingResource();
                     if (!(targetResource instanceof IFolder)) {
@@ -132,5 +129,19 @@ public abstract class MoveOperation {
             }
         }
         return true;
+    }
+
+    private static boolean representsFolder(Object object) {
+        return object instanceof IIpsPackageFragment || object instanceof IIpsPackageFragmentRoot;
+    }
+
+    private static boolean isDefaultPackageFragement(Object source) {
+        if (source instanceof IIpsPackageFragment) {
+            IIpsPackageFragment packageFragment = (IIpsPackageFragment)source;
+            if (packageFragment.isDefaultPackage()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
