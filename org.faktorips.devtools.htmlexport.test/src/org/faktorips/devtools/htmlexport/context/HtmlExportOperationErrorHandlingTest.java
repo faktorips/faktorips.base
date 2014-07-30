@@ -12,11 +12,10 @@ package org.faktorips.devtools.htmlexport.context;
 
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -41,7 +40,7 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
     }
 
     @Test
-    public void testSrcFileWithoutIpsObject() throws IOException {
+    public void testSrcFileWithoutIpsObject() throws Exception {
         context = new DocumentationContext() {
             private boolean alreadyAdded = false;
 
@@ -77,8 +76,8 @@ public class HtmlExportOperationErrorHandlingTest extends AbstractHtmlExportPlug
 
         try {
             operation.run(new NullProgressMonitor());
-            fail("sollte CoreException werfen");
-        } catch (CoreException e) {
+            fail("sollte CoreRuntimeException werfen");
+        } catch (CoreRuntimeException e) {
             // nix zu tun
         }
     }

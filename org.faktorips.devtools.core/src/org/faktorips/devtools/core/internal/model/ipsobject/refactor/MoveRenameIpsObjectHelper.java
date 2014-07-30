@@ -266,20 +266,16 @@ public final class MoveRenameIpsObjectHelper {
         dependencyToProject = new HashMap<IDependency, IIpsProject>();
         List<IDependency> collectedDependencies = new ArrayList<IDependency>();
 
-        try {
-            addDependencies(collectedDependencies, toBeRefactored.getIpsProject());
-            IIpsProject[] projects = toBeRefactored.getIpsProject().findReferencingProjects(true);
-            for (IIpsProject project : projects) {
-                addDependencies(collectedDependencies, project);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        addDependencies(collectedDependencies, toBeRefactored.getIpsProject());
+        IIpsProject[] projects = toBeRefactored.getIpsProject().findReferencingProjects(true);
+        for (IIpsProject project : projects) {
+            addDependencies(collectedDependencies, project);
         }
 
         dependencies = collectedDependencies.toArray(new IDependency[collectedDependencies.size()]);
     }
 
-    private void addDependencies(List<IDependency> dependencies, IIpsProject project) throws CoreException {
+    private void addDependencies(List<IDependency> dependencies, IIpsProject project) {
         IDependencyGraph graph = new DependencyGraph(project);
         for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
             dependencies.add(dependency);

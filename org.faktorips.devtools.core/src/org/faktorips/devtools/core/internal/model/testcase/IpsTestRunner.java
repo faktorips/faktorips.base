@@ -89,16 +89,19 @@ public class IpsTestRunner implements IIpsTestRunner {
     public static final String ATTR_TESTCASES = IpsPlugin.PLUGIN_ID + ".ATTR_TESTCASES"; //$NON-NLS-1$
     public static final String ATTR_MAX_HEAP_SIZE = IpsPlugin.PLUGIN_ID + ".ATTR_MAX_HEAP_SIZE"; //$NON-NLS-1$
 
-    public static String INVALID_NAME = IIpsProjectNamingConventions.INVALID_NAME;
+    public static final String INVALID_NAME = IIpsProjectNamingConventions.INVALID_NAME;
+
+    public static final boolean TRACE_IPS_TEST_RUNNER;
 
     /**
      * Characters which are used within the test runner protocol and therfore forbidden to use
      * inside a test case name
      */
-    private static String FORBIDDEN_CHARACTERS_IN_TESTCASENAME = "\\[\\]{},:"; //$NON-NLS-1$
+    private static final String FORBIDDEN_CHARACTERS_IN_TESTCASENAME = "\\[\\]{},:"; //$NON-NLS-1$
 
-    private static DateFormat DEBUG_FORMAT;
     private static final int ACCEPT_TIMEOUT = 5000;
+
+    private static DateFormat debugFormat;
 
     /**
      * time in ms to check for active test runner, if this time is reached then the test runner will
@@ -107,26 +110,12 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private static final int MAX_START_TIME_INTERVAL = 5000;
 
-    public final static boolean TRACE_IPS_TEST_RUNNER;
-
     static {
         TRACE_IPS_TEST_RUNNER = Boolean
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
     }
 
-    /**
-     * Validate if the test case name is a valid name.
-     */
-    public static MessageList validateTestCaseName(String testCaseName) {
-        MessageList ml = new MessageList();
-        Pattern p = Pattern.compile("[" + FORBIDDEN_CHARACTERS_IN_TESTCASENAME + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-        boolean matches = p.matcher(testCaseName).find();
-        if (matches) {
-            ml.add(new Message(INVALID_NAME, NLS.bind(Messages.IpsTestRunner_validationErrorInvalidName, testCaseName,
-                    FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), Message.ERROR)); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        return ml;
-    }
+    private static IpsTestRunner ipsTestRunner;
 
     private int port;
     private IIpsProject ipsProject;
@@ -141,7 +130,6 @@ public class IpsTestRunner implements IIpsTestRunner {
     private List<IIpsTestRunListener> fIpsTestRunListeners = new ArrayList<IIpsTestRunListener>();
 
     /** Shared instance of the test runner */
-    private static IpsTestRunner ipsTestRunner;
 
     /** Error details in case multiline errors */
     private ArrayList<String> errorDetailList;
@@ -173,6 +161,10 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     private long launchStartTime;
 
+    private IpsTestRunner() {
+        // avoid creating new instances (use getDefault() instead)
+    }
+
     /**
      * Returns the shared instance.
      */
@@ -191,7 +183,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         return builderSet.getRuntimeRepositoryTocResourceName(root);
     }
 
-    public static IIpsProject getIpsProjectFromTocPath(String tocPaths) throws CoreException {
+    public static IIpsProject getIpsProjectFromTocPath(String tocPaths) {
         List<String> reps = AbstractIpsTestRunner.extractListFromString(tocPaths);
         if (!(reps.size() > 0)) {
             return null;
@@ -210,49 +202,17 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /**
-     * Job class to run the selected tests.
+     * Validate if the test case name is a valid name.
      */
-    private class TestRunnerJob extends WorkspaceJob {
-
-        private IpsTestRunner testRunner;
-        private String classpathRepository;
-        private String testsuite;
-        private String mode;
-        private ILaunch jobLaunch;
-
-        public TestRunnerJob(IpsTestRunner testRunner, String classpathRepository, String testsuite, String mode,
-                ILaunch launch) {
-
-            super(Messages.IpsTestRunner_Job_Name);
-            this.testRunner = testRunner;
-            this.classpathRepository = classpathRepository;
-            this.testsuite = testsuite;
-            this.mode = mode;
-            this.jobLaunch = launch;
+    public static MessageList validateTestCaseName(String testCaseName) {
+        MessageList ml = new MessageList();
+        Pattern p = Pattern.compile("[" + FORBIDDEN_CHARACTERS_IN_TESTCASENAME + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+        boolean matches = p.matcher(testCaseName).find();
+        if (matches) {
+            ml.add(new Message(INVALID_NAME, NLS.bind(Messages.IpsTestRunner_validationErrorInvalidName, testCaseName,
+                    FORBIDDEN_CHARACTERS_IN_TESTCASENAME.replaceAll("\\\\", "")), Message.ERROR)); //$NON-NLS-1$ //$NON-NLS-2$
         }
-
-        @Override
-        public IStatus runInWorkspace(IProgressMonitor monitor) {
-            try {
-                testRunnerMonitor = monitor;
-
-                if (!monitor.isCanceled()) {
-                    if (mode != null) {
-                        testRunner.run(classpathRepository, testsuite, mode, jobLaunch);
-                    } else {
-                        testRunner.run(classpathRepository, testsuite, ILaunchManager.RUN_MODE, jobLaunch);
-                    }
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-            return Status.OK_STATUS;
-        }
-
-    }
-
-    private IpsTestRunner() {
-        // avoid creating new instances (use getDefault() instead)
+        return ml;
     }
 
     @Override
@@ -402,12 +362,12 @@ public class IpsTestRunner implements IIpsTestRunner {
         String vmArgsInConfig = launchConfiguration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
                 (String)null);
         if (StringUtils.isNotEmpty(vmArgsInConfig)) {
-            String vmArguments[] = vmConfig.getVMArguments();
+            String[] vmArguments = vmConfig.getVMArguments();
             String[] vmArgumentsFromLaunchConfig = new String[0];
             if (vmArgsInConfig != null) {
                 vmArgumentsFromLaunchConfig = DebugPlugin.parseArguments(vmArgsInConfig);
             }
-            String vmArgumentsNew[] = new String[vmArguments.length + vmArgumentsFromLaunchConfig.length];
+            String[] vmArgumentsNew = new String[vmArguments.length + vmArgumentsFromLaunchConfig.length];
             System.arraycopy(vmArguments, 0, vmArgumentsNew, 0, vmArguments.length);
             System.arraycopy(vmArgumentsFromLaunchConfig, 0, vmArgumentsNew, vmArguments.length,
                     vmArgumentsFromLaunchConfig.length);
@@ -738,12 +698,12 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void trace(String line) {
         if (TRACE_IPS_TEST_RUNNER) {
-            if (DEBUG_FORMAT == null) {
-                DEBUG_FORMAT = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
+            if (debugFormat == null) {
+                debugFormat = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
             }
             StringBuffer msgBuf = new StringBuffer(line.length() + 40);
             msgBuf.append("IpsTestRunner "); //$NON-NLS-1$
-            DEBUG_FORMAT.format(new Date(), msgBuf, new FieldPosition(0));
+            debugFormat.format(new Date(), msgBuf, new FieldPosition(0));
             msgBuf.append(line);
             System.out.println(msgBuf.toString());
         }
@@ -893,7 +853,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             try {
                 terminate();
             } catch (CoreException e) {
-                // ignore exception
+                IpsPlugin.log(e);
             }
         }
         testRunnerMonitor.subTask(qualifiedTestName);
@@ -1067,6 +1027,48 @@ public class IpsTestRunner implements IIpsTestRunner {
      */
     public String[] getEnvironment(ILaunchConfiguration configuration) throws CoreException {
         return DebugPlugin.getDefault().getLaunchManager().getEnvironment(configuration);
+    }
+
+    /**
+     * Job class to run the selected tests.
+     */
+    private class TestRunnerJob extends WorkspaceJob {
+
+        private IpsTestRunner testRunner;
+        private String classpathRepository;
+        private String testsuite;
+        private String mode;
+        private ILaunch jobLaunch;
+
+        public TestRunnerJob(IpsTestRunner testRunner, String classpathRepository, String testsuite, String mode,
+                ILaunch launch) {
+
+            super(Messages.IpsTestRunner_Job_Name);
+            this.testRunner = testRunner;
+            this.classpathRepository = classpathRepository;
+            this.testsuite = testsuite;
+            this.mode = mode;
+            this.jobLaunch = launch;
+        }
+
+        @Override
+        public IStatus runInWorkspace(IProgressMonitor monitor) {
+            try {
+                testRunnerMonitor = monitor;
+
+                if (!monitor.isCanceled()) {
+                    if (mode != null) {
+                        testRunner.run(classpathRepository, testsuite, mode, jobLaunch);
+                    } else {
+                        testRunner.run(classpathRepository, testsuite, ILaunchManager.RUN_MODE, jobLaunch);
+                    }
+                }
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+            return Status.OK_STATUS;
+        }
+
     }
 
 }

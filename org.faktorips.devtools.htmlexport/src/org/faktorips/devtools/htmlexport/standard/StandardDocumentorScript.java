@@ -84,9 +84,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
             writeResources(context, new SubProgressMonitor(monitor, 1));
         } catch (IOException e) {
             throw new CoreException(new IpsStatus(e));
-        }
-
-        finally {
+        } finally {
             monitor.done();
         }
     }
@@ -185,7 +183,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
             List<IIpsSrcFile> srcFiles) throws IOException {
         boolean shownTypeChooser = false;
         IpsElementListPageElement allClassesPage = new IpsElementListPageElement(ipsPackageFragment, srcFiles,
-                new IpsElementInIIpsPackageFilter(ipsPackageFragment, context), context, shownTypeChooser);
+                new IpsElementInIIpsPackageFilter(ipsPackageFragment), context, shownTypeChooser);
         allClassesPage.setLinkTarget(TargetType.CONTENT);
         allClassesPage.build();
         ioHandler.writeFile(
@@ -240,7 +238,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(
                 context.getMessage(HtmlExportMessages.StandardDocumentorScript_documentation)
-                        + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ 
+                        + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         ioHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
 
         monitor.done();

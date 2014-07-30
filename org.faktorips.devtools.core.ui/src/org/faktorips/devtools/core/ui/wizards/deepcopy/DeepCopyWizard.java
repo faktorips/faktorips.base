@@ -54,8 +54,8 @@ public class DeepCopyWizard extends ResizableWizard {
 
     public static final int TYPE_COPY_PRODUCT = 10;
     public static final int TYPE_NEW_VERSION = 100;
-    private final static int DEFAULT_WIDTH = 800;
-    private final static int DEFAULT_HEIGHT = 800;
+    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_HEIGHT = 800;
 
     private static final String SECTION_NAME = "DeepCopyWizard"; //$NON-NLS-1$
 
@@ -80,10 +80,9 @@ public class DeepCopyWizard extends ResizableWizard {
      *            rename-pattern.
      * 
      * @throws IllegalArgumentException if the given type is not valid.
-     * @throws CycleInProductStructureException when the structure have a cyle
+     * @throws CycleInProductStructureException when the structure have a cycle
      */
-    public DeepCopyWizard(IProductCmptGeneration productGeneration, int type) throws IllegalArgumentException,
-    CycleInProductStructureException {
+    public DeepCopyWizard(IProductCmptGeneration productGeneration, int type) throws CycleInProductStructureException {
         super(SECTION_NAME, IpsPlugin.getDefault().getDialogSettings(), DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         setNeedsProgressMonitor(true);
@@ -118,8 +117,7 @@ public class DeepCopyWizard extends ResizableWizard {
         super.addPage(sourcePage);
         ReferenceAndPreviewPage previewPage = new ReferenceAndPreviewPage(type);
         super.addPage(previewPage);
-        List<IAdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
-        for (IAdditionalDeepCopyWizardPage additionalPage : additionalPages) {
+        for (IAdditionalDeepCopyWizardPage additionalPage : getAdditionalPages()) {
             super.addPage(additionalPage);
         }
     }
@@ -143,8 +141,7 @@ public class DeepCopyWizard extends ResizableWizard {
 
     private void configureFixups(DeepCopyOperation dco) {
         final List<IDeepCopyOperationFixup> additionalFixups = dco.getAdditionalFixups();
-        List<IAdditionalDeepCopyWizardPage> additionalPages = getAdditionalPages();
-        for (final IAdditionalDeepCopyWizardPage additionalPage : additionalPages) {
+        for (final IAdditionalDeepCopyWizardPage additionalPage : getAdditionalPages()) {
             ISafeRunnable runnable = new ISafeRunnable() {
                 @Override
                 public void handleException(Throwable exception) {
@@ -166,7 +163,7 @@ public class DeepCopyWizard extends ResizableWizard {
         IIpsPackageFragmentRoot defaultPackageRoot = getDefaultPackage().getRoot();
         IIpsPackageFragmentRoot packRoot = defaultPackageRoot;
         if (!packRoot.isBasedOnSourceFolder()) {
-            IIpsPackageFragmentRoot srcRoots[];
+            IIpsPackageFragmentRoot[] srcRoots;
             srcRoots = getPresentationModel().getIpsProject().getSourceIpsPackageFragmentRoots();
             if (srcRoots.length > 0) {
                 packRoot = srcRoots[0];
@@ -220,8 +217,7 @@ public class DeepCopyWizard extends ResizableWizard {
             WorkspaceModifyOperation operation = new WorkspaceModifyOperation(schedulingRule) {
 
                 @Override
-                protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                InterruptedException {
+                protected void execute(IProgressMonitor monitor) throws CoreException, InterruptedException {
                     monitor.beginTask("", 2); //$NON-NLS-1$
                     final Map<IProductCmptStructureReference, IIpsSrcFile> handles = deepCopyPreview.getHandles(
                             new SubProgressMonitor(monitor, 1), toCopy);
@@ -238,7 +234,9 @@ public class DeepCopyWizard extends ResizableWizard {
                 }
             };
             getContainer().run(true, true, operation);
-        } catch (Exception e) {
+        } catch (InvocationTargetException e) {
+            IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the copying process.", e)); //$NON-NLS-1$
+        } catch (InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(new IpsStatus("An error occurred during the copying process.", e)); //$NON-NLS-1$
         }
 
@@ -297,7 +295,8 @@ public class DeepCopyWizard extends ResizableWizard {
             size.x = section.getInt(BOUNDS_WIDTH_KEY);
             size.y = section.getInt(BOUNDS_HEIGHT_KEY);
         } catch (NumberFormatException e) {
-            // ignore number format exceptions
+            size.x = DEFAULT_WIDTH;
+            size.y = DEFAULT_HEIGHT;
         }
         return size;
     }

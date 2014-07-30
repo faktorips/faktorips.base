@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.internal.builder;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +21,11 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -47,7 +52,9 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     }
 
     private final MultiMap<Object, IDependency> dependantsForMap = MultiMap.createWithSetsAsValues();
+
     private final MultiMap<QualifiedNameType, IDependency> dependsOnMap = MultiMap.createWithSetsAsValues();
+
     private transient IIpsProject ipsProject;
 
     /**
@@ -194,6 +201,34 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
     @Override
     public String toString() {
         return "DependencyGraph for " + ipsProject.getName(); //$NON-NLS-1$
+    }
+
+    /**
+     * Writes the object status to the {@link ObjectOutputStream}. For the {@link IIpsProject} we
+     * simply write the name of the project.
+     * 
+     * @serialData The maps are serialized by default serialization. The {@link #ipsProject} is
+     *             serialized by writing its name.
+     */
+    private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+        s.writeObject(ipsProject != null ? ipsProject.getName() : null);
+    }
+
+    /**
+     * Reading the status of this object from the {@link ObjectInputStream}. The {@link IIpsProject}
+     * is set by reading its name and resolving the project from the {@link IIpsModel}.
+     * 
+     * @serialData The maps are read by default deserialization. The {@link #ipsProject} is read by
+     *             reading the name of the project and resolving the project via the
+     *             {@link IIpsModel}.
+     */
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        String projectName = (String)s.readObject();
+        if (projectName != null) {
+            ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        }
     }
 
 }

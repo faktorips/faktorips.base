@@ -68,10 +68,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * check is successful the subclass implementation
      * {@link #checkInitialConditionsThis(RefactoringStatus, IProgressMonitor)} is called which may
      * extent the initial condition checking.
+     * 
+     * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-    OperationCanceledException {
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
@@ -104,10 +105,12 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * implementation
      * {@link #checkFinalConditionsThis(RefactoringStatus, IProgressMonitor, CheckConditionsContext)}
      * that may extend the final condition checking is called.
+     * 
+     * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreException, OperationCanceledException {
+            throws CoreException {
 
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
@@ -193,9 +196,11 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * source files will be saved after all modifications are complete.
      * <p>
      * Always returns a {@link NullChange}.
+     * 
+     * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public final Change createChange(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = refactorIpsModel(pm);
         saveIpsSourceFiles(modificationSet, pm);
         return new NullChange();

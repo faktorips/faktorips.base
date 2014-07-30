@@ -105,11 +105,11 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     /**
      * The ID of this view extension
      */
-    public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productStructureExplorer"; //$NON-NLS-1$
 
-    private static String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
-    private static String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
-    private static String MENU_RULE_GROUP = "group.rule"; //$NON-NLS-1$
+    private static final String MENU_INFO_GROUP = "group.info"; //$NON-NLS-1$
+    private static final String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
+    private static final String MENU_RULE_GROUP = "group.rule"; //$NON-NLS-1$
 
     // Used for saving the current layout style in a eclipse memento.
     private static final String LAYOUT_AND_FILTER_MEMENTO = "layoutandfilter"; //$NON-NLS-1$
@@ -637,7 +637,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
      * 
      * @param file The selection to display
      */
-    public void showStructure(IIpsSrcFile file) throws CoreException {
+    public void showStructure(IIpsSrcFile file) {
         if (isSupported(file)) {
             showStructure((IProductCmpt)file.getIpsObject());
         }
@@ -742,13 +742,9 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         if (ipsSrcFile == null) {
             return false;
         }
-        try {
-            if (isSupported(ipsSrcFile)) {
-                showStructure(ipsSrcFile);
-                return true;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (isSupported(ipsSrcFile)) {
+            showStructure(ipsSrcFile);
+            return true;
         }
         return false;
     }
@@ -952,10 +948,10 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
     }
 
     private int evalMenuStates() {
-        return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0) | //
-                (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0) | //
-                (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS
-                    : 0)); //
+        return ((showReferencedTable ? OPTION_REFERENCE_TABLE : 0)
+                | (showTableStructureRoleName ? OPTION_TABLE_STRUCTURE_ROLE_NAME : 0)
+                | (showAssociationNode ? OPTION_ASSOCIATION_NODE : 0) | (showAssociatedCmpts ? OPTION_ASSOCIATED_CMPTS
+                    : 0));
     }
 
     public void setShowAssociationNode(boolean showAssociationNode) {
@@ -1013,7 +1009,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
         };
     }
 
-    private static abstract class AbstractCardinalityAction extends Action {
+    private abstract static class AbstractCardinalityAction extends Action {
 
         private final ProductStructureExplorer productStructureExplorer;
 

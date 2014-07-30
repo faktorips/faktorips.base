@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.LinkDropListener;
 import org.faktorips.devtools.core.ui.views.IpsElementDropListener;
@@ -44,11 +42,7 @@ class ProductCmptDropListener extends IpsElementDropListener {
     public void drop(DropTargetEvent event) {
         Object[] transferred = super.getTransferedElements(event.currentDataType);
         if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
-            try {
-                this.productStructureExplorer.showStructure((IIpsSrcFile)transferred[0]);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            this.productStructureExplorer.showStructure((IIpsSrcFile)transferred[0]);
         }
     }
 

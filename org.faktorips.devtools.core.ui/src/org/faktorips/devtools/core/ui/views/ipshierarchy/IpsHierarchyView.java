@@ -97,6 +97,10 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     private boolean linkingEnabled = false;
     private ActivationListener editorActivationListener;
 
+    public IpsHierarchyView() {
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+    }
+
     /**
      * Check whether this HierarchyView supports this object or not. Null is also a supported type
      * to reset the editor.
@@ -106,10 +110,6 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
      */
     public static boolean supports(Object object) {
         return object instanceof IType;
-    }
-
-    public IpsHierarchyView() {
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
     }
 
     @Override
@@ -446,6 +446,29 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         layout.putInteger(LINK_WITH_EDITOR_KEY, linkingEnabled ? 1 : 0);
     }
 
+    private void activateContext() {
+        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+    }
+
+    @Override
+    protected ISelection getSelection() {
+        return treeViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        if (ipsObject == null) {
+            return false;
+        }
+        if (supports(ipsObject)) {
+            showHierarchy(ipsObject);
+            return true;
+        }
+        return false;
+    }
+
     private class ActivationListener implements IPartListener, IWindowListener {
 
         private IPartService partService;
@@ -569,8 +592,8 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             }
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
-                IIpsObject selected = ipsSrcFile.getIpsObject();
-                if (selected instanceof IType) {
+                IIpsObject selectedIpsObject = ipsSrcFile.getIpsObject();
+                if (selectedIpsObject instanceof IType) {
                     event.detail = DND.DROP_LINK;
                 }
 
@@ -590,29 +613,6 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         public boolean isMessage() {
             return equals(MESSAGE);
         }
-    }
-
-    private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
-        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
-    }
-
-    @Override
-    protected ISelection getSelection() {
-        return treeViewer.getSelection();
-    }
-
-    @Override
-    protected boolean show(IAdaptable adaptable) {
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
-        if (ipsObject == null) {
-            return false;
-        }
-        if (supports(ipsObject)) {
-            showHierarchy(ipsObject);
-            return true;
-        }
-        return false;
     }
 
 }

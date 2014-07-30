@@ -304,6 +304,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             ImageDescriptor icon,
             String label) {
 
+        // CSOFF: TrailingComment
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
                 null, // id
@@ -320,6 +321,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 false // visibleEnabled
                 );
         // @formatter:on
+        // CSON: TrailingComment
 
         return new CommandContributionItem(itemParameter);
     }
