@@ -20,8 +20,8 @@ import org.faktorips.runtime.internal.ProductConfiguration;
  * Custom JAXB marshaling/unmarshaling for {@link ProductConfiguration} instances.
  * <p>
  * When marshaling/unmarshaling a configurable policy component (and thus a
- * {@link ProductConfiguration}), the respective product component is preserved in XML by the
- * means of the product component ID.
+ * {@link ProductConfiguration}), the respective product component is preserved in XML by the means
+ * of the product component ID.
  */
 public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductConfiguration> {
 
@@ -32,11 +32,13 @@ public class ProductConfigurationXmlAdapter extends XmlAdapter<String, ProductCo
     }
 
     /**
-     * Returns the ID for the specified product component.
+     * Returns the ID for the configuring product component or <code>null</code> if it could not be
+     * determined. Cannot return an ID if either the given {@link ProductConfiguration} is
+     * <code>null</code> or if it does not contain a {@link IProductComponent} instance.
      */
     @Override
     public String marshal(ProductConfiguration config) throws Exception {
-        if (config == null) {
+        if (config == null || config.getProductComponent() == null) {
             return null;
         }
         return config.getProductComponent().getId();
