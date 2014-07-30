@@ -22,6 +22,9 @@ import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * Move processor for {@link IIpsPackageFragment}.
+ */
 public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
 
     private final MoveRenamePackageHelper moveRenameHelper;
@@ -80,7 +83,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
 
     @Override
     protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
-        // wenn in das gleiche Root Package verschoben werden soll.
+        // TODO was kann hier passieren?
     }
 
     @Override

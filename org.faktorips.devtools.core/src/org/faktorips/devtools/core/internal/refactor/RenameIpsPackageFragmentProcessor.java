@@ -22,6 +22,9 @@ import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
+/**
+ * Rename processor for {@link IIpsPackageFragment}.
+ */
 public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
 
     private final MoveRenamePackageHelper moveRenameHelper;
@@ -72,8 +75,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
 
     @Override
     protected void validateIpsModel(MessageList validationMessageList) throws CoreException {
-        // TODO Auto-generated method stub
-
+        // TODO was kann hier passieren?
     }
 
     @Override
