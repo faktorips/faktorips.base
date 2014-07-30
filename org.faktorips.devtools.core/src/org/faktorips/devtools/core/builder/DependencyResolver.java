@@ -129,23 +129,23 @@ public class DependencyResolver {
     }
 
     private boolean isProperDependency(IDependency dependency, boolean searchInstanceOfOnly) {
-        return DependencyType.INSTANCEOF.equals(dependency.getType()) || !searchInstanceOfOnly
-                || (DependencyType.SUBTYPE.equals(dependency.getType()) && searchInstanceOfOnly);
+        boolean allDependencies = !searchInstanceOfOnly;
+        return allDependencies || DependencyType.INSTANCEOF.equals(dependency.getType())
+                || DependencyType.SUBTYPE.equals(dependency.getType());
     }
 
     private void considerTransitiveDependencies(IDependency dependency, boolean searchInstanceOfDependencyOnly) {
+        if (dependency.getType().equals(DependencyType.SUBTYPE)) {
+            collectTransitivDependencies(dependency, searchInstanceOfDependencyOnly);
+        }
         if (!searchInstanceOfDependencyOnly) {
-            if (dependency.getType().equals(DependencyType.SUBTYPE)) {
-                collectTransitivDependencies(dependency, false);
-            } else if (dependency.getType().equals(DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL)
+            if (dependency.getType().equals(DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL)
                     && getArtefactBuilderSet().containsAggregateRootBuilder()) {
                 collectTransitivDependencies(dependency, false);
             } else if (dependency.getType().equals(DependencyType.REFERENCE)
                     || dependency.getType().equals(DependencyType.DATATYPE)) {
                 collectTransitivDependencies(dependency, true);
             }
-        } else if (dependency.getType().equals(DependencyType.SUBTYPE)) {
-            collectTransitivDependencies(dependency, true);
         }
     }
 
