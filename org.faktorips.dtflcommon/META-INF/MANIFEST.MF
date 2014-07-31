@@ -2,17 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor- IPS Common code for Devtools and Formula Language
 Bundle-SymbolicName: org.faktorips.dtflcommon
-Bundle-Version: 3.10.6.qualifier
+Bundle-Version: 3.10.7.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.util,
  org.faktorips.valuetypes.java5
-Export-Package: org.faktorips.codegen,
- org.faktorips.codegen.conversion,
- org.faktorips.codegen.dthelpers,
- org.faktorips.codegen.dthelpers.joda,
- org.faktorips.datatype,
- org.faktorips.datatype.classtypes,
- org.faktorips.datatype.joda,
- org.faktorips.util
+Export-Package: org.faktorips.codegen,org.faktorips.codegen.conversion
+ ,org.faktorips.codegen.dthelpers,org.faktorips.codegen.dthelpers.joda
+ ,org.faktorips.datatype,org.faktorips.datatype.classtypes,org.faktori
+ ps.datatype.joda,org.faktorips.util
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.apache.commons.lang;version="[2.6,2.6]"
