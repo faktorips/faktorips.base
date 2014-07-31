@@ -14,6 +14,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -41,6 +42,16 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         super.checkInitialConditionsThis(status, pm);
         moveRenameHelper.checkInitialConditions(status);
+    }
+
+    @Override
+    protected void checkFinalConditionsThis(RefactoringStatus status,
+            IProgressMonitor pm,
+            CheckConditionsContext context) throws CoreException {
+        super.checkFinalConditionsThis(status, pm, context);
+        IIpsPackageFragment newPackageFragment = getOriginalIpsPackageFragment().getRoot().getIpsPackageFragment(
+                getNewName());
+        moveRenameHelper.checkFinalConditions(newPackageFragment, status, pm);
     }
 
     @Override

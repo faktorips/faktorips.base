@@ -45,13 +45,14 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
             IProgressMonitor pm,
             CheckConditionsContext context) throws CoreException {
         super.checkFinalConditionsThis(status, pm, context);
-        IIpsPackageFragment target = getTargetIpsPackageFragment().getSubPackage(
+        IIpsPackageFragment newPackageFragment = getTargetIpsPackageFragment().getSubPackage(
                 getOriginalIpsPackageFragment().getLastSegmentName());
 
-        if (target != null && target.exists()) {
+        if (newPackageFragment != null && newPackageFragment.exists()) {
             status.addFatalError(NLS.bind(Messages.IpsPackageFragmentProcessor_errorPackageAlreadyContains,
-                    target.getName()));
+                    newPackageFragment.getName()));
         }
+        moveRenameHelper.checkFinalConditions(newPackageFragment, status, pm);
     }
 
     @Override
@@ -64,7 +65,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
         }
         if (getOriginalIpsPackageFragment().isDefaultPackage()
                 && getTargetIpsPackageFragment().getIpsProject()
-                        .equals(getOriginalIpsPackageFragment().getIpsProject())) {
+                .equals(getOriginalIpsPackageFragment().getIpsProject())) {
             status.addFatalError(Messages.IpsCompositeMoveRefactoring_msgDefaultPackageInSameProject);
         }
     }

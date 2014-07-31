@@ -138,7 +138,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         association2.setTargetRoleSingular(COVERAGE_TYPE_NAME);
         RefactoringStatus status = new RefactoringStatus();
         processor.checkInitialConditionsThis(status, new NullProgressMonitor());
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
     }
 
     @Test
@@ -147,6 +147,15 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         CheckConditionsContext context = new CheckConditionsContext();
         processor.checkFinalConditionsThis(status, new NullProgressMonitor(), context);
         assertTrue(status.isOK());
+        assertThatFilesOk();
+    }
+
+    private void assertThatFilesOk() {
+        assertTrue(source.exists());
+        assertFalse(target.getSubPackage("products").exists());
+        assertTrue(source.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT).exists());
+        assertTrue(source.getIpsSrcFile("ProductB", IpsObjectType.PRODUCT_CMPT).exists());
+        assertTrue(source.getSubPackage("subproducts").getIpsSrcFile("ProductC", IpsObjectType.PRODUCT_CMPT).exists());
     }
 
     @Test
@@ -155,7 +164,8 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
         RefactoringStatus status = new RefactoringStatus();
         CheckConditionsContext context = new CheckConditionsContext();
         processor.checkFinalConditionsThis(status, new NullProgressMonitor(), context);
-        assertTrue(status.hasFatalError());
+        assertTrue(status.hasError());
+        assertThatFilesOk();
     }
 
     @Test

@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.util.QNameUtil;
@@ -122,7 +123,7 @@ public final class MoveRenamePackageHelper {
                 IIpsSrcFile targetFile = targetPackage.getIpsSrcFile(fileInfos.getFileName());
                 String targetName = targetPackage.getName() + '.' + targetFile.getIpsObjectName();
                 RefactoringStatus status = moveIpsObject(ipsObject, targetName, currTargetRoot, monitor);
-                if (!status.isOK()) {
+                if (status.hasError()) {
                     IpsPlugin.log(new IpsStatus(NLS.bind("Error moving file {0}.\n{1}", sourceFile.getName(), //$NON-NLS-1$
                             status.toString())));
                 }
@@ -314,6 +315,55 @@ public final class MoveRenamePackageHelper {
             }
         }
         return true;
+    }
+
+    /**
+     * Checks the final conditions on all AffectedIpsSourceFiles. It's necessary to create the
+     * target packages. After the check the target package will be deleted.
+     */
+    public void checkFinalConditions(IIpsPackageFragment targetIpsPackageFragment,
+            RefactoringStatus status,
+            IProgressMonitor pm) throws CoreException {
+        if (targetIpsPackageFragment != null) {
+            try {
+                createPackageFragmentIfNotExist(targetIpsPackageFragment.getRoot(), targetIpsPackageFragment, pm);
+                Set<IIpsSrcFile> affectedIpsSrcFiles = getAffectedIpsSrcFiles();
+                for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
+                    checkFinalConditionsOnIpsSrcFile(ipsSrcFile, targetIpsPackageFragment, status, pm);
+                }
+            } finally {
+                if (targetIpsPackageFragment.exists()) {
+                    targetIpsPackageFragment.getEnclosingResource().delete(true, pm);
+                }
+            }
+        }
+    }
+
+    /**
+     * Calling the refactoring processor for {@link IIpsObject}. The source file of the
+     * {@link IIpsObject} will be moved this early. Based on that new source file and on the moved
+     * {@link IIpsObject} validation is performed. After validation the file is moved back to
+     * perform the real model refactoring.
+     */
+    private void checkFinalConditionsOnIpsSrcFile(IIpsSrcFile originalFile,
+            IIpsPackageFragment targetIpsPackageFragment,
+            RefactoringStatus status,
+            IProgressMonitor pm) throws CoreException {
+        createSubPackageFragmentIfNotExist(originalFile, targetIpsPackageFragment, pm);
+        IIpsProcessorBasedRefactoring moveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(
+                originalFile.getIpsObject(), targetIpsPackageFragment);
+        status.merge(moveRefactoring.checkFinalConditions(pm));
+    }
+
+    private void createSubPackageFragmentIfNotExist(IIpsSrcFile originalFile,
+            IIpsPackageFragment targetIpsPackageFragment,
+            IProgressMonitor pm) throws CoreException {
+        if (!originalPackageFragment.equals(originalFile.getIpsPackageFragment())) {
+            IIpsPackageFragment targetPackage = targetIpsPackageFragment.getRoot().getIpsPackageFragment(
+                    buildPackageName(StringUtils.EMPTY, targetIpsPackageFragment.getName(), originalFile
+                            .getIpsPackageFragment().getLastSegmentName()));
+            createPackageFragmentIfNotExist(targetIpsPackageFragment.getRoot(), targetPackage, pm);
+        }
     }
 
     /**

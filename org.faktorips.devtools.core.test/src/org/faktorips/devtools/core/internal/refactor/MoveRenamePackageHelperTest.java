@@ -141,6 +141,46 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCheckFinalConditions() throws Exception {
+        RefactoringStatus status = new RefactoringStatus();
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("target");
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkFinalConditions(target, status, new NullProgressMonitor());
+
+        assertTrue(status.isOK());
+        assertThatFilesOk(source, target);
+    }
+
+    @Test
+    public void testCheckFinalConditions_WithInValidAssociation() throws Exception {
+        // Association with no Plural Name
+        IProductCmptTypeAssociation newAssociation = productCmptType1.newProductCmptTypeAssociation();
+        newAssociation.setTarget(productCmptType2.getQualifiedName());
+        newAssociation.setTargetRoleSingular(COVERAGE_TYPE_NAME);
+
+        RefactoringStatus status = new RefactoringStatus();
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("target");
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkFinalConditions(target, status, new NullProgressMonitor());
+
+        assertTrue(status.hasError());
+        assertTrue(status.getEntries().length == 3);
+        assertThatFilesOk(source, target);
+    }
+
+    private void assertThatFilesOk(IIpsPackageFragment source, IIpsPackageFragment target) {
+        assertFalse(target.exists());
+        assertTrue(source.exists());
+        assertTrue(source.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT).exists());
+        assertTrue(source.getIpsSrcFile("ProductB", IpsObjectType.PRODUCT_CMPT).exists());
+        assertTrue(source.getSubPackage("subproducts").getIpsSrcFile("ProductC", IpsObjectType.PRODUCT_CMPT).exists());
+    }
+
+    @Test
     public void testGetAffectedIpsSrcFiles() throws Exception {
         IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
         IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
