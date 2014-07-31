@@ -166,22 +166,24 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         return DND.DROP_MOVE;
     }
 
-    private class ModifyOperation extends WorkspaceModifyOperation {
-    
+    private static class ModifyOperation extends WorkspaceModifyOperation {
+
         private NonIPSMoveOperation move;
-    
+
         public ModifyOperation(NonIPSMoveOperation toExecute) {
             super();
             move = toExecute;
         }
-    
+
         @Override
-        protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException,
-                InterruptedException {
-    
-            move.run(monitor);
+        protected void execute(final IProgressMonitor monitor) throws CoreException, InterruptedException {
+            try {
+                move.run(monitor);
+            } catch (InvocationTargetException e) {
+                IpsPlugin.log(e);
+            }
         }
-    
+
     }
 
 }
