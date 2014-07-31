@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -168,7 +169,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
                 }
-                IpsPlugin.getDefault().reinitModel(); // also starts the listening process
+                // also starts the listening process
+                IpsPlugin.getDefault().reinitModel();
             }
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -1354,16 +1356,18 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * Performs a composite Faktor-IPS 'Move' refactoring for the given {@link IIpsObject}s and
      * provided target {@link IIpsPackageFragment}.
      */
-    protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsElement> ipsObjects,
+    protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
-        for (IIpsElement ipsObject : ipsObjects) {
-            printValidationResult((IIpsObject)ipsObject);
-            ((IIpsObject)ipsObject).getIpsSrcFile().save(true, null);
+        Set<IIpsElement> ipsElemets = new LinkedHashSet<IIpsElement>();
+        for (IIpsObject ipsObject : ipsObjects) {
+            printValidationResult(ipsObject);
+            ipsObject.getIpsSrcFile().save(true, null);
+            ipsElemets.add(ipsObject);
         }
 
         IIpsRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment);
+                .createCompositeMoveRefactoring(ipsElemets, targetIpsPackageFragment);
 
         return performRefactoring(ipsCompositeMoveRefactoring);
     }
@@ -1392,7 +1396,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * and performs a full build.
      */
     protected final void performFullBuild(IIpsProject ipsProject) throws CoreException {
-        clearOutputFolders(ipsProject); // To avoid code merging problems
+        // To avoid code merging problems
+        clearOutputFolders(ipsProject);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
@@ -1457,8 +1462,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         assertEquals(eventType, getLastContentChangeEvent().getEventType());
     }
 
-    protected final void setPartId(IIpsObjectPart part, String id) throws SecurityException, NoSuchFieldException,
-            IllegalArgumentException, IllegalAccessException {
+    protected final void setPartId(IIpsObjectPart part, String id) throws NoSuchFieldException, IllegalAccessException {
 
         Field field = IpsObjectPart.class.getDeclaredField("id");
         field.setAccessible(true);

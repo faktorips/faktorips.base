@@ -94,18 +94,18 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
             }
             // The new refactoring support goes from here
             if (target instanceof IIpsPackageFragment) {
-                Set<IIpsElement> ipsElement = new LinkedHashSet<IIpsElement>(sources.length);
+                Set<IIpsElement> ipsElements = new LinkedHashSet<IIpsElement>(sources.length);
                 for (Object source : sources) {
                     if ((source instanceof IIpsSrcFile)) {
-                        ipsElement.add(((IIpsSrcFile)source).getIpsObject());
+                        ipsElements.add(((IIpsSrcFile)source).getIpsObject());
                     } else if (source instanceof IIpsPackageFragment) {
-                        ipsElement.add((IIpsPackageFragment)source);
+                        ipsElements.add((IIpsPackageFragment)source);
                     }
                 }
 
-                if (!ipsElement.isEmpty()) {
+                if (!ipsElements.isEmpty()) {
                     IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                            .createCompositeMoveRefactoring(ipsElement);
+                            .createCompositeMoveRefactoring(ipsElements);
                     ipsCompositeMoveRefactoring.setTargetIpsPackageFragment((IIpsPackageFragment)target);
                     IpsRefactoringOperation refactoringOperation = new IpsRefactoringOperation(
                             ipsCompositeMoveRefactoring, shell);

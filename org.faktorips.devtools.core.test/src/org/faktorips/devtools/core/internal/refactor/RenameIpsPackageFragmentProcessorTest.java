@@ -21,7 +21,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -137,14 +136,6 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
         RefactoringStatus status = new RefactoringStatus();
         processor.checkInitialConditionsThis(status, new NullProgressMonitor());
         assertTrue(status.hasFatalError());
-    }
-
-    @Test
-    public void testCheckFinalConditionsThis() throws Exception {
-        RefactoringStatus status = new RefactoringStatus();
-        CheckConditionsContext context = new CheckConditionsContext();
-        processor.checkFinalConditionsThis(status, new NullProgressMonitor(), context);
-        assertTrue(status.isOK());
     }
 
     @Test

@@ -150,6 +150,9 @@ public final class MoveRenamePackageHelper {
         return sourceRoot;
     }
 
+    /**
+     * Checks recursively if the {@link IFolder} is empty.
+     */
     private boolean isSourceFolderEmpty(IFolder folder) throws CoreException {
         IResource[] members = folder.members();
         for (IResource member : members) {
@@ -172,7 +175,9 @@ public final class MoveRenamePackageHelper {
         }
     }
 
-    // We do not have a IIpsSrcFile, so move the file as resource operation.
+    /**
+     * We do not have a IIpsSrcFile, so move the file as resource operation.
+     */
     private void moveOtherFiles(IIpsPackageFragment sourcePackage,
             IIpsPackageFragment targetPackage,
             FileInfo fileInfos,
@@ -239,6 +244,9 @@ public final class MoveRenamePackageHelper {
         return result;
     }
 
+    /**
+     * Move the {@link IIpsObject} to the target
+     */
     private RefactoringStatus moveIpsObject(IIpsObject ipsObject,
             String targetName,
             IIpsPackageFragmentRoot targetRoot,
@@ -288,9 +296,11 @@ public final class MoveRenamePackageHelper {
             status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorPackageContainsInvalidObjects,
                     originalPackageFragment.getName()));
         }
-
     }
 
+    /**
+     * Returns <code>true</code> if all found {@link IIpsObject IIpsObjects} are valid.
+     */
     private boolean packageValid(IIpsPackageFragment fragment) throws CoreException {
         for (IIpsPackageFragment childFragment : fragment.getChildIpsPackageFragments()) {
             if (!(packageValid(childFragment))) {
@@ -307,14 +317,9 @@ public final class MoveRenamePackageHelper {
     }
 
     /**
-     * 
-     * @param status
+     * Stores the path and the filename
      */
-    public void checkFinalConditions(RefactoringStatus status) {
-        // TODO hier auch packageValid Testen mit dem Target?
-    }
-
-    private static class FileInfo {
+    private static final class FileInfo {
 
         private final String path;
         private final String filename;
@@ -334,7 +339,13 @@ public final class MoveRenamePackageHelper {
 
         @Override
         public String toString() {
-            return "FileInfo [path=" + path + ", filename=" + filename + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("FileInfo [path="); //$NON-NLS-1$
+            stringBuilder.append(path);
+            stringBuilder.append(", filename="); //$NON-NLS-1$
+            stringBuilder.append(filename);
+            stringBuilder.append("]"); //$NON-NLS-1$
+            return stringBuilder.toString();
         }
     }
 }

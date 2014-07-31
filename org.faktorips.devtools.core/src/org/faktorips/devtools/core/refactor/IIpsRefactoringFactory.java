@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.refactor;
 import java.util.Set;
 
 import org.faktorips.devtools.core.model.IIpsElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -55,13 +54,13 @@ public interface IIpsRefactoringFactory {
 
     /**
      * Creates a fully configured Faktor-IPS "Move" refactoring capable of moving the given
-     * {@link IIpsObject}.
+     * {@link IIpsElement}.
      * 
-     * @param ipsObject The {@link IIpsObject} to move
+     * @param ipsElement The {@link IIpsElement} to move
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
-     *            {@link IIpsObject} to
+     *            {@link IIpsElement} to
      */
-    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsObject,
+    public IIpsProcessorBasedRefactoring createMoveRefactoring(IIpsElement ipsElement,
             IIpsPackageFragment targetIpsPackageFragment);
 
     /**
@@ -74,7 +73,7 @@ public interface IIpsRefactoringFactory {
 
     /**
      * Creates a fully configured composite Faktor-IPS refactoring that is capable of batch-moving
-     * all given {@link IIpsObject}s.
+     * all given {@link IIpsElement}s.
      * 
      * @param ipsElement The {@link IIpsElement}s to move
      * @param targetIpsPackageFragment The target {@link IIpsPackageFragment} to move the
@@ -85,7 +84,7 @@ public interface IIpsRefactoringFactory {
 
     /**
      * Creates a composite Faktor-IPS refactoring that is capable of batch-moving all given
-     * {@link IIpsObject}s.
+     * {@link IIpsElement}s.
      * 
      * @param ipsElement The {@link IIpsElement}s to move
      */

@@ -17,7 +17,7 @@ import java.util.LinkedHashSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -56,7 +56,7 @@ public class IpsCompositeMoveRefactoringIntegrationTest extends AbstractIpsPlugi
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
 
         // Execute the composite move refactoring
-        performCompositeMoveRefactoring(new LinkedHashSet<IIpsElement>(Arrays.asList(policyCmptType, productCmptType)),
+        performCompositeMoveRefactoring(new LinkedHashSet<IIpsObject>(Arrays.asList(policyCmptType, productCmptType)),
                 targetIpsPackageFragment);
 
         assertSourceFilesNonExistent(originalIpsPackageFragment);

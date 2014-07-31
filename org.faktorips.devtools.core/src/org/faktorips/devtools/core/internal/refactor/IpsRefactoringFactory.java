@@ -106,17 +106,17 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
     }
 
     @Override
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement,
+    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElements,
             IIpsPackageFragment targetIpsPackageFragment) {
 
-        IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = createCompositeMoveRefactoring(ipsElement);
+        IIpsCompositeMoveRefactoring ipsCompositeMoveRefactoring = createCompositeMoveRefactoring(ipsElements);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
         return ipsCompositeMoveRefactoring;
     }
 
     @Override
-    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElement) {
-        return new IpsCompositeMoveRefactoring(ipsElement);
+    public IIpsCompositeMoveRefactoring createCompositeMoveRefactoring(Set<IIpsElement> ipsElements) {
+        return new IpsCompositeMoveRefactoring(ipsElements);
     }
 
     @Override
