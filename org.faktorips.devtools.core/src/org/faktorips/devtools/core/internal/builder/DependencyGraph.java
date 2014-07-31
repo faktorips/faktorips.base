@@ -105,17 +105,20 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
                 continue;
             }
             IIpsObject ipsObject = file.getIpsObject();
-            IDependency[] dependencies;
-            try {
-                dependencies = ipsObject.dependsOn();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            addEntries(ipsObject);
+        }
+    }
+
+    private void addEntries(IIpsObject ipsObject) {
+        try {
+            IDependency[] dependencies = ipsObject.dependsOn();
+            if (dependencies != null) {
+                QualifiedNameType qualifiedNameType = ipsObject.getQualifiedNameType();
+                addEntriesToDependsOnMap(qualifiedNameType, dependencies);
+                addEntryToDependantsForMap(dependencies);
             }
-            if (dependencies == null || dependencies.length == 0) {
-                continue;
-            }
-            addEntriesToDependsOnMap(ipsObject.getQualifiedNameType(), dependencies);
-            addEntryToDependantsForMap(dependencies);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -172,9 +175,7 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
             removeDependency(qName);
             IIpsObject ipsObject = ipsProject.findIpsObject(qName);
             if (ipsObject != null) {
-                IDependency[] newDependOnNameTypes = ipsObject.dependsOn();
-                addEntriesToDependsOnMap(qName, newDependOnNameTypes);
-                addEntryToDependantsForMap(newDependOnNameTypes);
+                addEntries(ipsObject);
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

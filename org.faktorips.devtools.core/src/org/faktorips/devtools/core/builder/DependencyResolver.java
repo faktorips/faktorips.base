@@ -13,10 +13,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
+import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -27,20 +32,22 @@ import org.faktorips.util.MultiMap;
  * of each {@link DependencyGraph} instance is a single project, the dependency resolver creates
  * {@link DependencyResolver} instances for dependent projects where necessary and searches them
  * recursively.
- * 
+ * <p>
  * The method {@link #getCollectedDependencies()} provides all dependencies in a map. That map
  * contains projects as keys and sets of the corresponding dependencies as values. Thus dependencies
  * a categorized by the project they come from.
- * 
+ * <p>
  * Normally only direct dependencies are resolved. Transitive dependencies are only resolved in the
  * following cases:
- * 
+ * <p>
  * 1. For dependencies of type {@link DependencyType#SUBTYPE} all transitive dependencies are taken
  * into account
- * 
+ * <p>
  * 2. For dependencies of type {@link DependencyType#DATATYPE} and {@link DependencyType#REFERENCE}
- * only transitive dependencies of type {@link DependencyType#INSTANCEOF} are taken into account
- * 
+ * only transitive dependencies of type {@link DependencyType#INSTANCEOF} are taken into account. To
+ * get all {@link DependencyType#INSTANCEOF} dependencies, the {@link DependencyType#SUBTYPE}
+ * dependencies are taken into account, too.
+ * <p>
  * 3. For dependencies of type {@link DependencyType#REFERENCE_COMPOSITION_MASTER_DETAIL} all
  * transitive dependencies are taken into account if the method
  * {@link IIpsArtefactBuilderSet#containsAggregateRootBuilder()} returns <code>true</code>.
@@ -113,9 +120,42 @@ public class DependencyResolver {
             Set<IIpsProject> visitedProjects,
             boolean searchInstanceOfDependencyOnly) {
         if (canCollectDependencies()) {
+            collectEnumContentDependencies(root, visitedProjects, searchInstanceOfDependencyOnly);
             collectDependencies(root, searchInstanceOfDependencyOnly);
             collectDependenciesOfDependantProjects(root, visitedProjects, searchInstanceOfDependencyOnly);
         }
+    }
+
+    private void collectEnumContentDependencies(QualifiedNameType root,
+            Set<IIpsProject> visitedProjects,
+            boolean searchInstanceOfDependencyOnly) {
+        if (IpsObjectType.ENUM_CONTENT.equals(root.getIpsObjectType())) {
+            try {
+                IEnumContent enumContent = (IEnumContent)ipsProject.findIpsObject(root);
+                if (enumContent != null) {
+                    IIpsProject project = getEnumTypeProject(enumContent);
+                    if (project != null) {
+                        DependencyResolver dependencyResolver = new DependencyResolver(project);
+                        QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(),
+                                IpsObjectType.ENUM_TYPE);
+                        dependencyResolver.collectDependencies(enumType, visitedProjects,
+                                searchInstanceOfDependencyOnly);
+                        dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+    }
+
+    private IIpsProject getEnumTypeProject(IEnumContent enumContent) {
+        IEnumType enumType = enumContent.findEnumType(ipsProject);
+        if (enumType != null) {
+            IIpsProject project = enumType.getIpsProject();
+            return project;
+        }
+        return null;
     }
 
     private void collectDependencies(QualifiedNameType root, boolean searchInstanceOfDependencyOnly) {
