@@ -57,7 +57,7 @@ public final class MoveRenamePackageHelper {
             IProgressMonitor pm) {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(originalPackageFragment);
         try {
-            moveRenamePackageFragement(targetPackageFragement, getTargetPackageName(targetPackageFragement),
+            moveRenamePackageFragement(targetPackageFragement, getResultingPackageName(targetPackageFragement),
                     modificationSet, pm);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -78,7 +78,13 @@ public final class MoveRenamePackageHelper {
         return modificationSet;
     }
 
-    private String getTargetPackageName(IIpsPackageFragment targetPackageFragement) {
+    /**
+     * Calculates the name of the package after it is moved or renamed.
+     * 
+     * @param targetPackageFragement the package the original package should be moved into
+     * @return the resulting name of the moved package fragment
+     */
+    private String getResultingPackageName(IIpsPackageFragment targetPackageFragement) {
         if (targetPackageFragement.isDefaultPackage()) {
             return originalPackageFragment.getLastSegmentName();
         } else if (originalPackageFragment.isDefaultPackage()) {
@@ -295,6 +301,20 @@ public final class MoveRenamePackageHelper {
     public void checkInitialConditions(RefactoringStatus status) throws CoreException {
         if (!packageValid(originalPackageFragment)) {
             status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorPackageContainsInvalidObjects,
+                    originalPackageFragment.getName()));
+        }
+    }
+
+    /**
+     * Checks the initial conditions.
+     * 
+     * @param targetPackageFragment the package fragment the original package fragment is moved into
+     */
+    public void checkInitialConditions(RefactoringStatus status, IIpsPackageFragment targetPackageFragment)
+            throws CoreException {
+        checkInitialConditions(status);
+        if (!MoveOperation.canMovePackages(new Object[] { originalPackageFragment }, targetPackageFragment)) {
+            status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage,
                     originalPackageFragment.getName()));
         }
     }

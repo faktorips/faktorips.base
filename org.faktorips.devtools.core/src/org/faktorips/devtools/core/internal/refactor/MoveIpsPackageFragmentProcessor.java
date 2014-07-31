@@ -37,7 +37,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     @Override
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         super.checkInitialConditionsThis(status, pm);
-        moveRenameHelper.checkInitialConditions(status);
+        moveRenameHelper.checkInitialConditions(status, getTargetIpsPackageFragment());
     }
 
     @Override
@@ -58,16 +58,24 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     @Override
     protected void validateUserInputThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         super.validateUserInputThis(status, pm);
-        if (getTargetIpsPackageFragment().equals(getOriginalIpsPackageFragment().getParentIpsPackageFragment())) {
+        if (isTargetAParentPackage()) {
             status.addFatalError(NLS.bind(
                     Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
                     getOriginalIpsPackageFragment().getName()));
         }
-        if (getOriginalIpsPackageFragment().isDefaultPackage()
-                && getTargetIpsPackageFragment().getIpsProject()
-                .equals(getOriginalIpsPackageFragment().getIpsProject())) {
+        if (isDefaultPackageMovedToSameProject()) {
             status.addFatalError(Messages.IpsCompositeMoveRefactoring_msgDefaultPackageInSameProject);
         }
+    }
+
+    private boolean isTargetAParentPackage() {
+        return getTargetIpsPackageFragment().equals(getOriginalIpsPackageFragment().getParentIpsPackageFragment());
+    }
+
+    private boolean isDefaultPackageMovedToSameProject() {
+        return getOriginalIpsPackageFragment().isDefaultPackage()
+                && getTargetIpsPackageFragment().getIpsProject()
+                .equals(getOriginalIpsPackageFragment().getIpsProject());
     }
 
     @Override

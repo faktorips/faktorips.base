@@ -106,7 +106,7 @@ public abstract class MoveOperation {
      * <code>false</code> e.g. target is inside an ips archive. Also returns <tt>false</tt> if at
      * least one of the sources to move is a default package.
      */
-    private static boolean canMovePackages(Object[] sources, Object target) {
+    public static boolean canMovePackages(Object[] sources, Object target) {
         for (Object source : sources) {
             if (source.equals(target)) {
                 return false;

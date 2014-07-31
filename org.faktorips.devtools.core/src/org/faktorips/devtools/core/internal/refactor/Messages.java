@@ -63,6 +63,7 @@ public class Messages extends NLS {
 
     public static String RenameIpsPackageFragmentProcessor_processorName;
     public static String MoveIpsPackageFragmentProcessor_processorName;
+    public static String MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage;
     public static String MoveRenamePackageHelper_errorPackageContainsInvalidObjects;
     public static String IpsPackageFragmentProcessor_errorPackageAlreadyContains;
 

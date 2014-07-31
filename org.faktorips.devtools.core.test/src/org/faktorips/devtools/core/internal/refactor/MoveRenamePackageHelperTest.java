@@ -181,6 +181,42 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testCheckInitialConditions_prohibitMoveIntoSubPackage() throws Exception {
+        RefactoringStatus status = new RefactoringStatus();
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products.subpackage");
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkInitialConditions(status, target);
+
+        assertFalse(status.isOK());
+    }
+
+    @Test
+    public void testCheckInitialConditions_prohibitMoveIntoSelf() throws Exception {
+        RefactoringStatus status = new RefactoringStatus();
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products");
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkInitialConditions(status, target);
+
+        assertFalse(status.isOK());
+    }
+
+    @Test
+    public void testCheckInitialConditions_prohibitMoveDefaultPackage() throws Exception {
+        RefactoringStatus status = new RefactoringStatus();
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products");
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkInitialConditions(status, target);
+
+        assertFalse(status.isOK());
+    }
+
+    @Test
     public void testGetAffectedIpsSrcFiles() throws Exception {
         IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
         IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");

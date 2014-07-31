@@ -59,10 +59,14 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
         super.validateUserInputThis(status, pm);
         IIpsPackageFragment newPackageFragment = getOriginalIpsPackageFragment().getRoot().getIpsPackageFragment(
                 getNewName());
-        if (newPackageFragment != null && newPackageFragment.exists()) {
+        if (packageFragmentExists(newPackageFragment)) {
             status.addFatalError(NLS.bind(Messages.IpsPackageFragmentProcessor_errorPackageAlreadyContains,
                     newPackageFragment.getName()));
         }
+    }
+
+    private boolean packageFragmentExists(IIpsPackageFragment newPackageFragment) {
+        return newPackageFragment != null && newPackageFragment.exists();
     }
 
     @Override
