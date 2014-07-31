@@ -63,9 +63,9 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             return graph;
         } catch (Exception e) {
             IpsPlugin
-                    .log(new IpsStatus(
-                            IStatus.WARNING,
-                            "An Exception occurred while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
+            .log(new IpsStatus(
+                    IStatus.WARNING,
+                    "An Exception occurred while trying to establish the last state of the dependency graph for the project " + project.getName(), e)); //$NON-NLS-1$
             return new DependencyGraph(project);
         } finally {
             if (ois != null) {
@@ -73,8 +73,8 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
                     ois.close();
                 } catch (IOException e1) {
                     IpsPlugin
-                            .log(new IpsStatus(
-                                    "Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1)); //$NON-NLS-1$
+                    .log(new IpsStatus(
+                            "Unable to close the input stream while of the dependency graph file " + file.getAbsolutePath(), e1)); //$NON-NLS-1$
                     return new DependencyGraph(project);
                 }
             }
@@ -125,7 +125,7 @@ public class DependencyGraphPersistenceManager implements ISaveParticipant {
             os.writeObject(graph);
             os.flush();
             os.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             IpsPlugin.log(new IpsStatus(IStatus.WARNING,
                     "Unable to save dependency graph file " + file.getAbsolutePath(), e)); //$NON-NLS-1$
         } finally {

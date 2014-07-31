@@ -94,8 +94,8 @@ public class MultiMapTest {
         multiMap.put(10, "10");
         multiMap.put(10, "ten");
         multiMap.put(10, "TEN");
-        multiMap.remove(10, "ten");
 
+        multiMap.remove(10, "ten");
         Collection<String> stringCollection = multiMap.get(10);
 
         assertEquals(2, stringCollection.size());
@@ -118,6 +118,39 @@ public class MultiMapTest {
 
         assertEquals(1, stringCollection10.size());
         assertEquals(0, stringCollection12.size());
+    }
+
+    @Test
+    public void testRemoveObject() throws Exception {
+        multiMap.put(10, "10");
+        multiMap.put(10, "ten");
+        multiMap.put(10, "TEN");
+
+        Collection<String> removedCollection = multiMap.remove(10);
+        Collection<String> stringCollection = multiMap.get(10);
+
+        assertTrue(stringCollection.isEmpty());
+        assertEquals(3, removedCollection.size());
+        assertTrue(removedCollection.contains("10"));
+        assertTrue(removedCollection.contains("TEN"));
+        assertTrue(removedCollection.contains("ten"));
+    }
+
+    @Test
+    public void testRemoveObject_DifferntKeys() {
+        multiMap.put(10, "10");
+        multiMap.put(10, "ten");
+        multiMap.put(12, "12");
+
+        Collection<String> removedCollection = multiMap.remove(10);
+        Collection<String> stringCollection10 = multiMap.get(10);
+        Collection<String> stringCollection12 = multiMap.get(12);
+
+        assertTrue(stringCollection10.isEmpty());
+        assertEquals(1, stringCollection12.size());
+        assertThat(stringCollection12, hasItem("12"));
+        assertEquals(2, removedCollection.size());
+        assertThat(removedCollection, hasItems("10", "ten"));
     }
 
     @Test

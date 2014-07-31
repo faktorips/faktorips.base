@@ -15,9 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -101,8 +98,6 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private static final int ACCEPT_TIMEOUT = 5000;
 
-    private static DateFormat debugFormat;
-
     /**
      * time in ms to check for active test runner, if this time is reached then the test runner will
      * always started this avoids dead test runner (a state where the test runner didn't returned
@@ -115,6 +110,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 .valueOf(Platform.getDebugOption("org.faktorips.devtools.core/trace/testrunner")).booleanValue(); //$NON-NLS-1$
     }
 
+    /** Shared instance of the test runner */
     private static IpsTestRunner ipsTestRunner;
 
     private int port;
@@ -128,8 +124,6 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     /** List storing the registered ips test run listeners */
     private List<IIpsTestRunListener> fIpsTestRunListeners = new ArrayList<IIpsTestRunListener>();
-
-    /** Shared instance of the test runner */
 
     /** Error details in case multiline errors */
     private ArrayList<String> errorDetailList;
@@ -698,12 +692,9 @@ public class IpsTestRunner implements IIpsTestRunner {
 
     private void trace(String line) {
         if (TRACE_IPS_TEST_RUNNER) {
-            if (debugFormat == null) {
-                debugFormat = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
-            }
             StringBuffer msgBuf = new StringBuffer(line.length() + 40);
             msgBuf.append("IpsTestRunner "); //$NON-NLS-1$
-            debugFormat.format(new Date(), msgBuf, new FieldPosition(0));
+            msgBuf.append(new Date());
             msgBuf.append(line);
             System.out.println(msgBuf.toString());
         }

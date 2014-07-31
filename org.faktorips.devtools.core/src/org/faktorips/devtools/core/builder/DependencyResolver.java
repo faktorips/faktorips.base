@@ -83,7 +83,8 @@ public class DependencyResolver {
      * @param addedOrChangedIpsSrcFiles Source files that are changed or added
      * @param removedIpsSrcFiles Source files that are removed
      * 
-     * @return The number of found dependencies.
+     * @return A {@link MultiMap} containing all found dependencies. The key is the project where
+     *         the dependency comes from.
      */
     public MultiMap<IIpsProject, IDependency> collectDependenciesForIncrementalBuild(List<IIpsSrcFile> addedOrChangedIpsSrcFiles,
             List<IIpsSrcFile> removedIpsSrcFiles) {
