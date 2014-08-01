@@ -48,8 +48,9 @@ public class IdentifierParser {
     private final ParsingContext parsingContext;
 
     /**
-     * Maps the identifier node parsers to the character that separates the identifier part
-     * concerning this parser from the previous parts.
+     * Maps the identifier node parsers to their specific separator character. For example the
+     * {@link QualifierAndIndexParser} maps to the separator character "[", as all qualifiers and
+     * indices start with that separator.
      */
     private final Map<AbstractIdentifierNodeParser, Character> parsers = new LinkedHashMap<AbstractIdentifierNodeParser, Character>();
 
@@ -109,7 +110,7 @@ public class IdentifierParser {
 
     private IdentifierNode parseNextPart() {
         for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
-            if (isParserSpecificSeperator(parserEntry.getValue())) {
+            if (isResponsibleForCurrentTextRegion(parserEntry)) {
                 IdentifierNode node = parserEntry.getKey().parse(matcher.getTextRegion());
                 if (node != null) {
                     if (matcher.hasNextIdentifierPart()) {
@@ -126,20 +127,76 @@ public class IdentifierParser {
                         NLS.bind(Messages.IdentifierParser_msgErrorInvalidIdentifier, matcher.getIdentifierPart())));
     }
 
-    private boolean isParserSpecificSeperator(char seperator) {
-        TextRegion textRegion = matcher.getTextRegion();
-        return textRegion.getStart() == 0 || textRegion.isRelativeChar(-1, seperator);
+    /**
+     * Returns <code>true</code> if the parser contained in the entry is responsible for the current
+     * text region, <code>false</code> else. This is done by checking the character preceding the
+     * current text region against the parsers specific separator character.
+     * 
+     * @param parserEntry the entry containing the parser and the corresponding separator character
+     */
+    private boolean isResponsibleForCurrentTextRegion(Entry<AbstractIdentifierNodeParser, Character> parserEntry) {
+        return isParserSpecificSeparator(parserEntry.getValue());
     }
 
+    /**
+     * Returns <code>true</code> if the given separator character precedes the current text region
+     * (the part of text that is currently being looked at), <code>false</code> else.
+     * 
+     * @param separator the separator character
+     */
+    private boolean isParserSpecificSeparator(char separator) {
+        TextRegion textRegion = matcher.getTextRegion();
+        return textRegion.getStart() == 0 || textRegion.isRelativeChar(-1, separator);
+    }
+
+    /**
+     * Returns every possible identifier proposal that the parsers can provide. However, only
+     * provides proposals if the syntax rules are adhered to. For example "coverage[0." will not
+     * provide proposals, as "." is illegal inside "[]".
+     * 
+     * @param existingContent the text to filter the result. Empty string to get all available
+     *            proposals.
+     * 
+     * @return a list {@link IdentifierProposal IdentifierProposals}.
+     */
     public List<IdentifierProposal> getProposals(String existingContent) {
         parse(existingContent);
         ArrayList<IdentifierProposal> result = new ArrayList<IdentifierProposal>();
-        for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
-            if (isParserSpecificSeperator(parserEntry.getValue())) {
-                result.addAll(parserEntry.getKey().getProposals(matcher.getIdentifierPart()));
+        if (isLegalSyntaxUpToNow()) {
+            for (Entry<AbstractIdentifierNodeParser, Character> parserEntry : parsers.entrySet()) {
+                if (isResponsibleForCurrentTextRegion(parserEntry)) {
+                    result.addAll(getProposalsFrom(parserEntry));
+                }
             }
         }
         return result;
+    }
+
+    /**
+     * Returns <code>true</code> if the identifier's syntax is correct up to (and including) the
+     * currently processed text region, <code>false</code> if it contains a syntax error.
+     * 
+     * {@link IdentifierMatcher#hitEnd()} is used as an indicator for such an error. The method
+     * returns <code>false</code> if no valid region could be matched, and thus no valid closing
+     * character for an identifier part could be found. This is the case if an illegal character was
+     * entered in between.
+     * 
+     * For example "coverage[0.]" will not hitEnd(), as the matcher tries to associate two following
+     * separators "[" and ".", but they do not belong together. On the other hand "coverage[0]" will
+     * hitEnd(), as the matcher identifies the braces "[" and "]" as belonging together.
+     */
+    private boolean isLegalSyntaxUpToNow() {
+        return matcher.hitEnd();
+    }
+
+    /**
+     * Returns the proposals the parser in the entry provides given the current text region (or
+     * identifier part).
+     * 
+     * @param parserEntry the entry containing the parser
+     */
+    private List<IdentifierProposal> getProposalsFrom(Entry<AbstractIdentifierNodeParser, Character> parserEntry) {
+        return parserEntry.getKey().getProposals(matcher.getIdentifierPart());
     }
 
     private void initNewParse(String identifier) {
@@ -182,10 +239,20 @@ public class IdentifierParser {
             return !matcher.hitEnd();
         }
 
+        public boolean hitEnd() {
+            return matcher.hitEnd();
+        }
+
+        /**
+         * @return the value of the current text region.
+         */
         public String getIdentifierPart() {
             return textRegion.getTextRegionString();
         }
 
+        /**
+         * @return the region of text that is currently being processed.
+         */
         public TextRegion getTextRegion() {
             return textRegion;
         }
