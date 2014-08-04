@@ -45,7 +45,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * Creates a new Dependency between the specified source and target objects and defines if it is
      * a transitive dependency.
      */
-    public final static IpsObjectDependency create(QualifiedNameType source,
+    public static final IpsObjectDependency create(QualifiedNameType source,
             QualifiedNameType target,
             DependencyType dependencyType) {
 
@@ -57,8 +57,18 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * source and target objects. A Dependency instance indicates that the source is sub type of the
      * target and hence the source depends on the target.
      */
-    public final static IpsObjectDependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
+    public static final IpsObjectDependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.SUBTYPE);
+    }
+
+    /**
+     * Creates a new Dependency instance indicating a configuration dependency between the specified
+     * source and target objects. A Dependency instance indicates that the source configures the
+     * target or the source is configured by the target and hence the source depends on the target.
+     */
+    public static final IpsObjectDependency createConfigurationDependency(QualifiedNameType source,
+            QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.CONFIGURATION);
     }
 
     /**
@@ -66,7 +76,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * source and target objects. A Dependency instance indicates that the source references the
      * target and hence the source depends on the target.
      */
-    public final static IpsObjectDependency createReferenceDependency(QualifiedNameType source, QualifiedNameType target) {
+    public static final IpsObjectDependency createReferenceDependency(QualifiedNameType source, QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.REFERENCE);
     }
 
@@ -76,7 +86,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * instance indicates that the source references the target and hence the source depends on the
      * target.
      */
-    public final static IpsObjectDependency createCompostionMasterDetailDependency(QualifiedNameType source,
+    public static final IpsObjectDependency createCompostionMasterDetailDependency(QualifiedNameType source,
             QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.REFERENCE_COMPOSITION_MASTER_DETAIL);
     }
@@ -86,7 +96,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
      * source and target objects. A Dependency instance indicates that the source is an instance of
      * the target and hence the source depends on the target.
      */
-    public final static IpsObjectDependency createInstanceOfDependency(QualifiedNameType source,
+    public static final IpsObjectDependency createInstanceOfDependency(QualifiedNameType source,
             QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.INSTANCEOF);
     }

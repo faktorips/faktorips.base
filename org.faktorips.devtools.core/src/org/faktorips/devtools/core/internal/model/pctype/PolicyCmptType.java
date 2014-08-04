@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartCollect
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
+import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -394,15 +395,12 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+            IDependency dependency = IpsObjectDependency.createConfigurationDependency(getQualifiedNameType(),
                     new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE));
             dependencies.add(dependency);
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
         }
-        // TODO we have to find a better solution!
-        // to force a check if a product component type exists with the same qualified name (hack)
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE)));
+        dependsOnAddValidationDependency(dependencies);
 
         if (!isConfigurableByProductCmptType()) {
             /*
@@ -423,6 +421,17 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
 
         super.dependsOn(dependencies, details);
         return dependencies.toArray(new IDependency[dependencies.size()]);
+    }
+
+    /**
+     * Adding a validation dependency to force a check if a product component type exists with the
+     * same qualified name.
+     * 
+     * @param dependencies is the result set which will contain all dependencies
+     */
+    private void dependsOnAddValidationDependency(Set<IDependency> dependencies) {
+        dependencies.add(IpsObjectDependency.create(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(),
+                IpsObjectType.PRODUCT_CMPT_TYPE), DependencyType.VALIDATION));
     }
 
     @Override

@@ -40,13 +40,13 @@ import org.faktorips.util.MultiMap;
  * Normally only direct dependencies are resolved. Transitive dependencies are only resolved in the
  * following cases:
  * <p>
- * 1. For dependencies of type {@link DependencyType#SUBTYPE} all transitive dependencies are taken
- * into account
+ * 1. For dependencies of type {@link DependencyType#SUBTYPE} and
+ * {@link DependencyType#CONFIGURATION} all transitive dependencies are taken into account
  * <p>
  * 2. For dependencies of type {@link DependencyType#DATATYPE} and {@link DependencyType#REFERENCE}
  * only transitive dependencies of type {@link DependencyType#INSTANCEOF} are taken into account. To
- * get all {@link DependencyType#INSTANCEOF} dependencies, the {@link DependencyType#SUBTYPE}
- * dependencies are taken into account, too.
+ * get all {@link DependencyType#INSTANCEOF} dependencies, the {@link DependencyType#SUBTYPE} and
+ * {@link DependencyType#CONFIGURATION} dependencies are taken into account, too.
  * <p>
  * 3. For dependencies of type {@link DependencyType#REFERENCE_COMPOSITION_MASTER_DETAIL} all
  * transitive dependencies are taken into account if the method
@@ -121,16 +121,15 @@ public class DependencyResolver {
             Set<IIpsProject> visitedProjects,
             boolean searchInstanceOfDependencyOnly) {
         if (canCollectDependencies()) {
-            collectEnumContentDependencies(root, visitedProjects, searchInstanceOfDependencyOnly);
+            collectEnumContentDependencies(root, searchInstanceOfDependencyOnly);
             collectDependencies(root, searchInstanceOfDependencyOnly);
             collectDependenciesOfDependantProjects(root, visitedProjects, searchInstanceOfDependencyOnly);
         }
     }
 
-    private void collectEnumContentDependencies(QualifiedNameType root,
-            Set<IIpsProject> visitedProjects,
-            boolean searchInstanceOfDependencyOnly) {
+    private void collectEnumContentDependencies(QualifiedNameType root, boolean searchInstanceOfDependencyOnly) {
         if (IpsObjectType.ENUM_CONTENT.equals(root.getIpsObjectType())) {
+            Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<IIpsProject>();
             try {
                 IEnumContent enumContent = (IEnumContent)ipsProject.findIpsObject(root);
                 if (enumContent != null) {
@@ -139,7 +138,7 @@ public class DependencyResolver {
                         DependencyResolver dependencyResolver = new DependencyResolver(project);
                         QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(),
                                 IpsObjectType.ENUM_TYPE);
-                        dependencyResolver.collectDependencies(enumType, visitedProjects,
+                        dependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent,
                                 searchInstanceOfDependencyOnly);
                         dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
                     }
@@ -162,21 +161,29 @@ public class DependencyResolver {
     private void collectDependencies(QualifiedNameType root, boolean searchInstanceOfDependencyOnly) {
         IDependency[] dependencies = graph.getDependants(root);
         for (IDependency dependency : dependencies) {
-            if (isProperDependency(dependency, searchInstanceOfDependencyOnly)) {
-                dependenciesForProjectMap.put(ipsProject, dependency);
+            if (!isAlreadyCollected(dependency)) {
+                if (isProperDependency(dependency, searchInstanceOfDependencyOnly)) {
+                    dependenciesForProjectMap.put(ipsProject, dependency);
+                }
+                considerTransitiveDependencies(dependency, searchInstanceOfDependencyOnly);
             }
-            considerTransitiveDependencies(dependency, searchInstanceOfDependencyOnly);
         }
+    }
+
+    private boolean isAlreadyCollected(IDependency dependency) {
+        return dependenciesForProjectMap.get(ipsProject).contains(dependency);
     }
 
     private boolean isProperDependency(IDependency dependency, boolean searchInstanceOfOnly) {
         boolean allDependencies = !searchInstanceOfOnly;
         return allDependencies || DependencyType.INSTANCEOF.equals(dependency.getType())
-                || DependencyType.SUBTYPE.equals(dependency.getType());
+                || DependencyType.SUBTYPE.equals(dependency.getType())
+                || DependencyType.CONFIGURATION.equals(dependency.getType());
     }
 
     private void considerTransitiveDependencies(IDependency dependency, boolean searchInstanceOfDependencyOnly) {
-        if (dependency.getType().equals(DependencyType.SUBTYPE)) {
+        if (dependency.getType().equals(DependencyType.SUBTYPE)
+                || dependency.getType().equals(DependencyType.CONFIGURATION)) {
             collectTransitivDependencies(dependency, searchInstanceOfDependencyOnly);
         }
         if (!searchInstanceOfDependencyOnly) {
@@ -205,8 +212,6 @@ public class DependencyResolver {
                 DependencyResolver dependencyResolver = new DependencyResolver(dependantProject);
                 dependencyResolver.collectDependencies(root, visitedProjects, searchInstanceOfDependencyOnly);
                 dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
-            } else {
-                break;
             }
         }
     }

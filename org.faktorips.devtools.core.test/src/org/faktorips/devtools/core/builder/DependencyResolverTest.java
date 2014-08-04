@@ -59,6 +59,9 @@ public class DependencyResolverTest {
     private IIpsProject ipsProject3;
 
     @Mock
+    private IIpsProject ipsProject4;
+
+    @Mock
     private IDependencyGraph dependencyGraph1;
 
     @Mock
@@ -66,6 +69,9 @@ public class DependencyResolverTest {
 
     @Mock
     private IDependencyGraph dependencyGraph3;
+
+    @Mock
+    private IDependencyGraph dependencyGraph4;
 
     @Mock
     private IIpsArtefactBuilderSet artefactBuilderSet;
@@ -110,6 +116,9 @@ public class DependencyResolverTest {
     private IDependency depInstanceOfProductCmpt2 = IpsObjectDependency.createInstanceOfDependency(productCmpt,
             subSubProductCmptType);
 
+    private IDependency depInstanceOfProductCmpt3 = IpsObjectDependency.createInstanceOfDependency(productCmpt,
+            superProductCmptType);
+
     private QualifiedNameType policyType1 = new QualifiedNameType("policyType1", IpsObjectType.POLICY_CMPT_TYPE);
     private QualifiedNameType policyType2 = new QualifiedNameType("policyType2", IpsObjectType.POLICY_CMPT_TYPE);
     private IDependency depRefCompMasterDetail = IpsObjectDependency.createCompostionMasterDetailDependency(
@@ -122,13 +131,16 @@ public class DependencyResolverTest {
     private IDependency depReferencePolicy = IpsObjectDependency.createReferenceDependency(referencingPolicyType,
             referencedPolicyType);
 
-    private IDependency depReferenceProductCmptType1 = IpsObjectDependency.createReferenceDependency(
-            subProductCmptType, superProductCmptType);
+    private IDependency depReferenceSubProductCmptTypeToSuperProductCmptType = IpsObjectDependency
+            .createReferenceDependency(subProductCmptType, superProductCmptType);
 
     private QualifiedNameType referencingProductCmptType = new QualifiedNameType("referencingProductCmptType",
             IpsObjectType.PRODUCT_CMPT_TYPE);
-    private IDependency depReferenceProductCmptType2 = IpsObjectDependency.createReferenceDependency(
-            referencingProductCmptType, subProductCmptType);
+    private IDependency depReferenceReferencingProductCmptTypeToSubProductCmptType = IpsObjectDependency
+            .createReferenceDependency(referencingProductCmptType, subProductCmptType);
+
+    private IDependency depReferenceReferencingProductCmptTypeToSuperProductCmptType = IpsObjectDependency
+            .createReferenceDependency(referencingProductCmptType, superProductCmptType);
 
     private IDependency depReferenceSubProductCmptTypeToEnumType = IpsObjectDependency.createReferenceDependency(
             subProductCmptType, enumType);
@@ -140,6 +152,18 @@ public class DependencyResolverTest {
 
     private IDependency depReferenceSuperPolicyCmptTypeToSuperProductCmptType = IpsObjectDependency
             .createReferenceDependency(superPolicyCmptType, superProductCmptType);
+
+    private IDependency depReferenceReferencingProductCmptTypeToEnumContent = IpsObjectDependency
+            .createReferenceDependency(referencingProductCmptType, enumContent);
+
+    private IDependency depConfigurationSuperProductCmptToSuperPolicyCmptType = IpsObjectDependency
+            .createConfigurationDependency(superProductCmptType, superPolicyCmptType);
+
+    private IDependency depConfigurationSuperPolicyCmptTypeToSuperProductCmptType = IpsObjectDependency
+            .createConfigurationDependency(superPolicyCmptType, superProductCmptType);
+
+    private IDependency depConfigurationSubProductCmptTypeToSuperProductCmptType = IpsObjectDependency
+            .createConfigurationDependency(subProductCmptType, superProductCmptType);
 
     private IDependency depDatatype = new DatatypeDependency(superProductCmptType, "enumType");
 
@@ -186,6 +210,13 @@ public class DependencyResolverTest {
         when(ipsProject3.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
 
         when(dependencyGraph3.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
+
+        when(ipsProject4.getDependencyGraph()).thenReturn(dependencyGraph4);
+        when(ipsProject4.canBeBuild()).thenReturn(true);
+        when(ipsProject4.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
+        when(ipsProject4.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
+
+        when(dependencyGraph4.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
     }
 
     @Test
@@ -320,36 +351,59 @@ public class DependencyResolverTest {
     public void testCollectDependencies_FindAllDependenciesGoingOverSUBTYPE() {
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(3, collectedDependencies.get(ipsProject1).size());
-        assertThat(collectedDependencies.get(ipsProject1),
-                hasItems(depSubtype, depInstanceOfProductCmpt, depReferenceProductCmptType2));
+        assertThat(
+                collectedDependencies.get(ipsProject1),
+                hasItems(depSubtype, depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType));
+    }
+
+    @Test
+    public void testCollectDependencies_FindAllDependenciesGoingOverCONFIGURATION() {
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
+                new IDependency[] { depConfigurationSubProductCmptTypeToSuperProductCmptType });
+        when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
+
+        assertEquals(1, collectedDependencies.keySet().size());
+        assertEquals(3, collectedDependencies.get(ipsProject1).size());
+        assertThat(
+                collectedDependencies.get(ipsProject1),
+                hasItems(depConfigurationSubProductCmptTypeToSuperProductCmptType, depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType));
     }
 
     @Test
     public void testCollectDependencies_FindSpecificDependenciesGoingOverREFERENCE() {
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType1 });
+                new IDependency[] { depReferenceSubProductCmptTypeToSuperProductCmptType });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
 
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(2, collectedDependencies.get(ipsProject1).size());
         assertThat(collectedDependencies.get(ipsProject1),
-                hasItems(depReferenceProductCmptType1, depInstanceOfProductCmpt));
+                hasItems(depReferenceSubProductCmptTypeToSuperProductCmptType, depInstanceOfProductCmpt));
     }
 
     @Test
     public void testCollectDependencies_FindSpecificDependenciesGoingOverDATATYPE() {
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depDatatype2 });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
 
@@ -363,7 +417,8 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum, depDatatype });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
@@ -378,7 +433,7 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum, depDatatype });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depSubSubtype, depReferenceProductCmptType2 });
+                new IDependency[] { depSubSubtype, depReferenceReferencingProductCmptTypeToSubProductCmptType });
         when(dependencyGraph1.getDependants(subSubProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt2 });
 
@@ -396,7 +451,8 @@ public class DependencyResolverTest {
                 new IDependency[] { depInstanceOfEnum, depDatatype, depReferenceSubProductCmptTypeToEnumType });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
 
@@ -471,7 +527,7 @@ public class DependencyResolverTest {
         when(dependencyGraph2.getDependants(enumType)).thenReturn(
                 new IDependency[] { depInstanceOfEnum, depReferenceSubProductCmptTypeToEnumType });
         when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType2 });
+                new IDependency[] { depReferenceReferencingProductCmptTypeToSubProductCmptType });
         when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt, });
         dependencyResolver = new DependencyResolver(ipsProject1);
@@ -515,7 +571,8 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum, depDatatype });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, depReferenceProductCmptType2 });
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumContent);
 
@@ -532,7 +589,7 @@ public class DependencyResolverTest {
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
         when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType2 });
+                new IDependency[] { depReferenceReferencingProductCmptTypeToSubProductCmptType });
         when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt, });
         dependencyResolver = new DependencyResolver(ipsProject2);
@@ -565,9 +622,9 @@ public class DependencyResolverTest {
                 new IDependency[] { depSubtype, depReferenceSuperPolicyCmptTypeToSuperProductCmptType });
         when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
         when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depReferenceProductCmptType2 });
+                new IDependency[] { depReferenceReferencingProductCmptTypeToSubProductCmptType });
         when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
-                new IDependency[] { depInstanceOfProductCmpt, });
+                new IDependency[] { depInstanceOfProductCmpt });
         dependencyResolver = new DependencyResolver(ipsProject2);
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
@@ -600,6 +657,132 @@ public class DependencyResolverTest {
         assertEquals(1, collectedDependencies.keySet().size());
         assertEquals(1, collectedDependencies.get(ipsProject1).size());
         assertThat(collectedDependencies.get(ipsProject1), hasItems(depDatatypeEnumTypeToSuperPolicyCmptType));
+    }
+
+    @Test
+    public void testCollectDependencies_FindCONFIGURATIONgoingOverDATATYPE() {
+        when(dependencyGraph1.getDependants(enumType)).thenReturn(
+                new IDependency[] { depDatatypeEnumTypeToSuperPolicyCmptType });
+        when(dependencyGraph1.getDependants(superPolicyCmptType)).thenReturn(
+                new IDependency[] { depConfigurationSuperProductCmptToSuperPolicyCmptType });
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
+                new IDependency[] { depConfigurationSuperPolicyCmptTypeToSuperProductCmptType });
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumType);
+
+        assertEquals(1, collectedDependencies.keySet().size());
+        assertEquals(3, collectedDependencies.get(ipsProject1).size());
+        assertThat(
+                collectedDependencies.get(ipsProject1),
+                hasItems(depDatatypeEnumTypeToSuperPolicyCmptType,
+                        depConfigurationSuperProductCmptToSuperPolicyCmptType,
+                        depConfigurationSuperPolicyCmptTypeToSuperProductCmptType));
+    }
+
+    @Test
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndCONFIGURATION()
+            throws CoreException {
+        when(dependencyGraph1.getDependants(enumType)).thenReturn(
+                new IDependency[] { depDatatypeEnumTypeToSuperPolicyCmptType });
+        when(dependencyGraph1.getDependants(superPolicyCmptType)).thenReturn(
+                new IDependency[] { depConfigurationSuperProductCmptToSuperPolicyCmptType });
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
+                new IDependency[] { depSubtype, depConfigurationSuperPolicyCmptTypeToSuperProductCmptType });
+        when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
+        when(dependencyGraph2.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depReferenceReferencingProductCmptTypeToSubProductCmptType });
+        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt });
+        dependencyResolver = new DependencyResolver(ipsProject2);
+        when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
+        when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
+        when(ipsProject2.findIpsObject(enumContent)).thenReturn(enumContentObject);
+        when(enumContentObject.getEnumType()).thenReturn("enumType");
+        when(enumContentObject.findEnumType(ipsProject2)).thenReturn(enumTypeObject);
+        when(enumTypeObject.getIpsProject()).thenReturn(ipsProject1);
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumContent);
+
+        assertEquals(3, collectedDependencies.keySet().size());
+        assertEquals(4, collectedDependencies.get(ipsProject1).size());
+        assertEquals(1, collectedDependencies.get(ipsProject2).size());
+        assertEquals(1, collectedDependencies.get(ipsProject3).size());
+        assertThat(
+                collectedDependencies.get(ipsProject1),
+                hasItems(depDatatypeEnumTypeToSuperPolicyCmptType,
+                        depConfigurationSuperProductCmptToSuperPolicyCmptType,
+                        depConfigurationSuperPolicyCmptTypeToSuperProductCmptType, depSubtype));
+        assertThat(collectedDependencies.get(ipsProject2), hasItems(depInstanceOfEnum));
+        assertThat(collectedDependencies.get(ipsProject3), hasItems(depInstanceOfProductCmpt));
+    }
+
+    @Test
+    public void testCollectDependencies_ResolveReferenceDependencyOnEnumContent() throws CoreException {
+        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype, depInstanceOfEnum });
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt3 });
+        when(dependencyGraph1.getDependants(enumContent)).thenReturn(
+                new IDependency[] { depReferenceReferencingProductCmptTypeToEnumContent });
+        dependencyResolver = new DependencyResolver(ipsProject1);
+        when(ipsProject1.findIpsObject(enumContent)).thenReturn(enumContentObject);
+        when(enumContentObject.getEnumType()).thenReturn("enumType");
+        when(enumContentObject.findEnumType(ipsProject1)).thenReturn(enumTypeObject);
+        when(enumTypeObject.getIpsProject()).thenReturn(ipsProject1);
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumContent);
+
+        assertEquals(1, collectedDependencies.keySet().size());
+        assertEquals(4, collectedDependencies.get(ipsProject1).size());
+        assertThat(
+                collectedDependencies.get(ipsProject1),
+                hasItems(depDatatype, depInstanceOfEnum, depInstanceOfProductCmpt3,
+                        depReferenceReferencingProductCmptTypeToEnumContent));
+    }
+
+    @Test
+    public void testCollectDependencies_ResolveReferenceDependencyOnEnumContentOverDependentProjects()
+            throws CoreException {
+        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
+        when(dependencyGraph2.getDependants(superProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt3 });
+        when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
+        when(dependencyGraph3.getDependants(enumContent)).thenReturn(
+                new IDependency[] { depReferenceReferencingProductCmptTypeToEnumContent });
+        dependencyResolver = new DependencyResolver(ipsProject2);
+        when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
+        when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
+        when(ipsProject2.findIpsObject(enumContent)).thenReturn(enumContentObject);
+        when(enumContentObject.getEnumType()).thenReturn("enumType");
+        when(enumContentObject.findEnumType(ipsProject2)).thenReturn(enumTypeObject);
+        when(enumTypeObject.getIpsProject()).thenReturn(ipsProject1);
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumContent);
+
+        assertEquals(3, collectedDependencies.keySet().size());
+        assertEquals(1, collectedDependencies.get(ipsProject1).size());
+        assertEquals(2, collectedDependencies.get(ipsProject2).size());
+        assertEquals(1, collectedDependencies.get(ipsProject3).size());
+        assertThat(collectedDependencies.get(ipsProject1), hasItems(depDatatype));
+        assertThat(collectedDependencies.get(ipsProject2), hasItems(depInstanceOfEnum, depInstanceOfProductCmpt3));
+        assertThat(collectedDependencies.get(ipsProject3),
+                hasItems(depReferenceReferencingProductCmptTypeToEnumContent));
+    }
+
+    @Test
+    public void testCollectDependencies_CrossDependentProjects() {
+        when(dependencyGraph4.getDependants(superProductCmptType)).thenReturn(
+                new IDependency[] { depReferenceReferencingProductCmptTypeToSuperProductCmptType });
+        when(ipsProject1.findReferencingProjects(false)).thenReturn(
+                new IIpsProject[] { ipsProject2, ipsProject3, ipsProject4 });
+        when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
+        dependencyResolver = new DependencyResolver(ipsProject1);
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
+
+        assertEquals(1, collectedDependencies.keySet().size());
+        assertEquals(1, collectedDependencies.get(ipsProject4).size());
+        assertThat(collectedDependencies.get(ipsProject4),
+                hasItems(depReferenceReferencingProductCmptTypeToSuperProductCmptType));
     }
 
     private MultiMap<IIpsProject, IDependency> collectDependenciesOf(QualifiedNameType objectNameType) {

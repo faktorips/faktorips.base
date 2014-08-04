@@ -39,6 +39,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContain
 import org.faktorips.devtools.core.internal.model.method.BaseMethod;
 import org.faktorips.devtools.core.internal.model.type.DuplicatePropertyNameValidator;
 import org.faktorips.devtools.core.internal.model.type.Type;
+import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -740,14 +741,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getPolicyCmptType())) {
-            IDependency dependency = IpsObjectDependency.createReferenceDependency(getQualifiedNameType(),
+            IDependency dependency = IpsObjectDependency.createConfigurationDependency(getQualifiedNameType(),
                     new QualifiedNameType(getPolicyCmptType(), IpsObjectType.POLICY_CMPT_TYPE));
             dependencies.add(dependency);
             addDetails(details, dependency, this, PROPERTY_POLICY_CMPT_TYPE);
         }
-        // to force a check is a policy component type exists with the same qualified name
-        dependencies.add(IpsObjectDependency.createReferenceDependency(getQualifiedNameType(), new QualifiedNameType(
-                getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE)));
+        dependsOnAddValidationDependency(dependencies);
 
         dependsOnAddExplicitlyMatchingAssociations(dependencies);
         dependsOnAddTables(dependencies, details);
@@ -756,6 +755,17 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         return dependencies.toArray(new IDependency[dependencies.size()]);
 
+    }
+
+    /**
+     * Adding a validation dependency to force a check if a policy component type exists with the
+     * same qualified name.
+     * 
+     * @param dependencies is the result set which will contain all dependencies
+     */
+    private void dependsOnAddValidationDependency(Set<IDependency> dependencies) {
+        dependencies.add(IpsObjectDependency.create(getQualifiedNameType(), new QualifiedNameType(getQualifiedName(),
+                IpsObjectType.POLICY_CMPT_TYPE), DependencyType.VALIDATION));
     }
 
     /**

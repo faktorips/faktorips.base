@@ -20,6 +20,8 @@ public enum DependencyType {
 
     SUBTYPE("subtype dependency"), //$NON-NLS-1$
 
+    CONFIGURATION("configuration dependency"), //$NON-NLS-1$
+
     REFERENCE_COMPOSITION_MASTER_DETAIL("master to detail composition dependency"), //$NON-NLS-1$
 
     REFERENCE("reference dependency"), //$NON-NLS-1$
