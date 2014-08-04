@@ -16,6 +16,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
+import org.faktorips.devtools.core.internal.model.enums.EnumContent;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -127,25 +129,40 @@ public class DependencyResolver {
         }
     }
 
+    /**
+     * Collects the dependencies for an {@link EnumContent} by collecting the dependencies for the
+     * related {@link EnumType}. This is necessary because if the {@link EnumContent} changes, all
+     * objects using this {@link EnumContent} over an extensible {@link EnumType} have to be
+     * rebuild, too. The problem here is, that the {@link EnumContent} has no dependencies to the
+     * objects that are using it, because these objects only have a dependency to the
+     * {@link EnumType}. So here the {@link EnumType} dependencies are treated as they would be the
+     * dependencies of the corresponding {@link EnumContent}.
+     */
     private void collectEnumContentDependencies(QualifiedNameType root, boolean searchInstanceOfDependencyOnly) {
-        if (IpsObjectType.ENUM_CONTENT.equals(root.getIpsObjectType())) {
-            Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<IIpsProject>();
-            try {
-                IEnumContent enumContent = (IEnumContent)ipsProject.findIpsObject(root);
-                if (enumContent != null) {
-                    IIpsProject project = getEnumTypeProject(enumContent);
-                    if (project != null) {
-                        DependencyResolver dependencyResolver = new DependencyResolver(project);
-                        QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(),
-                                IpsObjectType.ENUM_TYPE);
-                        dependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent,
-                                searchInstanceOfDependencyOnly);
-                        dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
-                    }
+        if (isEnumContent(root)) {
+            IEnumContent enumContent = findEnumContentIpsObject(root);
+            if (enumContent != null) {
+                IIpsProject enumTypeProject = getEnumTypeProject(enumContent);
+                if (enumTypeProject != null) {
+                    collectEnumTypeDependencies(enumContent, enumTypeProject, searchInstanceOfDependencyOnly);
                 }
+            }
+        }
+    }
+
+    private boolean isEnumContent(QualifiedNameType root) {
+        return IpsObjectType.ENUM_CONTENT.equals(root.getIpsObjectType());
+    }
+
+    private IEnumContent findEnumContentIpsObject(QualifiedNameType root) {
+        if (isEnumContent(root)) {
+            try {
+                return (IEnumContent)ipsProject.findIpsObject(root);
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
+        } else {
+            return null;
         }
     }
 
@@ -156,6 +173,16 @@ public class DependencyResolver {
             return project;
         }
         return null;
+    }
+
+    private void collectEnumTypeDependencies(IEnumContent enumContent,
+            IIpsProject enumTypeProject,
+            boolean searchInstanceOfDependencyOnly) {
+        Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<IIpsProject>();
+        DependencyResolver dependencyResolver = new DependencyResolver(enumTypeProject);
+        QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(), IpsObjectType.ENUM_TYPE);
+        dependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent, searchInstanceOfDependencyOnly);
+        dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
     }
 
     private void collectDependencies(QualifiedNameType root, boolean searchInstanceOfDependencyOnly) {
