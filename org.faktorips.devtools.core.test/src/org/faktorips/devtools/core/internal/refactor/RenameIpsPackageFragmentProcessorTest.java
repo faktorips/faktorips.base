@@ -217,6 +217,6 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
 
     @Test
     public void testIsSourceFilesSavedRequired() throws Exception {
-        assertTrue(processor.isSourceFilesSavedRequired());
+        assertFalse(processor.isSourceFilesSavedRequired());
     }
 }

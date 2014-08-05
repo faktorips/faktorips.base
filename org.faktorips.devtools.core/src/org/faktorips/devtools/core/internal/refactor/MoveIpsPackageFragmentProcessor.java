@@ -75,7 +75,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     private boolean isDefaultPackageMovedToSameProject() {
         return getOriginalIpsPackageFragment().isDefaultPackage()
                 && getTargetIpsPackageFragment().getIpsProject()
-                .equals(getOriginalIpsPackageFragment().getIpsProject());
+                        .equals(getOriginalIpsPackageFragment().getIpsProject());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return true;
+        return moveRenameHelper.isSourceFilesSavedRequired();
     }
 
     @Override

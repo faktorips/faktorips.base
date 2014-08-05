@@ -86,7 +86,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
 
     @Override
     public boolean isSourceFilesSavedRequired() {
-        return true;
+        return moveRenameHelper.isSourceFilesSavedRequired();
     }
 
     @Override

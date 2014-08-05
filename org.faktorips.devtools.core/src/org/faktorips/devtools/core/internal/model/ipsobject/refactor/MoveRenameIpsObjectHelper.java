@@ -140,6 +140,12 @@ public final class MoveRenameIpsObjectHelper {
             IProgressMonitor pm) throws CoreException {
 
         IIpsSrcFile originalFile = toBeRefactored.getIpsSrcFile();
+        if (isSourceFilesSavedRequired() && originalFile.isDirty()) {
+            String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileDirty,
+                    originalFile.getIpsObjectName());
+            status.addFatalError(text);
+            return new MessageList();
+        }
         IIpsSrcFile targetFile = null;
         try {
             targetFile = RefactorUtil.moveIpsSrcFile(originalFile, targetIpsPackageFragment, newName, pm);

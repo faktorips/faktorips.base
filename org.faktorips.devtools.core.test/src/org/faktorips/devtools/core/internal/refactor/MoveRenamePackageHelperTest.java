@@ -527,4 +527,11 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         assertTrue(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.target.TestProduct").exists());
         assertNull(ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT, "source.TestProduct"));
     }
+
+    @Test
+    public void testIsSourceFilesSavedRequired() throws Exception {
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        helper = new MoveRenamePackageHelper(source);
+        assertFalse(helper.isSourceFilesSavedRequired());
+    }
 }

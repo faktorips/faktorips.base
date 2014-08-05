@@ -28,6 +28,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -417,5 +419,13 @@ public final class MoveRenamePackageHelper {
             stringBuilder.append("]"); //$NON-NLS-1$
             return stringBuilder.toString();
         }
+    }
+
+    /**
+     * Returns <code>false</code> because the {@link IpsPackageFragment} is not a file and the
+     * {@link IpsSrcFile} inside checks this property self.
+     */
+    public boolean isSourceFilesSavedRequired() {
+        return false;
     }
 }
