@@ -101,6 +101,24 @@ public class DateUtilTest {
     }
 
     @Test
+    public void testParseIsoDateTimeStringToDate() {
+        assertNull(DateUtil.parseIsoDateTimeStringToDate(""));
+        Date date = new GregorianCalendar(2005, 8, 9, 1, 2, 3).getTime();
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-09-09 01:02:03"));
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-9-9 01:02:03"));
+        date = new GregorianCalendar(2005, 9, 10, 1, 2, 3).getTime();
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10 01:02:03"));
+    }
+
+    @Test
+    public void testParseIsoTimeStringToDate() {
+        assertNull(DateUtil.parseIsoTimeStringToDate(""));
+        Date date = new GregorianCalendar(1970, 0, 1, 1, 2, 3).getTime();
+        assertEquals(date, DateUtil.parseIsoTimeStringToDate("01:02:03"));
+        assertEquals(date, DateUtil.parseIsoTimeStringToDate("01:02:03"));
+    }
+
+    @Test
     public void testGetDifferenceInYearsCalendar() {
         Calendar start = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
         Calendar end = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
@@ -163,4 +181,23 @@ public class DateUtilTest {
         assertEquals(32, DateUtil.getDifferenceInYears(start.getTime(), end.getTime()));
     }
 
+    @Test
+    public void testParseIsoDateStringToDate_WithMoreThreads() {
+        Thread t1 = new Thread(new Task());
+        Thread t2 = new Thread(new Task());
+
+        t1.start();
+        t2.start();
+    }
+
+    private class Task implements Runnable {
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 10; i++) {
+                Date date = new GregorianCalendar(2005, 8, 9).getTime();
+                assertEquals(date, DateUtil.parseIsoDateStringToDate("2005-09-09"));
+            }
+        }
+    }
 }

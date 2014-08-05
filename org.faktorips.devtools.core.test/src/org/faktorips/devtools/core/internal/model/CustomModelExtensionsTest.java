@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -38,6 +39,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.util.message.Message;
@@ -62,7 +64,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetExtensionPropertyDefinitionss_empty() throws Exception {
+    public void testGetExtensionPropertyDefinitions_empty() throws Exception {
         IIpsObjectPartContainer object = mock(IIpsObjectPartContainer.class);
 
         Map<String, IExtensionPropertyDefinition> propertyDefinitions = modelExtensions
@@ -72,8 +74,8 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetExtensionPropertyDefinitionss_notEmpty() throws Exception {
-        BooleanExtensionPropertyDefinition property = createExtensionProperty(null);
+    public void testGetExtensionPropertyDefinitions_notEmpty() throws Exception {
+        BooleanExtensionPropertyDefinition property = createExtensionProperty((IIpsObjectPartContainer)null);
         modelExtensions.addIpsObjectExtensionProperty(property);
         IIpsObjectPartContainer object = mock(IAttributeValue.class);
 
@@ -84,7 +86,7 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetExtensionPropertyDefinitionss_filtered() throws Exception {
+    public void testGetExtensionPropertyDefinitions_filtered() throws Exception {
         final IIpsObjectPartContainer object = mock(IAttributeValue.class);
         BooleanExtensionPropertyDefinition property = createExtensionProperty(object);
         modelExtensions.addIpsObjectExtensionProperty(property);
@@ -95,8 +97,63 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         assertTrue(propertyDefinitions.isEmpty());
     }
 
-    private BooleanExtensionPropertyDefinition createExtensionProperty(final IIpsObjectPartContainer diabledObject) {
-        BooleanExtensionPropertyDefinition property = new BooleanExtensionPropertyDefinitionExtension(diabledObject);
+    @Test
+    public void testGetExtensionPropertyDefinitions() {
+        Class<?> class1 = IAttributeValue.class;
+        Class<?> class2 = IConfigElement.class;
+        BooleanExtensionPropertyDefinition extProperty1 = createExtensionProperty(class1);
+        BooleanExtensionPropertyDefinition extProperty2 = createExtensionProperty(class1);
+        BooleanExtensionPropertyDefinition extProperty3 = createExtensionProperty(class2);
+        modelExtensions.addIpsObjectExtensionProperty(extProperty1);
+        modelExtensions.addIpsObjectExtensionProperty(extProperty2);
+        modelExtensions.addIpsObjectExtensionProperty(extProperty3);
+
+        Set<IExtensionPropertyDefinition> definitions1 = modelExtensions.getExtensionPropertyDefinitions(class1, false);
+        assertTrue(definitions1.contains(extProperty1));
+        assertTrue(definitions1.contains(extProperty2));
+        assertEquals(2, definitions1.size());
+
+        Set<IExtensionPropertyDefinition> definitions2 = modelExtensions.getExtensionPropertyDefinitions(class2, false);
+        assertTrue(definitions2.contains(extProperty3));
+        assertEquals(1, definitions2.size());
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitions_NoDefinitionsRegistered() {
+        Class<?> class_ = IAttributeValue.class;
+        assertTrue(modelExtensions.getExtensionPropertyDefinitions(class_, false).isEmpty());
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitions_IncludeSupertypes() {
+        Class<?> baseClass = IIpsObjectPartContainer.class;
+        BooleanExtensionPropertyDefinition extProperty = createExtensionProperty(baseClass);
+        modelExtensions.addIpsObjectExtensionProperty(extProperty);
+
+        Class<?> subClass = IAttributeValue.class;
+        assertTrue(modelExtensions.getExtensionPropertyDefinitions(subClass, true).contains(extProperty));
+    }
+
+    @Test
+    public void testGetExtensionPropertyDefinitions_ExcludeSupertypes() {
+        Class<?> baseClass = IIpsObjectPartContainer.class;
+        BooleanExtensionPropertyDefinition extProperty = createExtensionProperty(baseClass);
+        modelExtensions.addIpsObjectExtensionProperty(extProperty);
+
+        Class<?> subClass = IAttributeValue.class;
+        assertFalse(modelExtensions.getExtensionPropertyDefinitions(subClass, false).contains(extProperty));
+    }
+
+    private BooleanExtensionPropertyDefinition createExtensionProperty(Class<?> extendedType) {
+        BooleanExtensionPropertyDefinition property = new BooleanExtensionPropertyDefinition();
+        property.setPropertyId(ANY_ID);
+        property.setName(ANY_NAME);
+        property.setExtendedType(extendedType);
+        return property;
+    }
+
+    private BooleanExtensionPropertyDefinition createExtensionProperty(IIpsObjectPartContainer object) {
+        BooleanExtensionPropertyDefinition property = new BooleanExtensionPropertyDefinitionExtension(object);
         property.setPropertyId(ANY_ID);
         property.setName(ANY_NAME);
         property.setExtendedType(IAttributeValue.class);
@@ -270,11 +327,6 @@ public class CustomModelExtensionsTest extends AbstractIpsPluginTest {
         public boolean isApplicableFor(IIpsObjectPartContainer ipsObjectPartContainer) {
             return ipsObjectPartContainer != object;
         }
-    }
-
-    @Test
-    public void testGetExtensionPropertyDefinitions() throws Exception {
-
     }
 
 }

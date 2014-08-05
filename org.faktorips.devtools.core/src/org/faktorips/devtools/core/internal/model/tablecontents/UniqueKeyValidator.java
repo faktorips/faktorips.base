@@ -348,7 +348,7 @@ public class UniqueKeyValidator {
      * Store (cache) the table structure and value datatype's of all columns
      */
     void cacheTableStructureAndValueDatatypes(ITableRows tableContentsGeneration) {
-        if (cachedTableStructure == null) {
+        if (cachedTableStructure == null || isInvalidUniqueKeyCache(cachedTableStructure)) {
             updateCachedTableStructure((TableRows)tableContentsGeneration);
         }
         if (cachedValueDatatypes == null) {
@@ -365,8 +365,8 @@ public class UniqueKeyValidator {
                     cachedTableStructure, tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin
-            .log(new IpsStatus(
-                    "Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
+                    .log(new IpsStatus(
+                            "Error searching value datatypes: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
             return;
         }
     }
@@ -377,8 +377,8 @@ public class UniqueKeyValidator {
                     tableContentsGeneration.getIpsProject());
         } catch (CoreException e) {
             IpsPlugin
-            .log(new IpsStatus(
-                    "Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
+                    .log(new IpsStatus(
+                            "Error searching TableStructure: " + tableContentsGeneration.getTableContents().getTableStructure())); //$NON-NLS-1$
             return;
         }
     }

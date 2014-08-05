@@ -91,7 +91,7 @@ public interface ICustomModelExtensions {
      * 
      * @throws NullPointerException if type is <code>null</code>.
      */
-    <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<? extends T> type);
+    <T extends IIpsObjectPartContainer> Set<ICustomValidation<?>> getCustomValidations(Class<T> type);
 
     /**
      * Returns a factory to create product component naming strategies. The type of strategy is

@@ -309,6 +309,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         try {
             List<TocEntryObject> entries = new ArrayList<TocEntryObject>();
             object = ipsSrcFile.getIpsObject();
+            if (!object.isValid(getIpsProject())) {
+                return;
+            }
             IpsObjectType type = object.getIpsObjectType();
             if (type.equals(IpsObjectType.PRODUCT_CMPT)) {
                 // add entry for product cmpt
@@ -381,6 +384,9 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
         for (IIpsObjectGeneration generation : generations) {
             DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
+            if (validFrom == null) {
+                continue;
+            }
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
             String generationClassName;
             if (gen.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {

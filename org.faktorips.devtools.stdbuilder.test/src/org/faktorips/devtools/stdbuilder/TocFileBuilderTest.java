@@ -134,10 +134,12 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         table.getIpsSrcFile().save(true, null);
 
         // create another table content based on the same structure => 5
+        ITableStructure structure2 = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
+                "motor.RateTableStructure2");
         ITableContents table2 = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "motor.RateTable2");
         table2.newTableRows();
-        table2.setTableStructure(structure.getQualifiedName());
+        table2.setTableStructure(structure2.getQualifiedName());
         table2.getIpsSrcFile().save(true, null);
 
         // create a test case type and a test case => 6
@@ -218,10 +220,14 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
 
         // check removing of table toc entries depending on the table structure type
         // create table content
+        ITableStructure structureEnum = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE,
+                "motor.RateTableStructureEnum");
         ITableContents tableEnum = (ITableContents)newIpsObject(ipsProject, IpsObjectType.TABLE_CONTENTS,
                 "motor.RateTableEnum");
+        structureEnum.newColumn();
+        structureEnum.newColumn();
         tableEnum.newTableRows();
-        tableEnum.setTableStructure(structure.getQualifiedName());
+        tableEnum.setTableStructure(structureEnum.getQualifiedName());
         tableEnum.newColumn("");
         tableEnum.newColumn("");
         tableEnum.getIpsSrcFile().save(true, null);

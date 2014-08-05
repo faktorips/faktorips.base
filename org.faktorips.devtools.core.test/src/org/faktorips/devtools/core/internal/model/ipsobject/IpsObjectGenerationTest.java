@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsobject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -19,10 +20,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -31,7 +34,7 @@ import org.w3c.dom.Element;
 public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
 
     private ITimedIpsObject timedObj;
-    private IIpsObjectGeneration generation;
+    private IpsObjectGeneration generation;
 
     @Override
     @Before
@@ -41,7 +44,7 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         // because TimedIpsObject is abstract.
         IIpsProject ipsProject = newIpsProject();
         timedObj = newProductCmpt(ipsProject, "MyProduct");
-        generation = timedObj.newGeneration();
+        generation = (IpsObjectGeneration)timedObj.newGeneration();
     }
 
     @Test
@@ -147,4 +150,43 @@ public class IpsObjectGenerationTest extends AbstractIpsPluginTest {
         assertNull(generation.getPreviousByValidDate());
     }
 
+    @Test
+    public void testValidateThis_ValidFromNull() throws CoreException {
+        generation.setValidFrom(null);
+
+        MessageList list = new MessageList();
+        generation.validateThis(list, generation.getIpsProject());
+
+        assertTrue(list.containsErrorMsg());
+        assertNotNull(list.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_FORMAT_VALID_FROM));
+    }
+
+    @Test
+    public void testValidateThis_ValidFromAfterValidTo() throws CoreException {
+        timedObj.setValidTo(new GregorianCalendar(2005, 11, 1));
+        generation.setValidFrom(new GregorianCalendar(2006, 1, 1));
+
+        MessageList list = new MessageList();
+        generation.validateThis(list, generation.getIpsProject());
+
+        assertTrue(list.containsErrorMsg());
+        assertNotNull(list.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM));
+    }
+
+    @Test
+    public void testValidateThis_ValidFromDuplicateeGeneration() throws CoreException {
+        IpsObjectGeneration gen1 = (IpsObjectGeneration)timedObj.newGeneration();
+        IpsObjectGeneration gen2 = (IpsObjectGeneration)timedObj.newGeneration();
+
+        gen1.setValidFrom(new GregorianCalendar(2006, 1, 1));
+        gen2.setValidFrom(new GregorianCalendar(2006, 1, 1));
+
+        MessageList list = new MessageList();
+        gen2.validateThis(list, generation.getIpsProject());
+
+        assertTrue(list.containsErrorMsg());
+        assertNotNull(list.toString(),
+                list.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_VALID_FROM_DUPLICATE_GENERATION));
+
+    }
 }

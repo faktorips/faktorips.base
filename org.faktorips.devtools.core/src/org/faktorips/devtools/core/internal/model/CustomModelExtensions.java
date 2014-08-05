@@ -50,7 +50,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     /** extension properties per IPS object (or part) class object, e.g. IAttribute.class. */
     private final Map<Class<?>, List<IExtensionPropertyDefinition>> typeExtensionPropertiesMap;
 
-    private final CustomValidationsPerType customValidationsPerType;
+    private final CustomValidationsResolver customValidationsResolver;
 
     private final Map<String, IProductCmptNamingStrategyFactory> productCmptNamingStrategies;
 
@@ -59,7 +59,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     public CustomModelExtensions(IpsModel ipsModel) {
         ArgumentCheck.notNull(ipsModel);
         this.ipsModel = ipsModel;
-        customValidationsPerType = CustomValidationsPerType.createFromExtensions();
+        customValidationsResolver = CustomValidationsResolver.createFromExtensions();
         typeExtensionPropertiesMap = new ConcurrentHashMap<Class<?>, List<IExtensionPropertyDefinition>>(8, 0.75f, 1);
         initExtensionPropertiesFromConfiguration();
         productCmptNamingStrategies = new ConcurrentHashMap<String, IProductCmptNamingStrategyFactory>(4, 0.9f, 1);
@@ -227,8 +227,8 @@ public class CustomModelExtensions implements ICustomModelExtensions {
     }
 
     @Override
-    public <T extends IIpsObjectPartContainer> Set<ICustomValidation<T>> getCustomValidations(Class<? extends T> type) {
-        return customValidationsPerType.getCustomValidations(type);
+    public <T extends IIpsObjectPartContainer> Set<ICustomValidation<?>> getCustomValidations(Class<T> type) {
+        return customValidationsResolver.getCustomValidations(type);
     }
 
     /**
@@ -238,7 +238,7 @@ public class CustomModelExtensions implements ICustomModelExtensions {
      */
     public void addCustomValidation(ICustomValidation<? extends IIpsObjectPartContainer> validation) {
         ipsModel.clearValidationCache();
-        customValidationsPerType.addCustomValidation(validation);
+        customValidationsResolver.addCustomValidation(validation);
     }
 
     @Override
