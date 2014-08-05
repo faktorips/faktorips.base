@@ -1001,7 +1001,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 DependencyType.VALIDATION)));
 
         IDependency dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(),
-                a.getQualifiedNameType(), DependencyType.CONFIGURATION);
+                a.getQualifiedNameType(), DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 
@@ -1015,7 +1015,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 DependencyType.VALIDATION)));
 
         dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(), a.getQualifiedNameType(),
-                DependencyType.CONFIGURATION);
+                DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 
@@ -1034,7 +1034,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 DependencyType.VALIDATION)));
 
         dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(), a.getQualifiedNameType(),
-                DependencyType.CONFIGURATION);
+                DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 
@@ -1057,7 +1057,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 DependencyType.VALIDATION)));
 
         dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(), a.getQualifiedNameType(),
-                DependencyType.CONFIGURATION);
+                DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 

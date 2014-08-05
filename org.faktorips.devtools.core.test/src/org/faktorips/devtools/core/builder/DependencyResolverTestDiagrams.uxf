@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="12.2">
-  <zoom_level>10</zoom_level>
+  <zoom_level>7</zoom_level>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>100</x>
-      <y>270</y>
-      <w>140</w>
-      <h>40</h>
+      <x>105</x>
+      <y>189</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -17,35 +17,36 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>100</x>
-      <y>380</y>
-      <w>140</w>
-      <h>40</h>
+      <x>105</x>
+      <y>266</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project1
-bg=green</panel_attributes>
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>280</y>
-      <w>140</w>
-      <h>120</h>
+      <x>112</x>
+      <y>196</y>
+      <w>77</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>420</x>
-      <y>270</y>
-      <w>170</w>
-      <h>40</h>
+      <x>329</x>
+      <y>189</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 bg=yellow
@@ -55,10 +56,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>420</x>
-      <y>380</y>
-      <w>170</w>
-      <h>40</h>
+      <x>329</x>
+      <y>266</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -68,22 +69,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>440</x>
-      <y>280</y>
-      <w>110</w>
-      <h>120</h>
+      <x>350</x>
+      <y>196</y>
+      <w>63</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTPYE</panel_attributes>
-    <additional_attributes>60;30;60;100</additional_attributes>
+SUBTPYE
+fg=green</panel_attributes>
+    <additional_attributes>35;21;35;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>810</x>
-      <y>270</y>
-      <w>170</w>
-      <h>40</h>
+      <x>602</x>
+      <y>189</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>policyType1
 bg=yellow
@@ -93,10 +95,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>810</x>
-      <y>380</y>
-      <w>170</w>
-      <h>40</h>
+      <x>602</x>
+      <y>266</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>policyType2
 Project1
@@ -106,22 +108,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>760</x>
-      <y>280</y>
-      <w>240</w>
-      <h>120</h>
+      <x>595</x>
+      <y>196</y>
+      <w>119</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REF_COMP_MASTER_DETAIL</panel_attributes>
-    <additional_attributes>130;30;130;100</additional_attributes>
+REF_COMP_MASTER_DETAIL
+fg=green</panel_attributes>
+    <additional_attributes>63;21;63;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>420</x>
-      <y>680</y>
-      <w>170</w>
-      <h>40</h>
+      <x>329</x>
+      <y>476</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -131,10 +134,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>420</x>
-      <y>580</y>
-      <w>170</w>
-      <h>40</h>
+      <x>329</x>
+      <y>406</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -145,22 +148,23 @@ Project1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>440</x>
-      <y>590</y>
-      <w>132</w>
-      <h>110</h>
+      <x>357</x>
+      <y>413</y>
+      <w>63</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>70;30;70;90</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>35;21;35;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>90</x>
-      <y>580</y>
-      <w>170</w>
-      <h>40</h>
+      <x>98</x>
+      <y>406</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencedPolicyType
 bg=yellow
@@ -170,10 +174,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>90</x>
-      <y>690</y>
-      <w>170</w>
-      <h>40</h>
+      <x>98</x>
+      <y>483</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingPolicyType
 Project1
@@ -183,22 +187,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>590</y>
-      <w>144</w>
-      <h>120</h>
+      <x>119</x>
+      <y>413</y>
+      <w>63</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>35;21;35;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>730</x>
-      <y>580</y>
-      <w>170</w>
-      <h>40</h>
+      <x>546</x>
+      <y>406</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>tableContentType1
 bg=yellow
@@ -208,10 +213,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>730</x>
-      <y>690</y>
-      <w>170</w>
-      <h>40</h>
+      <x>546</x>
+      <y>483</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>tableContentType2
 Project1
@@ -221,22 +226,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>730</x>
-      <y>590</y>
-      <w>142</w>
-      <h>120</h>
+      <x>560</x>
+      <y>413</y>
+      <w>77</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-VALIDATION</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+VALIDATION
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>360</x>
-      <y>220</y>
-      <w>290</w>
-      <h>230</h>
+      <x>287</x>
+      <y>154</y>
+      <w>203</w>
+      <h>161</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_SUBTYPE()
 bg=orange</panel_attributes>
@@ -245,10 +251,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>220</y>
-      <w>290</w>
-      <h>230</h>
+      <x>56</x>
+      <y>154</y>
+      <w>203</w>
+      <h>161</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_INSTANCEOF()
 bg=orange</panel_attributes>
@@ -257,22 +263,23 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>680</x>
-      <y>220</y>
-      <w>530</w>
-      <h>230</h>
+      <x>511</x>
+      <y>154</y>
+      <w>371</w>
+      <h>161</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_REFERENCE_COMPOSITION_MASTER_DETAIL()
-bg=orange</panel_attributes>
+bg=orange
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>530</y>
-      <w>290</w>
-      <h>230</h>
+      <x>56</x>
+      <y>371</y>
+      <w>203</w>
+      <h>161</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_REFERENCE()
 bg=orange</panel_attributes>
@@ -281,10 +288,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>360</x>
-      <y>530</y>
-      <w>290</w>
-      <h>230</h>
+      <x>287</x>
+      <y>371</y>
+      <w>203</w>
+      <h>161</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_DATATYPE()
 bg=orange</panel_attributes>
@@ -293,10 +300,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>680</x>
-      <y>530</y>
-      <w>290</w>
-      <h>230</h>
+      <x>511</x>
+      <y>371</y>
+      <w>203</w>
+      <h>161</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_VALIDATION()
 bg=orange</panel_attributes>
@@ -305,10 +312,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>860</y>
-      <w>180</w>
-      <h>40</h>
+      <x>70</x>
+      <y>602</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 bg=yellow
@@ -318,10 +325,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1090</y>
-      <w>180</w>
-      <h>40</h>
+      <x>70</x>
+      <y>763</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -331,10 +338,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>970</y>
-      <w>180</w>
-      <h>40</h>
+      <x>70</x>
+      <y>679</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -344,34 +351,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>70</x>
-      <y>870</y>
-      <w>122</w>
-      <h>120</h>
+      <x>98</x>
+      <y>609</y>
+      <w>63</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>35;21;35;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>60</x>
-      <y>980</y>
-      <w>148</w>
-      <h>130</h>
+      <x>84</x>
+      <y>686</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>360</x>
-      <y>970</y>
-      <w>210</w>
-      <h>40</h>
+      <x>287</x>
+      <y>679</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -381,22 +390,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>200</x>
-      <y>940</y>
-      <w>180</w>
-      <h>70</h>
+      <x>175</x>
+      <y>665</y>
+      <w>119</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>21;28;112;28</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>820</y>
-      <w>600</w>
-      <h>340</h>
+      <x>56</x>
+      <y>574</y>
+      <w>420</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_FindAllDependenciesGoingOverSUBTYPE()
 bg=orange</panel_attributes>
@@ -405,10 +415,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>860</y>
-      <w>180</w>
-      <h>40</h>
+      <x>518</x>
+      <y>602</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 bg=yellow
@@ -418,10 +428,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>1090</y>
-      <w>180</w>
-      <h>40</h>
+      <x>518</x>
+      <y>763</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -431,10 +441,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>970</y>
-      <w>180</w>
-      <h>40</h>
+      <x>518</x>
+      <y>679</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -444,34 +454,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>700</x>
-      <y>870</y>
-      <w>144</w>
-      <h>120</h>
+      <x>546</x>
+      <y>609</y>
+      <w>63</w>
+      <h>77</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>35;21;35;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>700</x>
-      <y>980</y>
-      <w>148</w>
-      <h>130</h>
+      <x>532</x>
+      <y>686</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1000</x>
-      <y>970</y>
-      <w>210</w>
-      <h>40</h>
+      <x>735</x>
+      <y>679</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -481,22 +493,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>840</x>
-      <y>940</y>
-      <w>180</w>
-      <h>70</h>
+      <x>623</x>
+      <y>665</y>
+      <w>119</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;28;112;28</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>670</x>
-      <y>820</y>
-      <w>600</w>
-      <h>340</h>
+      <x>504</x>
+      <y>574</y>
+      <w>420</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_FindSpecificDependenciesGoingOverREFERENCE()
 bg=orange</panel_attributes>
@@ -505,12 +518,12 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1620</y>
-      <w>180</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2198</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>superProductCmptType
+    <panel_attributes>enumType
 bg=yellow
 Project1</panel_attributes>
     <additional_attributes/>
@@ -518,10 +531,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1850</y>
-      <w>180</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2359</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -531,10 +544,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1730</y>
-      <w>180</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2275</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -544,34 +557,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>70</x>
-      <y>1630</y>
-      <w>132</w>
-      <h>120</h>
+      <x>91</x>
+      <y>2205</y>
+      <w>86</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>60</x>
-      <y>1740</y>
-      <w>148</w>
-      <h>130</h>
+      <x>91</x>
+      <y>2282</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>370</x>
-      <y>1730</y>
-      <w>210</w>
-      <h>40</h>
+      <x>301</x>
+      <y>2275</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -581,22 +596,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>200</x>
-      <y>1700</y>
-      <w>190</w>
-      <h>70</h>
+      <x>182</x>
+      <y>2254</y>
+      <w>132</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;170;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;119;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>1580</y>
-      <w>600</w>
-      <h>340</h>
+      <x>63</x>
+      <y>2170</y>
+      <w>420</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_FindSpecificDependenciesGoingOverDATATYPE()
 bg=orange</panel_attributes>
@@ -605,10 +621,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1020</x>
-      <y>1620</y>
-      <w>180</w>
-      <h>40</h>
+      <x>756</x>
+      <y>2198</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -618,10 +634,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1020</x>
-      <y>1850</y>
-      <w>180</w>
-      <h>50</h>
+      <x>756</x>
+      <y>2359</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -631,10 +647,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1020</x>
-      <y>1730</y>
-      <w>180</w>
-      <h>50</h>
+      <x>756</x>
+      <y>2275</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -644,34 +660,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1040</x>
-      <y>1630</y>
-      <w>122</w>
-      <h>120</h>
+      <x>777</x>
+      <y>2205</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1030</x>
-      <y>1750</y>
-      <w>148</w>
-      <h>120</h>
+      <x>770</x>
+      <y>2289</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1330</x>
-      <y>1740</y>
-      <w>210</w>
-      <h>40</h>
+      <x>973</x>
+      <y>2282</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -681,22 +699,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1170</x>
-      <y>1710</y>
-      <w>180</w>
-      <h>70</h>
+      <x>861</x>
+      <y>2261</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>680</x>
-      <y>1620</y>
-      <w>140</w>
-      <h>40</h>
+      <x>518</x>
+      <y>2198</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -706,10 +725,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>680</x>
-      <y>1730</y>
-      <w>140</w>
-      <h>40</h>
+      <x>518</x>
+      <y>2275</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project1
@@ -719,34 +738,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>670</x>
-      <y>1630</y>
-      <w>148</w>
-      <h>120</h>
+      <x>518</x>
+      <y>2205</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>790</x>
-      <y>1590</y>
-      <w>250</w>
-      <h>70</h>
+      <x>595</x>
+      <y>2177</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>670</x>
-      <y>1580</y>
-      <w>890</w>
-      <h>340</h>
+      <x>511</x>
+      <y>2170</y>
+      <w>623</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_TransitiveInstanceOfOverSubtype()
 bg=orange</panel_attributes>
@@ -755,10 +776,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2520</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>2828</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -768,10 +789,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2750</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>2989</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -781,10 +802,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2630</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>2905</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -794,34 +815,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>2530</y>
-      <w>122</w>
-      <h>120</h>
+      <x>336</x>
+      <y>2835</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>2640</y>
-      <w>148</w>
-      <h>130</h>
+      <x>329</x>
+      <y>2912</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>700</x>
-      <y>2630</y>
-      <w>210</w>
-      <h>40</h>
+      <x>532</x>
+      <y>2905</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -831,22 +854,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>2600</y>
-      <w>180</w>
-      <h>70</h>
+      <x>420</x>
+      <y>2884</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>2520</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2828</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -856,10 +880,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>2630</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2905</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project1
@@ -869,46 +893,49 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>2530</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>2835</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>2490</y>
-      <w>250</w>
-      <h>70</h>
+      <x>154</x>
+      <y>2807</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>2530</y>
-      <w>250</w>
-      <h>140</h>
+      <x>154</x>
+      <y>2835</y>
+      <w>174</w>
+      <h>97</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;30;230;120</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>21;21;161;84</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>2480</y>
-      <w>890</w>
-      <h>340</h>
+      <x>63</x>
+      <y>2800</y>
+      <w>623</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_FindSpecificDependenciesGoingOverDATATYPEandREFERENCE()
 bg=orange</panel_attributes>
@@ -917,10 +944,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2890</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3087</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -930,10 +957,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3120</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3248</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project3
@@ -943,10 +970,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3000</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3164</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project2
@@ -956,34 +983,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>2900</y>
-      <w>122</w>
-      <h>120</h>
+      <x>336</x>
+      <y>3094</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>3010</y>
-      <w>148</w>
-      <h>130</h>
+      <x>329</x>
+      <y>3171</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>3000</y>
-      <w>210</w>
-      <h>40</h>
+      <x>525</x>
+      <y>3164</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project2
@@ -993,22 +1022,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>2970</y>
-      <w>170</w>
-      <h>70</h>
+      <x>420</x>
+      <y>3143</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;150;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>2890</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>3087</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -1018,10 +1048,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>3000</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>3164</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -1031,46 +1061,49 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>2900</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>3094</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>2860</y>
-      <w>250</w>
-      <h>70</h>
+      <x>154</x>
+      <y>3066</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>2900</y>
-      <w>250</w>
-      <h>140</h>
+      <x>154</x>
+      <y>3094</y>
+      <w>174</w>
+      <h>97</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;30;230;120</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>21;21;161;84</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>2850</y>
-      <w>990</w>
-      <h>340</h>
+      <x>63</x>
+      <y>3059</y>
+      <w>693</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_DependentProjects()
 bg=orange</panel_attributes>
@@ -1079,10 +1112,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>2880</y>
-      <w>870</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3080</y>
+      <w>609</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1091,10 +1124,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>2990</y>
-      <w>870</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3157</y>
+      <w>609</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1103,10 +1136,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3110</y>
-      <w>870</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3241</y>
+      <w>609</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1115,32 +1148,32 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>860</x>
-      <y>2910</y>
-      <w>50</w>
-      <h>100</h>
+      <x>644</x>
+      <y>3101</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>870</x>
-      <y>3020</y>
-      <w>50</w>
-      <h>110</h>
+      <x>651</x>
+      <y>3178</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>30</x>
+      <x>56</x>
       <y>0</y>
-      <w>560</w>
-      <h>120</h>
+      <w>392</w>
+      <h>119</h>
     </coordinates>
     <panel_attributes>/LEGENDE/
 </panel_attributes>
@@ -1149,10 +1182,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>70</x>
-      <y>50</y>
-      <w>120</w>
-      <h>40</h>
+      <x>84</x>
+      <y>35</y>
+      <w>84</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>asked object
 bg=yellow
@@ -1162,34 +1195,34 @@ bg=yellow
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>220</x>
-      <y>50</y>
-      <w>140</w>
-      <h>40</h>
+      <x>189</x>
+      <y>35</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>found dependency
+    <panel_attributes>found object
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>50</y>
-      <w>160</w>
-      <h>40</h>
+      <x>308</x>
+      <y>35</y>
+      <w>112</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>not found dependency
+    <panel_attributes>not found object
 bg=red</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3250</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3339</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -1199,10 +1232,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3480</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3500</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project3
@@ -1212,10 +1245,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3360</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3416</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project2
@@ -1225,34 +1258,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>3260</y>
-      <w>122</w>
-      <h>120</h>
+      <x>336</x>
+      <y>3346</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>3370</y>
-      <w>148</w>
-      <h>130</h>
+      <x>329</x>
+      <y>3423</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>3360</y>
-      <w>210</w>
-      <h>40</h>
+      <x>525</x>
+      <y>3416</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project2
@@ -1262,22 +1297,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>3330</y>
-      <w>170</w>
-      <h>70</h>
+      <x>420</x>
+      <y>3395</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;150;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>3250</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>3339</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -1287,10 +1323,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>3360</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>3416</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -1300,46 +1336,49 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>3260</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>3346</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>3220</y>
-      <w>250</w>
-      <h>70</h>
+      <x>154</x>
+      <y>3318</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>3260</y>
-      <w>250</w>
-      <h>140</h>
+      <x>154</x>
+      <y>3346</y>
+      <w>174</w>
+      <h>97</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;30;230;120</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>21;21;161;84</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>3210</y>
-      <w>990</w>
-      <h>340</h>
+      <x>63</x>
+      <y>3311</y>
+      <w>693</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_MultiDependentProjects()
 bg=orange</panel_attributes>
@@ -1348,10 +1387,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3240</y>
-      <w>920</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3332</y>
+      <w>644</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1360,10 +1399,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3350</y>
-      <w>870</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3409</y>
+      <w>609</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1372,10 +1411,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3470</y>
-      <w>920</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3493</y>
+      <w>644</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1384,43 +1423,43 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>860</x>
-      <y>3270</y>
-      <w>50</w>
-      <h>100</h>
+      <x>644</x>
+      <y>3353</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>870</x>
-      <y>3380</y>
-      <w>50</w>
-      <h>110</h>
+      <x>651</x>
+      <y>3430</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>920</x>
-      <y>3270</y>
-      <w>50</w>
-      <h>220</h>
+      <x>686</x>
+      <y>3353</y>
+      <w>34</w>
+      <h>153</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;200</additional_attributes>
+    <additional_attributes>21;21;21;140</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1210</x>
-      <y>3680</y>
-      <w>100</w>
-      <h>30</h>
+      <x>889</x>
+      <y>3640</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>1</panel_attributes>
     <additional_attributes/>
@@ -1428,10 +1467,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1320</x>
-      <y>3780</y>
-      <w>100</w>
-      <h>30</h>
+      <x>966</x>
+      <y>3710</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>3</panel_attributes>
     <additional_attributes/>
@@ -1439,10 +1478,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1100</x>
-      <y>3780</y>
-      <w>100</w>
-      <h>30</h>
+      <x>812</x>
+      <y>3710</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>2</panel_attributes>
     <additional_attributes/>
@@ -1450,43 +1489,43 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1130</x>
-      <y>3680</y>
-      <w>110</w>
-      <h>120</h>
+      <x>833</x>
+      <y>3640</y>
+      <w>76</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>90;30;30;100</additional_attributes>
+    <additional_attributes>63;21;21;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1170</x>
-      <y>3760</y>
-      <w>170</w>
-      <h>50</h>
+      <x>861</x>
+      <y>3696</y>
+      <w>118</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;150;30</additional_attributes>
+    <additional_attributes>21;21;105;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1280</x>
-      <y>3680</y>
-      <w>110</w>
-      <h>120</h>
+      <x>938</x>
+      <y>3640</y>
+      <w>76</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>90;100;30;30</additional_attributes>
+    <additional_attributes>63;70;21;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1210</x>
-      <y>3320</y>
-      <w>100</w>
-      <h>30</h>
+      <x>889</x>
+      <y>3388</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>1</panel_attributes>
     <additional_attributes/>
@@ -1494,10 +1533,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1320</x>
-      <y>3420</y>
-      <w>100</w>
-      <h>30</h>
+      <x>966</x>
+      <y>3458</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>3</panel_attributes>
     <additional_attributes/>
@@ -1505,10 +1544,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1100</x>
-      <y>3420</y>
-      <w>100</w>
-      <h>30</h>
+      <x>812</x>
+      <y>3458</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>2</panel_attributes>
     <additional_attributes/>
@@ -1516,43 +1555,43 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1130</x>
-      <y>3320</y>
-      <w>110</w>
-      <h>120</h>
+      <x>833</x>
+      <y>3388</y>
+      <w>76</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>90;30;30;100</additional_attributes>
+    <additional_attributes>63;21;21;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1170</x>
-      <y>3400</y>
-      <w>170</w>
-      <h>50</h>
+      <x>861</x>
+      <y>3444</y>
+      <w>118</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;150;30</additional_attributes>
+    <additional_attributes>21;21;105;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1280</x>
-      <y>3320</y>
-      <w>100</w>
-      <h>120</h>
+      <x>938</x>
+      <y>3388</y>
+      <w>69</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;80;100</additional_attributes>
+    <additional_attributes>21;21;56;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3610</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3591</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -1562,10 +1601,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3840</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3752</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project3
@@ -1575,10 +1614,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>3720</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>3668</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project2
@@ -1588,34 +1627,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>3620</y>
-      <w>122</w>
-      <h>120</h>
+      <x>336</x>
+      <y>3598</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>3730</y>
-      <w>148</w>
-      <h>130</h>
+      <x>329</x>
+      <y>3675</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>3720</y>
-      <w>210</w>
-      <h>40</h>
+      <x>525</x>
+      <y>3668</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project2
@@ -1625,22 +1666,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>3690</y>
-      <w>170</w>
-      <h>70</h>
+      <x>420</x>
+      <y>3647</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;150;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>3610</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>3591</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -1650,10 +1692,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>3720</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>3668</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -1663,58 +1705,62 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>3620</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>3598</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>3580</y>
-      <w>250</w>
-      <h>70</h>
+      <x>154</x>
+      <y>3570</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>3620</y>
-      <w>250</w>
-      <h>140</h>
+      <x>154</x>
+      <y>3598</y>
+      <w>174</w>
+      <h>97</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;30;230;120</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>21;21;161;84</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>3570</y>
-      <w>990</w>
-      <h>340</h>
+      <x>63</x>
+      <y>3563</y>
+      <w>693</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_LoopDependentProjects()
-bg=orange</panel_attributes>
+bg=orange
+layer=-1</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3600</y>
-      <w>920</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3584</y>
+      <w>644</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1723,10 +1769,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3710</y>
-      <w>870</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3661</y>
+      <w>609</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1735,10 +1781,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>3830</y>
-      <w>920</w>
-      <h>60</h>
+      <x>70</x>
+      <y>3745</y>
+      <w>644</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1747,43 +1793,43 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>860</x>
-      <y>3630</y>
-      <w>50</w>
-      <h>100</h>
+      <x>644</x>
+      <y>3605</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>870</x>
-      <y>3740</y>
-      <w>50</w>
-      <h>110</h>
+      <x>651</x>
+      <y>3682</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>920</x>
-      <y>3630</y>
-      <w>50</w>
-      <h>220</h>
+      <x>686</x>
+      <y>3605</y>
+      <w>34</w>
+      <h>153</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;200;30;30</additional_attributes>
+    <additional_attributes>21;140;21;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1200</x>
-      <y>2960</y>
-      <w>100</w>
-      <h>30</h>
+      <x>882</x>
+      <y>3136</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>1</panel_attributes>
     <additional_attributes/>
@@ -1791,10 +1837,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1310</x>
-      <y>3060</y>
-      <w>100</w>
-      <h>30</h>
+      <x>959</x>
+      <y>3206</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>3</panel_attributes>
     <additional_attributes/>
@@ -1802,10 +1848,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1090</x>
-      <y>3060</y>
-      <w>100</w>
-      <h>30</h>
+      <x>805</x>
+      <y>3206</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>2</panel_attributes>
     <additional_attributes/>
@@ -1813,32 +1859,32 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1120</x>
-      <y>2960</y>
-      <w>110</w>
-      <h>120</h>
+      <x>826</x>
+      <y>3136</y>
+      <w>76</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>90;30;30;100</additional_attributes>
+    <additional_attributes>63;21;21;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1160</x>
-      <y>3040</y>
-      <w>170</w>
-      <h>50</h>
+      <x>854</x>
+      <y>3192</y>
+      <w>118</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;150;30</additional_attributes>
+    <additional_attributes>21;21;105;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>100</x>
-      <y>4010</y>
-      <w>140</w>
-      <h>40</h>
+      <x>112</x>
+      <y>3871</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -1848,10 +1894,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>100</x>
-      <y>4120</y>
-      <w>140</w>
-      <h>40</h>
+      <x>112</x>
+      <y>3948</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -1861,22 +1907,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>90</x>
-      <y>4020</y>
-      <w>148</w>
-      <h>120</h>
+      <x>112</x>
+      <y>3878</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>660</x>
-      <y>4010</y>
-      <w>170</w>
-      <h>40</h>
+      <x>504</x>
+      <y>3871</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencedPolicyType
 bg=yellow
@@ -1886,10 +1933,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>660</x>
-      <y>4120</y>
-      <w>170</w>
-      <h>40</h>
+      <x>504</x>
+      <y>3948</y>
+      <w>119</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingPolicyType
 Project2
@@ -1899,22 +1946,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>660</x>
-      <y>4020</y>
-      <w>144</w>
-      <h>120</h>
+      <x>511</x>
+      <y>3878</y>
+      <w>92</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>3970</y>
-      <w>430</w>
-      <h>220</h>
+      <x>63</x>
+      <y>3843</y>
+      <w>301</w>
+      <h>154</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_DependentProjects_INSTANCEOF()
 bg=orange</panel_attributes>
@@ -1923,10 +1971,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>600</x>
-      <y>3970</y>
-      <w>420</w>
-      <h>220</h>
+      <x>462</x>
+      <y>3843</y>
+      <w>294</w>
+      <h>154</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_DependentProjects_REFERENCE()
 bg=orange</panel_attributes>
@@ -1935,10 +1983,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>90</x>
-      <y>4000</y>
-      <w>330</w>
-      <h>60</h>
+      <x>105</x>
+      <y>3864</y>
+      <w>231</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1947,10 +1995,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>650</x>
-      <y>4000</y>
-      <w>330</w>
-      <h>60</h>
+      <x>497</x>
+      <y>3864</y>
+      <w>231</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1959,10 +2007,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>90</x>
-      <y>4110</y>
-      <w>330</w>
-      <h>60</h>
+      <x>105</x>
+      <y>3941</y>
+      <w>231</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1971,10 +2019,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>650</x>
-      <y>4110</y>
-      <w>330</w>
-      <h>60</h>
+      <x>497</x>
+      <y>3941</y>
+      <w>231</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -1983,32 +2031,32 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>370</x>
-      <y>4030</y>
-      <w>50</w>
-      <h>100</h>
+      <x>301</x>
+      <y>3885</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>930</x>
-      <y>4030</y>
-      <w>50</w>
-      <h>100</h>
+      <x>693</x>
+      <y>3885</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2020</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>2478</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2018,10 +2066,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2350</y>
-      <w>180</w>
-      <h>50</h>
+      <x>315</x>
+      <y>2709</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -2031,10 +2079,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2130</y>
-      <w>180</w>
-      <h>50</h>
+      <x>315</x>
+      <y>2555</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -2044,34 +2092,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>2030</y>
-      <w>122</w>
-      <h>120</h>
+      <x>336</x>
+      <y>2485</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>2250</y>
-      <w>148</w>
-      <h>120</h>
+      <x>329</x>
+      <y>2639</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>700</x>
-      <y>2140</y>
-      <w>210</w>
-      <h>40</h>
+      <x>532</x>
+      <y>2562</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -2081,22 +2131,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>2110</y>
-      <w>180</w>
-      <h>70</h>
+      <x>420</x>
+      <y>2541</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>2020</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2478</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -2106,10 +2157,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>2130</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>2555</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project1
@@ -2119,34 +2170,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>2030</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>2485</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>1990</y>
-      <w>250</w>
-      <h>70</h>
+      <x>154</x>
+      <y>2457</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>2230</y>
-      <w>180</w>
-      <h>50</h>
+      <x>315</x>
+      <y>2625</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>subSubProductCmptType
 Project1
@@ -2156,34 +2209,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>2150</y>
-      <w>122</w>
-      <h>100</h>
+      <x>336</x>
+      <y>2569</y>
+      <w>80</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;80</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>1980</y>
-      <w>890</w>
-      <h>440</h>
+      <x>63</x>
+      <y>2450</y>
+      <w>623</w>
+      <h>308</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_TransitiveInstanceOfOverSubSubtype()
-bg=orange</panel_attributes>
+bg=orange
+layer=-1</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>380</x>
-      <y>4290</y>
-      <w>180</w>
-      <h>40</h>
+      <x>308</x>
+      <y>4067</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2193,10 +2248,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>380</x>
-      <y>4520</y>
-      <w>180</w>
-      <h>50</h>
+      <x>308</x>
+      <y>4228</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -2206,10 +2261,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>380</x>
-      <y>4400</y>
-      <w>180</w>
-      <h>50</h>
+      <x>308</x>
+      <y>4144</y>
+      <w>126</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -2219,34 +2274,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>4300</y>
-      <w>122</w>
-      <h>120</h>
+      <x>329</x>
+      <y>4074</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>390</x>
-      <y>4420</y>
-      <w>148</w>
-      <h>120</h>
+      <x>322</x>
+      <y>4158</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>4410</y>
-      <w>210</w>
-      <h>40</h>
+      <x>525</x>
+      <y>4151</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -2256,22 +2313,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>530</x>
-      <y>4380</y>
-      <w>180</w>
-      <h>70</h>
+      <x>413</x>
+      <y>4130</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>4290</y>
-      <w>140</w>
-      <h>40</h>
+      <x>70</x>
+      <y>4067</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=green
@@ -2281,10 +2339,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>4400</y>
-      <w>140</w>
-      <h>40</h>
+      <x>70</x>
+      <y>4144</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project1
@@ -2294,34 +2352,36 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>30</x>
-      <y>4300</y>
-      <w>148</w>
-      <h>120</h>
+      <x>70</x>
+      <y>4074</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>150</x>
-      <y>4260</y>
-      <w>250</w>
-      <h>70</h>
+      <x>147</x>
+      <y>4046</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>4250</y>
-      <w>890</w>
-      <h>340</h>
+      <x>63</x>
+      <y>4039</y>
+      <w>623</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_ResolveDatatypeDependenciesForEnumContent()
 bg=orange</panel_attributes>
@@ -2330,10 +2390,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>4680</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>4340</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2343,10 +2403,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>4910</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>4501</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project3
@@ -2356,10 +2416,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>390</x>
-      <y>4790</y>
-      <w>180</w>
-      <h>40</h>
+      <x>315</x>
+      <y>4417</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project2
@@ -2369,34 +2429,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>410</x>
-      <y>4690</y>
-      <w>122</w>
-      <h>120</h>
+      <x>336</x>
+      <y>4347</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>400</x>
-      <y>4800</y>
-      <w>148</w>
-      <h>130</h>
+      <x>329</x>
+      <y>4424</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>690</x>
-      <y>4790</y>
-      <w>210</w>
-      <h>40</h>
+      <x>525</x>
+      <y>4417</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project2
@@ -2406,22 +2468,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>540</x>
-      <y>4760</y>
-      <w>170</w>
-      <h>70</h>
+      <x>420</x>
+      <y>4396</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;150;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>4680</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>4340</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=green
@@ -2431,10 +2494,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>4790</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>4417</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -2444,34 +2507,36 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>4690</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>4347</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>4650</y>
-      <w>250</w>
-      <h>70</h>
+      <x>154</x>
+      <y>4319</y>
+      <w>174</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;230;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;161;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>4640</y>
-      <w>990</w>
-      <h>340</h>
+      <x>63</x>
+      <y>4312</y>
+      <w>693</w>
+      <h>238</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjects()
 bg=orange</panel_attributes>
@@ -2480,10 +2545,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>4670</y>
-      <w>920</w>
-      <h>60</h>
+      <x>70</x>
+      <y>4333</y>
+      <w>644</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -2492,10 +2557,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>4780</y>
-      <w>870</w>
-      <h>60</h>
+      <x>70</x>
+      <y>4410</y>
+      <w>609</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -2504,10 +2569,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>4900</y>
-      <w>920</w>
-      <h>60</h>
+      <x>70</x>
+      <y>4494</y>
+      <w>644</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -2516,32 +2581,32 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>860</x>
-      <y>4700</y>
-      <w>50</w>
-      <h>100</h>
+      <x>644</x>
+      <y>4354</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>870</x>
-      <y>4810</y>
-      <w>50</w>
-      <h>110</h>
+      <x>651</x>
+      <y>4431</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5060</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>4606</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2551,10 +2616,10 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5290</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>4767</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project3
@@ -2564,10 +2629,10 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5170</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>4683</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project2
@@ -2577,34 +2642,36 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>610</x>
-      <y>5070</y>
-      <w>122</w>
-      <h>120</h>
+      <x>476</x>
+      <y>4613</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=red</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>600</x>
-      <y>5180</y>
-      <w>148</w>
-      <h>130</h>
+      <x>469</x>
+      <y>4690</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=red</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>890</x>
-      <y>5170</y>
-      <w>210</w>
-      <h>40</h>
+      <x>665</x>
+      <y>4683</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project2
@@ -2614,22 +2681,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>740</x>
-      <y>5140</y>
-      <w>170</w>
-      <h>70</h>
+      <x>560</x>
+      <y>4662</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;150;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>5060</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>4606</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=green
@@ -2639,10 +2707,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>5170</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>4683</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -2652,34 +2720,36 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>5070</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>4613</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>5030</y>
-      <w>140</w>
-      <h>70</h>
+      <x>154</x>
+      <y>4585</y>
+      <w>97</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;120;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;84;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>5050</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>4599</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -2688,10 +2758,10 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>5160</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>4676</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -2700,10 +2770,10 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>5280</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>4760</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -2712,32 +2782,32 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1060</x>
-      <y>5080</y>
-      <w>50</w>
-      <h>100</h>
+      <x>784</x>
+      <y>4620</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1070</x>
-      <y>5190</y>
-      <w>50</w>
-      <h>110</h>
+      <x>791</x>
+      <y>4697</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>280</x>
-      <y>5060</y>
-      <w>180</w>
-      <h>40</h>
+      <x>238</x>
+      <y>4606</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superPolicyCmptType
 Project1
@@ -2747,34 +2817,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>5020</y>
-      <w>180</w>
-      <h>70</h>
+      <x>343</x>
+      <y>4585</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>430</x>
-      <y>5040</y>
-      <w>180</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>160;50;30;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>5010</y>
-      <w>1140</w>
-      <h>360</h>
+      <x>63</x>
+      <y>4571</y>
+      <w>798</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndREFERENCE()
 bg=orange</panel_attributes>
@@ -2783,10 +2842,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5450</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>4879</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2796,10 +2855,10 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>5450</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>4879</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -2809,22 +2868,23 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>5420</y>
-      <w>140</w>
-      <h>70</h>
+      <x>154</x>
+      <y>4858</y>
+      <w>97</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;120;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;84;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>280</x>
-      <y>5450</y>
-      <w>180</w>
-      <h>40</h>
+      <x>238</x>
+      <y>4879</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superPolicyCmptType
 Project1
@@ -2834,34 +2894,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>5410</y>
-      <w>180</w>
-      <h>70</h>
+      <x>343</x>
+      <y>4858</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>430</x>
-      <y>5430</y>
-      <w>180</w>
-      <h>70</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>160;50;30;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>5400</y>
-      <w>810</w>
-      <h>160</h>
+      <x>63</x>
+      <y>4844</y>
+      <w>567</w>
+      <h>112</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_DoNotFindREFERENCEgoingOverDATATYPE()
 bg=orange</panel_attributes>
@@ -2870,10 +2919,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5650</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5019</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2883,10 +2932,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>5650</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5019</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=yellow
@@ -2896,22 +2945,23 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>5620</y>
-      <w>140</w>
-      <h>70</h>
+      <x>154</x>
+      <y>4998</y>
+      <w>97</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;120;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;84;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>280</x>
-      <y>5650</y>
-      <w>180</w>
-      <h>40</h>
+      <x>238</x>
+      <y>5019</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superPolicyCmptType
 Project1
@@ -2921,34 +2971,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>5610</y>
-      <w>180</w>
-      <h>70</h>
+      <x>343</x>
+      <y>4991</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-CONFIGURATION</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+CONFIGURES
+fg=green</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>5630</y>
-      <w>180</w>
-      <h>70</h>
+      <x>343</x>
+      <y>5005</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-CONFIGURATION</panel_attributes>
-    <additional_attributes>160;50;30;50</additional_attributes>
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>112;35;21;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>5590</y>
-      <w>810</w>
-      <h>170</h>
+      <x>63</x>
+      <y>4977</y>
+      <w>567</w>
+      <h>119</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_FindCONFIGURATIONgoingOverDATATYPE()
 bg=orange</panel_attributes>
@@ -2957,10 +3009,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5840</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5152</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -2970,10 +3022,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>6070</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5313</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project3
@@ -2983,10 +3035,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>5950</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5229</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project2
@@ -2996,34 +3048,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>610</x>
-      <y>5850</y>
-      <w>122</w>
-      <h>120</h>
+      <x>476</x>
+      <y>5159</y>
+      <w>80</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-SUBTYPE</panel_attributes>
-    <additional_attributes>70;30;70;100</additional_attributes>
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>600</x>
-      <y>5960</y>
-      <w>148</w>
-      <h>130</h>
+      <x>469</x>
+      <y>5236</y>
+      <w>91</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>890</x>
-      <y>5950</y>
-      <w>210</w>
-      <h>40</h>
+      <x>665</x>
+      <y>5229</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project2
@@ -3033,22 +3087,23 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>740</x>
-      <y>5920</y>
-      <w>170</w>
-      <h>70</h>
+      <x>560</x>
+      <y>5208</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;150;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>5840</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5152</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=green
@@ -3058,10 +3113,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>5950</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5229</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -3071,34 +3126,36 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>5850</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>5159</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>5810</y>
-      <w>140</w>
-      <h>70</h>
+      <x>154</x>
+      <y>5131</y>
+      <w>97</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;120;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;84;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>5830</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5145</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3107,10 +3164,10 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>5940</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5222</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3119,10 +3176,10 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>6060</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5306</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3131,32 +3188,32 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1060</x>
-      <y>5860</y>
-      <w>50</w>
-      <h>100</h>
+      <x>784</x>
+      <y>5166</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1070</x>
-      <y>5970</y>
-      <w>50</w>
-      <h>110</h>
+      <x>791</x>
+      <y>5243</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>280</x>
-      <y>5840</y>
-      <w>180</w>
-      <h>40</h>
+      <x>238</x>
+      <y>5152</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superPolicyCmptType
 Project1
@@ -3166,34 +3223,36 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>5800</y>
-      <w>180</w>
-      <h>70</h>
+      <x>343</x>
+      <y>5124</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-CONFIGURATION</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+CONFIGURES
+fg=green</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>5820</y>
-      <w>180</w>
-      <h>70</h>
+      <x>343</x>
+      <y>5138</y>
+      <w>125</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-CONFIGURATION</panel_attributes>
-    <additional_attributes>160;50;30;50</additional_attributes>
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>112;35;21;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>5790</y>
-      <w>1140</w>
-      <h>360</h>
+      <x>63</x>
+      <y>5117</y>
+      <w>798</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndCONFIGURATION()
 bg=orange</panel_attributes>
@@ -3202,12 +3261,12 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1230</y>
-      <w>180</w>
-      <h>40</h>
+      <x>70</x>
+      <y>889</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
-    <panel_attributes>superProductCmptType
+    <panel_attributes>subPolicyCmptType
 bg=yellow
 Project1</panel_attributes>
     <additional_attributes/>
@@ -3215,10 +3274,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1460</y>
-      <w>180</w>
-      <h>40</h>
+      <x>301</x>
+      <y>994</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -3228,10 +3287,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>1340</y>
-      <w>180</w>
-      <h>40</h>
+      <x>301</x>
+      <y>889</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>subProductCmptType
 Project1
@@ -3241,71 +3300,74 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>50</x>
-      <y>1240</y>
-      <w>174</w>
-      <h>120</h>
+      <x>175</x>
+      <y>861</y>
+      <w>139</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-CONFIGURATION</panel_attributes>
-    <additional_attributes>90;30;90;100</additional_attributes>
+CONFIGURES
+fg=green</panel_attributes>
+    <additional_attributes>21;35;126;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>60</x>
-      <y>1350</y>
-      <w>148</w>
-      <h>130</h>
+      <x>315</x>
+      <y>896</y>
+      <w>91</w>
+      <h>111</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;98</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>360</x>
-      <y>1340</y>
-      <w>210</w>
-      <h>40</h>
+      <x>511</x>
+      <y>889</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
-bg=green</panel_attributes>
+bg=red</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>200</x>
-      <y>1310</y>
-      <w>180</w>
-      <h>70</h>
+      <x>406</x>
+      <y>868</y>
+      <w>118</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>30;50;160;50</additional_attributes>
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>1190</y>
-      <w>600</w>
-      <h>340</h>
+      <x>56</x>
+      <y>833</y>
+      <w>658</w>
+      <h>238</h>
     </coordinates>
-    <panel_attributes>testCollectDependencies_FindAllDependenciesGoingOverCONFIGURATION()
+    <panel_attributes>testCollectDependencies_FindAllDependenciesGoingOverCONFIGURES()
 bg=orange</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>6630</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5712</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -3315,10 +3377,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>6740</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5789</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project2
@@ -3328,22 +3390,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>600</x>
-      <y>6640</y>
-      <w>148</w>
-      <h>120</h>
+      <x>469</x>
+      <y>5719</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>6860</y>
-      <w>210</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5873</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project3
@@ -3353,22 +3416,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>6750</y>
-      <w>144</w>
-      <h>130</h>
+      <x>77</x>
+      <y>5796</y>
+      <w>92</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>6630</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5712</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=green
@@ -3378,10 +3442,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>6740</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5789</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project2
@@ -3391,34 +3455,36 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>6640</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>5719</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>6600</y>
-      <w>450</w>
-      <h>70</h>
+      <x>154</x>
+      <y>5691</y>
+      <w>314</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;430;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;301;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>6620</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5705</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3427,10 +3493,10 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>6730</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5782</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3439,10 +3505,10 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>6850</y>
-      <w>1080</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5866</y>
+      <w>756</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3451,32 +3517,32 @@ DATATYPE</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1060</x>
-      <y>6650</y>
-      <w>50</w>
-      <h>100</h>
+      <x>784</x>
+      <y>5726</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1070</x>
-      <y>6760</y>
-      <w>50</w>
-      <h>110</h>
+      <x>791</x>
+      <y>5803</y>
+      <w>34</w>
+      <h>76</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;90</additional_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>6570</y>
-      <w>1140</w>
-      <h>360</h>
+      <x>63</x>
+      <y>5670</y>
+      <w>798</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_ResolveReferenceDependencyOnEnumContentOverDependentProjects()
 bg=orange</panel_attributes>
@@ -3485,10 +3551,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>6240</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5439</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -3498,10 +3564,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>590</x>
-      <y>6350</y>
-      <w>180</w>
-      <h>40</h>
+      <x>455</x>
+      <y>5516</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>productCmpt
 Project1
@@ -3511,22 +3577,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>600</x>
-      <y>6250</y>
-      <w>148</w>
-      <h>120</h>
+      <x>469</x>
+      <y>5446</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>6470</y>
-      <w>210</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5600</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project1
@@ -3536,22 +3603,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>6360</y>
-      <w>144</w>
-      <h>130</h>
+      <x>77</x>
+      <y>5523</y>
+      <w>92</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>80;30;80;110</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>6240</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5439</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumType
 bg=green
@@ -3561,10 +3629,10 @@ Project1</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>6350</y>
-      <w>140</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5516</y>
+      <w>98</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>enumContent
 Project1
@@ -3574,34 +3642,36 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>40</x>
-      <y>6250</y>
-      <w>148</w>
-      <h>120</h>
+      <x>77</x>
+      <y>5446</y>
+      <w>91</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
-INSTANCEOF</panel_attributes>
-    <additional_attributes>80;30;80;100</additional_attributes>
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
-      <y>6210</y>
-      <w>450</w>
-      <h>70</h>
+      <x>154</x>
+      <y>5418</y>
+      <w>314</w>
+      <h>49</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-DATATYPE</panel_attributes>
-    <additional_attributes>30;50;430;50</additional_attributes>
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>21;35;301;35</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>6180</y>
-      <w>1140</w>
-      <h>360</h>
+      <x>63</x>
+      <y>5397</y>
+      <w>798</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_ResolveReferenceDependencyOnEnumContent()
 bg=orange</panel_attributes>
@@ -3610,10 +3680,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>450</x>
-      <y>7100</y>
-      <w>100</w>
-      <h>30</h>
+      <x>357</x>
+      <y>6041</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>1</panel_attributes>
     <additional_attributes/>
@@ -3621,10 +3691,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>610</x>
-      <y>7200</y>
-      <w>100</w>
-      <h>30</h>
+      <x>469</x>
+      <y>6111</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>3</panel_attributes>
     <additional_attributes/>
@@ -3632,10 +3702,10 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>450</x>
-      <y>7200</y>
-      <w>100</w>
-      <h>30</h>
+      <x>357</x>
+      <y>6111</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>2</panel_attributes>
     <additional_attributes/>
@@ -3643,43 +3713,43 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>470</x>
-      <y>7100</y>
-      <w>50</w>
-      <h>120</h>
+      <x>371</x>
+      <y>6041</y>
+      <w>34</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;30;100</additional_attributes>
+    <additional_attributes>21;21;21;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>520</x>
-      <y>7180</y>
-      <w>110</w>
-      <h>50</h>
+      <x>406</x>
+      <y>6097</y>
+      <w>76</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;90;30</additional_attributes>
+    <additional_attributes>21;21;63;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>520</x>
-      <y>7100</y>
-      <w>120</w>
-      <h>120</h>
+      <x>406</x>
+      <y>6041</y>
+      <w>83</w>
+      <h>83</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;100;100</additional_attributes>
+    <additional_attributes>21;21;70;70</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>610</x>
-      <y>7100</y>
-      <w>100</w>
-      <h>30</h>
+      <x>469</x>
+      <y>6041</y>
+      <w>70</w>
+      <h>21</h>
     </coordinates>
     <panel_attributes>4</panel_attributes>
     <additional_attributes/>
@@ -3687,21 +3757,21 @@ bg=orange</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>520</x>
-      <y>7080</y>
-      <w>110</w>
-      <h>50</h>
+      <x>406</x>
+      <y>6027</y>
+      <w>76</w>
+      <h>34</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
-    <additional_attributes>30;30;90;30</additional_attributes>
+    <additional_attributes>21;21;63;21</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>7020</y>
-      <w>180</w>
-      <h>40</h>
+      <x>77</x>
+      <y>5985</y>
+      <w>126</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>superProductCmptType
 Project1
@@ -3711,10 +3781,10 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>50</x>
-      <y>7350</y>
-      <w>210</w>
-      <h>40</h>
+      <x>77</x>
+      <y>6216</y>
+      <w>147</w>
+      <h>28</h>
     </coordinates>
     <panel_attributes>referencingProductCmptType
 Project4
@@ -3724,22 +3794,23 @@ bg=green</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>60</x>
-      <y>7030</y>
-      <w>144</w>
-      <h>340</h>
+      <x>91</x>
+      <y>5992</y>
+      <w>92</w>
+      <h>237</h>
     </coordinates>
     <panel_attributes>lt=&lt;
-REFERENCE</panel_attributes>
-    <additional_attributes>80;30;80;320</additional_attributes>
+REFERENCE
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;224</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>7010</y>
-      <w>310</w>
-      <h>60</h>
+      <x>70</x>
+      <y>5978</y>
+      <w>217</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3748,10 +3819,10 @@ REFERENCE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>7120</y>
-      <w>310</w>
-      <h>60</h>
+      <x>70</x>
+      <y>6055</y>
+      <w>217</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>Project2
 </panel_attributes>
@@ -3760,10 +3831,10 @@ REFERENCE</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>7340</y>
-      <w>310</w>
-      <h>60</h>
+      <x>70</x>
+      <y>6209</y>
+      <w>217</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>
 </panel_attributes>
@@ -3772,32 +3843,32 @@ REFERENCE</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>230</x>
-      <y>7040</y>
-      <w>50</w>
-      <h>100</h>
+      <x>203</x>
+      <y>5999</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>260</x>
-      <y>7040</y>
-      <w>50</w>
-      <h>210</h>
+      <x>224</x>
+      <y>5999</y>
+      <w>34</w>
+      <h>146</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;190</additional_attributes>
+    <additional_attributes>21;21;21;133</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>40</x>
-      <y>7230</y>
-      <w>310</w>
-      <h>60</h>
+      <x>70</x>
+      <y>6132</y>
+      <w>217</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>Project3
 </panel_attributes>
@@ -3806,35 +3877,848 @@ REFERENCE</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>310</x>
-      <y>7040</y>
-      <w>50</w>
-      <h>320</h>
+      <x>259</x>
+      <y>5999</y>
+      <w>34</w>
+      <h>223</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;300</additional_attributes>
+    <additional_attributes>21;21;21;210</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>230</x>
-      <y>7150</y>
-      <w>50</w>
-      <h>100</h>
+      <x>203</x>
+      <y>6076</y>
+      <w>34</w>
+      <h>69</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
-    <additional_attributes>30;30;30;80</additional_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Package</type>
     <coordinates>
-      <x>30</x>
-      <y>6960</y>
-      <w>370</w>
-      <h>490</h>
+      <x>63</x>
+      <y>5943</y>
+      <w>266</w>
+      <h>343</h>
     </coordinates>
     <panel_attributes>testCollectDependencies_CrossDependentProjects()
 bg=orange</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>175</x>
+      <y>875</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>126;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>308</x>
+      <y>1127</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superProductCmptType
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>308</x>
+      <y>1288</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>productCmpt
+Project3
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>308</x>
+      <y>1204</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subProductCmptType
+Project2
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>329</x>
+      <y>1134</y>
+      <w>80</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>322</x>
+      <y>1211</y>
+      <w>91</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>518</x>
+      <y>1204</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>referencingProductCmptType
+Project2
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>413</x>
+      <y>1183</y>
+      <w>118</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>77</x>
+      <y>1120</y>
+      <w>602</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>70</x>
+      <y>1197</y>
+      <w>609</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>70</x>
+      <y>1281</y>
+      <w>609</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>637</x>
+      <y>1141</y>
+      <w>34</w>
+      <h>69</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>644</x>
+      <y>1218</y>
+      <w>34</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;63</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>91</x>
+      <y>1127</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superPolicyCmptType
+Project1
+bg=yellow
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>1099</y>
+      <w>125</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=green</panel_attributes>
+    <additional_attributes>21;35;112;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>1113</y>
+      <w>125</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>112;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>56</x>
+      <y>1092</y>
+      <w>658</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>testCollectDependencies_ResolveCONFIGURESDependencyForPolicyComponent()
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1008</x>
+      <y>896</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subPolicyCmptType
+bg=green
+Project1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1239</x>
+      <y>1001</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>productCmpt
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1239</x>
+      <y>896</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subProductCmptType
+Project1
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1113</x>
+      <y>868</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=red</panel_attributes>
+    <additional_attributes>21;35;126;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1260</x>
+      <y>903</y>
+      <w>77</w>
+      <h>105</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;98</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>777</x>
+      <y>896</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>referencingProductCmptType
+Project1
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>903</x>
+      <y>875</y>
+      <w>118</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>105;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>749</x>
+      <y>833</y>
+      <w>658</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>testCollectDependencies_FindAllDependenciesGoingOverCONFIGUREDBY()
+bg=orange</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>1113</x>
+      <y>882</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=green</panel_attributes>
+    <additional_attributes>126;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>175</x>
+      <y>56</y>
+      <w>119</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+found
+Dependency
+fg=green</panel_attributes>
+    <additional_attributes>21;28;112;28</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>294</x>
+      <y>56</y>
+      <w>119</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+no found
+Dependency
+fg=red</panel_attributes>
+    <additional_attributes>21;28;112;28</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>91</x>
+      <y>1407</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superPolicyCmptType
+bg=yellow
+Project1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>322</x>
+      <y>1407</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superProductCmptType
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>1379</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=green</panel_attributes>
+    <additional_attributes>21;35;126;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>532</x>
+      <y>1407</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>referencingProductCmptType
+Project1
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>427</x>
+      <y>1386</y>
+      <w>118</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>21;35;105;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>56</x>
+      <y>1358</y>
+      <w>658</w>
+      <h>203</h>
+    </coordinates>
+    <panel_attributes>testCollectDependencies_findDependenciesForConfiguredPolicy()
+bg=orange
+layer=-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>1393</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>126;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>91</x>
+      <y>1491</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subPolicyCmptType
+bg=green
+Project1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>322</x>
+      <y>1491</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subProductCmptType
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>1463</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=green</panel_attributes>
+    <additional_attributes>21;35;126;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>1477</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>126;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>105</x>
+      <y>1414</y>
+      <w>80</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>343</x>
+      <y>1414</y>
+      <w>80</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>322</x>
+      <y>1624</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superPolicyCmptType
+bg=green
+Project1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>553</x>
+      <y>1624</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superProductCmptType
+Project1
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>427</x>
+      <y>1596</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=red</panel_attributes>
+    <additional_attributes>21;35;126;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>84</x>
+      <y>1624</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>referencingProductCmptType
+Project1
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>210</x>
+      <y>1603</y>
+      <w>125</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+REFERENCE
+fg=red</panel_attributes>
+    <additional_attributes>112;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>56</x>
+      <y>1575</y>
+      <w>658</w>
+      <h>203</h>
+    </coordinates>
+    <panel_attributes>testCollectDependencies_findDependenciesForConfiguredByProduct()
+bg=orange
+layer=-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>427</x>
+      <y>1610</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=green</panel_attributes>
+    <additional_attributes>126;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>322</x>
+      <y>1708</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subPolicyCmptType
+bg=green
+Project1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>553</x>
+      <y>1708</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>subProductCmptType
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>427</x>
+      <y>1680</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=red</panel_attributes>
+    <additional_attributes>21;35;126;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>427</x>
+      <y>1694</y>
+      <w>139</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=green</panel_attributes>
+    <additional_attributes>126;35;21;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>336</x>
+      <y>1631</y>
+      <w>80</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>574</x>
+      <y>1631</y>
+      <w>80</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+SUBTYPE
+fg=green</panel_attributes>
+    <additional_attributes>42;21;42;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>77</x>
+      <y>1953</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>enumType
+bg=yellow
+Project1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>77</x>
+      <y>2114</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>productCmpt
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>77</x>
+      <y>2030</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superProductCmptType
+Project1
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>91</x>
+      <y>1960</y>
+      <w>86</w>
+      <h>83</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+DATATYPE
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;70</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>91</x>
+      <y>2037</y>
+      <w>91</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+INSTANCEOF
+fg=green</panel_attributes>
+    <additional_attributes>49;21;49;77</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Package</type>
+    <coordinates>
+      <x>63</x>
+      <y>1925</y>
+      <w>420</w>
+      <h>238</h>
+    </coordinates>
+    <panel_attributes>testCollectDependencies_FindSpecificDatatypeDependenciesFindNoPolicy()
+bg=orange
+layer=-1</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>301</x>
+      <y>2030</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>superPolicyCmptType
+Project2
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>182</x>
+      <y>2016</y>
+      <w>132</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGUREDBY
+fg=red</panel_attributes>
+    <additional_attributes>21;35;119;35</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>182</x>
+      <y>2002</y>
+      <w>132</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;
+CONFIGURES
+fg=red</panel_attributes>
+    <additional_attributes>119;35;21;35</additional_attributes>
   </element>
 </diagram>

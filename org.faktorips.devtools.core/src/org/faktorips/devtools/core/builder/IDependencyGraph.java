@@ -10,9 +10,24 @@
 package org.faktorips.devtools.core.builder;
 
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
+/**
+ * The dependency graph is designed to access the dependencies of {@link IIpsObject IPS objects} in
+ * reverse direction. Every {@link IIpsObject} is able to resolve all dependencies itself depends on
+ * by calling the method {@link IIpsObject#dependsOn()}. The dependency graph looks for all
+ * dependencies and is able to resolve the reverse question: which dependencies are targeted to a
+ * specific object.
+ * <p>
+ * The dependency graph is always responsible for the dependencies for exactly one project. More
+ * precisely it is responsible for all dependencies which source object is in the responsible
+ * project. Hence to get all dependencies for a specific object it does not satisfy to check the
+ * dependency graph of the object's project. It is necessary to check also every project that
+ * depends on this project.
+ * 
+ */
 public interface IDependencyGraph {
 
     public abstract IIpsProject getIpsProject();

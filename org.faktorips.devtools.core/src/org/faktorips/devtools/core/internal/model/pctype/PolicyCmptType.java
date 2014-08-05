@@ -395,7 +395,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     protected IDependency[] dependsOn(Map<IDependency, List<IDependencyDetail>> details) throws CoreException {
         Set<IDependency> dependencies = new HashSet<IDependency>();
         if (!StringUtils.isEmpty(getProductCmptType())) {
-            IDependency dependency = IpsObjectDependency.createConfigurationDependency(getQualifiedNameType(),
+            IDependency dependency = IpsObjectDependency.createConfiguredByDependency(getQualifiedNameType(),
                     new QualifiedNameType(getProductCmptType(), IpsObjectType.PRODUCT_CMPT_TYPE));
             dependencies.add(dependency);
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);

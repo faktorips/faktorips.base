@@ -599,8 +599,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         AggregateRootBuilderSet builderSet = new AggregateRootBuilderSet();
         builderSet.setIpsProject(ipsProject);
         ((IpsModel)ipsProject.getIpsModel())
-                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                        builderSet) });
+        .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                builderSet) });
 
         List<IDependency> dependsOn = Arrays.asList(a.dependsOn());
         IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(),
@@ -639,7 +639,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
                 new QualifiedNameType(aPolicyCmptType.getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE),
                 DependencyType.VALIDATION)));
         IDependency dependency = IpsObjectDependency.create(aPolicyCmptType.getQualifiedNameType(),
-                aProductCmptType.getQualifiedNameType(), DependencyType.CONFIGURATION);
+                aProductCmptType.getQualifiedNameType(), DependencyType.CONFIGUREDBY);
         assertTrue(dependencies.contains(dependency));
     }
 

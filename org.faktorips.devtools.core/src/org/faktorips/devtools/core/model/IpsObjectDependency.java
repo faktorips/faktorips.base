@@ -62,13 +62,23 @@ public class IpsObjectDependency implements IDependency, Serializable {
     }
 
     /**
-     * Creates a new Dependency instance indicating a configuration dependency between the specified
-     * source and target objects. A Dependency instance indicates that the source configures the
-     * target or the source is configured by the target and hence the source depends on the target.
+     * Creates a new Dependency instance indicating a configuration dependency of type
+     * {@link DependencyType#CONFIGUREDBY}. The source needs to be a policy component type, the
+     * target is a product component type.
      */
-    public static final IpsObjectDependency createConfigurationDependency(QualifiedNameType source,
+    public static final IpsObjectDependency createConfiguredByDependency(QualifiedNameType source,
             QualifiedNameType target) {
-        return new IpsObjectDependency(source, target, DependencyType.CONFIGURATION);
+        return new IpsObjectDependency(source, target, DependencyType.CONFIGUREDBY);
+    }
+
+    /**
+     * Creates a new Dependency instance indicating a configuration dependency of type
+     * {@link DependencyType#CONFIGURES}. The source needs to be a product component type, the
+     * target is a policy component type.
+     */
+    public static final IpsObjectDependency createConfiguresDependency(QualifiedNameType source,
+            QualifiedNameType target) {
+        return new IpsObjectDependency(source, target, DependencyType.CONFIGURES);
     }
 
     /**
