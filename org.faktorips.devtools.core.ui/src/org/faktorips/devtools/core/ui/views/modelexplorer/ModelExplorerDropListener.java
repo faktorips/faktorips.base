@@ -120,36 +120,41 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
 
             moveNonIPSObjects(sources, target, shell);
         } catch (CoreException e) {
-            IStatus status = e.getStatus();
-            if (status instanceof IpsStatus) {
-                MessageDialog.openError(shell, Messages.ModelExplorer_errorTitle, ((IpsStatus)status).getMessage());
-            } else {
-                IpsPlugin.log(e);
+            logCoreException(shell, e);
+        }
+    }
+
+    private void logCoreException(Shell shell, CoreException e) {
+        IStatus status = e.getStatus();
+        if (status instanceof IpsStatus) {
+            MessageDialog.openError(shell, Messages.ModelExplorer_errorTitle, ((IpsStatus)status).getMessage());
+        } else {
+            IpsPlugin.log(e);
+        }
+    }
+
+    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreException {
+        try {
+            NonIPSMoveOperation moveOp = null;
+            if (target instanceof IIpsPackageFragment) {
+                moveOp = new NonIPSMoveOperation(sources, (IIpsPackageFragment)target);
+            } else if (target instanceof IContainer) {
+                moveOp = new NonIPSMoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
+                        .getLocation().toOSString());
             }
+
+            if (moveOp == null) {
+                return;
+            }
+
+            ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+            // Run the operation with fork = true to ensure UI responsiveness.
+            dialog.run(true, false, new ModifyOperation(moveOp));
         } catch (InvocationTargetException e) {
             IpsPlugin.log(e);
         } catch (InterruptedException e) {
             IpsPlugin.log(e);
         }
-    }
-
-    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreException,
-            InvocationTargetException, InterruptedException {
-        NonIPSMoveOperation moveOp = null;
-        if (target instanceof IIpsPackageFragment) {
-            moveOp = new NonIPSMoveOperation(sources, (IIpsPackageFragment)target);
-        } else if (target instanceof IContainer) {
-            moveOp = new NonIPSMoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
-                    .getLocation().toOSString());
-        }
-
-        if (moveOp == null) {
-            return;
-        }
-
-        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-        // Run the operation with fork = true to ensure UI responsiveness.
-        dialog.run(true, false, new ModifyOperation(moveOp));
     }
 
     private Object getTarget(DropTargetEvent event) {

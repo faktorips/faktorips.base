@@ -389,6 +389,14 @@ public final class MoveRenamePackageHelper {
     }
 
     /**
+     * Returns <code>false</code> because the {@link IpsPackageFragment} is not a file and the
+     * {@link IpsSrcFile} inside checks this property self.
+     */
+    public boolean isSourceFilesSavedRequired() {
+        return false;
+    }
+
+    /**
      * Stores the path and the filename
      */
     private static final class FileInfo {
@@ -419,13 +427,5 @@ public final class MoveRenamePackageHelper {
             stringBuilder.append("]"); //$NON-NLS-1$
             return stringBuilder.toString();
         }
-    }
-
-    /**
-     * Returns <code>false</code> because the {@link IpsPackageFragment} is not a file and the
-     * {@link IpsSrcFile} inside checks this property self.
-     */
-    public boolean isSourceFilesSavedRequired() {
-        return false;
     }
 }
