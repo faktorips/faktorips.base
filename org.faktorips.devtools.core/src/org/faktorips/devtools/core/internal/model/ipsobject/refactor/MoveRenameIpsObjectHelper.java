@@ -153,7 +153,11 @@ public final class MoveRenameIpsObjectHelper {
             // Need to catch RuntimeException to get really every exception and set corresponding
             // fatal error status
         } catch (RuntimeException e) {
-            status.addFatalError(e.getLocalizedMessage());
+            if (e.getLocalizedMessage() != null) {
+                status.addFatalError(e.getLocalizedMessage());
+            } else {
+                status.addFatalError("no message available " + e); //$NON-NLS-1$
+            }
             return new MessageList();
             // CSON: IllegalCatch
         } finally {

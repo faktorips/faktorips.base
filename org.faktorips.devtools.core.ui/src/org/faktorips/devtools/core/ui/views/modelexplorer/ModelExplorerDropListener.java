@@ -97,7 +97,11 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                 Set<IIpsElement> ipsElements = new LinkedHashSet<IIpsElement>(sources.length);
                 for (Object source : sources) {
                     if ((source instanceof IIpsSrcFile)) {
-                        ipsElements.add(((IIpsSrcFile)source).getIpsObject());
+                        IIpsSrcFile ipsSourceFile = (IIpsSrcFile)source;
+                        if (ipsSourceFile.isDirty()) {
+                            return;
+                        }
+                        ipsElements.add(ipsSourceFile.getIpsObject());
                     } else if (source instanceof IIpsPackageFragment) {
                         ipsElements.add((IIpsPackageFragment)source);
                     }
@@ -114,21 +118,7 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
                 }
             }
 
-            NonIPSMoveOperation moveOp = null;
-            if (target instanceof IIpsPackageFragment) {
-                moveOp = new NonIPSMoveOperation(sources, (IIpsPackageFragment)target);
-            } else if (target instanceof IContainer) {
-                moveOp = new NonIPSMoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
-                        .getLocation().toOSString());
-            }
-
-            if (moveOp == null) {
-                return;
-            }
-
-            ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
-            // Run the operation with fork = true to ensure UI responsiveness.
-            dialog.run(true, false, new ModifyOperation(moveOp));
+            moveNonIPSObjects(sources, target, shell);
         } catch (CoreException e) {
             IStatus status = e.getStatus();
             if (status instanceof IpsStatus) {
@@ -141,6 +131,25 @@ public class ModelExplorerDropListener extends IpsElementDropListener {
         } catch (InterruptedException e) {
             IpsPlugin.log(e);
         }
+    }
+
+    private void moveNonIPSObjects(Object[] sources, Object target, Shell shell) throws CoreException,
+            InvocationTargetException, InterruptedException {
+        NonIPSMoveOperation moveOp = null;
+        if (target instanceof IIpsPackageFragment) {
+            moveOp = new NonIPSMoveOperation(sources, (IIpsPackageFragment)target);
+        } else if (target instanceof IContainer) {
+            moveOp = new NonIPSMoveOperation(((IContainer)target).getProject(), sources, ((IResource)target)
+                    .getLocation().toOSString());
+        }
+
+        if (moveOp == null) {
+            return;
+        }
+
+        ProgressMonitorDialog dialog = new ProgressMonitorDialog(shell);
+        // Run the operation with fork = true to ensure UI responsiveness.
+        dialog.run(true, false, new ModifyOperation(moveOp));
     }
 
     private Object getTarget(DropTargetEvent event) {
