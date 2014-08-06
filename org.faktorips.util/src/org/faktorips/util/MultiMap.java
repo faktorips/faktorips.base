@@ -10,6 +10,7 @@
 
 package org.faktorips.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +31,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * {@link #createWithListsAsValues()} and {@link #createWithSetsAsValues()}. The map then contains
  * only lists or only sets respectively, depending on the use case.
  */
-public class MultiMap<K, V> {
+public class MultiMap<K, V> implements Serializable {
+
+    /**
+     * Serializable for persistence of the DependencyGraph.
+     */
+    private static final long serialVersionUID = 1L;
 
     private final ConcurrentHashMap<K, Collection<V>> internalMap;
 
@@ -216,7 +222,9 @@ public class MultiMap<K, V> {
     /**
      * Creates {@link ArrayList} instances as {@link MultiMap} values.
      */
-    public static class ArrayListFactory<V> implements CollectionFactory<V> {
+    public static class ArrayListFactory<V> implements CollectionFactory<V>, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         @Override
         public Collection<V> createCollection() {
@@ -228,7 +236,9 @@ public class MultiMap<K, V> {
     /**
      * Creates {@link HashSet} instances as {@link MultiMap} values.
      */
-    public static class HashSetFactory<V> implements CollectionFactory<V> {
+    public static class HashSetFactory<V> implements CollectionFactory<V>, Serializable {
+
+        private static final long serialVersionUID = 1L;
 
         @Override
         public Collection<V> createCollection() {
