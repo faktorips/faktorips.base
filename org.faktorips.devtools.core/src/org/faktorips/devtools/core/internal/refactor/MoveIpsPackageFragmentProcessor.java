@@ -51,6 +51,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
         if (newPackageFragment != null && newPackageFragment.exists()) {
             status.addFatalError(NLS.bind(Messages.IpsPackageFragmentProcessor_errorPackageAlreadyContains,
                     newPackageFragment.getName()));
+            return;
         }
         moveRenameHelper.checkFinalConditions(newPackageFragment, status, pm);
     }
@@ -62,6 +63,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
             status.addFatalError(NLS.bind(
                     Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
                     getOriginalIpsPackageFragment().getName()));
+            return;
         }
         if (isDefaultPackageMovedToSameProject()) {
             status.addFatalError(Messages.IpsCompositeMoveRefactoring_msgDefaultPackageInSameProject);

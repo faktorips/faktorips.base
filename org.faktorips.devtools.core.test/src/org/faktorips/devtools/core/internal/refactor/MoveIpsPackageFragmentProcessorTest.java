@@ -160,12 +160,17 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCheckFinalConditionsThis_StatusNOK() throws Exception {
+        // target folder exists
         ipsRoot.createPackageFragment("target.products", true, new NullProgressMonitor());
         RefactoringStatus status = new RefactoringStatus();
         CheckConditionsContext context = new CheckConditionsContext();
         processor.checkFinalConditionsThis(status, new NullProgressMonitor(), context);
         assertTrue(status.hasError());
-        assertThatFilesOk();
+        // target folder not deleted
+        assertTrue(target.getSubPackage("products").exists());
+        assertTrue(source.getIpsSrcFile("ProductA", IpsObjectType.PRODUCT_CMPT).exists());
+        assertTrue(source.getIpsSrcFile("ProductB", IpsObjectType.PRODUCT_CMPT).exists());
+        assertTrue(source.getSubPackage("subproducts").getIpsSrcFile("ProductC", IpsObjectType.PRODUCT_CMPT).exists());
     }
 
     @Test
