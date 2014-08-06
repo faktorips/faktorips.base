@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
@@ -59,14 +58,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
         super.validateUserInputThis(status, pm);
         IIpsPackageFragment newPackageFragment = getOriginalIpsPackageFragment().getRoot().getIpsPackageFragment(
                 getNewName());
-        if (packageFragmentExists(newPackageFragment)) {
-            status.addFatalError(NLS.bind(Messages.IpsPackageFragmentProcessor_errorPackageAlreadyContains,
-                    newPackageFragment.getName()));
-        }
-    }
-
-    private boolean packageFragmentExists(IIpsPackageFragment newPackageFragment) {
-        return newPackageFragment != null && newPackageFragment.exists();
+        moveRenameHelper.checkTargetPackage(newPackageFragment, status);
     }
 
     @Override

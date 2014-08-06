@@ -21,6 +21,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -534,4 +535,29 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
         helper = new MoveRenamePackageHelper(source);
         assertFalse(helper.isSourceFilesSavedRequired());
     }
+
+    @Test
+    public void testCheckTargetPackage_TargetPackageNotValid() throws Exception {
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        RefactoringStatus status = new RefactoringStatus();
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkTargetPackage(null, status);
+        assertTrue(status.hasFatalError());
+        assertEquals(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid, status.getEntryWithHighestSeverity()
+                .getMessage());
+    }
+
+    @Test
+    public void testCheckTargetPackage_TargetPackageExists() throws Exception {
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        RefactoringStatus status = new RefactoringStatus();
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.checkTargetPackage(source, status);
+        assertTrue(status.hasFatalError());
+        assertEquals(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains, source.getName()),
+                status.getEntryWithHighestSeverity().getMessage());
+    }
+
 }

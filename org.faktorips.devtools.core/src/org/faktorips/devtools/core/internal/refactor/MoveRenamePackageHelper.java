@@ -116,6 +116,9 @@ public final class MoveRenamePackageHelper {
             IIpsPackageFragment targetPackage = currTargetRoot.getIpsPackageFragment(buildPackageName(
                     StringUtils.EMPTY, newName, fileInfos.getPath()));
 
+            if (targetPackage == null) {
+                continue;
+            }
             if (targetPackage.getParentIpsPackageFragment().equals(originalPackageFragment)) {
                 createSubPackage = true;
             }
@@ -346,7 +349,8 @@ public final class MoveRenamePackageHelper {
     public void checkFinalConditions(IIpsPackageFragment targetIpsPackageFragment,
             RefactoringStatus status,
             IProgressMonitor pm) throws CoreException {
-        if (targetIpsPackageFragment != null) {
+        // no errors so far
+        if (targetIpsPackageFragment != null && status.isOK()) {
             try {
                 createPackageFragmentIfNotExist(targetIpsPackageFragment.getRoot(), targetIpsPackageFragment, pm);
                 Set<IIpsSrcFile> affectedIpsSrcFiles = getAffectedIpsSrcFiles();
@@ -358,6 +362,18 @@ public final class MoveRenamePackageHelper {
                     targetIpsPackageFragment.getEnclosingResource().delete(true, pm);
                 }
             }
+        }
+    }
+
+    /**
+     * Checks the new target {@link IIpsPackageFragment} is not valid or already exists.
+     */
+    public void checkTargetPackage(IIpsPackageFragment newPackageFragment, RefactoringStatus status) {
+        if (newPackageFragment == null) {
+            status.addFatalError(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid);
+        } else if (newPackageFragment.exists()) {
+            status.addFatalError(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains,
+                    newPackageFragment.getName()));
         }
     }
 

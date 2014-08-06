@@ -170,6 +170,15 @@ public class RenameIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest
     }
 
     @Test
+    public void testValidateUserInputThis_RenameToNotValidFolder() throws CoreException {
+        processor.setNewName("data.");
+        RefactoringStatus status = new RefactoringStatus();
+        processor.validateUserInputThis(status, new NullProgressMonitor());
+        assertTrue(status.hasFatalError());
+        assertNotNull(status.getMessageMatchingSeverity(RefactoringStatus.FATAL));
+    }
+
+    @Test
     public void testRefactorIpsModel() throws Exception {
         processor.refactorIpsModel(new NullProgressMonitor());
 

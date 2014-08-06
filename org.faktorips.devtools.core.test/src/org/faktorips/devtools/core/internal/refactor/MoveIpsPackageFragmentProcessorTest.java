@@ -159,7 +159,7 @@ public class MoveIpsPackageFragmentProcessorTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCheckFinalConditionsThis_StatusNOK() throws Exception {
+    public void testCheckFinalConditionsThis_TargetFolderExist() throws Exception {
         // target folder exists
         ipsRoot.createPackageFragment("target.products", true, new NullProgressMonitor());
         RefactoringStatus status = new RefactoringStatus();
