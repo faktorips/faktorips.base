@@ -304,23 +304,11 @@ public final class MoveRenamePackageHelper {
      * Checks the initial conditions.
      */
     public void checkInitialConditions(RefactoringStatus status) throws CoreException {
-        if (!packageValid(originalPackageFragment)) {
-            status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorPackageContainsInvalidObjects,
-                    originalPackageFragment.getName()));
-        }
-    }
-
-    /**
-     * Checks the initial conditions.
-     * 
-     * @param targetPackageFragment the package fragment the original package fragment is moved into
-     */
-    public void checkInitialConditions(RefactoringStatus status, IIpsPackageFragment targetPackageFragment)
-            throws CoreException {
-        checkInitialConditions(status);
-        if (!MoveOperation.canMovePackages(new Object[] { originalPackageFragment }, targetPackageFragment)) {
-            status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage,
-                    originalPackageFragment.getName()));
+        if (status.isOK()) {
+            if (!packageValid(originalPackageFragment)) {
+                status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorPackageContainsInvalidObjects,
+                        originalPackageFragment.getName()));
+            }
         }
     }
 
@@ -368,12 +356,20 @@ public final class MoveRenamePackageHelper {
     /**
      * Checks the new target {@link IIpsPackageFragment} is not valid or already exists.
      */
-    public void checkTargetPackage(IIpsPackageFragment newPackageFragment, RefactoringStatus status) {
-        if (newPackageFragment == null) {
-            status.addFatalError(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid);
-        } else if (newPackageFragment.exists()) {
-            status.addFatalError(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains,
-                    newPackageFragment.getName()));
+    public void validateUserInput(IIpsPackageFragment newPackageFragment, RefactoringStatus status) {
+        if (status.isOK()) {
+            if (newPackageFragment == null) {
+                status.addFatalError(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid);
+                return;
+            } else if (newPackageFragment.exists()) {
+                status.addFatalError(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains,
+                        newPackageFragment.getName()));
+                return;
+            }
+            if (!MoveOperation.canMovePackages(new Object[] { originalPackageFragment }, newPackageFragment)) {
+                status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage,
+                        originalPackageFragment.getName()));
+            }
         }
     }
 

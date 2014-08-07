@@ -182,42 +182,6 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCheckInitialConditions_prohibitMoveIntoSubPackage() throws Exception {
-        RefactoringStatus status = new RefactoringStatus();
-        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
-        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products.subpackage");
-
-        helper = new MoveRenamePackageHelper(source);
-        helper.checkInitialConditions(status, target);
-
-        assertFalse(status.isOK());
-    }
-
-    @Test
-    public void testCheckInitialConditions_prohibitMoveIntoSelf() throws Exception {
-        RefactoringStatus status = new RefactoringStatus();
-        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
-        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products");
-
-        helper = new MoveRenamePackageHelper(source);
-        helper.checkInitialConditions(status, target);
-
-        assertFalse(status.isOK());
-    }
-
-    @Test
-    public void testCheckInitialConditions_prohibitMoveDefaultPackage() throws Exception {
-        RefactoringStatus status = new RefactoringStatus();
-        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("");
-        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products");
-
-        helper = new MoveRenamePackageHelper(source);
-        helper.checkInitialConditions(status, target);
-
-        assertFalse(status.isOK());
-    }
-
-    @Test
     public void testGetAffectedIpsSrcFiles() throws Exception {
         IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
         IFile file = ((IFolder)source.getCorrespondingResource()).getFile("test.unknown");
@@ -537,27 +501,52 @@ public class MoveRenamePackageHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCheckTargetPackage_TargetPackageNotValid() throws Exception {
+    public void testValidateUserInput_TargetPackageNotValid() throws Exception {
         IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
         RefactoringStatus status = new RefactoringStatus();
 
         helper = new MoveRenamePackageHelper(source);
-        helper.checkTargetPackage(null, status);
+        helper.validateUserInput(null, status);
         assertTrue(status.hasFatalError());
         assertEquals(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid, status.getEntryWithHighestSeverity()
                 .getMessage());
     }
 
     @Test
-    public void testCheckTargetPackage_TargetPackageExists() throws Exception {
+    public void testValidateUserInput_TargetPackageExists() throws Exception {
         IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
         RefactoringStatus status = new RefactoringStatus();
 
         helper = new MoveRenamePackageHelper(source);
-        helper.checkTargetPackage(source, status);
+        helper.validateUserInput(source, status);
         assertTrue(status.hasFatalError());
-        assertEquals(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains, source.getName()),
+        assertEquals(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains, source.getName()), status
+                .getEntryWithHighestSeverity().getMessage());
+    }
+
+    @Test
+    public void testValidateUserInput_TargetPackageSubPackage() throws Exception {
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("data.products");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products.subProducts");
+        RefactoringStatus status = new RefactoringStatus();
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.validateUserInput(target, status);
+        assertTrue(status.hasFatalError());
+        assertEquals(
+                NLS.bind(Messages.MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage, source.getName()),
                 status.getEntryWithHighestSeverity().getMessage());
     }
 
+    @Test
+    public void testValidateUserInput_prohibitMoveDefaultPackage() throws Exception {
+        RefactoringStatus status = new RefactoringStatus();
+        IIpsPackageFragment source = ipsRoot.getIpsPackageFragment("");
+        IIpsPackageFragment target = ipsRoot.getIpsPackageFragment("data.products");
+
+        helper = new MoveRenamePackageHelper(source);
+        helper.validateUserInput(target, status);
+
+        assertFalse(status.isOK());
+    }
 }

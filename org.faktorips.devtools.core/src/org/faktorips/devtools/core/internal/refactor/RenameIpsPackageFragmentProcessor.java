@@ -58,7 +58,7 @@ public class RenameIpsPackageFragmentProcessor extends IpsRenameProcessor {
         super.validateUserInputThis(status, pm);
         IIpsPackageFragment newPackageFragment = getOriginalIpsPackageFragment().getRoot().getIpsPackageFragment(
                 getNewName());
-        moveRenameHelper.checkTargetPackage(newPackageFragment, status);
+        moveRenameHelper.validateUserInput(newPackageFragment, status);
     }
 
     @Override

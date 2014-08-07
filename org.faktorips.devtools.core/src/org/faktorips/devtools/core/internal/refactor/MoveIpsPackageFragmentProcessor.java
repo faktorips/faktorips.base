@@ -37,7 +37,7 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
     @Override
     protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
         super.checkInitialConditionsThis(status, pm);
-        moveRenameHelper.checkInitialConditions(status, getTargetIpsPackageFragment());
+        moveRenameHelper.checkInitialConditions(status);
     }
 
     @Override
@@ -48,7 +48,6 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
         IIpsPackageFragment newPackageFragment = getTargetIpsPackageFragment().getSubPackage(
                 getOriginalIpsPackageFragment().getLastSegmentName());
 
-        moveRenameHelper.checkTargetPackage(newPackageFragment, status);
         moveRenameHelper.checkFinalConditions(newPackageFragment, status, pm);
     }
 
@@ -63,7 +62,11 @@ public class MoveIpsPackageFragmentProcessor extends IpsMoveProcessor {
         }
         if (isDefaultPackageMovedToSameProject()) {
             status.addFatalError(Messages.IpsCompositeMoveRefactoring_msgDefaultPackageInSameProject);
+            return;
         }
+        IIpsPackageFragment newPackageFragment = getTargetIpsPackageFragment().getSubPackage(
+                getOriginalIpsPackageFragment().getLastSegmentName());
+        moveRenameHelper.validateUserInput(newPackageFragment, status);
     }
 
     private boolean isTargetParentPackage() {
