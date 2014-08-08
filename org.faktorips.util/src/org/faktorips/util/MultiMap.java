@@ -34,13 +34,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MultiMap<K, V> implements Serializable {
 
     /**
-     * Serializable for persistence of the DependencyGraph.
+     * Comment for <code>serialVersionUID</code>
      */
-    private static final long serialVersionUID = 1L;
-
-    private final ConcurrentHashMap<K, Collection<V>> internalMap;
+    private static final long serialVersionUID = -1167623033749612550L;
 
     private final CollectionFactory<V> collectionFactory;
+
+    private final ConcurrentHashMap<K, Collection<V>> internalMap;
 
     /**
      * Creates a new {@link MultiMap} with {@link ArrayList} instances as values.
@@ -210,7 +210,7 @@ public class MultiMap<K, V> implements Serializable {
     /**
      * Factory for creating collection instances to be used as values in a {@link MultiMap}.
      */
-    public static interface CollectionFactory<V> {
+    public static interface CollectionFactory<V> extends Serializable {
 
         /**
          * Creates collections that are used as values in a {@link MultiMap}
@@ -222,9 +222,12 @@ public class MultiMap<K, V> implements Serializable {
     /**
      * Creates {@link ArrayList} instances as {@link MultiMap} values.
      */
-    public static class ArrayListFactory<V> implements CollectionFactory<V>, Serializable {
+    public static class ArrayListFactory<V> implements CollectionFactory<V> {
 
-        private static final long serialVersionUID = 1L;
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = -1282726028020257888L;
 
         @Override
         public Collection<V> createCollection() {
@@ -236,9 +239,12 @@ public class MultiMap<K, V> implements Serializable {
     /**
      * Creates {@link HashSet} instances as {@link MultiMap} values.
      */
-    public static class HashSetFactory<V> implements CollectionFactory<V>, Serializable {
+    public static class HashSetFactory<V> implements CollectionFactory<V> {
 
-        private static final long serialVersionUID = 1L;
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 2534395916683559784L;
 
         @Override
         public Collection<V> createCollection() {
