@@ -41,6 +41,5 @@ public class Messages extends NLS {
     public static String OpenActionGroup_openWithMenuLabel;
 
     public static String ModelExplorerDropListener_titleMove;
-    public static String ModelExplorerDropListener_errorPackageContainsInvalidObjects;
 
 }
