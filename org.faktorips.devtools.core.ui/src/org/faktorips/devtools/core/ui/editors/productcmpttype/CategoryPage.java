@@ -351,20 +351,22 @@ public class CategoryPage extends IpsObjectEditorPage {
 
             @Override
             public void run() {
-                class NewCategoryDialogMementoHelper extends DialogMementoHelper {
-                    private IProductCmptCategory newCategory;
-
-                    @Override
-                    protected Dialog createDialog() {
-                        newCategory = getProductCmptType().newCategory();
-                        Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
-                        return new CategoryEditDialog(newCategory, shell);
-                    }
-                }
                 NewCategoryDialogMementoHelper dialogHelper = new NewCategoryDialogMementoHelper();
                 int returnCode = dialogHelper.openDialogWithMemento(getProductCmptType());
                 if (returnCode == Window.OK) {
                     recreateCategorySections(dialogHelper.newCategory);
+                }
+            }
+
+            class NewCategoryDialogMementoHelper extends DialogMementoHelper {
+
+                private IProductCmptCategory newCategory;
+
+                @Override
+                protected Dialog createDialog() {
+                    newCategory = getProductCmptType().newCategory();
+                    Shell shell = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getShell();
+                    return new CategoryEditDialog(newCategory, shell);
                 }
             }
 
@@ -418,8 +420,7 @@ public class CategoryPage extends IpsObjectEditorPage {
             try {
                 Object categoryState = obtainCategoryState();
                 if (lastCategoryState == null || !lastCategoryState.equals(categoryState)) {
-                    if (categoryCompositionSection != null
-                            && getProductCmptType().hasExistingSupertype(getIpsProject())) {
+                    if (categoryCompositionSection != null) {
                         categoryCompositionSection.recreateCategorySections(null);
                     }
                     lastCategoryState = categoryState;
