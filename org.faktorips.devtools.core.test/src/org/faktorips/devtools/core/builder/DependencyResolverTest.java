@@ -498,14 +498,29 @@ public class DependencyResolverTest {
                 new IDependency[] { depReferenceSubProductCmptTypeToSuperProductCmptType });
         when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt,
-                        depReferenceReferencingProductCmptTypeToSubProductCmptType });
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType, depSubSubtype });
 
         MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
 
         assertEquals(1, collectedDependencies.keySet().size());
-        assertEquals(2, collectedDependencies.get(ipsProject1).size());
+        assertEquals(1, collectedDependencies.get(ipsProject1).size());
         assertThat(collectedDependencies.get(ipsProject1),
-                hasItems(depReferenceSubProductCmptTypeToSuperProductCmptType, depInstanceOfProductCmpt));
+                hasItems(depReferenceSubProductCmptTypeToSuperProductCmptType));
+    }
+
+    @Test
+    public void testCollectDependencies_FindSpecificDependenciesGoingOverVALIDATION() {
+        depValidation = IpsObjectDependency.create(subProductCmptType, superProductCmptType, DependencyType.VALIDATION);
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depValidation });
+        when(dependencyGraph1.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt,
+                        depReferenceReferencingProductCmptTypeToSubProductCmptType, depSubSubtype });
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(superProductCmptType);
+
+        assertEquals(1, collectedDependencies.keySet().size());
+        assertEquals(1, collectedDependencies.get(ipsProject1).size());
+        assertThat(collectedDependencies.get(ipsProject1), hasItems(depValidation));
     }
 
     @Test

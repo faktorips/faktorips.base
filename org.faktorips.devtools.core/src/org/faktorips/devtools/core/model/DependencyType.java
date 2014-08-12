@@ -77,7 +77,7 @@ public enum DependencyType {
     REFERENCE("reference dependency") { //$NON-NLS-1$
         @Override
         public EnumSet<DependencyType> getTransitiveTypes(IIpsProject ipsProject) {
-            return EnumSet.of(SUBTYPE, INSTANCEOF);
+            return EnumSet.noneOf(DependencyType.class);
         }
     },
 
