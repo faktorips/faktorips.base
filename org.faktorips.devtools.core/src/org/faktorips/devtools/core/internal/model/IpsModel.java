@@ -1453,7 +1453,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public void clearValidationCache() {
-        getValidationResultCache().removeStaleData(null);
+        getValidationResultCache().clear();
     }
 
     private void createIpsArtefactBuilderSetInfosIfNecessary() {
