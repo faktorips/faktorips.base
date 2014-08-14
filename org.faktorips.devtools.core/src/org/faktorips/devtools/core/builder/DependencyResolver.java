@@ -47,11 +47,13 @@ import org.faktorips.util.MultiMap;
  */
 public class DependencyResolver {
 
+    private final IIpsProject referenceProject;
+
     private final IIpsProject ipsProject;
 
     private final IDependencyGraph graph;
 
-    private final MultiMap<IIpsProject, IDependency> dependenciesForProjectMap = MultiMap.createWithSetsAsValues();
+    private final MultiMap<IIpsProject, IDependency> dependenciesForProjectMap;
 
     /**
      * Creates a new {@link DependencyResolver} for the specified project. If there are other
@@ -62,7 +64,21 @@ public class DependencyResolver {
      */
     public DependencyResolver(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
+        referenceProject = ipsProject;
         graph = getDependencyGraph();
+        dependenciesForProjectMap = MultiMap.createWithSetsAsValues();
+    }
+
+    /**
+     * Creates a new dependency resolver and uses the previous resolver to set up the
+     * {@link #referenceProject} and the already found {@link #dependenciesForProjectMap}
+     * 
+     */
+    private DependencyResolver(IIpsProject ipsProject, DependencyResolver previousResolver) {
+        this.ipsProject = ipsProject;
+        graph = getDependencyGraph();
+        referenceProject = previousResolver.referenceProject;
+        dependenciesForProjectMap = previousResolver.dependenciesForProjectMap;
     }
 
     private IDependencyGraph getDependencyGraph() {
@@ -145,14 +161,10 @@ public class DependencyResolver {
     }
 
     private IEnumContent findEnumContentIpsObject(QualifiedNameType root) {
-        if (isEnumContent(root)) {
-            try {
-                return (IEnumContent)ipsProject.findIpsObject(root);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
-        } else {
-            return null;
+        try {
+            return (IEnumContent)ipsProject.findIpsObject(root);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
@@ -169,15 +181,9 @@ public class DependencyResolver {
             IIpsProject enumTypeProject,
             EnumSet<DependencyType> transitiveTypes) {
         Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<IIpsProject>();
-        DependencyResolver enumTypedependencyResolver = new DependencyResolver(enumTypeProject);
+        DependencyResolver enumTypedependencyResolver = new DependencyResolver(enumTypeProject, this);
         QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(), IpsObjectType.ENUM_TYPE);
         enumTypedependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent, transitiveTypes);
-        dependenciesForProjectMap.merge(enumTypedependencyResolver.getCollectedDependencies());
-        for (IIpsProject foundProject : dependenciesForProjectMap.keySet()) {
-            if (foundProject.isReferencedBy(ipsProject, true)) {
-                dependenciesForProjectMap.remove(foundProject);
-            }
-        }
     }
 
     private void collectDependencies(QualifiedNameType root, EnumSet<DependencyType> transitiveTypes) {
@@ -185,7 +191,9 @@ public class DependencyResolver {
         for (IDependency dependency : dependencies) {
             if (!isAlreadyCollected(dependency)) {
                 if (isProperDependency(dependency, transitiveTypes)) {
-                    dependenciesForProjectMap.put(ipsProject, dependency);
+                    if (ipsProject.equals(referenceProject) || ipsProject.isReferencing(referenceProject)) {
+                        dependenciesForProjectMap.put(ipsProject, dependency);
+                    }
                     collectTransitivDependencies(dependency, transitiveTypes);
                 }
             }
@@ -211,10 +219,11 @@ public class DependencyResolver {
         visitedProjects.add(ipsProject);
         IIpsProject[] dependantProjects = ipsProject.findReferencingProjects(false);
         for (IIpsProject dependantProject : dependantProjects) {
-            if (!visitedProjects.contains(dependantProject)) {
-                DependencyResolver dependencyResolver = new DependencyResolver(dependantProject);
+            if (!visitedProjects.contains(dependantProject)
+                    && (dependantProject.equals(referenceProject) || referenceProject.isReferencing(dependantProject) || dependantProject
+                            .isReferencing(referenceProject))) {
+                DependencyResolver dependencyResolver = new DependencyResolver(dependantProject, this);
                 dependencyResolver.collectDependencies(root, visitedProjects, transitiveTypes);
-                dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
             }
         }
     }

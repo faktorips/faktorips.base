@@ -201,8 +201,6 @@ public class DependencyResolverTest {
         when(ipsProject1.getDependencyGraph()).thenReturn(dependencyGraph1);
         when(ipsProject1.canBeBuild()).thenReturn(true);
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2 });
-        when(ipsProject1.isReferencedBy(ipsProject2, true)).thenReturn(true);
-        when(ipsProject1.isReferencedBy(ipsProject3, true)).thenReturn(true);
         when(ipsProject1.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
 
         dependencyResolver = new DependencyResolver(ipsProject1);
@@ -212,8 +210,8 @@ public class DependencyResolverTest {
         when(ipsProject2.getDependencyGraph()).thenReturn(dependencyGraph2);
         when(ipsProject2.canBeBuild()).thenReturn(true);
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject3 });
-        when(ipsProject2.isReferencedBy(ipsProject3, true)).thenReturn(true);
         when(ipsProject2.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
+        when(ipsProject2.isReferencing(ipsProject1)).thenReturn(true);
 
         when(dependencyGraph2.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
 
@@ -221,12 +219,15 @@ public class DependencyResolverTest {
         when(ipsProject3.canBeBuild()).thenReturn(true);
         when(ipsProject3.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
         when(ipsProject3.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
+        when(ipsProject3.isReferencing(ipsProject1)).thenReturn(true);
+        when(ipsProject3.isReferencing(ipsProject2)).thenReturn(true);
 
         when(dependencyGraph3.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
 
         when(ipsProject4.getDependencyGraph()).thenReturn(dependencyGraph4);
         when(ipsProject4.canBeBuild()).thenReturn(true);
         when(ipsProject4.findReferencingProjects(false)).thenReturn(new IIpsProject[0]);
+        when(ipsProject4.isReferencing(ipsProject1)).thenReturn(true);
         when(ipsProject4.getIpsArtefactBuilderSet()).thenReturn(artefactBuilderSet);
 
         when(dependencyGraph4.getDependants(any(QualifiedNameType.class))).thenReturn(new IDependency[0]);
@@ -745,6 +746,31 @@ public class DependencyResolverTest {
         assertEquals(1, collectedDependencies.get(ipsProject3).size());
         assertThat(collectedDependencies.get(ipsProject2), hasItems(depInstanceOfEnum, depSubtype));
         assertThat(collectedDependencies.get(ipsProject3), hasItems(depInstanceOfProductCmpt));
+    }
+
+    @Test
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentNotInOtherProjects()
+            throws CoreException {
+        when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2, ipsProject3 });
+        when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] {});
+        when(ipsProject3.isReferencing(ipsProject2)).thenReturn(false);
+
+        when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
+        when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
+        when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
+        when(dependencyGraph3.getDependants(subProductCmptType)).thenReturn(
+                new IDependency[] { depInstanceOfProductCmpt, });
+        dependencyResolver = new DependencyResolver(ipsProject2);
+        when(ipsProject2.findIpsObject(enumContent)).thenReturn(enumContentObject);
+        when(enumContentObject.getEnumType()).thenReturn("enumType");
+        when(enumContentObject.findEnumType(ipsProject2)).thenReturn(enumTypeObject);
+        when(enumTypeObject.getIpsProject()).thenReturn(ipsProject1);
+
+        MultiMap<IIpsProject, IDependency> collectedDependencies = collectDependenciesOf(enumContent);
+
+        assertEquals(1, collectedDependencies.keySet().size());
+        assertEquals(1, collectedDependencies.get(ipsProject2).size());
+        assertThat(collectedDependencies.get(ipsProject2), hasItems(depInstanceOfEnum));
     }
 
     @Test
