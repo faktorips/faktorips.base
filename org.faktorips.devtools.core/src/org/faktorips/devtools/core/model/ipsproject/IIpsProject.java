@@ -209,9 +209,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param considerIndirect <code>true</code> if the method should return <code>true</code> for
      *            indirect references.
      * 
-     * @throws CoreException if an error occurs.
      */
-    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect) throws CoreException;
+    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect);
 
     /**
      * Returns all ips projects that reference this one in their ips object path.
@@ -246,9 +245,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @return The IPS projects referencing this project excluding projects that are referenced by
      *         another result
-     * @throws CoreException if an error occurs while searching the project
      */
-    public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException;
+    public IIpsProject[] findReferencingProjectLeavesOrSelf();
 
     /**
      * Returns <code>true</code> if this project depends on the other project, because it is
@@ -258,7 +256,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @see IIpsObjectPath
      */
-    public boolean isReferencing(IIpsProject otherProject) throws CoreException;
+    public boolean isReferencing(IIpsProject otherProject);
 
     /**
      * This method returns the dependency graph for this project. The dependency graph is designed

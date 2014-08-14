@@ -52,7 +52,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
     public ProjectOverviewPageElement(DocumentationContext context) {
         this.context = context;
         setTitle(context.getMessage(HtmlExportMessages.ProjectOverviewPageElement_project)
-                + " " + getProject().getName()); //$NON-NLS-1$ 
+                + " " + getProject().getName()); //$NON-NLS-1$
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_1));
 
         addPageElements(new TextPageElement(context.getMessage(HtmlExportMessages.ProjectOverviewPageElement_version)
-                + ": " + getProject().getReadOnlyProperties().getVersion())); //$NON-NLS-1$ 
+                + ": " + getProject().getReadOnlyProperties().getVersion())); //$NON-NLS-1$
 
         addIpsObjectPaths();
 
@@ -77,9 +77,9 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
      */
     private void addCreationTime() {
         IPageElement createCreationTime = new TextPageElement(
-                context.getMessage(HtmlExportMessages.ProjectOverviewPageElement_created) + " " //$NON-NLS-1$ 
-                        + new SimpleDateFormat(CREATION_TIME_DATE_FORMAT).format(new Date()), TextType.BLOCK)
-                .addStyles(Style.SMALL);
+                context.getMessage(HtmlExportMessages.ProjectOverviewPageElement_created) + " " //$NON-NLS-1$
+                + new SimpleDateFormat(CREATION_TIME_DATE_FORMAT).format(new Date()), TextType.BLOCK)
+        .addStyles(Style.SMALL);
         addPageElements(createCreationTime);
     }
 
@@ -137,7 +137,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils()
-                .createTextPageElements(referencedIpsProjectsName)));
+        .createTextPageElements(referencedIpsProjectsName)));
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -146,13 +146,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         wrapper.addPageElements(new TextPageElement(context
                 .getMessage(HtmlExportMessages.ProjectOverviewPageElement_referencingProjects), TextType.HEADING_3));
         IIpsProject[] referencingProjectLeavesOrSelf;
-        try {
-            referencingProjectLeavesOrSelf = objectPath.getIpsProject().findReferencingProjectLeavesOrSelf();
-        } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.ERROR, "Error getting referencing projects", e)); //$NON-NLS-1$
-            return wrapper.addPageElements(new TextPageElement(context
-                    .getMessage(HtmlExportMessages.ProjectOverviewPageElement_noReferencingProjects)));
-        }
+        referencingProjectLeavesOrSelf = objectPath.getIpsProject().findReferencingProjectLeavesOrSelf();
 
         List<String> referencingIpsProjectsName = new ArrayList<String>();
         for (IIpsProject ipsProject : referencingProjectLeavesOrSelf) {
@@ -168,7 +162,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         }
 
         ListPageElement referencingProjects = new ListPageElement(Arrays.asList(new PageElementUtils()
-                .createTextPageElements(referencingIpsProjectsName)));
+        .createTextPageElements(referencingIpsProjectsName)));
         return wrapper.addPageElements(referencingProjects);
     }
 
@@ -186,7 +180,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             sourceFolder.add(folderEntry.getSourceFolder().getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils()
-                .createTextPageElements(sourceFolder)));
+        .createTextPageElements(sourceFolder)));
         return wrapper.addPageElements(referencedProjects);
     }
 

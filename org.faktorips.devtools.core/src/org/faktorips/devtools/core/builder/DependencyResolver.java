@@ -124,13 +124,12 @@ public class DependencyResolver {
      * Collects the dependencies for an {@link EnumContent} by collecting the dependencies for the
      * related {@link EnumType}. This is necessary because if the {@link EnumContent} changes, all
      * objects using this {@link EnumContent} over an extensible {@link EnumType} have to be
-     * rebuild, too. The problem here is, that the {@link EnumContent} has no dependencies to the
-     * objects that are using it, because these objects only have a dependency to the
-     * {@link EnumType}. So here the {@link EnumType} dependencies are treated as they would be the
-     * dependencies of the corresponding {@link EnumContent}.
+     * rebuild, too. The problem is that the objects have no dependency to the {@link EnumContent}
+     * they are using. They only have a dependency to the {@link EnumType}. Hence we need to find
+     * all objects that has a dependency to the enum type.
      */
     private void collectEnumContentDependencies(QualifiedNameType root, EnumSet<DependencyType> transitiveTypes) {
-        if (isEnumContent(root)) {
+        if (isEnumContent(root) && transitiveTypes.contains(DependencyType.DATATYPE)) {
             IEnumContent enumContent = findEnumContentIpsObject(root);
             if (enumContent != null) {
                 IIpsProject enumTypeProject = getEnumTypeProject(enumContent);
@@ -170,10 +169,15 @@ public class DependencyResolver {
             IIpsProject enumTypeProject,
             EnumSet<DependencyType> transitiveTypes) {
         Set<IIpsProject> visitedProjectsForEnumContent = new HashSet<IIpsProject>();
-        DependencyResolver dependencyResolver = new DependencyResolver(enumTypeProject);
+        DependencyResolver enumTypedependencyResolver = new DependencyResolver(enumTypeProject);
         QualifiedNameType enumType = new QualifiedNameType(enumContent.getEnumType(), IpsObjectType.ENUM_TYPE);
-        dependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent, transitiveTypes);
-        dependenciesForProjectMap.merge(dependencyResolver.getCollectedDependencies());
+        enumTypedependencyResolver.collectDependencies(enumType, visitedProjectsForEnumContent, transitiveTypes);
+        dependenciesForProjectMap.merge(enumTypedependencyResolver.getCollectedDependencies());
+        for (IIpsProject foundProject : dependenciesForProjectMap.keySet()) {
+            if (foundProject.isReferencedBy(ipsProject, true)) {
+                dependenciesForProjectMap.remove(foundProject);
+            }
+        }
     }
 
     private void collectDependencies(QualifiedNameType root, EnumSet<DependencyType> transitiveTypes) {
@@ -204,7 +208,6 @@ public class DependencyResolver {
     private void collectDependenciesOfDependantProjects(QualifiedNameType root,
             Set<IIpsProject> visitedProjects,
             EnumSet<DependencyType> transitiveTypes) {
-
         visitedProjects.add(ipsProject);
         IIpsProject[] dependantProjects = ipsProject.findReferencingProjects(false);
         for (IIpsProject dependantProject : dependantProjects) {

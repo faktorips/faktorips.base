@@ -181,12 +181,8 @@ public class TableContentsStructureCache {
         }
 
         private void updateTableContentsForReferencingProjects(IIpsSrcFile ipsSrcFile) {
-            try {
-                IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
-                updateTableContents(ipsProjects);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
+            updateTableContents(ipsProjects);
         }
 
         public void updateTableContent(IIpsSrcFile ipsSrcFile, OperationKind operation) {

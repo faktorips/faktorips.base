@@ -180,7 +180,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public boolean isReferencing(IIpsProject otherProject) throws CoreException {
+    public boolean isReferencing(IIpsProject otherProject) {
         return otherProject.isReferencedBy(this, true);
     }
 
@@ -419,7 +419,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException {
+    public IIpsProject[] findReferencingProjectLeavesOrSelf() {
         IIpsProject[] ipsPprojects = getIpsModel().getIpsProjects();
         List<IIpsProject> result = new ArrayList<IIpsProject>(ipsPprojects.length);
         result.add(this);

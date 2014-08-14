@@ -27,7 +27,7 @@ public enum DependencyType {
     INSTANCEOF("instance of dependency") { //$NON-NLS-1$
         @Override
         public EnumSet<DependencyType> getTransitiveTypes(IIpsProject ipsProject) {
-            return EnumSet.noneOf(DependencyType.class);
+            return EnumSet.of(INSTANCEOF);
         }
     },
 
