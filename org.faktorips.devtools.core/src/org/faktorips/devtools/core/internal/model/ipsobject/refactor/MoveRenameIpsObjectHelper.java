@@ -115,7 +115,6 @@ public final class MoveRenameIpsObjectHelper {
     public void validateIpsModel(IIpsPackageFragment targetIpsPackageFragment,
             String newName,
             MessageList validationMessageList) throws CoreException {
-
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
             if (sourceFileName.equals(newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension())) {
@@ -141,6 +140,12 @@ public final class MoveRenameIpsObjectHelper {
             IProgressMonitor pm) throws CoreException {
 
         IIpsSrcFile originalFile = toBeRefactored.getIpsSrcFile();
+        if (isSourceFilesSavedRequired() && originalFile.isDirty()) {
+            String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileDirty,
+                    originalFile.getIpsObjectName());
+            status.addFatalError(text);
+            return new MessageList();
+        }
         IIpsSrcFile targetFile = null;
         try {
             targetFile = RefactorUtil.moveIpsSrcFile(originalFile, targetIpsPackageFragment, newName, pm);
@@ -154,7 +159,11 @@ public final class MoveRenameIpsObjectHelper {
             // Need to catch RuntimeException to get really every exception and set corresponding
             // fatal error status
         } catch (RuntimeException e) {
-            status.addFatalError(e.getLocalizedMessage());
+            if (e.getLocalizedMessage() != null) {
+                status.addFatalError(e.getLocalizedMessage());
+            } else {
+                status.addFatalError("no message available " + e); //$NON-NLS-1$
+            }
             return new MessageList();
             // CSON: IllegalCatch
         } finally {

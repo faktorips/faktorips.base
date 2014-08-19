@@ -46,6 +46,7 @@ public class Messages extends NLS {
     public static String IpsCompositeMoveRefactoring_name;
     public static String IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentNotSet;
     public static String IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment;
+    public static String IpsCompositeMoveRefactoring_msgDefaultPackageInSameProject;
 
     public static String MoveOperation_errorMessageSourceNotExists;
     public static String MoveOperation_msgErrorTheTargetIsIncludedInTheSource;
@@ -59,5 +60,12 @@ public class Messages extends NLS {
     public static String MoveOperation_msgUnsupportedType;
     public static String MoveOperation_msgUnsupportedObject;
     public static String MoveOperation_errorIpsObjectMissing;
+
+    public static String RenameIpsPackageFragmentProcessor_processorName;
+    public static String MoveIpsPackageFragmentProcessor_processorName;
+    public static String MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage;
+    public static String MoveRenamePackageHelper_errorPackageContainsInvalidObjects;
+    public static String MoveRenamePackageHelper_errorTargetPackageNotValid;
+    public static String MoveRenaamePackageHelper_errorPackageAlreadyContains;
 
 }

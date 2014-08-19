@@ -21,9 +21,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
-import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.refactor.IpsMoveProcessor;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -33,7 +31,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
 
     private IIpsPackageFragment targetIpsPackageFragment;
 
-    public IpsCompositeMoveRefactoring(Set<IIpsObject> ipsObjects) {
+    public IpsCompositeMoveRefactoring(Set<IIpsElement> ipsObjects) {
         super(new LinkedHashSet<IIpsElement>(ipsObjects));
     }
 
@@ -49,13 +47,29 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
         }
 
         for (IIpsElement ipsElement : getIpsElements()) {
-            IIpsObject ipsObject = (IIpsObject)ipsElement;
-            if (ipsObject.getIpsPackageFragment().equals(targetIpsPackageFragment)) {
-                refactoringStatus
-                        .addWarning(NLS
-                                .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
-                                        ipsObject.getName()));
-                skipElement(ipsObject);
+            if (ipsElement instanceof IIpsObject) {
+                IIpsObject ipsObject = (IIpsObject)ipsElement;
+                if (ipsObject.getIpsPackageFragment().equals(targetIpsPackageFragment)) {
+                    refactoringStatus
+                    .addWarning(NLS
+                            .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
+                                    ipsObject.getName()));
+                    skipElement(ipsObject);
+                }
+            } else if (ipsElement instanceof IIpsPackageFragment) {
+                IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                if (targetIpsPackageFragment.equals(packageFragment.getParentIpsPackageFragment())) {
+                    refactoringStatus
+                    .addError(NLS
+                            .bind(Messages.IpsCompositeMoveRefactoring_msgTargetIpsPackageFragmentEqualsOriginalIpsPackageFragment,
+                                    packageFragment.getName()));
+                    skipElement(packageFragment);
+                }
+                if (packageFragment.isDefaultPackage()
+                        && targetIpsPackageFragment.getIpsProject().equals(packageFragment.getIpsProject())) {
+                    refactoringStatus.addError(Messages.IpsCompositeMoveRefactoring_msgDefaultPackageInSameProject);
+                    skipElement(packageFragment);
+                }
             }
         }
 
@@ -64,13 +78,7 @@ public final class IpsCompositeMoveRefactoring extends IpsCompositeRefactoring i
 
     @Override
     protected IIpsRefactoring createRefactoring(IIpsElement ipsElement) {
-        IIpsProcessorBasedRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(
-                (IIpsObject)ipsElement);
-        IpsMoveProcessor ipsMoveProcessor = (IpsMoveProcessor)ipsMoveRefactoring.getIpsRefactoringProcessor();
-        if (targetIpsPackageFragment != null) {
-            ipsMoveProcessor.setTargetIpsPackageFragment(targetIpsPackageFragment);
-        }
-        return ipsMoveRefactoring;
+        return IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsElement, targetIpsPackageFragment);
     }
 
     @Override

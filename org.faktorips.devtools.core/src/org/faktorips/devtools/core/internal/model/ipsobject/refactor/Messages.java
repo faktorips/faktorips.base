@@ -26,6 +26,8 @@ public class Messages extends NLS {
 
     public static String MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists;
 
+    public static String MoveRenameIpsObjectHelper_msgSourceFileDirty;
+
     public static String RenameIpsObjectProcessor_processorName;
 
     public static String MoveIpsObjectProcessor_processorName;

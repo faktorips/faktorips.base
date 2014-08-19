@@ -26,6 +26,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -88,6 +89,7 @@ import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.CreateIpsArchiveOperation;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -167,7 +169,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 if (IpsModel.TRACE_MODEL_MANAGEMENT) {
                     System.out.println("AbstractIpsPlugin.setUp(): Projects deleted.");
                 }
-                IpsPlugin.getDefault().reinitModel(); // also starts the listening process
+                // also starts the listening process
+                IpsPlugin.getDefault().reinitModel();
             }
         };
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
@@ -886,7 +889,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
     /**
      * Creates a new product component that is based on the given product component type and has one
-     * generation with it's valid from date set 2012-07-18, 01:01:01. The product component is
+     * generation with it's valid from date set 2012-07-18, 00:00:00. The product component is
      * stored in the same package fragment root as the type. If the qualifiedName includes a package
      * name, the package is created if it does not already exists.
      */
@@ -894,7 +897,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
                 IpsObjectType.PRODUCT_CMPT, qualifiedName);
         productCmpt.setProductCmptType(type.getQualifiedName());
-        productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 1, 1, 1));
+        productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 0, 0, 0));
         productCmpt.getIpsSrcFile().save(true, null);
         return (ProductCmpt)productCmpt;
     }
@@ -1356,13 +1359,15 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected final RefactoringStatus performCompositeMoveRefactoring(Set<IIpsObject> ipsObjects,
             IIpsPackageFragment targetIpsPackageFragment) throws CoreException {
 
+        Set<IIpsElement> ipsElemets = new LinkedHashSet<IIpsElement>();
         for (IIpsObject ipsObject : ipsObjects) {
             printValidationResult(ipsObject);
             ipsObject.getIpsSrcFile().save(true, null);
+            ipsElemets.add(ipsObject);
         }
 
         IIpsRefactoring ipsCompositeMoveRefactoring = IpsPlugin.getIpsRefactoringFactory()
-                .createCompositeMoveRefactoring(ipsObjects, targetIpsPackageFragment);
+                .createCompositeMoveRefactoring(ipsElemets, targetIpsPackageFragment);
 
         return performRefactoring(ipsCompositeMoveRefactoring);
     }
@@ -1391,7 +1396,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      * and performs a full build.
      */
     protected final void performFullBuild(IIpsProject ipsProject) throws CoreException {
-        clearOutputFolders(ipsProject); // To avoid code merging problems
+        // To avoid code merging problems
+        clearOutputFolders(ipsProject);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
     }
 
@@ -1456,8 +1462,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         assertEquals(eventType, getLastContentChangeEvent().getEventType());
     }
 
-    protected final void setPartId(IIpsObjectPart part, String id) throws SecurityException, NoSuchFieldException,
-            IllegalArgumentException, IllegalAccessException {
+    protected final void setPartId(IIpsObjectPart part, String id) throws NoSuchFieldException, IllegalAccessException {
 
         Field field = IpsObjectPart.class.getDeclaredField("id");
         field.setAccessible(true);

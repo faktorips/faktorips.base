@@ -17,7 +17,6 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -70,8 +69,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * extent the initial condition checking.
      */
     @Override
-    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
 
         RefactoringStatus status = new RefactoringStatus();
         if (!(ipsElement.exists())) {
@@ -107,7 +105,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
-            throws CoreException, OperationCanceledException {
+            throws CoreException {
 
         RefactoringStatus status = new RefactoringStatus();
         status.merge(validateUserInput(pm));
@@ -195,7 +193,7 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * Always returns a {@link NullChange}.
      */
     @Override
-    public final Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public final Change createChange(IProgressMonitor pm) throws CoreException {
         IpsRefactoringModificationSet modificationSet = refactorIpsModel(pm);
         saveIpsSourceFiles(modificationSet, pm);
         return new NullChange();
