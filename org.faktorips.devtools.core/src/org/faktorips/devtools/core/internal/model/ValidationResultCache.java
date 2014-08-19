@@ -25,10 +25,6 @@ public class ValidationResultCache {
 
     private HashMap<IIpsObjectPartContainer, MessageList> data = new HashMap<IIpsObjectPartContainer, MessageList>(1000);
 
-    public ValidationResultCache() {
-        super();
-    }
-
     /**
      * Puts a copy of the given the validation result for the given IPS object part container into
      * the cache. Overwrites any old data for the given container. If result is <code>null</code>,
@@ -39,7 +35,7 @@ public class ValidationResultCache {
      * 
      * @throws NullPointerException if container is <code>null</code>.
      */
-    synchronized public void putResult(IIpsObjectPartContainer container, MessageList result) {
+    public synchronized void putResult(IIpsObjectPartContainer container, MessageList result) {
         if (result == null) {
             data.remove(container);
             return;
@@ -54,7 +50,7 @@ public class ValidationResultCache {
      * Returns the cached validation result for the given container or <code>null</code> if the
      * cache does not contain a result for the container.
      */
-    synchronized public MessageList getResult(IIpsObjectPartContainer c) {
+    public synchronized MessageList getResult(IIpsObjectPartContainer c) {
         MessageList cached = data.get(c);
         if (cached == null) {
             return null;
@@ -76,14 +72,14 @@ public class ValidationResultCache {
      * 
      * @param file The ips source file that has changed.
      */
-    synchronized public void removeStaleData(IIpsSrcFile file) {
-        data.clear();
+    public synchronized void removeStaleData(IIpsSrcFile file) {
+        clear();
     }
 
     /**
      * Clears the whole cache.
      */
-    synchronized public void clear() {
+    public synchronized void clear() {
         data.clear();
     }
 
