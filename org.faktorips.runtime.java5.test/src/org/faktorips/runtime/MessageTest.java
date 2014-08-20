@@ -328,6 +328,22 @@ public class MessageTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testHasMarker() {
+        IMarker marker1 = mock(IMarker.class);
+        IMarker marker2 = mock(IMarker.class);
+        IMarker marker3 = mock(IMarker.class);
+        List<IMarker> markers = new ArrayList<IMarker>();
+        markers.add(marker1);
+        markers.add(marker2);
+
+        Message message = Message.warning("text").code("1").markers(markers).create();
+
+        assertTrue(message.hasMarker(marker1));
+        assertTrue(message.hasMarker(marker2));
+        assertFalse(message.hasMarker(marker3));
+    }
+
+    @Test
     public void testHasMarkers() {
         // markers not null but empty
         Message message = new Message("text", "code", null, null, null, null);
