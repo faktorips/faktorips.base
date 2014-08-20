@@ -59,4 +59,9 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
         return "OsgiVersion [version=" + version + "]"; //$NON-NLS-1$//$NON-NLS-2$
     }
 
+    @Override
+    public boolean isEmptyVersion() {
+        return Version.emptyVersion.equals(version);
+    }
+
 }
