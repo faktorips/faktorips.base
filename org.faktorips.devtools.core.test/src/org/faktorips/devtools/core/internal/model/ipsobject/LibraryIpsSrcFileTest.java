@@ -74,7 +74,7 @@ public class LibraryIpsSrcFileTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetIpsObject() throws CoreException {
+    public void testGetIpsObject() {
         assertNotNull(srcFile.getIpsObject());
         IPolicyCmptType type = (IPolicyCmptType)srcFile.getIpsObject();
         assertEquals(originalType.getProductCmptType(), type.getProductCmptType());

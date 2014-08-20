@@ -185,13 +185,8 @@ public class TestCaseStructurePage extends WizardPage {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)((TableItem)element).getData();
                 checkedProductCmpt = ipsSrcFile;
                 IProductCmpt newProductCmpt = null;
-                try {
-                    newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                    replaceSelectedProductCmpt(newProductCmpt);
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                    return;
-                }
+                newProductCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                replaceSelectedProductCmpt(newProductCmpt);
                 refreshTree();
                 tableViewer.refresh();
             }

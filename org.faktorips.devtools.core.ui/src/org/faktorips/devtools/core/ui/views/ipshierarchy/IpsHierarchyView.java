@@ -97,6 +97,10 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     private boolean linkingEnabled = false;
     private ActivationListener editorActivationListener;
 
+    public IpsHierarchyView() {
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
+    }
+
     /**
      * Check whether this HierarchyView supports this object or not. Null is also a supported type
      * to reset the editor.
@@ -106,10 +110,6 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
      */
     public static boolean supports(Object object) {
         return object instanceof IType;
-    }
-
-    public IpsHierarchyView() {
-        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(this);
     }
 
     @Override
@@ -153,11 +153,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             linkWithEditor.setChecked(true);
             IEditorPart editorPart = getSite().getPage().getActiveEditor();
             if (editorPart != null) {
-                try {
-                    editorActivated(editorPart);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                editorActivated(editorPart);
             }
         }
         editorActivationListener = new ActivationListener(getSite().getPage());
@@ -214,11 +210,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
 
             @Override
             public void run() {
-                try {
-                    setLinkingEnabled(isChecked());
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                setLinkingEnabled(isChecked());
             }
 
             @Override
@@ -404,7 +396,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    private void setLinkingEnabled(boolean linkingEnabled) throws CoreException {
+    private void setLinkingEnabled(boolean linkingEnabled) {
         this.linkingEnabled = linkingEnabled;
 
         if (linkingEnabled) {
@@ -415,7 +407,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         }
     }
 
-    private void editorActivated(IEditorPart editorPart) throws CoreException {
+    private void editorActivated(IEditorPart editorPart) {
         if (!linkingEnabled || editorPart == null) {
             return;
         }
@@ -454,6 +446,29 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         layout.putInteger(LINK_WITH_EDITOR_KEY, linkingEnabled ? 1 : 0);
     }
 
+    private void activateContext() {
+        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+    }
+
+    @Override
+    protected ISelection getSelection() {
+        return treeViewer.getSelection();
+    }
+
+    @Override
+    protected boolean show(IAdaptable adaptable) {
+        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
+        if (ipsObject == null) {
+            return false;
+        }
+        if (supports(ipsObject)) {
+            showHierarchy(ipsObject);
+            return true;
+        }
+        return false;
+    }
+
     private class ActivationListener implements IPartListener, IWindowListener {
 
         private IPartService partService;
@@ -479,21 +494,13 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         @Override
         public void partActivated(IWorkbenchPart part) {
             if (part instanceof IEditorPart) {
-                try {
-                    editorActivated((IEditorPart)part);
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                editorActivated((IEditorPart)part);
             }
         }
 
         @Override
         public void windowActivated(IWorkbenchWindow window) {
-            try {
-                editorActivated(window.getActivePage().getActiveEditor());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            editorActivated(window.getActivePage().getActiveEditor());
         }
 
         @Override
@@ -569,11 +576,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         public void drop(DropTargetEvent event) {
             Object[] transferred = super.getTransferedElements(event.currentDataType);
             if (transferred.length > 0 && transferred[0] instanceof IIpsSrcFile) {
-                try {
-                    showHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                showHierarchy(((IIpsSrcFile)transferred[0]).getIpsObject());
             }
         }
 
@@ -589,13 +592,9 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
             }
             if (transferred.length == 1 && transferred[0] instanceof IIpsSrcFile) {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)transferred[0];
-                try {
-                    IIpsObject selected = ipsSrcFile.getIpsObject();
-                    if (selected instanceof IType) {
-                        event.detail = DND.DROP_LINK;
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
+                IIpsObject selectedIpsObject = ipsSrcFile.getIpsObject();
+                if (selectedIpsObject instanceof IType) {
+                    event.detail = DND.DROP_LINK;
                 }
 
             }
@@ -614,29 +613,6 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
         public boolean isMessage() {
             return equals(MESSAGE);
         }
-    }
-
-    private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
-        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
-    }
-
-    @Override
-    protected ISelection getSelection() {
-        return treeViewer.getSelection();
-    }
-
-    @Override
-    protected boolean show(IAdaptable adaptable) {
-        IIpsObject ipsObject = (IIpsObject)adaptable.getAdapter(IIpsObject.class);
-        if (ipsObject == null) {
-            return false;
-        }
-        if (supports(ipsObject)) {
-            showHierarchy(ipsObject);
-            return true;
-        }
-        return false;
     }
 
 }

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -55,11 +54,7 @@ public class ShowModelStructureHandler extends IpsAbstractHandler {
             if (firstElement instanceof IpsProject) {
                 ((ModelStructure)modelOverviewView).showStructure((IpsProject)firstElement);
             } else if (ipsSrcFile != null) {
-                try {
-                    ((ModelStructure)modelOverviewView).showStructure((IType)ipsSrcFile.getIpsObject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                ((ModelStructure)modelOverviewView).showStructure((IType)ipsSrcFile.getIpsObject());
             } else {
                 throw new CoreRuntimeException(
                         "The selection must be of type IType, IpsProject or ComponentNode, but was " + selection.getFirstElement().getClass()); //$NON-NLS-1$

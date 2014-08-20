@@ -67,25 +67,21 @@ public class TableExportPage extends IpsObjectExportPage {
 
     @Override
     protected void setDefaults(IResource selectedResource) {
-        try {
-            if (selectedResource == null) {
-                setTableContents(null);
-                return;
+        if (selectedResource == null) {
+            setTableContents(null);
+            return;
+        }
+        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        if (element instanceof IIpsSrcFile) {
+            IIpsSrcFile src = (IIpsSrcFile)element;
+            if (src.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
+                ITableContents contents = (ITableContents)src.getIpsObject();
+                setTableContents(contents);
             }
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile src = (IIpsSrcFile)element;
-                if (src.getIpsObjectType() == IpsObjectType.TABLE_CONTENTS) {
-                    ITableContents contents = (ITableContents)src.getIpsObject();
-                    setTableContents(contents);
-                }
-            } else if (element != null) {
-                setIpsProject(element.getIpsProject());
-            } else {
-                setTableContents(null);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        } else if (element != null) {
+            setIpsProject(element.getIpsProject());
+        } else {
+            setTableContents(null);
         }
     }
 

@@ -15,6 +15,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathEntry;
@@ -114,14 +115,14 @@ public abstract class AbstractIpsSrcFile extends IpsElement implements IIpsSrcFi
     }
 
     @Override
-    public IIpsObject getIpsObject() throws CoreException {
+    public IIpsObject getIpsObject() {
         if (!exists()) {
-            throw new CoreException(new IpsStatus("Can't get ips object because file does not exist. " + this)); //$NON-NLS-1$
+            throw new CoreRuntimeException(new IpsStatus("Can't get ips object because file does not exist. " + this)); //$NON-NLS-1$
         }
 
         IpsSrcFileContent content = getContent();
         if (content == null) {
-            throw new CoreException(new IpsStatus("Could not read content. " + this)); //$NON-NLS-1$
+            throw new CoreRuntimeException(new IpsStatus("Could not read content. " + this)); //$NON-NLS-1$
         }
         return content.getIpsObject();
     }

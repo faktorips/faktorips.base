@@ -72,8 +72,7 @@ public class ProductCmptLinkContainerUtil {
         return isProjectCorrect(linkContainer, target);
     }
 
-    private static boolean isProjectCorrect(IProductCmptLinkContainer linkContainer, IProductCmpt target)
-            throws CoreException {
+    private static boolean isProjectCorrect(IProductCmptLinkContainer linkContainer, IProductCmpt target) {
 
         IIpsProject linkContainerProject = linkContainer.getIpsProject();
         IIpsProject targetProject = target.getIpsProject();

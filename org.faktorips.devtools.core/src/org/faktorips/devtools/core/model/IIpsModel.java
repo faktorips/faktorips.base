@@ -105,7 +105,7 @@ public interface IIpsModel extends IIpsElement {
     public IIpsProject createIpsProject(IJavaProject javaProject) throws CoreException;
 
     /** Returns all IPS projects opened in the workspace or an empty array if none. */
-    public IIpsProject[] getIpsProjects() throws CoreException;
+    public IIpsProject[] getIpsProjects();
 
     /**
      * Returns all IPS projects opened in the workspace that contain a model definition or an empty

@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
@@ -151,7 +152,13 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
     private IEnumValue getEnumValueForValidIdentifierAttribute(String identifierAttributeValue) {
         IEnumValue enumValue = enumValuesByIdentifier.get(identifierAttributeValue);
         if (enumValue != null) {
-            return enumValue;
+            IEnumAttributeValue enumAttributeValue = enumValue.getEnumAttributeValue(identifierAttribute);
+            String newIdentifier = enumAttributeValue.getValue().getDefaultLocalizedContent(getIpsProject());
+            if (StringUtils.equals(newIdentifier, identifierAttributeValue)) {
+                return enumValue;
+            } else {
+                enumValuesByIdentifier.remove(identifierAttributeValue);
+            }
         }
 
         /*
@@ -166,7 +173,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                 continue;
             }
             String newIdentifier = enumAttributeValue.getValue().getDefaultLocalizedContent(getIpsProject());
-            if (newIdentifier != null && newIdentifier.equals(identifierAttributeValue)) {
+            if (StringUtils.equals(newIdentifier, identifierAttributeValue)) {
                 enumValue = currentEnumValue;
                 /*
                  * Now that we found the enum value that was not in the map we need to find and
@@ -179,11 +186,11 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
                         break;
                     }
                 }
-                break;
+                return enumValue;
             }
         }
 
-        return enumValue;
+        return null;
     }
 
     @Override

@@ -17,7 +17,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.viewers.ISelection;
@@ -29,7 +28,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
@@ -102,12 +100,7 @@ public abstract class IpsRefactoringHandler extends AbstractHandler {
                 break;
             }
             if (selectedIpsElement instanceof IIpsSrcFile) {
-                try {
-                    selectedIpsElement = ((IIpsSrcFile)selectedIpsElement).getIpsObject();
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                    return null;
-                }
+                selectedIpsElement = ((IIpsSrcFile)selectedIpsElement).getIpsObject();
             }
             selectedIpsElements.add(selectedIpsElement);
         }

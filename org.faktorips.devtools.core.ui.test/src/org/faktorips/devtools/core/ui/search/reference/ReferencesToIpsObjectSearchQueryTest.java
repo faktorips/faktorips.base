@@ -115,7 +115,7 @@ public class ReferencesToIpsObjectSearchQueryTest {
     private IDependencyDetail detail2;
 
     @Before
-    public void initSrcFilesSetUp() throws CoreException {
+    public void initSrcFilesSetUp() {
         MockitoAnnotations.initMocks(this);
 
         when(prodCmpt.getIpsProject()).thenReturn(proj);

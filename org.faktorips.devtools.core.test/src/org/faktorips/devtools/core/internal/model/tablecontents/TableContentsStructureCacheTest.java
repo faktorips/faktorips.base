@@ -71,7 +71,7 @@ public class TableContentsStructureCacheTest {
     private IIpsSrcFilesChangeListener changeListener;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         IIpsProject[] projects = new IIpsProject[2];
         projects[0] = ipsProject1;
         projects[1] = ipsProject2;

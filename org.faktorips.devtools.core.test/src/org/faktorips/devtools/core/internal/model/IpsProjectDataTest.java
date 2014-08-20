@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -26,7 +25,7 @@ import org.junit.Test;
 public class IpsProjectDataTest {
 
     private IpsObjectPathContainerFactory factory = new IpsObjectPathContainerFactory();
-    private IIpsProject ipsProject = new IpsProject(mock(IIpsModel.class), "TestProject");
+    private IIpsProject ipsProject = new IpsProject(mock(IpsModel.class), "TestProject");
     private IpsProjectData ipsProjectData = new IpsProjectData(ipsProject, factory);
 
     @Test

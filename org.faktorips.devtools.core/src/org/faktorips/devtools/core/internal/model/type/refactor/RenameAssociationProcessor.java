@@ -159,7 +159,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         }
     }
 
-    private void updateTestCaseTypeParameters() throws CoreException {
+    private void updateTestCaseTypeParameters() {
         for (IIpsSrcFile ipsSrcFile : testCaseTypeSrcFiles) {
             ITestCaseType testCaseType = (ITestCaseType)ipsSrcFile.getIpsObject();
             for (ITestPolicyCmptTypeParameter parameter : testCaseType.getTestPolicyCmptTypeParameters()) {
@@ -177,7 +177,7 @@ public final class RenameAssociationProcessor extends IpsRenameProcessor {
         }
     }
 
-    private void updateProductCmptLinks() throws CoreException {
+    private void updateProductCmptLinks() {
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
             /*

@@ -2155,7 +2155,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(ipsProject.exists());
     }
 
-    private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) throws CoreException {
+    private boolean containsIpsSrcFile(IIpsSrcFile[] result, IIpsSrcFile policyCmptType) {
         for (IIpsSrcFile element : result) {
             if (element.getIpsObject().equals(policyCmptType.getIpsObject())) {
                 return true;

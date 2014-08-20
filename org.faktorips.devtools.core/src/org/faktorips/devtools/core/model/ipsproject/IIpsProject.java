@@ -29,7 +29,9 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
@@ -207,18 +209,16 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param considerIndirect <code>true</code> if the method should return <code>true</code> for
      *            indirect references.
      * 
-     * @throws CoreException if an error occurs.
      */
-    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect) throws CoreException;
+    public boolean isReferencedBy(IIpsProject otherProject, boolean considerIndirect);
 
     /**
      * Returns all ips projects that reference this one in their ips object path.
      * 
      * @param includeIndirect <code>true</code> if also indirect references should
      * 
-     * @throws CoreException if an errors occurs while searching the projects
      */
-    public IIpsProject[] findReferencingProjects(boolean includeIndirect) throws CoreException;
+    public IIpsProject[] findReferencingProjects(boolean includeIndirect);
 
     /**
      * Returns all {@link IIpsProject}s that reference this IPS project, excluding projects that are
@@ -245,9 +245,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @return The IPS projects referencing this project excluding projects that are referenced by
      *         another result
-     * @throws CoreException if an error occurs while searching the project
      */
-    public IIpsProject[] findReferencingProjectLeavesOrSelf() throws CoreException;
+    public IIpsProject[] findReferencingProjectLeavesOrSelf();
 
     /**
      * Returns <code>true</code> if this project depends on the other project, because it is
@@ -257,7 +256,20 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @see IIpsObjectPath
      */
-    public boolean isReferencing(IIpsProject otherProject) throws CoreException;
+    public boolean isReferencing(IIpsProject otherProject);
+
+    /**
+     * This method returns the dependency graph for this project. The dependency graph is designed
+     * to resolve reverse dependencies. For example it is able to retrieve all objects that have
+     * dependencies to an other specified object.
+     * <p>
+     * The dependency graph is updated by the builder. It is persisted to disk to not create the
+     * whole graph after every restart. It is fully rebuild in clean builds.
+     * 
+     * @return The {@link DependencyGraph} for this project.
+     * @see DependencyGraph
+     */
+    public IDependencyGraph getDependencyGraph();
 
     /**
      * Returns <code>true</code> if the project can be build / Java sourcecode can be generated.
@@ -432,7 +444,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the project's package fragment roots contains source code or an empty array if none
      * is found.
      */
-    public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots() throws CoreException;
+    public IIpsPackageFragmentRoot[] getSourceIpsPackageFragmentRoots();
 
     /**
      * Returns the first object with the indicated type and qualified name found on the object path.
@@ -624,7 +636,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Adds all IPS source files that are accessible through IPS source folder entries to the result
      * list.
      */
-    public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) throws CoreException;
+    public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result);
 
     /**
      * Returns all objects of the given type starting with the given prefix found on the IPS object

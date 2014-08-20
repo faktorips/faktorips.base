@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -37,8 +36,6 @@ public class ShowStructureHandler extends IpsAbstractHandler {
                         .showView(ProductStructureExplorer.EXTENSION_ID, null, IWorkbenchPage.VIEW_ACTIVATE);
                 ((ProductStructureExplorer)pse).showStructure(ipsSrcFile);
             } catch (PartInitException e) {
-                IpsPlugin.logAndShowErrorDialog(e);
-            } catch (CoreException e) {
                 IpsPlugin.logAndShowErrorDialog(e);
             }
         }

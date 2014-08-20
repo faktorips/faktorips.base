@@ -49,7 +49,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.part.ResourceTransfer;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartContainer;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPartState;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -101,14 +100,10 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         if (adaptable.getAdapter(IIpsElement.class) != null) {
             IIpsElement selected = (IIpsElement)adaptable.getAdapter(IIpsElement.class);
             if (selected instanceof IIpsSrcFile) {
-                try {
-                    IIpsObject ipsObject = ((IIpsSrcFile)selected).getIpsObject();
-                    if (ipsObject instanceof IpsObjectPartContainer) {
-                        IpsObjectPartContainer ipsObjectPartContainer = (IpsObjectPartContainer)ipsObject;
-                        paste(ipsObjectPartContainer);
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                IIpsObject ipsObject = ((IIpsSrcFile)selected).getIpsObject();
+                if (ipsObject instanceof IpsObjectPartContainer) {
+                    IpsObjectPartContainer ipsObjectPartContainer = (IpsObjectPartContainer)ipsObject;
+                    paste(ipsObjectPartContainer);
                 }
             } else if (selected instanceof IpsObjectPartContainer) {
                 paste((IpsObjectPartContainer)selected);
@@ -601,7 +596,7 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
         dialog.open();
     }
 
-    private boolean isResourceProductCmpt(IResource resource) throws CoreException {
+    private boolean isResourceProductCmpt(IResource resource) {
         if (resource instanceof IFile) {
             IIpsElement ipsElement = IpsPlugin.getDefault().getIpsModel().getIpsElement(resource);
             if (ipsElement instanceof IIpsSrcFile && ipsElement.exists()) {

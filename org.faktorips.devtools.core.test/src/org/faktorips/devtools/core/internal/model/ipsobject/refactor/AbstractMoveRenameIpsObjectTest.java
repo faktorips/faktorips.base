@@ -67,7 +67,7 @@ public abstract class AbstractMoveRenameIpsObjectTest extends AbstractIpsPluginT
             String newName,
             IIpsPackageFragment originalIpsPackageFragment,
             IIpsPackageFragment targetIpsPackageFragment,
-            IpsObjectType ipsObjectType) throws CoreException {
+            IpsObjectType ipsObjectType) {
 
         // The old file must no longer exist
         IIpsSrcFile oldIpsSrcFile = originalIpsPackageFragment.getIpsSrcFile(oldName, ipsObjectType);

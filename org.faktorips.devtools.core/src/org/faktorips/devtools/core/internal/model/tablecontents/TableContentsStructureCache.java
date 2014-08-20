@@ -110,11 +110,7 @@ public class TableContentsStructureCache {
     }
 
     private IIpsProject[] getIpsProjects() {
-        try {
-            return ipsModel.getIpsProjects();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ipsModel.getIpsProjects();
     }
 
     /**
@@ -185,12 +181,8 @@ public class TableContentsStructureCache {
         }
 
         private void updateTableContentsForReferencingProjects(IIpsSrcFile ipsSrcFile) {
-            try {
-                IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
-                updateTableContents(ipsProjects);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IIpsProject[] ipsProjects = ipsSrcFile.getIpsProject().findReferencingProjectLeavesOrSelf();
+            updateTableContents(ipsProjects);
         }
 
         public void updateTableContent(IIpsSrcFile ipsSrcFile, OperationKind operation) {

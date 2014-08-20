@@ -93,9 +93,8 @@ public interface IIpsSrcFile extends IIpsElement {
     /**
      * Returns the IPS object stored in the file.
      * 
-     * @throws CoreException if the file can't be read or it's contents can't be parsed.
      */
-    public IIpsObject getIpsObject() throws CoreException;
+    public IIpsObject getIpsObject();
 
     /**
      * Returns the given property of the source file.Returns <code>null</code> if the given property

@@ -92,14 +92,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
 
     private void addSubType(List<IPageElement> subTypes, IIpsSrcFile srcFile) {
         IEnumType type;
-        try {
-            type = (IEnumType)srcFile.getIpsObject();
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR,
-                            "Error getting IpsObject of " + getDocumentedIpsObject().getQualifiedName(), e)); //$NON-NLS-1$
-            return;
-        }
+        type = (IEnumType)srcFile.getIpsObject();
 
         if (type.getSuperEnumType().equals(getDocumentedIpsObject().getQualifiedName())) {
             subTypes.add(new PageElementUtils().createLinkPageElement(getContext(), type, TargetType.CONTENT,
@@ -232,7 +225,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
      * 
      */
     private class EnumAttributesTablePageElement extends
-            AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
+    AbstractIpsObjectPartsContainerTablePageElement<IEnumAttribute> {
 
         public EnumAttributesTablePageElement(List<IEnumAttribute> enumAttributes, DocumentationContext context) {
             super(enumAttributes, context);
@@ -270,7 +263,7 @@ public class EnumTypeContentPageElement extends AbstractIpsObjectContentPageElem
                     headline,
                     getContext().getMessage(
                             HtmlExportMessages.EnumTypeContentPageElement_headlineUsedAsNameInFaktorIpsUi),
-                    Style.CENTER);
+                            Style.CENTER);
             addHeadlineAndColumnLayout(headline,
                     getContext().getMessage(HtmlExportMessages.EnumTypeContentPageElement_headlineUnique), Style.CENTER);
             addHeadlineAndColumnLayout(headline,

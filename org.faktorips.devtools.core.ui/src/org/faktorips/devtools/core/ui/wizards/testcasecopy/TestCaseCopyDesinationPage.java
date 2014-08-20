@@ -149,14 +149,10 @@ public class TestCaseCopyDesinationPage extends WizardPage implements ValueChang
         IIpsPackageFragmentRoot packRoot = targetIpsPackageFragment.getRoot();
         if (!packRoot.isBasedOnSourceFolder()) {
             IIpsPackageFragmentRoot[] srcRoots;
-            try {
-                srcRoots = sourceTestCase.getIpsProject().getSourceIpsPackageFragmentRoots();
-                if (srcRoots.length > 0) {
-                    packRoot = srcRoots[0];
-                } else {
-                    packRoot = null;
-                }
-            } catch (CoreException e1) {
+            srcRoots = sourceTestCase.getIpsProject().getSourceIpsPackageFragmentRoots();
+            if (srcRoots.length > 0) {
+                packRoot = srcRoots[0];
+            } else {
                 packRoot = null;
             }
         }

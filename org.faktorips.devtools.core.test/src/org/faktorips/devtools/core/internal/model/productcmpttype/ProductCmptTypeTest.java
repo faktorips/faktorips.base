@@ -990,7 +990,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
-                DependencyType.REFERENCE)));
+                DependencyType.VALIDATION)));
 
         aProductType.setPolicyCmptType(a.getQualifiedName());
 
@@ -998,10 +998,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(2, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
-                DependencyType.REFERENCE)));
+                DependencyType.VALIDATION)));
 
         IDependency dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(),
-                a.getQualifiedNameType(), DependencyType.REFERENCE);
+                a.getQualifiedNameType(), DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 
@@ -1012,10 +1012,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(3, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
-                DependencyType.REFERENCE)));
+                DependencyType.VALIDATION)));
 
         dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(), a.getQualifiedNameType(),
-                DependencyType.REFERENCE);
+                DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 
@@ -1031,10 +1031,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(4, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
-                DependencyType.REFERENCE)));
+                DependencyType.VALIDATION)));
 
         dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(), a.getQualifiedNameType(),
-                DependencyType.REFERENCE);
+                DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 
@@ -1054,10 +1054,10 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(5, dependencies.size());
         assertTrue(dependencies.contains(IpsObjectDependency.create(aProductType.getQualifiedNameType(),
                 new QualifiedNameType(aProductType.getQualifiedName(), IpsObjectType.POLICY_CMPT_TYPE),
-                DependencyType.REFERENCE)));
+                DependencyType.VALIDATION)));
 
         dependency = IpsObjectDependency.create(aProductType.getQualifiedNameType(), a.getQualifiedNameType(),
-                DependencyType.REFERENCE);
+                DependencyType.CONFIGURES);
         assertTrue(dependencies.contains(dependency));
         assertSingleDependencyDetail(aProductType, dependency, aProductType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE);
 

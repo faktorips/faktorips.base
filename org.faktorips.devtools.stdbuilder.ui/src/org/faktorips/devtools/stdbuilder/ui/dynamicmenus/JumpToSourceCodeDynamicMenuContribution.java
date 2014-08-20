@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -86,17 +85,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             return getContributionItemsForNoSourceCodeFound();
         }
         if (selectedItem instanceof IIpsSrcFile) {
-            try {
-                selectedItem = ((IIpsSrcFile)selectedItem).getIpsObject();
-            } catch (CoreException e) {
-                /*
-                 * Recover from exception: If the IPS Object cannot be extracted from the source
-                 * file we log the exception and show the error to the user. Then, the situation is
-                 * treated as if there was no source code found.
-                 */
-                IpsPlugin.logAndShowErrorDialog(e);
-                return getContributionItemsForNoSourceCodeFound();
-            }
+            selectedItem = ((IIpsSrcFile)selectedItem).getIpsObject();
         }
 
         if (!(selectedItem instanceof IIpsObjectPartContainer)) {
@@ -264,16 +253,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
 
         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
-        try {
-            return ipsSrcFile.getIpsObject();
-        } catch (CoreException e) {
-            /*
-             * Recover from exception: If the IPS Object cannot be accessed inform the user about
-             * the error and return null as selected IPS element.
-             */
-            IpsPlugin.logAndShowErrorDialog(e);
-            return null;
-        }
+        return ipsSrcFile.getIpsObject();
     }
 
     private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
@@ -324,6 +304,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             ImageDescriptor icon,
             String label) {
 
+        // CSOFF: TrailingComment
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
                 null, // id
@@ -338,8 +319,9 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 CommandContributionItem.STYLE_PUSH, // style
                 null, // helpContextId
                 false // visibleEnabled
-        );
+                );
         // @formatter:on
+        // CSON: TrailingComment
 
         return new CommandContributionItem(itemParameter);
     }

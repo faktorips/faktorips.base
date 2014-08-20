@@ -11,8 +11,6 @@
 package org.faktorips.devtools.core.ui.team.compare.tablecontents;
 
 import org.eclipse.compare.structuremergeviewer.IStructureComparator;
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -56,25 +54,21 @@ public class TableContentsCompareItemCreator extends AbstractCompareItemCreator 
      */
     @Override
     protected IStructureComparator getStructureForIpsSrcFile(IIpsSrcFile file) {
-        try {
-            if (file.getIpsObject() instanceof ITableContents) {
-                TableContentsCompareItem root = new TableContentsCompareItem(null, file);
-                ITableContents table = (ITableContents)file.getIpsObject();
-                TableContentsCompareItem ipsObject = new TableContentsCompareItem(root, table);
-                // Generations for table
-                ITableRows gen = table.getTableRows();
-                TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gen);
-                // rows for each generation
-                IRow[] rows = gen.getRows();
-                for (IRow row : rows) {
-                    new TableContentsCompareItem(generation, row);
-                }
-                // initialize name, root-document and ranges for all nodes
-                root.init();
-                return root;
+        if (file.getIpsObject() instanceof ITableContents) {
+            TableContentsCompareItem root = new TableContentsCompareItem(null, file);
+            ITableContents table = (ITableContents)file.getIpsObject();
+            TableContentsCompareItem ipsObject = new TableContentsCompareItem(root, table);
+            // Generations for table
+            ITableRows gen = table.getTableRows();
+            TableContentsCompareItem generation = new TableContentsCompareItem(ipsObject, gen);
+            // rows for each generation
+            IRow[] rows = gen.getRows();
+            for (IRow row : rows) {
+                new TableContentsCompareItem(generation, row);
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+            // initialize name, root-document and ranges for all nodes
+            root.init();
+            return root;
         }
         return null;
     }

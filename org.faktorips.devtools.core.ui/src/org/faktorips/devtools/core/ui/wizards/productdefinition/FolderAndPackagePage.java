@@ -12,13 +12,11 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.beans.PropertyChangeEvent;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -139,12 +137,8 @@ public class FolderAndPackagePage extends WizardPage {
         }
 
         void updateRootFolderCombo() {
-            try {
-                if (getPmo().getIpsProject() != null) {
-                    getPage().rootFolderField.setInput(getPmo().getIpsProject().getSourceIpsPackageFragmentRoots());
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (getPmo().getIpsProject() != null) {
+                getPage().rootFolderField.setInput(getPmo().getIpsProject().getSourceIpsPackageFragmentRoots());
             }
         }
 

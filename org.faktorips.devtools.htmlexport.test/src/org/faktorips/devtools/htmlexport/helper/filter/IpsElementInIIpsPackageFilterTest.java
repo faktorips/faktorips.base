@@ -12,14 +12,9 @@ package org.faktorips.devtools.htmlexport.helper.filter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -44,7 +39,7 @@ public class IpsElementInIIpsPackageFilterTest {
         IIpsObject filteredObject = mock(IIpsObject.class);
         when(filteredObject.getIpsPackageFragment()).thenReturn(anotherIpsPackageFragment);
 
-        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment, context);
+        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment);
 
         assertTrue(filter.accept(object));
         assertFalse(filter.accept(filteredObject));
@@ -61,13 +56,13 @@ public class IpsElementInIIpsPackageFilterTest {
         IIpsObject object = mock(IIpsObject.class);
         when(object.getIpsPackageFragment()).thenReturn(anotherIpsPackageFragment);
 
-        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment, context);
+        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment);
 
         assertTrue(filter.accept(object));
     }
 
     @Test
-    public void testIpsSrcFile() throws CoreException {
+    public void testIpsSrcFile() {
         IIpsPackageFragment ipsPackageFragment = mock(IIpsPackageFragment.class);
         IIpsPackageFragment anotherIpsPackageFragment = mock(IIpsPackageFragment.class);
 
@@ -86,26 +81,10 @@ public class IpsElementInIIpsPackageFilterTest {
         IIpsSrcFile filteredSrcFile = mock(IIpsSrcFile.class);
         when(filteredSrcFile.getIpsObject()).thenReturn(filteredObject);
 
-        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment, context);
+        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment);
 
         assertTrue(filter.accept(srcFile));
         assertFalse(filter.accept(filteredSrcFile));
-    }
-
-    @Test
-    public void testIpsSrcFileException() throws CoreException {
-        IIpsPackageFragment ipsPackageFragment = mock(IIpsPackageFragment.class);
-
-        IIpsObject object = mock(IIpsObject.class);
-        when(object.getIpsPackageFragment()).thenReturn(ipsPackageFragment);
-
-        IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
-        when(srcFile.getIpsObject()).thenThrow(new CoreException(new IpsStatus("Exception")));
-
-        IpsElementInIIpsPackageFilter filter = new IpsElementInIIpsPackageFilter(ipsPackageFragment, context);
-
-        assertFalse(filter.accept(srcFile));
-        verify(context).addStatus((IStatus)any());
     }
 
 }

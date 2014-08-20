@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.widgets.Shell;
@@ -54,14 +53,10 @@ public class IpsPackageFragmentRootSelectionDialog extends ElementTreeSelectionD
         @Override
         public Object[] getChildren(Object parentElement) {
             if (parentElement instanceof IIpsProject) {
-                try {
-                    if (onlySourceRoots) {
-                        return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
-                    } else {
-                        return ((IIpsProject)parentElement).getIpsPackageFragmentRoots();
-                    }
-                } catch (CoreException e) {
-                    return new Object[0];
+                if (onlySourceRoots) {
+                    return ((IIpsProject)parentElement).getSourceIpsPackageFragmentRoots();
+                } else {
+                    return ((IIpsProject)parentElement).getIpsPackageFragmentRoots();
                 }
             }
             return new Object[0];

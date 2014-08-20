@@ -13,9 +13,7 @@ package org.faktorips.devtools.core.internal.fl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructureType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -41,19 +39,15 @@ public class TableSingleContentFunctionsResolver extends AbstractTableFunctionsR
     @Override
     protected List<TableData> createTableDatas() {
         List<TableData> tableDatas = new ArrayList<TableData>();
-        try {
-            List<IIpsSrcFile> result = getIpsProject().findAllIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
+        List<IIpsSrcFile> result = getIpsProject().findAllIpsSrcFiles(IpsObjectType.TABLE_STRUCTURE);
 
-            for (IIpsSrcFile srcFile : result) {
-                createTableData(srcFile, tableDatas);
-            }
-            return tableDatas;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        for (IIpsSrcFile srcFile : result) {
+            createTableData(srcFile, tableDatas);
         }
+        return tableDatas;
     }
 
-    private void createTableData(IIpsSrcFile srcFile, List<TableData> tableDatas) throws CoreException {
+    private void createTableData(IIpsSrcFile srcFile, List<TableData> tableDatas) {
         ITableStructure structure = (ITableStructure)srcFile.getIpsObject();
         if (!isSingleContent(structure)) {
             return;

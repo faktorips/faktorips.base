@@ -89,21 +89,17 @@ public class SelectTableContentsPage extends SelectImportTargetPage {
     @Override
     protected void setDefaults(IResource selectedResource) {
         super.setDefaults(selectedResource);
-        try {
-            if (selectedResource == null) {
-                setTargetForImport(null);
-                return;
-            }
-            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
-            if (element instanceof IIpsSrcFile) {
-                IIpsSrcFile src = (IIpsSrcFile)element;
-                setTargetForImport(src.getIpsObject());
-            }
-            if (element == null) {
-                setTargetForImport(null);
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        if (selectedResource == null) {
+            setTargetForImport(null);
+            return;
+        }
+        IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(selectedResource);
+        if (element instanceof IIpsSrcFile) {
+            IIpsSrcFile src = (IIpsSrcFile)element;
+            setTargetForImport(src.getIpsObject());
+        }
+        if (element == null) {
+            setTargetForImport(null);
         }
     }
 

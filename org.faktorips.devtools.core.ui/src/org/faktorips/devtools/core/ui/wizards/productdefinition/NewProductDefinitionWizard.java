@@ -14,7 +14,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -22,7 +21,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -70,32 +68,27 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
             Object element = selection.getFirstElement();
             if (element instanceof IAdaptable) {
                 IAdaptable adaptableObject = (IAdaptable)element;
-                try {
-                    IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
-                    if (ipsElement instanceof IIpsPackageFragmentRoot) {
-                        IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
-                        initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
-                    } else if (ipsElement instanceof IIpsPackageFragment) {
-                        IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
-                        initDefaults(packageFragment, null);
-                    } else if (ipsElement instanceof IIpsSrcFile) {
-                        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
-                        IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
-                        initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
-                    } else {
-                        IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
-                        if (resource != null) {
-                            IProject project = resource.getProject();
-                            IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
-                            IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsProject
-                                    .getSourceIpsPackageFragmentRoots()[0];
-                            initDefaults(ipsPackageFragmentRoot.getDefaultIpsPackageFragment(), null);
-                        }
+                IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
+                if (ipsElement instanceof IIpsPackageFragmentRoot) {
+                    IIpsPackageFragmentRoot ipsPackageRoot = (IIpsPackageFragmentRoot)ipsElement;
+                    initDefaults(ipsPackageRoot.getDefaultIpsPackageFragment(), null);
+                } else if (ipsElement instanceof IIpsPackageFragment) {
+                    IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
+                    initDefaults(packageFragment, null);
+                } else if (ipsElement instanceof IIpsSrcFile) {
+                    IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
+                    IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                    initDefaults(ipsSrcFile.getIpsPackageFragment(), ipsObject);
+                } else {
+                    IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+                    if (resource != null) {
+                        IProject project = resource.getProject();
+                        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(project);
+                        IIpsPackageFragmentRoot ipsPackageFragmentRoot = ipsProject.getSourceIpsPackageFragmentRoots()[0];
+                        initDefaults(ipsPackageFragmentRoot.getDefaultIpsPackageFragment(), null);
                     }
-                    return;
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
                 }
+                return;
             }
         }
     }

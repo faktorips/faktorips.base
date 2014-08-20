@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.NullChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -67,6 +68,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * check is successful the subclass implementation
      * {@link #checkInitialConditionsThis(RefactoringStatus, IProgressMonitor)} is called which may
      * extent the initial condition checking.
+     * 
+     * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
     public final RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException {
@@ -102,6 +105,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * implementation
      * {@link #checkFinalConditionsThis(RefactoringStatus, IProgressMonitor, CheckConditionsContext)}
      * that may extend the final condition checking is called.
+     * 
+     * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
     public final RefactoringStatus checkFinalConditions(IProgressMonitor pm, CheckConditionsContext context)
@@ -191,6 +196,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * source files will be saved after all modifications are complete.
      * <p>
      * Always returns a {@link NullChange}.
+     * 
+     * @throws OperationCanceledException In case of an canceled operation
      */
     @Override
     public final Change createChange(IProgressMonitor pm) throws CoreException {
@@ -287,12 +294,8 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
         }
         if (ipsElement instanceof IIpsObject) {
             IIpsObject ipsObject = (IIpsObject)ipsElement;
-            try {
-                // this would reload the content or simply returns the existing one
-                return ipsObject.getIpsSrcFile().getIpsObject();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            // this would reload the content or simply returns the existing one
+            return ipsObject.getIpsSrcFile().getIpsObject();
         }
         ArrayList<String> ids = new ArrayList<String>();
         IIpsElement element = ipsElement;

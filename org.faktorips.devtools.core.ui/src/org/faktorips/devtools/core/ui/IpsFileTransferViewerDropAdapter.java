@@ -15,7 +15,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -39,7 +38,7 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
         return ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(new Path(filename));
     }
 
-    private IProductCmpt getProductCmpt(IIpsElement element) throws CoreException {
+    private IProductCmpt getProductCmpt(IIpsElement element) {
         if (element instanceof IIpsSrcFile
                 && ((IIpsSrcFile)element).getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
             return (IProductCmpt)((IIpsSrcFile)element).getIpsObject();
@@ -89,20 +88,15 @@ public abstract class IpsFileTransferViewerDropAdapter extends IpsViewerDropAdap
             if (file == null) {
                 return null;
             }
-            try {
-                IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
-                if (element == null || !element.exists()) {
-                    return null;
-                }
-                IProductCmpt draggedCmpt = getProductCmpt(element);
-                if (draggedCmpt == null) {
-                    return null;
-                }
-                result.add(draggedCmpt);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+            IIpsElement element = IpsPlugin.getDefault().getIpsModel().getIpsElement(file);
+            if (element == null || !element.exists()) {
                 return null;
             }
+            IProductCmpt draggedCmpt = getProductCmpt(element);
+            if (draggedCmpt == null) {
+                return null;
+            }
+            result.add(draggedCmpt);
         }
         return result;
     }

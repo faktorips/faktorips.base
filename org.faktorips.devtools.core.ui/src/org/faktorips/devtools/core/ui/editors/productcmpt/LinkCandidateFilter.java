@@ -202,10 +202,6 @@ public class LinkCandidateFilter {
         if (ipsProject.equals(ipsProject2)) {
             return false;
         }
-        try {
-            return !ipsProject.isReferencing(ipsProject2);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return !ipsProject.isReferencing(ipsProject2);
     }
 }

@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- *
+ * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- *
+ * 
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -60,8 +60,9 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Util;
-import org.faktorips.devtools.core.builder.DependencyGraph;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
@@ -108,9 +109,9 @@ import org.xml.sax.SAXException;
 
 /**
  * Implementation of <tt>IIpsModel</tt>.
- *
+ * 
  * @see IIpsModel
- *
+ * 
  * @author Jan Ortmann
  */
 public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeListener {
@@ -389,12 +390,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public IIpsProject[] getIpsProjects() throws CoreException {
+    public IIpsProject[] getIpsProjects() {
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         IIpsProject[] ipsProjects = new IIpsProject[projects.length];
         int counter = 0;
         for (IProject project : projects) {
-            if (project.isOpen() && project.hasNature(IIpsProject.NATURE_ID)) {
+            if (project.isOpen() && hasIpsNature(project)) {
                 ipsProjects[counter] = getIpsProject(project.getName());
                 counter++;
             }
@@ -405,6 +406,14 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         IIpsProject[] shrinked = new IIpsProject[counter];
         System.arraycopy(ipsProjects, 0, shrinked, 0, shrinked.length);
         return shrinked;
+    }
+
+    private boolean hasIpsNature(IProject project) {
+        try {
+            return project.hasNature(IIpsProject.NATURE_ID);
+        } catch (CoreException e) {
+            return false;
+        }
     }
 
     @Override
@@ -868,14 +877,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * provided IpsProject doesn't exist or if it isn't a valid <code>IpsProject</code>
      * <code>null</code> will be returned by this method. This method is not part of the published
      * interface.
-     *
-     * @throws CoreException will be thrown if an error occurs while trying to validated the
-     *             provided IpsProject.
+     * 
      * @throws NullPointerException if the argument is null
      */
     // TODO the resource change listener method of this IpsModel needs to update
     // the dependencyGraphForProjectsMap
-    public DependencyGraph getDependencyGraph(IIpsProject ipsProject) throws CoreException {
+    public DependencyGraph getDependencyGraph(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject, this);
         DependencyGraph graph = getIpsProjectData(ipsProject).getDependencyGraph();
         if (graph == null) {
@@ -901,7 +908,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * <p>
      * This method is not part of the published interface.
      */
-    public DependencyGraph[] getCachedDependencyGraphs() {
+    public IDependencyGraph[] getCachedDependencyGraphs() {
         ArrayList<DependencyGraph> graphs = new ArrayList<DependencyGraph>();
         for (IpsProjectData projectData : ipsProjectDatas.values()) {
             if (projectData.getDependencyGraph() != null) {
@@ -952,7 +959,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Clears caches for a given project. Affects only caches whose objects depend on project
      * settings, e.g. IPS project properties or manifest files.
-     *
+     * 
      * @param ipsProject whose properties and or settings changed
      */
     public void clearProjectSpecificCaches(IIpsProject ipsProject) {
@@ -1039,7 +1046,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Forces to reload the the cached IPS source file contents of a single project or the whole
      * workspace. This is done by setting -1 as modification stamp in each content object.
-     *
+     * 
      * @param project The project that should considered or <code>null</code> if the whole workspace
      *            should be considered.
      */
@@ -1061,7 +1068,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * set the modification stamp invalid and force a reload on next access.
      * <p>
      * Only alternative would be to use a soft reference cache.
-     *
+     * 
      * @param srcFile The {@link IIpsSrcFile} you want to release from the cache.
      */
     private void releaseInCache(IIpsSrcFile srcFile) {
@@ -1098,7 +1105,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
@@ -1125,7 +1132,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     /**
      * {@inheritDoc}
-     *
+     * 
      * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
@@ -1290,9 +1297,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns the ClassLoaderProvider for the given ips project. Uses the System class loader as
      * parent of the class loader that is provided by the returned provider.
-     *
+     * 
      * @throws NullPointerException if ipsProject is <code>null</code>.
-     *
+     * 
      * @see ClassLoader#getSystemClassLoader()
      */
     public ClassLoaderProvider getClassLoaderProvider(IIpsProject ipsProject) {
@@ -1312,7 +1319,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Returns the cache for all function resolvers (registered via extension point) for the given
      * IPS project.
-     *
+     * 
      * @param ipsProject the project to return a cache for
      */
     @Override
@@ -1361,9 +1368,9 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * resource does not exist, the method returns <code>null</code>. If loadCompleteContent is
      * <code>true</code> then the complete content will be read from the source file, if
      * <code>false</code> then only the properties of the ips object will be read.
-     *
+     * 
      * @param file the file to read
-     *
+     * 
      * @param loadCompleteContent <code>true</code> if the completely file should be read,
      *            <code>false</code> if only the properties will be read
      */
@@ -1456,7 +1463,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     @Override
     public void clearValidationCache() {
-        getValidationResultCache().removeStaleData(null);
+        getValidationResultCache().clear();
     }
 
     private void createIpsArtefactBuilderSetInfosIfNecessary() {
@@ -1549,7 +1556,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /**
      * Add the key/value pair to the cache: key = IIpsPackageFragment; value =
      * IIpsPackageFragmentSortDefinition
-     *
+     * 
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @param sortDefinition Value of the hash table entry.
      */
@@ -1565,7 +1572,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * Get a IIpsPackageFragmentSortDefinition for a given IIpsPackageFragment. Returns the object
      * from the cache if the file exists and didn't change, otherwise update sort order from the
      * file system.
-     *
+     * 
      * @param fragment Key of the hash table entry. The fragment is part of the sortDefinition.
      * @return A IIpsPackageFragmentSortDefinition implementation. THe return value should always be
      *         not <code>null</code>.

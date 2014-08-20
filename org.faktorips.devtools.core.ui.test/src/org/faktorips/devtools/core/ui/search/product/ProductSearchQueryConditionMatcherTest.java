@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -79,7 +78,7 @@ public class ProductSearchQueryConditionMatcherTest {
     private Set<IIpsSrcFile> matchingFiles;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         searchOperators = Arrays.asList(searchOperatorHit);
         matchingFiles = new HashSet<IIpsSrcFile>(Arrays.asList(srcFileMiss, srcFileHit, srcFileGenerationHit));
 

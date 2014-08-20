@@ -292,6 +292,17 @@ public class EnumValueContainerTest extends AbstractIpsEnumPluginTest {
     }
 
     @Test
+    public void testFindEnumValue_idChanged() throws CoreException {
+        // verify cache is initialized
+        assertNotNull(genderEnumContent.findEnumValue(GENDER_ENUM_LITERAL_MALE_ID, ipsProject));
+
+        genderEnumContent.findEnumValue(GENDER_ENUM_LITERAL_MALE_ID, ipsProject)
+                .getEnumAttributeValue(genderEnumAttributeId).setValue(ValueFactory.createStringValue("x"));
+
+        assertNull(genderEnumContent.findEnumValue(GENDER_ENUM_LITERAL_MALE_ID, ipsProject));
+    }
+
+    @Test
     public void testFindEnumValue_ForContentInType() throws CoreException {
         IEnumValue newEnumValue = genderEnumType.newEnumValue();
         newEnumValue.setEnumAttributeValue(1, ValueFactory.createStringValue("test1"));

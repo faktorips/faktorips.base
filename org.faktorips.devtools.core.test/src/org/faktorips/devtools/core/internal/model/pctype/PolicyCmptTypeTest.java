@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.DatatypeDependency;
+import org.faktorips.devtools.core.model.DependencyType;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IpsObjectDependency;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetInfo;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -597,8 +599,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         AggregateRootBuilderSet builderSet = new AggregateRootBuilderSet();
         builderSet.setIpsProject(ipsProject);
         ((IpsModel)ipsProject.getIpsModel())
-                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                        builderSet) });
+        .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                builderSet) });
 
         List<IDependency> dependsOn = Arrays.asList(a.dependsOn());
         IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(),
@@ -616,6 +618,29 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         dependency = IpsObjectDependency.createSubtypeDependency(d2.getQualifiedNameType(), s2.getQualifiedNameType());
         assertTrue(dependsOn.contains(dependency));
         assertSingleDependencyDetail(d2, dependency, d2, IPolicyCmptType.PROPERTY_SUPERTYPE);
+    }
+
+    @Test
+    public void testDependsOnProductCmptType() throws CoreException {
+        IPolicyCmptType aPolicyCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "A");
+        IProductCmptType aProductCmptType = newProductCmptType(ipsProject, "AProduct");
+
+        List<IDependency> dependencies = Arrays.asList(aPolicyCmptType.dependsOn());
+        assertEquals(1, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aPolicyCmptType.getQualifiedNameType(),
+                new QualifiedNameType(aPolicyCmptType.getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE),
+                DependencyType.VALIDATION)));
+
+        aPolicyCmptType.setProductCmptType(aProductCmptType.getQualifiedName());
+
+        dependencies = Arrays.asList(aPolicyCmptType.dependsOn());
+        assertEquals(2, dependencies.size());
+        assertTrue(dependencies.contains(IpsObjectDependency.create(aPolicyCmptType.getQualifiedNameType(),
+                new QualifiedNameType(aPolicyCmptType.getQualifiedName(), IpsObjectType.PRODUCT_CMPT_TYPE),
+                DependencyType.VALIDATION)));
+        IDependency dependency = IpsObjectDependency.create(aPolicyCmptType.getQualifiedNameType(),
+                aProductCmptType.getQualifiedNameType(), DependencyType.CONFIGUREDBY);
+        assertTrue(dependencies.contains(dependency));
     }
 
     @Test

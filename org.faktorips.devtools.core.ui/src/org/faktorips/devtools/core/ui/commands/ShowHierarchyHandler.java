@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.commands;
 
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -31,20 +30,15 @@ public class ShowHierarchyHandler extends IpsAbstractHandler {
 
     @Override
     public void execute(ExecutionEvent event, IWorkbenchPage activePage, IIpsSrcFile ipsSrcFile) {
-        try {
-            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
-            if (IpsHierarchyView.supports(ipsObject)) {
-                try {
-                    IViewPart hierarchyView = activePage.showView(IpsHierarchyView.EXTENSION_ID, null,
-                            IWorkbenchPage.VIEW_ACTIVATE);
-                    ((IpsHierarchyView)hierarchyView).showHierarchy(ipsObject);
-                } catch (PartInitException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
+        IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+        if (IpsHierarchyView.supports(ipsObject)) {
+            try {
+                IViewPart hierarchyView = activePage.showView(IpsHierarchyView.EXTENSION_ID, null,
+                        IWorkbenchPage.VIEW_ACTIVATE);
+                ((IpsHierarchyView)hierarchyView).showHierarchy(ipsObject);
+            } catch (PartInitException e) {
+                IpsPlugin.logAndShowErrorDialog(e);
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         }
-
     }
 }

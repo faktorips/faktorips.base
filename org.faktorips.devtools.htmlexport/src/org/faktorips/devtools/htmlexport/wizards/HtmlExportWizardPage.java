@@ -18,7 +18,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -61,7 +60,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 
 public class HtmlExportWizardPage extends WizardDataTransferPage implements ValueChangeListener, ModifyListener,
-        ICheckStateListener {
+ICheckStateListener {
 
     private static final String PAGE_NAME = "IpsProjectHtmlExportWizardPage"; //$NON-NLS-1$
 
@@ -79,141 +78,6 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
 
     private CheckboxTreeViewer objectTypesTreeViewer;
 
-    private static final class IpsObjectLabelProvider implements ILabelProvider {
-
-        @Override
-        public void addListener(ILabelProviderListener listener) {
-            // nothing to do
-        }
-
-        @Override
-        public void dispose() {
-            // TODO Auto-generated method stub
-
-        }
-
-        @Override
-        public boolean isLabelProperty(Object element, String property) {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public void removeListener(ILabelProviderListener listener) {
-            // nothing to do
-        }
-
-        @Override
-        public Image getImage(Object element) {
-            if (!(element instanceof IpsObjectType)) {
-                return null;
-            }
-            IpsObjectType ipsObjectType = (IpsObjectType)element;
-            return IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass());
-        }
-
-        @Override
-        public String getText(Object element) {
-            if (element == IpsObjectTypeTreeViewBaseNodes.POLICY) {
-                return Messages.HtmlExportWizardPage_policy;
-            }
-            if (element == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
-                return Messages.HtmlExportWizardPage_product;
-            }
-            if (element instanceof IpsObjectType) {
-                IpsObjectType ipsObjectType = (IpsObjectType)element;
-                return ipsObjectType.getDisplayNamePlural();
-            }
-            return null;
-        }
-
-    }
-
-    private static final class IpsObjectTreeContentProvider implements ITreeContentProvider {
-        public IpsObjectTreeContentProvider() {
-            createIpsObjectTypesArrays();
-        }
-
-        private final Object[] EMPTY_ARRAY = new Object[0];
-        private IpsObjectType[] IPS_OBJECT_TYPES_POLICY;
-        private IpsObjectType[] IPS_OBJECT_TYPES_PRODUCT;
-        private final IpsObjectTypeTreeViewBaseNodes[] OBJECT_TYPES_ARRAY = { IpsObjectTypeTreeViewBaseNodes.POLICY,
-                IpsObjectTypeTreeViewBaseNodes.PRODUCT };
-
-        @Override
-        public Object[] getElements(Object inputElement) {
-            return getChildren(inputElement);
-        }
-
-        @Override
-        public void dispose() {
-            // nothing to do
-        }
-
-        @Override
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            // nothing to do
-        }
-
-        @Override
-        public Object[] getChildren(Object parentElement) {
-            if (parentElement == IpsObjectTypeTreeViewBaseNodes.ROOT) {
-                return OBJECT_TYPES_ARRAY;
-            }
-            if (parentElement == IpsObjectTypeTreeViewBaseNodes.POLICY) {
-                return IPS_OBJECT_TYPES_POLICY;
-            }
-            if (parentElement == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
-                return IPS_OBJECT_TYPES_PRODUCT;
-            }
-
-            return EMPTY_ARRAY;
-        }
-
-        private void createIpsObjectTypesArrays() {
-            IpsObjectType[] ipsObjectTypes = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
-            List<IpsObjectType> ipsObjectTypesPolicy = new ArrayList<IpsObjectType>();
-            List<IpsObjectType> ipsObjectTypesProduct = new ArrayList<IpsObjectType>();
-
-            for (IpsObjectType ipsObjectType : ipsObjectTypes) {
-                if (ipsObjectType.isProductDefinitionType()) {
-                    ipsObjectTypesProduct.add(ipsObjectType);
-                } else {
-                    ipsObjectTypesPolicy.add(ipsObjectType);
-                }
-            }
-            IPS_OBJECT_TYPES_POLICY = ipsObjectTypesPolicy.toArray(new IpsObjectType[ipsObjectTypesPolicy.size()]);
-            IPS_OBJECT_TYPES_PRODUCT = ipsObjectTypesProduct.toArray(new IpsObjectType[ipsObjectTypesProduct.size()]);
-        }
-
-        @Override
-        public Object getParent(Object element) {
-            if (element == IpsObjectTypeTreeViewBaseNodes.ROOT) {
-                return null;
-            }
-            if (element instanceof IpsObjectTypeTreeViewBaseNodes) {
-                return IpsObjectTypeTreeViewBaseNodes.ROOT;
-            }
-            if (!(element instanceof IpsObjectType)) {
-                return null;
-            }
-            IpsObjectType type = (IpsObjectType)element;
-            return type.isProductDefinitionType() ? IpsObjectTypeTreeViewBaseNodes.PRODUCT
-                    : IpsObjectTypeTreeViewBaseNodes.POLICY;
-        }
-
-        @Override
-        public boolean hasChildren(Object element) {
-            return element instanceof IpsObjectTypeTreeViewBaseNodes;
-        }
-    }
-
-    private enum IpsObjectTypeTreeViewBaseNodes {
-        ROOT,
-        POLICY,
-        PRODUCT
-    }
-
     private IIpsProject[] ipsProjects;
 
     private StringValueComboField destinationNameComboField;
@@ -227,11 +91,7 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
     }
 
     private void initIpsProjects() {
-        try {
-            ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        ipsProjects = IpsPlugin.getDefault().getIpsModel().getIpsProjects();
     }
 
     private void updateSelectedProject() {
@@ -533,7 +393,8 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
         destinationNamesCombo.setText(""); //$NON-NLS-1$
         String[] directoryNames = settings.getArray(STORE_DESTINATION_NAMES);
         if (directoryNames == null) {
-            return; // ie.- no settings stored
+            // ie.- no settings stored
+            return;
         }
         if (!destinationNamesCombo.getText().equals(directoryNames[0])) {
             destinationNamesCombo.add(destinationNamesCombo.getText());
@@ -558,6 +419,144 @@ public class HtmlExportWizardPage extends WizardDataTransferPage implements Valu
         }
         directoryNames = addToHistory(directoryNames, getDestinationDirectory());
         settings.put(STORE_DESTINATION_NAMES, directoryNames);
+    }
+
+    private static final class IpsObjectLabelProvider implements ILabelProvider {
+
+        @Override
+        public void addListener(ILabelProviderListener listener) {
+            // nothing to do
+        }
+
+        @Override
+        public void dispose() {
+            // nothing to dispose
+        }
+
+        @Override
+        public boolean isLabelProperty(Object element, String property) {
+            return false;
+        }
+
+        @Override
+        public void removeListener(ILabelProviderListener listener) {
+            // nothing to do
+        }
+
+        @Override
+        public Image getImage(Object element) {
+            if (!(element instanceof IpsObjectType)) {
+                return null;
+            }
+            IpsObjectType ipsObjectType = (IpsObjectType)element;
+            return IpsUIPlugin.getImageHandling().getDefaultImage(ipsObjectType.getImplementingClass());
+        }
+
+        @Override
+        public String getText(Object element) {
+            if (element == IpsObjectTypeTreeViewBaseNodes.POLICY) {
+                return Messages.HtmlExportWizardPage_policy;
+            }
+            if (element == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
+                return Messages.HtmlExportWizardPage_product;
+            }
+            if (element instanceof IpsObjectType) {
+                IpsObjectType ipsObjectType = (IpsObjectType)element;
+                return ipsObjectType.getDisplayNamePlural();
+            }
+            return null;
+        }
+
+    }
+
+    private static final class IpsObjectTreeContentProvider implements ITreeContentProvider {
+
+        private static final Object[] EMPTY_ARRAY = new Object[0];
+
+        private static final IpsObjectTypeTreeViewBaseNodes[] OBJECT_TYPES_ARRAY = {
+                IpsObjectTypeTreeViewBaseNodes.POLICY, IpsObjectTypeTreeViewBaseNodes.PRODUCT };
+
+        private IpsObjectType[] ipsObjectTypesPolicy;
+        private IpsObjectType[] ipsObjectTypesProduct;
+
+        public IpsObjectTreeContentProvider() {
+            createIpsObjectTypesArrays();
+        }
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            return getChildren(inputElement);
+        }
+
+        @Override
+        public void dispose() {
+            // nothing to do
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            // nothing to do
+        }
+
+        @Override
+        public Object[] getChildren(Object parentElement) {
+            if (parentElement == IpsObjectTypeTreeViewBaseNodes.ROOT) {
+                return OBJECT_TYPES_ARRAY;
+            }
+            if (parentElement == IpsObjectTypeTreeViewBaseNodes.POLICY) {
+                return ipsObjectTypesPolicy;
+            }
+            if (parentElement == IpsObjectTypeTreeViewBaseNodes.PRODUCT) {
+                return ipsObjectTypesProduct;
+            }
+
+            return EMPTY_ARRAY;
+        }
+
+        private void createIpsObjectTypesArrays() {
+            IpsObjectType[] ipsObjectTypes = IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes();
+            List<IpsObjectType> ipsObjectTypesPolicyList = new ArrayList<IpsObjectType>();
+            List<IpsObjectType> ipsObjectTypesProductList = new ArrayList<IpsObjectType>();
+
+            for (IpsObjectType ipsObjectType : ipsObjectTypes) {
+                if (ipsObjectType.isProductDefinitionType()) {
+                    ipsObjectTypesProductList.add(ipsObjectType);
+                } else {
+                    ipsObjectTypesPolicyList.add(ipsObjectType);
+                }
+            }
+            this.ipsObjectTypesPolicy = ipsObjectTypesPolicyList.toArray(new IpsObjectType[ipsObjectTypesPolicyList
+                    .size()]);
+            this.ipsObjectTypesProduct = ipsObjectTypesProductList.toArray(new IpsObjectType[ipsObjectTypesProductList
+                    .size()]);
+        }
+
+        @Override
+        public Object getParent(Object element) {
+            if (element == IpsObjectTypeTreeViewBaseNodes.ROOT) {
+                return null;
+            }
+            if (element instanceof IpsObjectTypeTreeViewBaseNodes) {
+                return IpsObjectTypeTreeViewBaseNodes.ROOT;
+            }
+            if (!(element instanceof IpsObjectType)) {
+                return null;
+            }
+            IpsObjectType type = (IpsObjectType)element;
+            return type.isProductDefinitionType() ? IpsObjectTypeTreeViewBaseNodes.PRODUCT
+                    : IpsObjectTypeTreeViewBaseNodes.POLICY;
+        }
+
+        @Override
+        public boolean hasChildren(Object element) {
+            return element instanceof IpsObjectTypeTreeViewBaseNodes;
+        }
+    }
+
+    private enum IpsObjectTypeTreeViewBaseNodes {
+        ROOT,
+        POLICY,
+        PRODUCT
     }
 
 }

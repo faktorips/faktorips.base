@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.actions;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.ITextSelection;
@@ -52,23 +51,19 @@ public class OpenIpsObjectAction extends Action implements IWorkbenchWindowActio
     public void run() {
         IWorkbenchWindow activeWorkbenchWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
         Shell parent = activeWorkbenchWindow.getShell();
-        try {
-            boolean onlyProdDefs = IpsPlugin.getDefault().isProductDefinitionPerspective();
-            OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
-                    Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs), true);
-            String selectedText = getSelectedText(activeWorkbenchWindow);
-            dialog.setFilter(StringUtil.unqualifiedName(selectedText));
-            if (dialog.open() == Window.OK) {
-                ArrayList<IIpsElement> objects = dialog.getSelectedObjects();
-                for (IIpsElement ipsElement : objects) {
-                    if (ipsElement instanceof IIpsSrcFile) {
-                        IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
-                        IpsUIPlugin.getDefault().openEditor(ipsObject);
-                    }
+        boolean onlyProdDefs = IpsPlugin.getDefault().isProductDefinitionPerspective();
+        OpenIpsObjectSelectionDialog dialog = new OpenIpsObjectSelectionDialog(parent,
+                Messages.OpenIpsObjectAction_dialogTitle, new OpenIpsObjectContext(onlyProdDefs), true);
+        String selectedText = getSelectedText(activeWorkbenchWindow);
+        dialog.setFilter(StringUtil.unqualifiedName(selectedText));
+        if (dialog.open() == Window.OK) {
+            ArrayList<IIpsElement> objects = dialog.getSelectedObjects();
+            for (IIpsElement ipsElement : objects) {
+                if (ipsElement instanceof IIpsSrcFile) {
+                    IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
+                    IpsUIPlugin.getDefault().openEditor(ipsObject);
                 }
             }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
         }
 
     }

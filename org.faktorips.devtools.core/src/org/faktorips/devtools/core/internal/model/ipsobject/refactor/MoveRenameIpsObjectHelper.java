@@ -21,8 +21,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.builder.DependencyGraph;
+import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -274,21 +275,17 @@ public final class MoveRenameIpsObjectHelper {
         dependencyToProject = new HashMap<IDependency, IIpsProject>();
         List<IDependency> collectedDependencies = new ArrayList<IDependency>();
 
-        try {
-            addDependencies(collectedDependencies, toBeRefactored.getIpsProject());
-            IIpsProject[] projects = toBeRefactored.getIpsProject().findReferencingProjects(true);
-            for (IIpsProject project : projects) {
-                addDependencies(collectedDependencies, project);
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        addDependencies(collectedDependencies, toBeRefactored.getIpsProject());
+        IIpsProject[] projects = toBeRefactored.getIpsProject().findReferencingProjects(true);
+        for (IIpsProject project : projects) {
+            addDependencies(collectedDependencies, project);
         }
 
         dependencies = collectedDependencies.toArray(new IDependency[collectedDependencies.size()]);
     }
 
-    private void addDependencies(List<IDependency> dependencies, IIpsProject project) throws CoreException {
-        DependencyGraph graph = new DependencyGraph(project);
+    private void addDependencies(List<IDependency> dependencies, IIpsProject project) {
+        IDependencyGraph graph = new DependencyGraph(project);
         for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
             dependencies.add(dependency);
             dependencyToProject.put(dependency, project);
