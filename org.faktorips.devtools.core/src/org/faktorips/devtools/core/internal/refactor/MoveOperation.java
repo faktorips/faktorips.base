@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.refactor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragment;
 import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -66,12 +65,8 @@ public abstract class MoveOperation {
         IIpsProject targetIpsProject = ((IIpsElement)target).getIpsProject();
         for (Object source : sources) {
             if (source instanceof IIpsElement) {
-                try {
-                    IIpsProject ipsProject = ((IIpsElement)source).getIpsProject();
-                    if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true))) {
-                        return false;
-                    }
-                } catch (CoreException e) {
+                IIpsProject ipsProject = ((IIpsElement)source).getIpsProject();
+                if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true))) {
                     return false;
                 }
             }

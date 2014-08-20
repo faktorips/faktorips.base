@@ -26,7 +26,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -132,13 +131,9 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
         }
 
         private void setReferencingProjectsAsInput() {
-            try {
-                IIpsProject ipsProject = getIpsRefactoring().getIpsProject();
-                IIpsProject[] referencingProjects = ipsProject.findReferencingProjects(true);
-                treeViewer.setInput(ArrayUtils.add(referencingProjects, 0, ipsProject));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IIpsProject ipsProject = getIpsRefactoring().getIpsProject();
+            IIpsProject[] referencingProjects = ipsProject.findReferencingProjects(true);
+            treeViewer.setInput(ArrayUtils.add(referencingProjects, 0, ipsProject));
         }
 
         private void setInitialTreeViewerSelection(IIpsPackageFragment ipsPackageFragment) {
