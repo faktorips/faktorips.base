@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -206,9 +204,6 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         try {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             String version = getIpsProject().getReadOnlyProperties().getVersion();
-            if (StringUtils.isEmpty(version)) {
-                version = Long.toString(new Date().getTime());
-            }
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);
