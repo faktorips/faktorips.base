@@ -13,8 +13,12 @@ package org.faktorips.runtime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.mock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -266,6 +270,18 @@ public class MessageTest extends XmlAbstractTestCase {
     }
 
     @Test
+    public void testGetNumOfReplacementParameters_defensiveCopy() {
+        MsgReplacementParameter msgReplacementParameter = new MsgReplacementParameter("sumInsured", Money.euro(100));
+        MsgReplacementParameter[] params = new MsgReplacementParameter[] { msgReplacementParameter };
+
+        Message msg = Message.error("text").code("code").replacements(params).create();
+        params[0] = null;
+
+        assertEquals(1, msg.getNumOfReplacementParameters());
+        assertThat(msg.getReplacementParameters(), hasItem(msgReplacementParameter));
+    }
+
+    @Test
     public void testHasReplacementParameter() {
         Message msg = new Message("code", "text", Message.ERROR);
         assertFalse(msg.hasReplacementParameter("param"));
@@ -310,4 +326,54 @@ public class MessageTest extends XmlAbstractTestCase {
         Message message = Message.warning("text").code("1").create();
         assertEquals(Severity.WARNING, message.getSeverity());
     }
+
+    @Test
+    public void testHasMarkers() {
+        // markers not null but empty
+        Message message = new Message("text", "code", null, null, null, null);
+        assertFalse(message.hasMarkers());
+
+        message = Message.warning("text").code("1").markers().create();
+        assertFalse(message.hasMarkers());
+        // 1 marker
+        message = Message.warning("text").code("1").markers(mock(IMarker.class)).create();
+        assertTrue(message.hasMarkers());
+        // 2 markers
+        List<IMarker> markers = new ArrayList<IMarker>();
+        markers.add(mock(IMarker.class));
+        markers.add(mock(IMarker.class));
+        message = Message.warning("text").code("1").markers(markers).create();
+        assertTrue(message.hasMarkers());
+    }
+
+    @Test
+    public void testGetMarkers() {
+        Message message = new Message("text", "code", null, null, null, null);
+        assertTrue(message.getMarkers().isEmpty());
+
+        message = Message.warning("text").code("1").markers().create();
+        assertTrue(message.getMarkers().isEmpty());
+
+        message = Message.warning("text").code("1").markers(mock(IMarker.class)).create();
+        assertEquals(1, message.getMarkers().size());
+
+        List<IMarker> markers = new ArrayList<IMarker>();
+        markers.add(mock(IMarker.class));
+        markers.add(mock(IMarker.class));
+        message = Message.warning("text").code("1").markers(markers).create();
+        assertEquals(2, message.getMarkers().size());
+    }
+
+    @Test
+    public void testGetMarkers_defensiveCopy() {
+        IMarker testMarker = mock(IMarker.class);
+        IMarker[] markerArray = new IMarker[] { testMarker };
+        Message message = Message.warning("text").code("1").markers(markerArray).create();
+
+        markerArray[0] = null;
+
+        assertEquals(1, message.getMarkers().size());
+        assertThat(message.getMarkers(), hasItem(testMarker));
+    }
+
 }

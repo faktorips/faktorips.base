@@ -1110,14 +1110,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
      *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
+     *             <p>
+     *             If you are interested in all extension properties regardless of their
+     *             applicability to specific objects, use
+     *             {@link #getExtensionPropertyDefinitionsForClass(Class, boolean)} explicitly.
      */
     @Override
     @Deprecated
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
             boolean includeSupertypesAndInterfaces) {
-        Set<IExtensionPropertyDefinition> props = customModelExtensions.getExtensionPropertyDefinitions(type,
+        Set<IExtensionPropertyDefinition> props = getExtensionPropertyDefinitionsForClass(type,
                 includeSupertypesAndInterfaces);
         return props.toArray(new IExtensionPropertyDefinition[props.size()]);
+    }
+
+    @Override
+    public Set<IExtensionPropertyDefinition> getExtensionPropertyDefinitionsForClass(Class<?> type,
+            boolean includeSupertypesAndInterfaces) {
+        return customModelExtensions.getExtensionPropertyDefinitions(type, includeSupertypesAndInterfaces);
     }
 
     /**

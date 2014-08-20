@@ -103,9 +103,11 @@ public class IpsRefactoringOperation {
         RefactoringStatus status = new RefactoringStatus();
         boolean conditionsOk = checkConditionsWizardInteraction(status);
         if (!(conditionsOk)) {
-            MessageDialog.openInformation(shell, refactoring.getName(),
-                    Messages.IpsRefactoringAction_refactoringCurrentlyNotApplicable + "\n\n      - " //$NON-NLS-1$
-                            + status.getEntryWithHighestSeverity().getMessage());
+            if (!status.isOK()) {
+                MessageDialog.openInformation(shell, refactoring.getName(),
+                        Messages.IpsRefactoringAction_refactoringCurrentlyNotApplicable + "\n\n      - " //$NON-NLS-1$
+                                + status.getEntryWithHighestSeverity().getMessage());
+            }
             return;
         }
         performRefactoringWizardInteraction(refactoringWizard);

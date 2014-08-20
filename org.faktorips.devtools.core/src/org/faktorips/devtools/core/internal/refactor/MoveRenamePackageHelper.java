@@ -1,0 +1,443 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.devtools.core.internal.refactor;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.ltk.core.refactoring.CheckConditionsOperation;
+import org.eclipse.ltk.core.refactoring.PerformRefactoringOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
+import org.faktorips.devtools.core.refactor.IIpsRefactoring;
+import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.util.QNameUtil;
+import org.faktorips.util.StringUtil;
+
+/**
+ * Helper-Class for move or rename a {@link IIpsPackageFragment}.
+ * 
+ */
+public final class MoveRenamePackageHelper {
+
+    private IIpsPackageFragment originalPackageFragment;
+
+    public MoveRenamePackageHelper(IIpsPackageFragment ipsPackageFragment) {
+        this.originalPackageFragment = ipsPackageFragment;
+    }
+
+    /**
+     * Move a {@link IIpsPackageFragment} to a new package.
+     */
+    public IpsRefactoringModificationSet movePackageFragment(IIpsPackageFragment targetPackageFragement,
+            IProgressMonitor pm) {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(originalPackageFragment);
+        try {
+            moveRenamePackageFragement(targetPackageFragement, getResultingPackageName(targetPackageFragement),
+                    modificationSet, pm);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return modificationSet;
+    }
+
+    /**
+     * Rename a {@link IIpsPackageFragment} to a new name.
+     */
+    public IpsRefactoringModificationSet renamePackageFragment(String newName, IProgressMonitor pm) {
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(originalPackageFragment);
+        try {
+            moveRenamePackageFragement(originalPackageFragment, newName, modificationSet, pm);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return modificationSet;
+    }
+
+    /**
+     * Calculates the name of the package after it is moved or renamed.
+     * 
+     * @param targetPackageFragement the package the original package should be moved into
+     * @return the resulting name of the moved package fragment
+     */
+    private String getResultingPackageName(IIpsPackageFragment targetPackageFragement) {
+        if (targetPackageFragement.isDefaultPackage()) {
+            return originalPackageFragment.getLastSegmentName();
+        } else if (originalPackageFragment.isDefaultPackage()) {
+            return targetPackageFragement.getName();
+        } else {
+            return targetPackageFragement.getName() + IIpsPackageFragment.SEPARATOR
+                    + originalPackageFragment.getLastSegmentName();
+        }
+    }
+
+    private void moveRenamePackageFragement(IIpsPackageFragment targetPackageFragement,
+            String newName,
+            IpsRefactoringModificationSet modificationSet,
+            IProgressMonitor monitor) throws CoreException {
+
+        IIpsPackageFragmentRoot currTargetRoot = targetPackageFragement.getRoot();
+        IIpsPackageFragmentRoot sourceRoot = getSourceRoot();
+
+        // 1) Find all files contained in this folder.
+        ArrayList<FileInfo> files = getRelativeFileNames(StringUtils.EMPTY,
+                (IFolder)originalPackageFragment.getEnclosingResource());
+
+        // 2) Move them all.
+        boolean createSubPackage = false;
+        for (FileInfo fileInfos : files) {
+
+            IIpsPackageFragment targetPackage = currTargetRoot.getIpsPackageFragment(buildPackageName(
+                    StringUtils.EMPTY, newName, fileInfos.getPath()));
+
+            if (targetPackage == null) {
+                continue;
+            }
+            if (targetPackage.getParentIpsPackageFragment().equals(originalPackageFragment)) {
+                createSubPackage = true;
+            }
+
+            createPackageFragmentIfNotExist(currTargetRoot, targetPackage, monitor);
+
+            IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(buildPackageName(
+                    originalPackageFragment.getName(), StringUtils.EMPTY, fileInfos.getPath()));
+            IIpsSrcFile sourceFile = sourcePackage.getIpsSrcFile(fileInfos.getFileName());
+            if (sourceFile != null) {
+                modificationSet.addBeforeChanged(sourceFile);
+                IIpsObject ipsObject = sourceFile.getIpsObject();
+                IIpsSrcFile targetFile = targetPackage.getIpsSrcFile(fileInfos.getFileName());
+                String targetName = targetPackage.getName() + '.' + targetFile.getIpsObjectName();
+                RefactoringStatus status = moveIpsObject(ipsObject, targetName, currTargetRoot, monitor);
+                if (status.hasError()) {
+                    IpsPlugin.log(new IpsStatus(NLS.bind("Error moving file {0}.\n{1}", sourceFile.getName(), //$NON-NLS-1$
+                            status.toString())));
+                }
+            } else {
+                moveOtherFiles(sourcePackage, targetPackage, fileInfos, monitor);
+            }
+        }
+
+        // 3) Remove remaining folders(only if no sub package was to be created).
+        if (!(createSubPackage)) {
+            if (isSourceFolderEmpty(((IFolder)originalPackageFragment.getEnclosingResource()))) {
+                originalPackageFragment.getEnclosingResource().delete(true, monitor);
+            }
+        }
+    }
+
+    private IIpsPackageFragmentRoot getSourceRoot() {
+        IIpsPackageFragment sourceParent = originalPackageFragment.getParentIpsPackageFragment();
+        IIpsPackageFragmentRoot sourceRoot;
+        if (sourceParent != null) {
+            sourceRoot = sourceParent.getRoot();
+        } else {
+            sourceRoot = originalPackageFragment.getRoot();
+        }
+        return sourceRoot;
+    }
+
+    /**
+     * Checks recursively if the {@link IFolder} is empty.
+     */
+    private boolean isSourceFolderEmpty(IFolder folder) throws CoreException {
+        IResource[] members = folder.members();
+        for (IResource member : members) {
+            if (member.getType() == IResource.FILE) {
+                return false;
+            } else if (member.getType() == IResource.FOLDER) {
+                if (!isSourceFolderEmpty((IFolder)member)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void createPackageFragmentIfNotExist(IIpsPackageFragmentRoot currTargetRoot,
+            IIpsPackageFragment targetPackage,
+            IProgressMonitor monitor) throws CoreException {
+        if (!targetPackage.exists()) {
+            currTargetRoot.createPackageFragment(targetPackage.getName(), true, monitor);
+        }
+    }
+
+    /**
+     * We do not have a IIpsSrcFile, so move the file as resource operation.
+     */
+    private void moveOtherFiles(IIpsPackageFragment sourcePackage,
+            IIpsPackageFragment targetPackage,
+            FileInfo fileInfos,
+            IProgressMonitor monitor) throws CoreException {
+        IFolder folder = (IFolder)sourcePackage.getEnclosingResource();
+        IFile rawFile = folder.getFile(fileInfos.getFileName());
+        IPath destination = ((IFolder)targetPackage.getCorrespondingResource()).getFullPath().append(
+                fileInfos.getFileName());
+        if (rawFile.exists()) {
+            rawFile.move(destination, true, monitor);
+        } else {
+            if (!((IFolder)targetPackage.getCorrespondingResource()).getFolder(fileInfos.getFileName()).exists()) {
+                IFolder rawFolder = folder.getFolder(fileInfos.getFileName());
+                rawFolder.move(destination, true, monitor);
+            }
+        }
+    }
+
+    /**
+     * Recursively descend the path down the folders and collect all files found in the given list.
+     */
+    private ArrayList<FileInfo> getRelativeFileNames(String path, IFolder folder) throws CoreException {
+        ArrayList<FileInfo> files = new ArrayList<FileInfo>();
+        IResource[] members = folder.members();
+
+        if (members.length == 0) {
+            files.add(new FileInfo(StringUtil.getPackageName(path), StringUtil.unqualifiedName(path)));
+        }
+
+        for (IResource member : members) {
+            if (member.getType() == IResource.FOLDER) {
+                String pathName = path.length() > 0 ? (path + IIpsPackageFragment.SEPARATOR + member.getName())
+                        : member.getName();
+                files.addAll(getRelativeFileNames(pathName, (IFolder)member));
+            } else if (member.getType() == IResource.FILE) {
+                files.add(new FileInfo(path, member.getName()));
+            }
+        }
+        return files;
+    }
+
+    /**
+     * Builds a package name by concatenating the given parts with dots. Each one of the three parts
+     * can be empty.
+     */
+    private String buildPackageName(String prefix, String middle, String postfix) {
+        String result = prefix;
+
+        if (StringUtils.isNotEmpty(result) && StringUtils.isNotEmpty(middle)) {
+            result += IIpsPackageFragment.SEPARATOR;
+        }
+
+        if (StringUtils.isNotEmpty(middle)) {
+            result += middle;
+        }
+
+        if (StringUtils.isNotEmpty(result) && StringUtils.isNotEmpty(postfix)) {
+            result += IIpsPackageFragment.SEPARATOR;
+        }
+
+        if (StringUtils.isNotEmpty(postfix)) {
+            result += postfix;
+        }
+        return result;
+    }
+
+    /**
+     * Move the {@link IIpsObject} to the target
+     */
+    private RefactoringStatus moveIpsObject(IIpsObject ipsObject,
+            String targetName,
+            IIpsPackageFragmentRoot targetRoot,
+            IProgressMonitor pm) throws CoreException {
+
+        IIpsPackageFragmentRoot root = targetRoot;
+        if (root == null) {
+            root = ipsObject.getIpsPackageFragment().getRoot();
+        }
+        IIpsPackageFragment targetIpsPackageFragment = root.getIpsPackageFragment(QNameUtil.getPackageName(targetName));
+        IIpsRefactoring ipsMoveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(ipsObject,
+                targetIpsPackageFragment);
+        PerformRefactoringOperation operation = new PerformRefactoringOperation(ipsMoveRefactoring.toLtkRefactoring(),
+                CheckConditionsOperation.ALL_CONDITIONS);
+        ResourcesPlugin.getWorkspace().run(operation, pm);
+        return operation.getConditionStatus();
+    }
+
+    /**
+     * Returns the affected {@link IIpsSrcFile IIpsSrcFiles}.
+     */
+    public Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
+        Set<IIpsSrcFile> affectedFiles = new HashSet<IIpsSrcFile>();
+        try {
+            ArrayList<FileInfo> files = getRelativeFileNames(StringUtils.EMPTY,
+                    (IFolder)originalPackageFragment.getEnclosingResource());
+            IIpsPackageFragmentRoot sourceRoot = getSourceRoot();
+            for (FileInfo fileInfos : files) {
+                IIpsPackageFragment sourcePackage = sourceRoot.getIpsPackageFragment(buildPackageName(
+                        originalPackageFragment.getName(), StringUtils.EMPTY, fileInfos.getPath()));
+                IIpsSrcFile sourceFile = sourcePackage.getIpsSrcFile(fileInfos.getFileName());
+                if (sourceFile != null && sourceFile.exists()) {
+                    affectedFiles.add(sourceFile);
+                }
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return affectedFiles;
+    }
+
+    /**
+     * Checks the initial conditions.
+     */
+    public void checkInitialConditions(RefactoringStatus status) throws CoreException {
+        if (status.isOK()) {
+            if (!packageValid(originalPackageFragment)) {
+                status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorPackageContainsInvalidObjects,
+                        originalPackageFragment.getName()));
+            }
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if all found {@link IIpsObject IIpsObjects} are valid.
+     */
+    private boolean packageValid(IIpsPackageFragment fragment) throws CoreException {
+        for (IIpsPackageFragment childFragment : fragment.getChildIpsPackageFragments()) {
+            if (!(packageValid(childFragment))) {
+                return false;
+            }
+        }
+        for (IIpsSrcFile ipsSrcFile : fragment.getIpsSrcFiles()) {
+            IIpsObject ipsObject = ipsSrcFile.getIpsObject();
+            if (!(ipsObject.isValid(ipsSrcFile.getIpsProject()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks the final conditions on all AffectedIpsSourceFiles. It's necessary to create the
+     * target packages. After the check the target package will be deleted.
+     */
+    public void checkFinalConditions(IIpsPackageFragment targetIpsPackageFragment,
+            RefactoringStatus status,
+            IProgressMonitor pm) throws CoreException {
+        // no errors so far
+        if (targetIpsPackageFragment != null && status.isOK()) {
+            try {
+                createPackageFragmentIfNotExist(targetIpsPackageFragment.getRoot(), targetIpsPackageFragment, pm);
+                Set<IIpsSrcFile> affectedIpsSrcFiles = getAffectedIpsSrcFiles();
+                for (IIpsSrcFile ipsSrcFile : affectedIpsSrcFiles) {
+                    checkFinalConditionsOnIpsSrcFile(ipsSrcFile, targetIpsPackageFragment, status, pm);
+                }
+            } finally {
+                if (targetIpsPackageFragment.exists()) {
+                    targetIpsPackageFragment.getEnclosingResource().delete(true, pm);
+                }
+            }
+        }
+    }
+
+    /**
+     * Checks the new target {@link IIpsPackageFragment} is not valid or already exists.
+     */
+    public void validateUserInput(IIpsPackageFragment newPackageFragment, RefactoringStatus status) {
+        if (status.isOK()) {
+            if (newPackageFragment == null) {
+                status.addFatalError(Messages.MoveRenamePackageHelper_errorTargetPackageNotValid);
+                return;
+            } else if (newPackageFragment.exists()) {
+                status.addFatalError(NLS.bind(Messages.MoveRenaamePackageHelper_errorPackageAlreadyContains,
+                        newPackageFragment.getName()));
+                return;
+            }
+            if (!MoveOperation.canMovePackages(new Object[] { originalPackageFragment }, newPackageFragment)) {
+                status.addFatalError(NLS.bind(Messages.MoveRenamePackageHelper_errorMessage_disallowMoveIntoSubPackage,
+                        originalPackageFragment.getName()));
+            }
+        }
+    }
+
+    /**
+     * Calling the refactoring processor for {@link IIpsObject}. The source file of the
+     * {@link IIpsObject} will be moved this early. Based on that new source file and on the moved
+     * {@link IIpsObject} validation is performed. After validation the file is moved back to
+     * perform the real model refactoring.
+     */
+    private void checkFinalConditionsOnIpsSrcFile(IIpsSrcFile originalFile,
+            IIpsPackageFragment targetIpsPackageFragment,
+            RefactoringStatus status,
+            IProgressMonitor pm) throws CoreException {
+        createSubPackageFragmentIfNotExist(originalFile, targetIpsPackageFragment, pm);
+        IIpsProcessorBasedRefactoring moveRefactoring = IpsPlugin.getIpsRefactoringFactory().createMoveRefactoring(
+                originalFile.getIpsObject(), targetIpsPackageFragment);
+        status.merge(moveRefactoring.checkFinalConditions(pm));
+    }
+
+    private void createSubPackageFragmentIfNotExist(IIpsSrcFile originalFile,
+            IIpsPackageFragment targetIpsPackageFragment,
+            IProgressMonitor pm) throws CoreException {
+        if (!originalPackageFragment.equals(originalFile.getIpsPackageFragment())) {
+            IIpsPackageFragment targetPackage = targetIpsPackageFragment.getRoot().getIpsPackageFragment(
+                    buildPackageName(StringUtils.EMPTY, targetIpsPackageFragment.getName(), originalFile
+                            .getIpsPackageFragment().getLastSegmentName()));
+            createPackageFragmentIfNotExist(targetIpsPackageFragment.getRoot(), targetPackage, pm);
+        }
+    }
+
+    /**
+     * Returns <code>false</code> because the {@link IpsPackageFragment} is not a file and the
+     * {@link IpsSrcFile} inside checks this property self.
+     */
+    public boolean isSourceFilesSavedRequired() {
+        return false;
+    }
+
+    /**
+     * Stores the path and the filename
+     */
+    private static final class FileInfo {
+
+        private final String path;
+        private final String filename;
+
+        public FileInfo(String path, String filename) {
+            this.path = path;
+            this.filename = filename;
+        }
+
+        public String getPath() {
+            return this.path;
+        }
+
+        public String getFileName() {
+            return this.filename;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("FileInfo [path="); //$NON-NLS-1$
+            stringBuilder.append(path);
+            stringBuilder.append(", filename="); //$NON-NLS-1$
+            stringBuilder.append(filename);
+            stringBuilder.append("]"); //$NON-NLS-1$
+            return stringBuilder.toString();
+        }
+    }
+}

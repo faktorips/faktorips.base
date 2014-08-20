@@ -12,12 +12,10 @@ package org.faktorips.devtools.core.ui.refactor;
 
 import java.util.Set;
 
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.refactor.IIpsRefactoring;
-import org.faktorips.devtools.core.ui.wizards.move.MoveWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsPullUpRefactoringWizard;
 import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
 
@@ -32,12 +30,6 @@ import org.faktorips.devtools.core.ui.wizards.refactor.IpsRefactoringWizard;
 public class IpsPullUpHandler extends IpsRefactoringHandler {
 
     public static final String CONTRIBUTION_ID = "org.faktorips.devtools.core.refactor.pullUp"; //$NON-NLS-1$
-
-    @Override
-    protected MoveWizard getMoveWizard(IStructuredSelection selection) {
-        // TODO AW 27-05-2011: Need to remove old refactoring parts
-        return null;
-    }
 
     @Override
     protected IpsRefactoringWizard getRefactoringWizard(IIpsRefactoring refactoring) {

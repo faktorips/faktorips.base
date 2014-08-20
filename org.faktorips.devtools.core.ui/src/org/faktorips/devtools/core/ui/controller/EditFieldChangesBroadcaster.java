@@ -37,9 +37,10 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
  */
 public class EditFieldChangesBroadcaster {
 
-    private static DateFormat DEBUG_FORMAT;
-    private static int DELAY_TIME = 200;
+    /** delay time for change events */
+    private static final int DELAY_TIME = IpsPlugin.getDefault().getIpsPreferences().getChangeEventDelayTime();
 
+    private DateFormat debugFormat;
     private FieldValueChangedEvent lastEvent;
     private ValueChangeListener[] lastListeners;
     private long lastEventTime = 0;
@@ -55,42 +56,6 @@ public class EditFieldChangesBroadcaster {
 
     /** debug counter for accrued events */
     private int eventCounter = 0;
-
-    /**
-     * Internal system ui job to check when it is time to broadcast the delayed event.
-     */
-    private class BroadcastDelayedUIJob extends UIJob {
-
-        public BroadcastDelayedUIJob() {
-            super("BroadcastDelayedUIJob"); //$NON-NLS-1$
-            setSystem(true);
-        }
-
-        @Override
-        public IStatus runInUIThread(IProgressMonitor monitor) {
-            synchronized (mutex) {
-                if ((System.currentTimeMillis() - lastEventTime) > DELAY_TIME) {
-                    // it is time to broadcast the event, afterwards stop this job
-                    try {
-                        broadcastLastEvent();
-                    } catch (RuntimeException e) {
-                        logTrace("Error: " + e.getMessage()); //$NON-NLS-1$
-                    }
-                    running = false;
-                }
-            }
-
-            // schedule to check the next event delay time
-            // or to get discarded by the job manager (if running is false)
-            schedule(DELAY_TIME / 2);
-            return Status.OK_STATUS;
-        }
-
-        @Override
-        public boolean shouldSchedule() {
-            return running;
-        }
-    }
 
     /**
      * Broadcastes the given event to the listener after a specified delay time.
@@ -143,7 +108,9 @@ public class EditFieldChangesBroadcaster {
                         continue;
                     }
                     listener.valueChanged(event);
+                    // CSOFF: IllegalCatch
                 } catch (RuntimeException e) {
+                    // CSON: IllegalCatch
                     IpsPlugin.logAndShowErrorDialog(e);
                 }
             }
@@ -179,10 +146,10 @@ public class EditFieldChangesBroadcaster {
         }
         StringBuffer msgBuf = new StringBuffer(message.length() + 40);
         msgBuf.append("EditFieldChangesBroadcaster "); //$NON-NLS-1$
-        if (DEBUG_FORMAT == null) {
-            DEBUG_FORMAT = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
+        if (debugFormat == null) {
+            debugFormat = new SimpleDateFormat("(HH:mm:ss.SSS): "); //$NON-NLS-1$
         }
-        DEBUG_FORMAT.format(new Date(), msgBuf, new FieldPosition(0));
+        debugFormat.format(new Date(), msgBuf, new FieldPosition(0));
         msgBuf.append(message);
         System.out.println(msgBuf.toString());
     }
@@ -201,5 +168,43 @@ public class EditFieldChangesBroadcaster {
 
     private boolean isDebugOn() {
         return IpsModel.TRACE_MODEL_CHANGE_LISTENERS;
+    }
+
+    /**
+     * Internal system ui job to check when it is time to broadcast the delayed event.
+     */
+    private class BroadcastDelayedUIJob extends UIJob {
+
+        public BroadcastDelayedUIJob() {
+            super("BroadcastDelayedUIJob"); //$NON-NLS-1$
+            setSystem(true);
+        }
+
+        @Override
+        public IStatus runInUIThread(IProgressMonitor monitor) {
+            synchronized (mutex) {
+                if ((System.currentTimeMillis() - lastEventTime) > DELAY_TIME) {
+                    // it is time to broadcast the event, afterwards stop this job
+                    try {
+                        broadcastLastEvent();
+                        // CSOFF: IllegalCatch
+                    } catch (RuntimeException e) {
+                        // CSON: IllegalCatch
+                        logTrace("Error: " + e.getMessage()); //$NON-NLS-1$
+                    }
+                    running = false;
+                }
+            }
+
+            // schedule to check the next event delay time
+            // or to get discarded by the job manager (if running is false)
+            schedule(DELAY_TIME / 2);
+            return Status.OK_STATUS;
+        }
+
+        @Override
+        public boolean shouldSchedule() {
+            return running;
+        }
     }
 }

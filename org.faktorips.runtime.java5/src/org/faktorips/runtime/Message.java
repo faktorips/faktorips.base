@@ -255,7 +255,8 @@ public class Message implements Serializable {
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
      * @param invalidObjectProperties A list of object properties the message refers to
      * @param parameters a list of replacement parameters
-     * @param markers a list of markers
+     * @param markers a list of markers. If this parameter is null an empty list is set as markers.
+     *            The List of markers is
      */
     public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties,
             List<MsgReplacementParameter> parameters, List<IMarker> markers) {
@@ -263,17 +264,17 @@ public class Message implements Serializable {
         this.text = text;
         this.severity = severity;
         if (markers != null) {
-            this.markers = markers;
+            this.markers = Collections.unmodifiableList(new ArrayList<IMarker>(markers));
         } else {
             this.markers = Collections.emptyList();
         }
         if (invalidObjectProperties != null) {
-            invalidOp = new ArrayList<ObjectProperty>(invalidObjectProperties);
+            invalidOp = Collections.unmodifiableList(new ArrayList<ObjectProperty>(invalidObjectProperties));
         } else {
             invalidOp = Collections.emptyList();
         }
         if (parameters != null) {
-            replacementParameters = new ArrayList<MsgReplacementParameter>(parameters);
+            replacementParameters = Collections.unmodifiableList(new ArrayList<MsgReplacementParameter>(parameters));
         } else {
             replacementParameters = Collections.emptyList();
         }
@@ -462,11 +463,18 @@ public class Message implements Serializable {
     }
 
     /**
-     * Returns a list of {@link IMarker}s associated with this class. Returns <code>null</code> if
-     * no markers where set.
+     * Returns a list of {@link IMarker}s associated with this class. Returns an empty list if no
+     * markers are set.
      */
     public List<IMarker> getMarkers() {
         return markers;
+    }
+
+    /**
+     * Returns <code>true</code> if the message has markers otherwise <code>false</code>.
+     */
+    public boolean hasMarkers() {
+        return !markers.isEmpty();
     }
 
     @Override

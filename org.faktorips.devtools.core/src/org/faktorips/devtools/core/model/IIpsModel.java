@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -62,7 +63,7 @@ public interface IIpsModel extends IIpsElement {
      * method in IWorkspace. All IPS source file change events are queued until the action is
      * finished and then broadcasted. If an IPS source file is changed more than once, only one
      * change event is sent.
-     * 
+     *
      * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
      *      org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -73,7 +74,7 @@ public interface IIpsModel extends IIpsElement {
      * method in IWorkspace. All IPS source file change events are queued until the action is
      * finished and then broadcasted. If an IPS source file is change more than one, only one change
      * event is sent.
-     * 
+     *
      * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
      *      org.eclipse.core.runtime.jobs.ISchedulingRule, int,
      *      org.eclipse.core.runtime.IProgressMonitor)
@@ -88,7 +89,7 @@ public interface IIpsModel extends IIpsElement {
      * given parentPart is the parent of the newly created part. For example, if you want to create
      * a {@link IValueSet} as part of a {@link IConfigElement} you call this method with the
      * {@link IConfigElement} as parameter to get the ID for the new {@link IValueSet}.
-     * 
+     *
      * @param parentPart The parent part of the new part for which we need the ID
      * @return the new unique ID that can be used for a new part
      */
@@ -97,7 +98,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Creates an IpsProject for the given Java project by adding the IPS nature and creating (an
      * empty) .ipsproject file.
-     * 
+     *
      * @throws NullPointerException if javaProjecct is <code>null</code>.
      * @throws CoreException if an error occurs while creating the IPS project.
      */
@@ -123,7 +124,7 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Returns the IpsProject that belongs to the indicated platform project.
-     * 
+     *
      * @throws NullPointerException if project is null.
      */
     public IIpsProject getIpsProject(IProject project);
@@ -131,7 +132,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns all <code>IProject</code>s in the workspace, that do not have an IpsProject nature.
      * Ignores closed projects.
-     * 
+     *
      * @throws CoreException if an exception occurs while accessing project-natures.
      */
     public IResource[] getNonIpsProjects() throws CoreException;
@@ -178,7 +179,7 @@ public interface IIpsModel extends IIpsElement {
      * <p>
      * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
      * longer needed to prevent memory leaks.
-     * 
+     *
      * @see #removeChangeListener(ContentsChangeListener)
      */
     public void addChangeListener(ContentsChangeListener listener);
@@ -194,7 +195,7 @@ public interface IIpsModel extends IIpsElement {
      * <p>
      * <strong>Important</strong>: Do not forget to <strong>remove the listener again</strong> if no
      * longer needed to prevent memory leaks.
-     * 
+     *
      * @see #removeModificationStatusChangeListener(IModificationStatusChangeListener)
      */
     public void addModifcationStatusChangeListener(IModificationStatusChangeListener listener);
@@ -219,21 +220,53 @@ public interface IIpsModel extends IIpsElement {
      * {@link IIpsObjectPartContainer} by calling
      * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}. Better use
      * {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
-     * 
-     * 
+     *
+     *
      * @param type The published interface of the IPS object or part e.g.
      *            <code>org.faktorips.plugin.model.pctype.IAttribute</code>
      * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
      *            defined for for the type itself should be returned, but also the ones registered
      *            for it's super type(s) and it's interfaces.
+     *
      * @see #getExtensionPropertyDefinitions(IIpsObjectPartContainer)
+     *
      * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
      *             {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
+     *             <p>
+     *             If you are interested in all extension properties regardless of their
+     *             applicability to specific objects, use
+     *             {@link #getExtensionPropertyDefinitionsForClass(Class, boolean)} explicitly.
      */
     @Deprecated
     public IExtensionPropertyDefinition[] getExtensionPropertyDefinitions(Class<?> type,
+            boolean includeSupertypesAndInterfaces);
+
+    /**
+     * Returns a view on the extension properties for the given class.
+     * <p>
+     * <em><strong>Important: This operation must only be used if it is of no relevance whether
+     * the retrieved extension properties are applicable to a given {@link IIpsObjectPartContainer}.</strong></em>
+     * <p>
+     * This operation simply returns every {@link IExtensionPropertyDefinition} that is registered
+     * for the given class. It does not respect whether these definitions are applicable for a given
+     * {@link IIpsObjectPartContainer} by calling
+     * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}.
+     * <p>
+     * Clients are advised to use {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)}
+     * instead, except if they explicitly want the behavior provided by this operation.
+     *
+     *
+     * @param type The published interface of the extended {@link IIpsObjectPartContainer}, e.g.
+     *            {@link org.faktorips.devtools.core.model.type.IAttribute}
+     * @param includeSupertypesAndInterfaces <code>true</code> if not only the extension properties
+     *            defined for for the type itself should be returned, but also the ones registered
+     *            for it's super type(s) and interface(s).
+     *
+     * @see #getExtensionPropertyDefinitions(IIpsObjectPartContainer)
+     */
+    public Set<IExtensionPropertyDefinition> getExtensionPropertyDefinitionsForClass(Class<?> type,
             boolean includeSupertypesAndInterfaces);
 
     /**
@@ -245,7 +278,7 @@ public interface IIpsModel extends IIpsElement {
      * {@link IIpsObjectPartContainer} by calling
      * {@link IExtensionPropertyDefinition2#isApplicableFor(IIpsObjectPartContainer)}. Better use
      * {@link #getExtensionPropertyDefinitions(IIpsObjectPartContainer)} instead.
-     * 
+     *
      * @param type The published interface of the IPS object or part e.g.
      *            <code>or.faktorips.plugin.model.pctype.Attribute</code>
      * @param propertyId the extension property id
@@ -253,7 +286,7 @@ public interface IIpsModel extends IIpsElement {
      *            defined for for the type itself should be returned, but also the ones registered
      *            for it's super type(s) and it's interfaces.
      * @see #getExtensionPropertyDefinitions(IIpsObjectPartContainer)
-     * 
+     *
      * @deprecated Since 3.10 the scope of an extension property could be limited to an instance of
      *             {@link IIpsObjectPartContainer}. Hence we need the instance to decide whether a
      *             extension property is applicable or not. Use
@@ -267,7 +300,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns a map {@link IExtensionPropertyDefinition} identified by their IDs, that are defined
      * and activated for the given {@link IIpsObjectPartContainer}.
-     * 
+     *
      * @param object The {@link IIpsObjectPartContainer} for which you want to get the
      *            {@link IExtensionPropertyDefinition}
      * @return A map of {@link IExtensionPropertyDefinition} that are identified by their IDs
@@ -338,7 +371,7 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Searches for all test cases referring to the given product component. The project of the
      * given product component and all projects referring to this one are searched.
-     * 
+     *
      * @param cmpt The product component test cases have to refer to.
      * @return All test cases referring the product component with the given name or an empty list,
      *         of none is found.
@@ -349,11 +382,11 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Returns the container identified by the given type ID and optional path for the given IPS
      * project. Returns <code>null</code> if no such container exists.
-     * 
+     *
      * @param ipsProject The IPS project
      * @param containerTypeId The unique ID of the container type.
      * @param optionalPath The optional path info.
-     * 
+     *
      * @throws NullPointerException if any argument is <code>null</code>.
      */
     public IIpsObjectPathContainer getIpsObjectPathContainer(IIpsProject ipsProject,
@@ -363,8 +396,8 @@ public interface IIpsModel extends IIpsElement {
     /**
      * Adding a {@link IIpsSrcFilesChangeListener} to the list of listeners. If the listener already
      * exists this method does nothing.
-     * 
-     * 
+     *
+     *
      * @param listener the new listener
      * @return true if this set did not already contain the specified element
      */
@@ -372,7 +405,7 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Removes the {@link IIpsSrcFilesChangeListener} from the list of listeners.
-     * 
+     *
      * @param listener the listener to remove
      * @return true if the listener was removed
      */
@@ -383,7 +416,7 @@ public interface IIpsModel extends IIpsElement {
      * {@link SingleEventModification} and makes sure that only the {@link ContentChangeEvent} that
      * is provided by the {@link SingleEventModification} is fired. No events are fired during the
      * method execution.
-     * 
+     *
      * @throws CoreException delegates the exceptions from the execute() method of the
      *             {@link SingleEventModification}
      */
@@ -391,14 +424,14 @@ public interface IIpsModel extends IIpsElement {
 
     /**
      * Returns the function resolver cache for the given IPS project.
-     * 
+     *
      * @see ExtensionFunctionResolversCache
      */
     public ExtensionFunctionResolversCache getExtensionFunctionResolverCache(IIpsProject ipsProject);
 
     /**
      * Returns the version provider according to {@link IIpsProject#getVersionProvider()}
-     * 
+     *
      * @param ipsProject The {@link IIpsProject} for which you want to get the version provider.
      * @return The version provider that is configured for this {@link IIpsProject}.
      */

@@ -18,6 +18,7 @@ import java.util.LinkedHashSet;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.refactor.IIpsProcessorBasedRefactoring;
@@ -48,14 +49,14 @@ public class IpsCompositeMoveRefactoringTest {
         MockitoAnnotations.initMocks(this);
         when(ipsObject1.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
         when(ipsObject2.getIpsPackageFragment()).thenReturn(originalIpsPackageFragment);
-        LinkedHashSet<IIpsObject> ipsObjects = new LinkedHashSet<IIpsObject>(Arrays.asList(ipsObject1, ipsObject2));
+        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(ipsObject1, ipsObject2));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.setTargetIpsPackageFragment(targetIpsPackageFragment);
     }
 
     @Test
     public void testValidateUserInputTargetPackageNotSet() throws CoreException {
-        LinkedHashSet<IIpsObject> ipsObjects = new LinkedHashSet<IIpsObject>(Arrays.asList(ipsObject1));
+        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(ipsObject1));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
 
         RefactoringStatus result = ipsCompositeMoveRefactoring.validateUserInput(null);
@@ -85,7 +86,7 @@ public class IpsCompositeMoveRefactoringTest {
 
     @Test
     public void testCreateRefactoringTargetIpsPackageFragmentNotYetSet() {
-        LinkedHashSet<IIpsObject> ipsObjects = new LinkedHashSet<IIpsObject>(Arrays.asList(ipsObject1));
+        LinkedHashSet<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(ipsObject1));
         ipsCompositeMoveRefactoring = new IpsCompositeMoveRefactoring(ipsObjects);
         ipsCompositeMoveRefactoring.createRefactoring(mock(IIpsObject.class));
         // Test successful if no NPE has been thrown

@@ -88,6 +88,13 @@ public class IpsRefactoringFactoryTest {
     }
 
     @Test
+    public void testCreateRenameRefactoringIpsPackageFragement() {
+        IIpsProcessorBasedRefactoring ipsRenameRefactoring = ipsRefactoringFactory
+                .createRenameRefactoring(mock(IIpsPackageFragment.class));
+        assertTrue(ipsRenameRefactoring.getIpsRefactoringProcessor() instanceof RenameIpsPackageFragmentProcessor);
+    }
+
+    @Test
     public void testCreateRenameRefactoringNotSupportedIpsElement() {
         assertNull(ipsRefactoringFactory.createRenameRefactoring(mock(IIpsElement.class)));
     }
@@ -128,7 +135,7 @@ public class IpsRefactoringFactoryTest {
 
     @Test
     public void testCreateFullyConfiguredCompositeMoveRefactoring() {
-        Set<IIpsObject> ipsObjects = new LinkedHashSet<IIpsObject>(Arrays.asList(mock(IIpsObject.class),
+        Set<IIpsElement> ipsObjects = new LinkedHashSet<IIpsElement>(Arrays.asList(mock(IIpsObject.class),
                 mock(IIpsObject.class)));
         IIpsPackageFragment targetIpsPackageFragment = mock(IIpsPackageFragment.class);
 

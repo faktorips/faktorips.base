@@ -55,6 +55,16 @@ public class ObjectProperty implements Serializable {
     }
 
     /**
+     * Creates a new ObjectProperty.
+     * <p>
+     * It is possible to provide additional information using the qualifier and implementing the
+     * interface {@link IPropertyQualifier}.
+     */
+    public ObjectProperty(Object object, String property, IPropertyQualifier qualifier) {
+        this(object, property, -1, qualifier);
+    }
+
+    /**
      * Creates a new ObjectProperty. If the property is a list or an array the index can specify the
      * position within the property. An index smaller than 0 indicates that it is not an indexed
      * property.

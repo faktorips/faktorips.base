@@ -86,7 +86,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     private void loadFromFile(EnumPropertyGenerator enumPropertyGenerator) {
         try {
             IFile file = getPropertyFile(enumPropertyGenerator.getLocale());
-            if (file.exists()) {
+            if (file != null && file.exists()) {
                 enumPropertyGenerator.readFromStream(file.getContents());
             }
         } catch (CoreException e) {
@@ -97,12 +97,14 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     private void writeToFile(EnumPropertyGenerator enumPropertyGenerator) {
         try {
             IFile file = getPropertyFile(enumPropertyGenerator.getLocale());
-            createFolderIfNotThere((IFolder)file.getParent());
-            createFileIfNotTher(file);
-            InputStream inputStream = enumPropertyGenerator.getStream(getLocalizedStringSet().getString(
-                    "MULTILINGUAL_PROPERTY_COMMENT", getBuilderSet().getLanguageUsedInGeneratedSourceCode(),
-                    enumType.getName(), enumPropertyGenerator.getLocale().getDisplayLanguage()));
-            writeToFile(file, inputStream, true, true);
+            if (file != null) {
+                createFolderIfNotThere((IFolder)file.getParent());
+                createFileIfNotTher(file);
+                InputStream inputStream = enumPropertyGenerator.getStream(getLocalizedStringSet().getString(
+                        "MULTILINGUAL_PROPERTY_COMMENT", getBuilderSet().getLanguageUsedInGeneratedSourceCode(),
+                        enumType.getName(), enumPropertyGenerator.getLocale().getDisplayLanguage()));
+                writeToFile(file, inputStream, true, true);
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
@@ -122,12 +124,16 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      * enum java class.
      */
     IFile getPropertyFile(Locale locale) throws CoreException {
-        IFolder artefactDestination = getArtefactDestination(enumType.getIpsSrcFile());
-        IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(enumType.getIpsSrcFile());
-        IPath relativePropertyFile = relativeJavaFile.removeFileExtension();
-        IPath folder = relativePropertyFile.removeLastSegments(1);
-        String filename = relativePropertyFile.lastSegment() + "_" + locale.getLanguage();
-        return artefactDestination.getFile(folder.append(filename).addFileExtension("properties"));
+        if (enumType != null) {
+            IFolder artefactDestination = getArtefactDestination(enumType.getIpsSrcFile());
+            IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(enumType.getIpsSrcFile());
+            IPath relativePropertyFile = relativeJavaFile.removeFileExtension();
+            IPath folder = relativePropertyFile.removeLastSegments(1);
+            String filename = relativePropertyFile.lastSegment() + "_" + locale.getLanguage();
+            return artefactDestination.getFile(folder.append(filename).addFileExtension("properties"));
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -151,7 +157,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
         Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
             IFile propertyFile = getPropertyFile(supportedLanguage.getLocale());
-            if (propertyFile.exists()) {
+            if (propertyFile != null && propertyFile.exists()) {
                 propertyFile.delete(true, null);
             }
         }

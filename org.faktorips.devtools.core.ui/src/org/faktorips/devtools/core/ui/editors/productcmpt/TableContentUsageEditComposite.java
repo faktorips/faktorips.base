@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -51,6 +51,7 @@ public class TableContentUsageEditComposite extends
                 this, getToolkit(), getPropertyValue());
 
         TextButtonField editField = new TextButtonField(tcuControl);
+        editField.setSupportsNullStringRepresentation(false);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), ITableContentUsage.PROPERTY_TABLE_CONTENT);
     }

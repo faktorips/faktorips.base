@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.faktorips.runtime.internal.AbstractRuntimeRepository;
 import org.faktorips.runtime.test.IpsTest2;
 import org.faktorips.runtime.test.IpsTestCaseBase;
+import org.faktorips.values.ObjectUtil;
 
 /**
  * A runtime repository that keeps it's data in memory.
@@ -347,27 +348,6 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         return genSet.last();
     }
 
-    private static class ProductCmptGenerationComparator implements Comparator<IProductComponentGeneration> {
-
-        private TimeZone timeZone;
-
-        private ProductCmptGenerationComparator(TimeZone timeZone) {
-            this.timeZone = timeZone;
-        }
-
-        public int compare(IProductComponentGeneration gen1, IProductComponentGeneration gen2) {
-
-            if (gen1.getValidFrom(timeZone).before(gen2.getValidFrom(timeZone))) {
-                return -1;
-            }
-            if (gen1.getValidFrom(timeZone).after(gen2.getValidFrom(timeZone))) {
-                return 1;
-            }
-            return 0;
-        }
-
-    }
-
     @Override
     protected <T> List<T> getEnumValuesInternal(Class<T> clazz) {
         @SuppressWarnings("unchecked")
@@ -414,6 +394,31 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
             return runtimeObject;
         }
         return null;
+    }
+
+    private static class ProductCmptGenerationComparator implements Comparator<IProductComponentGeneration> {
+    
+        private TimeZone timeZone;
+    
+        private ProductCmptGenerationComparator(TimeZone timeZone) {
+            this.timeZone = timeZone;
+        }
+    
+        public int compare(IProductComponentGeneration gen1, IProductComponentGeneration gen2) {
+    
+            if (ObjectUtil.equals(gen1, gen2)) {
+                return 0;
+            }
+    
+            if (gen1.getValidFrom(timeZone).before(gen2.getValidFrom(timeZone))) {
+                return -1;
+            }
+            if (gen1.getValidFrom(timeZone).after(gen2.getValidFrom(timeZone))) {
+                return 1;
+            }
+            return 0;
+        }
+    
     }
 
 }

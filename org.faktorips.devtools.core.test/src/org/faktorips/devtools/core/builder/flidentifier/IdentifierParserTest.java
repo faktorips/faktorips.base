@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.builder.flidentifier;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -18,6 +19,8 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -38,6 +41,8 @@ import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -45,6 +50,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
@@ -113,10 +119,10 @@ public class IdentifierParserTest {
     private IAttribute attribute;
 
     @Mock
-    private IPolicyCmptTypeAssociation association;
+    private IAssociation association;
 
     @Mock
-    private IPolicyCmptTypeAssociation associationQualified;
+    private IAssociation associationQualified;
 
     @Mock
     private IPolicyCmptTypeAssociation associationIndexed;
@@ -126,6 +132,12 @@ public class IdentifierParserTest {
 
     @Mock
     private IdentifierFilter identifierFilter;
+
+    @Mock
+    private IIpsProjectProperties projectProperties;
+
+    @Mock
+    private ISupportedLanguage supportetLanguage;
 
     @Before
     public void createIdentifierParser() throws Exception {
@@ -146,12 +158,27 @@ public class IdentifierParserTest {
         when(formulaMethod.getParameters()).thenReturn(new IParameter[] { parameter });
         when(parameter.getName()).thenReturn(MY_PARAMETER);
         when(parameter.findDatatype(ipsProject)).thenReturn(type);
+        when(parameter.getIpsProject()).thenReturn(ipsProject);
         when(type.findAssociation(MY_ASSOCIATION, ipsProject)).thenReturn(association);
+        when(type.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
+        when(type.findAllAssociations(ipsProject)).thenReturn(Arrays.asList(association, associationQualified));
+        when(type.getIpsProject()).thenReturn(ipsProject);
         when(association.findTarget(ipsProject)).thenReturn(type1);
         when(association.is1ToMany()).thenReturn(true);
+        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(association.getTarget()).thenReturn("target");
+        when(association.getIpsProject()).thenReturn(ipsProject);
+        when(association.getName()).thenReturn(MY_ASSOCIATION);
+        when(associationQualified.getTarget()).thenReturn("target1");
+        when(associationQualified.getIpsProject()).thenReturn(ipsProject);
+        when(associationQualified.getName()).thenReturn(MY_ASSOCIATION + "1");
         when(type1.findAssociation(MY_ASSOCIATION + "1", ipsProject)).thenReturn(associationQualified);
+        when(type1.findAllAssociations(ipsProject)).thenReturn(Arrays.asList(associationQualified));
+        when(type1.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        when(type1.getIpsProject()).thenReturn(ipsProject);
         when(associationQualified.findTarget(ipsProject)).thenReturn(type2);
         when(type2.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        when(type2.getIpsProject()).thenReturn(ipsProject);
         IIpsSrcFile sourceFile = mock(IIpsSrcFile.class);
         IIpsSrcFile[] ipsSourceFiles = new IIpsSrcFile[] { sourceFile };
         when(ipsProject.findAllProductCmptSrcFiles(productCmptType, true)).thenReturn(ipsSourceFiles);
@@ -159,13 +186,19 @@ public class IdentifierParserTest {
         when(sourceFile.getIpsObject()).thenReturn(productCmpt);
         when(productCmpt.getRuntimeId()).thenReturn("runtimeId." + MY_QUALIFIER);
         when(productCmpt.findPolicyCmptType(ipsProject)).thenReturn(type2);
+        when(productCmpt.getName()).thenReturn(MY_QUALIFIER);
         when(type2.findAssociation(MY_ASSOCIATION + "2", ipsProject)).thenReturn(associationIndexed);
+        when(productCmptType.searchProductComponents(true)).thenReturn(Arrays.asList(sourceFile));
         when(associationIndexed.findTarget(ipsProject)).thenReturn(type3);
         when(type3.findAllAttributes(ipsProject)).thenReturn(Arrays.asList(attribute));
+        when(type3.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
                 .thenReturn(true);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
+        when(projectProperties.getDefaultLanguage()).thenReturn(supportetLanguage);
+        when(supportetLanguage.getLocale()).thenReturn(Locale.GERMAN);
     }
 
     @Test
@@ -255,4 +288,34 @@ public class IdentifierParserTest {
         assertEquals(node.getTextRegion().getStart(), node.getTextRegion().getEnd());
     }
 
+    /**
+     * Simulate the activation with dot separator. <br>
+     * No proposals will be found because the dot is the last character.
+     * <p>
+     * More information can be found on FIPS-3514
+     */
+    @Test
+    public void testGetProposals_hitEndSeparator() throws Exception {
+        assertTrue(identifierParser.getProposals("anyParam.").isEmpty());
+        assertTrue(identifierParser.getProposals("anyParam..").isEmpty());
+
+        String input = MY_PARAMETER + '.' + MY_ASSOCIATION + "1[\".";
+        List<IdentifierProposal> proposals = identifierParser.getProposals(input);
+        assertTrue(String.valueOf(proposals.size()), proposals.isEmpty());
+    }
+
+    /**
+     * Simulate the activation with STRG + Space. <br>
+     * The correct proposal will be found.
+     */
+    @Test
+    public void testGetProposals_STRG_SPACE() throws Exception {
+        assertFalse(identifierParser.getProposals("anyParam").isEmpty());
+        assertTrue(identifierParser.getProposals("anyParamm").isEmpty());
+
+        String input = MY_PARAMETER + '.' + MY_ASSOCIATION + "1[\"";
+        List<IdentifierProposal> proposals = identifierParser.getProposals(input);
+        assertEquals(1, proposals.size());
+        assertEquals("\"" + MY_QUALIFIER + "\"]", proposals.get(0).getText());
+    }
 }

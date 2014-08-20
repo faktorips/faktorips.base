@@ -30,6 +30,12 @@ public class ProductConfigurationXmlAdapterTest {
     }
 
     @Test
+    public void testMarshal_Null() throws Exception {
+        assertNull(xmlAdapter.marshal(null));
+        assertNull(xmlAdapter.marshal(new ProductConfiguration()));
+    }
+
+    @Test
     public void testMarshal() throws Exception {
         ProductConfiguration config = new ProductConfiguration(productCmpt);
 

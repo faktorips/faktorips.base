@@ -165,6 +165,35 @@ public class InMemoryRuntimeRepositoryTest {
     }
 
     @Test
+    public void testPutProductComponentGenerationValidFromNull() {
+        TestProductCmptGeneration gen1 = new TestProductCmptGeneration(a);
+
+        repository.putProductCmptGeneration(gen1);
+        repository.putProductCmptGeneration(gen1);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testPutProductComponentGenerationValidFromNullPointer() {
+        TestProductCmptGeneration gen1 = new TestProductCmptGeneration(a);
+        TestProductCmptGeneration gen2 = new TestProductCmptGeneration(a);
+
+        repository.putProductCmptGeneration(gen1);
+        repository.putProductCmptGeneration(gen2);
+    }
+
+    @Test
+    public void testPutProductComponentGenerationSameValidFromDate() {
+        GregorianCalendar date = new GregorianCalendar(2005, 0, 1);
+        TestProductCmptGeneration gen1 = new TestProductCmptGeneration(a);
+        gen1.setValidFrom(DateTime.createDateOnly(date));
+        TestProductCmptGeneration gen2 = new TestProductCmptGeneration(a);
+        gen2.setValidFrom(DateTime.createDateOnly(date));
+
+        repository.putProductCmptGeneration(gen1);
+        repository.putProductCmptGeneration(gen2);
+    }
+
+    @Test
     public void testPutIpsTestCase() {
         TestPremiumCalculation testCase = new TestPremiumCalculation("ipsTest");
         repository.putIpsTestCase(testCase);
@@ -567,10 +596,12 @@ public class InMemoryRuntimeRepositoryTest {
         assertNull(dummyRuntimeObject);
         class NoClass implements IRuntimeObject {
 
+            @Override
             public Set<String> getExtensionPropertyIds() {
                 return Collections.emptySet();
             }
 
+            @Override
             public Object getExtensionPropertyValue(String propertyId) {
                 return null;
             }

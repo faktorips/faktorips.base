@@ -1,9 +1,9 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
- * 
+ *
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
- * 
+ *
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
@@ -16,18 +16,23 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 
+/**
+ * An {@link IExtensionPropertyEditFieldFactory} that is used for all extension properties for which
+ * no specific factory is provided.
+ * <p>
+ * This factory provides a simple {@link Text} control for editing extension properties.
+ * <p>
+ * <strong>Subclassing:</strong><br>
+ * It is not recommended to subclass this factory. Instead, subclass directly from
+ * {@link IExtensionPropertyEditFieldFactory}.
+ */
 public class DefaultExtensionPropertyEditFieldFactory implements IExtensionPropertyEditFieldFactory {
 
-    /**
-     * Adds a <code>Text</code> control to the extension area and returns a <code>TextField</code>
-     * based on it.
-     */
     @Override
-    public EditField<String> newEditField(IIpsObjectPartContainer ipsObjectPart,
-            Composite extensionArea,
+    public EditField<String> newEditField(IIpsObjectPartContainer ipsObjectPartContainer,
+            Composite parent,
             UIToolkit toolkit) {
-        Text text = toolkit.createText(extensionArea);
-        return new TextField(text);
+        return new TextField(toolkit.createText(parent));
     }
 
 }

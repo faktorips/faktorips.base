@@ -141,6 +141,16 @@ public class IpsPreferences {
      */
     public static final String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
 
+    /**
+     * Constant that identifies the preference for delay time on change events.
+     */
+    public static final String CHANGE_EVENT_DELAY_TIME = IpsPlugin.PLUGIN_ID + ".changeEventDelayTime"; //$NON-NLS-1$
+
+    /**
+     * Default value in milliseconds for change event delay time
+     */
+    private static final int DEFAULT_DELAY_TIME = 200;
+
     private final DatatypeFormatter datatypeFormatter;
 
     private final IPreferenceStore prefStore;
@@ -160,6 +170,7 @@ public class IpsPreferences {
         prefStore.setDefault(SIMPLE_CONTEXT_MENU, true);
         prefStore.setDefault(AUTO_VALIDATE_TABLES, true);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
+        prefStore.setDefault(CHANGE_EVENT_DELAY_TIME, DEFAULT_DELAY_TIME);
 
         setDefaultForDatatypeFormatting(prefStore);
 
@@ -498,4 +509,19 @@ public class IpsPreferences {
         return result;
     }
 
+    /**
+     * Returns the delay time for change events in milliseconds. This value is used for setting the
+     * delay time on calling a change event in edit fields e.g. for activating the validation.
+     */
+    public int getChangeEventDelayTime() {
+        return prefStore.getInt(CHANGE_EVENT_DELAY_TIME);
+    }
+
+    /**
+     * Sets the delay time in milliseconds for change events according to the given parameter
+     * <code>delayTime</code>.
+     */
+    public void setChangeEventDelayTime(int delayTime) {
+        prefStore.setValue(CHANGE_EVENT_DELAY_TIME, delayTime);
+    }
 }
