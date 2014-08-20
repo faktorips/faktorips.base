@@ -471,6 +471,14 @@ public class Message implements Serializable {
     }
 
     /**
+     * Returns <code>true</code> if the message contains the specified {@link IMarker} marker
+     * otherwise <code>false</code>.
+     */
+    public boolean hasMarker(IMarker marker) {
+        return markers.contains(marker);
+    }
+
+    /**
      * Returns <code>true</code> if the message has markers otherwise <code>false</code>.
      */
     public boolean hasMarkers() {
