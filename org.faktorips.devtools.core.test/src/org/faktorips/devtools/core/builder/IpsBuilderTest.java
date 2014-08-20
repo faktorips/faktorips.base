@@ -316,7 +316,6 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         assertTrue(builtIpsObjects.contains(a));
         assertTrue(builtIpsObjects.contains(b));
-        assertTrue(builtIpsObjects.contains(aProduct));
     }
 
     @Test
@@ -515,14 +514,12 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(aProduct));
 
         // recreate d. All dependants are expected to be rebuilt
         d = newProductCmptType(root, "D");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
         builtIpsObjects = builder.getBuiltIpsObjects();
         assertTrue(builtIpsObjects.contains(a));
-        assertTrue(builtIpsObjects.contains(aProduct));
 
         // delete d and dependants. The IpsBuilder has to make sure to only build the existing
         // IpsObjects though the graph still contains the dependency chain of the deleted IpsOjects
