@@ -75,4 +75,9 @@ public class DefaultVersion implements IVersion<DefaultVersion> {
         return "Version [" + versionString + "]"; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
+    @Override
+    public boolean isEmptyVersion() {
+        return "0".equals(versionString); //$NON-NLS-1$
+    }
+
 }
