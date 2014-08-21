@@ -1,16 +1,14 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
-	<artifactId>org.faktorips.valuetypes.joda</artifactId>
+	<artifactId>runtime</artifactId>
+	<version>@version@</version>
 	<packaging>jar</packaging>
 	
-	<name>Faktor-IPS Valuetypes for Joda-Time</name>
-	<description>Valuetype Joda-Time for Faktor-IPS</description>
+	<name>Faktor-IPS Runtime</name>
+	<description>Runtime library for Faktor-IPS</description>
 	<url>http://faktorzehn.org</url>
-	
-	<properties>
-		<version.joda>2.1</version.joda>
-	</properties>
+
 	<scm>
 		<url>https://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</url>
 		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
@@ -34,9 +32,9 @@
 
     <dependencies>
         <dependency>
-           <groupId>joda-time</groupId>
-           <artifactId>joda-time</artifactId>         
-           <version>${version.joda}</version>
+           <groupId>org.faktorips</groupId>
+           <artifactId>valuetypes</artifactId>
+           <version>@version@</version>
         </dependency>
     </dependencies>
 

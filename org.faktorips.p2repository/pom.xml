@@ -21,11 +21,15 @@
 		<deploy.agpl>agpl-3.0.txt</deploy.agpl>
 		<deploy.downloadDir>${deploy.basedir}/downloads/faktorips-${parsedVersion.majorVersion}.${parsedVersion.minorVersion}</deploy.downloadDir>
 		<deploy.repositoryDir>${deploy.basedir}/${qualifiedVersion}</deploy.repositoryDir>
-		<deploy.scriptsdir>${project.basedir}/scripts</deploy.scriptsdir>
+		<scriptdir>scripts</scriptdir>
+		<nexusPomsDir>${scriptdir}/nexus-poms</nexusPomsDir>
+		<deploy.scriptsdir>${project.basedir}/${scriptdir}</deploy.scriptsdir>
+		<deploy.nexusPomsDir>${project.build.directory}/${nexusPomsDir}</deploy.nexusPomsDir>
 		<deploy.script.buildComposites>${deploy.scriptsdir}/buildComposites.sh</deploy.script.buildComposites>
 		<deploy.script.callssh>${deploy.scriptsdir}/callSSH.sh</deploy.script.callssh>
 		<deploy.script.maven-central>${deploy.scriptsdir}/deployToMavenCentral.sh</deploy.script.maven-central>
 		<deploy.release>false</deploy.release>
+		<snapshotQualifier>-SNAPSHOT</snapshotQualifier>
 	</properties>
 
 
@@ -59,6 +63,7 @@
 			</activation>
 			<properties>
 				<deploy.release>true</deploy.release>
+				<snapshotQualifier></snapshotQualifier>
 			</properties>
 		</profile>
 		<profile>
@@ -72,6 +77,34 @@
 			</activation>
 			<build>
 				<plugins>
+				
+					<!-- Update poms for maven central upload -->
+					<plugin>
+						<groupId>com.google.code.maven-replacer-plugin</groupId>
+						<artifactId>replacer</artifactId>
+						<version>1.5.3</version>
+						<executions>
+							<execution>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>replace</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<filesToInclude>${project.basedir}/${nexusPomsDir}/**.template</filesToInclude>
+							<inputFilePattern>.*${nexusPomsDir}(.*)-pom.xml.template</inputFilePattern>
+							<outputFilePattern>${deploy.nexusPomsDir}$1-pom.xml</outputFilePattern>
+							<replacements>
+								<replacement>
+									<token>@version@</token>
+									<value>${unqualifiedVersion}${snapshotQualifier}</value>
+								</replacement>
+							</replacements>
+						</configuration>
+					</plugin>
+
+
 					<plugin>
 						<groupId>org.eclipse.tycho</groupId>
 						<artifactId>tycho-p2-repository-plugin</artifactId>
@@ -206,13 +239,13 @@
 									<goal>upload</goal>
 								</goals>
 								<configuration>
-									<fromDir>${project.basedir}/scripts/nexus-poms</fromDir>
+									<fromDir>${deploy.nexusPomsDir}</fromDir>
 									<includes>*.xml</includes>
 									<url>scp://${deploy.user}@${deploy.server}</url>
 									<toDir>${deploy.repositoryDir}/plugins</toDir>
 								</configuration>
 							</execution>
-							<!-- Deploy fake javadoc until the correct javadoc jars are created by tycho-extra 0.21.0 -->
+							<!-- Deploy fake javadoc until we generate them on-the-fly -->
 							<execution>
 								<id>upload-fake-javadoc</id>
 								<phase>deploy</phase>
@@ -229,12 +262,12 @@
 						</executions>
 					</plugin>
 
-					<!-- Unzip deployed update site and create composites -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
 						<executions>
 							<execution>
+								<!-- Unzip deployed update site and create composites -->
 								<id>update-composite-p2</id>
 								<goals>
 									<goal>exec</goal>
@@ -246,6 +279,7 @@
 								</configuration>
 							</execution>
 							<execution>
+								<!-- Deploy to Maven-Central -->
 								<id>deploy-to-maven-central</id>
 								<goals>
 									<goal>exec</goal>
@@ -253,7 +287,7 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>${deploy.script.callssh}</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.maven-central} ${unqualifiedVersion} ${deploy.release} ${deploy.repositoryDir}/plugins</commandlineArgs>
+									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.maven-central} ${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${deploy.repositoryDir}/plugins</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
