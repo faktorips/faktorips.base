@@ -16,14 +16,13 @@ JAR_DIRECTORY=$3
 
 if [ "$IS_RELEASE" = "true" ] 
 then
-REPO_ID=ossrh    
-REPO_URL=https://oss.sonatype.org/service/local/staging/deploy/maven2
+	REPO_ID=ossrh    
+	REPO_URL=https://oss.sonatype.org/service/local/staging/deploy/maven2
 else
-REPO_ID=snapshots
-REPO_URL=https://nexus.faktorzehn.de/content/repositories/snapshots/
-#REPO_ID=ossrh    
-#REPO_URL=https://oss.sonatype.org/content/repositories/snapshots/
-VERSION=${VERSION}-SNAPSHOT
+	REPO_ID=snapshots
+	REPO_URL=https://nexus.faktorzehn.de/content/repositories/snapshots/
+	#REPO_ID=ossrh    
+	#REPO_URL=https://oss.sonatype.org/content/repositories/snapshots/
 fi
 
 echo "##########################"

@@ -1,11 +1,12 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
-	<artifactId>org.faktorips.runtime</artifactId>
+	<artifactId>valuetypes</artifactId>
+	<version>@version@</version>
 	<packaging>jar</packaging>
 	
-	<name>Faktor-IPS Runtime</name>
-	<description>Runtime library for Faktor-IPS</description>
+	<name>Faktor-IPS Valuetypes</name>
+	<description>Valuetypes libraries for Faktor-IPS</description>
 	<url>http://faktorzehn.org</url>
 
 	<scm>
@@ -28,13 +29,5 @@
 			<email>Cornelius.dirmeier@faktorzehn.de</email>
 		</developer>
 	</developers>
-
-    <dependencies>
-        <dependency>
-           <groupId>org.faktorips</groupId>
-           <artifactId>org.faktorips.valuetypes</artifactId>
-           <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 
 </project>
