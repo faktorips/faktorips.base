@@ -1,7 +1,7 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
-	<artifactId>runtime</artifactId>
+	<artifactId>faktorips-runtime</artifactId>
 	<version>@version@</version>
 	<packaging>jar</packaging>
 	
@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
            <groupId>org.faktorips</groupId>
-           <artifactId>valuetypes</artifactId>
+           <artifactId>faktorips-valuetypes</artifactId>
            <version>@version@</version>
         </dependency>
     </dependencies>
