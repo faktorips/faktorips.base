@@ -39,11 +39,9 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.BundleVersionProvider;
 import org.faktorips.devtools.core.internal.model.DefaultVersion;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.IpsModel;
-import org.faktorips.devtools.core.internal.model.OsgiVersion;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersion;
@@ -150,15 +148,9 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
     }
 
     private void setProjectVersion(String version) {
-        if (versionedContainer.getIpsProject().getVersionProvider() instanceof DefaultVersionProvider) {
-            DefaultVersionProvider versionProvider = (DefaultVersionProvider)versionedContainer.getIpsProject()
-                    .getVersionProvider();
-            versionProvider.setProjectVersion(new DefaultVersion(version));
-        } else {
-            BundleVersionProvider versionProvider = (BundleVersionProvider)versionedContainer.getIpsProject()
-                    .getVersionProvider();
-            versionProvider.setProjectVersion(new OsgiVersion(version));
-        }
+        DefaultVersionProvider versionProvider = (DefaultVersionProvider)versionedContainer.getIpsProject()
+                .getVersionProvider();
+        versionProvider.setProjectVersion(new DefaultVersion(version));
     }
 
     @Test
