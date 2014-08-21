@@ -33,9 +33,9 @@ public interface IVersion<K extends IVersion<K>> extends Comparable<K> {
     String asString();
 
     /**
-     * Returns if this Version represents an emptyVersion. An example for an emptyVersion is 0.
+     * Returns true if this version represents an empty Version (for example 0), false otherwise.
      * 
-     * @return true if this Version is an empty Version
+     * @return true if this version is an empty Version
      */
     public boolean isEmptyVersion();
 }
