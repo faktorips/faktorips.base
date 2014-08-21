@@ -16,7 +16,7 @@
 		<version.joda>2.1</version.joda>
 	</properties>
 	<scm>
-		<url>https://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</url>
+		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
 		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
 	</scm>
 
@@ -32,7 +32,7 @@
 		<developer>
 			<id>dirmeier</id>
 			<name>Cornelius Dirmeier</name>
-			<email>Cornelius.dirmeier@faktorzehn.de</email>
+			<email>Cornelius.Dirmeier@faktorzehn.de</email>
 		</developer>
 	</developers>
 

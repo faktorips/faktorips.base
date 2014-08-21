@@ -266,60 +266,25 @@
 						</configuration>
 					</plugin>
 
-					<!-- Upload Repository and Downloads -->
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>wagon-maven-plugin</artifactId>
-						<version>1.0-beta-4</version>
-						<executions>
-							<execution>
-								<id>upload-nexus-poms</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>upload</goal>
-								</goals>
-								<configuration>
-									<fromDir>${deploy.nexusPomsDir}</fromDir>
-									<includes>*.xml</includes>
-									<url>scp://${deploy.user}@${deploy.server}</url>
-									<toDir>${deploy.repositoryDir}/plugins</toDir>
-								</configuration>
-							</execution>
-							<!-- Deploy fake javadoc until we generate them on-the-fly -->
-							<execution>
-								<id>upload-fake-javadoc</id>
-								<phase>deploy</phase>
-								<goals>
-									<goal>upload</goal>
-								</goals>
-								<configuration>
-									<fromDir>${project.basedir}/scripts/fake-java-doc</fromDir>
-									<includes>*.jar</includes>
-									<url>scp://${deploy.user}@${deploy.server}</url>
-									<toDir>${deploy.repositoryDir}/plugins</toDir>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<!-- Deploy to Maven-Central -->
-								<id>deploy-to-maven-central</id>
+								<!-- Deploy to Nexus/Maven-Central -->
+								<id>deploy-to-nexus</id>
 								<goals>
 									<goal>exec</goal>
 								</goals>
 								<phase>deploy</phase>
 								<configuration>
-									<executable>${deploy.script.callssh}</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.maven-central} ${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${deploy.repositoryDir}/plugins</commandlineArgs>
+									<executable>${deploy.script.maven-central}</executable>
+									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${basedir}/..</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
 					</plugin>
+
 				</plugins>
 			</build>
 		</profile>
