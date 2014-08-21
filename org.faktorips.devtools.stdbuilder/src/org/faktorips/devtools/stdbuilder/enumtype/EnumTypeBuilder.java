@@ -179,7 +179,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             classModifier = Modifier.PUBLIC | Modifier.FINAL;
         }
         mainSection.setClassModifier(classModifier);
-        String typeName = getJavaNamingConvention().getTypeName(enumType.getName());
+        String typeName = enumType.getName();
         mainSection.setUnqualifiedName(typeName);
         String description = getDescriptionInGeneratorLanguage(enumType);
         String[] javaDocTags = JavaDocTagGeneratorUtil.getJavaDocTagsInclGenerated(enumType, getBuilderSet());
@@ -814,10 +814,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generatePublicConstructorForEnumsWithSeparateContent(constructorBuilder);
     }
 
-    private String getNameForConstructor(IEnumType enumType) {
-        return getJavaNamingConvention().getTypeName(enumType.getName());
-    }
-
     private void generateConstructurForEnumsWithContent(JavaCodeFragmentBuilder constructorBuilder)
             throws CoreException {
 
@@ -869,7 +865,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         createAttributeInitialization(methodBody);
 
         appendLocalizedJavaDoc("CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
-        constructorBuilder.methodBegin(modifier, null, getNameForConstructor(enumType), argumentNames, argumentClasses);
+        constructorBuilder.methodBegin(modifier, null, enumType.getName(), argumentNames, argumentClasses);
         constructorBuilder.append(methodBody);
         constructorBuilder.methodEnd();
 
@@ -910,7 +906,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             appendFieldDeclaration(currentEnumAttribute, argNames[i++], body);
         }
         appendLocalizedJavaDoc("PROTECTED_CONSTRUCTOR", enumType.getName(), enumType, constructorBuilder); //$NON-NLS-1$
-        constructorBuilder.methodBegin(Modifier.PROTECTED, null, getNameForConstructor(enumType), argNames, argClasses);
+        constructorBuilder.methodBegin(Modifier.PROTECTED, null, enumType.getName(), argNames, argClasses);
         constructorBuilder.append(body);
         constructorBuilder.methodEnd();
 
@@ -1458,8 +1454,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateCompareToMethod(JavaCodeFragmentBuilder methodBuilder) {
         methodBuilder.javaDoc("", ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, true);
+        // TODO
         methodBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE.getName(), "compareTo", new String[] { "o" },
-                new String[] { getJavaNamingConvention().getTypeName(getEnumType().getName()) });
+                new String[] { getEnumType().getName() });
         methodBuilder.append(getCompareToMethodBody());
         methodBuilder.methodEnd();
     }
