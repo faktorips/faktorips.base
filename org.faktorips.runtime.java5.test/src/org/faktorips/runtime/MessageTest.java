@@ -150,6 +150,11 @@ public class MessageTest extends XmlAbstractTestCase {
         assertEquals("pB", op2.get(1).getProperty());
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testMessage_NPE() {
+        Message.error("text").invalidObjects((Object)null);
+    }
+
     @Test
     public void testMessage_Message() {
         Message msg = new Message("code", "text", Message.ERROR);
@@ -160,7 +165,7 @@ public class MessageTest extends XmlAbstractTestCase {
         List<MsgReplacementParameter> params = Arrays.asList(
                 new MsgReplacementParameter("sumInsured", Money.euro(100)), new MsgReplacementParameter("minAge",
                         new Integer(18)));
-        msg = new Message("code", "text", Message.ERROR, (ObjectProperty)null, params);
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
         copy = new Message(msg);
         List<MsgReplacementParameter> copyParams = copy.getReplacementParameters();
         assertEquals(2, copyParams.size());
@@ -264,7 +269,7 @@ public class MessageTest extends XmlAbstractTestCase {
         MsgReplacementParameter[] params = new MsgReplacementParameter[] {
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", new Integer(18)) };
-        msg = new Message("code", "text", Message.ERROR, (ObjectProperty)null, params);
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
 
         assertEquals(2, msg.getNumOfReplacementParameters());
     }
@@ -289,7 +294,7 @@ public class MessageTest extends XmlAbstractTestCase {
         MsgReplacementParameter[] params = new MsgReplacementParameter[] {
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", new Integer(18)) };
-        msg = new Message("code", "text", Message.ERROR, (ObjectProperty)null, params);
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
         assertFalse(msg.hasReplacementParameter("param"));
         assertTrue(msg.hasReplacementParameter("sumInsured"));
         assertTrue(msg.hasReplacementParameter("minAge"));
@@ -303,7 +308,7 @@ public class MessageTest extends XmlAbstractTestCase {
         MsgReplacementParameter[] params = new MsgReplacementParameter[] {
                 new MsgReplacementParameter("sumInsured", Money.euro(100)),
                 new MsgReplacementParameter("minAge", new Integer(18)) };
-        msg = new Message("code", "text", Message.ERROR, (ObjectProperty)null, params);
+        msg = new Message("code", "text", Message.ERROR, new ObjectProperty("objectA", "pA"), params);
         assertNull(msg.getReplacementValue("param"));
         assertEquals(Money.euro(100), msg.getReplacementValue("sumInsured"));
         assertEquals(new Integer(18), msg.getReplacementValue("minAge"));
