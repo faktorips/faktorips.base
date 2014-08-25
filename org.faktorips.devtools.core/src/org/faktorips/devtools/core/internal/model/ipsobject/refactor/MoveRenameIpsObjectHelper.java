@@ -118,13 +118,19 @@ public final class MoveRenameIpsObjectHelper {
             MessageList validationMessageList) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
-            if (sourceFileName.equals(newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension())) {
+            if (isValidNewName(newName, sourceFileName)) {
                 String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists, newName,
                         targetIpsPackageFragment.getName());
                 validationMessageList.add(new Message(null, text, Message.ERROR));
                 break;
             }
         }
+    }
+
+    private boolean isValidNewName(String newName, String sourceFileName) {
+        String newNameWithFileExtension = newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension();
+        return !toBeRefactored.getName().equalsIgnoreCase(newName)
+                && sourceFileName.equalsIgnoreCase(newNameWithFileExtension);
     }
 
     /**
