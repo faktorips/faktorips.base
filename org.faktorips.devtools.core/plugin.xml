@@ -536,7 +536,7 @@
          point="org.faktorips.devtools.core.versionProvider">
       <versionProvider
             class="org.faktorips.devtools.core.internal.model.BundleVersionProviderFactory"
-            id="BundleVersionProviderFactory">
+            id="org.faktorips.devtools.core.bundleVersionProvider">
       </versionProvider>
    </extension>
 </plugin>
