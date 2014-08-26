@@ -147,7 +147,7 @@ public class Message implements Serializable {
      * @param invalidObjectProperty An object property the message refers to
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperty));
+        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperty));
     }
 
     /**
@@ -213,7 +213,7 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
             MsgReplacementParameter... parameters) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
                 .markers(Collections.<IMarker> emptyList()));
     }
 
@@ -228,7 +228,7 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
             List<MsgReplacementParameter> parameters) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
                 .markers(Collections.<IMarker> emptyList()));
     }
 
@@ -613,13 +613,24 @@ public class Message implements Serializable {
         }
 
         /**
-         * Add a list of object properties the message refers to.
+         * Add a list of object properties that message refers to.
          * 
-         * @param invalidObjectProperties A list of object properties the message refers to
+         * @param invalidObjectProperties A list of object properties that message refers to
          * @return This builder instance to directly add further properties
          */
         public Builder invalidObjects(List<ObjectProperty> invalidObjectProperties) {
             this.invalidObjectProperties = invalidObjectProperties;
+            return this;
+        }
+
+        /**
+         * Set an object property that message refers to.
+         * 
+         * @param invalidObjectProperties An object property that message refers to
+         * @return This builder instance to directly add further properties
+         */
+        public Builder invalidObject(ObjectProperty invalidObjectProperties) {
+            this.invalidObjectProperties = Arrays.asList(invalidObjectProperties);
             return this;
         }
 
