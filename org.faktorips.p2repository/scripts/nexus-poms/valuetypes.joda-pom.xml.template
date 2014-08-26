@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.faktorips</groupId>
+	<artifactId>faktorips-valuetypes-joda</artifactId>
+	<version>@version@</version>
+	<packaging>jar</packaging>
+	
+	<name>Faktor-IPS Valuetypes for Joda-Time</name>
+	<description>Valuetype Joda-Time for Faktor-IPS</description>
+	<url>http://faktorzehn.org</url>
+	
+	<properties>
+		<version.joda>2.1</version.joda>
+	</properties>
+	<scm>
+		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
+		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License Version 3 with additional permissions</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>dirmeier</id>
+			<name>Cornelius Dirmeier</name>
+			<email>Cornelius.Dirmeier@faktorzehn.de</email>
+		</developer>
+	</developers>
+
+    <dependencies>
+        <dependency>
+           <groupId>joda-time</groupId>
+           <artifactId>joda-time</artifactId>         
+           <version>${version.joda}</version>
+        </dependency>
+    </dependencies>
+
+</project>

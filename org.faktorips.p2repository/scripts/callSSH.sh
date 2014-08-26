@@ -4,8 +4,8 @@
 # $2: Qualified name of the script (local)
 # $*: Arguments of the script
 URL=$1
+SCRIPT_NAME=$2
 shift
-SCRIPT_NAME=$1
 shift
 
 ssh $URL bash -s -- "$@" < $SCRIPT_NAME
