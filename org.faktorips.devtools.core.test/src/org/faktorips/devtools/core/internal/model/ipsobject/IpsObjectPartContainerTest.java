@@ -31,6 +31,7 @@ import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -38,6 +39,8 @@ import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.DefaultVersion;
+import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -124,6 +127,30 @@ public class IpsObjectPartContainerTest extends AbstractIpsPluginTest {
         germanLabel = container.getLabel(Locale.GERMAN);
         germanLabel.setValue("bar");
         germanLabel.setPluralValue("bars");
+    }
+
+    @Test
+    public void testinitDefaultVersion_emptyVersion() {
+        setProjectVersion("0");
+
+        versionedContainer.initDefaultVersion();
+
+        assertTrue(StringUtils.isEmpty(versionedContainer.getSinceVersionString()));
+    }
+
+    @Test
+    public void testinitDefaultVersion_nonEmptyVersion() {
+        setProjectVersion("501");
+
+        versionedContainer.initDefaultVersion();
+
+        assertEquals("501", versionedContainer.getSinceVersionString());
+    }
+
+    private void setProjectVersion(String version) {
+        DefaultVersionProvider versionProvider = (DefaultVersionProvider)versionedContainer.getIpsProject()
+                .getVersionProvider();
+        versionProvider.setProjectVersion(new DefaultVersion(version));
     }
 
     @Test

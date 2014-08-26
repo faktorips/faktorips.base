@@ -139,12 +139,14 @@ public abstract class IpsObjectPartContainer extends IpsElement implements IIpsO
         }
     }
 
-    private void initDefaultVersion() {
+    /* private */void initDefaultVersion() {
         if (this instanceof IVersionControlledElement && getIpsProject() != null) {
             IVersionProvider<?> versionProvider = getIpsProject().getVersionProvider();
             IVersion<?> version = versionProvider.getProjectVersion();
-            if (version != null) {
+            if (version.isNotEmptyVersion()) {
                 sinceVersion = version.asString();
+            } else {
+                sinceVersion = StringUtils.EMPTY;
             }
         }
     }

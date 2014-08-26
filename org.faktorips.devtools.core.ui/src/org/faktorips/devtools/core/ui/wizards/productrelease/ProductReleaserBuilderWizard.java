@@ -160,7 +160,7 @@ public class ProductReleaserBuilderWizard extends Wizard {
     }
 
     public void setIpsProject(IIpsProject ipsProject) {
-        selectionPage.setIpsProject(ipsProject);
+        selectionPage.updateIpsProject(ipsProject);
     }
 
     static class Operation extends WorkspaceModifyOperation {
