@@ -34,7 +34,7 @@ public class SinceVersionJavaDocTagGenerator implements IAnnotationGenerator {
 
         @Override
         public boolean isRequiredFor(IIpsProject ipsProject) {
-            return ipsProject.getVersionProvider().getProjectVersion() != null;
+            return ipsProject.getVersionProvider().getProjectVersion().isNotEmptyVersion();
         }
 
         @Override

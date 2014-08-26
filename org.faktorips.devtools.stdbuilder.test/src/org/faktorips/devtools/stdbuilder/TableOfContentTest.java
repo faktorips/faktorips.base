@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
+import org.faktorips.devtools.core.internal.model.DefaultVersion;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -33,13 +34,13 @@ import org.faktorips.devtools.stdbuilder.MyDummyTocEntryFactory.MyDummyTypedTocE
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumXmlAdapterTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -280,7 +281,7 @@ public class TableOfContentTest extends XmlAbstractTestCase {
         toc.addOrReplaceTocEntry(entry4);
         toc.addOrReplaceTocEntry(entry5);
 
-        Element tocElement = toc.toXml("0", newDocument());
+        Element tocElement = toc.toXml(DefaultVersion.EMPTY_VERSION, newDocument());
         assertNotNull(tocElement);
         AbstractReadonlyTableOfContents readOnlyToc = new ReadonlyTableOfContents(
                 MyDummyTypedTocEntryObject.class.getClassLoader());
@@ -315,18 +316,18 @@ public class TableOfContentTest extends XmlAbstractTestCase {
                 "HomeProduct2005.ipsproduct", "HomePolicyPk", "HomePolicyPkAnpStufe", new DateTime(2010, 1, 1));
         toc.addOrReplaceTocEntry(entry0);
         toc.addOrReplaceTocEntry(entry1);
-        String tocString = XmlUtil.nodeToString(toc.toXml("0", newDocument()), "UTF-8");
+        String tocString = XmlUtil.nodeToString(toc.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8");
         TableOfContent toc2 = new TableOfContent();
         toc2.addOrReplaceTocEntry(entry1);
         toc2.addOrReplaceTocEntry(entry0);
-        String toc2String = XmlUtil.nodeToString(toc2.toXml("0", newDocument()), "UTF-8");
+        String toc2String = XmlUtil.nodeToString(toc2.toXml(DefaultVersion.EMPTY_VERSION, newDocument()), "UTF-8");
 
         assertEquals(tocString, toc2String);
 
-        toc2String = XmlUtil.nodeToString(toc2.toXml("other", newDocument()), "UTF-8");
+        toc2String = XmlUtil.nodeToString(toc2.toXml(new DefaultVersion("other"), newDocument()), "UTF-8");
         assertNotSame(tocString.intern(), toc2String.intern());
 
-        Pattern versionPattern = Pattern.compile("productDataVersion=\".*\"");
+        Pattern versionPattern = Pattern.compile("productDataVersion=\".*?\"\\s*");
         String tocWithoutVersion = versionPattern.matcher(tocString).replaceFirst("");
         String toc2WithoutVersion = versionPattern.matcher(toc2String).replaceFirst("");
 

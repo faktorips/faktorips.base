@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,6 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -35,6 +33,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -205,10 +204,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xml = null;
         try {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-            String version = getIpsProject().getReadOnlyProperties().getVersion();
-            if (StringUtils.isEmpty(version)) {
-                version = Long.toString(new Date().getTime());
-            }
+            IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersion();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);
