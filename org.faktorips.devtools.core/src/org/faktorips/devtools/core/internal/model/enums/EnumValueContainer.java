@@ -366,7 +366,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         IEnumType enumType;
         enumType = findEnumType(getIpsProject());
         if (enumType != null) {
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (IEnumAttribute enumAttribute : enumAttributes) {
                 fixEnumAttributeValuesInternal(enumAttribute);
             }
@@ -379,7 +379,7 @@ public abstract class EnumValueContainer extends BaseIpsObject implements IEnumV
         Map<String, ValueTypeMismatch> map = new ConcurrentHashMap<String, ValueTypeMismatch>(16, 0.9f, 1);
         IEnumType enumType = findEnumType(getIpsProject());
         if (enumType != null) {
-            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);
+            List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
             for (IEnumAttribute enumAttribute : enumAttributes) {
                 map.put(enumAttribute.getName(), checkValueTypeMismatch(enumAttribute));
             }

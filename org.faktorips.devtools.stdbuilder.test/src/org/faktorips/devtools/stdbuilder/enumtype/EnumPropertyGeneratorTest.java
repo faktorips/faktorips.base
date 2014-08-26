@@ -64,7 +64,7 @@ public class EnumPropertyGeneratorTest {
         List<IEnumAttribute> attributes = new ArrayList<IEnumAttribute>();
         attributes.add(enumAttribute);
         attributes.add(enumAttribute2);
-        when(enumType.getEnumAttributes(false)).thenReturn(attributes);
+        when(enumType.getEnumAttributesIncludeSupertypeCopies(false)).thenReturn(attributes);
 
         when(enumAttribute.getName()).thenReturn("column");
 
