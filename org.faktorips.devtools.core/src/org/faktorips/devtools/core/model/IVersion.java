@@ -35,7 +35,16 @@ public interface IVersion<K extends IVersion<K>> extends Comparable<K> {
     /**
      * Returns true if this version represents an empty Version (for example 0), false otherwise.
      * 
-     * @return true if this version is an empty Version
+     * @return true if this version is an empty version
      */
     public boolean isEmptyVersion();
+
+    /**
+     * Returns true if this version is no empty, false otherwise. This method always returns the
+     * negation of {@link #isEmptyVersion()}
+     * 
+     * @return true if this version is no empty version, false if this version is an empty version
+     */
+    public boolean isNotEmptyVersion();
+
 }
