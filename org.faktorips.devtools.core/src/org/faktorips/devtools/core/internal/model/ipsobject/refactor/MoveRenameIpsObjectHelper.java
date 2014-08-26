@@ -118,7 +118,7 @@ public final class MoveRenameIpsObjectHelper {
             MessageList validationMessageList) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : targetIpsPackageFragment.getIpsSrcFiles()) {
             String sourceFileName = ipsSrcFile.getName();
-            if (isValidNewName(newName, sourceFileName)) {
+            if (isInvalidNewName(newName, sourceFileName)) {
                 String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileAlreadyExists, newName,
                         targetIpsPackageFragment.getName());
                 validationMessageList.add(new Message(null, text, Message.ERROR));
@@ -127,7 +127,7 @@ public final class MoveRenameIpsObjectHelper {
         }
     }
 
-    private boolean isValidNewName(String newName, String sourceFileName) {
+    private boolean isInvalidNewName(String newName, String sourceFileName) {
         String newNameWithFileExtension = newName + '.' + toBeRefactored.getIpsObjectType().getFileExtension();
         return !toBeRefactored.getName().equalsIgnoreCase(newName)
                 && sourceFileName.equalsIgnoreCase(newNameWithFileExtension);

@@ -53,10 +53,20 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateIpsModel_NameAlreadyExists() throws CoreException {
+    public void testValidateIpsModel_NameAlreadyExist() throws CoreException {
         IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
         moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "otherProductCmp", messageList);
+
+        assertFalse(messageList.isEmpty());
+        assertEquals(1, messageList.size());
+    }
+
+    @Test
+    public void testValidateIpsModel_NameAlreadyExistUpperCase() throws CoreException {
+        IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
+        moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "OTHERPRODUctCMp", messageList);
 
         assertFalse(messageList.isEmpty());
         assertEquals(1, messageList.size());

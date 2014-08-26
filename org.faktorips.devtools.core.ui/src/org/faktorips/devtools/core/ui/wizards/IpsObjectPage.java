@@ -448,9 +448,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
 
         // check if an ipsobject already exists that has the same name and generates a java class
         // to avoid conflicts with java classes that have the same name
-        // IIpsSrcFile file = getIpsProject().findIpsSrcFile(getIpsObjectType(),
-        // getQualifiedIpsObjectName(), true);
-        IIpsSrcFile file = findIpsObject();
+        IIpsSrcFile file = findExistingIpsSrcFile();
         if (file != null) {
             StringBuffer msg = new StringBuffer();
             msg.append(Messages.IpsObjectPage_msgIpsObjectAlreadyExists1);
@@ -475,7 +473,7 @@ public abstract class IpsObjectPage extends AbstractIpsObjectNewWizardPage imple
         }
     }
 
-    private IIpsSrcFile findIpsObject() throws CoreException {
+    private IIpsSrcFile findExistingIpsSrcFile() throws CoreException {
         IIpsSrcFile[] ipsSrcFiles = getIpsPackageFragment().getIpsSrcFiles();
         IIpsSrcFile file = null;
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
