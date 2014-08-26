@@ -22,6 +22,7 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.TransformerException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -203,7 +204,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xml = null;
         try {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-            String version = getIpsProject().getReadOnlyProperties().getVersion();
+            String version = getVersion();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);
@@ -222,6 +223,15 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             } catch (UnsupportedEncodingException e1) {
                 throw new CoreException(new IpsStatus(e1));
             }
+        }
+    }
+
+    private String getVersion() {
+        String version = getIpsProject().getReadOnlyProperties().getVersion();
+        if (version == null || version.equals("null")) {
+            return StringUtils.EMPTY;
+        } else {
+            return version;
         }
     }
 
