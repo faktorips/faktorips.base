@@ -79,7 +79,7 @@ public class DefaultVersion implements IVersion<DefaultVersion> {
 
     @Override
     public boolean isEmptyVersion() {
-        return EMPTY_VERSION.equals(this);
+        return this.equals(EMPTY_VERSION);
     }
 
     @Override
