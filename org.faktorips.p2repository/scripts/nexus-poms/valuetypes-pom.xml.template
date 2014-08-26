@@ -1,7 +1,11 @@
-<project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
-	<artifactId>org.faktorips.valuetypes</artifactId>
+	<artifactId>faktorips-valuetypes</artifactId>
+	<version>@version@</version>
 	<packaging>jar</packaging>
 	
 	<name>Faktor-IPS Valuetypes</name>
@@ -9,7 +13,7 @@
 	<url>http://faktorzehn.org</url>
 
 	<scm>
-		<url>https://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</url>
+		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
 		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
 	</scm>
 
@@ -25,7 +29,7 @@
 		<developer>
 			<id>dirmeier</id>
 			<name>Cornelius Dirmeier</name>
-			<email>Cornelius.dirmeier@faktorzehn.de</email>
+			<email>Cornelius.Dirmeier@faktorzehn.de</email>
 		</developer>
 	</developers>
 
