@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.runtime.internal.toc.AbstractReadonlyTableOfContents;
@@ -96,7 +97,7 @@ public class TableOfContent {
 
     /**
      * Check if the table of content was modified since last {@link #initFromXml(Element)},
-     * {@link #toXml(String, Document)} or {@link #resetModified()}
+     * {@link #toXml(IVersion, Document)} or {@link #resetModified()}
      */
     public boolean isModified() {
         return modified;
@@ -177,10 +178,12 @@ public class TableOfContent {
      * @param doc The xml document used to create new objects.
      * @throws NullPointerException if doc is <code>null</code>.
      */
-    public Element toXml(String version, Document doc) {
+    public Element toXml(IVersion<?> version, Document doc) {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
-        element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, "" + version);
+        if (version != null && !version.isEmptyVersion()) {
+            element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, version.asString());
+        }
         for (TocEntryObject entry : getEntries()) {
             element.appendChild(entry.toXml(doc));
         }

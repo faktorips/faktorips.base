@@ -61,7 +61,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         addPageElements(new TextPageElement(getTitle(), TextType.HEADING_1));
 
         addPageElements(new TextPageElement(context.getMessage(HtmlExportMessages.ProjectOverviewPageElement_version)
-                + ": " + getProject().getReadOnlyProperties().getVersion())); //$NON-NLS-1$
+                + ": " + getProject().getVersionProvider().getProjectVersion().asString())); //$NON-NLS-1$
 
         addIpsObjectPaths();
 

@@ -195,7 +195,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         String oldVersion = ""; //$NON-NLS-1$
         productReleaseProcessor = null;
         if (ipsProject != null) {
-            oldVersion = ipsProject.getReadOnlyProperties().getVersion();
+            oldVersion = ipsProject.getVersionProvider().getProjectVersion().asString();
             try {
                 productReleaseProcessor = new ProductReleaseProcessor(ipsProject, observableProgressMessages);
             } catch (CoreException e) {
@@ -276,7 +276,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             if (!correctVersionFormat) {
                 setMessage(NLS.bind(Messages.ReleaserBuilderWizardSelectionPage_error_illegalVersion, newVersion,
                         ipsProject.getVersionProvider().getVersionFormat()), DialogPage.ERROR);
-            } else if (newVersion.equals(ipsProject.getReadOnlyProperties().getVersion())) {
+            } else if (newVersion.equals(ipsProject.getVersionProvider().getProjectVersion().asString())) {
                 setMessage(Messages.ReleaserBuilderWizardSelectionPage_warning_sameVersion, DialogPage.ERROR);
                 return;
             }
@@ -286,7 +286,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     private void updatePageComplete() {
         boolean complete = ipsProject != null && correctVersionFormat && productReleaseProcessor != null
                 && productReleaseProcessor.getReleaseAndDeploymentOperation() != null
-                && !newVersionText.getText().equals(ipsProject.getReadOnlyProperties().getVersion());
+                && !newVersionText.getText().equals(ipsProject.getVersionProvider().getProjectVersion().asString());
         setPageComplete(complete);
     }
 

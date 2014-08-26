@@ -526,7 +526,7 @@ public interface IIpsProjectProperties {
     public void removeSupportedLanguage(Locale locale);
 
     /**
-     * Return the version that was set in this project properties.<
+     * Return the version that was set in this project properties.
      * <p>
      * You should never call this method directly! Instead you should get the
      * {@link IVersionProvider} from {@link IIpsProject} by calling
