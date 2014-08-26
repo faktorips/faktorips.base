@@ -1454,7 +1454,6 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private void generateCompareToMethod(JavaCodeFragmentBuilder methodBuilder) {
         methodBuilder.javaDoc("", ANNOTATION_GENERATED);
         appendOverrideAnnotation(methodBuilder, true);
-        // TODO
         methodBuilder.methodBegin(Modifier.PUBLIC, Integer.TYPE.getName(), "compareTo", new String[] { "o" },
                 new String[] { getEnumType().getName() });
         methodBuilder.append(getCompareToMethodBody());
