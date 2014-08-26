@@ -23,6 +23,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class DefaultVersion implements IVersion<DefaultVersion> {
 
+    public static final DefaultVersion EMPTY_VERSION = new DefaultVersion("0"); //$NON-NLS-1$
+
     private final String versionString;
 
     public DefaultVersion(String versionString) {
@@ -77,7 +79,12 @@ public class DefaultVersion implements IVersion<DefaultVersion> {
 
     @Override
     public boolean isEmptyVersion() {
-        return "0".equals(versionString); //$NON-NLS-1$
+        return EMPTY_VERSION.equals(this);
+    }
+
+    @Override
+    public boolean isNotEmptyVersion() {
+        return !isEmptyVersion();
     }
 
 }

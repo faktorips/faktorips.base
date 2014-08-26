@@ -181,7 +181,7 @@ public class TableOfContent {
     public Element toXml(IVersion<?> version, Document doc) {
         Element element = doc.createElement(AbstractReadonlyTableOfContents.TOC_XML_ELEMENT);
         element.setAttribute(VERSION_XML_ATTRIBUTE, ACTUAL_XML_VERSION);
-        if (version != null && !version.isEmptyVersion()) {
+        if (version.isNotEmptyVersion()) {
             element.setAttribute(AbstractReadonlyTableOfContents.PRODUCT_DATA_VERSION_XML_ELEMENT, version.asString());
         }
         for (TocEntryObject entry : getEntries()) {

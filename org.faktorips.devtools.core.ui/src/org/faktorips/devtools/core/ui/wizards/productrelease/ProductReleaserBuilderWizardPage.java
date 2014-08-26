@@ -136,10 +136,10 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                 TypedSelection<IIpsProject> typedSelection = new TypedSelection<IIpsProject>(IIpsProject.class, event
                         .getSelection());
                 if (typedSelection.isValid()) {
-                    IIpsProject ipsProject = typedSelection.getFirstElement();
-                    setIpsProject(ipsProject);
+                    IIpsProject selectedProject = typedSelection.getFirstElement();
+                    updateIpsProject(selectedProject);
                 } else {
-                    setIpsProject(null);
+                    updateIpsProject(null);
                 }
                 updatePageComplete();
             }
@@ -190,7 +190,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
         setControl(pageControl);
     }
 
-    public void setIpsProject(IIpsProject ipsProject) {
+    public void updateIpsProject(IIpsProject ipsProject) {
         this.ipsProject = ipsProject;
         String oldVersion = ""; //$NON-NLS-1$
         productReleaseProcessor = null;
@@ -202,6 +202,13 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                 IpsPlugin.log(e);
             }
         }
+        updateVersion(oldVersion, ipsProject);
+        updateTargetSystem(ipsProject);
+        updateMessage();
+        updatePageComplete();
+    }
+
+    private void updateVersion(String oldVersion, IIpsProject ipsProject) {
         if (currentVersionLabel != null && !currentVersionLabel.isDisposed()) {
             String latestVersionText = currentVersionLabel.getText();
             if (newVersionText != null && !newVersionText.isDisposed()) {
@@ -219,6 +226,9 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
             }
             currentVersionLabel.setText(oldVersion);
         }
+    }
+
+    private void updateTargetSystem(IIpsProject ipsProject) {
         if (targetSystemViewer != null && !targetSystemViewer.getTable().isDisposed()) {
             boolean targetSystemWasVisible = selectTargetSystemGroup.getVisible();
             boolean showTargetSystems = false;
@@ -232,18 +242,7 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                         targetSystemViewer.setInput(availableTargetSystems);
                         showTargetSystems = true;
                     }
-                    List<ITargetSystem> selected = new ArrayList<ITargetSystem>();
-                    String[] prevSelected = getDialogSettings().getArray(
-                            SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
-                    if (prevSelected != null) {
-                        for (String name : prevSelected) {
-                            for (ITargetSystem aTargetSystem : availableTargetSystems) {
-                                if (aTargetSystem.getName().equals(name)) {
-                                    selected.add(aTargetSystem);
-                                }
-                            }
-                        }
-                    }
+                    List<ITargetSystem> selected = updateSelectedTargetSystem(availableTargetSystems);
                     targetSystemViewer.setCheckedElements(selected.toArray());
                 }
             }
@@ -251,8 +250,22 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
                 selectTargetSystemGroup.setVisible(showTargetSystems);
             }
         }
-        updateMessage();
-        updatePageComplete();
+    }
+
+    private List<ITargetSystem> updateSelectedTargetSystem(List<ITargetSystem> availableTargetSystems) {
+        List<ITargetSystem> selected = new ArrayList<ITargetSystem>();
+        String[] prevSelected = getDialogSettings().getArray(
+                SELECTED_TARGET_SYSTEMS_SETTING + "@" + getSelectedProject().getName()); //$NON-NLS-1$
+        if (prevSelected != null) {
+            for (String name : prevSelected) {
+                for (ITargetSystem aTargetSystem : availableTargetSystems) {
+                    if (aTargetSystem.getName().equals(name)) {
+                        selected.add(aTargetSystem);
+                    }
+                }
+            }
+        }
+        return selected;
     }
 
     private void updateMessage() {
@@ -284,10 +297,13 @@ public class ProductReleaserBuilderWizardPage extends WizardPage {
     }
 
     private void updatePageComplete() {
-        boolean complete = ipsProject != null && correctVersionFormat && productReleaseProcessor != null
-                && productReleaseProcessor.getReleaseAndDeploymentOperation() != null
+        boolean complete = ipsProject != null && correctVersionFormat && isCorrectReleaseProcessorSet()
                 && !newVersionText.getText().equals(ipsProject.getVersionProvider().getProjectVersion().asString());
         setPageComplete(complete);
+    }
+
+    private boolean isCorrectReleaseProcessorSet() {
+        return productReleaseProcessor != null && productReleaseProcessor.getReleaseAndDeploymentOperation() != null;
     }
 
     public ProductReleaseProcessor getProductReleaseProcessor() {

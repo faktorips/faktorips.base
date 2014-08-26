@@ -19,11 +19,17 @@ import org.osgi.framework.Version;
  */
 public class OsgiVersion implements IVersion<OsgiVersion> {
 
-    private Version version;
+    public static final OsgiVersion EMPTY_VERSION = new OsgiVersion(Version.emptyVersion);
+
+    private final Version version;
 
     public OsgiVersion(String versionString) {
         ArgumentCheck.notNull(versionString);
         version = new Version(versionString);
+    }
+
+    private OsgiVersion(Version version) {
+        this.version = version;
     }
 
     @Override
@@ -62,6 +68,11 @@ public class OsgiVersion implements IVersion<OsgiVersion> {
     @Override
     public boolean isEmptyVersion() {
         return Version.emptyVersion.equals(version);
+    }
+
+    @Override
+    public boolean isNotEmptyVersion() {
+        return !isEmptyVersion();
     }
 
 }
