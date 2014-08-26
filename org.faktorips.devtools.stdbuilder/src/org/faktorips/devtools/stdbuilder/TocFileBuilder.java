@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
 import org.faktorips.devtools.core.builder.ComplianceCheck;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.IVersion;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -203,7 +204,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         String xml = null;
         try {
             Document doc = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
-            String version = getIpsProject().getReadOnlyProperties().getVersion();
+            IVersion<?> version = getIpsProject().getVersionProvider().getProjectVersion();
             Element tocElement = getToc(root).toXml(version, doc);
             doc.appendChild(tocElement);
             xml = XmlUtil.nodeToString(doc, encoding);

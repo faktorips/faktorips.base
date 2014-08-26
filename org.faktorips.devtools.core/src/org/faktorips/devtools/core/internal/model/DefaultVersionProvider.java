@@ -70,7 +70,7 @@ public class DefaultVersionProvider implements IVersionProvider<DefaultVersion> 
         if (projectVersion != null && isCorrectVersionFormat(projectVersion)) {
             return getVersion(projectVersion);
         }
-        return null;
+        return DefaultVersion.EMPTY_VERSION;
     }
 
     @Override
