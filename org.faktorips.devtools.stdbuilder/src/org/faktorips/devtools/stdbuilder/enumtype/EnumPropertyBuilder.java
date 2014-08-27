@@ -123,7 +123,8 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      * uses the base package of mergeable sources to get the same qualified name as the generated
      * enum java class.
      * 
-     * @param ipsSrcFile
+     * @param ipsSrcFile represents the file for which the property file will be returned
+     * @param locale indicates the language of the property file
      */
     IFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreException {
         if (ipsSrcFile != null) {

@@ -12,7 +12,7 @@ package org.faktorips.devtools.stdbuilder.enumtype;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -164,7 +164,7 @@ public class EnumPropertyBuilderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetPropertyFile_Null() throws CoreException {
-        assertNull(enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN));
+    public void testGetPropertyFile_NotNull() throws CoreException {
+        assertNotNull(enumPropertyBuilder.getPropertyFile(enumType.getIpsSrcFile(), Locale.GERMAN));
     }
 }
