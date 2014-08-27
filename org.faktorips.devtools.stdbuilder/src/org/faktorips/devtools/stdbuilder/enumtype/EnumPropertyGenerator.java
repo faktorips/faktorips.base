@@ -78,7 +78,7 @@ public class EnumPropertyGenerator {
 
     void findMultilingualAttributes() {
         multilingualAttributes = new ArrayList<IEnumAttribute>();
-        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributes(false);
+        List<IEnumAttribute> enumAttributes = enumType.getEnumAttributesIncludeSupertypeCopies(false);
         for (IEnumAttribute enumAttribute : enumAttributes) {
             if (enumAttribute.isMultilingual()) {
                 multilingualAttributes.add(enumAttribute);

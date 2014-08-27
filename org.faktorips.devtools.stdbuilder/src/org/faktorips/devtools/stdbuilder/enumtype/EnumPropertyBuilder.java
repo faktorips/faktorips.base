@@ -85,7 +85,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
 
     private void loadFromFile(EnumPropertyGenerator enumPropertyGenerator) {
         try {
-            IFile file = getPropertyFile(enumPropertyGenerator.getLocale());
+            IFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
             if (file != null && file.exists()) {
                 enumPropertyGenerator.readFromStream(file.getContents());
             }
@@ -96,7 +96,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
 
     private void writeToFile(EnumPropertyGenerator enumPropertyGenerator) {
         try {
-            IFile file = getPropertyFile(enumPropertyGenerator.getLocale());
+            IFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
             if (file != null) {
                 createFolderIfNotThere((IFolder)file.getParent());
                 createFileIfNotTher(file);
@@ -122,11 +122,14 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
      * locale. The property file is located in derived @see {@link #buildsDerivedArtefacts()} but
      * uses the base package of mergeable sources to get the same qualified name as the generated
      * enum java class.
+     * 
+     * @param ipsSrcFile represents the file for which the property file will be returned
+     * @param locale indicates the language of the property file
      */
-    IFile getPropertyFile(Locale locale) throws CoreException {
-        if (enumType != null) {
-            IFolder artefactDestination = getArtefactDestination(enumType.getIpsSrcFile());
-            IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(enumType.getIpsSrcFile());
+    IFile getPropertyFile(IIpsSrcFile ipsSrcFile, Locale locale) throws CoreException {
+        if (ipsSrcFile != null) {
+            IFolder artefactDestination = getArtefactDestination(ipsSrcFile);
+            IPath relativeJavaFile = getBuilderSet().getEnumTypeBuilder().getRelativeJavaFile(ipsSrcFile);
             IPath relativePropertyFile = relativeJavaFile.removeFileExtension();
             IPath folder = relativePropertyFile.removeLastSegments(1);
             String filename = relativePropertyFile.lastSegment() + "_" + locale.getLanguage();
@@ -156,7 +159,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     public void delete(IIpsSrcFile ipsSrcFile) throws CoreException {
         Set<ISupportedLanguage> supportedLanguages = getIpsProject().getReadOnlyProperties().getSupportedLanguages();
         for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-            IFile propertyFile = getPropertyFile(supportedLanguage.getLocale());
+            IFile propertyFile = getPropertyFile(ipsSrcFile, supportedLanguage.getLocale());
             if (propertyFile != null && propertyFile.exists()) {
                 propertyFile.delete(true, null);
             }

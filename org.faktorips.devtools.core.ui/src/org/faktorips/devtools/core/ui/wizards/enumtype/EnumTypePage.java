@@ -325,9 +325,9 @@ public class EnumTypePage extends IpsObjectPage {
         EnumTypeValidations.validateEnumContentName(validationMessages, null, isAbstractField.getValue(),
                 extensibleField.getCheckbox().isChecked(), enumContentQualifiedNameField.getText());
 
-        // Display the first error message if any.
+        // Display message with highest severity if any.
         if (validationMessages.size() > 0) {
-            Message msg = validationMessages.getMessage(0);
+            Message msg = validationMessages.getMessageWithHighestSeverity();
             int severity = msg.getSeverity();
             int msgLevel = Message.NONE;
             switch (severity) {
