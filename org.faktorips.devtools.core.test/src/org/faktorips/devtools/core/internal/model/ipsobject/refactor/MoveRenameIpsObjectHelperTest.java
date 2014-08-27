@@ -39,6 +39,7 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("ipsProject");
         productCmptType = newProductCmptType(ipsProject, "prodCmpt");
         newProductCmptType(ipsProject, "otherProductCmp");
+        newPolicyCmptType(ipsProject, "policyCmptType");
 
         moveRenameHelper = new MoveRenameIpsObjectHelper(productCmptType);
     }
@@ -67,6 +68,16 @@ public class MoveRenameIpsObjectHelperTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
         IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
         moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "OTHERPRODUctCMp", messageList);
+
+        assertFalse(messageList.isEmpty());
+        assertEquals(1, messageList.size());
+    }
+
+    @Test
+    public void testValidateIpsModel_NameAlreadyExistInOtherIpsObjectType() throws CoreException {
+        IIpsPackageFragmentRoot iIpsPackageFragmentRoot = ipsProject.getIpsPackageFragmentRoots()[0];
+        IIpsPackageFragment targetIpsPackageFragment = iIpsPackageFragmentRoot.getIpsPackageFragments()[0];
+        moveRenameHelper.validateIpsModel(targetIpsPackageFragment, "policyCMPTType", messageList);
 
         assertFalse(messageList.isEmpty());
         assertEquals(1, messageList.size());
