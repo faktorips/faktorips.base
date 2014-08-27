@@ -147,7 +147,7 @@ public class Message implements Serializable {
      * @param invalidObjectProperty An object property the message refers to
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperty));
+        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperty));
     }
 
     /**
@@ -173,7 +173,7 @@ public class Message implements Serializable {
      * @param invalidObjectProperties An array of object properties the message refers to
      */
     public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties));
+        this(new Builder(text, severity).code(code).invalidObjects(Arrays.asList(invalidObjectProperties)));
     }
 
     /**
@@ -213,7 +213,7 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
             MsgReplacementParameter... parameters) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
                 .markers(Collections.<IMarker> emptyList()));
     }
 
@@ -228,7 +228,7 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
             List<MsgReplacementParameter> parameters) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
+        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
                 .markers(Collections.<IMarker> emptyList()));
     }
 
@@ -243,8 +243,8 @@ public class Message implements Serializable {
      */
     public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties,
             MsgReplacementParameter[] parameters) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties).replacements(parameters)
-                .markers(Collections.<IMarker> emptyList()));
+        this(new Builder(text, severity).code(code).invalidObjects(Arrays.asList(invalidObjectProperties))
+                .replacements(parameters).markers(Collections.<IMarker> emptyList()));
     }
 
     /**
@@ -471,6 +471,14 @@ public class Message implements Serializable {
     }
 
     /**
+     * Returns <code>true</code> if the message contains the specified {@link IMarker} marker
+     * otherwise <code>false</code>.
+     */
+    public boolean hasMarker(IMarker marker) {
+        return markers.contains(marker);
+    }
+
+    /**
      * Returns <code>true</code> if the message has markers otherwise <code>false</code>.
      */
     public boolean hasMarkers() {
@@ -559,9 +567,9 @@ public class Message implements Serializable {
      * {@link #Message(String, Severity)} or by calling one of the static creation methods like
      * {@link Message#error(String)}, {@link Message#warning(String)} or
      * {@link Message#info(String)}. Afterwards add needed information to the builder for example
-     * call {@link #invalidObjects(ObjectProperty...)} to provide some invalid object properties.
-     * When the builder has every information that is needed to create a proper message call
-     * {@link #create()}.
+     * call {@link #invalidObjects(Object object, String... properties)} to provide some invalid
+     * object properties. When the builder has every information that is needed to create a proper
+     * message call {@link #create()}.
      * 
      * @see Message#error(String)
      * @see Message#warning(String)
@@ -605,9 +613,9 @@ public class Message implements Serializable {
         }
 
         /**
-         * Add a list of object properties the message refers to.
+         * Add a list of object properties that message refers to.
          * 
-         * @param invalidObjectProperties A list of object properties the message refers to
+         * @param invalidObjectProperties A list of object properties that message refers to
          * @return This builder instance to directly add further properties
          */
         public Builder invalidObjects(List<ObjectProperty> invalidObjectProperties) {
@@ -616,12 +624,12 @@ public class Message implements Serializable {
         }
 
         /**
-         * Add some object properties the message refers to.
+         * Set an object property that message refers to.
          * 
-         * @param invalidObjectProperties Some object properties the message refers to
+         * @param invalidObjectProperties An object property that message refers to
          * @return This builder instance to directly add further properties
          */
-        public Builder invalidObjects(ObjectProperty... invalidObjectProperties) {
+        public Builder invalidObject(ObjectProperty invalidObjectProperties) {
             this.invalidObjectProperties = Arrays.asList(invalidObjectProperties);
             return this;
         }
@@ -636,8 +644,12 @@ public class Message implements Serializable {
          */
         public Builder invalidObjects(Object object, String... properties) {
             invalidObjectProperties = new ArrayList<ObjectProperty>();
-            for (String property : properties) {
-                invalidObjectProperties.add(new ObjectProperty(object, property));
+            if (properties.length == 0) {
+                invalidObjectProperties.add(new ObjectProperty(object));
+            } else {
+                for (String property : properties) {
+                    invalidObjectProperties.add(new ObjectProperty(object, property));
+                }
             }
             return this;
         }
