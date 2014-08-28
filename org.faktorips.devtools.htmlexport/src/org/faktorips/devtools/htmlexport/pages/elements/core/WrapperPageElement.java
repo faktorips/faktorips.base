@@ -12,6 +12,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.Set;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -27,26 +28,34 @@ public class WrapperPageElement extends AbstractCompositePageElement {
      * creates an empty {@link WrapperPageElement} with the given {@link WrapperType} (e.g.
      * LISTITEM, TABLECELL, BLOCK)
      * 
+     * @param context the current {@link DocumentationContext}
+     * 
      */
-    public WrapperPageElement(WrapperType wrapperType) {
+    public WrapperPageElement(WrapperType wrapperType, DocumentationContext context) {
+        super(context);
         setWrapperType(wrapperType);
     }
 
     /**
      * creates an {@link WrapperPageElement} with the given {@link IPageElement}s
      * 
+     * @param context the current {@link DocumentationContext}
+     * 
      */
-    public WrapperPageElement(WrapperType wrapperType, IPageElement... pageElements) {
-        this(wrapperType, null, pageElements);
+    public WrapperPageElement(WrapperType wrapperType, DocumentationContext context, IPageElement... pageElements) {
+        this(wrapperType, null, context, pageElements);
     }
 
     /**
      * creates an {@link WrapperPageElement} with the given {@link IPageElement}s and the given
      * styles
      * 
+     * @param context the current {@link DocumentationContext}
+     * 
      */
-    public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, IPageElement... pageElements) {
-        super();
+    public WrapperPageElement(WrapperType wrapperType, Set<Style> styles, DocumentationContext context,
+            IPageElement... pageElements) {
+        super(context);
         addPageElements(pageElements);
         if (styles != null) {
             addStyles(styles.toArray(new Style[styles.size()]));
@@ -55,7 +64,7 @@ public class WrapperPageElement extends AbstractCompositePageElement {
     }
 
     @Override
-    public void build() {
+    protected void buildInternal() {
         // could be overridden
     }
 

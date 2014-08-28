@@ -13,6 +13,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -35,18 +36,11 @@ public class TextPageElement extends AbstractPageElement {
     private TextType type;
 
     /**
-     * creates a {@link TextPageElement} representing a paragraph
-     * 
-     */
-    public static TextPageElement createParagraph(String text) {
-        return new TextPageElement(text, TextType.BLOCK);
-    }
-
-    /**
+     * @param context the current {@link DocumentationContext}
      * @throws NullPointerException if text is null
      */
-    public TextPageElement(String text, Set<Style> styles, TextType type) {
-        super(styles);
+    public TextPageElement(String text, Set<Style> styles, TextType type, DocumentationContext context) {
+        super(styles, context);
         /*
          * TODO wieder einkommentieren sobald moeglich if (text == null) { throw new
          * NullPointerException("text must not be null"); //$NON-NLS-1$ }
@@ -55,16 +49,26 @@ public class TextPageElement extends AbstractPageElement {
         this.type = type;
     }
 
-    public TextPageElement(String text, TextType type) {
-        this(text, new LinkedHashSet<Style>(), type);
+    public TextPageElement(String text, TextType type, DocumentationContext context) {
+        this(text, new LinkedHashSet<Style>(), type, context);
     }
 
-    public TextPageElement(String text, Set<Style> styles) {
-        this(text, styles, TextType.WITHOUT_TYPE);
+    public TextPageElement(String text, Set<Style> styles, DocumentationContext context) {
+        this(text, styles, TextType.WITHOUT_TYPE, context);
     }
 
-    public TextPageElement(String text) {
-        this(text, new LinkedHashSet<Style>(), TextType.WITHOUT_TYPE);
+    public TextPageElement(String text, DocumentationContext context) {
+        this(text, new LinkedHashSet<Style>(), TextType.WITHOUT_TYPE, context);
+    }
+
+    /**
+     * creates a {@link TextPageElement} representing a paragraph
+     * 
+     * @param context the current {@link DocumentationContext}
+     * 
+     */
+    public static TextPageElement createParagraph(String text, DocumentationContext context) {
+        return new TextPageElement(text, TextType.BLOCK, context);
     }
 
     /**
@@ -147,5 +151,10 @@ public class TextPageElement extends AbstractPageElement {
     @Override
     public String toString() {
         return "TextPageElement:" + text; //$NON-NLS-1$
+    }
+
+    @Override
+    protected void buildInternal() {
+        // do nothing
     }
 }

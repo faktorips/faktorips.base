@@ -74,7 +74,7 @@ class EnumValuesTablePageElement extends AbstractIpsObjectPartsContainerTablePag
             addEnumAttributeValue(valueData, rowData, enumAttribute);
         }
 
-        return Arrays.asList(new PageElementUtils().createTextPageElements(valueData));
+        return Arrays.asList(new PageElementUtils(getContext()).createTextPageElements(valueData));
     }
 
     private void addEnumAttributeValue(List<String> valueData, IEnumValue rowData, IEnumAttribute enumAttribute) {

@@ -48,7 +48,7 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
 
     @Test
     public void testLeereListe() {
-        ListPageElement liste = new ListPageElement();
+        ListPageElement liste = new ListPageElement(getContext());
 
         String xml = layout(liste);
         Assert.assertTrue("Liste nicht leer: " + xml, StringUtils.isEmpty(xml));
@@ -57,9 +57,9 @@ public class HtmlLayouterListTest extends AbstractTestHtmlLayouter {
 
     protected ListPageElement createList() {
         items = new String[] { "Item 1", "Item 2", "Item 3" };
-        IPageElement[] pageElements = new PageElementUtils().createTextPageElements(Arrays.asList(items));
+        IPageElement[] pageElements = new PageElementUtils(getContext()).createTextPageElements(Arrays.asList(items));
 
-        ListPageElement liste = new ListPageElement(Arrays.asList(pageElements));
+        ListPageElement liste = new ListPageElement(Arrays.asList(pageElements), getContext());
         return liste;
     }
 }

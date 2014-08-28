@@ -11,19 +11,21 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import org.eclipse.swt.graphics.ImageData;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 public class ImagePageElement extends AbstractPageElement {
 
-    protected ImageData imageData;
-    protected String title;
-    protected String fileName;
+    private ImageData imageData;
+    private String title;
+    private String fileName;
 
-    public ImagePageElement() {
-        super();
+    public ImagePageElement(DocumentationContext context) {
+        super(context);
     }
 
-    public ImagePageElement(ImageData imageData, String title, String path) {
+    public ImagePageElement(ImageData imageData, String title, String path, DocumentationContext context) {
+        super(context);
         this.imageData = imageData;
         this.title = title;
         this.fileName = path;
@@ -53,5 +55,10 @@ public class ImagePageElement extends AbstractPageElement {
      */
     public String getFileName() {
         return fileName;
+    }
+
+    @Override
+    protected void buildInternal() {
+        // do nothing
     }
 }

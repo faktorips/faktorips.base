@@ -32,9 +32,9 @@ public class InheritedTypeAttributesPageElement extends AbstractInheritedIpsObje
     }
 
     @Override
-    public void build() {
+    protected void buildInternal() {
         initializeOverwritingAttributesList();
-        super.build();
+        super.buildInternal();
     }
 
     private void initializeOverwritingAttributesList() {

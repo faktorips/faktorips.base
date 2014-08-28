@@ -27,16 +27,15 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperType;
 
 public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsElement, T extends IIpsObjectPartContainer>
-        extends AbstractCompositePageElement {
+extends AbstractCompositePageElement {
 
-    private static final TextPageElement INHERITED_PARTS_SEPARATOR = new TextPageElement(", "); //$NON-NLS-1$
-    private final DocumentationContext context;
+    private static final TextPageElement INHERITED_PARTS_SEPARATOR = new TextPageElement(", ", null); //$NON-NLS-1$
 
     private final S parentIpsElement;
     private final List<S> superElements;
 
     public AbstractInheritedIpsObjectPartsPageElement(DocumentationContext context, S element, List<S> superElements) {
-        this.context = context;
+        super(context);
         this.parentIpsElement = element;
         this.superElements = superElements;
     }
@@ -47,7 +46,7 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
     }
 
     @Override
-    public void build() {
+    protected void buildInternal() {
 
         List<S> list = superElements;
         for (S superElement : list) {
@@ -66,16 +65,16 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
     }
 
     protected void addInheritedObjectParts(S superElement, List<? extends T> objectParts) {
-        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        WrapperPageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
 
-        wrapper.addPageElements(new TextPageElement(createHeadline(superElement), TextType.HEADING_3));
+        wrapper.addPageElements(new TextPageElement(createHeadline(superElement), TextType.HEADING_3, getContext()));
         wrapper.addPageElements(createInheritedObjectPartsEnumeration(objectParts));
 
         addPageElements(wrapper);
     }
 
     protected WrapperPageElement createInheritedObjectPartsEnumeration(List<? extends T> objectParts) {
-        WrapperPageElement inheritedObjectParts = new WrapperPageElement(WrapperType.BLOCK);
+        WrapperPageElement inheritedObjectParts = new WrapperPageElement(WrapperType.BLOCK, getContext());
         for (T objectPart : objectParts) {
             if (!showObjectPart(objectPart)) {
                 continue;
@@ -96,14 +95,11 @@ public abstract class AbstractInheritedIpsObjectPartsPageElement<S extends IIpsE
     protected abstract List<? extends T> getIpsObjectParts(S ipsElement);
 
     protected IPageElement createRepresentation(T objectPart) {
-        return new PageElementUtils().createLinkPageElement(context, objectPart, TargetType.CONTENT, new Style[0]);
+        return new PageElementUtils(getContext()).createLinkPageElement(getContext(), objectPart, TargetType.CONTENT, new Style[0]);
     }
 
     protected S getParentIpsElement() {
         return parentIpsElement;
     }
 
-    protected DocumentationContext getContext() {
-        return context;
-    }
 }

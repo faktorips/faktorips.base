@@ -51,8 +51,8 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IAttribute attribute) {
-        IPageElement[] textPageElements = new PageElementUtils().createTextPageElements(getAttributeData(attribute));
-        textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(attribute));
+        IPageElement[] textPageElements = new PageElementUtils(getContext()).createTextPageElements(getAttributeData(attribute));
+        textPageElements[0].setAnchor(new PageElementUtils(getContext()).createAnchorId(attribute));
         return Arrays.asList(textPageElements);
     }
 

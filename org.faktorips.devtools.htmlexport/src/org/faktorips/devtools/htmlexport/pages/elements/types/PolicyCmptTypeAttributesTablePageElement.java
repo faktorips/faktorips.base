@@ -67,10 +67,11 @@ public class PolicyCmptTypeAttributesTablePageElement extends AttributesTablePag
         IPolicyCmptType attributeDefiningPolicyCmptType = polAttribute.getPolicyCmptType();
 
         if (attributeDefiningPolicyCmptType.equals(getType())) {
-            pageElement = new TextPageElement("-"); //$NON-NLS-1$
+            pageElement = new TextPageElement("-", getContext()); //$NON-NLS-1$
         } else {
-            pageElement = new PageElementUtils().createLinkPageElement(getContext(), attributeDefiningPolicyCmptType,
-                    TargetType.CONTENT, attributeDefiningPolicyCmptType.getName(), true);
+            pageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),
+                    attributeDefiningPolicyCmptType, TargetType.CONTENT, attributeDefiningPolicyCmptType.getName(),
+                    true);
         }
         return pageElement;
     }

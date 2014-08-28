@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -66,15 +66,15 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
-                new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": "), //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), tableStructure, TargetType.CONTENT,
-                        getContext().getLabel(tableStructure), true) }));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
+            new TextPageElement(IpsObjectType.TABLE_STRUCTURE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+            new PageElementUtils(getContext()).createLinkPageElement(getContext(), tableStructure,
+                        TargetType.CONTENT, getContext().getLabel(tableStructure), true) }));
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
         addContentTable();
     }
@@ -83,15 +83,15 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
      * adds the content of the table
      */
     private void addContentTable() {
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.TableContentsContentPageElement_content), TextType.HEADING_2));
+                HtmlExportMessages.TableContentsContentPageElement_content), TextType.HEADING_2, getContext()));
 
         ITableRows tableRows = getTableContent().getTableRows();
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 "TableContentsContentPageElement_generation") //$NON-NLS-1$
                 + " " + getContext().getLabel(tableRows), //$NON-NLS-1$
-                TextType.HEADING_3));
+                TextType.HEADING_3, getContext()));
         ContentTablePageElement contentTablePageElement = null;
         try {
             contentTablePageElement = new ContentTablePageElement(tableRows);
@@ -140,7 +140,7 @@ public class TableContentsContentPageElement extends AbstractIpsObjectContentPag
 
         @Override
         protected List<IPageElement> createRowWithIpsObjectPart(IRow rowData) {
-            return Arrays.asList(new PageElementUtils().createTextPageElements(getRowData(rowData)));
+            return Arrays.asList(new PageElementUtils(getContext()).createTextPageElements(getRowData(rowData)));
         }
 
         private List<String> getRowData(IRow row) {

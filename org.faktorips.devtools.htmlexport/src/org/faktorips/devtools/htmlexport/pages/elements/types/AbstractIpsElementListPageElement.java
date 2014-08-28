@@ -37,16 +37,10 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageEle
  */
 public abstract class AbstractIpsElementListPageElement extends AbstractRootPageElement {
 
-    protected IIpsElement baseIpsElement;
-    protected TargetType linkTarget;
-    protected List<IIpsSrcFile> srcFiles;
-    protected IIpsElementFilter filter = ALL_FILTER;
-    private DocumentationContext context;
-
     /**
      * {@link IIpsElementFilter}, which accepts all {@link IIpsElement}s
      */
-    protected final static IIpsElementFilter ALL_FILTER = new IIpsElementFilter() {
+    protected static final IIpsElementFilter ALL_FILTER = new IIpsElementFilter() {
         @Override
         public boolean accept(IIpsElement object) {
             return true;
@@ -57,7 +51,7 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      * {@link Comparator}, which is used for sorting the {@link IIpsObject}s according to their
      * {@link IpsObjectType} and then their unqualified name.
      */
-    protected final static Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = new Comparator<IIpsSrcFile>() {
+    protected static final Comparator<IIpsSrcFile> IPS_OBJECT_COMPARATOR = new Comparator<IIpsSrcFile>() {
         @Override
         public int compare(IIpsSrcFile o1, IIpsSrcFile o2) {
             IpsObjectTypeComparator ipsObjectTypeComparator = new IpsObjectTypeComparator();
@@ -73,6 +67,11 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
         }
     };
 
+    private IIpsElement baseIpsElement;
+    private List<IIpsSrcFile> srcFiles;
+    private TargetType linkTarget;
+    private IIpsElementFilter filter = ALL_FILTER;
+
     /**
      * creates an {@link AbstractIpsElementListPageElement}
      * 
@@ -83,11 +82,10 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      */
     public AbstractIpsElementListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles,
             IIpsElementFilter filter, DocumentationContext context) {
-        super();
+        super(context);
         this.baseIpsElement = baseIpsElement;
         this.srcFiles = srcFiles;
         this.filter = filter;
-        this.context = context;
     }
 
     /**
@@ -121,13 +119,25 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
      */
     protected Set<IpsObjectType> getRelatedObjectTypes() {
         Set<IpsObjectType> packageFragments = new LinkedHashSet<IpsObjectType>();
-        for (IIpsSrcFile object : srcFiles) {
-            if (!filter.accept(object)) {
+        for (IIpsSrcFile object : getSrcFiles()) {
+            if (!getFilter().accept(object)) {
                 continue;
             }
             packageFragments.add(object.getIpsObjectType());
         }
         return packageFragments;
+    }
+
+    public IIpsElement getBaseIpsElement() {
+        return baseIpsElement;
+    }
+
+    public List<IIpsSrcFile> getSrcFiles() {
+        return srcFiles;
+    }
+
+    public IIpsElementFilter getFilter() {
+        return filter;
     }
 
     /**
@@ -154,10 +164,6 @@ public abstract class AbstractIpsElementListPageElement extends AbstractRootPage
     @Override
     public String getPathToRoot() {
         return HtmlPathFactory.createPathUtil(baseIpsElement).getPathToRoot();
-    }
-
-    public DocumentationContext getContext() {
-        return context;
     }
 
     @Override

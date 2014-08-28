@@ -32,13 +32,16 @@ import org.faktorips.util.message.ObjectProperty;
 
 public class MessageListTablePageElement extends AbstractStandardTablePageElement {
 
-    protected final MessageList messageList;
-    protected final DocumentationContext context;
+    private static final String MESSAGE_LIST_TABLE_PAGE_ELEMENT_SEVERITY = "MessageListTablePageElement_severity"; //$NON-NLS-1$
+    private static final String MESSAGE_LIST_TABLE_PAGE_ELEMENT_INFO = "MessageListTablePageElement_info"; //$NON-NLS-1$
+    private static final String MESSAGE_LIST_TABLE_PAGE_ELEMENT_WARNING = "MessageListTablePageElement_warning"; //$NON-NLS-1$
+    private static final String MESSAGE_LIST_TABLE_PAGE_ELEMENT_ERROR = "MessageListTablePageElement_error"; //$NON-NLS-1$
+
+    private final MessageList messageList;
 
     public MessageListTablePageElement(MessageList messageList, DocumentationContext context) {
-        super();
+        super(context);
         this.messageList = messageList;
-        this.context = context;
     }
 
     @Override
@@ -56,25 +59,25 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
         int severity = message.getSeverity();
         addSubElement(new TableRowPageElement(new IPageElement[] {
                 createInvalidObjectPropertiesPageElement(message),
-                new TextPageElement(message.getText()),
+                new TextPageElement(message.getText(), getContext()),
                 new TextPageElement(severity == Message.ERROR ? getContext().getMessage(
-                        "MessageListTablePageElement_error") : severity == Message.WARNING ? getContext().getMessage( //$NON-NLS-1$
-                        "MessageListTablePageElement_warning") : severity == Message.INFO ? getContext().getMessage( //$NON-NLS-1$
-                        "MessageListTablePageElement_info") : getContext().getMessage( //$NON-NLS-1$
-                        "MessageListTablePageElement_severity") //$NON-NLS-1$
-                        + severity) }));
+                        MESSAGE_LIST_TABLE_PAGE_ELEMENT_ERROR) : severity == Message.WARNING ? getContext().getMessage(
+                                MESSAGE_LIST_TABLE_PAGE_ELEMENT_WARNING) : severity == Message.INFO ? getContext().getMessage(
+                                        MESSAGE_LIST_TABLE_PAGE_ELEMENT_INFO) : getContext().getMessage(
+                                                MESSAGE_LIST_TABLE_PAGE_ELEMENT_SEVERITY)
+                                                + severity, getContext()) }, getContext()));
     }
 
     protected IPageElement createInvalidObjectPropertiesPageElement(Message message) {
         if (message.getInvalidObjectProperties().length == 0) {
-            return new TextPageElement(""); //$NON-NLS-1$
+            return new TextPageElement("", getContext()); //$NON-NLS-1$
         }
 
         if (message.getInvalidObjectProperties().length == 1) {
             return createInvalidObjectPropertiesItem(message.getInvalidObjectProperties()[0]);
         }
 
-        ListPageElement objectPropertiesList = new ListPageElement();
+        ListPageElement objectPropertiesList = new ListPageElement(getContext());
 
         ObjectProperty[] invalidObjectProperties = message.getInvalidObjectProperties();
         for (ObjectProperty objectProperty : invalidObjectProperties) {
@@ -87,10 +90,10 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     protected IPageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
         IIpsSrcFile srcFile = getLinkableSrcFile(objectProperty.getObject(), getContext());
         if (srcFile != null) {
-            return new PageElementUtils().createLinkPageElement(context, srcFile, TargetType.CONTENT,
+            return new PageElementUtils(getContext()).createLinkPageElement(getContext(), srcFile, TargetType.CONTENT,
                     srcFile.getIpsObjectName(), true);
         }
-        return new TextPageElement(objectProperty.getObject().toString());
+        return new TextPageElement(objectProperty.getObject().toString(), getContext());
     }
 
     private IIpsSrcFile getLinkableSrcFile(Object object, DocumentationContext context) {
@@ -101,7 +104,7 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
             return (IIpsSrcFile)object;
         }
         if (object instanceof Description) {
-            return getLinkableSrcFile(((Description)object).getParent(), context);
+            return getLinkableSrcFile(((Description)object).getParent(), getContext());
         }
         if (object instanceof IIpsObjectPartContainer) {
             return ((IIpsObjectPartContainer)object).getIpsSrcFile();
@@ -125,10 +128,6 @@ public class MessageListTablePageElement extends AbstractStandardTablePageElemen
     @Override
     public boolean isEmpty() {
         return messageList.isEmpty();
-    }
-
-    protected DocumentationContext getContext() {
-        return context;
     }
 
 }

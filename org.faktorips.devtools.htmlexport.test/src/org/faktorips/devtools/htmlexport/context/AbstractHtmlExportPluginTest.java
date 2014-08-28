@@ -64,6 +64,10 @@ public abstract class AbstractHtmlExportPluginTest extends AbstractIpsPluginTest
         operation = new HtmlExportOperation(context);
     }
 
+    public DocumentationContext getContext() {
+        return context;
+    }
+
     protected void initContext() throws IOException {
         File tmpFile = File.createTempFile("tmp", "tmp");
         String location = tmpFile.getParentFile() + File.separator + "fips";

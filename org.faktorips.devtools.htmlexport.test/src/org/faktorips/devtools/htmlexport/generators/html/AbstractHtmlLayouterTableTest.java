@@ -27,14 +27,14 @@ public abstract class AbstractHtmlLayouterTableTest extends AbstractTestHtmlLayo
     }
 
     protected TablePageElement createTable(int rows, int cols) {
-        TablePageElement table = new TablePageElement();
+        TablePageElement table = new TablePageElement(getContext());
 
         for (int row = 0; row < rows; row++) {
             IPageElement[] pageElements = new IPageElement[cols];
             for (int col = 0; col < cols; col++) {
-                pageElements[col] = new TextPageElement(createCellContent(row, col));
+                pageElements[col] = new TextPageElement(createCellContent(row, col), getContext());
             }
-            table.addPageElements(new TableRowPageElement(pageElements));
+            table.addPageElements(new TableRowPageElement(pageElements, getContext()));
         }
         return table;
     }

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.htmlexport.pages.elements.types.chooser;
 
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -26,10 +27,10 @@ public class LinkToObjectTypeClassesStrategy implements ILinkStrategy {
     }
 
     @Override
-    public LinkPageElement createLink(IPageElement... containedPageElements) {
+    public LinkPageElement createLink(DocumentationContext context, IPageElement... containedPageElements) {
         LinkPageElement linkPageElement = new LinkPageElement(HtmlPathFactory.createPathUtil(ipsObjectType)
                 .getPathFromRoot(LinkedFileType.OBJECT_TYPE_CLASSES_OVERVIEW),
-                LinkedFileType.OBJECT_TYPE_CLASSES_OVERVIEW.getTarget(), containedPageElements);
+                LinkedFileType.OBJECT_TYPE_CLASSES_OVERVIEW.getTarget(), context, containedPageElements);
         linkPageElement.setTitle(ipsObjectType.getDisplayNamePlural());
         return linkPageElement;
 

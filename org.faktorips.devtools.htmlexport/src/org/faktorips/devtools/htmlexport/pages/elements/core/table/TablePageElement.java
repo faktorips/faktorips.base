@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -32,6 +33,26 @@ public class TablePageElement extends AbstractCompositePageElement {
      * a {@link Set} of {@link ITablePageElementLayout}s
      */
     private Set<ITablePageElementLayout> tableLayouts = new HashSet<ITablePageElementLayout>();
+
+    /**
+     * creates an empty {@link TablePageElement}
+     * 
+     * @param context the current {@link DocumentationContext}
+     */
+    public TablePageElement(DocumentationContext context) {
+        this(true, context);
+    }
+
+    /**
+     * creates an empty {@link TablePageElement}
+     * 
+     * @param border shows the border of the table if is set to true
+     * @param context the current {@link DocumentationContext}
+     */
+    public TablePageElement(boolean border, DocumentationContext context) {
+        super(context);
+        setBorder(border);
+    }
 
     @Override
     public void acceptLayouter(ILayouter layoutVisitor) {
@@ -53,25 +74,8 @@ public class TablePageElement extends AbstractCompositePageElement {
         rowPageElement.setParentTablePageElement(this);
     }
 
-    /**
-     * creates an empty {@link TablePageElement}
-     */
-    public TablePageElement() {
-        this(true);
-    }
-
-    /**
-     * creates an empty {@link TablePageElement}
-     * 
-     * @param border shows the border of the table if is set to true
-     */
-    public TablePageElement(boolean border) {
-        super();
-        setBorder(border);
-    }
-
     @Override
-    public void build() {
+    protected void buildInternal() {
         // could be overridden
     }
 
@@ -79,7 +83,7 @@ public class TablePageElement extends AbstractCompositePageElement {
      * @return true, if the table has a border
      */
     public boolean hasBorder() {
-        return styles.contains(Style.BORDER);
+        return getStyles().contains(Style.BORDER);
     }
 
     /**
@@ -88,10 +92,10 @@ public class TablePageElement extends AbstractCompositePageElement {
      */
     public void setBorder(boolean border) {
         if (border) {
-            styles.add(Style.BORDER);
+            getStyles().add(Style.BORDER);
             return;
         }
-        styles.remove(Style.BORDER);
+        getStyles().remove(Style.BORDER);
     }
 
     @Override
@@ -106,7 +110,8 @@ public class TablePageElement extends AbstractCompositePageElement {
     }
 
     /**
-     * layouts the given {@link TableRowPageElement} using all added {@link ITablePageElementLayout}s
+     * layouts the given {@link TableRowPageElement} using all added {@link ITablePageElementLayout}
+     * s
      * 
      */
     protected void layoutTableRow(int i, TableRowPageElement rowPageElement) {

@@ -60,7 +60,7 @@ public class ValidationRuleTablePageElement extends AbstractIpsObjectPartsContai
         ruleData.add(rule.isActivatedByDefault() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         ruleData.add(getContext().getDescription(rule));
 
-        return Arrays.asList(new PageElementUtils().createTextPageElements(ruleData));
+        return Arrays.asList(new PageElementUtils(getContext()).createTextPageElements(ruleData));
 
     }
 

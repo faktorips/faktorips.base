@@ -21,7 +21,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
     @Test
     public void testEinfacherText() {
-        TextPageElement pageElement = new TextPageElement(TESTTEXT);
+        TextPageElement pageElement = new TextPageElement(TESTTEXT, getContext());
 
         HtmlTextPageElementLayouter elementLayouter = new HtmlTextPageElementLayouter(pageElement, layouter);
 
@@ -32,7 +32,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
     @Test
     public void testMitStyle() {
-        TextPageElement pageElement = new TextPageElement(TESTTEXT);
+        TextPageElement pageElement = new TextPageElement(TESTTEXT, getContext());
         pageElement.addStyles(Style.BOLD);
 
         HtmlTextPageElementLayouter elementLayouter = new HtmlTextPageElementLayouter(pageElement, layouter);
@@ -44,7 +44,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
     @Test
     public void testMitTextType() {
-        TextPageElement pageElement = new TextPageElement(TESTTEXT);
+        TextPageElement pageElement = new TextPageElement(TESTTEXT, getContext());
         pageElement.setType(TextType.HEADING_4);
 
         HtmlTextPageElementLayouter elementLayouter = new HtmlTextPageElementLayouter(pageElement, layouter);
@@ -56,7 +56,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
     @Test
     public void testMitTextTypeUndStyle() {
-        TextPageElement pageElement = new TextPageElement(TESTTEXT);
+        TextPageElement pageElement = new TextPageElement(TESTTEXT, getContext());
         pageElement.setType(TextType.HEADING_3);
         pageElement.addStyles(Style.ITALIC);
 
@@ -69,7 +69,7 @@ public class HtmlTextPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
     @Test
     public void testAnchor() {
-        TextPageElement pageElement = new TextPageElement(TESTTEXT);
+        TextPageElement pageElement = new TextPageElement(TESTTEXT, getContext());
         pageElement.setAnchor("anker");
 
         HtmlTextPageElementLayouter elementLayouter = new HtmlTextPageElementLayouter(pageElement, layouter);

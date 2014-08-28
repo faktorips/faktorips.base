@@ -30,15 +30,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageElement;
 
 public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends IIpsObjectPartContainer> extends
-        AbstractStandardTablePageElement {
+AbstractStandardTablePageElement {
 
-    private DocumentationContext context;
     private final List<? extends T> objectParts;
 
     public AbstractIpsObjectPartsContainerTablePageElement(List<? extends T> objectParts, DocumentationContext context) {
-        super();
+        super(context);
         this.objectParts = objectParts;
-        this.setContext(context);
     }
 
     @Override
@@ -87,7 +85,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
 
     protected final void addRow(T rowData) {
         List<IPageElement> values = getRow(rowData);
-        addSubElement(new TableRowPageElement(values.toArray(new IPageElement[values.size()])));
+        addSubElement(new TableRowPageElement(values.toArray(new IPageElement[values.size()]), getContext()));
     }
 
     protected List<IPageElement> getRow(T rowData) {
@@ -107,9 +105,9 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
             IVersionControlledElement versionControlledElement = (IVersionControlledElement)rowData;
             IVersion<?> sinceVersion = versionControlledElement.getSinceVersion();
             if (sinceVersion != null) {
-                values.add(new TextPageElement(versionControlledElement.getSinceVersion().asString()));
+                values.add(new TextPageElement(versionControlledElement.getSinceVersion().asString(), getContext()));
             } else {
-                values.add(new TextPageElement(StringUtils.EMPTY));
+                values.add(new TextPageElement(StringUtils.EMPTY, getContext()));
             }
         }
         return values;
@@ -119,7 +117,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
         List<IPageElement> extensionPropertyValues = new ArrayList<IPageElement>();
         for (IExtensionPropertyDefinition property : getPropertyDefinitions()) {
             Object value = rowData.getExtPropertyValue(property.getPropertyId());
-            extensionPropertyValues.add(new TextPageElement(value == null ? null : value.toString()));
+            extensionPropertyValues.add(new TextPageElement(value == null ? null : value.toString(), getContext()));
         }
         return extensionPropertyValues;
     }
@@ -134,7 +132,7 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
             Collection<IExtensionPropertyDefinition> extensionPropertyDefinitions = ((IExtensionPropertyAccess)rowData)
                     .getExtensionPropertyDefinitions();
             return extensionPropertyDefinitions.toArray(new IExtensionPropertyDefinition[extensionPropertyDefinitions
-                    .size()]);
+                                                                                         .size()]);
         }
         return new IExtensionPropertyDefinition[0];
     }
@@ -142,14 +140,6 @@ public abstract class AbstractIpsObjectPartsContainerTablePageElement<T extends 
     @Override
     public boolean isEmpty() {
         return getObjectParts().isEmpty();
-    }
-
-    public void setContext(DocumentationContext context) {
-        this.context = context;
-    }
-
-    public DocumentationContext getContext() {
-        return context;
     }
 
     protected List<? extends T> getObjectParts() {
