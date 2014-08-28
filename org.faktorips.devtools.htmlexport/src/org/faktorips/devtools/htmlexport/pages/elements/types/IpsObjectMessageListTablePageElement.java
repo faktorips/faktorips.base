@@ -39,12 +39,12 @@ public class IpsObjectMessageListTablePageElement extends MessageListTablePageEl
     protected IPageElement createInvalidObjectPropertiesItem(ObjectProperty objectProperty) {
         if (objectProperty.getObject() instanceof Description) {
             IIpsElement element = ((Description)objectProperty.getObject()).getParent();
-            return new TextPageElement(context.getLabel(element));
+            return new TextPageElement(getContext().getLabel(element), getContext());
         }
         if (objectProperty.getObject() instanceof IIpsElement) {
             IIpsElement element = (IIpsElement)objectProperty.getObject();
-            return new TextPageElement(context.getLabel(element));
+            return new TextPageElement(getContext().getLabel(element), getContext());
         }
-        return new TextPageElement(objectProperty.getProperty());
+        return new TextPageElement(objectProperty.getProperty(), getContext());
     }
 }

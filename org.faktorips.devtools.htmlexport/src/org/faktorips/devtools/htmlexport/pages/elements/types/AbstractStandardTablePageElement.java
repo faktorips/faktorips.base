@@ -13,8 +13,9 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.DataPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
@@ -42,9 +43,11 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
 
     /**
      * Creates an AbstractSpecificTablePageElement
+     * 
+     * @param context the current {@link DocumentationContext}
      */
-    public AbstractStandardTablePageElement() {
-        super();
+    public AbstractStandardTablePageElement(DocumentationContext context) {
+        super(context);
         addLayouts(RowTablePageElementLayout.HEADLINE);
         addLayouts(new AlternateRowTablePageElementLayout(true));
     }
@@ -61,7 +64,7 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
     protected abstract void addDataRows();
 
     @Override
-    public void build() {
+    protected void buildInternal() {
         addHeadline();
         addDataRowsWithExtensionPoints();
     }
@@ -75,16 +78,17 @@ public abstract class AbstractStandardTablePageElement extends TablePageElement 
      * adds the headline to the table and uses the values returned by the method getHeadline
      */
     protected void addHeadline() {
-        IPageElement[] pageElements = new PageElementUtils().createTextPageElements(getHeadline(), null, TextType.WITHOUT_TYPE);
+        IPageElement[] pageElements = new PageElementUtils(getContext()).createTextPageElements(getHeadline(), null,
+                TextType.WITHOUT_TYPE);
 
-        addSubElement(new TableRowPageElement(pageElements));
+        addSubElement(new TableRowPageElement(pageElements, getContext()));
     }
 
     /**
      * @throws UnsupportedOperationException always
      */
     @Override
-    public AbstractCompositePageElement addPageElements(IPageElement... pageElements) {
+    public ICompositePageElement addPageElements(IPageElement... pageElements) {
         throw new UnsupportedOperationException();
     }
 

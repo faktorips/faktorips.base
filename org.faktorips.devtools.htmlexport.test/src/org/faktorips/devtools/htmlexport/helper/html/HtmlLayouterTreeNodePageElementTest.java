@@ -23,10 +23,11 @@ public class HtmlLayouterTreeNodePageElementTest extends AbstractTestHtmlLayoute
         String childBaseName = "child"; //$NON-NLS-1$
         int countChildren = 5;
 
-        TreeNodePageElement pageElement = new TreeNodePageElement(new TextPageElement(rootName));
+        TreeNodePageElement pageElement = new TreeNodePageElement(new TextPageElement(rootName, getContext()),
+                getContext());
 
         for (int i = 1; i <= countChildren; i++) {
-            pageElement.addPageElements(new TextPageElement(childBaseName + i));
+            pageElement.addPageElements(new TextPageElement(childBaseName + i, getContext()));
         }
 
         String layout = layout(pageElement).replaceAll("\\s+<", "<"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParamet
 import org.faktorips.devtools.core.model.testcasetype.ITestRuleParameter;
 import org.faktorips.devtools.core.model.testcasetype.ITestValueParameter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
 
@@ -40,12 +41,12 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.ImagePageElement;
  */
 public class IpsElementImagePageElement extends ImagePageElement {
 
-    public IpsElementImagePageElement(IIpsElement element, String title, String path) {
-        super(createImageDataByIpsElement(element), title, path);
+    public IpsElementImagePageElement(IIpsElement element, String title, String path, DocumentationContext context) {
+        super(createImageDataByIpsElement(element), title, path, context);
     }
 
-    public IpsElementImagePageElement(IIpsElement element) throws CoreException {
-        super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element));
+    public IpsElementImagePageElement(IIpsElement element, DocumentationContext context) throws CoreException {
+        super(createImageDataByIpsElement(element), element.getName(), getIpsElementImageName(element), context);
     }
 
     private static ImageData createImageDataByIpsElement(IIpsElement element) {
@@ -138,7 +139,7 @@ public class IpsElementImagePageElement extends ImagePageElement {
             return productCmptType.getQualifiedName();
         }
 
-        if (productCmptType.hasSupertype()) {
+        if (productCmptType.hasExistingSupertype(productCmptType.getIpsProject())) {
             return getProductCmptImageNameByProductCmptType(productCmptType.findSuperProductCmptType(productCmptType
                     .getIpsProject()));
         }

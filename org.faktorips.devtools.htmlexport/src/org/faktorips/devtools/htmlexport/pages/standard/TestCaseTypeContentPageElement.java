@@ -53,85 +53,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.KeyValueTablePageE
 public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPageElement<ITestCaseType> {
 
     /**
-     * a table for the {@link ITestAttribute}s of the {@link ITestCaseType}
-     * 
-     * @author dicker
-     * 
-     */
-    private class TestAttributesTablePageElement extends
-            AbstractIpsObjectPartsContainerTablePageElement<ITestAttribute> {
-
-        public TestAttributesTablePageElement(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
-            super(Arrays.asList(testPolicyCmptTypeParameter.getTestAttributes()), TestCaseTypeContentPageElement.this
-                    .getContext());
-            addLayouts(new RegexTablePageElementLayout(".{1}", Style.CENTER)); //$NON-NLS-1$
-        }
-
-        @Override
-        protected List<IPageElement> createRowWithIpsObjectPart(ITestAttribute attribute) {
-            return Arrays.asList(getAttributeData(attribute));
-        }
-
-        protected IPageElement[] getAttributeData(ITestAttribute attribute) {
-            List<IPageElement> attributeData = new ArrayList<IPageElement>();
-
-            attributeData.add(new TextPageElement(getContext().getLabel(attribute)));
-            attributeData.add(new TextPageElement(attribute.getTestAttributeType().getName()));
-            attributeData.add(new TextPageElement(attribute.getAttribute()));
-
-            try {
-                addPolicyComponentAndDataType(attribute, attributeData);
-            } catch (CoreException e) {
-                getContext().addStatus(
-                        new IpsStatus(IStatus.WARNING, "Error adding data of corresponding PolicyCmptType", e)); //$NON-NLS-1$
-            }
-
-            attributeData.add(new TextPageElement(getContext().getDescription(attribute)));
-
-            return attributeData.toArray(new IPageElement[attributeData.size()]);
-        }
-
-        private void addPolicyComponentAndDataType(ITestAttribute attribute, List<IPageElement> attributeData)
-                throws CoreException {
-
-            String correspondingPolicyCmptType = attribute.getCorrespondingPolicyCmptType();
-
-            if (StringUtils.isEmpty(correspondingPolicyCmptType)) {
-                attributeData.add(new TextPageElement("-")); //$NON-NLS-1$
-                attributeData.add(new TextPageElement(attribute.getDatatype()));
-                return;
-            }
-
-            IPolicyCmptType policyCmptType;
-            try {
-                policyCmptType = getContext().getIpsProject().findPolicyCmptType(correspondingPolicyCmptType);
-            } catch (CoreException e) {
-                attributeData.add(new TextPageElement("-")); //$NON-NLS-1$
-                attributeData.add(new TextPageElement(attribute.getDatatype()));
-                throw e;
-            }
-
-            attributeData.add(new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
-                    TargetType.CONTENT, correspondingPolicyCmptType, true));
-            attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute()).getDatatype()));
-        }
-
-        @Override
-        protected List<String> getHeadlineWithIpsObjectPart() {
-            List<String> headline = new ArrayList<String>();
-
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name));
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributeType));
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_attribute));
-            headline.add(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName());
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_datatype));
-            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description));
-
-            return headline;
-        }
-    }
-
-    /**
      * creates a page representing the given {@link ITestCaseType} with the given context
      * 
      */
@@ -140,8 +61,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
         addTestCaseTypeParameters();
     }
@@ -151,7 +72,7 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
      */
     private void addTestCaseTypeParameters() {
         addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.TestCaseTypeContentPageElement_parameters), TextType.HEADING_2));
+                HtmlExportMessages.TestCaseTypeContentPageElement_parameters), TextType.HEADING_2, getContext()));
         TreeNodePageElement root = createRootNode();
 
         ITestParameter[] testParameters = getDocumentedIpsObject().getTestParameters();
@@ -170,19 +91,19 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
     }
 
     private TreeNodePageElement createRootNode(String name) {
-        WrapperPageElement wrapperPageElement = new WrapperPageElement(WrapperType.NONE);
+        WrapperPageElement wrapperPageElement = new WrapperPageElement(WrapperType.NONE, getContext());
         try {
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
-                    getDocumentedIpsObject());
+                    getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
         } catch (CoreException e) {
             IpsStatus status = new IpsStatus(IStatus.WARNING,
                     "Could not find image for " + getDocumentedIpsObject().getName(), e); //$NON-NLS-1$
             getContext().addStatus(status);
         }
-        wrapperPageElement.addPageElements(new TextPageElement(name));
+        wrapperPageElement.addPageElements(new TextPageElement(name, getContext()));
 
-        return new TreeNodePageElement(wrapperPageElement);
+        return new TreeNodePageElement(wrapperPageElement, getContext());
     }
 
     /**
@@ -200,20 +121,21 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
             return createTestPolicyCmptTypePageElement((TestPolicyCmptTypeParameter)testParameter);
         }
 
-        return TextPageElement
-                .createParagraph(getContext().getLabel(testParameter) + " " + testParameter.getClass()).addStyles( //$NON-NLS-1$
-                        Style.BIG).addStyles(Style.BOLD);
+        return TextPageElement.createParagraph(getContext().getLabel(testParameter) + " " + testParameter.getClass(), //$NON-NLS-1$
+                getContext()).addStyles(Style.BIG).addStyles(Style.BOLD);
     }
 
     private IPageElement createTestPolicyCmptTypePageElement(ITestPolicyCmptTypeParameter testParameter)
             throws CoreException {
         IPolicyCmptType policyCmptType = testParameter.findPolicyCmptType(testParameter.getIpsProject());
 
-        IPageElement linkPageElement = new PageElementUtils().createLinkPageElement(getContext(), policyCmptType,
-                TargetType.CONTENT, getContext().getLabel(policyCmptType), true);
+        IPageElement linkPageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),
+                policyCmptType, TargetType.CONTENT, getContext().getLabel(policyCmptType), true);
         TreeNodePageElement testParameterPageElement = new TreeNodePageElement(
-                new WrapperPageElement(WrapperType.BLOCK).addPageElements(linkPageElement).addPageElements(
-                        new TextPageElement((" - " + testParameter.getTestParameterType().getName())))); //$NON-NLS-1$
+                new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(linkPageElement)
+                        .addPageElements(
+                                new TextPageElement(
+                                        (" - " + testParameter.getTestParameterType().getName()), getContext())), getContext()); //$NON-NLS-1$
 
         testParameterPageElement.addPageElements(createKeyValueTableForTestPolicyCmptTypeParameter(testParameter));
 
@@ -229,16 +151,16 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
     private IPageElement createTestAttributeTable(ITestPolicyCmptTypeParameter testParameter) {
 
-        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK).addPageElements(TextPageElement
-                .createParagraph(
-                        getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes))
-                .addStyles(Style.BOLD));
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext())
+        .addPageElements(TextPageElement.createParagraph(
+                getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributes),
+                getContext()).addStyles(Style.BOLD));
 
         TestAttributesTablePageElement testAttributesTablePageElement = new TestAttributesTablePageElement(
                 testParameter);
         if (testAttributesTablePageElement.isEmpty()) {
-            return wrapper.addPageElements(TextPageElement.createParagraph(getContext().getMessage(
-                    "TestCaseTypeContentPageElement_noTestAttributes"))); //$NON-NLS-1$
+            return wrapper.addPageElements(TextPageElement.createParagraph(
+                    getContext().getMessage("TestCaseTypeContentPageElement_noTestAttributes"), getContext())); //$NON-NLS-1$
         }
 
         return wrapper.addPageElements(testAttributesTablePageElement);
@@ -306,5 +228,87 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
 
         testParameterPageElement.addPageElements(keyValueTable);
         return testParameterPageElement;
+    }
+
+    /**
+     * a table for the {@link ITestAttribute}s of the {@link ITestCaseType}
+     * 
+     * @author dicker
+     * 
+     */
+    private class TestAttributesTablePageElement extends
+            AbstractIpsObjectPartsContainerTablePageElement<ITestAttribute> {
+
+        public TestAttributesTablePageElement(ITestPolicyCmptTypeParameter testPolicyCmptTypeParameter) {
+            super(Arrays.asList(testPolicyCmptTypeParameter.getTestAttributes()), TestCaseTypeContentPageElement.this
+                    .getContext());
+            addLayouts(new RegexTablePageElementLayout(".{1}", Style.CENTER)); //$NON-NLS-1$
+        }
+
+        @Override
+        protected List<IPageElement> createRowWithIpsObjectPart(ITestAttribute attribute) {
+            return Arrays.asList(getAttributeData(attribute));
+        }
+
+        protected IPageElement[] getAttributeData(ITestAttribute attribute) {
+            List<IPageElement> attributeData = new ArrayList<IPageElement>();
+
+            attributeData.add(new TextPageElement(getContext().getLabel(attribute), getContext()));
+            attributeData.add(new TextPageElement(attribute.getTestAttributeType().getName(), getContext()));
+            attributeData.add(new TextPageElement(attribute.getAttribute(), getContext()));
+
+            try {
+                addPolicyComponentAndDataType(attribute, attributeData);
+            } catch (CoreException e) {
+                getContext().addStatus(
+                        new IpsStatus(IStatus.WARNING, "Error adding data of corresponding PolicyCmptType", e)); //$NON-NLS-1$
+            }
+
+            attributeData.add(new TextPageElement(getContext().getDescription(attribute), getContext()));
+
+            return attributeData.toArray(new IPageElement[attributeData.size()]);
+        }
+
+        private void addPolicyComponentAndDataType(ITestAttribute attribute, List<IPageElement> attributeData)
+                throws CoreException {
+
+            String correspondingPolicyCmptType = attribute.getCorrespondingPolicyCmptType();
+
+            if (StringUtils.isEmpty(correspondingPolicyCmptType)) {
+                attributeData.add(new TextPageElement("-", getContext())); //$NON-NLS-1$
+                attributeData.add(new TextPageElement(attribute.getDatatype(), getContext()));
+                return;
+            }
+
+            IPolicyCmptType policyCmptType;
+            try {
+                policyCmptType = getContext().getIpsProject().findPolicyCmptType(correspondingPolicyCmptType);
+            } catch (CoreException e) {
+                attributeData.add(new TextPageElement("-", getContext())); //$NON-NLS-1$
+                attributeData.add(new TextPageElement(attribute.getDatatype(), getContext()));
+                throw e;
+            }
+
+            attributeData.add(new PageElementUtils(getContext()).createLinkPageElement(getContext(), policyCmptType,
+                    TargetType.CONTENT, correspondingPolicyCmptType, true));
+            if (policyCmptType != null) {
+                attributeData.add(new TextPageElement(policyCmptType.getAttribute(attribute.getAttribute())
+                        .getDatatype(), getContext()));
+            }
+        }
+
+        @Override
+        protected List<String> getHeadlineWithIpsObjectPart() {
+            List<String> headline = new ArrayList<String>();
+
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_name));
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_testAttributeType));
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_attribute));
+            headline.add(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName());
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_datatype));
+            headline.add(getContext().getMessage(HtmlExportMessages.TestCaseTypeContentPageElement_description));
+
+            return headline;
+        }
     }
 }

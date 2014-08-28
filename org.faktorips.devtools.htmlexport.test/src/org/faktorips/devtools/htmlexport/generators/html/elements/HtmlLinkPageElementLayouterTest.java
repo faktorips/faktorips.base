@@ -34,7 +34,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         TargetType target = TargetType.CONTENT;
         String text = "Linktext";
 
-        LinkPageElement pageElement = new LinkPageElement(path, target, text);
+        LinkPageElement pageElement = new LinkPageElement(path, target, text, null);
 
         HtmlLinkPageElementLayouter elementLayouter = new HtmlLinkPageElementLayouter(pageElement, layouter);
 
@@ -52,7 +52,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         TargetType target = TargetType.CONTENT;
         String text = "Linktext";
 
-        LinkPageElement pageElement = new LinkPageElement(path, target, text);
+        LinkPageElement pageElement = new LinkPageElement(path, target, text, null);
         pageElement.addStyles(Style.BOLD);
 
         HtmlLinkPageElementLayouter elementLayouter = new HtmlLinkPageElementLayouter(pageElement, layouter);
@@ -68,7 +68,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         TargetType target = TargetType.CONTENT;
         String text = "Linktext";
 
-        LinkPageElement pageElement = new LinkPageElement(path, target, text);
+        LinkPageElement pageElement = new LinkPageElement(path, target, text, null);
         pageElement.addStyles(Style.BLOCK);
 
         HtmlLinkPageElementLayouter elementLayouter = new HtmlLinkPageElementLayouter(pageElement, layouter);
@@ -85,7 +85,7 @@ public class HtmlLinkPageElementLayouterTest extends AbstractHtmlPageElementLayo
         String text = "Linktext";
         String linkAnchor = "anker";
 
-        LinkPageElement pageElement = new LinkPageElement(path, target, text);
+        LinkPageElement pageElement = new LinkPageElement(path, target, text, null);
         pageElement.setLinkAnchor(linkAnchor);
 
         HtmlLinkPageElementLayouter elementLayouter = new HtmlLinkPageElementLayouter(pageElement, layouter);

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -27,9 +28,11 @@ public class TableCellPageElement extends WrapperPageElement {
      * creates a {@link TableCellPageElement} with the given {@link IPageElement}s as content of the
      * cell
      * 
+     * @param context the current {@link DocumentationContext}
+     * 
      */
-    public TableCellPageElement(IPageElement... pageElements) {
-        super(WrapperType.TABLECELL, pageElements);
+    public TableCellPageElement(DocumentationContext context, IPageElement... pageElements) {
+        super(WrapperType.TABLECELL, context, pageElements);
     }
 
     @Override

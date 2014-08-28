@@ -54,26 +54,26 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
-        addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
+        addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2, getContext()));
 
         if (shownTypeChooser) {
             addPageElements(new TypeChooserPageElement(getContext(), getRelatedObjectTypes()));
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK)
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext())
                 .addPageElements(new LinkPageElement(
-                        "classes", TargetType.CLASSES, getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects)))); //$NON-NLS-1$ 
+                        "classes", TargetType.CLASSES, getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_allObjects), getContext()))); //$NON-NLS-1$
 
         List<IPageElement> classes = createClassesList();
 
         addPageElements(new TextPageElement(classes.size()
-                + " " + getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_objects))); //$NON-NLS-1$ 
+                + " " + getContext().getMessage(HtmlExportMessages.IpsObjectListPageElement_objects), getContext())); //$NON-NLS-1$
 
         if (classes.size() > 0) {
-            addPageElements(new ListPageElement(classes));
+            addPageElements(new ListPageElement(classes, getContext()));
         }
     }
 
@@ -83,15 +83,16 @@ public class IpsElementListPageElement extends AbstractIpsElementListPageElement
      * @return List of {@link IPageElement}s
      */
     protected List<IPageElement> createClassesList() {
-        Collections.sort(srcFiles, IPS_OBJECT_COMPARATOR);
+
+        Collections.sort(getSrcFiles(), IPS_OBJECT_COMPARATOR);
 
         List<IPageElement> items = new ArrayList<IPageElement>();
-        for (IIpsSrcFile srcFile : srcFiles) {
-            if (!filter.accept(srcFile)) {
+        for (IIpsSrcFile srcFile : getSrcFiles()) {
+            if (!getFilter().accept(srcFile)) {
                 continue;
             }
-            IPageElement link = new PageElementUtils().createLinkPageElement(getContext(), srcFile, getLinkTarget(),
-                    srcFile.getIpsObjectName(), true);
+            IPageElement link = new PageElementUtils(getContext()).createLinkPageElement(getContext(), srcFile,
+                    getLinkTarget(), srcFile.getIpsObjectName(), true);
             items.add(link);
         }
         return items;

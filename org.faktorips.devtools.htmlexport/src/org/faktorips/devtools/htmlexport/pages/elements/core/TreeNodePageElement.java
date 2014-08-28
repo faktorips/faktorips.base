@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 
 /**
  * A {@link TreeNodePageElement} represents a node in a tree. The children are shown within an
@@ -20,17 +21,18 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
  */
 public class TreeNodePageElement extends WrapperPageElement {
 
-    AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+    private final ICompositePageElement wrapper;
 
     /**
      * creates a {@link TreeNodePageElement} with a IPageElement as representation
      * 
      * @param pageElement IPageElement which represents the node
+     * @param context the current {@link DocumentationContext}
      */
-    public TreeNodePageElement(IPageElement pageElement) {
-        super(WrapperType.BLOCK);
+    public TreeNodePageElement(IPageElement pageElement, DocumentationContext context) {
+        super(WrapperType.BLOCK, context);
         addSubElement(pageElement);
-
+        wrapper = new WrapperPageElement(WrapperType.BLOCK, context);
         wrapper.addStyles(Style.INDENTION);
         addSubElement(wrapper);
     }
@@ -39,7 +41,7 @@ public class TreeNodePageElement extends WrapperPageElement {
      * adds children to the node.
      */
     @Override
-    public AbstractCompositePageElement addPageElements(IPageElement... pageElements) {
+    public ICompositePageElement addPageElements(IPageElement... pageElements) {
         changePageElementsToBlock(pageElements);
         wrapper.addPageElements(pageElements);
         return this;

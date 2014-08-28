@@ -25,7 +25,7 @@ public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayo
         AbstractRootPageElement pageElement = createRootPageElement();
 
         pageElement.setTitle(title);
-        pageElement.addPageElements(new TextPageElement(text, TextType.BLOCK));
+        pageElement.addPageElements(new TextPageElement(text, TextType.BLOCK, getContext()));
 
         HtmlRootPageElementLayouter elementLayouter = new HtmlRootPageElementLayouter(pageElement, layouter);
 
@@ -43,7 +43,7 @@ public class HtmlRootPageElementLayouterTest extends AbstractHtmlPageElementLayo
     }
 
     private AbstractRootPageElement createRootPageElement() {
-        AbstractRootPageElement pageElement = new AbstractRootPageElement() {
+        AbstractRootPageElement pageElement = new AbstractRootPageElement(getContext()) {
 
             @Override
             public String getPathToRoot() {

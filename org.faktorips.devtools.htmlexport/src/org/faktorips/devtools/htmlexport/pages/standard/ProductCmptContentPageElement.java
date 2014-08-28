@@ -25,7 +25,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -63,15 +63,15 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             return;
         }
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
-                new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), productCmptType, TargetType.CONTENT,
-                        getContext().getLabel(productCmptType), true) }));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
+            new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+            new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
+                        TargetType.CONTENT, getContext().getLabel(productCmptType), true) }));
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
         addGenerationsList();
 
@@ -91,9 +91,9 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
                     new IpsStatus(IStatus.ERROR, "Error getting " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
             return;
         }
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.ProductCmptContentPageElement_values), TextType.HEADING_2));
+                HtmlExportMessages.ProductCmptContentPageElement_values), TextType.HEADING_2, getContext()));
 
         wrapper.addPageElements(getTableOrAlternativeText(productGenerationAttributeTable,
                 getContext().getMessage(HtmlExportMessages.ProductCmptContentPageElement_noGenerationsOrAttributes)));
@@ -106,12 +106,12 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
     private void addGenerationsList() {
         IIpsObjectGeneration[] generations = getDocumentedIpsObject().getGenerationsOrderedByValidDate();
 
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.ProductCmptContentPageElement_generations), TextType.HEADING_2));
+                HtmlExportMessages.ProductCmptContentPageElement_generations), TextType.HEADING_2, getContext()));
 
         if (generations.length == 0) {
-            wrapper.addPageElements(new TextPageElement("No generations")); //$NON-NLS-1$
+            wrapper.addPageElements(new TextPageElement("No generations", getContext())); //$NON-NLS-1$
             addPageElements(wrapper);
             return;
         }
@@ -123,8 +123,8 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
             validFroms.add(getContext().getSimpleDateFormat().format(validFrom.getTime()));
         }
 
-        wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils()
-                .createTextPageElements(validFroms))));
+        wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
+        .createTextPageElements(validFroms)), getContext()));
         addPageElements(wrapper);
     }
 }

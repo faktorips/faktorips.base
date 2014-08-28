@@ -10,9 +10,10 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.types;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 
 public interface ILinkStrategy {
-    public LinkPageElement createLink(IPageElement... containedPageElements);
+    public LinkPageElement createLink(DocumentationContext context, IPageElement... containedPageElements);
 }

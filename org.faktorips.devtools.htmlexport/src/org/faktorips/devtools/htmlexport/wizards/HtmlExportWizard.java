@@ -103,24 +103,16 @@ public class HtmlExportWizard extends Wizard implements IExportWizard {
         }
 
         IStatus exportStatus = context.getExportStatus();
+        int severity = exportStatus.getSeverity();
 
-        switch (exportStatus.getSeverity()) {
-            case IStatus.ERROR:
-                ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                        Messages.HtmlExportWizard_errorHtmlExport,
-                        Messages.HtmlExportWizard_messageErrorHtmlExport, exportStatus);
-                return false;
-
-            case IStatus.WARNING:
-                ErrorDialog.openError(Display.getDefault().getActiveShell(),
-                        Messages.HtmlExportWizard_warningHtmlExport,
-                        Messages.HtmlExportWizard_messageWarningHtmlExport, exportStatus);
-
-                return true;
-
-            default:
-                return true;
+        if (severity == IStatus.ERROR) {
+            ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.HtmlExportWizard_errorHtmlExport,
+                    Messages.HtmlExportWizard_messageErrorHtmlExport, exportStatus);
+        } else if (severity == IStatus.WARNING) {
+            ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.HtmlExportWizard_warningHtmlExport,
+                    Messages.HtmlExportWizard_messageWarningHtmlExport, exportStatus);
         }
+        return true;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTe
 
     @Test
     public void testNoStyles() {
-        TextPageElement pageElement = new TextPageElement("testtext");
+        TextPageElement pageElement = new TextPageElement("testtext", getContext());
 
         HtmlTextPageElementLayouter elementLayouter = new HtmlTextPageElementLayouter(pageElement, layouter);
 
@@ -32,7 +32,7 @@ public class HtmlPageElementStylesTest extends AbstractHtmlPageElementLayouterTe
 
     @Test
     public void testStyleConcatenation() {
-        TextPageElement pageElement = new TextPageElement("testtext");
+        TextPageElement pageElement = new TextPageElement("testtext", getContext());
         pageElement.addStyles(Style.ITALIC);
         pageElement.addStyles(Style.BOLD);
 

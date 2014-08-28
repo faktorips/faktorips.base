@@ -24,7 +24,7 @@ public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayo
     @Test
     public void testLeereListe() throws Exception {
 
-        ListPageElement pageElement = new ListPageElement(Collections.<IPageElement> emptyList());
+        ListPageElement pageElement = new ListPageElement(Collections.<IPageElement> emptyList(), getContext());
 
         HtmlListPageElementLayouter elementLayouter = new HtmlListPageElementLayouter(pageElement, layouter);
 
@@ -40,9 +40,9 @@ public class HtmlListPageElementLayouterTest extends AbstractHtmlPageElementLayo
 
         String[] itemTexts = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
 
-        IPageElement[] elements = new PageElementUtils().createTextPageElements(Arrays.asList(itemTexts));
+        IPageElement[] elements = new PageElementUtils(getContext()).createTextPageElements(Arrays.asList(itemTexts));
 
-        ListPageElement listPageElement = new ListPageElement(Arrays.asList(elements));
+        ListPageElement listPageElement = new ListPageElement(Arrays.asList(elements), getContext());
 
         HtmlListPageElementLayouter elementLayouter = new HtmlListPageElementLayouter(listPageElement, layouter);
 
