@@ -10,7 +10,9 @@
 
 package org.faktorips.devtools.core.ui.wizards.refactor;
 
-import org.apache.commons.lang.ArrayUtils;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -110,7 +112,7 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             treeViewer.setLabelProvider(new MoveLabelProvider());
             treeViewer.setContentProvider(new MoveContentProvider());
             treeViewer.setAutoExpandLevel(TreeViewer.ALL_LEVELS);
-            setReferencingProjectsAsInput();
+            setReferencingAndReferencedProjectsAsInput();
             treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
@@ -131,11 +133,19 @@ public final class IpsMoveRefactoringWizard extends IpsRefactoringWizard {
             });
         }
 
-        private void setReferencingProjectsAsInput() {
+        private void setReferencingAndReferencedProjectsAsInput() {
             try {
                 IIpsProject ipsProject = getIpsRefactoring().getIpsProject();
-                IIpsProject[] referencingProjects = ipsProject.findReferencingProjects(true);
-                treeViewer.setInput(ArrayUtils.add(referencingProjects, 0, ipsProject));
+                IIpsProject[] allProjects = ipsProject.getIpsModel().getIpsProjects();
+                List<IIpsProject> refProjectsList = new ArrayList<IIpsProject>();
+                refProjectsList.add(0, ipsProject);
+                for (IIpsProject project : allProjects) {
+                    if (ipsProject.isReferencing(project) || ipsProject.isReferencedBy(project, true)) {
+                        refProjectsList.add(project);
+                    }
+                }
+                IIpsProject[] refProjects = refProjectsList.toArray(new IIpsProject[refProjectsList.size()]);
+                treeViewer.setInput(refProjects);
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

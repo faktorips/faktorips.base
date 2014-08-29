@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,6 +34,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     private static final String PRODUCT_A_QNAME = "data.products.ProductA"; //$NON-NLS-1$
     private static final String PRODUCT_B_QNAME = "data.products.ProductB"; //$NON-NLS-1$
+    private static final String PRODUCT_C_QNAME = "data.products.ProductC"; //$NON-NLS-1$
     private static final String COVERAGE_QNAME = "data.coverages.Coverage"; //$NON-NLS-1$
     private static final String COVERAGE_TYPE_NAME = "CoverageType"; //$NON-NLS-1$
     private static final String COVERAGE_TYPE_QNAME = "model." + COVERAGE_TYPE_NAME; //$NON-NLS-1$
@@ -44,14 +46,18 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt productB;
     private IProductCmptGeneration productBGen;
     private IProductCmpt coverage;
+    private IIpsProject ipsProject2;
+    private IProductCmpt productC;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
+        ipsProject2 = newIpsProject();
         IProductCmptType productCmptType1 = newProductCmptType(ipsProject, PRODUCT_QNAME);
         IProductCmptType productCmptType2 = newProductCmptType(ipsProject, COVERAGE_TYPE_QNAME);
+        IProductCmptType productCmptType3 = newProductCmptType(ipsProject2, PRODUCT_QNAME);
         IProductCmptTypeAssociation association = productCmptType1.newProductCmptTypeAssociation();
         association.setTarget(productCmptType2.getQualifiedName());
         association.setTargetRoleSingular(COVERAGE_TYPE_NAME);
@@ -74,39 +80,63 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
         productBGen.newLink(COVERAGE_TYPE_NAME).setTarget(coverage.getQualifiedName());
         productB.getIpsSrcFile().save(true, null);
 
+        productC = newProductCmpt(productCmptType3, PRODUCT_C_QNAME);
+
     }
 
     @Test
     public void testCanMove_WithReferencedProject() throws Exception {
-        IIpsProject ipsProject2 = newIpsProject();
+        createProjectReference(ipsProject2, ipsProject);
         IProject project2 = ipsProject2.getProject();
         IFolder folderTarget = project2.getFolder("target");
         folderTarget.create(true, true, null);
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
-        path.newIpsProjectRefEntry(ipsProject);
-        ipsProject2.setIpsObjectPath(path);
-        assertTrue(ipsProject2.isReferencing(ipsProject));
         IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
 
+        assertTrue(ipsProject2.isReferencing(ipsProject));
         assertTrue(MoveOperation.canMove(new Object[] { productA }, newEntry.getIpsPackageFragmentRoot()));
+    }
+
+    /**
+     * Makes a project referencing another project.
+     * 
+     * @param referencingProject The project that is referencing the referencedProject
+     * @param referencedProject The project that is referenced by the referencingProject
+     */
+    private void createProjectReference(IIpsProject referencingProject, IIpsProject referencedProject)
+            throws CoreException {
+        IIpsObjectPath path = referencingProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(referencedProject);
+        referencingProject.setIpsObjectPath(path);
+    }
+
+    @Test
+    public void testCanMove_WithReferencingProject() throws Exception {
+        createProjectReference(ipsProject2, ipsProject);
+        IProject project = ipsProject.getProject();
+        IFolder folderTarget = project.getFolder("target");
+        folderTarget.create(true, true, null);
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
+
+        assertTrue(ipsProject2.isReferencing(ipsProject));
+        assertTrue(MoveOperation.canMove(new Object[] { productC }, newEntry.getIpsPackageFragmentRoot()));
     }
 
     @Test
     public void testCanMove_WithoutReferencedProject() throws Exception {
-        IIpsProject ipsProject2 = newIpsProject();
         IProject project2 = ipsProject2.getProject();
         IFolder folderTarget = project2.getFolder("target");
         folderTarget.create(true, true, null);
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
-        assertFalse(ipsProject2.isReferencing(ipsProject));
         IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
 
+        assertFalse(ipsProject2.isReferencing(ipsProject));
         assertFalse(MoveOperation.canMove(new Object[] { productA }, newEntry.getIpsPackageFragmentRoot()));
     }
 
     @Test
     public void testCanMove_OtherProductCmpt() throws Exception {
-        IIpsProject ipsProject2 = newIpsProject();
         IProject project2 = ipsProject2.getProject();
         IFolder folderTarget = project2.getFolder("target");
         folderTarget.create(true, true, null);
