@@ -20,10 +20,10 @@ import java.util.Set;
  */
 public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
-    private static final long serialVersionUID = 1L;
-
     /** Indicating whether this {@link UnrestrictedValueSet} contains null. */
     public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+
+    private static final long serialVersionUID = 1L;
 
     private boolean containsNull;
 
