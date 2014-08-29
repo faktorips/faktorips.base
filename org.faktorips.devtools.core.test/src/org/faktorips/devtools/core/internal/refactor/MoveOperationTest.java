@@ -14,7 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -87,9 +86,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     @Test
     public void testCanMove_WithReferencedProject() throws Exception {
         createProjectReference(ipsProject2, ipsProject);
-        IProject project2 = ipsProject2.getProject();
-        IFolder folderTarget = project2.getFolder("target");
-        folderTarget.create(true, true, null);
+        IFolder folderTarget = ipsProject2.getProject().getFolder("target");
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
 
@@ -113,9 +110,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
     @Test
     public void testCanMove_WithReferencingProject() throws Exception {
         createProjectReference(ipsProject2, ipsProject);
-        IProject project = ipsProject.getProject();
-        IFolder folderTarget = project.getFolder("target");
-        folderTarget.create(true, true, null);
+        IFolder folderTarget = ipsProject.getProject().getFolder("target");
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
 
@@ -125,9 +120,7 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCanMove_WithoutReferencedProject() throws Exception {
-        IProject project2 = ipsProject2.getProject();
-        IFolder folderTarget = project2.getFolder("target");
-        folderTarget.create(true, true, null);
+        IFolder folderTarget = ipsProject2.getProject().getFolder("target");
         IIpsObjectPath path = ipsProject2.getIpsObjectPath();
         IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
 
@@ -137,18 +130,12 @@ public class MoveOperationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testCanMove_OtherProductCmpt() throws Exception {
-        IProject project2 = ipsProject2.getProject();
-        IFolder folderTarget = project2.getFolder("target");
-        folderTarget.create(true, true, null);
-
         assertFalse(MoveOperation.canMove(new Object[] { productA }, productB));
     }
 
     @Test
     public void testCanMove_SameProject() throws Exception {
-        IProject project = ipsProject.getProject();
-        IFolder folderTarget = project.getFolder("target");
-        folderTarget.create(true, true, null);
+        IFolder folderTarget = ipsProject.getProject().getFolder("target");
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry newEntry = path.newSourceFolderEntry(folderTarget);
 
