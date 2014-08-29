@@ -22,12 +22,21 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     private static final long serialVersionUID = 1L;
 
+    /** Indicating whether this {@link UnrestrictedValueSet} contains null. */
+    public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
+
+    private boolean containsNull;
+
     public boolean contains(Object value) {
-        return true;
+        if (value == null) {
+            return isContainsNull();
+        } else {
+            return true;
+        }
     }
 
     public boolean containsNull() {
-        return true;
+        return isContainsNull();
     }
 
     public Set<T> getValues(boolean excludeNull) {
@@ -63,6 +72,21 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
     @Override
     public boolean equals(Object o) {
         return o instanceof UnrestrictedValueSet<?>;
+    }
+
+    /**
+     * Returns <tt>true</tt> if this {@link ValueSet} contains null
+     */
+    public boolean isContainsNull() {
+        return containsNull;
+
+    }
+
+    /**
+     * Sets whether this {@link ValueSet} contains null
+     */
+    public void setContainsNull(boolean containsNull) {
+        this.containsNull = containsNull;
     }
 
 }
