@@ -115,7 +115,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step) {
         IRangeValueSet range = new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step,
-                getValueSet().isContainingNull());
+                getValueSet().isContainsNull());
         return range;
     }
 

@@ -465,7 +465,7 @@ public class XPolicyAttribute extends XAttribute {
         if (isValueSetRange()) {
             IRangeValueSet range = (IRangeValueSet)getAttribute().getValueSet();
             JavaCodeFragment containsNullFrag = new JavaCodeFragment();
-            containsNullFrag.append(range.isContainingNull());
+            containsNullFrag.append(range.isContainsNull());
             result = getValuesetDatatypeHelper().newRangeInstance(createCastExpression(range.getLowerBound()),
                     createCastExpression(range.getUpperBound()), createCastExpression(range.getStep()),
                     containsNullFrag, true);
@@ -475,7 +475,7 @@ public class XPolicyAttribute extends XAttribute {
             if ((getAttribute()).getValueSet() instanceof IEnumValueSet) {
                 IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
                 valueIds = set.getValues();
-                containsNull = !getDatatype().isPrimitive() && set.isContainingNull();
+                containsNull = !getDatatype().isPrimitive() && set.isContainsNull();
             } else if (getDatatype() instanceof EnumDatatype) {
                 valueIds = ((EnumDatatype)getDatatype()).getAllValueIds(true);
                 containsNull = !getDatatype().isPrimitive();

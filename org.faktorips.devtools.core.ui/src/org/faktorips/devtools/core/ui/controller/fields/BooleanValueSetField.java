@@ -56,7 +56,7 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
             booleanValueSetControl.getFalseCheckBox().setChecked(
                     newValue.containsValue(Boolean.FALSE.toString(), newValue.getIpsProject()));
             if (booleanValueSetControl.getNullCheckBox() != null) {
-                booleanValueSetControl.getNullCheckBox().setChecked(newValue.isContainingNull());
+                booleanValueSetControl.getNullCheckBox().setChecked(newValue.isContainsNull());
             }
         } catch (CoreException e) {
             e.printStackTrace();

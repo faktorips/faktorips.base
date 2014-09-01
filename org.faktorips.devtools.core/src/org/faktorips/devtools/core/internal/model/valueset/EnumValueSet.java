@@ -123,7 +123,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
         if (isNullValue(value, datatype)) {
-            return isContainingNull();
+            return isContainsNull();
         }
         if (isAbstract()) {
             return true;
@@ -320,7 +320,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         }
         checkForDuplicates(list);
 
-        if (datatype != null && datatype.isPrimitive() && isContainingNull()) {
+        if (datatype != null && datatype.isPrimitive() && isContainsNull()) {
             String text = Messages.EnumValueSet_msgNullNotSupported;
             list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
         }
@@ -486,18 +486,18 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         addValues(Arrays.asList(valueIds));
     }
 
-    /**
-     * @deprecated Use {@link #isContainingNull()} instead
-     */
     @Override
-    @Deprecated
-    public boolean getContainsNull() {
-        return isContainingNull();
+    public boolean isContainsNull() {
+        return values.contains(null);
     }
 
     @Override
-    public boolean isContainingNull() {
-        return values.contains(null);
+    public void setContainsNull(boolean containsNull) {
+        if (!isContainsNull() && containsNull) {
+            addValue(null);
+        } else if (!containsNull) {
+            removeValue(null);
+        }
     }
 
 }

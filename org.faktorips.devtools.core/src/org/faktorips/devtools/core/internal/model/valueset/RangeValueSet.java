@@ -156,14 +156,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * <li>The value is null (according to definition of the datatype) and the range contains the
      * null value</li>
      * <li>The range is abstract and hence all values are allowed (except null if
-     * {@link #isContainingNull()} is false)</li>
+     * {@link #isContainsNull()} is false)</li>
      * <li>The value lies between the upper and the lower value</li>
      * </ul>
      */
     private boolean checkValueInRange(String value, ValueDatatype datatype) {
         try {
             if (isNullValue(value, datatype)) {
-                return isContainingNull();
+                return isContainsNull();
             }
             if (isAbstract()) {
                 return true;
@@ -241,7 +241,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (subRange.isAbstract()) {
             return false;
         }
-        if (!isContainingNull() && subRange.isContainingNull()) {
+        if (!isContainsNull() && subRange.isContainsNull()) {
             return false;
         }
 
@@ -367,7 +367,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     private ValueDatatype checkDatatypePrimitiv(MessageList list, ValueDatatype datatype) {
         if (datatype.isPrimitive()) {
-            if (isContainingNull()) {
+            if (isContainsNull()) {
                 String text = Messages.RangeValueSet_msgNullNotSupported;
                 list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
             }
@@ -492,17 +492,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         objectHasChanged();
     }
 
-    /**
-     * @deprecated Use {@link #isContainingNull()} instead
-     */
-    @Deprecated
     @Override
-    public boolean getContainsNull() {
-        return isContainingNull();
-    }
-
-    @Override
-    public boolean isContainingNull() {
+    public boolean isContainsNull() {
         return containsNull;
     }
 
@@ -512,5 +503,4 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         this.containsNull = containsNull;
         valueChanged(old, containsNull);
     }
-
 }

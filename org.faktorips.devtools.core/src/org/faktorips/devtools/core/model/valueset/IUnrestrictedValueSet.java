@@ -21,14 +21,5 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public interface IUnrestrictedValueSet extends IValueSet {
 
-    /**
-     * Returns <tt>true</tt> if this {@link IUnrestrictedValueSet} contains null
-     */
-    public boolean isContainsNull();
-
-    /**
-     * Sets whether this {@link IUnrestrictedValueSet} contains null
-     */
-    public void setContainsNull(boolean containsNull);
-
+    // No specific methods so far.
 }

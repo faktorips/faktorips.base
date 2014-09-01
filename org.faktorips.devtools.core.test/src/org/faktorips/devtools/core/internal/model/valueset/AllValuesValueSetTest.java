@@ -121,11 +121,11 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 
         // test with non-primitive datatype
-        assertTrue(allValues.isContainingNull());
+        assertTrue(allValues.isContainsNull());
 
         // test with no datatype
         attr.setDatatype("");
-        assertTrue(allValues.isContainingNull());
+        assertTrue(allValues.isContainsNull());
 
         // test with primitive datatype
         Datatype[] vds = ipsProject.findDatatypes(true, false);
@@ -137,7 +137,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-        assertFalse(allValues.isContainingNull());
+        assertFalse(allValues.isContainsNull());
     }
 
 }

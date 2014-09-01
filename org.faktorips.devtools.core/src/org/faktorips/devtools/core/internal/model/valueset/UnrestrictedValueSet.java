@@ -31,7 +31,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     public static final String XML_TAG_UNRESTRICTED = ValueToXmlHelper.XML_TAG_ALL_VALUES;
 
     /** Indicating whether this {@link UnrestrictedValueSet} contains null. */
-    private boolean containsNull;
+    private boolean containsNull = true;
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
@@ -106,21 +106,6 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     @Override
     public void copyPropertiesFrom(IValueSet target) {
         // Nothing to do.
-    }
-
-    /**
-     * @deprecated Use {@link #isContainingNull()} instead
-     */
-    @Deprecated
-    @Override
-    public boolean getContainsNull() {
-        return isContainingNull();
-    }
-
-    @Override
-    public boolean isContainingNull() {
-        ValueDatatype type = getValueDatatype();
-        return type == null || !type.isPrimitive();
     }
 
     @Override

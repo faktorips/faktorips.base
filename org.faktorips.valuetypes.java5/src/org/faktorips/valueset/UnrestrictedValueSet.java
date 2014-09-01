@@ -20,23 +20,14 @@ import java.util.Set;
  */
 public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
-    /** Indicating whether this {@link UnrestrictedValueSet} contains null. */
-    public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
-
     private static final long serialVersionUID = 1L;
 
-    private boolean containsNull;
-
     public boolean contains(Object value) {
-        if (value == null) {
-            return isContainsNull();
-        } else {
-            return true;
-        }
+        return true;
     }
 
     public boolean containsNull() {
-        return isContainsNull();
+        return true;
     }
 
     public Set<T> getValues(boolean excludeNull) {
@@ -72,21 +63,6 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
     @Override
     public boolean equals(Object o) {
         return o instanceof UnrestrictedValueSet<?>;
-    }
-
-    /**
-     * Returns <tt>true</tt> if this {@link ValueSet} contains null
-     */
-    public boolean isContainsNull() {
-        return containsNull;
-
-    }
-
-    /**
-     * Sets whether this {@link ValueSet} contains null
-     */
-    public void setContainsNull(boolean containsNull) {
-        this.containsNull = containsNull;
     }
 
 }

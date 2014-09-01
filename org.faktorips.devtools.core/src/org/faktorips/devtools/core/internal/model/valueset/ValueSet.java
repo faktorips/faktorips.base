@@ -223,6 +223,15 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     }
 
     /**
+     * @deprecated Use {@link #isContainsNull()} instead
+     */
+    @Deprecated
+    @Override
+    public final boolean isContainingNull() {
+        return isContainsNull();
+    }
+
+    /**
      * Creates a new message with severity ERROR and adds the new message to the given message list.
      * 
      * @param list The message list to add the new message to
