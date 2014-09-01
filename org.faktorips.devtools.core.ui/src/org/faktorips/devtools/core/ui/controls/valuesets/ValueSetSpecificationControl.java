@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
@@ -25,12 +26,14 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
@@ -46,7 +49,7 @@ import org.faktorips.devtools.core.ui.controls.Messages;
  */
 public class ValueSetSpecificationControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 
-    private IValueSetOwner valueSetOwner;
+    private final IValueSetOwner valueSetOwner;
 
     private ValueSetControlEditMode editMode = ValueSetControlEditMode.ALL_KIND_OF_SETS;
 
@@ -57,7 +60,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private List<ValueSetType> allowedValueSetTypes = new ArrayList<ValueSetType>();
 
     private Checkbox concreteValueSetCheckbox = null;
+    private Checkbox containsNullCheckbox;
     private CheckboxField concreteValueSetField = null;
+    private CheckboxField containsNullField;
 
     // control showing the value set
     private IValueSetEditControl valueSetEditControl;
@@ -75,6 +80,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private boolean dataChangeable;
     private Label concreteValueSetLabel;
 
+    private ValueSetPmo pmo;
+
     /**
      * Creates a new control which contains a combo box and depending on the value of the box a
      * EnumValueSetEditControl or a RangeEditControl. the following general layout is used: the main
@@ -90,6 +97,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         this.uiController = uiController;
         this.editMode = editMode;
 
+        pmo = new ValueSetPmo(valueSetOwner);
         initControls(toolkit);
         setAllowedValueSetTypes(allowedValueSetTypes);
     }
@@ -100,6 +108,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         Composite twoColumnArea = toolkit.createLabelEditColumnComposite(this);
         createValueSetTypesCombo(toolkit, twoColumnArea);
         createConcreteValueSetCheckbox(toolkit, twoColumnArea);
+        createContainsNullCheckbox(toolkit, twoColumnArea);
 
         toolkit.createVerticalSpacer(this, 5);
         createValueSetArea(toolkit, this);
@@ -303,6 +312,16 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         });
     }
 
+    private void createContainsNullCheckbox(UIToolkit toolkit, Composite parent) {
+        toolkit.createLabel(
+                parent,
+                NLS.bind(Messages.ValueSetSpecificationControl_containsNull, IpsPlugin.getDefault().getIpsPreferences()
+                        .getNullPresentation()));
+        containsNullCheckbox = toolkit.createCheckbox(parent);
+        containsNullField = new CheckboxField(containsNullCheckbox);
+        uiController.bindContent(containsNullField, pmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
+    }
+
     @Override
     public boolean setFocus() {
         return valueSetTypesCombo.setFocus();
@@ -425,4 +444,35 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private boolean getDefaultForAbstractProperty() {
         return editMode.canDefineAbstractSets();
     }
+
+    /**
+     * An implementation of {@link IpsObjectPartPmo}. It is used for binding the state of a checkbox
+     * according to the selected {@link IValueSet}.
+     */
+    public static class ValueSetPmo extends IpsObjectPartPmo {
+
+        public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
+
+        public ValueSetPmo(IValueSetOwner valueSetOwner) {
+            super(valueSetOwner);
+        }
+
+        public boolean isContainsNull() {
+            return getValueSet().isContainsNull();
+        }
+
+        public void setContainsNull(boolean containsNull) {
+            getValueSet().setContainsNull(containsNull);
+        }
+
+        private IValueSet getValueSet() {
+            return getIpsObjectPartContainer().getValueSet();
+        }
+
+        @Override
+        public IValueSetOwner getIpsObjectPartContainer() {
+            return (IValueSetOwner)super.getIpsObjectPartContainer();
+        }
+    }
+
 }

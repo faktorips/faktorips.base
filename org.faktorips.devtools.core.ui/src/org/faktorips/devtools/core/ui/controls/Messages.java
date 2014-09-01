@@ -68,6 +68,8 @@ public class Messages extends NLS {
 
     public static String ValueSetSpecificationControl_specifyBoundsValues;
 
+    public static String ValueSetSpecificationControl_containsNull;
+
     public static String TableStructureRefControl_title;
 
     public static String TableStructureRefControl_description;
@@ -105,8 +107,6 @@ public class Messages extends NLS {
     public static String ListChooser_buttonUp;
 
     public static String ListChooser_buttonDown;
-
-    public static String RangeEditControl_labelIncludeNull;
 
     public static String FileSelectionControl_titleBrowse;
 
