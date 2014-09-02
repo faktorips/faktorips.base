@@ -110,6 +110,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         range.setLowerBound("10");
         range.setUpperBound("100");
         range.setStep("10");
+        range.setContainsNull(true);
         Element element = range.toXml(newDocument());
         IRangeValueSet r2 = new RangeValueSet(ce, "1");
         r2.initFromXml(element);

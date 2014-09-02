@@ -546,7 +546,6 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals("one", set.getValue(0));
         assertEquals("two", set.getValue(1));
         assertEquals("three", set.getValue(2));
-
     }
 
     @Test
@@ -555,12 +554,14 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
+        set.setContainsNull(true);
         Element element = set.toXml(newDocument());
         IEnumValueSet set2 = new EnumValueSet(ce, "1");
         set2.initFromXml(element);
         assertEquals("one", set2.getValue(0));
         assertEquals("two", set2.getValue(1));
         assertEquals("two", set2.getValue(2));
+        assertTrue(set2.isContainsNull());
 
     }
 

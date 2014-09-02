@@ -449,6 +449,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             String value = ValueToXmlHelper.getValueFromElement(valueEl, XML_DATA);
             addValueWithoutTriggeringChangeEvent(value);
         }
+        setContainsNullWithoutTriggeringEvent(Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue());
     }
 
     @Override
@@ -458,6 +459,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         Element tagElement = doc.createElement(XML_TAG_ENUM);
         for (String value : values) {
             Element valueElement = doc.createElement(XML_VALUE);
+            tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(isContainsNull()));
             tagElement.appendChild(valueElement);
             ValueToXmlHelper.addValueToElement(value, valueElement, XML_DATA);
         }
@@ -468,6 +470,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public IValueSet copy(IValueSetOwner parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
+        copy.setContainsNullWithoutTriggeringEvent(this.isContainsNull());
         copy.refillValuesToIndexMap();
         return copy;
     }
@@ -476,6 +479,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public void copyPropertiesFrom(IValueSet source) {
         values.clear();
         values.addAll(((EnumValueSet)source).values);
+        setContainsNullWithoutTriggeringEvent(source.isContainsNull());
         refillValuesToIndexMap();
         objectHasChanged();
     }
@@ -497,6 +501,14 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             addValue(null);
         } else if (!containsNull) {
             removeValue(null);
+        }
+    }
+
+    public void setContainsNullWithoutTriggeringEvent(boolean containsNull) {
+        if (!isContainsNull() && containsNull) {
+            addValueWithoutTriggeringChangeEvent(null);
+        } else if (!containsNull) {
+            removeWithoutTriggeringChangeEvents(null);
         }
     }
 

@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -45,6 +46,11 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
      */
     public UnrestrictedValueSet(IValueSetOwner parent, String partId) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
+    }
+
+    public UnrestrictedValueSet(IValueSetOwner parent, String partId, boolean containsNull) {
+        super(ValueSetType.UNRESTRICTED, parent, partId);
+        this.containsNull = containsNull;
     }
 
     @Override
@@ -87,6 +93,8 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
+        containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
         // Nothing more to do...
     }
 
@@ -95,17 +103,22 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG_UNRESTRICTED);
+        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
         element.appendChild(tagElement);
     }
 
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
-        return new UnrestrictedValueSet(parent, id);
+        UnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(parent, id);
+        unrestrictedValueSet.containsNull = containsNull;
+        return unrestrictedValueSet;
     }
 
     @Override
     public void copyPropertiesFrom(IValueSet target) {
-        // Nothing to do.
+        UnrestrictedValueSet set = (UnrestrictedValueSet)target;
+        containsNull = set.containsNull;
+        objectHasChanged();
     }
 
     @Override
@@ -115,7 +128,9 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public void setContainsNull(boolean containsNull) {
+        boolean oldContainsNull = this.containsNull;
         this.containsNull = containsNull;
+        valueChanged(oldContainsNull, containsNull, PROPERTY_CONTAINS_NULL);
     }
 
 }
