@@ -260,7 +260,7 @@ public class ValueToXmlHelper {
         NodeList valueElements = enumEl.getElementsByTagName(XML_TAG_VALUE);
 
         String[] values = new String[valueElements.getLength()];
-        boolean containsNull = false;
+        boolean containsNull = Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
         for (int i = 0; i < valueElements.getLength(); i++) {
             Element valueEl = (Element)valueElements.item(i);
             values[i] = getValueFromElement(valueEl, XML_TAG_DATA);
@@ -271,4 +271,13 @@ public class ValueToXmlHelper {
         return new EnumValues(values, containsNull);
     }
 
+    public static boolean getUnrestrictedValueSetContainsNull(Element el, String tagName) {
+        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
+        Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ALL_VALUES);
+        if (valueSetEl == null || enumEl == null) {
+            return true;
+        }
+
+        return Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
+    }
 }
