@@ -169,7 +169,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (oldValue != newValue && !newValue) {
             computationMethodSignature = ""; //$NON-NLS-1$
         }
-        valueChanged(oldValue, newValue);
+        valueChanged(oldValue, newValue, PROPERTY_PRODUCT_RELEVANT);
     }
 
     @Override

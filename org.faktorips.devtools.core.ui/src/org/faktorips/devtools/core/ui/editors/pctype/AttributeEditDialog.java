@@ -41,6 +41,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -386,6 +387,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             checkboxLayoutData.horizontalSpan = 2;
             checkbox.setLayoutData(checkboxLayoutData);
             getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            bindRefreshAllowedValueSetTypes(checkbox);
 
             getToolkit().createFormLabel(labelEditColumnComposite, Messages.AttributeEditDialog_labelCategory);
             createCategoryCombo(labelEditColumnComposite);
@@ -439,6 +441,20 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 createMethodAndOpenDialog();
             }
         });
+    }
+
+    private void bindRefreshAllowedValueSetTypes(Checkbox checkbox) {
+        getBindingContext().add(
+                new ControlPropertyBinding(checkbox, attribute, PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT,
+                        Boolean.TYPE) {
+
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
+                            updateAllowedValueSetTypes();
+                        }
+                    }
+                });
     }
 
     private IProductCmptType getProductCmptType() {
@@ -886,8 +902,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, labelText);
         Text textField = getToolkit().createText(workArea);
         if (supportedByProvider) {
-            getBindingContext().bindContent(textField, attribute.getPersistenceAttributeInfo(),
-                    bindingProperty);
+            getBindingContext().bindContent(textField, attribute.getPersistenceAttributeInfo(), bindingProperty);
         } else {
             textField.setEnabled(false);
             textField.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);
