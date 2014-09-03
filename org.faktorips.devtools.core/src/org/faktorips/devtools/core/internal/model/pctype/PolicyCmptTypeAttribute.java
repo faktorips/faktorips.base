@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -181,16 +180,15 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         List<ValueSetType> types = ipsProject.getValueSetTypes(findDatatype(ipsProject));
-        for (Iterator<ValueSetType> it = types.iterator(); it.hasNext();) {
-            ValueSetType valueSetType = it.next();
-            if (valueSetType.isEnum()) {
-                ValueDatatype datatype = findDatatype(ipsProject);
-                if (DatatypeUtil.isExtensibleEnumType(datatype)) {
-                    it.remove();
-                }
-            }
+        ValueDatatype datatype = findDatatype(ipsProject);
+        if (isEnumValueSetIllegal(datatype)) {
+            types.remove(ValueSetType.ENUM);
         }
         return types;
+    }
+
+    private boolean isEnumValueSetIllegal(ValueDatatype datatype) {
+        return !isProductRelevant() && DatatypeUtil.isExtensibleEnumType(datatype);
     }
 
     @Override

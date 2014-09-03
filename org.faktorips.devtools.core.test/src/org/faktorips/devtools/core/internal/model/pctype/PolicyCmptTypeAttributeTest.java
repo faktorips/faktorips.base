@@ -22,7 +22,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -384,20 +383,33 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateDefaultValue() throws CoreException {
-        ipsSrcFile = ipsFolder.createIpsFile(IpsObjectType.ENUM_TYPE, "TestEnum", true, null);
-        EnumType enumType = new EnumType(ipsSrcFile);
+        EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
+        enumType.setExtensible(true);
+
         attribute.setName("name");
         attribute.setDatatype(enumType.getQualifiedName());
         attribute.setOverwrite(false);
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("notNull");
-        EnumTypeDatatypeAdapter datatype = (EnumTypeDatatypeAdapter)ipsProject.findValueDatatype(enumType
-                .getQualifiedName());
-        datatype.getEnumType().setExtensible(true);
 
         MessageList ml = attribute.validate(ipsProject);
 
         assertFalse(ml.isEmpty());
         assertTrue(ml.getText().contains(Messages.PolicyCmptTypeAttribute_msg_defaultValueExtensibleEnumType));
+    }
+
+    @Test
+    public void testGetAllowedValueSetTypes_allowEnumValueSetForExtensibleEnumDatatypes_dependingOnProductRelevance()
+            throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
+        enumType.setExtensible(true);
+
+        attribute.setProductRelevant(true);
+        attribute.setDatatype(enumType.getQualifiedName());
+
+        assertTrue(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM));
+
+        attribute.setProductRelevant(false);
+        assertFalse(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM));
     }
 }
