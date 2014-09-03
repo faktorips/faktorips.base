@@ -75,12 +75,12 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private IValueSet lastRestrictedValueSet;
 
     private UIToolkit toolkit;
-    private BindingContext uiController;
+    private BindingContext bindingContext;
 
     private boolean dataChangeable;
     private Label concreteValueSetLabel;
 
-    private ValueSetPmo pmo;
+    private SpecificationControlModel specificationControlModel;
 
     /**
      * Creates a new control which contains a combo box and depending on the value of the box a
@@ -89,15 +89,15 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * gridlayout is created. In the second row a stacklayout is used to swap the
      * EnumValueSetEditControl and RangeEditControl dynamically.
      */
-    public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, BindingContext uiController,
+    public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, BindingContext bindingContext,
             IValueSetOwner valueSetOwner, List<ValueSetType> allowedValueSetTypes, ValueSetControlEditMode editMode) {
         super(parent, SWT.NONE);
         this.valueSetOwner = valueSetOwner;
         this.toolkit = toolkit;
-        this.uiController = uiController;
+        this.bindingContext = bindingContext;
         this.editMode = editMode;
 
-        pmo = new ValueSetPmo(valueSetOwner);
+        specificationControlModel = new SpecificationControlModel(valueSetOwner);
         initControls(toolkit);
         setAllowedValueSetTypes(allowedValueSetTypes);
     }
@@ -197,7 +197,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private Control updateControlWithCurrentValueSetOrCreateNewIfNeccessary(Composite parent) {
         IValueSet valueSet = getValueSet();
-        if (valueSet.isAbstract() || valueSet.isUnrestricted()) {
+        if (isValueSetEditingNotRequired(valueSet)) {
             // no further editing possible, return empty composite
             return toolkit.createComposite(parent);
         }
@@ -214,11 +214,19 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
-        valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController,
+        valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, bindingContext,
                 valueSetOwner.getIpsProject());
         valueSetEditControl.getComposite().setLayoutData(
                 new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         return group;
+    }
+
+    private boolean isValueSetEditingNotRequired(IValueSet valueSet) {
+        return valueSet.isAbstract() || valueSet.isUnrestricted();
+    }
+
+    private boolean isAllowValueSetEditing(IValueSet valueSet) {
+        return !isValueSetEditingNotRequired(valueSet);
     }
 
     /**
@@ -319,7 +327,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
                         .getNullPresentation()));
         containsNullCheckbox = toolkit.createCheckbox(parent);
         containsNullField = new CheckboxField(containsNullCheckbox);
-        uiController.bindContent(containsNullField, pmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
+        bindingContext.bindContent(containsNullField, specificationControlModel,
+                SpecificationControlModel.PROPERTY_CONTAINS_NULL);
     }
 
     @Override
@@ -381,7 +390,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetArea.getParent().layout();
         valueSetArea.getParent().getParent().layout();
 
-        uiController.updateUI();
+        bindingContext.updateUI();
         updateConcreteValueSetCheckbox();
     }
 
@@ -405,6 +414,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             toolkit.setDataChangeable(valueSetEditControl.getComposite(), changeable);
         }
         updateConcreteValueSetCheckboxDataChangeableState();
+        toolkit.setDataChangeable(containsNullCheckbox, changeable);
     }
 
     private void updateConcreteValueSetCheckboxDataChangeableState() {
@@ -446,14 +456,23 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     /**
+     * It refreshes the valueSetEditControl by setting the current valueSet.
+     */
+    public void refreshValueSetControl() {
+        if (isAllowValueSetEditing(getValueSet())) {
+            valueSetEditControl.setValueSet(getValueSet(), getValueDatatype());
+        }
+    }
+
+    /**
      * An implementation of {@link IpsObjectPartPmo}. It is used for binding the state of a checkbox
      * according to the selected {@link IValueSet}.
      */
-    public static class ValueSetPmo extends IpsObjectPartPmo {
+    public class SpecificationControlModel extends IpsObjectPartPmo {
 
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
 
-        public ValueSetPmo(IValueSetOwner valueSetOwner) {
+        public SpecificationControlModel(IValueSetOwner valueSetOwner) {
             super(valueSetOwner);
         }
 
@@ -463,14 +482,19 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public void setContainsNull(boolean containsNull) {
             getValueSet().setContainsNull(containsNull);
+            /*
+             * mixing the UI and the SpecificationControlModel is done because the
+             * valueSetEditControl needs to be refreshed if the null value is added or removed from
+             * the valueSet
+             */
+            ValueSetSpecificationControl.this.refreshValueSetControl();
         }
 
         private IValueSet getValueSet() {
-            return getIpsObjectPartContainer().getValueSet();
+            return getValueSetOwner().getValueSet();
         }
 
-        @Override
-        public IValueSetOwner getIpsObjectPartContainer() {
+        private IValueSetOwner getValueSetOwner() {
             return (IValueSetOwner)super.getIpsObjectPartContainer();
         }
     }
