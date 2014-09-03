@@ -355,6 +355,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
         policyCmptTypeAttribute.setAttributeType(AttributeType.CHANGEABLE);
         policyCmptTypeAttribute.setProductRelevant(true);
         policyCmptTypeAttribute.setDefaultValue("0");
+        policyCmptTypeAttribute.getValueSet().setContainsNull(false);
         return policyCmptTypeAttribute;
     }
 

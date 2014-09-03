@@ -137,7 +137,6 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-        assertFalse(allValues.isContainsNull());
+        assertTrue(allValues.isContainsNull());
     }
-
 }

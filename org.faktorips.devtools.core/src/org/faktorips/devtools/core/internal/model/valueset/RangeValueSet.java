@@ -305,7 +305,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) {
+    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ObjectProperty parentObjectProperty = new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET);
         ObjectProperty lowerBoundProperty = new ObjectProperty(this, PROPERTY_LOWERBOUND);
         ObjectProperty upperBoundProperty = new ObjectProperty(this, PROPERTY_UPPERBOUND);
