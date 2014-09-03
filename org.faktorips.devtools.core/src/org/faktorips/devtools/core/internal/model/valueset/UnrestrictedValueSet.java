@@ -118,21 +118,21 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG_UNRESTRICTED);
-        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
+        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(isContainsNull()));
         element.appendChild(tagElement);
     }
 
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
         UnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(parent, id);
-        unrestrictedValueSet.containsNull = containsNull;
+        unrestrictedValueSet.containsNull = isContainsNull();
         return unrestrictedValueSet;
     }
 
     @Override
     public void copyPropertiesFrom(IValueSet target) {
         UnrestrictedValueSet set = (UnrestrictedValueSet)target;
-        containsNull = set.containsNull;
+        containsNull = set.isContainsNull();
         objectHasChanged();
     }
 
@@ -143,7 +143,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        boolean oldContainsNull = this.containsNull;
+        boolean oldContainsNull = this.isContainsNull();
         this.containsNull = containsNull;
         valueChanged(oldContainsNull, containsNull, PROPERTY_CONTAINS_NULL);
     }

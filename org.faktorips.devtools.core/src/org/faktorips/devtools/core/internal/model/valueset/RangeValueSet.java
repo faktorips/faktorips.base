@@ -317,7 +317,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                     lowerBoundProperty, upperBoundProperty, stepProperty));
             return;
         }
-        datatype = checkDatatypePrimitiv(list, datatype);
+        datatype = getDatatypeOrWrapperForPrimitivDatatype(datatype);
 
         validateParsable(datatype, getLowerBound(), list, this, PROPERTY_LOWERBOUND);
         validateParsable(datatype, getUpperBound(), list, this, PROPERTY_UPPERBOUND);
@@ -365,12 +365,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return true;
     }
 
-    private ValueDatatype checkDatatypePrimitiv(MessageList list, ValueDatatype datatype) {
+    private ValueDatatype getDatatypeOrWrapperForPrimitivDatatype(ValueDatatype datatype) {
         if (datatype.isPrimitive()) {
-            if (isContainsNull()) {
-                String text = Messages.RangeValueSet_msgNullNotSupported;
-                list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
-            }
             // even if the basic datatype is a primitive, null is allowed for upper, lower bound and
             // step.
             return datatype.getWrapperType();
