@@ -67,7 +67,10 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     @Override
     public int hashCode() {
-        return 0;
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (containsNull ? 1231 : 1237);
+        return result;
     }
 
     @Override

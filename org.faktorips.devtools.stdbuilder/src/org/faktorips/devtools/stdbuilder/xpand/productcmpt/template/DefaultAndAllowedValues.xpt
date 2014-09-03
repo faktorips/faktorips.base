@@ -87,8 +87,7 @@
             	«IF ipsEnum-»
        	            «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "true")»;
             	«ELSE-»
-            		boolean containsNull = «ValueToXmlHelper()».«getUnrestrictedValueSetContainsNull("configElement", XML_TAG_VALUE_SET())»;
-	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»(containsNull);
+	            	«fieldNameValueSet» = «ValueToXmlHelper()».«getUnrestrictedValueSet("configElement", XML_TAG_VALUE_SET())»;
             	«ENDIF-»
             «ENDIF-»
             «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)-»

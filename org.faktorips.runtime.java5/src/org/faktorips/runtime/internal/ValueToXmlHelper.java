@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -260,7 +261,7 @@ public class ValueToXmlHelper {
         NodeList valueElements = enumEl.getElementsByTagName(XML_TAG_VALUE);
 
         String[] values = new String[valueElements.getLength()];
-        boolean containsNull = Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
+        boolean containsNull = false;
         for (int i = 0; i < valueElements.getLength(); i++) {
             Element valueEl = (Element)valueElements.item(i);
             values[i] = getValueFromElement(valueEl, XML_TAG_DATA);
@@ -271,13 +272,18 @@ public class ValueToXmlHelper {
         return new EnumValues(values, containsNull);
     }
 
-    public static boolean getUnrestrictedValueSetContainsNull(Element el, String tagName) {
+    public static <T> UnrestrictedValueSet<T> getUnrestrictedValueSet(Element el, String tagName) {
         Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
-        Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ALL_VALUES);
-        if (valueSetEl == null || enumEl == null) {
-            return true;
+        if (valueSetEl != null) {
+            Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ALL_VALUES);
+            if (enumEl != null) {
+                if (enumEl.hasAttribute(XML_ATTRIBUTE_CONTAINS_NULL)) {
+                    boolean containsNull = Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL))
+                            .booleanValue();
+                    return new UnrestrictedValueSet<T>(containsNull);
+                }
+            }
         }
-
-        return Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL)).booleanValue();
+        return new UnrestrictedValueSet<T>(true);
     }
 }

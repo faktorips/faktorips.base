@@ -169,8 +169,8 @@ addValueToElement(String valueParam, String elementParam, String tagNameParam) :
 addInternationalStringToElement(String valueParam, String elementParam, String tagNameParam) :
 	"addInternationalStringToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
 	
-getUnrestrictedValueSetContainsNull(String paramConfigElement, String paramValueSet) :
-	"getUnrestrictedValueSetContainsNull("+ paramConfigElement + ", " + paramValueSet + ")";
+getUnrestrictedValueSet(String paramConfigElement, String paramValueSet) :
+	"getUnrestrictedValueSet("+ paramConfigElement + ", " + paramValueSet + ")";
 	
 // ---------------------------------
 // Methods in MultiValueXmlHelper

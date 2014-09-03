@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -105,4 +106,17 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertTrue(enumValues.containsNull());
     }
 
+    @Test
+    public void testGetUnrestrictedValueSet_containsNull() {
+        Document doc = getTestDocument();
+        NodeList configElements = doc.getDocumentElement().getElementsByTagName("ConfigElement");
+
+        Element node = (Element)configElements.item(5);
+        UnrestrictedValueSet<String> valueSet = ValueToXmlHelper.getUnrestrictedValueSet(node, "ValueSet");
+        assertTrue(valueSet.containsNull());
+
+        node = (Element)configElements.item(6);
+        valueSet = ValueToXmlHelper.getUnrestrictedValueSet(node, "ValueSet");
+        assertFalse(valueSet.containsNull());
+    }
 }

@@ -36,10 +36,11 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
-     * parent therefore has to implement IValueDatatypeProvider.
+     * parent therefore has to implement IValueDatatypeProvider. The value set contains
+     * <code>null</code> as default.
      * 
      * @param parent The parent this valueset belongs to.
-     * @param partId The id this part is knwon by by the parent.
+     * @param partId The id this part is known by by the parent.
      * 
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
@@ -48,6 +49,18 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
+    /**
+     * Creates a new value set representing all values of the datatype provided by the parent. The
+     * parent therefore has to implement IValueDatatypeProvider.
+     * 
+     * @param parent The parent this valueset belongs to.
+     * @param partId The id this part is known by by the parent.
+     * @param containsNull This indicates whether this value set contains null.
+     * 
+     * @throws IllegalArgumentException if the parent does not implement the interface
+     *             <code>IValueDatatypeProvider</code>.
+     * 
+     */
     public UnrestrictedValueSet(IValueSetOwner parent, String partId, boolean containsNull) {
         super(ValueSetType.UNRESTRICTED, parent, partId);
         this.containsNull = containsNull;
@@ -94,7 +107,9 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
-        containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
+        if (el.hasAttribute(PROPERTY_CONTAINS_NULL)) {
+            containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
+        }
         // Nothing more to do...
     }
 
