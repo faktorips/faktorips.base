@@ -86,7 +86,7 @@ public class DeepCopyPreview {
                 errorElements.put(
                         element,
                         NLS.bind(Messages.SourcePage_msgInvalidPattern, getPresentationModel().getSearchInput())
-                                + e.getLocalizedMessage());
+                        + e.getLocalizedMessage());
                 progressMonitor.done();
                 return;
             } catch (IllegalArgumentException e) {
@@ -268,49 +268,59 @@ public class DeepCopyPreview {
         if (alreadyMappedName != null) {
             return alreadyMappedName;
         }
-        return getNewNameInternal(targetPackage, correspondingIpsObject, 0);
+        return getNewNameInternal(targetPackage, correspondingIpsObject);
     }
 
-    private String getNewNameInternal(IIpsPackageFragment targetPackage,
-            IIpsObject correspondingIpsObject,
-            int uniqueCopyOfCounter) {
+    private String getNewNameInternal(IIpsPackageFragment targetPackage, IIpsObject correspondingIpsObject) {
+        IpsObjectType ipsObjectType = correspondingIpsObject.getIpsObjectType();
         String oldName = correspondingIpsObject.getName();
-        String newName = oldName;
+        String newName = getNameAfterSearchReplace(oldName);
+        if (IpsObjectType.TABLE_CONTENTS.equals(ipsObjectType) && targetPackage != null) {
+            newName = getUniqueCopyOfName(targetPackage, ipsObjectType, newName, 0);
+        }
+        return newName;
+    }
+
+    private String getNameAfterSearchReplace(String newName) {
         IProductCmptNamingStrategy namingStrategy = presentationModel.getIpsProject().getProductCmptNamingStrategy();
-        String kindId = null;
+        String kindId = getKindId(newName, namingStrategy);
+        boolean validKindId = kindId != null;
+        String nameForReplace;
+        if (validKindId) {
+            nameForReplace = kindId;
+        } else {
+            nameForReplace = newName;
+        }
+        String replacedString = searchReplace(nameForReplace);
+        if (validKindId) {
+            return namingStrategy.getProductCmptName(replacedString, presentationModel.getVersionId());
+        } else {
+            return replacedString;
+        }
+    }
+
+    private String getKindId(String newName, IProductCmptNamingStrategy namingStrategy) {
         if (namingStrategy != null && namingStrategy.supportsVersionId()) {
             MessageList list = namingStrategy.validate(newName);
             if (!list.containsErrorMsg()) {
-                kindId = namingStrategy.getKindId(newName);
-            }
-            if (kindId != null) {
-                kindId = searchReplace(kindId);
-                newName = namingStrategy.getProductCmptName(kindId, presentationModel.getVersionId());
+                return namingStrategy.getKindId(newName);
             }
         }
-        if (kindId == null && uniqueCopyOfCounter > 0) {
-            // could't determine kind id, thus add copy of in front of the name
-            // to get an unique new name
-            newName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter - 1, newName);
-        }
+        return null;
+    }
 
-        if (namingStrategy == null && oldName.equals(newName)) {
-            // programming error, should be assert before this page will be displayed
-            throw new RuntimeException(
-                    "No naming strategy exists, therefore the new product components couldn't be copied with the same name in the same directory!"); //$NON-NLS-1$
+    private String getUniqueCopyOfName(IIpsPackageFragment targetPackage,
+            IpsObjectType ipsObjectType,
+            String newName,
+            int uniqueCopyOfCounter) {
+        IIpsSrcFile ipsSrcFile = targetPackage.getIpsSrcFile(ipsObjectType.getFileName(newName));
+        if (ipsSrcFile.exists()) {
+            String copyOfName = org.faktorips.devtools.core.util.StringUtils.computeCopyOfName(uniqueCopyOfCounter,
+                    newName);
+            return getUniqueCopyOfName(targetPackage, ipsObjectType, copyOfName, uniqueCopyOfCounter + 1);
+        } else {
+            return newName;
         }
-
-        // if no kind is was found check and avoid duplicate names
-        // because a copyOf was added in front of the new name
-        if (kindId == null && targetPackage != null) {
-            IIpsSrcFile ipsSrcFile = targetPackage.getIpsSrcFile(correspondingIpsObject.getIpsObjectType().getFileName(
-                    newName));
-            if (ipsSrcFile.exists()) {
-                return getNewNameInternal(targetPackage, correspondingIpsObject, uniqueCopyOfCounter + 1);
-            }
-        }
-
-        return newName;
     }
 
     private String searchReplace(String newName) {

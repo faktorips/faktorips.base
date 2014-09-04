@@ -49,7 +49,9 @@ public class TableContentsSaxHandler extends DefaultHandler {
     private static final String EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL = TableRows.getXmlAttributeIsnull();
 
     /** the table which will be filled */
-    private TableContents tableContents;
+    private final TableContents tableContents;
+
+    private final boolean readRowsContent;
 
     /** contains all column values */
     private List<String> columns = new ArrayList<String>(20);
@@ -79,23 +81,21 @@ public class TableContentsSaxHandler extends DefaultHandler {
 
     private TableRows currentTableRows;
 
-    private boolean readWholeContent;
-
     private String currentId;
 
-    public TableContentsSaxHandler(TableContents tableContents, boolean readWholeContent) {
+    public TableContentsSaxHandler(TableContents tableContents, boolean readRowsContent) {
         this.tableContents = tableContents;
-        this.readWholeContent = readWholeContent;
+        this.readRowsContent = readRowsContent;
     }
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         updateCurrentId(attributes);
-        if (TABLECONTENTS.equals(qName)) {
+        if (TABLECONTENTS.equals(qName) && !readRowsContent) {
             tableContents.setTableStructureInternal(attributes.getValue(ATTRIBUTE_TABLESTRUCTURE));
             tableContents.setNumOfColumnsInternal(Integer.parseInt(attributes.getValue(ATTRIBUTE_NUMOFCOLUMNS)));
-        } else if (ITableRows.TAG_NAME.equals(qName) || IIpsObjectGeneration.TAG_NAME.equals(qName)) {
-            if (readWholeContent) {
+        } else if (isTableRowsTag(qName)) {
+            if (readRowsContent) {
                 currentTableRows = (TableRows)tableContents.createNewTableRowsInternal(currentId);
                 tableContents.setTableRowsInternal(currentTableRows);
             } else {
@@ -116,6 +116,10 @@ public class TableContentsSaxHandler extends DefaultHandler {
             nullValue = Boolean.valueOf(attributes.getValue(EXTENSIONPROPERTIES_ATTRIBUTE_ISNULL)).booleanValue();
             extensionPropertyId = attributes.getValue(EXTENSIONPROPERTIES_ID);
         }
+    }
+
+    private boolean isTableRowsTag(String qName) {
+        return ITableRows.TAG_NAME.equals(qName) || IIpsObjectGeneration.TAG_NAME.equals(qName);
     }
 
     private void updateCurrentId(Attributes attributes) {

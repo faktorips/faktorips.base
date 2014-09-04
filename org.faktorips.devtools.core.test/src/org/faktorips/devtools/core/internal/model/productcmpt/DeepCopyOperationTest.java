@@ -31,6 +31,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,12 +62,16 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureTblUsageReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,6 +87,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
+    private static final String TABLE_STRUCTURE = "TableStructure";
+    private static final String TABLE_CONTENT = "TableContent";
+
     private IIpsProject ipsProject;
     private IProductCmpt product;
 
@@ -96,6 +104,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private IProductCmpt comfortCollisionCoverageA;
     private IProductCmpt comfortCollisionCoverageB;
     private IProductCmpt standardTplCoverage;
+    private ITableContents tableContent;
     private IPolicyCmptTypeAttribute salesNameAttribute;
 
     @Mock
@@ -133,7 +142,13 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
 
         IProductCmptTreeStructure structure = productCmpt.getStructure(productCmpt.getFirstGeneration().getValidFrom(),
                 ipsProject);
-        Set<IProductCmptStructureReference> toCopy = structure.toSet(true);
+        Set<IProductCmptStructureReference> toCopy = structure.toSet(false);
+        for (Iterator<IProductCmptStructureReference> iterator = toCopy.iterator(); iterator.hasNext();) {
+            IProductCmptStructureReference productCmptStructureReference = iterator.next();
+            if (!(productCmptStructureReference instanceof IProductCmptReference || productCmptStructureReference instanceof IProductCmptStructureTblUsageReference)) {
+                iterator.remove();
+            }
+        }
 
         Hashtable<IProductCmptStructureReference, IIpsSrcFile> handles = new Hashtable<IProductCmptStructureReference, IIpsSrcFile>();
 
@@ -152,6 +167,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         dco.setIpsPackageFragmentRoot(productCmpt.getIpsPackageFragment().getRoot());
         dco.setSourceIpsPackageFragment(productCmpt.getIpsPackageFragment());
         dco.setTargetIpsPackageFragment(productCmpt.getIpsPackageFragment());
+        dco.setCreateEmptyTableContents(true);
         dco.run(null);
 
         for (IProductCmptStructureReference element : toCopy) {
@@ -411,9 +427,9 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
             configElement = generation.getConfigElement("salesName");
 
             verify(testDeepCopyOperationFixup, times(5)).fix(any(IProductCmpt.class), any(IProductCmpt.class)); // comfortMotorProduct
-                                                                                                                // +
-                                                                                                                // 4
-                                                                                                                // Links
+            // +
+            // 4
+            // Links
         } finally {
             singletonMockHelper.reset();
         }
@@ -422,6 +438,7 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
     private void createTestContent() throws CoreException {
         createModel();
         createProducts();
+        createTables();
     }
 
     private void createModel() throws CoreException {
@@ -486,6 +503,11 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
                 tplCoverage.findProductCmptType(ipsProject), "TplCoverageTypeStatic", "TplCoverageTypeStatics", 0, 1,
                 false);
 
+        ITableStructureUsage newTableStructureUsage = tplCoverage.findProductCmptType(ipsProject)
+                .newTableStructureUsage();
+        newTableStructureUsage.setRoleName(TABLE_STRUCTURE);
+        newTableStructureUsage.addTableStructure(TABLE_STRUCTURE);
+
         salesNameAttribute = motorContract.newPolicyCmptTypeAttribute("salesName");
         salesNameAttribute.setProductRelevant(true);
     }
@@ -529,6 +551,15 @@ public class DeepCopyOperationTest extends AbstractIpsPluginTest {
         link.setTarget("products.StandardTplCoverage");
 
         standardVehicle.setExtPropertyValue("StringExtPropForProdCmpts", "standardVehicleExtPropValue");
+    }
+
+    private void createTables() throws CoreException {
+        tableContent = newTableContents(ipsProject, "TableContent");
+        ITableContentUsage newTableContentUsage = standardTplCoverage.getLatestProductCmptGeneration()
+                .newTableContentUsage();
+        newTableContentUsage.setStructureUsage(TABLE_STRUCTURE);
+        newTableContentUsage.setTableContentName(TABLE_CONTENT);
+        tableContent.getIpsSrcFile().save(true, progressMonitor);
     }
 
     private void createProductCmptTypeAssociation(IProductCmptType source,
