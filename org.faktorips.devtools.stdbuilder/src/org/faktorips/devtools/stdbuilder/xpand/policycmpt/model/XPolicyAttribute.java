@@ -330,7 +330,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     private boolean isNonProductRelevantEnumValueSet() {
-        return !isProductRelevant() && (isValueSetEnum() && !isDatatypeExtensibleEnum());
+        return !isProductRelevant() && isValueSetEnum() && !isDatatypeExtensibleEnum();
     }
 
     public boolean isValueSetEnum() {

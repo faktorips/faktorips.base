@@ -96,9 +96,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertEquals(false, generatedMethod);
-
+        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
         verify(xPolicyAttribute, never()).isValueSetEnum();
     }
 
@@ -112,8 +110,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertTrue(generatedMethod);
+        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
 
     @Test
@@ -123,8 +120,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isChangeable();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertFalse(generatedMethod);
+        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
 
     @Test
@@ -137,8 +133,19 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertFalse(generatedMethod);
+        assertFalse(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesForRangeAndNonProductRelevant() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
+        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(false).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(true).when(xPolicyAttribute).isValueSetRange();
+
+        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
 
     @Test
@@ -151,8 +158,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertEquals(true, generatedMethod);
+        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
 
     @Test
@@ -165,8 +171,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertEquals(true, generatedMethod);
+        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
         verify(xPolicyAttribute, never()).isDatatypeExtensibleEnum();
     }
 
@@ -180,8 +185,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isValueSetEnum();
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertEquals(true, generatedMethod);
+        assertTrue(xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue());
     }
 
     @Test
@@ -462,8 +466,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
         doReturn(false).when(xPolicyAttribute).isValueSetRange();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
-        assertFalse(generatedMethod);
+        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
 
     @Test
@@ -475,8 +478,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
         doReturn(false).when(xPolicyAttribute).isValueSetRange();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
-        assertFalse(generatedMethod);
+        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
 
     @Test
@@ -488,8 +490,7 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
         doReturn(false).when(xPolicyAttribute).isValueSetRange();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
-        assertTrue(generatedMethod);
+        assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
 
     @Test
@@ -501,8 +502,7 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
         doReturn(false).when(xPolicyAttribute).isValueSetRange();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
-        assertFalse(generatedMethod);
+        assertFalse(xPolicyAttribute.isGenerateConstantForValueSet());
     }
 
     @Test
@@ -512,7 +512,6 @@ public class XPolicyAttributeTest {
         doReturn(false).when(xPolicyAttribute).isProductRelevant();
         doReturn(true).when(xPolicyAttribute).isValueSetRange();
 
-        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
-        assertTrue(generatedMethod);
+        assertTrue(xPolicyAttribute.isGenerateConstantForValueSet());
     }
 }
