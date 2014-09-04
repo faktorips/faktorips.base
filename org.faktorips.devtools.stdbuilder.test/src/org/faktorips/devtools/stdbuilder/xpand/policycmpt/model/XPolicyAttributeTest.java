@@ -113,7 +113,32 @@ public class XPolicyAttributeTest {
         doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
 
         boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
-        assertEquals(false, generatedMethod);
+        assertTrue(generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesForUnrestrictedAndNonProductRelevant() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(true).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
+        assertFalse(generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateAllowedValuesForEnumAndNonProductRelevant() throws Exception {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isValueSetUnrestricted();
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isChangeable();
+
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue();
+        assertFalse(generatedMethod);
     }
 
     @Test
@@ -426,5 +451,68 @@ public class XPolicyAttributeTest {
 
         String defaultValueCode = xPolicyAttribute.getDefaultValueCode();
         assertEquals("null", defaultValueCode);
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSetProductRelevantEnumNonExtensible() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
+        doReturn(false).when(xPolicyAttribute).isValueSetRange();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
+        assertFalse(generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSetProductRelevantEnumExtensible() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
+        doReturn(true).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
+        doReturn(false).when(xPolicyAttribute).isValueSetRange();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
+        assertFalse(generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSetNonProductRelevantNonExtensibleEnumSet() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(false).when(xPolicyAttribute).isDatatypeExtensibleEnum();
+        doReturn(false).when(xPolicyAttribute).isValueSetRange();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
+        assertTrue(generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSetNonProductRelevantExtensibleEnumSet() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isValueSetEnum();
+        doReturn(true).when(xPolicyAttribute).isDatatypeExtensibleEnum();
+        doReturn(false).when(xPolicyAttribute).isValueSetRange();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
+        assertFalse(generatedMethod);
+    }
+
+    @Test
+    public void testIsGenerateConstantForValueSetRange() {
+        xPolicyAttribute = spy(xPolicyAttribute);
+        doReturn(false).when(xPolicyAttribute).isAbstractValueSet();
+        doReturn(false).when(xPolicyAttribute).isProductRelevant();
+        doReturn(true).when(xPolicyAttribute).isValueSetRange();
+
+        boolean generatedMethod = xPolicyAttribute.isGenerateConstantForValueSet();
+        assertTrue(generatedMethod);
     }
 }

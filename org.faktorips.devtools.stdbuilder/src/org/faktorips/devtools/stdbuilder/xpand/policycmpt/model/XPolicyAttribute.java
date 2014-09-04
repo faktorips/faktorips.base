@@ -299,11 +299,10 @@ public class XPolicyAttribute extends XAttribute {
 
     public boolean isGenerateGetAllowedValuesForAndGetDefaultValue() {
         if (isChangeable()) {
-            if (isValueSetUnrestricted() && !isProductRelevant()) {
-                return false;
-            }
-            if (isValueSetEnum() && isDatatypeExtensibleEnum()) {
-                return false;
+            if (!isProductRelevant()) {
+                if (isValueSetUnrestricted() || (isValueSetEnum() && isDatatypeExtensibleEnum())) {
+                    return false;
+                }
             }
             return true;
         } else {
@@ -327,7 +326,11 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     public boolean isGenerateConstantForValueSet() {
-        return !isAbstractValueSet() && (isValueSetRange() || isValueSetEnum());
+        return !isAbstractValueSet() && (isValueSetRange() || isNonProductRelevantEnumValueSet());
+    }
+
+    private boolean isNonProductRelevantEnumValueSet() {
+        return !isProductRelevant() && (isValueSetEnum() && !isDatatypeExtensibleEnum());
     }
 
     public boolean isValueSetEnum() {
