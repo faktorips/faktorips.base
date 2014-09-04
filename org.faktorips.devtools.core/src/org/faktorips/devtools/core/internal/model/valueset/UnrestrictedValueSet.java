@@ -138,7 +138,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public boolean isContainsNull() {
-        return containsNull;
+        return containsNull && isContainingNullAllowed();
     }
 
     @Override

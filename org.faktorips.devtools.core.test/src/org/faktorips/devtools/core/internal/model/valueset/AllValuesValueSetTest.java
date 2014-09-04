@@ -117,7 +117,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContainsNull() throws Exception {
+    public void testIsContainsNull() throws Exception {
         UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
 
         // test with non-primitive datatype
@@ -137,6 +137,6 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-        assertTrue(allValues.isContainsNull());
+        assertFalse(allValues.isContainsNull());
     }
 }

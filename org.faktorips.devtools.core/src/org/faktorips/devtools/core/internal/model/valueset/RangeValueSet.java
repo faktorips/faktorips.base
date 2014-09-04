@@ -49,7 +49,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Flag that indicates whether this range contains <code>null</code> or not.
      */
-    private boolean containsNull;
+    private boolean containsNull = false;
 
     /**
      * Creates an unbounded range with no step.
@@ -459,7 +459,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG_RANGE);
-        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
+        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(isContainsNull()));
         ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
         ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
         ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalize(PROPERTY_STEP));
@@ -469,11 +469,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
         RangeValueSet retValue = new RangeValueSet(parent, id);
-
         retValue.lowerBound = lowerBound;
         retValue.upperBound = upperBound;
         retValue.step = step;
-        retValue.containsNull = containsNull;
+        retValue.containsNull = isContainsNull();
 
         return retValue;
     }
@@ -484,19 +483,19 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         lowerBound = set.lowerBound;
         upperBound = set.upperBound;
         step = set.step;
-        containsNull = set.containsNull;
+        containsNull = set.isContainsNull();
         objectHasChanged();
     }
 
     @Override
     public boolean isContainsNull() {
-        return containsNull;
+        return containsNull && isContainingNullAllowed();
     }
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        boolean old = this.containsNull;
+        boolean old = this.isContainsNull();
         this.containsNull = containsNull;
-        valueChanged(old, containsNull);
+        valueChanged(old, containsNull, PROPERTY_CONTAINS_NULL);
     }
 }

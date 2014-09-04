@@ -91,15 +91,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
-        ValueDatatype datatype = getValueDatatype();
-        if (datatype != null && datatype.isPrimitive() && isContainsNull()) {
-            String text = Messages.ValueSet_msgNullNotSupported;
-            list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
-        }
-    }
-
-    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         String abstractString = element.getAttribute(PROPERTY_ABSTRACT);
@@ -279,6 +270,14 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
 
     protected boolean isNullValue(String value, ValueDatatype datatype) {
         return value == null || datatype.isNull(value);
+    }
+
+    /**
+     * Returns <code>true</code> if the {@link ValueDatatype} is null or not a primitive datatype.
+     */
+    protected boolean isContainingNullAllowed() {
+        ValueDatatype dataType = getValueDatatype();
+        return dataType == null || !dataType.isPrimitive();
     }
 
 }

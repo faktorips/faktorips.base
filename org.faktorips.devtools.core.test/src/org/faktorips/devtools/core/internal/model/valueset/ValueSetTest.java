@@ -136,4 +136,12 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         assertFalse(enum2.isDetailedSpecificationOf(enum1));
         assertTrue(enum1.isDetailedSpecificationOf(enum2));
     }
+
+    @Test
+    public void testIsContainingNullAllowed() {
+        UnrestrictedValueSet unrestricted = new UnrestrictedValueSet(owner1, "1");
+        unrestricted.setContainsNull(true);
+        owner1.setDatatype(Datatype.PRIMITIVE_INT.getName());
+        assertFalse(unrestricted.isContainingNullAllowed());
+    }
 }

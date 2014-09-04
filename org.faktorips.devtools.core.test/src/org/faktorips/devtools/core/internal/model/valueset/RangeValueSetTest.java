@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -504,10 +503,14 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
         list = range.validate(ipsProject);
         assertNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+    }
 
-        range.setContainsNull(true);
-        list = range.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+    @Test
+    public void testIsContainsNullPrimitive() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        assertFalse(range.isContainsNull());
     }
 
     @Test

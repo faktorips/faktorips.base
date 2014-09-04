@@ -315,6 +315,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         super.validateThis(list, ipsProject);
         ValueDatatype datatype = getValueDatatype();
 
+        if (datatype != null && datatype.isPrimitive() && isContainsNull()) {
+            String text = Messages.ValueSet_msgNullNotSupported;
+            list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
+        }
+
         int numOfValues = values.size();
         for (int i = 0; i < numOfValues; i++) {
             validateValueWithoutDuplicateCheck(list, i, datatype);

@@ -10,8 +10,6 @@
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
@@ -26,9 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
-import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
-import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -144,14 +140,10 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateThis() throws Exception {
+    public void testIsContainsNullPrimitive() throws Exception {
         IUnrestrictedValueSet unrestricted = new UnrestrictedValueSet(ce, "1");
 
-        MessageList list = unrestricted.validate(ipsProject);
-        assertNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
-
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
-        list = unrestricted.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+        assertFalse(unrestricted.isContainsNull());
     }
 }
