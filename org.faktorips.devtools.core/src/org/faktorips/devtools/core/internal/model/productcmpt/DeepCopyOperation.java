@@ -30,7 +30,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SafeRunner;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -118,7 +117,8 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
+    public void run(IProgressMonitor progressMonitor) throws CoreException {
+        IProgressMonitor monitor = progressMonitor;
         if (monitor == null) {
             monitor = new NullProgressMonitor();
         }
@@ -298,9 +298,7 @@ public class DeepCopyOperation implements IWorkspaceRunnable {
                 // if table contents should be created empty or
                 // if the file could not be created from template then create an empty file
                 file = targetPackage.createIpsFile(templateObject.getIpsObjectType(), newName, false, monitor);
-                TimedIpsObject ipsObject = (TimedIpsObject)file.getIpsObject();
-                IIpsObjectGeneration generation = ipsObject.newGeneration();
-                generation.setValidFrom(newValidFrom);
+                TableContents ipsObject = (TableContents)file.getIpsObject();
                 setPropertiesFromTemplate(templateObject, ipsObject);
             }
         }

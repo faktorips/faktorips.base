@@ -15,15 +15,22 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategy;
+import org.faktorips.devtools.core.internal.model.productcmpt.DateBasedProductCmptNamingStrategyFactory;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptReference;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.AssociationType;
+import org.faktorips.devtools.core.util.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,4 +109,140 @@ public class DeepCopyPreviewTest extends AbstractIpsPluginTest {
         assertNotNull(errorElements);
         assertEquals(0, errorElements.size());
     }
+
+    @Test
+    public void testGetNewName_productCmpt() throws Exception {
+        setVersionAndStrategy();
+        bSuper = newProductCmpt(superType, "some.BSuper 2014-09");
+        deepCopy.getPresentationModel().setVersionId("2015-09");
+        deepCopy.getPresentationModel().setSearchInput("B");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+
+        String newName = deepCopy.getNewName(bSuper.getIpsPackageFragment(), bSuper);
+
+        assertEquals("XSuper 2015-09", newName);
+    }
+
+    @Test
+    public void testGetNewName_productCmpt_otherPackage() throws Exception {
+        setVersionAndStrategy();
+        bSuper = newProductCmpt(superType, "some.BSuper 2014-09");
+        deepCopy.getPresentationModel().setVersionId("2015-09");
+        deepCopy.getPresentationModel().setSearchInput("B");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+        IIpsPackageFragment ipsPackageFragment = bSuper.getIpsPackageFragment().createSubPackage("subPack", true, null);
+
+        String newName = deepCopy.getNewName(ipsPackageFragment, bSuper);
+
+        assertEquals("XSuper 2015-09", newName);
+    }
+
+    private void setVersionAndStrategy() throws CoreException {
+        IIpsProjectProperties properties = suPerIpsProject.getProperties();
+        DateBasedProductCmptNamingStrategy productCmptNamingStrategy = (DateBasedProductCmptNamingStrategy)new DateBasedProductCmptNamingStrategyFactory()
+                .newProductCmptNamingStrategy(suPerIpsProject);
+        productCmptNamingStrategy.setVersionIdSeparator(" ");
+        productCmptNamingStrategy.setDateFormatPattern("yyyy-MM");
+        properties.setProductCmptNamingStrategy(productCmptNamingStrategy);
+        suPerIpsProject.setProperties(properties);
+    }
+
+    @Test
+    public void testGetNewName_productCmpt_noVersion() throws Exception {
+        deepCopy.getPresentationModel().setSearchInput("B");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+
+        String newName = deepCopy.getNewName(bSuper.getIpsPackageFragment(), bSuper);
+
+        assertEquals("XSuper", newName);
+    }
+
+    @Test
+    public void testGetNewName_productCmpt_otherPackage_noVersion() throws Exception {
+        deepCopy.getPresentationModel().setSearchInput("B");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+        IIpsPackageFragment ipsPackageFragment = bSuper.getIpsPackageFragment().createSubPackage("subPack", true, null);
+
+        String newName = deepCopy.getNewName(ipsPackageFragment, bSuper);
+
+        assertEquals("XSuper", newName);
+    }
+
+    @Test
+    public void testGetNewName_table() throws Exception {
+        setVersionAndStrategy();
+        TableContents tableContents = newTableContents(subIpsProject, "some.AContent 2014-09");
+        deepCopy.getPresentationModel().setVersionId("2015-09");
+        deepCopy.getPresentationModel().setSearchInput("A");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+
+        String newName = deepCopy.getNewName(tableContents.getIpsPackageFragment(), tableContents);
+
+        assertEquals("XContent 2015-09", newName);
+    }
+
+    @Test
+    public void testGetNewName_table_sameVersion() throws Exception {
+        setVersionAndStrategy();
+        TableContents tableContents = newTableContents(subIpsProject, "some.AContent 2014-09");
+        deepCopy.getPresentationModel().setVersionId("2014-09");
+        deepCopy.getPresentationModel().setSearchInput("A");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+
+        String newName = deepCopy.getNewName(tableContents.getIpsPackageFragment(), tableContents);
+
+        assertEquals("XContent 2014-09", newName);
+    }
+
+    @Test
+    public void testGetNewName_table_sameVersion_noReplace() throws Exception {
+        setVersionAndStrategy();
+        TableContents tableContents = newTableContents(subIpsProject, "some.AContent 2014-09");
+        deepCopy.getPresentationModel().setVersionId("2014-09");
+        deepCopy.getPresentationModel().setSearchInput("A");
+        deepCopy.getPresentationModel().setReplaceInput("A");
+
+        String newName = deepCopy.getNewName(tableContents.getIpsPackageFragment(), tableContents);
+
+        assertEquals(StringUtils.computeCopyOfName(0, "AContent 2014-09"), newName);
+    }
+
+    @Test
+    public void testGetNewName_table_otherPacakge() throws Exception {
+        setVersionAndStrategy();
+        TableContents tableContents = newTableContents(subIpsProject, "some.AContent 2014-09");
+        deepCopy.getPresentationModel().setVersionId("2015-09");
+        deepCopy.getPresentationModel().setSearchInput("A");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+        IIpsPackageFragment ipsPackageFragment = tableContents.getIpsPackageFragment().createSubPackage("subPack",
+                true, null);
+
+        String newName = deepCopy.getNewName(ipsPackageFragment, tableContents);
+
+        assertEquals("XContent 2015-09", newName);
+    }
+
+    @Test
+    public void testGetNewName_table_noVersion() throws Exception {
+        TableContents tableContents = newTableContents(subIpsProject, "some.AContent");
+        deepCopy.getPresentationModel().setSearchInput("A");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+
+        String newName = deepCopy.getNewName(bSuper.getIpsPackageFragment(), tableContents);
+
+        assertEquals("XContent", newName);
+    }
+
+    @Test
+    public void testGetNewName_table_otherPackage_noVersion() throws Exception {
+        TableContents tableContents = newTableContents(subIpsProject, "some.AContent");
+        deepCopy.getPresentationModel().setSearchInput("A");
+        deepCopy.getPresentationModel().setReplaceInput("X");
+        IIpsPackageFragment ipsPackageFragment = bSuper.getIpsPackageFragment().createSubPackage("subPack", true, null);
+
+        String newName = deepCopy.getNewName(ipsPackageFragment, tableContents);
+
+        assertEquals("XContent", newName);
+    }
+
 }

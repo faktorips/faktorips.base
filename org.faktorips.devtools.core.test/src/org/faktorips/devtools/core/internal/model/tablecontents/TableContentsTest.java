@@ -425,6 +425,7 @@ public class TableContentsTest extends AbstractDependencyTest {
         when(tableContents.getIpsSrcFile()).thenReturn(ipsSrcFile);
         when(ipsSrcFile.getContentFromEnclosingResource()).thenReturn(
                 getClass().getResourceAsStream(getXmlResourceName()));
+        tableContents.setNumOfColumnsInternal(2);
 
         tableContents.setTableRowsInternal(null);
         ITableRows tableRows = tableContents.getTableRows();
