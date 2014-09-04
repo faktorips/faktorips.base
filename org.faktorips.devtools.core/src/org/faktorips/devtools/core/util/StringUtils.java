@@ -17,6 +17,8 @@ package org.faktorips.devtools.core.util;
  */
 public class StringUtils {
 
+    public static final String QUOTE = "\""; //$NON-NLS-1$
+
     /**
      * Wraps and returns the provide text according to the split length and tab size.
      * 
@@ -97,6 +99,28 @@ public class StringUtils {
 
     private StringUtils() {
         // Utility class not to be instantiated.
+    }
+
+    /**
+     * Returns the text in quotes (e.g. "anyText"). Does not add additional quotes if the given text
+     * already starts or ends with a quote (").
+     * 
+     * @param text the text to surround with quotes (").
+     */
+    public static String quote(String text) {
+        if (text != null) {
+            StringBuffer sb = new StringBuffer();
+            if (!text.startsWith(QUOTE)) {
+                sb.append(QUOTE);
+            }
+            sb.append(text);
+            if (!text.endsWith(QUOTE)) {
+                sb.append(QUOTE);
+            }
+            return sb.toString();
+        } else {
+            return QUOTE + text + QUOTE;
+        }
     }
 
 }

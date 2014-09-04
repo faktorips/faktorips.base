@@ -412,4 +412,24 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setProductRelevant(false);
         assertFalse(attribute.getAllowedValueSetTypes(ipsProject).contains(ValueSetType.ENUM));
     }
+
+    @Test
+    public void testValidateThis_illegalValueSets() throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "ExtensibleEnum");
+        enumType.setExtensible(true);
+        attribute.setValueSetType(ValueSetType.ENUM);
+        attribute.setDatatype(enumType.getQualifiedName());
+        attribute.setName("enumAttr");
+        pcType.setConfigurableByProductCmptType(true);
+
+        attribute.setProductRelevant(true);
+        MessageList messageList = attribute.validate(ipsProject);
+        assertEquals(0, messageList.size());
+
+        attribute.setProductRelevant(false);
+        messageList = attribute.validate(ipsProject);
+        assertEquals(1, messageList.size());
+        assertEquals(PolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE, messageList.getMessage(0).getCode());
+        assertEquals("The value set type \"Enumeration\" is not allowed.", messageList.getMessage(0).getText());
+    }
 }

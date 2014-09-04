@@ -54,4 +54,12 @@ public class StringUtilsTest {
                 Messages.StringUtils_copyOfNamePrefix + "(2)_" + oldName)); //$NON-NLS-1$
     }
 
+    @Test
+    public void testQuote() {
+        assertEquals("\"xyz\"", StringUtils.quote("xyz"));
+        assertEquals("\"\"", StringUtils.quote(""));
+        assertEquals("\"null\"", StringUtils.quote(null));
+        assertEquals("\"xyz\"", StringUtils.quote("\"xyz\""));
+    }
+
 }
