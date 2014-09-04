@@ -329,6 +329,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         containsNullField = new CheckboxField(containsNullCheckbox);
         bindingContext.bindContent(containsNullField, specificationControlModel,
                 SpecificationControlModel.PROPERTY_CONTAINS_NULL);
+        bindingContext.bindEnabled(containsNullCheckbox, specificationControlModel,
+                SpecificationControlModel.PROPERTY_CONTAINING_NULL_ALLOWED);
     }
 
     @Override
@@ -470,10 +472,15 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      */
     public class SpecificationControlModel extends IpsObjectPartPmo {
 
+        public static final String PROPERTY_CONTAINING_NULL_ALLOWED = "containingNullAllowed";
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
 
         public SpecificationControlModel(IValueSetOwner valueSetOwner) {
             super(valueSetOwner);
+        }
+
+        public boolean isContainingNullAllowed() {
+            return !getValueDatatype().isPrimitive() || getValueSetType().isEnum();
         }
 
         public boolean isContainsNull() {
