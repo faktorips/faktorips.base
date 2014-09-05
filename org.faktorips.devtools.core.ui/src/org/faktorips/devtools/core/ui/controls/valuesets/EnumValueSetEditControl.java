@@ -31,6 +31,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -58,6 +60,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     private IEnumValueSet valueSet;
     private final ValueDatatype valueDatatype;
     private final IIpsProject ipsProject;
+    private ContentsChangeListener changeListener;
 
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
@@ -67,6 +70,16 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         super(parent, SWT.NONE);
         this.valueDatatype = valueDatatype;
         this.ipsProject = ipsProject;
+        changeListener = new ContentsChangeListener() {
+
+            @Override
+            public void contentsChanged(ContentChangeEvent event) {
+                if (event.getPart() != null && event.getPart().equals(getValueSet())) {
+                    refresh();
+                }
+            }
+        };
+        ipsProject.getIpsModel().addChangeListener(changeListener);
     }
 
     @Override
@@ -201,6 +214,17 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         return valueSet.validateValue(wrapper.index, valueSet.getIpsProject());
     }
 
+    @Override
+    public Composite getComposite() {
+        return this;
+    }
+
+    @Override
+    public void dispose() {
+        ipsProject.getIpsModel().removeChangeListener(changeListener);
+        super.dispose();
+    }
+
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
         @Override
         public Image getColumnImage(Object element, int columnIndex) {
@@ -325,11 +349,6 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             return validate(element);
         }
 
-    }
-
-    @Override
-    public Composite getComposite() {
-        return this;
     }
 
 }

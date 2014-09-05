@@ -80,7 +80,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private boolean dataChangeable;
     private Label concreteValueSetLabel;
 
-    private SpecificationControlModel specificationControlModel;
+    private final ValueSetPmo valueSetPmo;
 
     /**
      * Creates a new control which contains a combo box and depending on the value of the box a
@@ -97,7 +97,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         this.bindingContext = bindingContext;
         this.editMode = editMode;
 
-        specificationControlModel = new SpecificationControlModel(valueSetOwner);
+        valueSetPmo = new ValueSetPmo(valueSetOwner);
         initControls(toolkit);
         setAllowedValueSetTypes(allowedValueSetTypes);
     }
@@ -144,18 +144,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         return valueSetOwner.getValueSet().getValueSetType();
     }
 
-    public ValueDatatype getValueDatatype() {
-        try {
-            ValueDatatype datatype = valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
-            if (datatype == null) {
-                return Datatype.STRING;
-            }
-            return datatype;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     /**
      * Selects the given value set type. Or the first item if the value set type is not in the list
      * of available item.
@@ -197,11 +185,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private Control updateControlWithCurrentValueSetOrCreateNewIfNeccessary(Composite parent) {
         IValueSet valueSet = getValueSet();
-        if (isValueSetEditingNotRequired(valueSet)) {
+        if (!isValueSetEditingAllowed(valueSet)) {
             // no further editing possible, return empty composite
             return toolkit.createComposite(parent);
         }
-        ValueDatatype valueDatatype = getValueDatatype();
+        ValueDatatype valueDatatype = valueSetPmo.getValueDatatype();
         if (getValueSetEditControl() != null && getValueSetEditControl().canEdit(valueSet, valueDatatype)) {
             // the current composite can be reused to edit the current value set
             getValueSetEditControl().setValueSet(valueSet, valueDatatype);
@@ -221,12 +209,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         return group;
     }
 
-    private boolean isValueSetEditingNotRequired(IValueSet valueSet) {
-        return valueSet.isAbstract() || valueSet.isUnrestricted();
-    }
-
-    private boolean isAllowValueSetEditing(IValueSet valueSet) {
-        return !isValueSetEditingNotRequired(valueSet);
+    private boolean isValueSetEditingAllowed(IValueSet valueSet) {
+        return !(valueSet.isAbstract() || valueSet.isUnrestricted());
     }
 
     /**
@@ -327,10 +311,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
                         .getNullPresentation()));
         containsNullCheckbox = toolkit.createCheckbox(parent);
         containsNullField = new CheckboxField(containsNullCheckbox);
-        bindingContext.bindContent(containsNullField, specificationControlModel,
-                SpecificationControlModel.PROPERTY_CONTAINS_NULL);
-        bindingContext.bindEnabled(containsNullCheckbox, specificationControlModel,
-                SpecificationControlModel.PROPERTY_CONTAINING_NULL_ALLOWED);
+        bindingContext.bindContent(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
+        bindingContext.bindEnabled(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINING_NULL_ALLOWED);
     }
 
     @Override
@@ -444,7 +426,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (valueSetEditControl != null) {
             setEnabledIfExistent(valueSetEditControl.getComposite(), enable);
         }
-        // TODO RangeEditControl#setEnabled() sauber implementieren
     }
 
     private void setEnabledIfExistent(Control control, boolean enable) {
@@ -458,24 +439,15 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     }
 
     /**
-     * It refreshes the valueSetEditControl by setting the current valueSet.
-     */
-    public void refreshValueSetControl() {
-        if (isAllowValueSetEditing(getValueSet())) {
-            valueSetEditControl.setValueSet(getValueSet(), getValueDatatype());
-        }
-    }
-
-    /**
      * An implementation of {@link IpsObjectPartPmo}. It is used for binding the state of a checkbox
      * according to the selected {@link IValueSet}.
      */
-    public class SpecificationControlModel extends IpsObjectPartPmo {
+    public static class ValueSetPmo extends IpsObjectPartPmo {
 
-        public static final String PROPERTY_CONTAINING_NULL_ALLOWED = "containingNullAllowed";
+        public static final String PROPERTY_CONTAINING_NULL_ALLOWED = "containingNullAllowed"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
 
-        public SpecificationControlModel(IValueSetOwner valueSetOwner) {
+        public ValueSetPmo(IValueSetOwner valueSetOwner) {
             super(valueSetOwner);
         }
 
@@ -489,12 +461,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         public void setContainsNull(boolean containsNull) {
             getValueSet().setContainsNull(containsNull);
-            /*
-             * mixing the UI and the SpecificationControlModel is done because the
-             * valueSetEditControl needs to be refreshed if the null value is added or removed from
-             * the valueSet
-             */
-            ValueSetSpecificationControl.this.refreshValueSetControl();
         }
 
         private IValueSet getValueSet() {
@@ -503,6 +469,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
         private IValueSetOwner getValueSetOwner() {
             return (IValueSetOwner)super.getIpsObjectPartContainer();
+        }
+
+        public ValueDatatype getValueDatatype() {
+            try {
+                ValueDatatype datatype = getValueSetOwner().findValueDatatype(getIpsProject());
+                if (datatype == null) {
+                    return Datatype.STRING;
+                }
+                return datatype;
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 

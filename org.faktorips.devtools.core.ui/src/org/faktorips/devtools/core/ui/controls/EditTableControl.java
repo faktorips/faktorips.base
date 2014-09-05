@@ -97,6 +97,14 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     protected abstract void initModelObject(Object modelObject);
 
     public void refresh() {
+        refreshTableViewer();
+        updateButtonsEnabledState();
+    }
+
+    private void refreshTableViewer() {
+        if (tableViewer.getTable().isDisposed()) {
+            return;
+        }
         tableViewer.refresh();
     }
 
@@ -389,6 +397,9 @@ public abstract class EditTableControl extends Composite implements IDataChangea
     }
 
     private void updateButtonsEnabledState() {
+        if (addButton.isDisposed() || removeButton.isDisposed() || upButton.isDisposed() || downButton.isDisposed()) {
+            return;
+        }
         if (!dataChangeable) {
             uiToolkit.setDataChangeable(addButton, false);
             uiToolkit.setDataChangeable(removeButton, false);
@@ -410,7 +421,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
             @Override
             public void widgetSelected(SelectionEvent e) {
                 addElement();
-                tableViewer.refresh();
+                refreshTableViewer();
                 tableViewer.getControl().setFocus();
                 int row = table.getItemCount() - 1;
                 table.setSelection(row);
@@ -432,11 +443,13 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                 for (int i = indices.length - 1; i >= 0; i--) {
                     removeElement(indices[i]);
                 }
-                restoreSelection(indices[0]);
+                if (indices.length > 0) {
+                    restoreSelection(indices[0]);
+                }
             }
 
             private void restoreSelection(int index) {
-                tableViewer.refresh();
+                refreshTableViewer();
                 tableViewer.getControl().setFocus();
                 int itemCount = table.getItemCount();
                 if (itemCount != 0 && index >= itemCount) {
@@ -465,7 +478,7 @@ public abstract class EditTableControl extends Composite implements IDataChangea
                 } else {
                     newSelection = moveDown(table.getSelectionIndices());
                 }
-                tableViewer.refresh();
+                refreshTableViewer();
                 table.setSelection(newSelection);
                 tableViewer.getControl().setFocus();
             }
