@@ -118,7 +118,6 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         if (el.hasAttribute(PROPERTY_CONTAINS_NULL)) {
             containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
         }
-        // Nothing more to do...
     }
 
     @Override
@@ -132,15 +131,13 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
-        UnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(parent, id);
-        unrestrictedValueSet.containsNull = isContainsNull();
+        UnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(parent, id, isContainsNull());
         return unrestrictedValueSet;
     }
 
     @Override
     public void copyPropertiesFrom(IValueSet target) {
-        UnrestrictedValueSet set = (UnrestrictedValueSet)target;
-        containsNull = set.isContainsNull();
+        containsNull = target.isContainsNull();
         objectHasChanged();
     }
 

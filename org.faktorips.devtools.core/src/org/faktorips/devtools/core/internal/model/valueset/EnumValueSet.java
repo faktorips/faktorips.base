@@ -470,7 +470,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public IValueSet copy(IValueSetOwner parent, String id) {
         EnumValueSet copy = new EnumValueSet(parent, id);
         copy.values = new ArrayList<String>(values);
-        copy.setContainsNullWithoutTriggeringEvent(this.isContainsNull());
         copy.refillValuesToIndexMap();
         return copy;
     }
@@ -479,7 +478,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     public void copyPropertiesFrom(IValueSet source) {
         values.clear();
         values.addAll(((EnumValueSet)source).values);
-        setContainsNullWithoutTriggeringEvent(source.isContainsNull());
         refillValuesToIndexMap();
         objectHasChanged();
     }
@@ -501,14 +499,6 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             addValue(null);
         } else if (!containsNull) {
             removeValue(null);
-        }
-    }
-
-    public void setContainsNullWithoutTriggeringEvent(boolean containsNull) {
-        if (!isContainsNull() && containsNull) {
-            addValueWithoutTriggeringChangeEvent(null);
-        } else if (!containsNull) {
-            removeWithoutTriggeringChangeEvents(null);
         }
     }
 

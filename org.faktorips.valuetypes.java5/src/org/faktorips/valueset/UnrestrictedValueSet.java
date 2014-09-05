@@ -75,7 +75,7 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof UnrestrictedValueSet<?> && (this.containsNull() == ((UnrestrictedValueSet<?>)o)
+        return (o instanceof UnrestrictedValueSet && (this.containsNull() == ((UnrestrictedValueSet<?>)o)
                 .containsNull()));
     }
 }
