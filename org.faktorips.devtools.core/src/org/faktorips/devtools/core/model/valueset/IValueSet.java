@@ -183,21 +183,19 @@ public interface IValueSet extends IIpsObjectPart {
      * Returns <code>true</code> if this value set is a more detailed specification of the given
      * value set or is the same specification.
      * <p>
-     * If the value set given as parameter is unrestricted and contains null, the method returns
-     * <code>true</code> as all other value sets are more detailed specifications.
+     * If the value set given as parameter is unrestricted, the method returns <code>true</code> as
+     * all other value sets are more detailed specifications, assumed that {@link #isContainsNull()}
+     * in both sets is equal.
      * <p>
      * If the value set given as parameter is restricted but has a different type, the method
-     * returns <code>false</code>. Otherwise, if the value sets are of the same type, there are four
-     * cases:
+     * returns <code>false</code>. Otherwise, if the value sets are of the same type, there are two
+     * cases. For this cases it is also assumed that {@link #isContainsNull()} in both sets is
+     * equal:
      * <ul>
      * <li>The given value set is abstract -> <code>true</code> is returned as an abstract value set
      * contains all values and thus all value sets of the same type.</li>
      * <li>The given value set is not abstract -> <code>true</code> is returned if this value set is
      * a subset of the given value set.</li>
-     * <li>The given value set contains null and this value set contains not null ->
-     * <code>true</code> is returned.</li>
-     * <li>The given value set contains not null and this value set contains null ->
-     * <code>false</code> is returned.</li>
      * </ul>
      */
     public boolean isDetailedSpecificationOf(IValueSet valueSet);
