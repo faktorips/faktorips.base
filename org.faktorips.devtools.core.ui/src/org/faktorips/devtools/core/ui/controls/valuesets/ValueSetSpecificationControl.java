@@ -27,6 +27,8 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -41,6 +43,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
+import org.faktorips.util.message.MessageList;
 
 /**
  * A control to specify the value set belonging to a {@link IValueSetOwner} . The control also
@@ -312,7 +315,8 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         containsNullCheckbox = toolkit.createCheckbox(parent);
         containsNullField = new CheckboxField(containsNullCheckbox);
         bindingContext.bindContent(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
-        bindingContext.bindEnabled(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINING_NULL_ALLOWED);
+        bindingContext.bindEnabled(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL_ENABLED);
+        bindingContext.bindProblemMarker(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
     }
 
     @Override
@@ -444,14 +448,19 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      */
     public static class ValueSetPmo extends IpsObjectPartPmo {
 
-        public static final String PROPERTY_CONTAINING_NULL_ALLOWED = "containingNullAllowed"; //$NON-NLS-1$
+        /**
+         * Prefix for all message codes of this class.
+         */
+        public final static String MSGCODE_PREFIX = "SpecificationControlModel-"; //$NON-NLS-1$
+        public static final String MSG_CODE_NULL_NOT_ALLOWED = MSGCODE_PREFIX + "nullNotAllowed"; //$NON-NLS-1$
+        public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
 
         public ValueSetPmo(IValueSetOwner valueSetOwner) {
             super(valueSetOwner);
         }
 
-        public boolean isContainingNullAllowed() {
+        public boolean isContainsNullEnabled() {
             return !getValueDatatype().isPrimitive() && !getValueSet().isAbstract();
         }
 
@@ -481,6 +490,32 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        @Override
+        public MessageList validate(IIpsProject ipsProject) throws CoreException {
+            MessageList messageList = super.validate(ipsProject);
+            addContainsNullMessagesIfApplicable(messageList);
+            return messageList;
+        }
+
+        private void addContainsNullMessagesIfApplicable(MessageList modelMessages) {
+            if (isNullIncompatible(modelMessages) || isNullNotSupported(modelMessages)) {
+                addContainsNullErrorMessage(modelMessages);
+            }
+        }
+
+        private void addContainsNullErrorMessage(MessageList messageList) {
+            String text = Messages.ValueSetSpecificationControl_Msg_NullNotAllowed;
+            messageList.newError(MSG_CODE_NULL_NOT_ALLOWED, text, this, PROPERTY_CONTAINS_NULL);
+        }
+
+        private boolean isNullNotSupported(MessageList modelMessages) {
+            return modelMessages.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED) != null;
+        }
+
+        private boolean isNullIncompatible(MessageList modelMessages) {
+            return !modelMessages.getMessagesFor(getValueSet(), IEnumValueSet.PROPERTY_CONTAINS_NULL).isEmpty();
         }
     }
 

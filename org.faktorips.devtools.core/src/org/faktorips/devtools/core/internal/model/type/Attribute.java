@@ -20,10 +20,12 @@ import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -150,8 +152,13 @@ public abstract class Attribute extends TypePart implements IAttribute {
             } else {
                 if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
                     String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, text, Message.ERROR,
-                            getValueSet()));
+                    String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
+                    if (isNullIncompatible(getValueSet(), superAttr.getValueSet())) {
+                        result.newError(code, text, new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_VALUES),
+                                new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_CONTAINS_NULL));
+                    } else {
+                        result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
+                    }
                 }
                 if (!getDatatype().equals(superAttr.getDatatype())) {
                     result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
@@ -165,6 +172,10 @@ public abstract class Attribute extends TypePart implements IAttribute {
                 }
             }
         }
+    }
+
+    private boolean isNullIncompatible(IValueSet valueSet, IValueSet superValueset) {
+        return valueSet.isContainsNull() && !superValueset.isContainsNull();
     }
 
     @Override

@@ -81,7 +81,13 @@ import org.faktorips.util.message.ObjectProperty;
  * type boolean.</li>
  * <li><strong>bindVisible</strong> Binds a control's visible property to a model object property of
  * type boolean.</li>
+ * <li><strong>bindProblemMarker</strong> Binds a field's problem markers to an arbitrary
+ * {@link ObjectProperty}. The object that is bound to must be {@link Validatable}. The use of
+ * {@link ValidatablePMO}, which allows the mapping of object properties, is encouraged.</li>
  * </ul>
+ * 
+ * When disposing a binding context instance all {@link IpsObjectPartPmo} instances it has bindings
+ * with will also be disposed.
  * 
  * @author Jan Ortmann
  */
@@ -102,7 +108,7 @@ public class BindingContext {
      * because once binded, we need to access all binded containers, and this is faster with a list,
      * than a hashset or treeset.
      */
-    private final Set<Validatable> validatables = new HashSet<Validatable>(1);
+    private final Set<Validatable> validatables = new CopyOnWriteArraySet<Validatable>();
 
     private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<ControlPropertyBinding>();
 
@@ -637,10 +643,9 @@ public class BindingContext {
      * field) will not overwrite each other.
      */
     protected void showValidationStatus(List<FieldPropertyMapping<?>> propertyMappings) {
-        Set<Validatable> copy = new CopyOnWriteArraySet<Validatable>(validatables);
         Map<ObjectProperty, MessageList> validationMap = new HashMap<ObjectProperty, MessageList>();
 
-        for (Validatable validatable : copy) {
+        for (Validatable validatable : validatables) {
             try {
                 MessageList messageList = validatable.validate(validatable.getIpsProject());
                 for (Message message : messageList) {
