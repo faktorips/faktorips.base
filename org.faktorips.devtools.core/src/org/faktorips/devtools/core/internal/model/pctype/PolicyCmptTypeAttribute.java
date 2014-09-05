@@ -229,6 +229,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         super.validateThis(result, ipsProject);
         validateProductRelevant(result, ipsProject);
         validateOverwrite(result, ipsProject);
+        validateValueSetType(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -260,20 +261,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 }
             }
         }
-        result.add(validateValueSetType());
-    }
-
-    private MessageList validateValueSetType() {
-        MessageList messageList = new MessageList();
-        if (!isAllowedValueSet(getValueSet())) {
-            String messageText = NLS.bind(
-                    Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
-                    getValueSet() == null ? StringUtils.EMPTY : org.faktorips.devtools.core.util.StringUtils
-                            .quote(getValueSet().getValueSetType().getName()));
-            messageList.add(new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this,
-                    PROPERTY_VALUE_SET));
-        }
-        return messageList;
     }
 
     private boolean isAllowedValueSet(IValueSet valueSet) {
@@ -301,6 +288,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                     }
                 }
             }
+        }
+    }
+
+    private void validateValueSetType(MessageList result) {
+        if (!isAllowedValueSet(getValueSet())) {
+            String messageText = NLS.bind(
+                    Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
+                    getValueSet() == null ? StringUtils.EMPTY : org.faktorips.devtools.core.util.StringUtils
+                            .quote(getValueSet().getValueSetType().getName()));
+            result.add(new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this, PROPERTY_VALUE_SET));
         }
     }
 

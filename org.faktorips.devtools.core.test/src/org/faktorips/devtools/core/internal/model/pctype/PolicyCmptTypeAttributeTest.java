@@ -430,6 +430,5 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         messageList = attribute.validate(ipsProject);
         assertEquals(1, messageList.size());
         assertEquals(PolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE, messageList.getMessage(0).getCode());
-        assertEquals("The value set type \"Enumeration\" is not allowed.", messageList.getMessage(0).getText());
     }
 }
