@@ -236,6 +236,46 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValueSet_EqualValueSetsWithNull() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(true);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(true);
+
+        assertTrue(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_EqualValueSetsWithoutNull() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(false);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(false);
+
+        assertTrue(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSet() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(true);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(false);
+
+        assertTrue(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSetNot() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(false);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(true);
+
+        assertFalse(superset.containsValueSet(subset));
+    }
+
+    @Test
     public void testAddValue() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");

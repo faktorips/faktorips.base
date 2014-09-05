@@ -443,6 +443,46 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValueSet_EqualValueSetsWithNull() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(true);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(true);
+
+        assertTrue(superRange.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_EqualValueSetsWithoutNull() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(false);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(false);
+
+        assertTrue(superRange.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSet() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(true);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(false);
+
+        assertTrue(superRange.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSetNot() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(false);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(true);
+
+        assertFalse(superRange.containsValueSet(subRange));
+    }
+
+    @Test
     public void testContainsValueSetEmptyWithDecimal() throws Exception {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attrX");

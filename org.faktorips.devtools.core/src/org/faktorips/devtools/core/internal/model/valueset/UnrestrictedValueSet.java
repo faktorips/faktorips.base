@@ -88,6 +88,10 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             return false;
         }
 
+        if (isNullValue(value, datatype)) {
+            return isContainsNull();
+        }
+
         return true;
     }
 
@@ -97,6 +101,10 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
 
         if (datatype == null || !datatype.equals(subDatatype)) {
+            return false;
+        }
+
+        if (!isContainsNull() && subset.isContainsNull()) {
             return false;
         }
 

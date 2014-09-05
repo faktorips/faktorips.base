@@ -178,13 +178,10 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     @Override
     public boolean isDetailedSpecificationOf(IValueSet otherValueSet) {
         if (otherValueSet.isUnrestricted()) {
-            return true;
+            return otherValueSet.containsValueSet(this);
         }
         if (!getValueSetType().equals(otherValueSet.getValueSetType())) {
             return false;
-        }
-        if (otherValueSet.isAbstract()) {
-            return true;
         }
         return otherValueSet.containsValueSet(this);
     }
@@ -279,5 +276,4 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         ValueDatatype dataType = getValueDatatype();
         return dataType == null || !dataType.isPrimitive();
     }
-
 }

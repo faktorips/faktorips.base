@@ -235,13 +235,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * </ul>
      */
     private boolean checkIsRangeSubset(IRangeValueSet subRange, NumericDatatype datatype) {
+        if (!isContainsNull() && subRange.isContainsNull()) {
+            return false;
+        }
         if (isAbstract()) {
             return true;
         }
         if (subRange.isAbstract()) {
-            return false;
-        }
-        if (!isContainsNull() && subRange.isContainsNull()) {
             return false;
         }
 

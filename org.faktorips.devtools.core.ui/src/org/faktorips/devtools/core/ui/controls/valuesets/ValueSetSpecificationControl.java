@@ -480,7 +480,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         public boolean isContainingNullAllowed() {
-            return !getValueDatatype().isPrimitive() || getValueSetType().isEnum();
+            return !getValueDatatype().isPrimitive() && !getValueSet().isAbstract();
         }
 
         public boolean isContainsNull() {

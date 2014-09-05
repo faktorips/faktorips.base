@@ -162,7 +162,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (!checkDatatypes(subset, datatype)) {
             return false;
         }
-
+        if (!isContainsNull() && subset.isContainsNull()) {
+            return false;
+        }
         if (isAbstract()) {
             return true;
         }

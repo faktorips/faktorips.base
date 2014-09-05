@@ -146,4 +146,84 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
         attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         assertFalse(unrestricted.isContainsNull());
     }
+
+    @Test
+    public void testContainsValue() throws Exception {
+        attr.setDatatype(Datatype.MONEY.getQualifiedName());
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertTrue(unrestrictedValueSet.containsValue("10EUR", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_DatatypeIsNull() throws Exception {
+        attr.setDatatype(null);
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertFalse(unrestrictedValueSet.containsValue("someValue", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_isNotParsableValue() throws Exception {
+        attr.setDatatype(Datatype.MONEY.getQualifiedName());
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertFalse(unrestrictedValueSet.containsValue("notParsable", ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_ValueIsNull_UnrestrictedValueSetWithoutNull() throws Exception {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertFalse(unrestrictedValueSet.containsValue(null, ipsProject));
+    }
+
+    @Test
+    public void testContainsValue_ValueIsNull_UnrestrictedValueSetWithNull() throws Exception {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", true);
+
+        assertTrue(unrestrictedValueSet.containsValue(null, ipsProject));
+    }
+
+    @Test
+    public void testContainsValueSet_DatatypeIsNull() {
+        attr.setDatatype(null);
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertFalse(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_EqualValueSetsWithoutNull() {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_EqualValueSetsWithNull() {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", true);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", true);
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSet() {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", true);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", false);
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSetNot() {
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", true);
+
+        assertFalse(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
 }
