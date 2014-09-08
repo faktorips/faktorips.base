@@ -183,19 +183,22 @@ public interface IValueSet extends IIpsObjectPart {
      * Returns <code>true</code> if this value set is a more detailed specification of the given
      * value set or is the same specification.
      * <p>
-     * If the value set given as parameter is unrestricted, the method returns <code>true</code> as
-     * all other value sets are more detailed specifications, assumed that {@link #isContainsNull()}
-     * in both sets is equal.
+     * If the value set given as parameter is unrestricted, only the parameter containsNull is
+     * checked. If the specified value set contains <code>null</code> this method always returns
+     * <code>true</code>. If the specified value set denies <code>null</code>, this value set also
+     * needs to deny <code>null</code> values. The type of this value set does not matter at all.
      * <p>
-     * If the value set given as parameter is restricted but has a different type, the method
-     * returns <code>false</code>. Otherwise, if the value sets are of the same type, there are two
-     * cases. For this cases it is also assumed that {@link #isContainsNull()} in both sets is
-     * equal:
+     * If the value set given as parameter is is not unrestricted but has a different type, the
+     * method returns <code>false</code>. Otherwise, if the value sets are of the same type, there
+     * are following rules:
      * <ul>
-     * <li>The given value set is abstract -> <code>true</code> is returned as an abstract value set
-     * contains all values and thus all value sets of the same type.</li>
-     * <li>The given value set is not abstract -> <code>true</code> is returned if this value set is
-     * a subset of the given value set.</li>
+     * <li>If the specified value set excludes <code>null</code> this value set has to exclude
+     * <code>null</code>, too. (containsNull must match)</li>
+     * <li>If the specified value set is abstract and containsNull matches, return <code>true</code>
+     * as an abstract value set contains all values and thus all value sets of the same type.</li>
+     * <li>If the specified value set is not abstract, return <code>true</code> if this value set is
+     * a subset of the given value set, that means {@link #containsValueSet(IValueSet)} returns
+     * true.</li>
      * </ul>
      */
     public boolean isDetailedSpecificationOf(IValueSet valueSet);
