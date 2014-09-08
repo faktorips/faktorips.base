@@ -28,51 +28,51 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
 
     // property names
-    public final static String PROPERTY_COMPUTATION_METHOD_SIGNATURE = "computationMethodSignature"; //$NON-NLS-1$
-    public final static String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
-    public final static String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
+    public static final String PROPERTY_COMPUTATION_METHOD_SIGNATURE = "computationMethodSignature"; //$NON-NLS-1$
+    public static final String PROPERTY_ATTRIBUTE_TYPE = "attributeType"; //$NON-NLS-1$
+    public static final String PROPERTY_PRODUCT_RELEVANT = "productRelevant"; //$NON-NLS-1$
 
-    public final static String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
-    public final static String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULAPARAM_NAME = "param.name"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMULAPARAM_DATATYPE = "param.datatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute can't be product relevant if the type
      * is configurable by product.
      */
-    public final static String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_ATTRIBUTE_CANT_BE_PRODUCT_RELEVANT_IF_TYPE_IS_NOT = IAttribute.MSGCODE_PREFIX
             + "AttributeCantBeProductRelevantIfTypeIsNot"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method has a different data type.
      */
-    public final static String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_COMPUTATION_MEHTOD_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
             + "CompuationMethodHasWrongDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method must be specified but it is
      * not.
      */
-    public final static String MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_COMPUTATION_METHOD_NOT_SPECIFIED = IAttribute.MSGCODE_PREFIX
             + "ComputationMethodNotSpecified"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the computation method is specified but does not
      * exist.
      */
-    public final static String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_COMPUTATION_METHOD_DOES_NOT_EXIST = IAttribute.MSGCODE_PREFIX
             + "ComputationMethodDoesNotExist"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but has a different
      * attribute type (which is not allowed).
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_TYPE = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentType"; //$NON-NLS-1$
     /**
      * Validation message code to indicate that the currently configured value set is not allowed
      * for this attribute.
      */
-    public final static String MSGCODE_ILLEGAL_VALUESET_TYPE = IAttribute.MSGCODE_PREFIX + "IllegalValueSetType"; //$NON-NLS-1$
+    public static final String MSGCODE_ILLEGAL_VALUESET_TYPE = IAttribute.MSGCODE_PREFIX + "IllegalValueSetType"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this attribute belongs to.
