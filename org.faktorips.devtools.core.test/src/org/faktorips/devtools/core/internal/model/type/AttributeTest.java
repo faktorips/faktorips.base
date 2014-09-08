@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -34,7 +35,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -281,11 +281,10 @@ public class AttributeTest extends AbstractIpsPluginTest {
         overwritingAttr.setValueSetCopy(new EnumValueSet(overwritingAttr, listWithNull, "partId"));
 
         messageList = overwritingAttr.validate(ipsProject);
-        assertEquals(1, messageList.size());
+        assertEquals(2, messageList.size());
         assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, messageList.getMessage(0).getCode());
-        invalidObjectProperties = messageList.getMessage(0).getInvalidObjectProperties();
-        assertEquals(2, invalidObjectProperties.length);
-        assertEquals(IEnumValueSet.PROPERTY_CONTAINS_NULL, invalidObjectProperties[1].getProperty());
+        assertEquals(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPAIBLE_VALUESET, messageList.getMessage(1)
+                .getCode());
     }
 
     private List<String> list(String... values) {

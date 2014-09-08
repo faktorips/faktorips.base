@@ -161,5 +161,5 @@ public interface IAttribute extends ITypePart {
      */
     public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
 
-    public IValueSet getValueSet() throws CoreException;
+    public IValueSet getValueSet();
 }

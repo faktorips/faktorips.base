@@ -451,7 +451,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         /**
          * Prefix for all message codes of this class.
          */
-        public static final String MSGCODE_PREFIX = "SpecificationControlModel-"; //$NON-NLS-1$
+        public static final String MSGCODE_PREFIX = "ValueSetPmo-"; //$NON-NLS-1$
         public static final String MSG_CODE_NULL_NOT_ALLOWED = MSGCODE_PREFIX + "nullNotAllowed"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
@@ -500,22 +500,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         private void addContainsNullMessagesIfApplicable(MessageList modelMessages) {
-            if (isNullIncompatible(modelMessages) || isNullNotSupported(modelMessages)) {
+            if (isNullIncompatible(modelMessages)) {
                 addContainsNullErrorMessage(modelMessages);
             }
+        }
+
+        private boolean isNullIncompatible(MessageList modelMessages) {
+            return !modelMessages.getMessagesFor(getValueSet(), IEnumValueSet.PROPERTY_CONTAINS_NULL).isEmpty();
         }
 
         private void addContainsNullErrorMessage(MessageList messageList) {
             String text = Messages.ValueSetSpecificationControl_Msg_NullNotAllowed;
             messageList.newError(MSG_CODE_NULL_NOT_ALLOWED, text, this, PROPERTY_CONTAINS_NULL);
-        }
-
-        private boolean isNullNotSupported(MessageList modelMessages) {
-            return modelMessages.getMessageByCode(IEnumValueSet.MSGCODE_NULL_NOT_SUPPORTED) != null;
-        }
-
-        private boolean isNullIncompatible(MessageList modelMessages) {
-            return !modelMessages.getMessagesFor(getValueSet(), IEnumValueSet.PROPERTY_CONTAINS_NULL).isEmpty();
         }
     }
 

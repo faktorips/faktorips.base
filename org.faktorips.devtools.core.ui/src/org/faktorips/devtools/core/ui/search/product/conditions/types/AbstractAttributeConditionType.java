@@ -39,13 +39,7 @@ public abstract class AbstractAttributeConditionType extends AbstractConditionTy
     @Override
     public IValueSet getValueSet(IIpsElement elementPart) {
         IAttribute attribute = (IAttribute)elementPart;
-
-        try {
-            return attribute.getValueSet();
-        } catch (CoreException e) {
-            // TODO Exception Handling
-            throw new RuntimeException(e);
-        }
+        return attribute.getValueSet();
     }
 
     @Override

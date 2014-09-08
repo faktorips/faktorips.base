@@ -17,6 +17,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -25,7 +26,6 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -143,6 +143,10 @@ public abstract class Attribute extends TypePart implements IAttribute {
                         PROPERTY_DEFAULT_VALUE));
             }
         }
+        validateOverwritingAttribute(result, ipsProject);
+    }
+
+    private void validateOverwritingAttribute(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (overwrites) {
             IAttribute superAttr = findOverwrittenAttribute(ipsProject);
             if (superAttr == null) {
@@ -150,32 +154,30 @@ public abstract class Attribute extends TypePart implements IAttribute {
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
                         PROPERTY_OVERWRITES, PROPERTY_NAME }));
             } else {
-                if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
-                    String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
-                    String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
-                    if (isNullIncompatible(getValueSet(), superAttr.getValueSet())) {
-                        result.newError(code, text, new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_VALUES),
-                                new ObjectProperty(getValueSet(), IEnumValueSet.PROPERTY_CONTAINS_NULL));
-                    } else {
-                        result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
-                    }
-                }
-                if (!getDatatype().equals(superAttr.getDatatype())) {
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
-                            Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this,
-                            PROPERTY_DATATYPE));
-                }
-                if (!getModifier().equals(superAttr.getModifier())) {
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
-                            Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this,
-                            PROPERTY_MODIFIER));
-                }
+                validateAgainstOverwrittenAttribute(result, superAttr);
             }
         }
     }
 
-    private boolean isNullIncompatible(IValueSet valueSet, IValueSet superValueset) {
-        return valueSet.isContainsNull() && !superValueset.isContainsNull();
+    private void validateAgainstOverwrittenAttribute(MessageList result, IAttribute superAttr) {
+        if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
+            String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
+            String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
+            result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
+        }
+        validateNullIncompatible(result, superAttr.getValueSet());
+        if (!getDatatype().equals(superAttr.getDatatype())) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
+                    Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this, PROPERTY_DATATYPE));
+        }
+        if (!getModifier().equals(superAttr.getModifier())) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
+                    Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this, PROPERTY_MODIFIER));
+        }
+    }
+
+    private void validateNullIncompatible(MessageList list, IValueSet modelValueSet) {
+        new ValueSetNullIncompatibleValidator(modelValueSet, getValueSet()).validateAndAppendMessages(list);
     }
 
     @Override

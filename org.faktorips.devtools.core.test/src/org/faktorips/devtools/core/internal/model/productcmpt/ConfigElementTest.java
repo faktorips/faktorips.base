@@ -30,6 +30,7 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
+import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -520,6 +521,23 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.setPolicyCmptTypeAttribute("attribute");
         assertEquals(StringUtils.capitalize(configElement.getPolicyCmptTypeAttribute()),
                 configElement.getLastResortCaption());
+    }
+
+    @Test
+    public void testValidateThis_nullIncompatible() throws CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("attr");
+        attr.setDatatype(ValueDatatype.INTEGER.getQualifiedName());
+        attr.setValueSetType(ValueSetType.UNRESTRICTED);
+        attr.getValueSet().setContainsNull(false);
+
+        configElement.setPolicyCmptTypeAttribute("attr");
+        configElement.setValueSetType(ValueSetType.UNRESTRICTED);
+        configElement.getValueSet().setAbstract(false);
+        configElement.getValueSet().setContainsNull(true);
+
+        MessageList messages = configElement.validate(ipsProject);
+        assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPAIBLE_VALUESET));
     }
 
     private class InvalidDatatype implements ValueDatatype {

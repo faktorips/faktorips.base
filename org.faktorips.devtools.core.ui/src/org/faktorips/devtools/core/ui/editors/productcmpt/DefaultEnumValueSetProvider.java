@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -41,8 +42,7 @@ public class DefaultEnumValueSetProvider implements IEnumValueSetProvider {
             IEnumValueSet sourceSet = (IEnumValueSet)attribute.getValueSet();
             return sourceSet;
         } catch (CoreException e) {
-            // FIXME throw CoreRuntimeException (FIPS 3.6)
-            throw new RuntimeException(e);
+            throw new CoreRuntimeException(e);
         }
     }
 
