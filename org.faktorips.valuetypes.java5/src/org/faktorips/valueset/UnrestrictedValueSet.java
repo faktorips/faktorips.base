@@ -24,6 +24,10 @@ public class UnrestrictedValueSet<T> implements ValueSet<T> {
 
     private boolean containsNull = true;
 
+    public UnrestrictedValueSet() {
+        super();
+    }
+
     public UnrestrictedValueSet(boolean containsNull) {
         this.containsNull = containsNull;
     }
