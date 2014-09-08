@@ -24,6 +24,7 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String ValueSet_unrestrictedWithoutNull;
     public static String ValueSetType__allValues;
     public static String ValueSetType_range;
     public static String ValueSetType_enumeration;

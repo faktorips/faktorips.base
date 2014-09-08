@@ -42,13 +42,18 @@ public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     public String formatInternal(IValueSet value) {
-        return Messages.ValueSetFormat_unrestricted;
+        return value.toShortString();
     }
 
     @Override
     public boolean isResponsibleFor(String stringToBeParsed) {
-        return ((StringUtils.isEmpty(stringToBeParsed) || Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed)) && isUnrestrictedAllowed())
+        return ((StringUtils.isEmpty(stringToBeParsed) || isUnrestrictedText(stringToBeParsed)) && isUnrestrictedAllowed())
                 || isOnlyAllowedValueSetType(ValueSetType.UNRESTRICTED);
+    }
+
+    private boolean isUnrestrictedText(String stringToBeParsed) {
+        return Messages.ValueSetFormat_unrestricted.equals(stringToBeParsed)
+                || Messages.ValueSet_unrestrictedWithoutNull.equals(stringToBeParsed);
     }
 
     private boolean isUnrestrictedAllowed() {

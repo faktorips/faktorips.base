@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
@@ -68,12 +69,16 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public String toShortString() {
-        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
+        if (isContainsNull()) {
+            return Messages.ValueSetFormat_unrestricted;
+        } else {
+            return Messages.ValueSet_unrestrictedWithoutNull;
+        }
     }
 
     @Override
     public String toString() {
-        return super.toString() + ":" + "UnrestrictedValueSet"; //$NON-NLS-1$ //$NON-NLS-2$
+        return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
     @Override

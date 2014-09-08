@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -422,6 +423,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         if (step != null) {
             sb.append(RANGE_STEP_SEPERATOR);
             sb.append(step);
+        }
+        if (isContainsNull()) {
+            sb.append(NLS.bind(Messages.RangeValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
+                    .getNullPresentation()));
         }
         sb.append(RANGE_VALUESET_END);
         return sb.toString();
