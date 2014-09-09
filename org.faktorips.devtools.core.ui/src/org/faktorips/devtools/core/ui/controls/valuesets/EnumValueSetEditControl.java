@@ -22,6 +22,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -61,6 +63,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     private final ValueDatatype valueDatatype;
     private final IIpsProject ipsProject;
     private ContentsChangeListener changeListener;
+    private DisposeListener disposeListener;
 
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
@@ -70,16 +73,32 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         super(parent, SWT.NONE);
         this.valueDatatype = valueDatatype;
         this.ipsProject = ipsProject;
+        setUpChangeListener(ipsProject);
+        setUpDisposeListener(ipsProject);
+    }
+
+    private void setUpChangeListener(final IIpsProject project) {
         changeListener = new ContentsChangeListener() {
 
             @Override
             public void contentsChanged(ContentChangeEvent event) {
-                if (event.getPart() != null && event.getPart().equals(getValueSet())) {
+                if (event.isAffected(valueSet)) {
                     refresh();
                 }
             }
         };
-        ipsProject.getIpsModel().addChangeListener(changeListener);
+        project.getIpsModel().addChangeListener(changeListener);
+    }
+
+    private void setUpDisposeListener(final IIpsProject project) {
+        disposeListener = new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                project.getIpsModel().removeChangeListener(changeListener);
+            }
+        };
+        addDisposeListener(disposeListener);
     }
 
     @Override
@@ -217,12 +236,6 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     @Override
     public Composite getComposite() {
         return this;
-    }
-
-    @Override
-    public void dispose() {
-        ipsProject.getIpsModel().removeChangeListener(changeListener);
-        super.dispose();
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {

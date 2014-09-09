@@ -451,7 +451,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         /**
          * Prefix for all message codes of this class.
          */
-        public final static String MSGCODE_PREFIX = "SpecificationControlModel-"; //$NON-NLS-1$
+        public static final String MSGCODE_PREFIX = "SpecificationControlModel-"; //$NON-NLS-1$
         public static final String MSG_CODE_NULL_NOT_ALLOWED = MSGCODE_PREFIX + "nullNotAllowed"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
@@ -461,7 +461,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         public boolean isContainsNullEnabled() {
-            return !getValueDatatype().isPrimitive() && !getValueSet().isAbstract();
+            return !getValueDatatype().isPrimitive() || getValueSet().isEnum();
         }
 
         public boolean isContainsNull() {

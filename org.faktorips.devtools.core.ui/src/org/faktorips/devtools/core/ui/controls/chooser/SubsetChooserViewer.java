@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.jface.window.ToolTip;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -63,6 +65,17 @@ public class SubsetChooserViewer {
         uiBuilder.createUI(parent, toolkit);
         initViewers();
         setUpListeners();
+        addDisposeListener(parent);
+    }
+
+    private void addDisposeListener(Composite parent) {
+        parent.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                model.dispose();
+            }
+        });
     }
 
     protected void initViewers() {
@@ -145,10 +158,10 @@ public class SubsetChooserViewer {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (evt.getPropertyName().equals(AbstractSubsetChooserModel.PROPERTY_RESULTING_VALUES)) {
+                if (AbstractSubsetChooserModel.PROPERTY_RESULTING_VALUES.equals(evt.getPropertyName())) {
                     resultingValuesTableViewer.refresh();
                 }
-                if (evt.getPropertyName().equals(AbstractSubsetChooserModel.PROPERTY_PREDEFINED_VALUES)) {
+                if (AbstractSubsetChooserModel.PROPERTY_PREDEFINED_VALUES.equals(evt.getPropertyName())) {
                     preDefinedValuesTableViewer.refresh();
                 }
                 IStructuredSelection selection = (IStructuredSelection)resultingValuesTableViewer.getSelection();
@@ -214,6 +227,18 @@ public class SubsetChooserViewer {
 
     protected CellLabelProvider createErrorColumnLabelProvider() {
         return new ErrorColumnLabelProvider();
+    }
+
+    public Composite getChooserComposite() {
+        return uiBuilder.getChooserComposite();
+    }
+
+    public void setSourceLabel(String label) {
+        uiBuilder.setSourceLabel(label);
+    }
+
+    public void setTargetLabel(String label) {
+        uiBuilder.setTargetLabel(label);
     }
 
     public enum ListAccessor {
@@ -313,18 +338,6 @@ public class SubsetChooserViewer {
             return 5000;
         }
 
-    }
-
-    public Composite getChooserComposite() {
-        return uiBuilder.getChooserComposite();
-    }
-
-    public void setSourceLabel(String label) {
-        uiBuilder.setSourceLabel(label);
-    }
-
-    public void setTargetLabel(String label) {
-        uiBuilder.setTargetLabel(label);
     }
 
 }

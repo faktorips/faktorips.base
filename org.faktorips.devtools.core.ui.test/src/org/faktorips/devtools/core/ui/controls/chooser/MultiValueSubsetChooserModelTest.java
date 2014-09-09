@@ -28,12 +28,17 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MultiValueSubsetChooserModelTest {
 
     private MultiValueHolder multiValueHolder;
@@ -44,11 +49,14 @@ public class MultiValueSubsetChooserModelTest {
     private SingleValueHolder holder1;
     private SingleValueHolder holder2;
 
+    @Mock
+    private IAttributeValue attributeValue;
+
     @Before
     public void setUp() {
         setUpMultiValueHolder();
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
+        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
         List<ListChooserValue> values = model.getResultingValues();
         assertEquals(5, values.size());
         assertEquals("A", values.get(0).getValue());
@@ -197,7 +205,7 @@ public class MultiValueSubsetChooserModelTest {
     public void findSingleValueHolderFor() {
         setUpMultiValueHolder();
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
+        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
         SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("C"));
         assertSame(multiValueHolder.getValue().get(2), holder);
     }
@@ -207,7 +215,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
         multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
+        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
         SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
         assertSame(multiValueHolder.getValue().get(5), holder);
     }
@@ -217,7 +225,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
         multiValueHolder.getValue().add(new SingleValueHolder(null, "X"));
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
+        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
         SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue(null));
         assertNull(holder);
     }
@@ -227,7 +235,7 @@ public class MultiValueSubsetChooserModelTest {
         setUpMultiValueHolder();
         multiValueHolder.getValue().add(new SingleValueHolder(null, (String)null));
 
-        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null);
+        model = new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue);
         SingleValueHolder holder = model.findSingleValueHolderFor(new ListChooserValue("X"));
         assertNull(holder);
     }
@@ -240,7 +248,7 @@ public class MultiValueSubsetChooserModelTest {
 
         setUpMultiValueHolder();
 
-        model = spy(new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null));
+        model = spy(new MultiValueSubsetChooserModel(new ArrayList<String>(), multiValueHolder, null, attributeValue));
         doReturn(holderC).when(model).findSingleValueHolderFor(any(ListChooserValue.class));
         doReturn(messageList).when(multiValueHolder).validate(any(IIpsProject.class));
 

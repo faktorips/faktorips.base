@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueListExtractor;
@@ -44,7 +45,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     @Deprecated
     public EnumValueSubsetChooserModel(List<String> sourceValueIds, IEnumValueSet resultingEnumValueSet,
             ValueDatatype datatype) {
-        super(datatype);
+        super(datatype, resultingEnumValueSet);
         this.resultingEnumValueSet = resultingEnumValueSet;
         sourceValues = convertToListChooserValues(sourceValueIds);
     }
@@ -65,7 +66,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
      */
     public EnumValueSubsetChooserModel(IValueSet sourceValueSet, ValueDatatype datatype,
             IEnumValueSet resultingEnumValueSet) {
-        super(datatype);
+        super(datatype, resultingEnumValueSet);
         this.resultingEnumValueSet = resultingEnumValueSet;
         sourceValues = initSourceValuesForEnumDatatypeAndValueSet(sourceValueSet, datatype);
     }
@@ -175,7 +176,13 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     public void setResultingEnumValueSet(IEnumValueSet newValueSet) {
         List<ListChooserValue> oldValues = getResultingValues();
         resultingEnumValueSet = newValueSet;
-        fireEvents(oldValues);
+        fireValuesChangedEvents(oldValues);
+    }
+
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        fireValuesChangedEvents(getResultingValues());
+        super.contentsChanged(event);
     }
 
 }
