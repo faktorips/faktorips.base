@@ -142,16 +142,6 @@ public class IpsPreferences {
     public static final String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
 
     /**
-     * Constant that identifies the preference for delay time on change events.
-     */
-    public static final String CHANGE_EVENT_DELAY_TIME = IpsPlugin.PLUGIN_ID + ".changeEventDelayTime"; //$NON-NLS-1$
-
-    /**
-     * Default value in milliseconds for change event delay time
-     */
-    private static final int DEFAULT_DELAY_TIME = 200;
-
-    /**
      * Constant that identifies the product copy wizard mode preference.
      */
     public static final String COPY_WIZARD_MODE = IpsPlugin.PLUGIN_ID + ".copyWizardMode"; //$NON-NLS-1$
@@ -170,6 +160,15 @@ public class IpsPreferences {
      * Constant that identifies the product copy wizard smart mode preference.
      */
     public static final String COPY_WIZARD_MODE_SMARTMODE = "smartmode"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the preference for delay time on change events.
+     */
+    public static final String CHANGE_EVENT_DELAY_TIME = IpsPlugin.PLUGIN_ID + ".changeEventDelayTime"; //$NON-NLS-1$
+    /**
+     * Default value in milliseconds for change event delay time
+     */
+    private static final int DEFAULT_DELAY_TIME = 200;
 
     private final DatatypeFormatter datatypeFormatter;
 
