@@ -15,8 +15,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -48,6 +51,14 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     private Map<IProductCmptLink, IProductCmpt> associationLinks;
 
+    private final IpsPreferences ipsPreferences;
+
+    private IIpsProject rootIpsProject;
+
+    public DeepCopyTreeStatus() {
+        ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+    }
+
     /**
      * Initializes the tree status for all references in the structure with default values
      * 
@@ -56,6 +67,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public void initialize(IProductCmptTreeStructure structure) {
         treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
         associationLinks = new HashMap<IProductCmptLink, IProductCmpt>();
+        rootIpsProject = structure.getRoot().getProductCmpt().getIpsProject();
         HashMap<IProductCmptLink, IProductCmpt> associationLinksCopy = new HashMap<IProductCmptLink, IProductCmpt>();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
@@ -173,7 +185,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
                 checked = true;
             }
             if (copyOrLink == null) {
-                copyOrLink = CopyOrLink.COPY;
+                copyOrLink = getInitCopyOrLinkFromPreferences(reference);
             }
             linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checked, copyOrLink);
         }
@@ -190,6 +202,27 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         }
         statusMap.put(part, linkStatus);
         return linkStatus;
+    }
+
+    private CopyOrLink getInitCopyOrLinkFromPreferences(IProductCmptStructureReference reference) {
+        // root node must be always a COPY
+        if (reference.getParent() == null) {
+            return CopyOrLink.COPY;
+        }
+        CopyOrLink copyOrLinkMode;
+        if (ipsPreferences.isCopyWizardModeCopy()) {
+            copyOrLinkMode = CopyOrLink.COPY;
+        } else if (ipsPreferences.isCopyWizardModeLink()) {
+            copyOrLinkMode = CopyOrLink.LINK;
+        } else {
+            // smartMode
+            if (rootIpsProject.equals(reference.getIpsProject())) {
+                copyOrLinkMode = CopyOrLink.COPY;
+            } else {
+                copyOrLinkMode = CopyOrLink.LINK;
+            }
+        }
+        return copyOrLinkMode;
     }
 
     /**
