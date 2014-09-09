@@ -151,6 +151,26 @@ public class IpsPreferences {
      */
     private static final int DEFAULT_DELAY_TIME = 200;
 
+    /**
+     * Constant that identifies the product copy wizard mode preference.
+     */
+    public static final String COPY_WIZARD_MODE = IpsPlugin.PLUGIN_ID + ".copyWizardMode"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the product copy wizard copy mode preference.
+     */
+    public static final String COPY_WIZARD_MODE_COPY = "copy"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the product copy wizard link mode preference.
+     */
+    public static final String COPY_WIZARD_MODE_LINK = "link"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the product copy wizard smart mode preference.
+     */
+    public static final String COPY_WIZARD_MODE_SMARTMODE = "smartmode"; //$NON-NLS-1$
+
     private final DatatypeFormatter datatypeFormatter;
 
     private final IPreferenceStore prefStore;
@@ -171,6 +191,7 @@ public class IpsPreferences {
         prefStore.setDefault(AUTO_VALIDATE_TABLES, true);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(CHANGE_EVENT_DELAY_TIME, DEFAULT_DELAY_TIME);
+        prefStore.setDefault(COPY_WIZARD_MODE, COPY_WIZARD_MODE_SMARTMODE);
 
         setDefaultForDatatypeFormatting(prefStore);
 
@@ -524,4 +545,21 @@ public class IpsPreferences {
     public void setChangeEventDelayTime(int delayTime) {
         prefStore.setValue(CHANGE_EVENT_DELAY_TIME, delayTime);
     }
+
+    public boolean isCopyWizardModeCopy() {
+        return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_COPY);
+    }
+
+    public boolean isCopyWizardModeLink() {
+        return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_LINK);
+    }
+
+    public boolean isCopyWizardModeSmartmode() {
+        return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_SMARTMODE);
+    }
+
+    public void setCopyWizardMode(String copyWizardMode) {
+        prefStore.setValue(COPY_WIZARD_MODE, copyWizardMode);
+    }
+
 }
