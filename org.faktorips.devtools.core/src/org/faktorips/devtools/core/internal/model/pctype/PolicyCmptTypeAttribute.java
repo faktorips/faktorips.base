@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -170,7 +170,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (oldValue != newValue && !newValue) {
             computationMethodSignature = ""; //$NON-NLS-1$
         }
-        valueChanged(oldValue, newValue);
+        valueChanged(oldValue, newValue, PROPERTY_PRODUCT_RELEVANT);
     }
 
     @Override
@@ -181,16 +181,15 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public List<ValueSetType> getAllowedValueSetTypes(IIpsProject ipsProject) throws CoreException {
         List<ValueSetType> types = ipsProject.getValueSetTypes(findDatatype(ipsProject));
-        for (Iterator<ValueSetType> it = types.iterator(); it.hasNext();) {
-            ValueSetType valueSetType = it.next();
-            if (valueSetType.isEnum()) {
-                ValueDatatype datatype = findDatatype(ipsProject);
-                if (DatatypeUtil.isExtensibleEnumType(datatype)) {
-                    it.remove();
-                }
-            }
+        ValueDatatype datatype = findDatatype(ipsProject);
+        if (isEnumValueSetIllegal(datatype)) {
+            types.remove(ValueSetType.ENUM);
         }
         return types;
+    }
+
+    private boolean isEnumValueSetIllegal(ValueDatatype datatype) {
+        return !isProductRelevant() && DatatypeUtil.isExtensibleEnumType(datatype);
     }
 
     @Override
@@ -230,6 +229,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         super.validateThis(result, ipsProject);
         validateProductRelevant(result, ipsProject);
         validateOverwrite(result, ipsProject);
+        validateValueSetType(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -263,12 +263,23 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
+    private boolean isAllowedValueSet(IValueSet valueSet) {
+        if (valueSet == null) {
+            return false;
+        }
+        try {
+            return getAllowedValueSetTypes(getIpsProject()).contains(valueSet.getValueSetType());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     private void validateOverwrite(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (isOverwrite()) {
             IPolicyCmptTypeAttribute superAttr = (IPolicyCmptTypeAttribute)findOverwrittenAttribute(ipsProject);
             if (superAttr != null) {
                 if (!attributeType.equals(superAttr.getAttributeType())) {
-                    // there is only one allowed change: superAttribute is deived on the fly and
+                    // there is only one allowed change: superAttribute is derived on the fly and
                     // this attribute is changeable. See FIPS-1103
                     if (!(superAttr.getAttributeType() == AttributeType.DERIVED_ON_THE_FLY && attributeType == AttributeType.CHANGEABLE)) {
                         String text = Messages.PolicyCmptTypeAttribute_TypeOfOverwrittenAttributeCantBeChanged;
@@ -277,6 +288,16 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                     }
                 }
             }
+        }
+    }
+
+    private void validateValueSetType(MessageList result) {
+        if (!isAllowedValueSet(getValueSet())) {
+            String messageText = NLS.bind(
+                    Messages.PolicyCmptTypeAttribute_msg_IllegalValueSetType,
+                    getValueSet() == null ? StringUtils.EMPTY : org.faktorips.devtools.core.util.StringUtils
+                            .quote(getValueSet().getValueSetType().getName()));
+            result.add(new Message(MSGCODE_ILLEGAL_VALUESET_TYPE, messageText, Message.ERROR, this, PROPERTY_VALUE_SET));
         }
     }
 

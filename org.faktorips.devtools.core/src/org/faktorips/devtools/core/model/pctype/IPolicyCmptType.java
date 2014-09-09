@@ -29,50 +29,50 @@ public interface IPolicyCmptType extends IType {
     /**
      * The name of the "configurableByProductComponentType" property.
      */
-    public final static String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
+    public static final String PROPERTY_CONFIGURABLE_BY_PRODUCTCMPTTYPE = "configurableByProductCmptType"; //$NON-NLS-1$
 
     /**
      * The name of the product component type property.
      */
-    public final static String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
+    public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     /**
      * The name of the super type property.
      */
-    public final static String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
+    public static final String PROPERTY_SUPERTYPE = "supertype"; //$NON-NLS-1$
 
     /**
      * The name of the abstract property.
      */
-    public final static String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
+    public static final String PROPERTY_ABSTRACT = "abstract"; //$NON-NLS-1$
 
     /**
      * The name of the abstract property.
      */
-    public final static String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration"; //$NON-NLS-1$
+    public static final String PROPERTY_FORCE_GENERATION_OF_EXTENSION_CU = "forceExtensionCompilationUnitGeneration"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "POLICYCMPTTYPE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "POLICYCMPTTYPE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined as
      * configurable by product, but the product component type name is not set.
      */
-    public final static String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING = MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
+    public static final String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSING = MSGCODE_PREFIX + "ProductCmptTypeNameMissing"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined as
      * configurable by product, but the product component type name is not set.
      */
-    public final static String MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND = MSGCODE_PREFIX + "ProductCmptTypeNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_PRODUCT_CMPT_TYPE_NOT_FOUND = MSGCODE_PREFIX + "ProductCmptTypeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this policy component type is defined configurable
      * by product and the product type name is the same as this type's name.
      */
-    public final static String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH = MSGCODE_PREFIX
+    public static final String MSGCODE_PRODUCT_CMPT_TYPE_NAME_MISSMATCH = MSGCODE_PREFIX
             + "ProductCmptTypeNameMissmatch"; //$NON-NLS-1$
 
     /**
@@ -80,21 +80,21 @@ public interface IPolicyCmptType extends IType {
      * type as configuring it, but the referenced product component type configures another policy
      * component type or none at all.
      */
-    public final static String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_PRODUCT_CMPT_TYPE_DOES_NOT_CONFIGURE_THIS_TYPE = MSGCODE_PREFIX
             + "ProductCmptTypeDoesNotConfigureThisType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product relevant flag is set but the super type
      * is not product relevant.
      */
-    public final static String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = MSGCODE_PREFIX
+    public static final String MSGCODE_SUPERTYPE_NOT_PRODUCT_RELEVANT_IF_THE_TYPE_IS_PRODUCT_RELEVANT = MSGCODE_PREFIX
             + "SupertypeNotProductRelevantIfTheTypeIsProductRelevant"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that this class needs to be configurable if the super
      * type is configurable.
      */
-    public final static String MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE = MSGCODE_PREFIX
+    public static final String MSGCODE_SUPERTYPE_CONFIGURABLE_FORCES_THIS_TYPE_IS_CONFIGURABLE = MSGCODE_PREFIX
             + "SupertypeProductRelevantForcesThisTypeIsProductRelevant"; //$NON-NLS-1$
 
     /**
