@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.NumericDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -49,7 +50,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     /**
      * Flag that indicates whether this range contains <code>null</code> or not.
      */
-    private boolean containsNull;
+    private boolean containsNull = false;
 
     /**
      * Creates an unbounded range with no step.
@@ -156,14 +157,14 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * <li>The value is null (according to definition of the datatype) and the range contains the
      * null value</li>
      * <li>The range is abstract and hence all values are allowed (except null if
-     * {@link #isContainingNull()} is false)</li>
+     * {@link #isContainsNull()} is false)</li>
      * <li>The value lies between the upper and the lower value</li>
      * </ul>
      */
     private boolean checkValueInRange(String value, ValueDatatype datatype) {
         try {
             if (isNullValue(value, datatype)) {
-                return isContainingNull();
+                return isContainsNull();
             }
             if (isAbstract()) {
                 return true;
@@ -235,13 +236,13 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
      * </ul>
      */
     private boolean checkIsRangeSubset(IRangeValueSet subRange, NumericDatatype datatype) {
+        if (!isContainsNull() && subRange.isContainsNull()) {
+            return false;
+        }
         if (isAbstract()) {
             return true;
         }
         if (subRange.isAbstract()) {
-            return false;
-        }
-        if (!isContainingNull() && subRange.isContainingNull()) {
             return false;
         }
 
@@ -305,7 +306,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
-    public void validateThis(MessageList list, IIpsProject ipsProject) {
+    public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ObjectProperty parentObjectProperty = new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET);
         ObjectProperty lowerBoundProperty = new ObjectProperty(this, PROPERTY_LOWERBOUND);
         ObjectProperty upperBoundProperty = new ObjectProperty(this, PROPERTY_UPPERBOUND);
@@ -317,7 +319,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                     lowerBoundProperty, upperBoundProperty, stepProperty));
             return;
         }
-        datatype = checkDatatypePrimitiv(list, datatype);
+        datatype = getDatatypeOrWrapperForPrimitivDatatype(datatype);
 
         validateParsable(datatype, getLowerBound(), list, this, PROPERTY_LOWERBOUND);
         validateParsable(datatype, getUpperBound(), list, this, PROPERTY_UPPERBOUND);
@@ -365,12 +367,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         return true;
     }
 
-    private ValueDatatype checkDatatypePrimitiv(MessageList list, ValueDatatype datatype) {
+    private ValueDatatype getDatatypeOrWrapperForPrimitivDatatype(ValueDatatype datatype) {
         if (datatype.isPrimitive()) {
-            if (isContainingNull()) {
-                String text = Messages.RangeValueSet_msgNullNotSupported;
-                list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
-            }
             // even if the basic datatype is a primitive, null is allowed for upper, lower bound and
             // step.
             return datatype.getWrapperType();
@@ -426,6 +424,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             sb.append(RANGE_STEP_SEPERATOR);
             sb.append(step);
         }
+        if (isContainsNull()) {
+            sb.append(NLS.bind(Messages.RangeValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
+                    .getNullPresentation()));
+        }
         sb.append(RANGE_VALUESET_END);
         return sb.toString();
     }
@@ -454,7 +456,6 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             upperBound = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_UPPERBOUND));
             step = ValueToXmlHelper.getValueFromElement(el, StringUtils.capitalize(PROPERTY_STEP));
         }
-
         containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
     }
 
@@ -463,7 +464,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG_RANGE);
-        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(containsNull));
+        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(isContainsNull()));
         ValueToXmlHelper.addValueToElement(lowerBound, tagElement, StringUtils.capitalize(PROPERTY_LOWERBOUND));
         ValueToXmlHelper.addValueToElement(upperBound, tagElement, StringUtils.capitalize(PROPERTY_UPPERBOUND));
         ValueToXmlHelper.addValueToElement(step, tagElement, StringUtils.capitalize(PROPERTY_STEP));
@@ -473,11 +474,10 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
         RangeValueSet retValue = new RangeValueSet(parent, id);
-
         retValue.lowerBound = lowerBound;
         retValue.upperBound = upperBound;
         retValue.step = step;
-        retValue.containsNull = containsNull;
+        retValue.containsNull = isContainsNull();
 
         return retValue;
     }
@@ -488,29 +488,19 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         lowerBound = set.lowerBound;
         upperBound = set.upperBound;
         step = set.step;
-        containsNull = set.containsNull;
+        containsNull = set.isContainsNull();
         objectHasChanged();
     }
 
-    /**
-     * @deprecated Use {@link #isContainingNull()} instead
-     */
-    @Deprecated
     @Override
-    public boolean getContainsNull() {
-        return isContainingNull();
-    }
-
-    @Override
-    public boolean isContainingNull() {
-        return containsNull;
+    public boolean isContainsNull() {
+        return containsNull && isContainingNullAllowed();
     }
 
     @Override
     public void setContainsNull(boolean containsNull) {
-        boolean old = this.containsNull;
+        boolean old = this.isContainsNull();
         this.containsNull = containsNull;
-        valueChanged(old, containsNull);
+        valueChanged(old, containsNull, PROPERTY_CONTAINS_NULL);
     }
-
 }

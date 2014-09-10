@@ -87,7 +87,7 @@
             	«IF ipsEnum-»
        	            «fieldNameValueSet» = «newEnumValueSetInstance(getAllEnumValuesCode("getRepository()"), "true")»;
             	«ELSE-»
-	            	«fieldNameValueSet» = new «UnrestrictedValueSet(javaClassUsedForValueSet)»();
+	            	«fieldNameValueSet» = «ValueToXmlHelper()».«getUnrestrictedValueSet("configElement", XML_TAG_VALUE_SET())»;
             	«ENDIF-»
             «ENDIF-»
             «IF valueSetEnum || (valueSetUnrestricted && enumValueSetSupported)-»
@@ -132,6 +132,7 @@
 	        «IF valueSetUnrestricted-»
 		        if («fieldNameValueSet» instanceof «UnrestrictedValueSet("?")») {
 		            Element valueElement = element.getOwnerDocument().createElement(«XML_TAG_ALL_VALUES()»);
+		            valueElement.setAttribute(«XML_ATTRIBUTE_CONTAINS_NULL()», Boolean.toString(«fieldNameValueSet».«containsNull()»));
 		            valueSetElement.appendChild(valueElement);
 		        }
 	        «ENDIF-»
@@ -155,6 +156,7 @@
 		}
 	«ENDIF-»
 «ENDDEFINE»
+
 
 «DEFINE writeRange(String rangeVar) FOR XPolicyAttribute-»
 	            Element valueSetValuesElement = element.getOwnerDocument().createElement(«XML_TAG_RANGE()»);

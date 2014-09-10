@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.ui.controls.chooser.AbstractSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.SubsetChooserViewer;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
@@ -80,7 +81,7 @@ public class EnumSubsetEditDialog extends IpsPartEditDialog2 {
 
     private Composite createEnumValueSetChooser(Composite workArea) {
         SubsetChooserViewer viewer = new SubsetChooserViewer(workArea, getToolkit());
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(
                 enumValueSetProvider.getSourceEnumValueSet(), valueDatatype, (IEnumValueSet)enumValueSetProvider
                         .getTargetConfigElement().getValueSet());
         viewer.init(model);

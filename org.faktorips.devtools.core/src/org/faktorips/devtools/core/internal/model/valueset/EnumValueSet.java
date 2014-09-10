@@ -123,7 +123,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             return false;
         }
         if (isNullValue(value, datatype)) {
-            return isContainingNull();
+            return isContainsNull();
         }
         if (isAbstract()) {
             return true;
@@ -162,7 +162,9 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (!checkDatatypes(subset, datatype)) {
             return false;
         }
-
+        if (!isContainsNull() && subset.isContainsNull()) {
+            return false;
+        }
         if (isAbstract()) {
             return true;
         }
@@ -312,19 +314,19 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
         ValueDatatype datatype = getValueDatatype();
+
+        if (datatype != null && datatype.isPrimitive() && isContainsNull()) {
+            String text = Messages.ValueSet_msgNullNotSupported;
+            list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
+        }
 
         int numOfValues = values.size();
         for (int i = 0; i < numOfValues; i++) {
             validateValueWithoutDuplicateCheck(list, i, datatype);
         }
         checkForDuplicates(list);
-
-        if (datatype != null && datatype.isPrimitive() && isContainingNull()) {
-            String text = Messages.EnumValueSet_msgNullNotSupported;
-            list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
-        }
-
     }
 
     @Override
@@ -486,18 +488,18 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         addValues(Arrays.asList(valueIds));
     }
 
-    /**
-     * @deprecated Use {@link #isContainingNull()} instead
-     */
     @Override
-    @Deprecated
-    public boolean getContainsNull() {
-        return isContainingNull();
+    public boolean isContainsNull() {
+        return values.contains(null);
     }
 
     @Override
-    public boolean isContainingNull() {
-        return values.contains(null);
+    public void setContainsNull(boolean containsNull) {
+        if (!isContainsNull() && containsNull) {
+            addValue(null);
+        } else if (!containsNull) {
+            removeValue(null);
+        }
     }
 
 }

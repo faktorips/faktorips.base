@@ -20,78 +20,78 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
  */
 public interface IAttribute extends ITypePart {
 
-    public final static String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
 
-    public final static String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFAULT_VALUE = "defaultValue"; //$NON-NLS-1$
 
-    public final static String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
+    public static final String PROPERTY_OVERWRITES = "overwrite"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "ATTRIBUTE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ATTRIBUTE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of the attribute is not a valid java field
      * identifier.
      */
-    public final static String MSGCODE_INVALID_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidAttributeName"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_ATTRIBUTE_NAME = MSGCODE_PREFIX + "InvalidAttributeName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this attribute is not set.
      */
-    public final static String MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE = MSGCODE_PREFIX
             + "DefaultNotParsableUnknownDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of this attribute is not a valid data
      * type.
      */
-    public final static String MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE = MSGCODE_PREFIX
+    public static final String MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE = MSGCODE_PREFIX
             + "ValueNotParsableInvalidDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the default value of this attribute can not be
      * parsed by the data type of this attribute.
      */
-    public final static String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueTypeMissmatch"; //$NON-NLS-1$
+    public static final String MSGCODE_VALUE_NOT_PARSABLE = MSGCODE_PREFIX + "ValueTypeMissmatch"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type provided for a parameter is not valid.
      */
-    public final static String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_DATATYPE_NOT_FOUND = MSGCODE_PREFIX + "DatatypeNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the default value of this attribute is not contained
      * in the value set of this attribute.
      */
-    public final static String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX + "DefaultNotInValueSet"; //$NON-NLS-1$
+    public static final String MSGCODE_DEFAULT_NOT_IN_VALUESET = MSGCODE_PREFIX + "DefaultNotInValueSet"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute is marked overwriting an attribute in
      * the super type hierarchy, but there is no such attribute.
      */
-    public final static String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
+    public static final String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but does has an
      * incompatible value set.
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeModifier"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but has a different
      * datatype.
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentDatatype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but has a different
      * modifier.
      */
-    public final static String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentModifier"; //$NON-NLS-1$
 
     /**
@@ -161,5 +161,8 @@ public interface IAttribute extends ITypePart {
      */
     public IAttribute findOverwrittenAttribute(IIpsProject ipsProject) throws CoreException;
 
-    public IValueSet getValueSet() throws CoreException;
+    /**
+     * Returns the {@link IValueSet} of this {@link IAttribute}.
+     */
+    public IValueSet getValueSet();
 }

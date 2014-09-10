@@ -44,7 +44,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     @Deprecated
     public EnumValueSubsetChooserModel(List<String> sourceValueIds, IEnumValueSet resultingEnumValueSet,
             ValueDatatype datatype) {
-        super(datatype);
+        super(datatype, resultingEnumValueSet);
         this.resultingEnumValueSet = resultingEnumValueSet;
         sourceValues = convertToListChooserValues(sourceValueIds);
     }
@@ -65,7 +65,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
      */
     public EnumValueSubsetChooserModel(IValueSet sourceValueSet, ValueDatatype datatype,
             IEnumValueSet resultingEnumValueSet) {
-        super(datatype);
+        super(datatype, resultingEnumValueSet);
         this.resultingEnumValueSet = resultingEnumValueSet;
         sourceValues = initSourceValuesForEnumDatatypeAndValueSet(sourceValueSet, datatype);
     }
@@ -175,7 +175,7 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
     public void setResultingEnumValueSet(IEnumValueSet newValueSet) {
         List<ListChooserValue> oldValues = getResultingValues();
         resultingEnumValueSet = newValueSet;
-        fireEvents(oldValues);
+        fireValuesChangedEvents(oldValues);
     }
 
 }

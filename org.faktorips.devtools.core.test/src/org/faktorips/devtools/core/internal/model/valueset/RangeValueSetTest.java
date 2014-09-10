@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -91,7 +90,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals("42", range.getLowerBound());
         assertEquals("trulala", range.getUpperBound());
         assertEquals("4", range.getStep());
-        assertTrue(range.isContainingNull());
+        assertTrue(range.isContainsNull());
 
         // new format
         element = XmlUtil.getElement(root, 1);
@@ -100,7 +99,7 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         assertEquals("1", range.getLowerBound());
         assertEquals("10", range.getUpperBound());
         assertEquals("2", range.getStep());
-        assertTrue(range.isContainingNull());
+        assertTrue(range.isContainsNull());
 
     }
 
@@ -110,13 +109,14 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         range.setLowerBound("10");
         range.setUpperBound("100");
         range.setStep("10");
+        range.setContainsNull(true);
         Element element = range.toXml(newDocument());
         IRangeValueSet r2 = new RangeValueSet(ce, "1");
         r2.initFromXml(element);
         assertEquals(range.getLowerBound(), r2.getLowerBound());
         assertEquals(range.getUpperBound(), r2.getUpperBound());
         assertEquals(range.getStep(), r2.getStep());
-        assertEquals(range.isContainingNull(), r2.isContainingNull());
+        assertEquals(range.isContainsNull(), r2.isContainsNull());
     }
 
     @Test
@@ -443,6 +443,46 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValueSet_EqualValueSetsWithNull() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(true);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(true);
+
+        assertTrue(superRange.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_EqualValueSetsWithoutNull() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(false);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(false);
+
+        assertTrue(superRange.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSet() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(true);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(false);
+
+        assertTrue(superRange.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSetNot() {
+        RangeValueSet superRange = new RangeValueSet(intEl, "50");
+        superRange.setContainsNull(false);
+        RangeValueSet subRange = new RangeValueSet(intEl, "100");
+        subRange.setContainsNull(true);
+
+        assertFalse(superRange.containsValueSet(subRange));
+    }
+
+    @Test
     public void testContainsValueSetEmptyWithDecimal() throws Exception {
         IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attrX");
@@ -503,10 +543,14 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
 
         list = range.validate(ipsProject);
         assertNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+    }
 
-        range.setContainsNull(true);
-        list = range.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IValueSet.MSGCODE_NULL_NOT_SUPPORTED));
+    @Test
+    public void testIsContainsNullPrimitive() throws Exception {
+        RangeValueSet range = new RangeValueSet(intEl, "50");
+
+        attr.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
+        assertFalse(range.isContainsNull());
     }
 
     @Test

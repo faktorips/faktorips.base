@@ -107,7 +107,7 @@ public class BooleanValueSetFieldTest {
         when(enumValue.getIpsProject()).thenReturn(ipsProject);
         when(enumValue.containsValue(Boolean.TRUE.toString(), ipsProject)).thenReturn(true);
         when(enumValue.containsValue(Boolean.FALSE.toString(), ipsProject)).thenReturn(true);
-        when(enumValue.isContainingNull()).thenReturn(true);
+        when(enumValue.isContainsNull()).thenReturn(true);
 
         field.setValue(enumValue);
 

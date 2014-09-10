@@ -15,15 +15,22 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -33,6 +40,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -244,5 +252,42 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
         assertFalse(list.isEmpty());
         assertNotNull(list.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
+    }
+
+    @Test
+    public void testOverwrittenAttribute_nullIcompatible() throws CoreException {
+        String superTypeQName = "SuperPCType";
+        PolicyCmptType superPCType = newPolicyCmptType(ipsProject, superTypeQName);
+        PolicyCmptType pCType = newPolicyCmptType(ipsProject, "PCType");
+        pCType.setSupertype(superTypeQName);
+
+        IPolicyCmptTypeAttribute attr = superPCType.newPolicyCmptTypeAttribute("attr");
+        IPolicyCmptTypeAttribute overwritingAttr = pCType.newPolicyCmptTypeAttribute("attr");
+        attr.setDatatype("Integer");
+        overwritingAttr.setDatatype("Integer");
+        overwritingAttr.setOverwrite(true);
+
+        List<String> listWithNull = list(null, "1", "2", "3", "4");
+        List<String> normalValues = list("1", "9", "99", "999");
+        attr.setValueSetCopy(new EnumValueSet(attr, listWithNull, "partId"));
+        overwritingAttr.setValueSetCopy(new EnumValueSet(overwritingAttr, normalValues, "partId"));
+
+        MessageList messageList = overwritingAttr.validate(ipsProject);
+        assertEquals(1, messageList.size());
+        ObjectProperty[] invalidObjectProperties = messageList.getMessage(0).getInvalidObjectProperties();
+        assertEquals(1, invalidObjectProperties.length);
+
+        attr.setValueSetCopy(new EnumValueSet(attr, normalValues, "partId"));
+        overwritingAttr.setValueSetCopy(new EnumValueSet(overwritingAttr, listWithNull, "partId"));
+
+        messageList = overwritingAttr.validate(ipsProject);
+        assertEquals(2, messageList.size());
+        assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, messageList.getMessage(0).getCode());
+        assertEquals(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET, messageList.getMessage(1)
+                .getCode());
+    }
+
+    private List<String> list(String... values) {
+        return Arrays.asList(values);
     }
 }

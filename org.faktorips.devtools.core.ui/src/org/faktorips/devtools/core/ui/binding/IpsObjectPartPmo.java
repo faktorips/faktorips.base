@@ -25,7 +25,7 @@ import org.faktorips.util.message.MessageList;
  * An abstract base class for presentation model objects that are based on a single ips object part.
  * If an instance of this class is bound to a binding context, the binding context registers itself
  * as change listener to the ips model. The context interprets changes to the underlying ips object
- * part as changes to the presenation model object.
+ * part as changes to the presentation model object.
  * 
  * @author Jan Ortmann
  */

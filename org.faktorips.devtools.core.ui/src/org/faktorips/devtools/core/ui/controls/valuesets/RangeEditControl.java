@@ -10,13 +10,11 @@
 
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
@@ -28,8 +26,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
 
@@ -47,9 +43,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private EditField<String> upperfield;
     private EditField<String> stepfield;
     private BindingContext uiController;
-    private Checkbox containsNullCB;
-    private CheckboxField containsNullField;
-
     private boolean dataChangeable;
 
     public RangeEditControl(Composite parent, UIToolkit toolkit, ValueDatatype valueDatatype, IRangeValueSet range,
@@ -123,12 +116,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         stepfield.getControl().getParent()
                 .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
-        toolkit.createLabel(
-                workArea,
-                NLS.bind(Messages.RangeEditControl_labelIncludeNull, IpsPlugin.getDefault().getIpsPreferences()
-                        .getNullPresentation()));
-        containsNullCB = toolkit.createCheckbox(workArea);
-
         if (toolkit.getFormToolkit() != null) {
             toolkit.getFormToolkit().paintBordersFor(workArea);
             toolkit.getFormToolkit().adapt(workArea);
@@ -136,11 +123,9 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     }
 
     private void connectToModel() {
-        containsNullField = new CheckboxField(containsNullCB);
         uiController.bindContent(upperfield, range, IRangeValueSet.PROPERTY_UPPERBOUND);
         uiController.bindContent(lowerfield, range, IRangeValueSet.PROPERTY_LOWERBOUND);
         uiController.bindContent(stepfield, range, IRangeValueSet.PROPERTY_STEP);
-        uiController.bindContent(containsNullField, range, IValueSet.PROPERTY_CONTAINS_NULL);
         uiController.updateUI();
     }
 
@@ -184,7 +169,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiController.removeBindings(upperfield.getControl());
         uiController.removeBindings(lowerfield.getControl());
         uiController.removeBindings(stepfield.getControl());
-        uiController.removeBindings(containsNullField.getControl());
         connectToModel();
     }
 
@@ -243,7 +227,6 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
         uiToolkit.setDataChangeable(lowerfield.getControl(), changeable);
         uiToolkit.setDataChangeable(upperfield.getControl(), changeable);
         uiToolkit.setDataChangeable(stepfield.getControl(), changeable);
-        uiToolkit.setDataChangeable(containsNullCB, changeable);
     }
 
     @Override

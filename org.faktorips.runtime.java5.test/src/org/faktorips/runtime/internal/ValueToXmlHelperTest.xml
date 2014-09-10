@@ -55,5 +55,14 @@
 	        </Enum>
 	    </ValueSet>
 	</ConfigElement>
-	
+	<ConfigElement>
+	    <ValueSet id="1" description="">
+	        <AllValues/>
+	    </ValueSet>
+	</ConfigElement>
+	<ConfigElement>
+	    <ValueSet id="1" description="">
+	        <AllValues containsNull="false" />
+	    </ValueSet>
+	</ConfigElement>
 </DocElement>

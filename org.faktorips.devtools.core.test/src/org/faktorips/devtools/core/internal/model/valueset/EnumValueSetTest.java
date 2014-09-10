@@ -236,6 +236,46 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testContainsValueSet_EqualValueSetsWithNull() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(true);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(true);
+
+        assertTrue(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_EqualValueSetsWithoutNull() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(false);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(false);
+
+        assertTrue(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSet() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(true);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(false);
+
+        assertTrue(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_ContainsSubValueSetNot() {
+        EnumValueSet superset = new EnumValueSet(ce, "id1");
+        superset.setContainsNull(false);
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+        subset.setContainsNull(true);
+
+        assertFalse(superset.containsValueSet(subset));
+    }
+
+    @Test
     public void testAddValue() {
         IEnumValueSet set = new EnumValueSet(ce, "1");
         set.addValue("one");
@@ -546,7 +586,6 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals("one", set.getValue(0));
         assertEquals("two", set.getValue(1));
         assertEquals("three", set.getValue(2));
-
     }
 
     @Test
@@ -555,12 +594,14 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("one");
         set.addValue("two");
         set.addValue("two");
+        set.setContainsNull(true);
         Element element = set.toXml(newDocument());
         IEnumValueSet set2 = new EnumValueSet(ce, "1");
         set2.initFromXml(element);
         assertEquals("one", set2.getValue(0));
         assertEquals("two", set2.getValue(1));
         assertEquals("two", set2.getValue(2));
+        assertTrue(set2.isContainsNull());
 
     }
 
@@ -703,13 +744,14 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsContainingNull() {
+    public void testIsContainsNull_SetContainsNull() {
         EnumValueSet set = new EnumValueSet(ce, "50");
 
-        assertFalse(set.isContainingNull());
+        set.setContainsNull(true);
+        assertTrue(set.isContainsNull());
 
-        set.addValue(null);
-        assertTrue(set.isContainingNull());
+        set.setContainsNull(false);
+        assertFalse(set.isContainsNull());
     }
 
     @Test

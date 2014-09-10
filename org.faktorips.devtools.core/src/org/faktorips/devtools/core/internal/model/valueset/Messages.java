@@ -24,16 +24,18 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String ValueSet_msgNullNotSupported;
+
     public static String EnumValueSet_msgValueNotParsable;
     public static String EnumValueSet_msgDuplicateValue;
     public static String EnumValueSet_msgValueNotParsableDatatypeUnknown;
-    public static String EnumValueSet_msgNullNotSupported;
 
     public static String Range_msgUnknownDatatype;
     public static String Range_msgLowerboundGreaterUpperbound;
     public static String Range_msgPropertyValueNotParsable;
 
-    public static String RangeValueSet_msgNullNotSupported;
+    public static String RangeValueSet_includingNull;
+
     public static String RangeValueSet_msgStepRangeMismatch;
     public static String RangeValueSet_msgStepWithLowerNull;
     public static String RangeValueSet_msgDatatypeNotNumeric;

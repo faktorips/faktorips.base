@@ -22,6 +22,8 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -31,6 +33,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -58,6 +62,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
     private IEnumValueSet valueSet;
     private final ValueDatatype valueDatatype;
     private final IIpsProject ipsProject;
+    private ContentsChangeListener changeListener;
+    private DisposeListener disposeListener;
 
     /**
      * Constructs a EnumValueSetEditControl and handles the type of the value set that is, if the
@@ -67,14 +73,38 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         super(parent, SWT.NONE);
         this.valueDatatype = valueDatatype;
         this.ipsProject = ipsProject;
+        setUpChangeListener(ipsProject);
+        setUpDisposeListener(ipsProject);
+    }
+
+    private void setUpChangeListener(final IIpsProject project) {
+        changeListener = new ContentsChangeListener() {
+
+            @Override
+            public void contentsChanged(ContentChangeEvent event) {
+                if (event.isAffected(valueSet)) {
+                    refresh();
+                }
+            }
+        };
+        project.getIpsModel().addChangeListener(changeListener);
+    }
+
+    private void setUpDisposeListener(final IIpsProject project) {
+        disposeListener = new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                project.getIpsModel().removeChangeListener(changeListener);
+            }
+        };
+        addDisposeListener(disposeListener);
     }
 
     @Override
     public void initialize(Object modelObject, String label) {
-        if (label == null) {
-            label = Messages.EnumValueSetEditControl_titleValues;
-        }
-        super.initialize(modelObject, label);
+        String resultingLabel = label == null ? Messages.EnumValueSetEditControl_titleValues : label;
+        super.initialize(modelObject, resultingLabel);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
 
@@ -152,7 +182,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        layouter.addColumnData(new ColumnPixelData(15, false)); // message image
+        // message image
+        layouter.addColumnData(new ColumnPixelData(15, false));
         layouter.addColumnData(new ColumnWeightData(95, true));
     }
 
@@ -161,7 +192,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(valueDatatype);
         CellEditor[] editors = new CellEditor[2];
-        editors[0] = null; // no editor for the message image column
+        // no editor for the message image column
+        editors[0] = null;
         editors[1] = ctrlFactory.createTableCellEditor(getUiToolkit(), valueDatatype, null, getTableViewer(), 1,
                 ipsProject);
         return editors;
@@ -199,6 +231,11 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             return new MessageList();
         }
         return valueSet.validateValue(wrapper.index, valueSet.getIpsProject());
+    }
+
+    @Override
+    public Composite getComposite() {
+        return this;
     }
 
     private class TableLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -270,12 +307,13 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             if (element == null) {
                 return;
             }
+            Object resultingElement = element;
             if (element instanceof Item) {
-                element = ((Item)element).getData();
+                resultingElement = ((Item)element).getData();
             }
-            IndexValueWrapper wrapper = (IndexValueWrapper)element;
+            IndexValueWrapper wrapper = (IndexValueWrapper)resultingElement;
             wrapper.setValueName((String)value);
-            getTableViewer().update(element, null);
+            getTableViewer().update(resultingElement, null);
         }
     }
 
@@ -325,11 +363,6 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             return validate(element);
         }
 
-    }
-
-    @Override
-    public Composite getComposite() {
-        return this;
     }
 
 }

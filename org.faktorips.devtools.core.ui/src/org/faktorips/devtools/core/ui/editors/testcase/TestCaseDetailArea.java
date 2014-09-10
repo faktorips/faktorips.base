@@ -386,7 +386,7 @@ public class TestCaseDetailArea {
     private EditField<?> createEditField(Composite attributeComposite,
             ValueDatatypeControlFactory ctrlFactory,
             ValueDatatype datatype,
-            IAttribute attribute) throws CoreException {
+            IAttribute attribute) {
         EditField<?> editField = null;
         if (attribute != null) {
             IValueSet valueSet = attribute.getValueSet();

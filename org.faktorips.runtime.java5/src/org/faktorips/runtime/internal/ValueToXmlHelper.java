@@ -11,6 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -271,4 +272,18 @@ public class ValueToXmlHelper {
         return new EnumValues(values, containsNull);
     }
 
+    public static <T> UnrestrictedValueSet<T> getUnrestrictedValueSet(Element el, String tagName) {
+        Element valueSetEl = XmlUtil.getFirstElement(el, tagName);
+        if (valueSetEl != null) {
+            Element enumEl = XmlUtil.getFirstElement(valueSetEl, XML_TAG_ALL_VALUES);
+            if (enumEl != null) {
+                if (enumEl.hasAttribute(XML_ATTRIBUTE_CONTAINS_NULL)) {
+                    boolean containsNull = Boolean.valueOf(enumEl.getAttribute(XML_ATTRIBUTE_CONTAINS_NULL))
+                            .booleanValue();
+                    return new UnrestrictedValueSet<T>(containsNull);
+                }
+            }
+        }
+        return new UnrestrictedValueSet<T>(true);
+    }
 }

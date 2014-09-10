@@ -18,6 +18,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.message.MessageList;
 
@@ -28,8 +29,8 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     private final List<ListChooserValue> sourceValues = new ArrayList<ListChooserValue>();
 
     public MultiValueSubsetChooserModel(List<String> allValues, MultiValueHolder multiValueHolder,
-            ValueDatatype datatype) {
-        super(datatype);
+            ValueDatatype datatype, IAttributeValue attributeValue) {
+        super(datatype, attributeValue);
         this.multiValueHolder = multiValueHolder;
         for (SingleValueHolder holder : multiValueHolder.getValue()) {
             resultingValues.add(new ListChooserValue(holder.getStringValue()));

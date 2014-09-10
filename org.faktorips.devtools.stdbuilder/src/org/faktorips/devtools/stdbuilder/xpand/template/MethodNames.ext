@@ -169,6 +169,9 @@ addValueToElement(String valueParam, String elementParam, String tagNameParam) :
 addInternationalStringToElement(String valueParam, String elementParam, String tagNameParam) :
 	"addInternationalStringToElement(" + valueParam + ", " +  elementParam + ", " + tagNameParam + ")";
 	
+getUnrestrictedValueSet(String paramConfigElement, String paramValueSet) :
+	"getUnrestrictedValueSet("+ paramConfigElement + ", " + paramValueSet + ")";
+	
 // ---------------------------------
 // Methods in MultiValueXmlHelper
 // ---------------------------------

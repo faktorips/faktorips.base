@@ -178,13 +178,10 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     @Override
     public boolean isDetailedSpecificationOf(IValueSet otherValueSet) {
         if (otherValueSet.isUnrestricted()) {
-            return true;
+            return otherValueSet.containsValueSet(this);
         }
         if (!getValueSetType().equals(otherValueSet.getValueSetType())) {
             return false;
-        }
-        if (otherValueSet.isAbstract()) {
-            return true;
         }
         return otherValueSet.containsValueSet(this);
     }
@@ -220,6 +217,15 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     @Override
     public boolean isAbstractAndNotUnrestricted() {
         return !isUnrestricted() && isAbstract();
+    }
+
+    /**
+     * @deprecated Use {@link #isContainsNull()} instead
+     */
+    @Deprecated
+    @Override
+    public final boolean isContainingNull() {
+        return isContainsNull();
     }
 
     /**
@@ -263,4 +269,11 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return value == null || datatype.isNull(value);
     }
 
+    /**
+     * Returns <code>true</code> if the {@link ValueDatatype} is null or not a primitive datatype.
+     */
+    protected boolean isContainingNullAllowed() {
+        ValueDatatype dataType = getValueDatatype();
+        return dataType == null || !dataType.isPrimitive();
+    }
 }

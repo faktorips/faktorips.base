@@ -21,6 +21,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -186,42 +187,38 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private void validateValueAndValueSet(MessageList list, IIpsProject ipsProject, IPolicyCmptTypeAttribute attribute)
             throws CoreException {
-
-        ValueDatatype valueDatatype = validateValueVsDatatype(attribute, ipsProject, list);
+        ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
+        validateValueVsDatatype(valueDatatype, list);
         if (valueDatatype != null) {
             validateValueVsValueSet(valueDatatype, ipsProject, list);
             validateValueSetVsAttributeValueSet(attribute, ipsProject, list);
         }
     }
 
-    private ValueDatatype validateValueVsDatatype(IPolicyCmptTypeAttribute attribute,
-            IIpsProject ipsProject,
-            MessageList list) throws CoreException {
+    private void validateValueVsDatatype(ValueDatatype valueDatatype, MessageList list) throws CoreException {
 
-        ValueDatatype valueDatatype = attribute.findDatatype(ipsProject);
         if (valueDatatype == null) {
             if (!StringUtils.isEmpty(value)) {
                 String text = Messages.ConfigElement_msgUndknownDatatype;
                 list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
                         PROPERTY_VALUE));
             }
-            return null;
+            return;
         }
         try {
             if (valueDatatype.checkReadyToUse().containsErrorMsg()) {
                 String text = Messages.ConfigElement_msgInvalidDatatype;
                 list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this, PROPERTY_VALUE));
-                return null;
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new CoreException(new IpsStatus(e));
         }
 
         if (!valueDatatype.isParsable(value)) {
             addNotParsableMessage(value, valueDatatype, list);
-            return null;
         }
-        return valueDatatype;
     }
 
     private void validateValueSetVsAttributeValueSet(IPolicyCmptTypeAttribute attribute,
@@ -244,6 +241,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             // are ok.
             return;
         }
+        validateNullIncompatible(list, modelValueSet);
         String msgCode;
         String text;
         if (!valueSet.isSameTypeOfValueSet(modelValueSet)) {
@@ -269,6 +267,10 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         ObjectProperty[] invalidOP = invalidObjectProperties
                 .toArray(new ObjectProperty[invalidObjectProperties.size()]);
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
+    }
+
+    private void validateNullIncompatible(MessageList list, IValueSet modelValueSet) {
+        new ValueSetNullIncompatibleValidator(modelValueSet, valueSet).validateAndAppendMessages(list);
     }
 
     private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)

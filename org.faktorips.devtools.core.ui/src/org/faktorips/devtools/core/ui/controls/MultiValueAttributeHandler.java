@@ -62,7 +62,7 @@ public class MultiValueAttributeHandler {
 
     protected void openMultiValueSubsetDialog(List<String> sourceValues) {
         MultiValueSubsetChooserModel model = new MultiValueSubsetChooserModel(sourceValues,
-                (MultiValueHolder)attributeValue.getValueHolder(), datatype);
+                (MultiValueHolder)attributeValue.getValueHolder(), datatype, attributeValue);
         new MultiValueSubsetDialog(shell, attributeValue, model).open();
         // changes are applied directly to the provided target value set
     }

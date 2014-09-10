@@ -12,10 +12,12 @@ package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
+import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.w3c.dom.Document;
@@ -30,12 +32,16 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     public static final String XML_TAG_UNRESTRICTED = ValueToXmlHelper.XML_TAG_ALL_VALUES;
 
+    /** Indicating whether this {@link UnrestrictedValueSet} contains null. */
+    private boolean containsNull = true;
+
     /**
      * Creates a new value set representing all values of the datatype provided by the parent. The
-     * parent therefore has to implement IValueDatatypeProvider.
+     * parent therefore has to implement IValueDatatypeProvider. The value set contains
+     * <code>null</code> as default.
      * 
      * @param parent The parent this valueset belongs to.
-     * @param partId The id this part is knwon by by the parent.
+     * @param partId The id this part is known by by the parent.
      * 
      * @throws IllegalArgumentException if the parent does not implement the interface
      *             <code>IValueDatatypeProvider</code>.
@@ -44,14 +50,35 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super(ValueSetType.UNRESTRICTED, parent, partId);
     }
 
+    /**
+     * Creates a new value set representing all values of the datatype provided by the parent. The
+     * parent therefore has to implement IValueDatatypeProvider.
+     * 
+     * @param parent The parent this valueset belongs to.
+     * @param partId The id this part is known by by the parent.
+     * @param containsNull This indicates whether this value set contains null.
+     * 
+     * @throws IllegalArgumentException if the parent does not implement the interface
+     *             <code>IValueDatatypeProvider</code>.
+     * 
+     */
+    public UnrestrictedValueSet(IValueSetOwner parent, String partId, boolean containsNull) {
+        super(ValueSetType.UNRESTRICTED, parent, partId);
+        this.containsNull = containsNull;
+    }
+
     @Override
     public String toShortString() {
-        return org.faktorips.devtools.core.model.valueset.Messages.ValueSetFormat_unrestricted;
+        if (isContainsNull()) {
+            return Messages.ValueSetFormat_unrestricted;
+        } else {
+            return Messages.ValueSet_unrestrictedWithoutNull;
+        }
     }
 
     @Override
     public String toString() {
-        return super.toString() + ":" + "UnrestrictedValueSet"; //$NON-NLS-1$ //$NON-NLS-2$
+        return super.toString() + ":" + toShortString(); //$NON-NLS-1$
     }
 
     @Override
@@ -66,6 +93,10 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             return false;
         }
 
+        if (isNullValue(value, datatype)) {
+            return isContainsNull();
+        }
+
         return true;
     }
 
@@ -78,13 +109,20 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             return false;
         }
 
+        if (!isContainsNull() && subset.isContainsNull()) {
+            return false;
+        }
+
         return true;
     }
 
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        // Nothing more to do...
+        Element el = DescriptionHelper.getFirstNoneDescriptionElement(element);
+        if (el.hasAttribute(PROPERTY_CONTAINS_NULL)) {
+            containsNull = Boolean.valueOf(el.getAttribute(PROPERTY_CONTAINS_NULL)).booleanValue();
+        }
     }
 
     @Override
@@ -92,32 +130,32 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         super.propertiesToXml(element);
         Document doc = element.getOwnerDocument();
         Element tagElement = doc.createElement(XML_TAG_UNRESTRICTED);
+        tagElement.setAttribute(PROPERTY_CONTAINS_NULL, Boolean.toString(isContainsNull()));
         element.appendChild(tagElement);
     }
 
     @Override
     public IValueSet copy(IValueSetOwner parent, String id) {
-        return new UnrestrictedValueSet(parent, id);
+        UnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(parent, id, isContainsNull());
+        return unrestrictedValueSet;
     }
 
     @Override
     public void copyPropertiesFrom(IValueSet target) {
-        // Nothing to do.
-    }
-
-    /**
-     * @deprecated Use {@link #isContainingNull()} instead
-     */
-    @Deprecated
-    @Override
-    public boolean getContainsNull() {
-        return isContainingNull();
+        containsNull = target.isContainsNull();
+        objectHasChanged();
     }
 
     @Override
-    public boolean isContainingNull() {
-        ValueDatatype type = getValueDatatype();
-        return type == null || !type.isPrimitive();
+    public boolean isContainsNull() {
+        return containsNull && isContainingNullAllowed();
+    }
+
+    @Override
+    public void setContainsNull(boolean containsNull) {
+        boolean oldContainsNull = this.isContainsNull();
+        this.containsNull = containsNull;
+        valueChanged(oldContainsNull, containsNull, PROPERTY_CONTAINS_NULL);
     }
 
 }

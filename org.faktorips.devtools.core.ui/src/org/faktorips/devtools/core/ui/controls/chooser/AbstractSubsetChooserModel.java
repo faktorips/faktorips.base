@@ -20,7 +20,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -31,13 +32,14 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Stefan Widmaier
  */
-public abstract class AbstractSubsetChooserModel extends PresentationModelObject {
+public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
 
     protected static final String PROPERTY_RESULTING_VALUES = "resultingValues"; //$NON-NLS-1$
     protected static final String PROPERTY_PREDEFINED_VALUES = "predefinedValues"; //$NON-NLS-1$
     private final ValueDatatype datatype;
 
-    public AbstractSubsetChooserModel(ValueDatatype datatype) {
+    public AbstractSubsetChooserModel(ValueDatatype datatype, IIpsObjectPart part) {
+        super(part);
         this.datatype = datatype;
     }
 
@@ -62,14 +64,13 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
     }
 
     public void moveValuesFromResultingToPredefined(List<ListChooserValue> values) {
-        List<ListChooserValue> oldValues = getResultingValues();
         removeFromResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
-        fireEvents(oldValues);
     }
 
-    protected void fireEvents(List<ListChooserValue> oldResultingValues) {
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldResultingValues, getResultingValues()));
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, oldResultingValues, getResultingValues()));
+    protected void fireValuesChangedEvents(List<ListChooserValue> oldResultingValues) {
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RESULTING_VALUES, oldResultingValues,
+                getResultingValues()));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_PREDEFINED_VALUES, null, null));
     }
 
     /**
@@ -83,9 +84,7 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
      * @param values the values to be moved
      */
     public void moveValuesFromPreDefinedToResulting(List<ListChooserValue> values) {
-        List<ListChooserValue> oldValues = getResultingValues();
         addToResultingValues(new CopyOnWriteArrayList<ListChooserValue>(values));
-        fireEvents(oldValues);
     }
 
     public abstract List<ListChooserValue> getAllValues();
@@ -132,6 +131,12 @@ public abstract class AbstractSubsetChooserModel extends PresentationModelObject
 
     public void moveDown(List<ListChooserValue> selectedValues) {
         move(selectedValues, false);
+    }
+
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        fireValuesChangedEvents(getResultingValues());
+        super.contentsChanged(event);
     }
 
 }

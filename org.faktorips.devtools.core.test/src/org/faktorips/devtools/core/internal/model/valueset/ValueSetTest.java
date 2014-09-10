@@ -46,24 +46,37 @@ public class ValueSetTest extends AbstractIpsPluginTest {
     @Test
     public void testIsDetailedSpecificationOf_Unrestricted() {
         IValueSet set1 = owner1.changeValueSetType(ValueSetType.UNRESTRICTED);
+        set1.setContainsNull(true);
 
         // unrestricted
         IValueSet set2 = owner2.changeValueSetType(ValueSetType.UNRESTRICTED);
+        set2.setContainsNull(false);
         assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        set2.setContainsNull(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
 
         // enum
+        set1.setContainsNull(true);
         set2 = owner2.changeValueSetType(ValueSetType.ENUM);
         set2.setAbstract(true);
         assertTrue(set2.isDetailedSpecificationOf(set1));
         set2.setAbstract(false);
         assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        set2.setContainsNull(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
 
         // range
+        set1.setContainsNull(true);
         set2 = owner2.changeValueSetType(ValueSetType.RANGE);
         set2.setAbstract(true);
         assertTrue(set2.isDetailedSpecificationOf(set1));
         set2.setAbstract(false);
         assertTrue(set2.isDetailedSpecificationOf(set1));
+        set1.setContainsNull(false);
+        set2.setContainsNull(true);
+        assertFalse(set2.isDetailedSpecificationOf(set1));
     }
 
     @Test
@@ -99,6 +112,17 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         range1.setUpperBound("9");
         assertFalse(range2.isDetailedSpecificationOf(range1));
         assertTrue(range1.isDetailedSpecificationOf(range2));
+
+        // super range candidate contains not null, 'this' range contains null
+        range1.setContainsNull(false);
+        range2.setContainsNull(true);
+        assertFalse(range2.isDetailedSpecificationOf(range1));
+
+        // super range candidate contains null, 'this' range contains not null
+        range1.setContainsNull(true);
+        range1.setUpperBound("10");
+        range2.setContainsNull(false);
+        assertTrue(range2.isDetailedSpecificationOf(range1));
     }
 
     @Test
@@ -135,5 +159,24 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         enum1.addValue("2");
         assertFalse(enum2.isDetailedSpecificationOf(enum1));
         assertTrue(enum1.isDetailedSpecificationOf(enum2));
+
+        // super enum candidate contains not null, 'this' enum contains null
+        enum1.setContainsNull(false);
+        enum2.setContainsNull(true);
+        assertFalse(enum2.isDetailedSpecificationOf(enum1));
+
+        // super enum candidate contains null, 'this' enum contains not null
+        enum1.setContainsNull(true);
+        enum1.addValue("3");
+        enum2.setContainsNull(false);
+        assertTrue(enum2.isDetailedSpecificationOf(enum1));
+    }
+
+    @Test
+    public void testIsContainingNullAllowed() {
+        UnrestrictedValueSet unrestricted = new UnrestrictedValueSet(owner1, "1");
+        unrestricted.setContainsNull(true);
+        owner1.setDatatype(Datatype.PRIMITIVE_INT.getName());
+        assertFalse(unrestricted.isContainingNullAllowed());
     }
 }

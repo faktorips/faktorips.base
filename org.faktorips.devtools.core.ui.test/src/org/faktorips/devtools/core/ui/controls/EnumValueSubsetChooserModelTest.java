@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
+import org.faktorips.devtools.core.ui.controls.chooser.AbstractSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.EnumValueSubsetChooserModel;
 import org.faktorips.devtools.core.ui.controls.chooser.ListChooserValue;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class EnumValueSubsetChooserModelTest {
         initialValues.add(null);
 
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
                 null, enumValueSetSpy);
 
         assertEquals(4, model.getPreDefinedValues().size());
@@ -79,7 +80,7 @@ public class EnumValueSubsetChooserModelTest {
         initialValues.add(null);
 
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
                 null, enumValueSetSpy);
 
         model.moveAllValuesFromPreDefinedToResulting();
@@ -101,7 +102,7 @@ public class EnumValueSubsetChooserModelTest {
         initialValues.add("three");
         initialValues.add(null);
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
                 null, enumValueSetSpy);
 
         assertEquals(4, model.getPreDefinedValues().size());
@@ -137,7 +138,7 @@ public class EnumValueSubsetChooserModelTest {
         initialValues.add("two");
         initialValues.add("three");
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
                 null, enumValueSetSpy);
 
         model.moveAllValuesFromPreDefinedToResulting();
@@ -165,7 +166,7 @@ public class EnumValueSubsetChooserModelTest {
         initialValues.add("two");
         initialValues.add("three");
         EnumValueSet enumValueSetSpy = getEnumValueSetMock();
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(mockValueSet(true, false, initialValues),
                 null, enumValueSetSpy);
 
         model.moveAllValuesFromPreDefinedToResulting();
@@ -192,7 +193,7 @@ public class EnumValueSubsetChooserModelTest {
         IEnumValueSet targetValueSet = mockEmptyValueSet();
         EnumDatatype datatype = mockDatatype();
 
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
         List<ListChooserValue> sourceValueIDs = model.getAllValues();
         assertEquals(3, sourceValueIDs.size());
         assertEquals("1", sourceValueIDs.get(0).getValue());
@@ -206,7 +207,7 @@ public class EnumValueSubsetChooserModelTest {
         IEnumValueSet targetValueSet = mockEmptyValueSet();
         EnumDatatype datatype = mockDatatype();
 
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
         List<ListChooserValue> sourceValueIDs = model.getAllValues();
         assertEquals(4, sourceValueIDs.size());
         assertEquals("1", sourceValueIDs.get(0).getValue());
@@ -222,7 +223,7 @@ public class EnumValueSubsetChooserModelTest {
         IEnumValueSet targetValueSet = mockEmptyValueSet();
         EnumDatatype datatype = mockDatatype();
 
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceValueSet, datatype, targetValueSet);
         List<ListChooserValue> sourceValueIDs = model.getAllValues();
         assertEquals(4, sourceValueIDs.size());
         assertEquals("1", sourceValueIDs.get(0).getValue());
@@ -236,7 +237,7 @@ public class EnumValueSubsetChooserModelTest {
         IEnumValueSet targetValueSet = mockEmptyValueSet();
         EnumDatatype datatype = mockDatatype();
 
-        EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(null, datatype, targetValueSet);
+        AbstractSubsetChooserModel model = new EnumValueSubsetChooserModel(null, datatype, targetValueSet);
         List<ListChooserValue> sourceValueIDs = model.getAllValues();
         assertEquals(4, sourceValueIDs.size());
         assertEquals("1", sourceValueIDs.get(0).getValue());

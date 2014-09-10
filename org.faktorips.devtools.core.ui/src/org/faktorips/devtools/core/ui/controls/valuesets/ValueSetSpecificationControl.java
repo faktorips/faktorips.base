@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.GridData;
@@ -25,12 +26,16 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controller.fields.FieldValueChangedEvent;
 import org.faktorips.devtools.core.ui.controller.fields.StringValueComboField;
@@ -38,6 +43,7 @@ import org.faktorips.devtools.core.ui.controller.fields.ValueChangeListener;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.ControlComposite;
 import org.faktorips.devtools.core.ui.controls.Messages;
+import org.faktorips.util.message.MessageList;
 
 /**
  * A control to specify the value set belonging to a {@link IValueSetOwner} . The control also
@@ -46,7 +52,7 @@ import org.faktorips.devtools.core.ui.controls.Messages;
  */
 public class ValueSetSpecificationControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 
-    private IValueSetOwner valueSetOwner;
+    private final IValueSetOwner valueSetOwner;
 
     private ValueSetControlEditMode editMode = ValueSetControlEditMode.ALL_KIND_OF_SETS;
 
@@ -57,7 +63,9 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private List<ValueSetType> allowedValueSetTypes = new ArrayList<ValueSetType>();
 
     private Checkbox concreteValueSetCheckbox = null;
+    private Checkbox containsNullCheckbox;
     private CheckboxField concreteValueSetField = null;
+    private CheckboxField containsNullField;
 
     // control showing the value set
     private IValueSetEditControl valueSetEditControl;
@@ -70,10 +78,12 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private IValueSet lastRestrictedValueSet;
 
     private UIToolkit toolkit;
-    private BindingContext uiController;
+    private BindingContext bindingContext;
 
     private boolean dataChangeable;
     private Label concreteValueSetLabel;
+
+    private final ValueSetPmo valueSetPmo;
 
     /**
      * Creates a new control which contains a combo box and depending on the value of the box a
@@ -82,14 +92,15 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      * gridlayout is created. In the second row a stacklayout is used to swap the
      * EnumValueSetEditControl and RangeEditControl dynamically.
      */
-    public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, BindingContext uiController,
+    public ValueSetSpecificationControl(Composite parent, UIToolkit toolkit, BindingContext bindingContext,
             IValueSetOwner valueSetOwner, List<ValueSetType> allowedValueSetTypes, ValueSetControlEditMode editMode) {
         super(parent, SWT.NONE);
         this.valueSetOwner = valueSetOwner;
         this.toolkit = toolkit;
-        this.uiController = uiController;
+        this.bindingContext = bindingContext;
         this.editMode = editMode;
 
+        valueSetPmo = new ValueSetPmo(valueSetOwner);
         initControls(toolkit);
         setAllowedValueSetTypes(allowedValueSetTypes);
     }
@@ -100,6 +111,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         Composite twoColumnArea = toolkit.createLabelEditColumnComposite(this);
         createValueSetTypesCombo(toolkit, twoColumnArea);
         createConcreteValueSetCheckbox(toolkit, twoColumnArea);
+        createContainsNullCheckbox(toolkit, twoColumnArea);
 
         toolkit.createVerticalSpacer(this, 5);
         createValueSetArea(toolkit, this);
@@ -133,18 +145,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      */
     public ValueSetType getValueSetType() {
         return valueSetOwner.getValueSet().getValueSetType();
-    }
-
-    public ValueDatatype getValueDatatype() {
-        try {
-            ValueDatatype datatype = valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
-            if (datatype == null) {
-                return Datatype.STRING;
-            }
-            return datatype;
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -188,11 +188,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
 
     private Control updateControlWithCurrentValueSetOrCreateNewIfNeccessary(Composite parent) {
         IValueSet valueSet = getValueSet();
-        if (valueSet.isAbstract() || valueSet.isUnrestricted()) {
+        if (!isValueSetEditingAllowed(valueSet)) {
             // no further editing possible, return empty composite
             return toolkit.createComposite(parent);
         }
-        ValueDatatype valueDatatype = getValueDatatype();
+        ValueDatatype valueDatatype = valueSetPmo.getValueDatatype();
         if (getValueSetEditControl() != null && getValueSetEditControl().canEdit(valueSet, valueDatatype)) {
             // the current composite can be reused to edit the current value set
             getValueSetEditControl().setValueSet(valueSet, valueDatatype);
@@ -205,11 +205,15 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         // Creates a new composite to edit the current value set
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
-        valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, uiController,
+        valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, bindingContext,
                 valueSetOwner.getIpsProject());
         valueSetEditControl.getComposite().setLayoutData(
                 new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         return group;
+    }
+
+    private boolean isValueSetEditingAllowed(IValueSet valueSet) {
+        return !(valueSet.isAbstract() || valueSet.isUnrestricted());
     }
 
     /**
@@ -303,6 +307,18 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         });
     }
 
+    private void createContainsNullCheckbox(UIToolkit toolkit, Composite parent) {
+        toolkit.createLabel(
+                parent,
+                NLS.bind(Messages.ValueSetSpecificationControl_containsNull, IpsPlugin.getDefault().getIpsPreferences()
+                        .getNullPresentation()));
+        containsNullCheckbox = toolkit.createCheckbox(parent);
+        containsNullField = new CheckboxField(containsNullCheckbox);
+        bindingContext.bindContent(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
+        bindingContext.bindEnabled(containsNullCheckbox, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL_ENABLED);
+        bindingContext.bindProblemMarker(containsNullField, valueSetPmo, ValueSetPmo.PROPERTY_CONTAINS_NULL);
+    }
+
     @Override
     public boolean setFocus() {
         return valueSetTypesCombo.setFocus();
@@ -362,7 +378,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         valueSetArea.getParent().layout();
         valueSetArea.getParent().getParent().layout();
 
-        uiController.updateUI();
+        bindingContext.updateUI();
         updateConcreteValueSetCheckbox();
     }
 
@@ -386,6 +402,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
             toolkit.setDataChangeable(valueSetEditControl.getComposite(), changeable);
         }
         updateConcreteValueSetCheckboxDataChangeableState();
+        toolkit.setDataChangeable(containsNullCheckbox, changeable);
     }
 
     private void updateConcreteValueSetCheckboxDataChangeableState() {
@@ -413,7 +430,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (valueSetEditControl != null) {
             setEnabledIfExistent(valueSetEditControl.getComposite(), enable);
         }
-        // TODO RangeEditControl#setEnabled() sauber implementieren
     }
 
     private void setEnabledIfExistent(Control control, boolean enable) {
@@ -425,4 +441,78 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
     private boolean getDefaultForAbstractProperty() {
         return editMode.canDefineAbstractSets();
     }
+
+    /**
+     * An implementation of {@link IpsObjectPartPmo}. It is used for binding the state of a checkbox
+     * according to the selected {@link IValueSet}.
+     */
+    public static class ValueSetPmo extends IpsObjectPartPmo {
+
+        /**
+         * Prefix for all message codes of this class.
+         */
+        public static final String MSGCODE_PREFIX = "ValueSetPmo-"; //$NON-NLS-1$
+        public static final String MSG_CODE_NULL_NOT_ALLOWED = MSGCODE_PREFIX + "nullNotAllowed"; //$NON-NLS-1$
+        public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
+
+        public ValueSetPmo(IValueSetOwner valueSetOwner) {
+            super(valueSetOwner);
+        }
+
+        public boolean isContainsNullEnabled() {
+            return !getValueDatatype().isPrimitive() || getValueSet().isEnum();
+        }
+
+        public boolean isContainsNull() {
+            return getValueSet().isContainsNull();
+        }
+
+        public void setContainsNull(boolean containsNull) {
+            getValueSet().setContainsNull(containsNull);
+        }
+
+        private IValueSet getValueSet() {
+            return getValueSetOwner().getValueSet();
+        }
+
+        private IValueSetOwner getValueSetOwner() {
+            return (IValueSetOwner)super.getIpsObjectPartContainer();
+        }
+
+        public ValueDatatype getValueDatatype() {
+            try {
+                ValueDatatype datatype = getValueSetOwner().findValueDatatype(getIpsProject());
+                if (datatype == null) {
+                    return Datatype.STRING;
+                }
+                return datatype;
+            } catch (CoreException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public MessageList validate(IIpsProject ipsProject) throws CoreException {
+            MessageList messageList = super.validate(ipsProject);
+            addContainsNullMessagesIfApplicable(messageList);
+            return messageList;
+        }
+
+        private void addContainsNullMessagesIfApplicable(MessageList modelMessages) {
+            if (isNullIncompatible(modelMessages)) {
+                addContainsNullErrorMessage(modelMessages);
+            }
+        }
+
+        private boolean isNullIncompatible(MessageList modelMessages) {
+            return !modelMessages.getMessagesFor(getValueSet(), IEnumValueSet.PROPERTY_CONTAINS_NULL).isEmpty();
+        }
+
+        private void addContainsNullErrorMessage(MessageList messageList) {
+            String text = Messages.ValueSetSpecificationControl_Msg_NullNotAllowed;
+            messageList.newError(MSG_CODE_NULL_NOT_ALLOWED, text, this, PROPERTY_CONTAINS_NULL);
+        }
+    }
+
 }
