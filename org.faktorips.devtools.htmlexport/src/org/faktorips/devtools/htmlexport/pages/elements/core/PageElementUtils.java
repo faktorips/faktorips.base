@@ -39,6 +39,11 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementImagePag
 public class PageElementUtils {
 
     private static final String ANCHOR_SEPARATOR = "."; //$NON-NLS-1$
+    private final DocumentationContext context;
+
+    public PageElementUtils(DocumentationContext context) {
+        this.context = context;
+    }
 
     /**
      * creates {@link IPageElement}s from the given {@link String}s with {@link Style}s and
@@ -51,7 +56,7 @@ public class PageElementUtils {
         IPageElement[] textPageElements = new IPageElement[texts.size()];
 
         for (int i = 0; i < textPageElements.length; i++) {
-            textPageElements[i] = new TextPageElement(texts.get(i), styles, type);
+            textPageElements[i] = new TextPageElement(texts.get(i), styles, type, getContext());
         }
 
         return textPageElements;
@@ -143,14 +148,14 @@ public class PageElementUtils {
             boolean useImage) {
         if (useImage) {
             try {
-                return new WrapperPageElement(WrapperType.NONE).addPageElements(
-                        new IpsElementImagePageElement(ipsElement)).addPageElements(
-                        new TextPageElement('\u00A0' + text));
+                return new WrapperPageElement(WrapperType.NONE, context).addPageElements(
+                        new IpsElementImagePageElement(ipsElement, getContext())).addPageElements(
+                                new TextPageElement('\u00A0' + text, context));
             } catch (CoreException e) {
                 context.addStatus(new IpsStatus(IStatus.WARNING, "Could not find image for " + ipsElement.getName(), e)); //$NON-NLS-1$
             }
         }
-        return new TextPageElement(text);
+        return new TextPageElement(text, context);
     }
 
     /**
@@ -174,7 +179,7 @@ public class PageElementUtils {
             IPageElement element) {
         String path = HtmlPathFactory.createPathUtil(to).getPathFromRoot(
                 LinkedFileType.getLinkedFileTypeByIpsElement(to));
-        LinkPageElement linkPageElement = new LinkPageElement(path, target, element);
+        LinkPageElement linkPageElement = new LinkPageElement(path, target, getContext(), element);
         linkPageElement.setLinkAnchor(linkAnchor);
         return linkPageElement;
     }
@@ -192,5 +197,9 @@ public class PageElementUtils {
         }
 
         return element.getName();
+    }
+
+    public DocumentationContext getContext() {
+        return context;
     }
 }

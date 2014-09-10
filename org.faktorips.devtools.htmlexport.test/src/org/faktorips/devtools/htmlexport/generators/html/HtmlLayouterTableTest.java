@@ -21,7 +21,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
 
     @Test
     public void testLeereTabelle() throws Exception {
-        TablePageElement table = new TablePageElement();
+        TablePageElement table = new TablePageElement(getContext());
 
         Assert.assertTrue(StringUtils.isEmpty(layout(table)));
     }
@@ -72,7 +72,7 @@ public class HtmlLayouterTableTest extends AbstractHtmlLayouterTableTest {
         Assert.assertFalse(layout, StringUtils.isEmpty(layout));
         assertXpathExists(layout, "/table[@class='" + Style.BORDER.name() + "']");
 
-        layouter.clear();
+        getLayouter().clear();
         table.setBorder(false);
 
         layout = layout(table);

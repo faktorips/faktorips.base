@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 
@@ -32,16 +33,17 @@ public class LinkPageElement extends AbstractCompositePageElement {
 
     private String linkAnchor;
 
-    public LinkPageElement(String path, TargetType target, IPageElement... pageElements) {
-        this(path, target);
+    public LinkPageElement(String path, TargetType target, DocumentationContext context, IPageElement... pageElements) {
+        this(path, target, context);
         addPageElements(pageElements);
     }
 
-    public LinkPageElement(String path, TargetType target, String text) {
-        this(path, target, new TextPageElement(text));
+    public LinkPageElement(String path, TargetType target, String text, DocumentationContext context) {
+        this(path, target, context, new TextPageElement(text, context));
     }
 
-    private LinkPageElement(String path, TargetType target) {
+    private LinkPageElement(String path, TargetType target, DocumentationContext context) {
+        super(context);
         this.path = path;
         this.target = target;
     }
@@ -67,7 +69,7 @@ public class LinkPageElement extends AbstractCompositePageElement {
     }
 
     @Override
-    public void build() {
+    protected void buildInternal() {
         // could be overridden
     }
 

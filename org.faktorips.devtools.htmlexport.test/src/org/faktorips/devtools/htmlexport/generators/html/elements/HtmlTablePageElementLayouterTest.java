@@ -22,7 +22,7 @@ public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLay
     @Test
     public void testLeereTabelle() {
 
-        TablePageElement pageElement = new TablePageElement(true);
+        TablePageElement pageElement = new TablePageElement(true, getContext());
 
         HtmlTablePageElementLayouter elementLayouter = new HtmlTablePageElementLayouter(pageElement, layouter);
 
@@ -39,14 +39,15 @@ public class HtmlTablePageElementLayouterTest extends AbstractHtmlPageElementLay
         int rows = 5;
         int cols = 4;
 
-        TablePageElement tablePageElement = new TablePageElement(true);
+        TablePageElement tablePageElement = new TablePageElement(true, getContext());
 
         for (int row = 0; row < rows; row++) {
             TableCellPageElement[] cellPageElements = new TableCellPageElement[cols];
             for (int col = 0; col < cols; col++) {
-                cellPageElements[col] = new TableCellPageElement(new TextPageElement(createCellText(row, col)));
+                cellPageElements[col] = new TableCellPageElement(getContext(), new TextPageElement(createCellText(row,
+                        col), getContext()));
             }
-            TableRowPageElement rowPageElement = new TableRowPageElement(cellPageElements);
+            TableRowPageElement rowPageElement = new TableRowPageElement(cellPageElements, getContext());
             tablePageElement.addPageElements(rowPageElement);
         }
 

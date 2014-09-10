@@ -32,7 +32,7 @@ public class RegexTablePageElementLayoutTest {
 
         RegexTablePageElementLayout layout = new RegexTablePageElementLayout(regex, styles);
 
-        when(cellPageElement.getSubElement(0)).thenReturn(new TextPageElement("123"));
+        when(cellPageElement.getSubElement(0)).thenReturn(new TextPageElement("123", null));
         layout.layoutCell(0, 0, cellPageElement);
         verify(cellPageElement, never()).addStyles(styles);
     }
@@ -50,7 +50,7 @@ public class RegexTablePageElementLayoutTest {
         String[] textsStrings = { "123", "a", "", null, "1234d", "00000" };
 
         for (String text : textsStrings) {
-            when(cellPageElement.getSubElement(0)).thenReturn(new TextPageElement(text));
+            when(cellPageElement.getSubElement(0)).thenReturn(new TextPageElement(text, null));
             layout.layoutCell(0, 0, cellPageElement);
         }
 

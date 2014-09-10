@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -50,16 +50,16 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
         addValidationRuleTable();
     }
 
     private void addValidationRuleTable() {
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.PolicyCmptTypeContentPageElement_rules), TextType.HEADING_2));
+                HtmlExportMessages.PolicyCmptTypeContentPageElement_rules), TextType.HEADING_2, getContext()));
 
         wrapper.addPageElements(getTableOrAlternativeText(new ValidationRuleTablePageElement(getDocumentedIpsObject(),
                 getContext()),
@@ -87,8 +87,8 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
     protected void addStructureData() {
         super.addStructureData();
 
-        addPageElements(TextPageElement
-                .createParagraph("Abstract Type" + ": " + (getDocumentedIpsObject().isAbstract() ? "X" : "-"))); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        addPageElements(TextPageElement.createParagraph(
+                "Abstract Type" + ": " + (getDocumentedIpsObject().isAbstract() ? "X" : "-"), getContext())); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
         IProductCmptType to;
         try {
@@ -100,14 +100,16 @@ public class PolicyCmptTypeContentPageElement extends AbstractTypeContentPageEle
             return;
         }
         if (to == null) {
-            addPageElements(TextPageElement.createParagraph(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
-                    + ": " + getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_none))); //$NON-NLS-1$ 
+            addPageElements(TextPageElement
+                    .createParagraph(
+                            IpsObjectType.POLICY_CMPT_TYPE.getDisplayName()
+                                    + ": " + getContext().getMessage(HtmlExportMessages.PolicyCmptTypeContentPageElement_none), getContext())); //$NON-NLS-1$
             return;
         }
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new IPageElement[] {
-                new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": "), //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext()
-                        .getLabel(to), true) }));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
+            new TextPageElement(IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+            new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT,
+                        getContext().getLabel(to), true) }));
 
     }
 }

@@ -41,6 +41,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -386,6 +387,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             checkboxLayoutData.horizontalSpan = 2;
             checkbox.setLayoutData(checkboxLayoutData);
             getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+            bindRefreshAllowedValueSetTypes(checkbox);
 
             getToolkit().createFormLabel(labelEditColumnComposite, Messages.AttributeEditDialog_labelCategory);
             createCategoryCombo(labelEditColumnComposite);
@@ -439,6 +441,20 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 createMethodAndOpenDialog();
             }
         });
+    }
+
+    private void bindRefreshAllowedValueSetTypes(Checkbox checkbox) {
+        getBindingContext().add(
+                new ControlPropertyBinding(checkbox, attribute, PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT,
+                        Boolean.TYPE) {
+
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (PolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT.equals(nameOfChangedProperty)) {
+                            updateAllowedValueSetTypes();
+                        }
+                    }
+                });
     }
 
     private IProductCmptType getProductCmptType() {
@@ -619,22 +635,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
                     IpsPlugin
-                            .getDefault()
-                            .getIpsModel()
-                            .executeModificationsWithSingleEvent(
-                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                    .getDefault()
+                    .getIpsModel()
+                    .executeModificationsWithSingleEvent(
+                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
-                                        @Override
-                                        protected boolean execute() throws CoreException {
-                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                            attribute.setModifier(overwrittenAttribute.getModifier());
-                                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
-                                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
-                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                            attribute.setCategory(overwrittenAttribute.getCategory());
-                                            return true;
-                                        }
-                                    });
+                                @Override
+                                protected boolean execute() throws CoreException {
+                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                    attribute.setModifier(overwrittenAttribute.getModifier());
+                                    attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                    attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                    attribute.setCategory(overwrittenAttribute.getCategory());
+                                    return true;
+                                }
+                            });
                 }
             }
 
@@ -672,8 +688,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         if (valueSetSpecificationControl != null) {
             valueSetSpecificationControl
-                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+            .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                    : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }
@@ -719,7 +735,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
              */
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (ruleDefinitionUI.isUiInitialized() && evt.getPropertyName() == RuleUIModel.PROPERTY_VALIDATION_RULE) {
+                if (ruleDefinitionUI.isUiInitialized()
+                        && RuleUIModel.PROPERTY_VALIDATION_RULE.equals(evt.getPropertyName())) {
                     ruleDefinitionUI.removeBindingsFromContext(getBindingContext());
                     if (evt.getNewValue() != null) {
                         IValidationRule rule = (IValidationRule)evt.getNewValue();
@@ -886,8 +903,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, labelText);
         Text textField = getToolkit().createText(workArea);
         if (supportedByProvider) {
-            getBindingContext().bindContent(textField, attribute.getPersistenceAttributeInfo(),
-                    bindingProperty);
+            getBindingContext().bindContent(textField, attribute.getPersistenceAttributeInfo(), bindingProperty);
         } else {
             textField.setEnabled(false);
             textField.setText(Messages.AttributeEditDialog_textNotSupportedByPersistenceProvider);

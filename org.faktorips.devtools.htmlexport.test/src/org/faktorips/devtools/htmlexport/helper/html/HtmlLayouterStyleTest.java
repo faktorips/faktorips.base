@@ -21,7 +21,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     @Test
     public void testStyleBold() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text);
+        TextPageElement pageElement = new TextPageElement(text, getContext());
         pageElement.addStyles(Style.BOLD);
 
         Assert.assertEquals("<span class=\"BOLD\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -30,7 +30,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     @Test
     public void testStyleItalic() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text);
+        TextPageElement pageElement = new TextPageElement(text, getContext());
         pageElement.addStyles(Style.ITALIC);
 
         Assert.assertEquals("<span class=\"ITALIC\">" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
@@ -39,7 +39,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     @Test
     public void testStyleBoldAndItalic() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text);
+        TextPageElement pageElement = new TextPageElement(text, getContext());
         pageElement.addStyles(Style.ITALIC);
         pageElement.addStyles(Style.BOLD);
 
@@ -49,7 +49,7 @@ public class HtmlLayouterStyleTest extends AbstractTestHtmlLayouter {
     @Test
     public void testStyleCenter() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
+        TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK, getContext());
         pageElement.addStyles(Style.CENTER);
 
         Assert.assertEquals("<div class=\"CENTER\">" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$

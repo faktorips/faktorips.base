@@ -23,7 +23,7 @@ public class HtmlCompositePageElementLayouter extends AbstractHtmlPageElementLay
     @Override
     protected void layoutInternal() {
         WrapperType wrapperType = pageElement.getWrapperType();
-        if (wrapperType == WrapperType.NONE && pageElement.getStyles().isEmpty()) {
+        if (wrapperType == WrapperType.NONE && pageElement.getStylesCopy().isEmpty()) {
             layouter.visitSubElements(pageElement);
             return;
         }

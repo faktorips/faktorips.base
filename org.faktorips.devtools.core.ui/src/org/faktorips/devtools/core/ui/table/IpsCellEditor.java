@@ -54,6 +54,13 @@ public abstract class IpsCellEditor extends CellEditor {
         this.control = control;
     }
 
+    @Override
+    public LayoutData getLayoutData() {
+        LayoutData layoutData = super.getLayoutData();
+        layoutData.minimumWidth = Math.min(70, layoutData.minimumWidth);
+        return layoutData;
+    }
+
     /**
      * Registers the given {@link TraversalStrategy} with this {@link CellEditor}.
      */

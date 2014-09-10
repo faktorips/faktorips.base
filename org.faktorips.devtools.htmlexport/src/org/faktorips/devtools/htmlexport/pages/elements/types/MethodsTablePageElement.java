@@ -72,8 +72,8 @@ public class MethodsTablePageElement extends AbstractIpsObjectPartsContainerTabl
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IMethod method) {
-        IPageElement[] textPageElements = new PageElementUtils().createTextPageElements(getMethodData(method));
-        textPageElements[0].setAnchor(new PageElementUtils().createAnchorId(method));
+        IPageElement[] textPageElements = new PageElementUtils(getContext()).createTextPageElements(getMethodData(method));
+        textPageElements[0].setAnchor(new PageElementUtils(getContext()).createAnchorId(method));
         return Arrays.asList(textPageElements);
     }
 }

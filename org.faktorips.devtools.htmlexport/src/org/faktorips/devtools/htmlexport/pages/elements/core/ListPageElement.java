@@ -12,6 +12,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.List;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -23,17 +24,17 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
 public class ListPageElement extends AbstractCompositePageElement {
     private boolean ordered = false;
 
-    public ListPageElement() {
-        super();
+    public ListPageElement(DocumentationContext context) {
+        super(context);
     }
 
-    public ListPageElement(List<? extends IPageElement> listElements) {
-        super();
+    public ListPageElement(List<? extends IPageElement> listElements, DocumentationContext context) {
+        super(context);
         getSubElements().addAll(listElements);
     }
 
     @Override
-    public void build() {
+    protected void buildInternal() {
         // could be overridden
     }
 
@@ -69,7 +70,7 @@ public class ListPageElement extends AbstractCompositePageElement {
         if (isListItem(subElement)) {
             return (WrapperPageElement)subElement;
         }
-        return new WrapperPageElement(WrapperType.LISTITEM, subElement);
+        return new WrapperPageElement(WrapperType.LISTITEM, getContext(), subElement);
     }
 
     private boolean isListItem(IPageElement pageElement) {

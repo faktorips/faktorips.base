@@ -11,8 +11,13 @@
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -26,13 +31,32 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
     /**
      * the subElements of the CompositePageElement
      */
-    protected List<IPageElement> subElements = new ArrayList<IPageElement>();
-
-    protected String title;
+    private List<IPageElement> subElements = new ArrayList<IPageElement>();
+    private String title;
     private WrapperType wrapperType = WrapperType.NONE;
+
+    public AbstractCompositePageElement(DocumentationContext context) {
+        super(context);
+    }
 
     @Override
     public abstract void acceptLayouter(ILayouter layouter);
+
+    @Override
+    public void build() {
+        try {
+            buildInternal();
+            // CSOFF: IllegalCatch
+        } catch (RuntimeException e) {
+            IpsStatus ipsStatus = new IpsStatus(IStatus.ERROR, "A problem occured while procesing an object", e); //$NON-NLS-1$
+            getContext().addStatus(ipsStatus);
+            Set<Style> textStyles = new HashSet<Style>();
+            textStyles.add(Style.BOLD);
+            addPageElements(new TextPageElement(
+                    "An error occured while processing current object: " + e.getClass().getSimpleName(), textStyles, getContext())); //$NON-NLS-1$
+        }
+        // CSON: IllegalCatch
+    }
 
     /**
      * @return title of the CompositePageElement
@@ -49,9 +73,6 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
         this.title = title;
     }
 
-    @Override
-    public abstract void build();
-
     /**
      * adds the given {@link IPageElement}s
      * 
@@ -65,6 +86,15 @@ public abstract class AbstractCompositePageElement extends AbstractPageElement i
             addSubElement(pageElement);
         }
         return this;
+    }
+
+    /**
+     * Sets the List with subElements.
+     * 
+     * @param subElements the List with {@link IPageElement}s
+     */
+    protected void setSubElements(List<IPageElement> subElements) {
+        this.subElements = subElements;
     }
 
     /**

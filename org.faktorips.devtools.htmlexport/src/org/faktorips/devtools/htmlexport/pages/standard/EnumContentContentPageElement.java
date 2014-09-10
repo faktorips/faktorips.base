@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextType;
@@ -47,13 +47,14 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
-                new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ")).addPageElements( //$NON-NLS-1$
-                new PageElementUtils().createLinkPageElement(getContext(), getEnumType(), TargetType.CONTENT,
-                        getEnumType().getQualifiedName(), true)));
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(
+                new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ", //$NON-NLS-1$
+                        getContext())).addPageElements(
+                                new PageElementUtils(getContext()).createLinkPageElement(getContext(), getEnumType(),
+                        TargetType.CONTENT, getEnumType().getQualifiedName(), true)));
 
         addValuesTable();
     }
@@ -71,9 +72,9 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
             getContext().addStatus(status);
             return;
         }
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.EnumContentContentPageElement_values), TextType.HEADING_2));
+                HtmlExportMessages.EnumContentContentPageElement_values), TextType.HEADING_2, getContext()));
 
         wrapper.addPageElements(getTableOrAlternativeText(tablePageElement,
                 getContext().getMessage(HtmlExportMessages.EnumContentContentPageElement_noValues)));

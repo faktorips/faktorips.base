@@ -47,7 +47,8 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -66,7 +67,8 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
 
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -88,7 +90,8 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         String setValue = "SetValueIpsObject";
         policy.setExtPropertyValue(id, setValue);
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };
@@ -108,7 +111,8 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
         policy.newPolicyCmptTypeAttribute();
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -128,7 +132,8 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         PolicyCmptType policy = newPolicyAndProductCmptType(ipsProject, "Vertrag", "VertragProdukt");
         policy.newPolicyCmptTypeAttribute();
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, defaultValue };
@@ -151,7 +156,8 @@ public class ExtensionPropertyTest extends AbstractHtmlExportPluginTest {
         String setValue = "SetValueIpsObjectPart";
         attribute.setExtPropertyValue(id, setValue);
 
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(policy.getIpsSrcFile(), context);
+        IPageElement objectContentPage = ContentPageUtil
+                .createObjectContentPageElement(policy.getIpsSrcFile(), context);
         objectContentPage.build();
 
         String[] texts = new String[] { name, setValue };

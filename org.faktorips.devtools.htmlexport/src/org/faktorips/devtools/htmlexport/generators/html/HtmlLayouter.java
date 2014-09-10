@@ -43,23 +43,25 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TablePageElem
  */
 public class HtmlLayouter extends AbstractLayouter {
 
-    private final DocumentationContext context;
     /**
      * Name of the css-File
      */
     private static final String HTML_BASE_CSS = "html/base.css"; //$NON-NLS-1$
 
     /**
+     * the actual {@link DocumentationContext}
+     */
+    private final DocumentationContext context;
+    /**
      * path to the resource in the generated site
      */
-
     private final String resourcePath;
 
+    private final IoHandler ioHandler;
     /**
      * path from the actual RootPageElement to the root-folder of the site
      */
     private String pathToRoot;
-    private final IoHandler ioHandler;
 
     public HtmlLayouter(DocumentationContext context, String resourcePath) {
         this(context, resourcePath, new FileHandler());

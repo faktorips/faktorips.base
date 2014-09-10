@@ -12,6 +12,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core;
 
 import java.util.ArrayList;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -22,10 +23,14 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  */
 public abstract class AbstractRootPageElement extends AbstractCompositePageElement {
 
+    public AbstractRootPageElement(DocumentationContext context) {
+        super(context);
+    }
+
     @Override
-    public void build() {
+    protected void buildInternal() {
         createId();
-        subElements = new ArrayList<IPageElement>();
+        setSubElements(new ArrayList<IPageElement>());
     }
 
     @Override

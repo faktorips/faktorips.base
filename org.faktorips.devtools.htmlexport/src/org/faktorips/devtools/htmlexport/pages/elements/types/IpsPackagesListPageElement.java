@@ -56,7 +56,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     public IpsPackagesListPageElement(IIpsElement baseIpsElement, List<IIpsSrcFile> srcFiles, IIpsElementFilter filter,
             DocumentationContext context) {
         super(baseIpsElement, srcFiles, filter, context);
-        setTitle(getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_allPackages)); 
+        setTitle(getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_allPackages));
     }
 
     /**
@@ -68,28 +68,28 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
     }
 
     @Override
-    public void build() {
-        super.build();
-        addPageElements(new TextPageElement(
-                getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_headlineObjectTypes), TextType.HEADING_2)); 
+    protected void buildInternal() {
+        super.buildInternal();
+        addPageElements(new TextPageElement(getContext().getMessage(
+                HtmlExportMessages.IpsPackagesListPageElement_headlineObjectTypes), TextType.HEADING_2, getContext()));
 
         addPageElements(new TypeChooserPageElement(getContext()));
 
-        addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2));
+        addPageElements(new TextPageElement(getTitle(), TextType.HEADING_2, getContext()));
 
         List<IPageElement> list = createPackageList();
 
-        addPageElements(new TextPageElement(list.size()
-                + " " + getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_packages), TextType.BLOCK)); //$NON-NLS-1$ 
+        addPageElements(new TextPageElement(
+                list.size() + " " + getContext().getMessage(HtmlExportMessages.IpsPackagesListPageElement_packages), TextType.BLOCK, getContext())); //$NON-NLS-1$
 
         if (list.size() > 0) {
-            addPageElements(new ListPageElement(list));
+            addPageElements(new ListPageElement(list, getContext()));
         }
     }
 
     private List<IPageElement> createPackageList() {
 
-        Collections.sort(srcFiles, packagesComparator);
+        Collections.sort(getSrcFiles(), packagesComparator);
 
         Set<IIpsPackageFragment> packageFragments = getRelatedPackageFragments();
 
@@ -97,7 +97,7 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
         Set<String> linkedPackagesNames = new HashSet<String>();
 
         for (IIpsPackageFragment packageFragment : packageFragments) {
-            if (!filter.accept(packageFragment)) {
+            if (!getFilter().accept(packageFragment)) {
                 continue;
             }
             if (linkedPackagesNames.contains(packageFragment.getName())) {
@@ -105,8 +105,8 @@ public class IpsPackagesListPageElement extends AbstractIpsElementListPageElemen
             }
 
             linkedPackagesNames.add(packageFragment.getName());
-            packageLinks.add(new PageElementUtils().createLinkPageElement(getContext(), packageFragment, getLinkTarget(),
-                    IpsUIPlugin.getLabel(packageFragment), true));
+            packageLinks.add(new PageElementUtils(getContext()).createLinkPageElement(getContext(), packageFragment,
+                    getLinkTarget(), IpsUIPlugin.getLabel(packageFragment), true));
         }
 
         return packageLinks;

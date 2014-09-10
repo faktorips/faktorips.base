@@ -60,14 +60,14 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK).addPageElements(
-                new TextPageElement(IpsObjectType.TEST_CASE_TYPE.getDisplayName() + ": ")) //$NON-NLS-1$
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(
+                new TextPageElement(IpsObjectType.TEST_CASE_TYPE.getDisplayName() + ": ", getContext())) //$NON-NLS-1$
                 .addPageElements(
-                        new PageElementUtils().createLinkPageElement(getContext(), testCaseType, TargetType.CONTENT,
-                                testCaseType.getQualifiedName(), true)));
+                        new PageElementUtils(getContext()).createLinkPageElement(getContext(), testCaseType,
+                                TargetType.CONTENT, testCaseType.getQualifiedName(), true)));
 
         addTestCaseTypeParameters();
     }
@@ -77,7 +77,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
      */
     private void addTestCaseTypeParameters() {
         addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.TestCaseContentPageElement_parameters), TextType.HEADING_2));
+                HtmlExportMessages.TestCaseContentPageElement_parameters), TextType.HEADING_2, getContext()));
         TreeNodePageElement root = createRootNode();
 
         ITestObject[] testObjects = getDocumentedIpsObject().getTestObjects();
@@ -107,13 +107,14 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                     new IpsStatus(IStatus.ERROR, "Error creating IPageElement for " + testObject.getName(), e)); //$NON-NLS-1$
         }
 
-        return TextPageElement.createParagraph(getContext().getLabel(testObject) + " " + testObject.getClass()); //$NON-NLS-1$
+        return TextPageElement.createParagraph(
+                getContext().getLabel(testObject) + " " + testObject.getClass(), getContext()); //$NON-NLS-1$
     }
 
     private IPageElement createTestPolicyCmptPageElement(ITestPolicyCmpt testObject) throws CoreException {
-        TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
-                        new TextPageElement(testObject.getTestParameterName())));
+        TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
+                getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
+                new TextPageElement(testObject.getTestParameterName(), getContext())), getContext());
 
         IPageElement testAttributesTable = createTestPolicyCmptTestAttributesTable(testObject);
 
@@ -133,7 +134,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
         ITestAttributeValue[] testAttributeValues = testObject.getTestAttributeValues();
         if (testAttributeValues.length == 0) {
             return new TextPageElement(getContext().getMessage(
-                    HtmlExportMessages.TestCaseContentPageElement_noTestAttributes));
+                    HtmlExportMessages.TestCaseContentPageElement_noTestAttributes), getContext());
         }
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
@@ -156,7 +157,7 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
                 testObject.getValidationRule());
         keyValueTable.addKeyValueRow(
                 getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_violationType), testObject
-                        .getViolationType().getName());
+                .getViolationType().getName());
 
         testObjectPageElement.addPageElements(keyValueTable);
 
@@ -164,9 +165,9 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     }
 
     private IPageElement createTestValuePageElement(ITestValue testObject) throws CoreException {
-        TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK)
-                .addPageElements(new IpsElementImagePageElement(testObject)).addPageElements(
-                        new TextPageElement(testObject.getTestParameterName())));
+        TreeNodePageElement testObjectPageElement = new TreeNodePageElement(new WrapperPageElement(WrapperType.BLOCK,
+                getContext()).addPageElements(new IpsElementImagePageElement(testObject, getContext())).addPageElements(
+                new TextPageElement(testObject.getTestParameterName(), getContext())), getContext());
 
         KeyValueTablePageElement keyValueTable = new KeyValueTablePageElement(getContext());
         keyValueTable.addKeyValueRow(getContext().getMessage(HtmlExportMessages.TestCaseContentPageElement_name),
@@ -193,17 +194,17 @@ public class TestCaseContentPageElement extends AbstractIpsObjectContentPageElem
     }
 
     private TreeNodePageElement createRootNode(String name) {
-        WrapperPageElement wrapperPageElement = new WrapperPageElement(WrapperType.NONE);
+        WrapperPageElement wrapperPageElement = new WrapperPageElement(WrapperType.NONE, getContext());
         try {
             IpsElementImagePageElement ipsElementImagePageElement = new IpsElementImagePageElement(
-                    getDocumentedIpsObject());
+                    getDocumentedIpsObject(), getContext());
             wrapperPageElement.addPageElements(ipsElementImagePageElement);
         } catch (CoreException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.WARNING, "Could not find image for " + getDocumentedIpsObject().getName())); //$NON-NLS-1$
         }
-        wrapperPageElement.addPageElements(new TextPageElement(name));
+        wrapperPageElement.addPageElements(new TextPageElement(name, getContext()));
 
-        return new TreeNodePageElement(wrapperPageElement);
+        return new TreeNodePageElement(wrapperPageElement, getContext());
     }
 }

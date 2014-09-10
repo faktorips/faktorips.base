@@ -23,11 +23,11 @@ import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 
 public class InheritedTypeMethodsPageElement extends AbstractInheritedIpsObjectPartsPageElement<IType, IMethod> {
 
+    private List<IMethod> overriddenMethods;
+
     public InheritedTypeMethodsPageElement(DocumentationContext context, IType element, List<IType> superElements) {
         super(context, element, superElements);
     }
-
-    private List<IMethod> overriddenMethods;
 
     @Override
     protected boolean showObjectPart(IMethod objectPart) {
@@ -36,9 +36,9 @@ public class InheritedTypeMethodsPageElement extends AbstractInheritedIpsObjectP
     }
 
     @Override
-    public void build() {
+    protected void buildInternal() {
         initializeOverriddenMethodList();
-        super.build();
+        super.buildInternal();
     }
 
     private void initializeOverriddenMethodList() {

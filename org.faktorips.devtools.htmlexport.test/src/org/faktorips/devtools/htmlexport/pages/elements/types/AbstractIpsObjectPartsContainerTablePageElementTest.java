@@ -95,7 +95,7 @@ public class AbstractIpsObjectPartsContainerTablePageElementTest {
         List<IPageElement> result = pageElement.getRow(versionControlledElement);
 
         assertEquals(1, result.size());
-        IPageElement textElement = new TextPageElement("1.2.3");
+        IPageElement textElement = new TextPageElement("1.2.3", context);
         assertThat(result, hasItem(textElement));
     }
 

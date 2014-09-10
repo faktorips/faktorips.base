@@ -26,8 +26,8 @@ import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
 import org.faktorips.devtools.htmlexport.helper.path.HtmlPathFactory;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractRootPageElement;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.LinkPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
@@ -53,55 +53,54 @@ import org.faktorips.util.message.MessageList;
 public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> extends AbstractRootPageElement {
 
     private T documentedIpsObject;
-    private final DocumentationContext context;
 
     /**
      * creates a page, which represents the given documentedIpsObject according to the given context
      * 
      */
     protected AbstractIpsObjectContentPageElement(T documentedIpsObject, DocumentationContext context) {
+        super(context);
         this.documentedIpsObject = documentedIpsObject;
-        this.context = context;
         setTitle(context.getLabel(documentedIpsObject));
     }
 
     @Override
-    public void build() {
-        super.build();
+    protected void buildInternal() {
+        super.buildInternal();
 
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, new LinkPageElement("index", TargetType.OVERALL, //$NON-NLS-1$ 
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new LinkPageElement(
+                "index", TargetType.OVERALL, //$NON-NLS-1$
                 getContext().getMessage(HtmlExportMessages.AbstractObjectContentPageElement_overviewProject)
-                        + " " + getContext().getIpsProject().getName()))); //$NON-NLS-1$
+                        + " " + getContext().getIpsProject().getName(), getContext()))); //$NON-NLS-1$
 
-        addPageElements(new PageElementUtils().createLinkPageElement(getContext(), getDocumentedIpsObject()
+        addPageElements(new PageElementUtils(getContext()).createLinkPageElement(getContext(), getDocumentedIpsObject()
                 .getIpsPackageFragment(), TargetType.CLASSES, IpsUIPlugin.getLabel(getDocumentedIpsObject()
                 .getIpsPackageFragment()), true));
         addPageElements(new TextPageElement(getIpsObjectTypeDisplayName() + " " //$NON-NLS-1$
-                + context.getLabel(getDocumentedIpsObject()), TextType.HEADING_1));
+                + getContext().getLabel(getDocumentedIpsObject()), TextType.HEADING_1, getContext()));
 
         addTypeHierarchy();
 
-        addPageElements(new TextPageElement(context.getLabel(getDocumentedIpsObject()), TextType.HEADING_2));
+        addPageElements(new TextPageElement(getContext().getLabel(getDocumentedIpsObject()), TextType.HEADING_2,
+                getContext()));
 
         addStructureData();
 
         if (!getDocumentedIpsObject().getIpsProject().equals(getContext().getIpsProject())) {
-            addPageElements(TextPageElement.createParagraph(getContext().getMessage(
-                    HtmlExportMessages.AbstractObjectContentPageElement_project)
-                    + ": " //$NON-NLS-1$ 
-                    + getDocumentedIpsObject().getIpsProject().getName()));
+            addPageElements(TextPageElement.createParagraph(
+                    getContext().getMessage(HtmlExportMessages.AbstractObjectContentPageElement_project) + ": " //$NON-NLS-1$
+                            + getDocumentedIpsObject().getIpsProject().getName(), getContext()));
         }
-        addPageElements(TextPageElement.createParagraph(getContext().getMessage(
-                HtmlExportMessages.AbstractObjectContentPageElement_projectFolder)
-                + ": " //$NON-NLS-1$ 
-                + getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment()));
+        addPageElements(TextPageElement.createParagraph(
+                getContext().getMessage(HtmlExportMessages.AbstractObjectContentPageElement_projectFolder) + ": " //$NON-NLS-1$
+                        + getDocumentedIpsObject().getIpsSrcFile().getIpsPackageFragment(), getContext()));
 
         addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.AbstractObjectContentPageElement_description), TextType.HEADING_2));
+                HtmlExportMessages.AbstractObjectContentPageElement_description), TextType.HEADING_2, getContext()));
         addPageElements(new TextPageElement(
                 StringUtils.isBlank(getContext().getDescription(getDocumentedIpsObject())) ? getContext().getMessage(
                         HtmlExportMessages.AbstractObjectContentPageElement_noDescription) : getContext()
-                        .getDescription(getDocumentedIpsObject()), TextType.BLOCK));
+                        .getDescription(getDocumentedIpsObject()), TextType.BLOCK, getContext()));
         addVersionPageElement();
 
         if (getContext().showsValidationErrors()) {
@@ -117,10 +116,10 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
             IVersion<?> sinceVersion = versionControlledElement.getSinceVersion();
             if (sinceVersion != null) {
                 addPageElements(new TextPageElement(getContext().getMessage(
-                        HtmlExportMessages.TablePageElement_headlineSince), TextType.HEADING_2));
+                        HtmlExportMessages.TablePageElement_headlineSince), TextType.HEADING_2, getContext()));
                 String content = getContext().getMessage(HtmlExportMessages.TablePageElement_version)
                         + sinceVersion.asString();
-                addPageElements(new TextPageElement(content, TextType.BLOCK));
+                addPageElements(new TextPageElement(content, TextType.BLOCK, getContext()));
             }
         }
     }
@@ -156,7 +155,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
         try {
             messageList = getDocumentedIpsObject().validate(getDocumentedIpsObject().getIpsProject());
         } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.ERROR, "Error validating " //$NON-NLS-1$
+            getContext().addStatus(new IpsStatus(IStatus.ERROR, "Error validating " //$NON-NLS-1$
                     + getDocumentedIpsObject().getQualifiedName(), e));
         }
 
@@ -164,9 +163,9 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
             return;
         }
 
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.AbstractObjectContentPageElement_validationErrors), TextType.HEADING_2));
+                HtmlExportMessages.AbstractObjectContentPageElement_validationErrors), TextType.HEADING_2, getContext()));
 
         TablePageElement tablePageElement = new IpsObjectMessageListTablePageElement(messageList, getContext());
 
@@ -201,7 +200,7 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
      */
     IPageElement getTableOrAlternativeText(AbstractStandardTablePageElement tablePageElement, String alternativeText) {
         if (tablePageElement == null || tablePageElement.isEmpty()) {
-            return new TextPageElement(alternativeText);
+            return new TextPageElement(alternativeText, getContext());
         }
         return tablePageElement;
     }
@@ -212,14 +211,6 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
      */
     protected T getDocumentedIpsObject() {
         return documentedIpsObject;
-    }
-
-    /**
-     * returns the context
-     * 
-     */
-    protected DocumentationContext getContext() {
-        return context;
     }
 
     @Override
@@ -247,9 +238,10 @@ public abstract class AbstractIpsObjectContentPageElement<T extends IIpsObject> 
                     extPropertyValue == null ? null : extPropertyValue.toString());
         }
 
-        AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+        ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
-                HtmlExportMessages.AbstractIpsObjectContentPageElement_extensionProperties), TextType.HEADING_2));
+                HtmlExportMessages.AbstractIpsObjectContentPageElement_extensionProperties), TextType.HEADING_2,
+                getContext()));
 
         wrapper.addPageElements(extensionPropertiesTable);
 

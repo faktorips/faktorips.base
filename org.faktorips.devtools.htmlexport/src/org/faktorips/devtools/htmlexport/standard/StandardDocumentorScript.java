@@ -36,6 +36,7 @@ import org.faktorips.devtools.htmlexport.helper.filter.IpsElementInIIpsPackageFi
 import org.faktorips.devtools.htmlexport.helper.html.HtmlUtil;
 import org.faktorips.devtools.htmlexport.helper.path.LinkedFileType;
 import org.faktorips.devtools.htmlexport.helper.path.TargetType;
+import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsElementListPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.types.IpsObjectTypeListPageElement;
@@ -110,23 +111,27 @@ public class StandardDocumentorScript implements IDocumentorScript {
             writeClassContentPage(context, ipsObject);
             monitor.worked(1);
         }
-
         monitor.done();
     }
 
     private void writeClassContentPage(DocumentationContext context, IIpsSrcFile ipsSrcFile) throws IOException,
-            CoreException {
-        IPageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
+    CoreException {
+        ICompositePageElement objectContentPage = ContentPageUtil.createObjectContentPageElement(ipsSrcFile, context);
         if (objectContentPage == null) {
             return;
         }
         objectContentPage.build();
+        writeFile(context, ipsSrcFile, objectContentPage);
+    }
+
+    private void writeFile(DocumentationContext context, IIpsSrcFile ipsSrcFile, ICompositePageElement objectContentPage)
+            throws IOException {
         ioHandler
-                .writeFile(
-                        context,
-                        STANDARD_PATH
-                                + htmlUtil.getPathFromRoot(ipsSrcFile,
-                                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
+        .writeFile(
+                context,
+                STANDARD_PATH
+                + htmlUtil.getPathFromRoot(ipsSrcFile,
+                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsSrcFile)),
                         getPageContent(context, objectContentPage));
     }
 
@@ -189,9 +194,9 @@ public class StandardDocumentorScript implements IDocumentorScript {
         ioHandler.writeFile(
                 context,
                 STANDARD_PATH
-                        + htmlUtil.getPathFromRoot(ipsPackageFragment,
-                                LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)),
-                getPageContent(context, allClassesPage));
+                + htmlUtil.getPathFromRoot(ipsPackageFragment,
+                        LinkedFileType.getLinkedFileTypeByIpsElement(ipsPackageFragment)),
+                        getPageContent(context, allClassesPage));
     }
 
     private Set<IIpsPackageFragment> getRelatedPackageFragments(List<IIpsSrcFile> srcFiles) {
@@ -238,7 +243,7 @@ public class StandardDocumentorScript implements IDocumentorScript {
 
         IGenerator baseFrameHtml = new BaseFrameHtmlGenerator(
                 context.getMessage(HtmlExportMessages.StandardDocumentorScript_documentation)
-                        + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
+                + " " + context.getIpsProject().getName(), "20%, 80%", "30%, 70%"); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
         ioHandler.writeFile(context, STANDARD_PATH + "index.html", baseFrameHtml.generate()); //$NON-NLS-1$
 
         monitor.done();

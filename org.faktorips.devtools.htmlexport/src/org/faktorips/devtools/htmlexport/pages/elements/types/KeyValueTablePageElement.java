@@ -23,8 +23,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 
 public class KeyValueTablePageElement extends TablePageElement {
 
-    private final DocumentationContext context;
-
     public KeyValueTablePageElement(DocumentationContext context) {
         this(context, context.getMessage(HtmlExportMessages.KeyValueTablePageElement_headlineProperty), context
                 .getMessage(HtmlExportMessages.KeyValueTablePageElement_headlineValue));
@@ -35,8 +33,7 @@ public class KeyValueTablePageElement extends TablePageElement {
      * 
      */
     public KeyValueTablePageElement(DocumentationContext context, String keyHeadline, String valueHeadline) {
-        super(true);
-        this.context = context;
+        super(true, context);
         addLayouts(RowTablePageElementLayout.HEADLINE);
         addLayouts(new AlternateRowTablePageElementLayout(true));
         addLayouts(new RegexTablePageElementLayout(".{1,3}", Style.CENTER)); //$NON-NLS-1$
@@ -74,7 +71,7 @@ public class KeyValueTablePageElement extends TablePageElement {
      * 
      */
     public KeyValueTablePageElement addKeyValueRow(String key, String value) {
-        return addKeyValueRow(new TextPageElement(key), new TextPageElement(value));
+        return addKeyValueRow(new TextPageElement(key, getContext()), new TextPageElement(value, getContext()));
     }
 
     /**
@@ -82,7 +79,7 @@ public class KeyValueTablePageElement extends TablePageElement {
      * 
      */
     public KeyValueTablePageElement addKeyValueRow(String key, IPageElement valuePageElement) {
-        return addKeyValueRow(new TextPageElement(key), valuePageElement);
+        return addKeyValueRow(new TextPageElement(key, getContext()), valuePageElement);
     }
 
     /**
@@ -91,11 +88,8 @@ public class KeyValueTablePageElement extends TablePageElement {
      * 
      */
     public KeyValueTablePageElement addKeyValueRow(IPageElement keyPageElement, IPageElement valuePageElement) {
-        addSubElement(new TableRowPageElement(new IPageElement[] { keyPageElement, valuePageElement }));
+        addSubElement(new TableRowPageElement(new IPageElement[] { keyPageElement, valuePageElement }, getContext()));
         return this;
     }
 
-    public DocumentationContext getContext() {
-        return context;
-    }
 }

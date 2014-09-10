@@ -18,6 +18,7 @@ import java.util.List;
 import org.custommonkey.xmlunit.XMLTestCase;
 import org.custommonkey.xmlunit.exceptions.XpathException;
 import org.faktorips.devtools.htmlexport.TestUtil;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.html.HtmlLayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
@@ -26,7 +27,7 @@ import org.xml.sax.SAXException;
 
 public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
-    protected HtmlLayouter layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), ".resources"); //$NON-NLS-1$
+    private HtmlLayouter layouter = new HtmlLayouter(new TestUtil().createMockDocumentationContext(), ".resources"); //$NON-NLS-1$
 
     public AbstractTestHtmlLayouter() {
         super();
@@ -38,13 +39,17 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
     @Override
     protected void setUp() throws Exception {
-        layouter.clear();
+        getLayouter().clear();
+    }
+
+    protected DocumentationContext getContext() {
+        return getLayouter().getContext();
     }
 
     protected List<IPageElement> createPageElementListe(String[] texte) {
         List<IPageElement> elemente = new ArrayList<IPageElement>();
         for (String text : texte) {
-            elemente.add(new TextPageElement(text));
+            elemente.add(new TextPageElement(text, getContext()));
         }
         return elemente;
     }
@@ -56,8 +61,8 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
     }
 
     protected String layout(IPageElement pageElement) {
-        pageElement.acceptLayouter(layouter);
-        byte[] generate = layouter.generate();
+        pageElement.acceptLayouter(getLayouter());
+        byte[] generate = getLayouter().generate();
 
         String html;
         try {
@@ -92,5 +97,9 @@ public abstract class AbstractTestHtmlLayouter extends XMLTestCase {
 
     private String prepareXml(String xml) {
         return xml.replaceFirst("<html .+>", "<html>").replaceFirst("<!DOCTYPE .+\n", "").trim(); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
+
+    public HtmlLayouter getLayouter() {
+        return layouter;
     }
 }

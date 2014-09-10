@@ -17,6 +17,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -25,22 +28,31 @@ import org.faktorips.devtools.htmlexport.generators.ILayouter;
  */
 public abstract class AbstractPageElement implements IPageElement {
 
-    protected Set<Style> styles = new LinkedHashSet<Style>();
-
+    private final DocumentationContext context;
+    private Set<Style> styles = new LinkedHashSet<Style>();
     private String id;
     private String anchor;
 
-    public AbstractPageElement() {
-        super();
+    public AbstractPageElement(DocumentationContext context) {
+        this.context = context;
     }
 
-    public AbstractPageElement(Set<Style> styles) {
+    public AbstractPageElement(Set<Style> styles, DocumentationContext context) {
         super();
         this.styles = styles;
+        this.context = context;
+    }
+
+    public DocumentationContext getContext() {
+        return context;
     }
 
     @Override
     public Set<Style> getStyles() {
+        return styles;
+    }
+
+    public Set<Style> getStylesCopy() {
         if (styles == null) {
             return Collections.emptySet();
         }
@@ -60,11 +72,22 @@ public abstract class AbstractPageElement implements IPageElement {
 
     @Override
     public boolean hasStyle(Style style) {
-        return getStyles().contains(style);
+        return styles.contains(style);
     }
 
     @Override
     public void build() {
+        try {
+            buildInternal();
+            // CSOFF: IllegalCatch
+        } catch (RuntimeException e) {
+            IpsStatus ipsStatus = new IpsStatus(IStatus.ERROR, "A problem occured while procesing an object", e); //$NON-NLS-1$
+            context.addStatus(ipsStatus);
+        }
+        // CSON: IllegalCatch
+    }
+
+    protected void buildInternal() {
         // override in subclass
     }
 

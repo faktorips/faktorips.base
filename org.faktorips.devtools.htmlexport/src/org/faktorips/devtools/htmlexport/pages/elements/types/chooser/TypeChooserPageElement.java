@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin.ImageHandling;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
-import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractCompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.AbstractPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.ICompositePageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
@@ -40,33 +39,32 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.ILinkStrategy;
  * @author dicker
  */
 public class TypeChooserPageElement extends AbstractPageElement {
-    private AbstractCompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK);
+    private ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
     private final Collection<IpsObjectType> types;
-    private final DocumentationContext context;
 
     public TypeChooserPageElement(DocumentationContext context) {
-        this.context = context;
+        super(context);
         this.types = Arrays.asList(context.getDocumentedIpsObjectTypes());
     }
 
     public TypeChooserPageElement(DocumentationContext context, Set<IpsObjectType> relatedObjectTypes) {
-        this.context = context;
+        super(context);
         this.types = relatedObjectTypes;
     }
 
     @Override
-    public void build() {
-        wrapper = new WrapperPageElement(WrapperType.BLOCK);
+    protected void buildInternal() {
+        wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
 
-        for (IpsObjectType ipsObjectType : context.getDocumentedIpsObjectTypes()) {
+        for (IpsObjectType ipsObjectType : getContext().getDocumentedIpsObjectTypes()) {
 
-            if (!types.contains(ipsObjectType) || context.getDocumentedSourceFiles(ipsObjectType).isEmpty()) {
+            if (!types.contains(ipsObjectType) || getContext().getDocumentedSourceFiles(ipsObjectType).isEmpty()) {
                 continue;
             }
 
             // TODO Bedingung aendern durch geeigneten Filter, sobald Auswahl auf Wizard angeboten
             // wird. Achtung: evtl. nicht anzeige disabled images nicht moeglich bei headless build
-            if (context.getDocumentedSourceFiles(ipsObjectType).isEmpty()) {
+            if (getContext().getDocumentedSourceFiles(ipsObjectType).isEmpty()) {
                 addDisabledImage(ipsObjectType, wrapper);
                 continue;
             }
@@ -86,7 +84,7 @@ public class TypeChooserPageElement extends AbstractPageElement {
                 Image disabledSharedImage = imageHandling.getDisabledSharedImage(defaultImageDescriptor);
                 ImageData imageData = disabledSharedImage.getImageData();
                 wrapper.addPageElements(new ImagePageElement(imageData, ipsObjectType.getDisplayName(), ipsObjectType
-                        .getFileExtension()));
+                        .getFileExtension(), getContext()));
             }
         };
         display.syncExec(runnable);
@@ -99,9 +97,9 @@ public class TypeChooserPageElement extends AbstractPageElement {
                 .getImageData();
 
         IPageElement pageElement = new ImagePageElement(imageData, ipsObjectType.getDisplayName(),
-                ipsObjectType.getFileExtension());
+                ipsObjectType.getFileExtension(), getContext());
 
-        wrapper.addPageElements(linkStrategy.createLink(pageElement));
+        wrapper.addPageElements(linkStrategy.createLink(getContext(), pageElement));
     }
 
     @Override

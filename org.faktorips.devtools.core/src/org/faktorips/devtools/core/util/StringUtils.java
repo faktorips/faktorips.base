@@ -17,6 +17,12 @@ package org.faktorips.devtools.core.util;
  */
 public class StringUtils {
 
+    public static final String QUOTE = "\""; //$NON-NLS-1$
+
+    private StringUtils() {
+        // Utility class not to be instantiated.
+    }
+
     /**
      * Wraps and returns the provide text according to the split length and tab size.
      * 
@@ -24,7 +30,7 @@ public class StringUtils {
      * @param length the length after which a line break should occur
      * @param lineSeparator the line separator that is used for the wrapped text
      */
-    public final static String wrapText(String text, int length, String lineSeparator) {
+    public static final String wrapText(String text, int length, String lineSeparator) {
         if (text == null || "".equals(text)) { //$NON-NLS-1$
             return text;
         }
@@ -91,12 +97,26 @@ public class StringUtils {
             nameWithoutCopyOfPrefix = nameCandidate;
         }
         // Add new copyOf and counter prefix.
-        nameCandidate = Messages.StringUtils_copyOfNamePrefix + uniqueCopyOfCounterText + nameWithoutCopyOfPrefix;
-        return nameCandidate;
+        return Messages.StringUtils_copyOfNamePrefix + uniqueCopyOfCounterText + nameWithoutCopyOfPrefix;
     }
 
-    private StringUtils() {
-        // Utility class not to be instantiated.
+    /**
+     * Returns the text in quotes (e.g. "anyText"). Does not add additional quotes if the given text
+     * already starts or ends with a quote (").
+     * 
+     * @param text the text to surround with quotes (").
+     */
+    public static String quote(String text) {
+        StringBuffer sb = new StringBuffer();
+        if (text == null || !text.startsWith(QUOTE)) {
+            sb.append(QUOTE);
+        }
+        sb.append(text);
+        if (text == null || !text.endsWith(QUOTE)) {
+            sb.append(QUOTE);
+        }
+
+        return sb.toString();
     }
 
 }

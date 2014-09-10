@@ -955,7 +955,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         TableContents tableContents = (TableContents)newIpsObject(ts0.getIpsPackageFragment().getRoot(),
                 IpsObjectType.TABLE_CONTENTS, qualifiedName);
         tableContents.setTableStructure(ts0.getQualifiedName());
-        tableContents.newTableRows();
         tableContents.getIpsSrcFile().save(true, null);
         return tableContents;
     }
@@ -1463,7 +1462,6 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     }
 
     protected final void setPartId(IIpsObjectPart part, String id) throws NoSuchFieldException, IllegalAccessException {
-
         Field field = IpsObjectPart.class.getDeclaredField("id");
         field.setAccessible(true);
         field.set(part, id);

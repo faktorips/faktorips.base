@@ -37,7 +37,6 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
  */
 public class AssociationTablePageElement extends AbstractIpsObjectPartsContainerTablePageElement<IAssociation> {
 
-    private final DocumentationContext context;
     private final IType type;
 
     /**
@@ -46,7 +45,6 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
      */
     public AssociationTablePageElement(IType type, DocumentationContext context) {
         super(type.getAssociations(), context);
-        this.context = context;
         this.type = type;
     }
 
@@ -54,7 +52,7 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
     protected List<IPageElement> createRowWithIpsObjectPart(IAssociation association) {
         List<String> values = new ArrayList<String>();
 
-        values.add(context.getLabel(association));
+        values.add(getContext().getLabel(association));
         values.add(getContext().getLabel(association));
 
         // will be replaced with the link
@@ -72,16 +70,16 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
         values.add(association.isSubsetOfADerivedUnion() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
         values.add(association.isQualified() ? "X" : "-"); //$NON-NLS-1$ //$NON-NLS-2$
 
-        IPageElement[] elements = new PageElementUtils().createTextPageElements(values);
+        IPageElement[] elements = new PageElementUtils(getContext()).createTextPageElements(values);
 
         try {
             IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-            elements[linkElementIndex] = new PageElementUtils().createLinkPageElement(context, target,
+            elements[linkElementIndex] = new PageElementUtils(getContext()).createLinkPageElement(getContext(), target,
                     TargetType.CONTENT, target.getName(), true);
         } catch (CoreException e) {
-            context.addStatus(new IpsStatus(IStatus.WARNING,
-                    "Error setting Link to target of " + association.getName(), e)); //$NON-NLS-1$
-            elements[linkElementIndex] = new TextPageElement(""); //$NON-NLS-1$
+            getContext().addStatus(
+                    new IpsStatus(IStatus.WARNING, "Error setting Link to target of " + association.getName(), e)); //$NON-NLS-1$
+            elements[linkElementIndex] = new TextPageElement("", getContext()); //$NON-NLS-1$
         }
 
         return Arrays.asList(elements);

@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.htmlexport.pages.elements.core;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 
 /**
@@ -25,6 +26,8 @@ public interface ICompositePageElement extends IPageElement {
      * 
      */
     public void visitSubElements(ILayouter layouter);
+
+    public abstract DocumentationContext getContext();
 
     /**
      * adds one or more {@link IPageElement}s and returns this

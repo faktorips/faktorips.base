@@ -29,7 +29,7 @@ import org.junit.Test;
 public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     @Test
     public void testHtmlLayouterRootPageElement() throws Exception {
-        AbstractRootPageElement pageElement = new AbstractRootPageElement() {
+        AbstractRootPageElement pageElement = new AbstractRootPageElement(getContext()) {
 
             @Override
             public String getPathToRoot() {
@@ -52,7 +52,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     @Test
     public void testHtmlLayouterTextPageElementEinfach() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text);
+        TextPageElement pageElement = new TextPageElement(text, getContext());
 
         Assert.assertEquals(text, layout(pageElement));
     }
@@ -60,7 +60,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     @Test
     public void testHtmlLayouterTextPageElementInline() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text, TextType.INLINE);
+        TextPageElement pageElement = new TextPageElement(text, TextType.INLINE, getContext());
 
         Assert.assertEquals("<span>" + text + "</span>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -68,7 +68,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
     @Test
     public void testHtmlLayouterTextPageElementBlock() {
         String text = "text beispiel"; //$NON-NLS-1$
-        TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK);
+        TextPageElement pageElement = new TextPageElement(text, TextType.BLOCK, getContext());
 
         Assert.assertEquals("<div>" + text + "</div>", layout(pageElement)); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -78,7 +78,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         List<IPageElement> elementListe = createPageElementListe(texte);
 
-        ListPageElement pageElement = new ListPageElement(elementListe);
+        ListPageElement pageElement = new ListPageElement(elementListe, getContext());
 
         String html = layout(pageElement);
         assertContains(html, texte);
@@ -92,7 +92,7 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
         String[] texte = { "Item 1", "Punkt 2", "blablabla", "letzter Punkt" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
         List<IPageElement> elementListe = createPageElementListe(texte);
 
-        ListPageElement pageElement = new ListPageElement(elementListe);
+        ListPageElement pageElement = new ListPageElement(elementListe, getContext());
         pageElement.setOrdered(true);
 
         String html = layout(pageElement);
@@ -114,10 +114,10 @@ public class HtmlLayouterTest extends AbstractTestHtmlLayouter {
             }
         }
 
-        TablePageElement table = new TablePageElement();
+        TablePageElement table = new TablePageElement(getContext());
 
         for (String[] zeile : texte) {
-            table.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(new TextPageElement[0])));
+            table.addPageElements(new TableRowPageElement(createPageElementListe(zeile).toArray(new TextPageElement[0]), getContext()));
 
         }
 

@@ -50,7 +50,7 @@ public abstract class MoveOperation {
      */
     private static boolean canMoveToTarget(Object[] sources, Object target) {
         if (target instanceof IIpsElement) {
-            if (!isSelfOrReferencedProject(sources, target)) {
+            if (!isSelfOrRefProject(sources, target)) {
                 return false;
             }
         }
@@ -59,14 +59,16 @@ public abstract class MoveOperation {
 
     /**
      * Returns <code>true</code> if the target project is same as source project or a target
-     * referencing source project.
+     * referencing source project or a target is referenced by source project. Indirect references
+     * are taken into account, too.
      */
-    private static boolean isSelfOrReferencedProject(Object[] sources, Object target) {
+    private static boolean isSelfOrRefProject(Object[] sources, Object target) {
         IIpsProject targetIpsProject = ((IIpsElement)target).getIpsProject();
         for (Object source : sources) {
             if (source instanceof IIpsElement) {
                 IIpsProject ipsProject = ((IIpsElement)source).getIpsProject();
-                if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true))) {
+                if (!(ipsProject.equals(targetIpsProject) || ipsProject.isReferencedBy(targetIpsProject, true) || ipsProject
+                        .isReferencing(targetIpsProject))) {
                     return false;
                 }
             }

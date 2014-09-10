@@ -20,10 +20,11 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.productcmpt.BooleanValueSetControl;
 
-public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
+public class BooleanValueSetField extends DefaultEditField<IValueSet> {
 
     private IConfigElement configElement;
 
@@ -49,7 +50,7 @@ public class BooleanValueSetField extends DefaultEditField<IEnumValueSet> {
     }
 
     @Override
-    public void setValue(IEnumValueSet newValue) {
+    public void setValue(IValueSet newValue) {
         try {
             booleanValueSetControl.getTrueCheckBox().setChecked(
                     newValue.containsValue(Boolean.TRUE.toString(), newValue.getIpsProject()));

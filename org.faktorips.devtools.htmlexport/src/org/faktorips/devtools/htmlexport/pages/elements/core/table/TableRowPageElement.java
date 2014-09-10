@@ -12,6 +12,7 @@ package org.faktorips.devtools.htmlexport.pages.elements.core.table;
 
 import java.util.List;
 
+import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.generators.ILayouter;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.WrapperPageElement;
@@ -31,9 +32,11 @@ public class TableRowPageElement extends WrapperPageElement {
      * creates a {@link TableRowPageElement} with the given {@link IPageElement}s as content of the
      * cells
      * 
+     * @param context the current {@link DocumentationContext}
+     * 
      */
-    public TableRowPageElement(IPageElement[] pageElements) {
-        super(WrapperType.TABLEROW, pageElements);
+    public TableRowPageElement(IPageElement[] pageElements, DocumentationContext context) {
+        super(WrapperType.TABLEROW, context, pageElements);
     }
 
     @Override
@@ -71,7 +74,7 @@ public class TableRowPageElement extends WrapperPageElement {
         if (pageElement instanceof TableCellPageElement) {
             return (TableCellPageElement)pageElement;
         }
-        return new TableCellPageElement(pageElement);
+        return new TableCellPageElement(getContext(), pageElement);
     }
 
     /**
