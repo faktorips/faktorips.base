@@ -19,7 +19,7 @@ public interface IMetaModelValidator {
     /**
      * Returns a {@link MessageList} containing all validation messages this validator creates.
      * Returns an empty {@link MessageList} if no errors could be found or if no validation can be
-     * performed ( {@link #canValidate()} returns {@link MessageList}).
+     * performed ( {@link #canValidate()} returns <code>false</code> in that case).
      */
     public MessageList validateIfPossible();
 
