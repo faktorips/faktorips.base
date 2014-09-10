@@ -47,6 +47,11 @@ public interface IProductCmptStructureReference extends IIpsSrcFileWrapper {
     public IProductCmptStructureReference getParent();
 
     /**
+     * Returns <code>true</code> if {@link #getParent()} is <code>null</code>
+     */
+    public boolean isRoot();
+
+    /**
      * @return The {@link IIpsObjectPart} referenced by this object.
      */
     public abstract IIpsObjectPart getWrapped();

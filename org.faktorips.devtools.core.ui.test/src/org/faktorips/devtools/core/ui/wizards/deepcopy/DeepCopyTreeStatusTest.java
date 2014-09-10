@@ -217,8 +217,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
         assertEquals(1, allLinkEnabledElements.size());
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference.getParent() == r1
-                    || (reference.getParent() != null && reference.getParent().getParent() == r1)) {
+            if (reference.getParent() == r1 || (!reference.isRoot() && reference.getParent().getParent() == r1)) {
                 assertFalse(deepCopyTreeStatus.isEnabled(reference));
             } else {
                 assertTrue(deepCopyTreeStatus.isEnabled(reference));
@@ -232,7 +231,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         assertEquals(0, allLinkEnabledElements.size());
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference == r1 || reference.getParent() == r1
-                    || (reference.getParent() != null && reference.getParent().getParent() == r1)) {
+                    || (!reference.isRoot() && reference.getParent().getParent() == r1)) {
                 assertFalse(deepCopyTreeStatus.isEnabled(reference));
             } else {
                 assertTrue(deepCopyTreeStatus.isEnabled(reference));
@@ -259,7 +258,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_LINK);
         initStructure();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference.getParent() == null) {
+            if (reference.isRoot()) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
@@ -275,7 +274,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         initStructure();
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference.getParent() == null) {
+            if (reference.isRoot()) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
@@ -294,7 +293,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
         initStructure(rootIpsProject, childIpsProject);
 
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference.getParent() == null) {
+            if (reference.isRoot()) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
             } else if (reference instanceof IProductCmptTypeAssociationReference) {
                 assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));

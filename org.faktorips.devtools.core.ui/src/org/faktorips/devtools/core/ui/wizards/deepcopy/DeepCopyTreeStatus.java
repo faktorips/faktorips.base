@@ -194,12 +194,11 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             if (copyOrLinkStatus == null) {
                 copyOrLinkStatus = getInitCopyOrLinkFromPreferences(reference);
             }
-            return new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checkedStatus,
+            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checkedStatus,
                     copyOrLinkStatus);
         }
         if (checkedStatus != null) {
-            if (reference.getParent() == null) {
-                // root node must be checked
+            if (reference.isRoot()) {
                 linkStatus.setChecked(true);
             } else {
                 linkStatus.setChecked(checkedStatus);
@@ -213,8 +212,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     private CopyOrLink getInitCopyOrLinkFromPreferences(IProductCmptStructureReference reference) {
-        // root node must be always a COPY
-        if (reference.getParent() == null) {
+        if (reference.isRoot()) {
             return CopyOrLink.COPY;
         }
         CopyOrLink copyOrLinkMode;
@@ -223,14 +221,17 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         } else if (ipsPreferences.isCopyWizardModeLink()) {
             copyOrLinkMode = CopyOrLink.LINK;
         } else {
-            // smartMode
-            if (rootIpsProject.equals(reference.getIpsProject())) {
-                copyOrLinkMode = CopyOrLink.COPY;
-            } else {
-                copyOrLinkMode = CopyOrLink.LINK;
-            }
+            copyOrLinkMode = getCopyOrLinkinSmartMode(reference);
         }
         return copyOrLinkMode;
+    }
+
+    private CopyOrLink getCopyOrLinkinSmartMode(IProductCmptStructureReference reference) {
+        if (rootIpsProject.equals(reference.getIpsProject())) {
+            return CopyOrLink.COPY;
+        } else {
+            return CopyOrLink.LINK;
+        }
     }
 
     /**
@@ -261,11 +262,10 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     public boolean isChecked(IProductCmptStructureReference reference) {
         if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
-            if (reference.getParent() != null) {
-                return getStatus(reference).isChecked();
-            } else {
-                // getParent() is null --> Root node
+            if (reference.isRoot()) {
                 return true;
+            } else {
+                return getStatus(reference).isChecked();
             }
         } else if (reference instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
@@ -344,14 +344,13 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     public boolean isEnabled(IProductCmptStructureReference reference) {
         boolean enabled = isChecked(reference);
-        IProductCmptStructureReference parent = reference;
-        while (enabled && (parent = parent.getParent()) != null) {
-            if (parent instanceof IProductCmptTypeAssociationReference) {
-                continue;
-            } else {
+        IProductCmptStructureReference parent = reference.getParent();
+        while (enabled && parent != null) {
+            if (!(parent instanceof IProductCmptTypeAssociationReference)) {
                 LinkStatus status = getStatus(parent);
                 enabled = enabled && status.isChecked() && status.getCopyOrLink() == CopyOrLink.COPY;
             }
+            parent = parent.getParent();
         }
         return enabled;
     }
