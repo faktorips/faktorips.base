@@ -178,27 +178,30 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
             CopyOrLink copyOrLink) {
         IIpsObjectPart part = reference.getWrapped();
         IProductCmpt parent = getProductCmpt(part);
+        Boolean checkedStatus = checked;
+        CopyOrLink copyOrLinkStatus = copyOrLink;
         Map<IIpsObjectPart, LinkStatus> statusMap = getStatusMap(parent);
         LinkStatus linkStatus = statusMap.get(part);
         if (linkStatus == null) {
-            if (checked == null) {
-                checked = true;
+            if (checkedStatus == null) {
+                checkedStatus = true;
             }
-            if (copyOrLink == null) {
-                copyOrLink = getInitCopyOrLinkFromPreferences(reference);
+            if (copyOrLinkStatus == null) {
+                copyOrLinkStatus = getInitCopyOrLinkFromPreferences(reference);
             }
-            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checked, copyOrLink);
+            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checkedStatus,
+                    copyOrLinkStatus);
         }
-        if (checked != null) {
+        if (checkedStatus != null) {
             if (reference.getParent() == null) {
                 // root node must be checked
                 linkStatus.setChecked(true);
             } else {
-                linkStatus.setChecked(checked);
+                linkStatus.setChecked(checkedStatus);
             }
         }
-        if (copyOrLink != null) {
-            linkStatus.setCopyOrLink(copyOrLink);
+        if (copyOrLinkStatus != null) {
+            linkStatus.setCopyOrLink(copyOrLinkStatus);
         }
         statusMap.put(part, linkStatus);
         return linkStatus;
