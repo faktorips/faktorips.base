@@ -33,11 +33,11 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
      */
     public static final String MSGCODE_INCOMPATIBLE_VALUESET = "ValueSetNullIncompatibleValidator_" + "NullIncompatible"; //$NON-NLS-1$ //$NON-NLS-2$
 
-    private final IValueSet presetValueset;
+    private final IValueSet presentValueset;
     private final IValueSet currentValueset;
 
     public ValueSetNullIncompatibleValidator(IValueSet presetValueset, IValueSet currentValueset) {
-        this.presetValueset = presetValueset;
+        this.presentValueset = presetValueset;
         this.currentValueset = currentValueset;
 
     }
@@ -53,7 +53,7 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
 
     @Override
     public boolean canValidate() {
-        return currentValueset != null && presetValueset != null;
+        return currentValueset != null && presentValueset != null;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
     }
 
     private boolean isNullIncompatible() {
-        return currentValueset.isContainsNull() && !presetValueset.isContainsNull();
+        return currentValueset.isContainsNull() && !presentValueset.isContainsNull();
     }
 
 }
