@@ -545,18 +545,33 @@ public class IpsPreferences {
         prefStore.setValue(CHANGE_EVENT_DELAY_TIME, delayTime);
     }
 
+    /**
+     * Returns <code>true</code> if the currently mode for the product copy wizard is the copy mode,
+     * <code>false</code> otherwise.
+     */
     public boolean isCopyWizardModeCopy() {
         return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_COPY);
     }
 
+    /**
+     * Returns <code>true</code> if the currently mode for the product copy wizard is the link mode,
+     * <code>false</code> otherwise.
+     */
     public boolean isCopyWizardModeLink() {
         return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_LINK);
     }
 
+    /**
+     * Returns <code>true</code> if the currently mode for the product copy wizard is the smart
+     * mode, <code>false</code> otherwise.
+     */
     public boolean isCopyWizardModeSmartmode() {
         return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_SMARTMODE);
     }
 
+    /**
+     * Sets the mode of the product copy wizard.
+     */
     public void setCopyWizardMode(String copyWizardMode) {
         prefStore.setValue(COPY_WIZARD_MODE, copyWizardMode);
     }
