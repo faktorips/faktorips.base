@@ -537,7 +537,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.getValueSet().setContainsNull(true);
 
         MessageList messages = configElement.validate(ipsProject);
-        assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPAIBLE_VALUESET));
+        assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
     }
 
     private class InvalidDatatype implements ValueDatatype {

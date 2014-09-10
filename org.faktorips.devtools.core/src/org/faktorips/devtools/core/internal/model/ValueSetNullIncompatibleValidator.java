@@ -31,7 +31,7 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
      * Validation message code to indicate that a value set is not compatible with another because
      * it contains <code>null</code>.
      */
-    public static final String MSGCODE_INCOMPAIBLE_VALUESET = "ValueSetNullIncompatibleValidator_" + "NullIncompatible"; //$NON-NLS-1$ //$NON-NLS-2$
+    public static final String MSGCODE_INCOMPATIBLE_VALUESET = "ValueSetNullIncompatibleValidator_" + "NullIncompatible"; //$NON-NLS-1$ //$NON-NLS-2$
 
     private final IValueSet presetValueset;
     private final IValueSet currentValueset;
@@ -59,7 +59,7 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
     @Override
     public void validateAndAppendMessages(MessageList messageList) {
         if (isNullIncompatible()) {
-            messageList.newError(MSGCODE_INCOMPAIBLE_VALUESET,
+            messageList.newError(MSGCODE_INCOMPATIBLE_VALUESET,
                     Messages.ValueSetNullIncompatibleValidator_Msg_NullNotAllowed, currentValueset,
                     IValueSet.PROPERTY_CONTAINS_NULL);
         }

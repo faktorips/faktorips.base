@@ -283,7 +283,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         messageList = overwritingAttr.validate(ipsProject);
         assertEquals(2, messageList.size());
         assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, messageList.getMessage(0).getCode());
-        assertEquals(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPAIBLE_VALUESET, messageList.getMessage(1)
+        assertEquals(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET, messageList.getMessage(1)
                 .getCode());
     }
 
