@@ -18,7 +18,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueListExtractor;
@@ -177,12 +176,6 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         List<ListChooserValue> oldValues = getResultingValues();
         resultingEnumValueSet = newValueSet;
         fireValuesChangedEvents(oldValues);
-    }
-
-    @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        fireValuesChangedEvents(getResultingValues());
-        super.contentsChanged(event);
     }
 
 }

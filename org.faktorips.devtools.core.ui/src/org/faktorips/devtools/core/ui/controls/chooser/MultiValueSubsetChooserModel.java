@@ -18,7 +18,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.util.message.MessageList;
@@ -109,12 +108,6 @@ public class MultiValueSubsetChooserModel extends AbstractSubsetChooserModel {
     protected void addToResultingValues(List<ListChooserValue> values) {
         resultingValues.addAll(values);
         updateMultiValueHolder();
-    }
-
-    @Override
-    public void contentsChanged(ContentChangeEvent event) {
-        fireValuesChangedEvents(getResultingValues());
-        super.contentsChanged(event);
     }
 
 }

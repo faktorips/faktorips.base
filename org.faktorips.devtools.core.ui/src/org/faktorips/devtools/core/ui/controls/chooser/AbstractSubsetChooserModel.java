@@ -133,4 +133,10 @@ public abstract class AbstractSubsetChooserModel extends IpsObjectPartPmo {
         move(selectedValues, false);
     }
 
+    @Override
+    public void contentsChanged(ContentChangeEvent event) {
+        fireValuesChangedEvents(getResultingValues());
+        super.contentsChanged(event);
+    }
+
 }

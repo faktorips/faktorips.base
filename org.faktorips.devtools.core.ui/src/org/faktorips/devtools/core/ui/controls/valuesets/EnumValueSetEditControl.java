@@ -103,10 +103,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     @Override
     public void initialize(Object modelObject, String label) {
-        if (label == null) {
-            label = Messages.EnumValueSetEditControl_titleValues;
-        }
-        super.initialize(modelObject, label);
+        String resultingLabel = label == null ? Messages.EnumValueSetEditControl_titleValues : label;
+        super.initialize(modelObject, resultingLabel);
         GridLayout layout = (GridLayout)getLayout();
         layout.marginHeight = 10;
 
@@ -184,7 +182,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     @Override
     protected void addColumnLayoutData(TableLayoutComposite layouter) {
-        layouter.addColumnData(new ColumnPixelData(15, false)); // message image
+        // message image
+        layouter.addColumnData(new ColumnPixelData(15, false));
         layouter.addColumnData(new ColumnWeightData(95, true));
     }
 
@@ -193,7 +192,8 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(valueDatatype);
         CellEditor[] editors = new CellEditor[2];
-        editors[0] = null; // no editor for the message image column
+        // no editor for the message image column
+        editors[0] = null;
         editors[1] = ctrlFactory.createTableCellEditor(getUiToolkit(), valueDatatype, null, getTableViewer(), 1,
                 ipsProject);
         return editors;
@@ -307,12 +307,13 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
             if (element == null) {
                 return;
             }
+            Object resultingElement = element;
             if (element instanceof Item) {
-                element = ((Item)element).getData();
+                resultingElement = ((Item)element).getData();
             }
-            IndexValueWrapper wrapper = (IndexValueWrapper)element;
+            IndexValueWrapper wrapper = (IndexValueWrapper)resultingElement;
             wrapper.setValueName((String)value);
-            getTableViewer().update(element, null);
+            getTableViewer().update(resultingElement, null);
         }
     }
 
