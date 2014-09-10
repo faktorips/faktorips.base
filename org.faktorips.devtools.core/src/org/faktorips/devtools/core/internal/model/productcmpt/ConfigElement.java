@@ -210,7 +210,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
                 String text = Messages.ConfigElement_msgInvalidDatatype;
                 list.add(new Message(IConfigElement.MSGCODE_INVALID_DATATYPE, text, Message.ERROR, this, PROPERTY_VALUE));
             }
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             throw new CoreException(new IpsStatus(e));
         }
 
