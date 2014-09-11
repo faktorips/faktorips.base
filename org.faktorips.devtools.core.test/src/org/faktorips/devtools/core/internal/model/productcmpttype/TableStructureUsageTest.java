@@ -83,6 +83,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.initFromXml(paramEl);
         assertEquals("role1", tableStructureUsage.getRoleName());
         assertTrue(tableStructureUsage.isMandatoryTableContent());
+        assertFalse(tableStructureUsage.isChangingOverTime());
         assertEquals(3, tableStructureUsage.getTableStructures().length);
         for (int i = 0; i < 3; i++) {
             assertEquals("tableStructure" + (i + 1), tableStructureUsage.getTableStructures()[i]);
@@ -90,6 +91,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         paramEl = XmlUtil.getElement(docEl, "TableStructureUsage", 1);
         tableStructureUsage.initFromXml(paramEl);
         assertFalse(tableStructureUsage.isMandatoryTableContent());
+        assertTrue(tableStructureUsage.isChangingOverTime());
     }
 
     @Test
@@ -99,6 +101,8 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         tableStructureUsage.addTableStructure("tableStructureA");
         tableStructureUsage.addTableStructure("tableStructureB");
         tableStructureUsage.setCategory("foo");
+        tableStructureUsage.setChangingOverTime(false);
+
         Element element = tableStructureUsage.toXml(this.newDocument());
 
         ITableStructureUsage copy = productCmptType.newTableStructureUsage();
@@ -110,6 +114,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertEquals("tableStructureA", copy.getTableStructures()[0]);
         assertEquals("tableStructureB", copy.getTableStructures()[1]);
         assertEquals("foo", copy.getCategory());
+        assertFalse(copy.isChangingOverTime());
     }
 
     @Test

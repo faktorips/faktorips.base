@@ -117,6 +117,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_ROLENAME);
         mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+        }
     }
 
     @Override
@@ -124,6 +127,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ROLENAME, name);
         element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, "" + changingOverTime); //$NON-NLS-1$
     }
 
     @Override
@@ -283,10 +287,11 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         return changingOverTime;
     }
 
+    @Override
     public void setChangingOverTime(boolean changingOverTime) {
         boolean oldValue = this.changingOverTime;
         this.changingOverTime = changingOverTime;
-        valueChanged(oldValue, changingOverTime);
+        valueChanged(oldValue, changingOverTime, ITableStructureUsage.PROPERTY_CHANGING_OVER_TIME);
     }
 
     @Override

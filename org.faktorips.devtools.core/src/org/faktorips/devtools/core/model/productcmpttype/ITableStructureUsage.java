@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
@@ -26,6 +27,8 @@ public interface ITableStructureUsage extends IProductCmptProperty {
     public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
 
     public final static String PROPERTY_MANDATORY_TABLE_CONTENT = "mandatoryTableContent"; //$NON-NLS-1$
+
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     public final static String MSGCODE_PREFIX = "TableStructureUsage-"; //$NON-NLS-1$
 
@@ -129,5 +132,14 @@ public interface ITableStructureUsage extends IProductCmptProperty {
      * Returns the {@link IProductCmptType} this table structure usage belongs to.
      */
     public IProductCmptType getProductCmptType();
+
+    /**
+     * Configures this {@link ITableStructureUsage} to change or be constant over time. If
+     * <code>true</code> every {@link IProductCmptGeneration} may specify a different value for this
+     * attribute. If <code>false</code> the value is the same for all generations.
+     * 
+     * @param changingOverTime indicates whether or not this attribute should change over time
+     */
+    public void setChangingOverTime(boolean changingOverTime);
 
 }
