@@ -106,6 +106,16 @@ public class Messages extends NLS {
 
     public static String FaktorIpsPreferencePage_labelMaxHeapSizeIpsTestRunner;
 
+    public static String FaktorIpsPreferencePage_CopyWizardModeTooltip;
+
+    public static String FaktorIpsPreferencePage_CopyWizardModeTitle;
+
+    public static String FaktorIpsPreferencePage_CopyWizardModeCopy;
+
+    public static String FaktorIpsPreferencePage_CopyWizardModeLink;
+
+    public static String FaktorIpsPreferencePage_CopyWizardModeSmartMode;
+
     public static String IpsClasspathContainerPage_description;
 
     public static String IpsClasspathContainerPage_includeJoda;

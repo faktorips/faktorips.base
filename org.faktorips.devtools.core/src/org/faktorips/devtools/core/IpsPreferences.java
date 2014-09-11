@@ -142,10 +142,29 @@ public class IpsPreferences {
     public static final String DATATYPE_FORMATTING_LOCALE = IpsPlugin.PLUGIN_ID + ".datatypeFormattingLocale"; //$NON-NLS-1$
 
     /**
+     * Constant that identifies the product copy wizard mode preference.
+     */
+    public static final String COPY_WIZARD_MODE = IpsPlugin.PLUGIN_ID + ".copyWizardMode"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the product copy wizard copy mode preference.
+     */
+    public static final String COPY_WIZARD_MODE_COPY = "copy"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the product copy wizard link mode preference.
+     */
+    public static final String COPY_WIZARD_MODE_LINK = "link"; //$NON-NLS-1$
+
+    /**
+     * Constant that identifies the product copy wizard smart mode preference.
+     */
+    public static final String COPY_WIZARD_MODE_SMARTMODE = "smartmode"; //$NON-NLS-1$
+
+    /**
      * Constant that identifies the preference for delay time on change events.
      */
     public static final String CHANGE_EVENT_DELAY_TIME = IpsPlugin.PLUGIN_ID + ".changeEventDelayTime"; //$NON-NLS-1$
-
     /**
      * Default value in milliseconds for change event delay time
      */
@@ -171,6 +190,7 @@ public class IpsPreferences {
         prefStore.setDefault(AUTO_VALIDATE_TABLES, true);
         prefStore.setDefault(SECTIONS_IN_TYPE_EDITORS, TWO_SECTIONS_IN_TYPE_EDITOR_PAGE);
         prefStore.setDefault(CHANGE_EVENT_DELAY_TIME, DEFAULT_DELAY_TIME);
+        prefStore.setDefault(COPY_WIZARD_MODE, COPY_WIZARD_MODE_SMARTMODE);
 
         setDefaultForDatatypeFormatting(prefStore);
 
@@ -524,4 +544,36 @@ public class IpsPreferences {
     public void setChangeEventDelayTime(int delayTime) {
         prefStore.setValue(CHANGE_EVENT_DELAY_TIME, delayTime);
     }
+
+    /**
+     * Returns <code>true</code> if the currently mode for the product copy wizard is the copy mode,
+     * <code>false</code> otherwise.
+     */
+    public boolean isCopyWizardModeCopy() {
+        return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_COPY);
+    }
+
+    /**
+     * Returns <code>true</code> if the currently mode for the product copy wizard is the link mode,
+     * <code>false</code> otherwise.
+     */
+    public boolean isCopyWizardModeLink() {
+        return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_LINK);
+    }
+
+    /**
+     * Returns <code>true</code> if the currently mode for the product copy wizard is the smart
+     * mode, <code>false</code> otherwise.
+     */
+    public boolean isCopyWizardModeSmartmode() {
+        return prefStore.getString(COPY_WIZARD_MODE).equals(COPY_WIZARD_MODE_SMARTMODE);
+    }
+
+    /**
+     * Sets the mode of the product copy wizard.
+     */
+    public void setCopyWizardMode(String copyWizardMode) {
+        prefStore.setValue(COPY_WIZARD_MODE, copyWizardMode);
+    }
+
 }
