@@ -221,12 +221,12 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         } else if (ipsPreferences.isCopyWizardModeLink()) {
             copyOrLinkMode = CopyOrLink.LINK;
         } else {
-            copyOrLinkMode = getCopyOrLinkinSmartMode(reference);
+            copyOrLinkMode = getCopyOrLinkInSmartMode(reference);
         }
         return copyOrLinkMode;
     }
 
-    private CopyOrLink getCopyOrLinkinSmartMode(IProductCmptStructureReference reference) {
+    private CopyOrLink getCopyOrLinkInSmartMode(IProductCmptStructureReference reference) {
         if (rootIpsProject.equals(reference.getIpsProject())) {
             return CopyOrLink.COPY;
         } else {
