@@ -46,6 +46,10 @@ import org.w3c.dom.Element;
  */
 public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFolderEntry {
 
+    public static final String DEFAULT_TOC_PATH = ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
+
+    public static final String DEFAUTL_VALIDATION_MESSAGES_BUNDLE = "validation-messages"; //$NON-NLS-1$
+
     private static final String PROPERTY_TYPE = "type"; //$NON-NLS-1$
 
     private static final String PROPERTY_SOURCE_FOLDER = "sourceFolder"; //$NON-NLS-1$
@@ -61,39 +65,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     private static final String PROPERTY_TOC_PATH = "tocPath"; //$NON-NLS-1$
 
     private static final String PROPERTY_VALIDATION_MESSAGES_BUNDLE = "validationMessagesBundle"; //$NON-NLS-1$
-
-    public final static String DEFAULT_TOC_PATH = ClassloaderRuntimeRepository.TABLE_OF_CONTENTS_FILE;
-
-    public static final String DEFAUTL_VALIDATION_MESSAGES_BUNDLE = "validation-messages"; //$NON-NLS-1$
-
-    /**
-     * Returns a description of the xml format.
-     */
-    public final static String getXmlFormatDescription() {
-        return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
-                "the newly generated content during each build cycle." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    validationMessagesBundle=\"motor.validation-messages\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The partial name of the resource bundle containing the validation messages." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      The full resource bundle name is derived from basePackageDerived adding this parial name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
-                "regenerated during a clean build cycle." //$NON-NLS-1$
-                + SystemUtils.LINE_SEPARATOR
-                + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    basePackageDerived=\"\">          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
-    }
 
     /** the folder containing the IPS objects */
     private IFolder sourceFolder;
@@ -127,6 +98,35 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         super(path);
         ArgumentCheck.notNull(sourceFolder);
         setSourceFolder(sourceFolder);
+    }
+
+    /**
+     * Returns a description of the xml format.
+     */
+    public static final String getXmlFormatDescription() {
+        return "Sourcefolder:" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "  <" + XML_ELEMENT + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    type=\"src\"" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    sourceFolder=\"model\"            Folder in the project that contains the Faktor-IPS model and product definition files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    outputFolderMergable=\"src\"      Folder in the project where the generator puts the java source files which content will be merged with " + //$NON-NLS-1$
+                "the newly generated content during each build cycle." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "    basePackageMergable=\"org.foo\"   The package prefix for all generated but mergable java files." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    tocPath=\"motor/motor-reposiory-toc.xml\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The partial path of the resource containing the runtime repository table of content (toc)." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The full path is derived from the basePackageMergeable by adding this partial path." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The file is not part of the published interface so it is places in the internal package." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    validationMessagesBundle=\"motor.validation-messages\" " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The partial name of the resource bundle containing the validation messages." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      The full resource bundle name is derived from basePackageDerived adding this parial name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      For getting the name of the resulting property file, the resource bundle algorithm adds the locale and '.properties' to the bundle name." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    outputFolderDerived=\"\"          Folder within the project where the generator puts java source files that will be overridden during each build cycle and delete and " + //$NON-NLS-1$
+                "regenerated during a clean build cycle." //$NON-NLS-1$
+                + SystemUtils.LINE_SEPARATOR
+                + "                                      Other builders can choose to maintain user code in a separate folder which is defined here." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "                                      If you use the standard builder, leave the atribute empty." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    basePackageDerived=\"\">          Package prefix for all generated derived Java classes in the output folder for derived sources. See above." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + " </" + XML_ELEMENT + ">" + SystemUtils.LINE_SEPARATOR; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private void setSourceFolder(IFolder newFolder) {
@@ -291,7 +291,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                 : outputFolderMergable.getProjectRelativePath().toString());
         element.setAttribute(PROPERTY_BASE_PACKAGE_MERGABLE, basePackageMergable == null ? StringUtils.EMPTY
                 : basePackageMergable);
-        element.setAttribute(PROPERTY_TOC_PATH, tocPath == null ? "" : tocPath); //$NON-NLS-1$ 
+        element.setAttribute(PROPERTY_TOC_PATH, tocPath == null ? "" : tocPath); //$NON-NLS-1$
         element.setAttribute(PROPERTY_VALIDATION_MESSAGES_BUNDLE, validationMessagesBundle == null ? StringUtils.EMPTY
                 : validationMessagesBundle);
         element.setAttribute(PROPERTY_OUTPUT_FOLDER_DERIVED, outputFolderDerived == null ? StringUtils.EMPTY
@@ -313,27 +313,33 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
                     this);
             result.add(msg);
         }
-        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable == null) {
+        if (getIpsObjectPath().isOutputDefinedPerSrcFolder()) {
+            result.add(validateOutputFolder());
+        }
+
+        return result;
+    }
+
+    private MessageList validateOutputFolder() {
+        MessageList result = new MessageList();
+        if (outputFolderMergable == null) {
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_MISSING,
                     Messages.IpsSrcFolderEntry_outputfoldermergablesrcmissing, Message.ERROR, this));
         }
-        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived == null) {
+        if (outputFolderDerived == null) {
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_MISSING,
                     Messages.IpsSrcFolderEntry_outputfoldersrcderivedmissing, Message.ERROR, this));
         }
-        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderMergable != null
-                && !outputFolderMergable.exists()) {
+        if (outputFolderMergable != null && !outputFolderMergable.exists()) {
             String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
                     outputFolderMergable.getFullPath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_MERGABLE_DOESNT_EXIST, text, Message.ERROR, this));
         }
-        if (getIpsObjectPath().isOutputDefinedPerSrcFolder() && outputFolderDerived != null
-                && !outputFolderDerived.exists()) {
+        if (outputFolderDerived != null && !outputFolderDerived.exists()) {
             String text = NLS.bind(Messages.IpsSrcFolderEntry_outputfolderdoesntexist,
                     outputFolderDerived.getFullPath());
             result.add(new Message(MSGCODE_OUTPUT_FOLDER_DERIVED_DOESNT_EXIST, text, Message.ERROR, this));
         }
-
         return result;
     }
 
@@ -402,4 +408,8 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
         }
     }
 
+    @Override
+    public boolean isReExported() {
+        return true;
+    }
 }

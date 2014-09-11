@@ -173,4 +173,14 @@ public interface IIpsObjectPathEntry {
      */
     public InputStream getResourceAsStream(String path);
 
+    /**
+     * Returns <code>true</code> if this entry should be reexported.
+     */
+    public boolean isReExported();
+
+    /**
+     * Sets the flag that this entry should reexported.
+     */
+    void setReExported(boolean reexported);
+
 }

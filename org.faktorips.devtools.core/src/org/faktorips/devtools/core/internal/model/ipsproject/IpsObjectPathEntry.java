@@ -43,6 +43,8 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     private IpsObjectPath path;
 
+    private boolean reexported = false;
+
     public IpsObjectPathEntry(IpsObjectPath ipsObjectPath) {
         ArgumentCheck.notNull(ipsObjectPath);
         this.path = ipsObjectPath;
@@ -66,6 +68,16 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     @Override
     public int getIndex() {
         return path.getIndex(this);
+    }
+
+    @Override
+    public boolean isReExported() {
+        return reexported;
+    }
+
+    @Override
+    public void setReExported(boolean reexported) {
+        this.reexported = reexported;
     }
 
     /**

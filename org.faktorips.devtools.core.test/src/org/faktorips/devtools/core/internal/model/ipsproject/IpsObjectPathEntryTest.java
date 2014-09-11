@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -132,4 +133,12 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
         assertTrue(result.isEmpty());
     }
 
+    @Test
+    public void testIsReexport() throws Exception {
+        IIpsObjectPathEntry ipsObjectPathEntry = path.newArchiveEntry(ipsProject.getProject()
+                .getFile("someArchive.jar").getFullPath());
+        assertFalse(ipsObjectPathEntry.isReExported());
+        ipsObjectPathEntry.setReExported(true);
+        assertTrue(ipsObjectPathEntry.isReExported());
+    }
 }

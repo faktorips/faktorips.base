@@ -242,4 +242,11 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
     }
 
+    @Test
+    public void testIsReExported() {
+        IFolder src = ipsProject.getProject().getFolder("src");
+        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
+        entry.setReExported(false);
+        assertTrue(entry.isReExported());
+    }
 }
