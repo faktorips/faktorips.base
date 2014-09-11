@@ -822,8 +822,7 @@ public class SourcePage extends WizardPage {
                 if (evt.getSource() instanceof IProductCmptStructureReference) {
                     IProductCmptStructureReference reference = (IProductCmptStructureReference)evt.getSource();
                     if (!reference.isRoot()) {
-                        // do not expand/collapse for root node
-                        if (evt.getNewValue().equals(true) || evt.getNewValue() == CopyOrLink.COPY) {
+                        if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
                             tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
                         } else {
                             tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
