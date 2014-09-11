@@ -16,6 +16,9 @@ import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 
+/**
+ * The Workbench Adapter for {@link ITableStructureUsage}.
+ */
 public class TableStructureUsageWorkbenchAdapter extends DefaultIpsObjectPartWorkbenchAdapter {
 
     public static final String BASE_IMAGE = "TableStructure.gif"; //$NON-NLS-1$
