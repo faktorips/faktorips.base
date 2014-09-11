@@ -43,7 +43,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     private IpsObjectPath path;
 
-    private boolean reexported = false;
+    private boolean reexported = true;
 
     public IpsObjectPathEntry(IpsObjectPath ipsObjectPath) {
         ArgumentCheck.notNull(ipsObjectPath);

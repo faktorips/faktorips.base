@@ -137,8 +137,8 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
     public void testIsReexport() throws Exception {
         IIpsObjectPathEntry ipsObjectPathEntry = path.newArchiveEntry(ipsProject.getProject()
                 .getFile("someArchive.jar").getFullPath());
-        assertFalse(ipsObjectPathEntry.isReExported());
-        ipsObjectPathEntry.setReExported(true);
         assertTrue(ipsObjectPathEntry.isReExported());
+        ipsObjectPathEntry.setReExported(false);
+        assertFalse(ipsObjectPathEntry.isReExported());
     }
 }
