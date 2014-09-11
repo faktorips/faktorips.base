@@ -11,11 +11,13 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -218,8 +220,8 @@ public interface IIpsObjectPath {
     public int[] moveEntries(int[] indices, boolean up);
 
     /**
-     * This method checks whether this object path has a resource with the specified path. The path is
-     * relative to any entry's root.
+     * This method checks whether this object path has a resource with the specified path. The path
+     * is relative to any entry's root.
      * 
      * @param path The path of the requested resource
      * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
@@ -260,4 +262,16 @@ public interface IIpsObjectPath {
      */
     public IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath);
 
+    /**
+     * 
+     * Returns all IPS source files within a IpsProject and it's references. {@link IIpsSrcFile}s in
+     * bundle-projects will always be included in the resulting list. The value of
+     * <code>respectReexport</code> indicates whether this method considers project references too.
+     * If the <code>respectReexport</code> is set to true, the {@link IIpsSrcFile}s of projects
+     * references will be included in the resulting list, otherwise they won't.
+     * 
+     * @param respectReexport indicates if {@link IIpsSrcFile} of non-bundle projects shall be
+     *            included in the result
+     */
+    public List<IIpsSrcFile> findAllIpsSrcFiles(boolean respectReexport);
 }
