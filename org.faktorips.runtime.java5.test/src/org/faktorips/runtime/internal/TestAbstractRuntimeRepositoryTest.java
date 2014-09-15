@@ -452,6 +452,10 @@ public class TestAbstractRuntimeRepositoryTest {
 
     class TestTable implements ITable {
         // test class
+        @Override
+        public String getName() {
+            return "qualifiedName";
+        }
     }
 
     private class Lookup implements IEnumValueLookupService<TestEnumValue> {

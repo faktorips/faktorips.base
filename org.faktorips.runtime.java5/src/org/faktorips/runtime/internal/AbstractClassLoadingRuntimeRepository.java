@@ -349,7 +349,7 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
         InputStream is = getXmlAsStream(tocEntry);
 
         try {
-            table.initFromXml(is, this);
+            table.initFromXml(is, this, tocEntry.getIpsObjectId());
         } catch (Exception e) {
             throw new RuntimeException("Can't parse xml for " + tocEntry.getIpsObjectId(), e);
         } finally {
