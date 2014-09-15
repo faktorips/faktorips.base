@@ -76,7 +76,7 @@ public class TableContentUsageEditComposite extends
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
-        controlDecoration.setMarginWidth(1);
+        controlDecoration.setMarginWidth(8);
     }
 
 }
