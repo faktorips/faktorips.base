@@ -22,51 +22,51 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  */
 public interface ITableStructureUsage extends IProductCmptProperty {
 
-    public final static String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
+    public static final String PROPERTY_ROLENAME = "roleName"; //$NON-NLS-1$
 
-    public final static String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
+    public static final String PROPERTY_TABLESTRUCTURE = "tableStructure"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MANDATORY_TABLE_CONTENT = "mandatoryTableContent"; //$NON-NLS-1$
+    public static final String PROPERTY_MANDATORY_TABLE_CONTENT = "mandatoryTableContent"; //$NON-NLS-1$
 
     public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    public final static String MSGCODE_PREFIX = "TableStructureUsage-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "TableStructureUsage-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the referenced table structure hasn't been found.
      */
-    public final static String MSGCODE_TABLE_STRUCTURE_NOT_FOUND = MSGCODE_PREFIX + "TableStructureNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_TABLE_STRUCTURE_NOT_FOUND = MSGCODE_PREFIX + "TableStructureNotFound"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the role name is invalid.
      */
-    public final static String MSGCODE_INVALID_ROLE_NAME = MSGCODE_PREFIX + "InvalidRoleName"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_ROLE_NAME = MSGCODE_PREFIX + "InvalidRoleName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the the usage does not reference at least one
      * structure
      */
-    public final static String MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE = MSGCODE_PREFIX
+    public static final String MSGCODE_MUST_REFERENCE_AT_LEAST_1_TABLE_STRUCTURE = MSGCODE_PREFIX
             + "MustReferenceAtLeast1Structure"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the policy component type is not configurable by
      * product.
      */
-    public final static String MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT = MSGCODE_PREFIX
+    public static final String MSGCODE_POLICYCMPTTYPE_IS_NOT_CONFIGURABLE_BY_PRODUCT = MSGCODE_PREFIX
             + "PolicycmpttypeIsNotConfigurableByProduct"; //$NON-NLS-1$
 
     /**
      * Validation message code that identifies the validation rule that checks if role name is
      * already defined in the super type.
      */
-    public final static String MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE = MSGCODE_PREFIX + "RoleNameAlreadyInSupertype"; //$NON-NLS-1$
+    public static final String MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE = MSGCODE_PREFIX + "RoleNameAlreadyInSupertype"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the table structure usage has the same role name as
      * at least one other usage in the supertype hierarchy.
      */
-    public final static String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName"; //$NON-NLS-1$
+    public static final String MSGCODE_SAME_ROLENAME = MSGCODE_PREFIX + "SameRoleName"; //$NON-NLS-1$
 
     /**
      * Returns the role name.

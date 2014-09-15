@@ -118,7 +118,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         name = element.getAttribute(PROPERTY_ROLENAME);
         mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME));
+            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME)).booleanValue();
         }
     }
 
