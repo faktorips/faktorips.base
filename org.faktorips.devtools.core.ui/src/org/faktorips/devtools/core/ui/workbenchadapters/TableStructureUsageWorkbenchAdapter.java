@@ -17,7 +17,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 
 /**
- * The Workbench Adapter for {@link ITableStructureUsage}.
+ * The workbench adapter for {@link ITableStructureUsage}.
  */
 public class TableStructureUsageWorkbenchAdapter extends DefaultIpsObjectPartWorkbenchAdapter {
 

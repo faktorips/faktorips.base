@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -50,6 +51,10 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
      */
     private String structureUsage = ""; //$NON-NLS-1$
 
+    public TableContentUsage() {
+        super();
+    }
+
     public TableContentUsage(IPropertyValueContainer generation, String id) {
         super(generation, id);
     }
@@ -62,10 +67,6 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     @Override
     public final IPropertyValueContainer getPropertyValueContainer() {
         return (IPropertyValueContainer)getParent();
-    }
-
-    public TableContentUsage() {
-        super();
     }
 
     @Override
@@ -90,11 +91,19 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
-        return (ProductCmptGeneration)getParent();
+        if (getParent() instanceof IProductCmptGeneration) {
+            return (ProductCmptGeneration)getParent();
+        }
+        return null;
+    }
+
+    @Override
+    public IProductCmpt getProductCmpt() {
+        return getPropertyValueContainer().getProductCmpt();
     }
 
     private IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return getProductCmptGeneration().findProductCmptType(ipsProject);
+        return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
     @Override
@@ -197,9 +206,9 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         ArgumentCheck.notNull(locale);
 
         String caption = null;
-        ITableStructureUsage structureUsage = findTableStructureUsage(getIpsProject());
-        if (structureUsage != null) {
-            caption = structureUsage.getLabelValue(locale);
+        ITableStructureUsage currentStructureUsage = findTableStructureUsage(getIpsProject());
+        if (currentStructureUsage != null) {
+            caption = currentStructureUsage.getLabelValue(locale);
         }
         return caption;
     }

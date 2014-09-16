@@ -767,4 +767,20 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(dependencyDetail2, detailList.get(1));
     }
 
+    @Test
+    public void testAddRelatedTableContentsQualifiedNameTypes() {
+        ProductCmptGeneration generationSpy = spy((ProductCmptGeneration)generation);
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setRoleName("RateTable");
+        ITableContentUsage contentUsage = generation.newTableContentUsage(structureUsage);
+        assertEquals("RateTable", contentUsage.getStructureUsage());
+
+        Set<IDependency> dependenciesResult = new HashSet<IDependency>();
+        Map<IDependency, List<IDependencyDetail>> detailsResult = new HashMap<IDependency, List<IDependencyDetail>>();
+        generationSpy.dependsOn(dependenciesResult, detailsResult);
+
+        assertEquals(1, dependenciesResult.size());
+        assertEquals(1, detailsResult.size());
+    }
+
 }

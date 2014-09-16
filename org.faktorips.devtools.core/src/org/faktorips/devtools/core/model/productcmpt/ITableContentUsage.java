@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -27,33 +28,39 @@ public interface ITableContentUsage extends IPropertyValue {
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "TABLECONTENT-USAGE"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "TABLECONTENT-USAGE"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the given structure usage is not known.
      */
-    public final static String MSGCODE_UNKNOWN_STRUCTURE_USAGE = MSGCODE_PREFIX + "UnknownStructureUsage"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_STRUCTURE_USAGE = MSGCODE_PREFIX + "UnknownStructureUsage"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the given table content was not found.
      */
-    public final static String MSGCODE_UNKNOWN_TABLE_CONTENT = MSGCODE_PREFIX + "UnknownTableContent"; //$NON-NLS-1$
+    public static final String MSGCODE_UNKNOWN_TABLE_CONTENT = MSGCODE_PREFIX + "UnknownTableContent"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the given table content does not match the needs of
      * the structure
      */
-    public final static String MSGCODE_INVALID_TABLE_CONTENT = MSGCODE_PREFIX + "InvalidTableContent"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_TABLE_CONTENT = MSGCODE_PREFIX + "InvalidTableContent"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the product component type was not found.
      */
-    public final static String MSGCODE_NO_TYPE = MSGCODE_PREFIX + "NoProductCmptType"; //$NON-NLS-1$
+    public static final String MSGCODE_NO_TYPE = MSGCODE_PREFIX + "NoProductCmptType"; //$NON-NLS-1$
 
     /**
-     * Returns the generation this formula belongs to.
+     * Returns the generation this {@link TableContentUsage} belongs to.
      */
     public IProductCmptGeneration getProductCmptGeneration();
+
+    /**
+     * Returns the {@link IProductCmpt} this {@link TableContentUsage} belongs to if not changing
+     * over time is set.
+     */
+    public IProductCmpt getProductCmpt();
 
     /**
      * Set the role name of the table structure usage implemented by this content usage.

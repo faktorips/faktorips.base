@@ -14,7 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 
 /**
- * Default workbench adapter for all kinds of {@link IIpsObjectPart}s
+ * Default workbench adapter for all kinds of {@link IIpsObjectPart IIpsObjectParts}
  */
 public class DefaultIpsObjectPartWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 

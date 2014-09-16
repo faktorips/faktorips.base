@@ -322,15 +322,21 @@ public class ProductCmptTreeStructure implements IProductCmptTreeStructure {
                 ProductCmptStructureReference node = new ProductCmptVRuleReference(this, parent, rule);
                 children.add(node);
             }
-            ITableContentUsage[] tcus = activeGeneration.getTableContentUsages();
-            for (ITableContentUsage tcu : tcus) {
-                ProductCmptStructureReference node = new ProductCmptStructureTblUsageReference(this, parent, tcu);
-                children.add(node);
-            }
+            addTableContentUsages(parent, children, cmpt.getTableContentUsages());
+            addTableContentUsages(parent, children, activeGeneration.getTableContentUsages());
         }
 
         ProductCmptStructureReference[] result = new ProductCmptStructureReference[children.size()];
         return children.toArray(result);
+    }
+
+    private void addTableContentUsages(ProductCmptStructureReference parent,
+            List<IProductCmptStructureReference> children,
+            ITableContentUsage[] tcus) throws CycleInProductStructureException {
+        for (ITableContentUsage tcu : tcus) {
+            ProductCmptStructureReference node = new ProductCmptStructureTblUsageReference(this, parent, tcu);
+            children.add(node);
+        }
     }
 
     private void addAssociationsAsChildren(ProductCmptStructureReference parent,

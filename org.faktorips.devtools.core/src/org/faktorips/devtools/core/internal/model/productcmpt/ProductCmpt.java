@@ -48,6 +48,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -217,13 +218,31 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             dependencySet.add(dependency);
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
         }
+
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencySet, details);
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             ((ProductCmptGeneration)generation).dependsOn(dependencySet, details);
         }
+        addRelatedTableContentsQualifiedNameTypes(dependencySet, details);
 
         return dependencySet.toArray(new IDependency[dependencySet.size()]);
+    }
+
+    /**
+     * Add the qualified name types of all related table contents.
+     */
+    private void addRelatedTableContentsQualifiedNameTypes(Set<IDependency> qaTypes,
+            Map<IDependency, List<IDependencyDetail>> details) {
+
+        ITableContentUsage[] tableContentUsages = getTableContentUsages();
+        for (ITableContentUsage tableContentUsage : tableContentUsages) {
+            IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
+                    .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
+                    IpsObjectType.TABLE_CONTENTS));
+            qaTypes.add(dependency);
+            addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        }
     }
 
     @Override
@@ -361,12 +380,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        if (property.getProductCmptPropertyType() == ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE) {
+        if (isAllowedPropertyType(property)) {
             IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
             objectHasChanged();
             return newPropertyValue;
         }
         return null;
+    }
+
+    private boolean isAllowedPropertyType(IProductCmptProperty property) {
+        return (property.getProductCmptPropertyType() == ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE)
+                || (property.getProductCmptPropertyType() == ProductCmptPropertyType.TABLE_STRUCTURE_USAGE);
     }
 
     @Override
@@ -383,10 +407,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
             return newLinkInternal;
         }
-        if (xmlTagName.equals(AttributeValue.TAG_NAME)) {
-            IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, AttributeValue.TAG_NAME, id);
+        if (xmlTagName.equals(AttributeValue.TAG_NAME) || xmlTagName.equals(TableContentUsage.TAG_NAME)) {
+            IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, xmlTagName, id);
             return newPartThis;
         }
+
         return null;
     }
 
@@ -613,6 +638,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IProductCmpt getProductCmpt() {
         return this;
+    }
+
+    @Override
+    public ITableContentUsage getTableContentUsage(String rolename) {
+        return propertyValueCollection.getPropertyValue(ITableContentUsage.class, rolename);
+    }
+
+    @Override
+    public ITableContentUsage[] getTableContentUsages() {
+        List<ITableContentUsage> usages = propertyValueCollection.getPropertyValues(ITableContentUsage.class);
+        return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
 }

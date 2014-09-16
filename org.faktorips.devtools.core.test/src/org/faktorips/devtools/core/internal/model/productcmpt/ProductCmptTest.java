@@ -59,10 +59,13 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.message.MessageList;
@@ -81,6 +84,10 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IProductCmptTypeAttribute attr;
     private IProductCmptTypeAttribute attr2;
     private IProductCmptType type;
+    private ITableStructure structure;
+    private ITableStructureUsage structUsage;
+
+    final private String STRUCTURE_ROLENAME = "StructUsageRole";
 
     @Override
     @Before
@@ -98,7 +105,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         attr.setName("TypeAttr1");
         attr2 = new ProductCmptTypeAttribute(type, "IDAttr2");
         attr2.setName("TypeAttr2");
-
     }
 
     @Test
@@ -636,7 +642,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPropertyValue() {
+    public void testNewPropertyValue() throws Exception {
         assertEquals(0,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
@@ -665,6 +671,12 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
+
+        createTableStructureUsage();
+
+        productCmpt.newPropertyValue(structUsage);
+        assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
+                .size());
     }
 
     @Test
@@ -696,6 +708,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         when(element.getNodeName()).thenReturn(ValidationRule.TAG_NAME);
         part = productCmpt.newPartThis(element, "vRuleID");
         assertNull(part);
+
+        when(element.getNodeName()).thenReturn(TableContentUsage.TAG_NAME);
+        part = productCmpt.newPartThis(element, "TCUID");
+        assertNotNull(part);
+
     }
 
     @Test
@@ -758,6 +775,23 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         List<IProductCmptLink> linksIncludingGenerations = productCmpt.getLinksIncludingGenerations();
         assertEquals(links, linksIncludingGenerations);
+    }
+
+    @Test
+    public void testGetTableContentUsages() throws Exception {
+        createTableStructureUsage();
+
+        ITableContentUsage contentUsagePC = (ITableContentUsage)productCmpt.newPropertyValue(structUsage);
+        assertNotNull(contentUsagePC);
+
+        assertEquals(1, productCmpt.getTableContentUsages().length);
+    }
+
+    private void createTableStructureUsage() throws CoreException {
+        structure = (ITableStructure)newIpsObject(ipsProject, IpsObjectType.TABLE_STRUCTURE, "SearchStructure");
+        structUsage = type.newTableStructureUsage();
+        structUsage.addTableStructure(structure.getQualifiedName());
+        structUsage.setRoleName(STRUCTURE_ROLENAME);
     }
 
 }
