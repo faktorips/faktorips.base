@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -74,9 +74,9 @@ public class TableContentUsageEditComposite extends
                 this.getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
-        controlDecoration.setMarginWidth(8);
+        // controlDecoration.setMarginWidth(8);
     }
 
 }

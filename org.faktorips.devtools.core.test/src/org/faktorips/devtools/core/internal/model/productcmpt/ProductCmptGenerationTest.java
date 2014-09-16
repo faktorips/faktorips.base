@@ -280,8 +280,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newFormula();
         generation.newFormula();
         generation.newAttributeValue();
+        generation.newTableContentUsage();
         newValidationRuleConfig();
         newValidationRuleConfig();
+
         Element element = generation.toXml(newDocument());
 
         IProductCmptGeneration copy = new ProductCmptGeneration();
@@ -291,6 +293,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, copy.getNumOfFormulas());
         assertEquals(1, copy.getNumOfAttributeValues());
         assertEquals(2, copy.getNumOfValidationRules());
+        assertEquals(1, copy.getNumOfTableContentUsages());
     }
 
     @Test
@@ -312,6 +315,9 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
         assertEquals(1, rules.size());
+
+        ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
+        assertEquals(1, tableContentUsages.length);
     }
 
     @Test

@@ -14,4 +14,7 @@
 	</AttributeValue>
     <Link id="3" association="staticCoverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
     <Link id="4" association="staticIDontKnow" target="IDK" minCardinality="2" maxCardinality="3"/>
+    <TableContentUsage id="10" structureUsage="staticTable">
+        <TableContentName isNull="false">produkt.Table1</TableContentName>
+    </TableContentUsage>
 </ProductCmpt>

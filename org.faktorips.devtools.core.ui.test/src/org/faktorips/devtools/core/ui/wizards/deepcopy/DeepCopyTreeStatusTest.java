@@ -89,6 +89,7 @@ public class DeepCopyTreeStatusTest {
             when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(
                     productCmptsGenerations[i]);
             when(productCmpts[i].findProductCmptType(any(IIpsProject.class))).thenReturn(types[i]);
+            when(productCmpts[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
             when(productCmptsGenerations[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
 
             links[i] = mock(IProductCmptLink.class);
