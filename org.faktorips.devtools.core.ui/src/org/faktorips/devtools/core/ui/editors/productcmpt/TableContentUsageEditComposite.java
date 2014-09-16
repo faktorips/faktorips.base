@@ -12,15 +12,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -33,12 +27,10 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann
- * 
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -49,10 +41,11 @@ EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        createTableContentEditField(editFields);
+        TextButtonField tcuField = createTableContentEditField(editFields);
+        addMovingChangingOverTimeDecorationIfRequired(tcuField);
     }
 
-    private void createTableContentEditField(List<EditField<?>> editFields) {
+    private TextButtonField createTableContentEditField(List<EditField<?>> editFields) {
         TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(getPropertyValue().getIpsProject(),
                 this, getToolkit(), getPropertyValue());
 
@@ -60,23 +53,6 @@ EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
         editField.setSupportsNullStringRepresentation(false);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), ITableContentUsage.PROPERTY_TABLE_CONTENT);
-        if (propertyIsNotChangingOverTime()) {
-            addNotChangingOverTimeControlDecoration(editField);
-        }
+        return editField;
     }
-
-    private boolean propertyIsNotChangingOverTime() {
-        return getProperty() != null && !getProperty().isChangingOverTime();
-    }
-
-    private void addNotChangingOverTimeControlDecoration(EditField<?> editField) {
-        ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP,
-                this.getParent());
-        controlDecoration.setDescriptionText(NLS.bind(
-                Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
-        controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
-        // controlDecoration.setMarginWidth(8);
-    }
-
 }

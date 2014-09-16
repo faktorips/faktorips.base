@@ -14,9 +14,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -35,7 +32,6 @@ import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -141,18 +137,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<?> editField) {
         editFields.add(editField);
         if (getProperty() != null && !getProperty().isChangingOverTime()) {
-            addNotChangingOverTimeControlDecoration(editField);
+            addChangingOverTimeDecorationIfRequired(editField);
         }
-    }
-
-    private void addNotChangingOverTimeControlDecoration(EditField<?> editField) {
-        ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP,
-                this.getParent());
-        controlDecoration.setDescriptionText(NLS.bind(
-                Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
-        controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
-        controlDecoration.setMarginWidth(1);
     }
 
     private void createControlForExtensionProperty() {
