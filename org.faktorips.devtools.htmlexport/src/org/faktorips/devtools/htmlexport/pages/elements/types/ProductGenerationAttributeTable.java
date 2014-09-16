@@ -147,7 +147,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     validationRuleConfig != null && validationRuleConfig.isActive() ? getContext().getMessage(
                             HtmlExportMessages.ProductGenerationAttributeTable_validationRulesActive) : getContext()
                             .getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRulesInactive),
-                    TextType.BLOCK, getContext());
+                            TextType.BLOCK, getContext());
             cells[i + 1].addStyles(Style.CENTER);
 
         }
@@ -238,7 +238,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + ": " //$NON-NLS-1$
                 + getContext().getDatatypeFormatter()
-                        .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK,
+                .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK,
                 getContext()));
 
         if (valueSet.isEnum()) {
@@ -336,6 +336,66 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
+        IPageElement[] cells;
+        if (tableStructureUsage.isChangingOverTime()) {
+            cells = createChangeableTableStructureUsageRow(tableStructureUsage);
+        } else {
+            cells = createNotChangeableTableStructureUsageRow(tableStructureUsage);
+        }
+        addSubElement(new TableRowPageElement(cells, getContext()));
+    }
+
+    private IPageElement[] createNotChangeableTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
+        cells[0] = new WrapperPageElement(WrapperType.NONE, getContext())
+                .addPageElements(
+                        new TextPageElement(tableStructureUsage.getRoleName(), getContext()),
+                        new TextPageElement(" ", getContext()), new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), //$NON-NLS-1$
+                                Collections.singleton(Style.SMALL), getContext()));
+
+        ITableContentUsage usage = productCmpt.getTableContentUsage(tableStructureUsage.getRoleName());
+        if (usage == null) {
+            setTableContentUnknown(cells);
+            return cells;
+        }
+
+        ITableContents tableContent = findTableContents(usage);
+
+        if (tableContent == null) {
+            setTableContentUnknown(cells);
+            return cells;
+        }
+
+        IPageElement linkPageElement = createTableContentLinkPageElement(tableContent);
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            cells[i + 1] = linkPageElement;
+        }
+        return cells;
+    }
+
+    private ITableContents findTableContents(ITableContentUsage usage) {
+        ITableContents tableContent = null;
+        try {
+            tableContent = usage.findTableContents(getContext().getIpsProject());
+        } catch (CoreException e) {
+            getContext().addStatus(new IpsStatus(IStatus.WARNING, "Could not find contents of TableContentUsage " //$NON-NLS-1$
+                    + usage.getName(), e));
+        }
+        return tableContent;
+    }
+
+    private IPageElement createTableContentLinkPageElement(ITableContents tableContent) {
+        return new PageElementUtils(getContext()).createLinkPageElement(getContext(), tableContent, TargetType.CONTENT,
+                getContext().getLabel(tableContent), true);
+    }
+
+    private void setTableContentUnknown(IPageElement[] cells) {
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
+        }
+    }
+
+    private IPageElement[] createChangeableTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
         IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
         cells[0] = new TextPageElement(tableStructureUsage.getRoleName(), getContext());
@@ -350,26 +410,18 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 continue;
             }
 
-            ITableContents tableContent = null;
-            try {
-                tableContent = usage.findTableContents(getContext().getIpsProject());
-            } catch (CoreException e) {
-                getContext().addStatus(new IpsStatus(IStatus.WARNING, "Could not find contents of TableContentUsage " //$NON-NLS-1$
-                        + usage.getName(), e));
-            }
+            ITableContents tableContent = findTableContents(usage);
 
             if (tableContent == null) {
                 cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
                 continue;
             }
-            IPageElement linkPageElement = new PageElementUtils(getContext()).createLinkPageElement(getContext(),
-                    tableContent, TargetType.CONTENT, getContext().getLabel(tableContent), true);
+            IPageElement linkPageElement = createTableContentLinkPageElement(tableContent);
 
             cells[i + 1] = linkPageElement;
 
         }
-
-        addSubElement(new TableRowPageElement(cells, getContext()));
+        return cells;
     }
 
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
@@ -463,8 +515,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         IPageElement cardinalities = new TextPageElement(
                 productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
-                        + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
-                        + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
+                + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
+                + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
 
         return new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(targetLink, cardinalities);
     }
@@ -503,10 +555,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private IPageElement[] createNotChangeableAttributeRow(IAttribute attribute) {
         IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
         cells[0] = new WrapperPageElement(WrapperType.NONE, getContext())
-                .addPageElements(
-                        new TextPageElement(getContext().getLabel(attribute), getContext()),
-                        new TextPageElement(" ", getContext()), new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeableAttributes), //$NON-NLS-1$
-                                Collections.singleton(Style.SMALL), getContext()));
+        .addPageElements(
+                new TextPageElement(getContext().getLabel(attribute), getContext()),
+                new TextPageElement(" ", getContext()), new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), //$NON-NLS-1$
+                        Collections.singleton(Style.SMALL), getContext()));
         IAttributeValue attributeValue = productCmpt.getAttributeValue(attribute.getName());
         String value = getValueOfAttribute(attributeValue, attribute);
 
