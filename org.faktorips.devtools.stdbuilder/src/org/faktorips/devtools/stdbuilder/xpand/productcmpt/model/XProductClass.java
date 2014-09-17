@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -26,6 +25,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
@@ -192,18 +192,37 @@ public abstract class XProductClass extends XType {
     }
 
     public Set<XTableUsage> getTables() {
-        if (isChangeOverTimeClass()) {
-            if (isCached(XTableUsage.class)) {
-                return getCachedObjects(XTableUsage.class);
-            } else {
-                Set<XTableUsage> nodesForParts = initNodesForParts(getType().getTableStructureUsages(),
-                        XTableUsage.class);
-                putToCache(nodesForParts);
-                return nodesForParts;
-            }
+        if (isCached(XTableUsage.class)) {
+            return getCachedObjects(XTableUsage.class);
         } else {
-            return Collections.emptySet();
+            Set<XTableUsage> nodesForParts = initNodesForParts(getTablesInternal(isChangeOverTimeClass()),
+                    XTableUsage.class);
+            putToCache(nodesForParts);
+            return nodesForParts;
         }
+    }
+
+    /**
+     * Getting the list of {@link ITableStructureUsage} defined in this type. With the parameter
+     * changableAssociations you could specify whether you want the {@link ITableStructureUsage}
+     * that are changeable over time or not changeable (sometimes called static).
+     * <p>
+     * 
+     * @param changableTableStructureUsage true if you want only {@link ITableStructureUsage}
+     *            changeable over time, false to get only not changeable over time
+     *            {@link ITableStructureUsage}
+     * @return The list of associations without derived unions
+     */
+
+    public Set<ITableStructureUsage> getTablesInternal(boolean changableTableStructureUsage) {
+        Set<ITableStructureUsage> resultingTableStructureUsages = new LinkedHashSet<ITableStructureUsage>();
+        List<ITableStructureUsage> allTableUsages = getType().getTableStructureUsages();
+        for (ITableStructureUsage tableUsage : allTableUsages) {
+            if (changableTableStructureUsage == tableUsage.isChangingOverTime()) {
+                resultingTableStructureUsages.add(tableUsage);
+            }
+        }
+        return resultingTableStructureUsages;
     }
 
     public boolean isContainsTables() {
