@@ -130,7 +130,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
      * is used instead of {@link TestProductComponent} because the method
      * {@link #writePropertiesToXml(Element)} has to be overridden for some tests here.
      */
-    private static class ProductComponentTestClass extends ProductComponent {
+    public static class ProductComponentTestClass extends ProductComponent {
 
         public ProductComponentTestClass(IRuntimeRepository repository, String id, String productKindId,
                 String versionId) {
