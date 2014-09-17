@@ -157,6 +157,20 @@ public class ValueToXmlHelper {
     }
 
     /**
+     * Adds a table usage to the XML element.
+     * 
+     * @param el the XML element to add the value to.
+     * @param structureUsage the value for the structureUsage XML attribute
+     * @param tableContentName the name of the used table content
+     */
+    protected static void addTableUsageToElement(Element el, String structureUsage, String tableContentName) {
+        Element tableContentElement = el.getOwnerDocument().createElement(XML_TAG_TABLE_CONTENT_USAGE);
+        tableContentElement.setAttribute(XML_ATTRIBUTE_STRUCTURE_USAGE, structureUsage);
+        addValueToElement(tableContentName, tableContentElement, XML_TAG_TABLE_CONTENT_NAME);
+        el.appendChild(tableContentElement);
+    }
+
+    /**
      * Returns the string representation of the value stored in the child element of the given
      * element with the indicated name. Returns <code>null</code> if the value is null or no such
      * child element exists.
