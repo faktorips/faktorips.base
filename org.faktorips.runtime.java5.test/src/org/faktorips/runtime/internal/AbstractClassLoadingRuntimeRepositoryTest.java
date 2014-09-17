@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -25,10 +27,12 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.faktorips.runtime.ClassloaderRuntimeRepository;
+import org.faktorips.runtime.ITable;
 import org.faktorips.runtime.internal.productvariant.ProductVariantRuntimeHelper;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -133,5 +137,20 @@ public class AbstractClassLoadingRuntimeRepositoryTest {
         List<Object> enumValues = repo.createEnumValues(tocEntry, Object.class);
 
         assertTrue(enumValues.isEmpty());
+    }
+
+    @Test
+    public void testCreateTable() {
+        String ipsObjectId = "qualifiedTableName";
+        String ipsObjectQualifiedName = "qualifiedTableName";
+        String xmlResourceName = "org/faktorips/runtime/internal/TableTest.xml";
+        String implementationClassName = "org.faktorips.runtime.internal.TestTable";
+        TableContentTocEntry tocEntry = new TableContentTocEntry(ipsObjectId, ipsObjectQualifiedName, xmlResourceName,
+                implementationClassName);
+
+        ITable table = repo.createTable(tocEntry);
+
+        assertNotNull(table.getName());
+        assertEquals(tocEntry.getIpsObjectId(), table.getName());
     }
 }

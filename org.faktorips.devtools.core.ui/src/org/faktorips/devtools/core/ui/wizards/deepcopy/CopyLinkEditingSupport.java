@@ -39,8 +39,7 @@ public class CopyLinkEditingSupport extends EditingSupport {
     protected boolean canEdit(Object element) {
         if (element instanceof IProductCmptReference || element instanceof IProductCmptStructureTblUsageReference) {
             IProductCmptStructureReference reference = (IProductCmptStructureReference)element;
-            if (reference.getParent() == null) {
-                // cannot edit root node
+            if (reference.isRoot()) {
                 return false;
             }
             return treeStatus.isEnabled(reference);

@@ -46,6 +46,11 @@ import org.xml.sax.InputSource;
 public abstract class Table<T> implements ITable {
 
     /**
+     * Contains the qualified name of this table.
+     */
+    private String name;
+
+    /**
      * Contains all rows of this table.
      */
     protected List<T> rows;
@@ -66,12 +71,14 @@ public abstract class Table<T> implements ITable {
     /**
      * Initializes this object with the data stored in the XML element.
      */
-    public void initFromXml(InputStream is, IRuntimeRepository productRepository) throws Exception {
+    public void initFromXml(InputStream is, IRuntimeRepository productRepository, String qualifiedTableName)
+            throws Exception {
         rows = new ArrayList<T>(200);
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
         saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));
         ((ArrayList<T>)rows).trimToSize();
         initKeyMaps();
+        name = qualifiedTableName;
     }
 
     /**
@@ -98,6 +105,11 @@ public abstract class Table<T> implements ITable {
             output.append(it.next().toString());
         }
         return output.toString();
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
 }
