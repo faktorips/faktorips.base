@@ -228,7 +228,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * @param editField the edit field whose control should be decorated with an "S".
      */
     protected void addChangingOverTimeDecorationIfRequired(EditField<?> editField) {
-        addConstantOverTimeDecorationIfRequired(editField, 0);
+        addChangingOverTimeDecorationIfRequired(editField, 0);
     }
 
     /**
@@ -242,10 +242,10 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * @param editField the edit field whose control should be decorated with an "S".
      */
     protected void addMovingChangingOverTimeDecorationIfRequired(EditField<?> editField) {
-        addChangingOverTimeDecoration(editField, 7);
+        addChangingOverTimeDecorationIfRequired(editField, 7);
     }
 
-    private void addConstantOverTimeDecorationIfRequired(EditField<?> editField, int pixelsToLeftUponControlFocus) {
+    private void addChangingOverTimeDecorationIfRequired(EditField<?> editField, int pixelsToLeftUponControlFocus) {
         if (propertyIsNotChangingOverTime()) {
             addChangingOverTimeDecoration(editField, pixelsToLeftUponControlFocus);
         }
@@ -262,7 +262,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
-        controlDecoration.setMarginWidth(0);
+        controlDecoration.setMarginWidth(1);
 
         addFocusListenerIfRequired(editField, controlDecoration, pixelsToLeftUponControlFocus);
     }

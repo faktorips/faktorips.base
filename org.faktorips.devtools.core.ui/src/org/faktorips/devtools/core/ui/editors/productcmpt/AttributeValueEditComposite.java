@@ -136,9 +136,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<?> editField) {
         editFields.add(editField);
-        if (getProperty() != null && !getProperty().isChangingOverTime()) {
-            addChangingOverTimeDecorationIfRequired(editField);
-        }
+        addChangingOverTimeDecorationIfRequired(editField);
     }
 
     private void createControlForExtensionProperty() {
