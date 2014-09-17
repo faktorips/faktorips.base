@@ -205,12 +205,12 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     public String getCaption(Locale locale) throws CoreException {
         ArgumentCheck.notNull(locale);
 
-        String caption = null;
         ITableStructureUsage currentStructureUsage = findTableStructureUsage(getIpsProject());
         if (currentStructureUsage != null) {
-            caption = currentStructureUsage.getLabelValue(locale);
+            return currentStructureUsage.getLabelValue(locale);
+        } else {
+            return null;
         }
-        return caption;
     }
 
     @Override
