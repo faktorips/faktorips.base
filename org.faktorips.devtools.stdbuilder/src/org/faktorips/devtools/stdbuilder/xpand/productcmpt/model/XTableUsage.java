@@ -71,4 +71,8 @@ public class XTableUsage extends AbstractGeneratorModelNode {
     public String getConstantNameTable() {
         return "TABLE_" + StringUtil.camelCaseToUnderscore(getName()).toUpperCase();
     }
+
+    public boolean isChangingOverTime() {
+        return getTableStructureUsage().isChangingOverTime();
+    }
 }

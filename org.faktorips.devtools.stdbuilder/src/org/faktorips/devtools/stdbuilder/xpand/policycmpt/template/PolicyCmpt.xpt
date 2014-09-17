@@ -202,7 +202,11 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
      * @generated
      */
     public «tableClassName» «method(methodNameGetter)» {
-    	«policyClass.productCmptGenerationNode.implClassName» productCmpt = «castToImplementation(policyClass.productCmptGenerationNode.implClassName)»«policyClass.methodNameGetProductCmptGeneration»();
+        «IF changingOverTime-»
+    	   «policyClass.productCmptGenerationNode.implClassName» productCmpt = «castToImplementation(policyClass.productCmptGenerationNode.implClassName)»«policyClass.methodNameGetProductCmptGeneration»();
+         «ELSE-»
+        	«policyClass.productCmptNode.implClassName» productCmpt = «castToImplementation(policyClass.productCmptNode.implClassName)»«policyClass.methodNameGetProductCmpt»();
+         «ENDIF-»
         if (productCmpt == null) {
             return null;
         }
