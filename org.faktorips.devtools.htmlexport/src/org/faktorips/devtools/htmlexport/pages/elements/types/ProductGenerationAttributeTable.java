@@ -64,7 +64,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private static final String COLON_SEPARATOR = ": "; //$NON-NLS-1$
     private static final String COMMA_SEPARATOR = ", "; //$NON-NLS-1$
     private static final String NOT_AVAILABLE = "-"; //$NON-NLS-1$
-    private static final String EMPTY_CHARACTER = " "; //$NON-NLS-1$
+    private static final String WHITE_SPACE = " "; //$NON-NLS-1$
     private final IProductCmpt productCmpt;
     private final List<IAttribute> attributes;
     private final IProductCmptType productCmptType;
@@ -569,7 +569,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private void addFirstCellWithNotChangeable(IPageElement[] cells, String label) {
         cells[0] = new WrapperPageElement(WrapperType.NONE, getContext()).addPageElements(
                 new TextPageElement(label, getContext()),
-                new TextPageElement(EMPTY_CHARACTER, getContext()),
+                new TextPageElement(WHITE_SPACE, getContext()),
                 new TextPageElement(getContext().getMessage(
                         HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), Collections
                         .singleton(Style.SMALL), getContext()));

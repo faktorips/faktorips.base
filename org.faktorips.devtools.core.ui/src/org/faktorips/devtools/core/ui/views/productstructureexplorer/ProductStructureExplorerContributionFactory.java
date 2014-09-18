@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.MenuManager;
@@ -178,6 +179,12 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
         }
     }
 
+    private ITableContentUsage[] getTableContentUsages(IProductCmptGeneration productCmptGen) {
+        List<ITableContentUsage> usages = productCmptGen
+                .getPropertyValuesIncludingProductCmpt(ITableContentUsage.class);
+        return usages.toArray(new ITableContentUsage[usages.size()]);
+    }
+
     private void createAddTableMenu(IServiceLocator serviceLocator, IContributionRoot additions, ISelection selection) {
         TypedSelection<IProductCmptReference> typedSelection = new TypedSelection<IProductCmptReference>(
                 IProductCmptReference.class, selection);
@@ -186,7 +193,7 @@ public class ProductStructureExplorerContributionFactory extends ExtensionContri
             IProductCmpt productCmpt = productCmptRef.getProductCmpt();
             IProductCmptGeneration productCmptGen = productCmpt.getGenerationEffectiveOn(productCmptRef.getStructure()
                     .getValidAt());
-            ITableContentUsage[] tableContentUsages = productCmptGen.getTableContentUsages();
+            ITableContentUsage[] tableContentUsages = getTableContentUsages(productCmptGen);
             if (tableContentUsages.length == 0) {
                 CommandContributionItem itemNew = createAddNewTableCommand(serviceLocator, null, null, true);
                 additions.addContributionItem(itemNew, null);

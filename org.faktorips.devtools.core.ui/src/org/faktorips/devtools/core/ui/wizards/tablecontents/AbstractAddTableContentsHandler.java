@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
@@ -45,6 +46,9 @@ public abstract class AbstractAddTableContentsHandler extends AbstractHandler {
             IProductCmptGeneration activeGeneration = selectedReference.getProductCmpt().getGenerationByEffectiveDate(
                     selectedReference.getStructure().getValidAt());
             ITableContentUsage tableContentUsage = activeGeneration.getTableContentUsage(tableUsageName);
+            if (tableContentUsage == null) {
+                tableContentUsage = selectedReference.getProductCmpt().getTableContentUsage(tableUsageName);
+            }
             openDialog(tableContentUsage, shell, true);
         }
         return null;
@@ -77,11 +81,20 @@ public abstract class AbstractAddTableContentsHandler extends AbstractHandler {
             IProductCmptReference cmptReference = typedSelection.getFirstElement();
             IProductCmptGeneration generation = cmptReference.getProductCmpt().getGenerationByEffectiveDate(
                     cmptReference.getStructure().getValidAt());
-            setBaseEnabled(generation != null && generation.getTableContentUsages().length > 0);
+            setBaseEnabled(hasProductCmptTableContentUsages(cmptReference.getProductCmpt())
+                    || hasGenerationTableContentUsages(generation));
         } else {
             setBaseEnabled(true);
         }
         super.setEnabled(evaluationContext);
+    }
+
+    private boolean hasProductCmptTableContentUsages(IProductCmpt productCmpt) {
+        return productCmpt.getTableContentUsages().length > 0;
+    }
+
+    private boolean hasGenerationTableContentUsages(IProductCmptGeneration generation) {
+        return generation != null && generation.getNumOfTableContentUsages() > 0;
     }
 
 }
