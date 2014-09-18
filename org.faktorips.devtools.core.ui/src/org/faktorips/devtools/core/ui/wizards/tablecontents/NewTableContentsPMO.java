@@ -135,6 +135,10 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
         this.addToTableUsage = tableUsage;
     }
 
+    /**
+     * Returns the {@link ITableContentUsage} which holds the target where the new table will be
+     * added to.
+     */
     public ITableContentUsage getAddToTableUsage() {
         return addToTableUsage;
     }
