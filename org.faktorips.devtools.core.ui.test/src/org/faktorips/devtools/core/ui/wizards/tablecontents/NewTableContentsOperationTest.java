@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableRows;
 import org.junit.Before;
@@ -169,7 +170,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testPostProcess_setsTableContentName() throws CoreException {
+    public void testPostProcess_setsTableContentNameOnProductCmptGeneration() throws CoreException {
         TableContents tableContents = newTableContents(ipsProject, "TestTableContent");
         tableContents.getIpsSrcFile().save(true, null);
         ITableContentUsage tableUsage = mockTableUsage(false);
@@ -179,6 +180,29 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
         newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
 
         verify(tableUsage).setTableContentName("TestTableContent");
+    }
+
+    @Test
+    public void testPostProcess_setsTableContentNameOnProductCmpt() throws CoreException {
+        TableContents tableContents = newTableContents(ipsProject, "TestTableContent");
+        tableContents.getIpsSrcFile().save(true, null);
+        ITableContentUsage tableUsage = mock(ITableContentUsage.class);
+        IPropertyValueContainer propertyValueContainer = mock(IPropertyValueContainer.class);
+        when(tableUsage.getPropertyValueContainer()).thenReturn(propertyValueContainer);
+        when(propertyValueContainer.getIpsSrcFile()).thenReturn(newProductCmpt().getIpsSrcFile());
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
+        NewTableContentsPMO pmo = mockPMO(tableUsage, true);
+        NewTableContentsOperation newTableContentsOperation = new NewTableContentsOperation(pmo);
+
+        newTableContentsOperation.postProcess(tableContents.getIpsSrcFile(), monitor);
+
+        verify(tableUsage).setTableContentName("TestTableContent");
+    }
+
+    private IProductCmpt newProductCmpt() throws CoreException {
+        IProductCmpt productCmpt = newProductCmpt(ipsProject, "TestProductCmptNoGeneration");
+        return productCmpt;
     }
 
     @Test
@@ -224,8 +248,7 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
     public void testPostProcess_throwsCoreRuntimeExceptionIfSavingThrowsCoreException() throws CoreException {
         TableContents tableContents = newTableContents(ipsProject, "TestTableContent");
         tableContents.getIpsSrcFile().save(true, null);
-        ITableContentUsage tableUsage = mock(ITableContentUsage.class);
-        when(tableUsage.getProductCmptGeneration()).thenReturn(newProductCmptGeneration());
+        ITableContentUsage tableUsage = mockTableUsage(true);
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         when(ipsSrcFile.isDirty()).thenReturn(false);
         doThrow(new CoreException(new Status(IStatus.ERROR, "foo", "bar"))).when(ipsSrcFile).save(true, monitor);
@@ -252,11 +275,12 @@ public class NewTableContentsOperationTest extends AbstractIpsPluginTest {
 
     private ITableContentUsage mockTableUsage(boolean dirty) throws CoreException {
         ITableContentUsage tableUsage = mock(ITableContentUsage.class);
-        when(tableUsage.getProductCmptGeneration()).thenReturn(newProductCmptGeneration());
+        IPropertyValueContainer propertyValueContainer = mock(IPropertyValueContainer.class);
+        when(tableUsage.getPropertyValueContainer()).thenReturn(propertyValueContainer);
+        when(propertyValueContainer.getIpsSrcFile()).thenReturn(newProductCmptGeneration().getIpsSrcFile());
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
         when(ipsSrcFile.isDirty()).thenReturn(dirty);
         when(tableUsage.getIpsSrcFile()).thenReturn(ipsSrcFile);
         return tableUsage;
     }
-
 }
