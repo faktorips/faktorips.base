@@ -96,8 +96,9 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     protected ITableContentUsage[] getTableContentUsages() {
-        IProductCmptGeneration gen = getProductCmptGeneration();
-        return gen.getTableContentUsages();
+        List<ITableContentUsage> usages = getProductCmptGeneration().getPropertyValuesIncludingProductCmpt(
+                ITableContentUsage.class);
+        return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
     @Override
