@@ -31,12 +31,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectP
 
 /**
  * a table representing the table structures of the given productCmptType
- * 
- * @author dicker
- * 
  */
 public class TableStructureTablePageElement extends
-AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
+        AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
+
+    private static final String IS_FALSE = "-"; //$NON-NLS-1$
+    private static final String IS_TRUE = "X"; //$NON-NLS-1$
+
     public TableStructureTablePageElement(IProductCmptType productCmptType, DocumentationContext context) {
         super(productCmptType.getTableStructureUsages(), context);
     }
@@ -48,8 +49,10 @@ AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
         pageElements.add(new TextPageElement(tableStructureUsage.getRoleName(), getContext()));
         pageElements.add(new TextPageElement(getContext().getLabel(tableStructureUsage), getContext()));
         pageElements.add(getTableStructureLinks(tableStructureUsage));
-        pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? "X" : "-", getContext())); //$NON-NLS-1$ //$NON-NLS-2$
-        pageElements.add(new TextPageElement(tableStructureUsage.isChangingOverTime() ? "X" : "-", getContext())); //$NON-NLS-1$ //$NON-NLS-2$
+        pageElements.add(new TextPageElement(tableStructureUsage.isMandatoryTableContent() ? IS_TRUE : IS_FALSE,
+                getContext()));
+        pageElements.add(new TextPageElement(tableStructureUsage.isChangingOverTime() ? IS_TRUE : IS_FALSE,
+                getContext()));
         pageElements.add(new TextPageElement(getContext().getDescription(tableStructureUsage), getContext()));
 
         return pageElements;
@@ -100,7 +103,7 @@ AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
         addHeadlineAndColumnLayout(
                 headline,
                 IpsObjectType.TABLE_CONTENTS.getDisplayName()
-                + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory),
+                        + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory),
                 Style.CENTER);
         addHeadlineAndColumnLayout(headline,
                 getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),

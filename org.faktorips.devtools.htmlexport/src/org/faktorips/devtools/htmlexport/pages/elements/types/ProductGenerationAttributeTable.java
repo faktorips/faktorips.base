@@ -58,12 +58,13 @@ import org.faktorips.devtools.htmlexport.pages.elements.core.table.TableRowPageE
 /**
  * Represents a table with the values of the {@link IAttribute}s of an {@link IProductCmpt} as rows
  * and the generations of the {@link IProductCmpt} as columns
- * 
- * @author dicker
- * 
  */
 public class ProductGenerationAttributeTable extends AbstractStandardTablePageElement {
 
+    private static final String COLON_SEPARATOR = ": "; //$NON-NLS-1$
+    private static final String COMMA_SEPARATOR = ", "; //$NON-NLS-1$
+    private static final String NOT_AVAILABLE = "-"; //$NON-NLS-1$
+    private static final String EMPTY_CHARACTER = " "; //$NON-NLS-1$
     private final IProductCmpt productCmpt;
     private final List<IAttribute> attributes;
     private final IProductCmptType productCmptType;
@@ -218,7 +219,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IConfigElement configElement = productCmptGeneration.getConfigElement(policyCmptTypeAttribute.getName());
 
             if (configElement == null || configElement.getValueSet() == null) {
-                cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
+                cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
                 continue;
             }
 
@@ -236,7 +237,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         pageElement.addPageElements(new TextPageElement(getContext().getMessage(
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
-                + ": " //$NON-NLS-1$
+                + COLON_SEPARATOR
                 + getContext().getDatatypeFormatter()
                 .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK,
                 getContext()));
@@ -254,13 +255,13 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private TextPageElement createRangeValueSetCell(RangeValueSet rangeValueSet) {
         StringBuilder builder = new StringBuilder();
         builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
-        builder.append(": "); //$NON-NLS-1$
+        builder.append(COLON_SEPARATOR);
         builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
                 rangeValueSet.getLowerBound()));
-        builder.append(", "); //$NON-NLS-1$
+        builder.append(COMMA_SEPARATOR);
         builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
                 rangeValueSet.getUpperBound()));
-        builder.append(", "); //$NON-NLS-1$
+        builder.append(COMMA_SEPARATOR);
         builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
                 rangeValueSet.getStep()));
 
@@ -279,14 +280,14 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         for (String enumValue : enumValueSet.getValues()) {
             if (builder.length() > 0) {
-                builder.append(", "); //$NON-NLS-1$
+                builder.append(COMMA_SEPARATOR);
             }
             builder.append(getContext().getDatatypeFormatter().formatValue(enumValueSet.getValueDatatype(), enumValue));
 
         }
         TextPageElement textPageElement = new TextPageElement(getContext().getMessage(
                 "ProductGenerationAttributeTable_valueSet") //$NON-NLS-1$
-                + ": " + builder.toString(), getContext()); //$NON-NLS-1$
+                + COLON_SEPARATOR + builder.toString(), getContext());
         return textPageElement;
     }
 
@@ -347,13 +348,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private IPageElement[] createNotChangeableTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
         IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
-        cells[0] = new WrapperPageElement(WrapperType.NONE, getContext())
-                .addPageElements(
-                        new TextPageElement(tableStructureUsage.getRoleName(), getContext()),
-                        new TextPageElement(" ", getContext()), new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), //$NON-NLS-1$
-                                Collections.singleton(Style.SMALL), getContext()));
+        String roleName = tableStructureUsage.getRoleName();
+        addFirstCellWithNotChangeable(cells, roleName);
 
-        ITableContentUsage usage = productCmpt.getTableContentUsage(tableStructureUsage.getRoleName());
+        ITableContentUsage usage = productCmpt.getTableContentUsage(roleName);
         if (usage == null) {
             setTableContentUnknown(cells);
             return cells;
@@ -391,29 +389,30 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private void setTableContentUnknown(IPageElement[] cells) {
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
+            cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
         }
     }
 
     private IPageElement[] createChangeableTableStructureUsageRow(ITableStructureUsage tableStructureUsage) {
         IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
-        cells[0] = new TextPageElement(tableStructureUsage.getRoleName(), getContext());
+        String roleName = tableStructureUsage.getRoleName();
+        cells[0] = new TextPageElement(roleName, getContext());
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
-            ITableContentUsage usage = productCmptGeneration.getTableContentUsage(tableStructureUsage.getRoleName());
+            ITableContentUsage usage = productCmptGeneration.getTableContentUsage(roleName);
 
             if (usage == null) {
-                cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
+                cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
                 continue;
             }
 
             ITableContents tableContent = findTableContents(usage);
 
             if (tableContent == null) {
-                cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
+                cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
                 continue;
             }
             IPageElement linkPageElement = createTableContentLinkPageElement(tableContent);
@@ -435,7 +434,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
             IFormula formula = productCmptGeneration.getFormula(formulaSignature.getFormulaName());
-            cells[i + 1] = new TextPageElement(formula == null ? "-" : formula.getExpression(), getContext()); //$NON-NLS-1$
+            cells[i + 1] = new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(), getContext());
 
         }
         addSubElement(new TableRowPageElement(cells, getContext()));
@@ -465,7 +464,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 IProductCmptGeneration productCmptGeneration = productCmpt.getProductCmptGeneration(i);
 
                 if (productCmptGeneration.getLinks().length == 0) {
-                    cells[i + 1] = new TextPageElement("-", getContext()); //$NON-NLS-1$
+                    cells[i + 1] = new TextPageElement(NOT_AVAILABLE, getContext());
                     continue;
                 }
 
@@ -497,7 +496,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
 
         if (cellContent.isEmpty()) {
-            cellContent.addPageElements(new TextPageElement("-", getContext())); //$NON-NLS-1$
+            cellContent.addPageElements(new TextPageElement(NOT_AVAILABLE, getContext()));
         }
 
         return cellContent;
@@ -554,11 +553,10 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private IPageElement[] createNotChangeableAttributeRow(IAttribute attribute) {
         IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
-        cells[0] = new WrapperPageElement(WrapperType.NONE, getContext())
-        .addPageElements(
-                new TextPageElement(getContext().getLabel(attribute), getContext()),
-                new TextPageElement(" ", getContext()), new TextPageElement(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), //$NON-NLS-1$
-                        Collections.singleton(Style.SMALL), getContext()));
+        String label = getContext().getLabel(attribute);
+
+        addFirstCellWithNotChangeable(cells, label);
+
         IAttributeValue attributeValue = productCmpt.getAttributeValue(attribute.getName());
         String value = getValueOfAttribute(attributeValue, attribute);
 
@@ -566,6 +564,15 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             cells[i + 1] = new TextPageElement(value, getContext());
         }
         return cells;
+    }
+
+    private void addFirstCellWithNotChangeable(IPageElement[] cells, String label) {
+        cells[0] = new WrapperPageElement(WrapperType.NONE, getContext()).addPageElements(
+                new TextPageElement(label, getContext()),
+                new TextPageElement(EMPTY_CHARACTER, getContext()),
+                new TextPageElement(getContext().getMessage(
+                        HtmlExportMessages.ProductGenerationAttributeTable_notChangeable), Collections
+                        .singleton(Style.SMALL), getContext()));
     }
 
     private IPageElement[] createChangeableAttributeRow(IAttribute attribute) {
