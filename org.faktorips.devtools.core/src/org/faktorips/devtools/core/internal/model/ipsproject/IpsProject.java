@@ -865,12 +865,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
-        return getIpsObjectPath().findIpsSrcFile(qNameType);
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) {
+        return getIpsObjectPathInternal().findIpsSrcFile(qNameType);
     }
 
     @Override
-    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException {
+    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) {
         return findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
 

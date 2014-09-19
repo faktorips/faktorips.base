@@ -561,14 +561,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the first IPS source file on the IPS object path with the the indicated qualified
      * name and type. Returns <code>null</code> if no such file was found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException;
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType);
 
     /**
      * Returns the first IPS source file with the the indicated IPS object type and qualified name
      * found on the object path.<br>
      * Returns <code>null</code> if the source file wasn't found (not exists).
      */
-    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException;
+    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns all objects of the given type found on the class path.
