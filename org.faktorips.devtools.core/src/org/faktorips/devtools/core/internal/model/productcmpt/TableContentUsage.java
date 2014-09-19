@@ -55,12 +55,12 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         super();
     }
 
-    public TableContentUsage(IPropertyValueContainer generation, String id) {
-        super(generation, id);
+    public TableContentUsage(IPropertyValueContainer parent, String id) {
+        super(parent, id);
     }
 
-    public TableContentUsage(IPropertyValueContainer generation, String id, String structureUsage) {
-        super(generation, id);
+    public TableContentUsage(IPropertyValueContainer parent, String id, String structureUsage) {
+        super(parent, id);
         this.structureUsage = structureUsage;
     }
 
@@ -89,7 +89,16 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return tableContentName;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated As of 3.14 {@link TableContentUsage table content usages} can be part of both
+     *             {@link IProductCmpt product components} and {@link ProductCmptGeneration product
+     *             component generations}. Use {@link #getPropertyValueContainer()} and the common
+     *             interface {@link IPropertyValueContainer} instead.
+     */
     @Override
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration() {
         if (getParent() instanceof IProductCmptGeneration) {
             return (ProductCmptGeneration)getParent();

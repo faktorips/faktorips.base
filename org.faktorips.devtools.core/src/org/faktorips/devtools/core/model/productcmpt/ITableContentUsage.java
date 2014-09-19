@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.TableContentUsage;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -53,7 +54,13 @@ public interface ITableContentUsage extends IPropertyValue {
 
     /**
      * Returns the generation this {@link TableContentUsage} belongs to.
+     * 
+     * @deprecated As of 3.14 {@link TableContentUsage table content usages} can be part of both
+     *             {@link IProductCmpt product components} and {@link ProductCmptGeneration product
+     *             component generations}. Use {@link #getPropertyValueContainer()} and the common
+     *             interface {@link IPropertyValueContainer} instead.
      */
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**
