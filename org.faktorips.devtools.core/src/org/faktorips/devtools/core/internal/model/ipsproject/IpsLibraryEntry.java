@@ -67,8 +67,7 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
     protected abstract IIpsStorage getIpsStorage();
 
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
+    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
         if (getIpsStorage() == null || nameType == null) {
             return null;
         } else if (getIpsStorage().contains(nameType.toPath())) {

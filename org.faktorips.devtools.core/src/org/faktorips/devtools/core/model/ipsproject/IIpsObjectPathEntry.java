@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -140,12 +139,12 @@ public interface IIpsObjectPathEntry {
     /**
      * Returns the IPS object with the indicated type and qualified name.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns the IPS source file with the indicated qualified name type.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 
     /**
      * This method checks whether this entry has a resource with the specified path. The path is

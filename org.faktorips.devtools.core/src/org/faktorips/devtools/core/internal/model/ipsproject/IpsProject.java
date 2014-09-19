@@ -481,7 +481,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsObjectPath getIpsObjectPath() throws CoreException {
+    public IIpsObjectPath getIpsObjectPath() {
         return getProperties().getIpsObjectPath();
     }
 
@@ -866,8 +866,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException {
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        return getIpsObjectPathInternal().findIpsSrcFile(qNameType, visitedEntries);
+        return getIpsObjectPath().findIpsSrcFile(qNameType);
     }
 
     @Override

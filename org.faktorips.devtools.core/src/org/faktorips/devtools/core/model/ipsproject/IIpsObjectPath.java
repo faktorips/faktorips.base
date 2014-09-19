@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -274,4 +275,6 @@ public interface IIpsObjectPath {
      *            included in the result
      */
     public List<IIpsSrcFile> findAllIpsSrcFiles(boolean respectReexport);
+
+    IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 }

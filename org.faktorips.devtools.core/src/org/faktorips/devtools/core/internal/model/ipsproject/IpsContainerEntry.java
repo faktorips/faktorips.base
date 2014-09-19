@@ -121,11 +121,10 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
+    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
-            IIpsSrcFile file = ((IpsObjectPathEntry)entry).findIpsSrcFileInternal(nameType, visitedEntries);
+            IIpsSrcFile file = ((IpsObjectPathEntry)entry).findIpsSrcFileInternal(nameType, searchContext);
             if (file != null) {
                 return file;
             }

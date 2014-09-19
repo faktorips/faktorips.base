@@ -431,8 +431,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first ips source file with the indicated qualified name type found on the path.
      * Returns <code>null</code> if no such object is found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
 
         int maxEntriesToSearch = entries.length;
         CachedSrcFile cachedSrcFile = lookupCache.get(nameType);
@@ -454,13 +453,18 @@ public class IpsObjectPath implements IIpsObjectPath {
             }
         }
         for (int i = 0; i < maxEntriesToSearch; i++) {
-            IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(nameType, visitedEntries);
+            IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(nameType, searchContext);
             if (ipsSrcFile != null) {
                 lookupCache.put(nameType, new CachedSrcFile(ipsSrcFile, i));
                 return ipsSrcFile;
             }
         }
         return cachedSrcFile == null ? null : cachedSrcFile.file;
+    }
+
+    @Override
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
+        return findIpsSrcFile(nameType, new IpsObjectPathSearchContext());
     }
 
     /**
@@ -538,8 +542,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             QualifiedNameType cmptTypeQnt = new QualifiedNameType(
                     productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE),
                     IpsObjectType.PRODUCT_CMPT_TYPE);
-            visitedEntries.clear();
-            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, visitedEntries);
+            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, new IpsObjectPathSearchContext());
             if (typeFoundFile == null) {
                 continue;
             }
@@ -724,6 +727,12 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
+    @Override
+    public List<IIpsSrcFile> findAllIpsSrcFiles(boolean respectReexport) {
+        // TODO to be implemented FIPS-3283
+        return null;
+    }
+
     private static class CachedSrcFile {
 
         private IIpsSrcFile file;
@@ -737,9 +746,4 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     }
 
-    @Override
-    public List<IIpsSrcFile> findAllIpsSrcFiles(boolean respectReexport) {
-        // TODO to be implemented FIPS-3283
-        return null;
-    }
 }

@@ -80,7 +80,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                 HtmlExportMessages.ProjectOverviewPageElement_created)
                 + " " //$NON-NLS-1$
                 + new SimpleDateFormat(CREATION_TIME_DATE_FORMAT).format(new Date()), TextType.BLOCK, getContext())
-                .addStyles(Style.SMALL);
+        .addStyles(Style.SMALL);
         addPageElements(createCreationTime);
     }
 
@@ -92,12 +92,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.ProjectOverviewPageElement_paths), TextType.HEADING_2, getContext()));
         IIpsObjectPath objectPath;
-        try {
-            objectPath = getProject().getIpsObjectPath();
-        } catch (CoreException e) {
-            getContext().addStatus(new IpsStatus(IStatus.ERROR, "Error getting IpsObjectPath of project", e)); //$NON-NLS-1$
-            return;
-        }
+        objectPath = getProject().getIpsObjectPath();
 
         wrapper.addPageElements(createArchiveEntriesList(objectPath));
         wrapper.addPageElements(createReferencedIpsProjectList(objectPath));
@@ -138,7 +133,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-                .createTextPageElements(referencedIpsProjectsName)), getContext());
+        .createTextPageElements(referencedIpsProjectsName)), getContext());
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -163,7 +158,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         }
 
         ListPageElement referencingProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-                .createTextPageElements(referencingIpsProjectsName)), getContext());
+        .createTextPageElements(referencingIpsProjectsName)), getContext());
         return wrapper.addPageElements(referencingProjects);
     }
 
@@ -181,7 +176,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             sourceFolder.add(folderEntry.getSourceFolder().getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-                .createTextPageElements(sourceFolder)), getContext());
+        .createTextPageElements(sourceFolder)), getContext());
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -192,9 +187,9 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             return;
         }
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-            new TextPageElement(getContext().getMessage(
-                    HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
-                        getContext()), messageListTablePageElement }));
+                new TextPageElement(getContext().getMessage(
+                        HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
+                    getContext()), messageListTablePageElement }));
     }
 
     private MessageList validateLinkedObjects() {

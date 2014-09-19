@@ -325,10 +325,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a copy of the project's object path. Note that a copy and not a reference is
      * returned. If you want to update the project's path, the updated object path has to b e
      * explicitly set on the project via the <code>setIpsObjectPath()</code> method.
-     * 
-     * @throws CoreException if an error occurs while retrieving the path
      */
-    public IIpsObjectPath getIpsObjectPath() throws CoreException;
+    public IIpsObjectPath getIpsObjectPath();
 
     /**
      * Returns <code>true</code> if the given object is accessible via the project's object path,

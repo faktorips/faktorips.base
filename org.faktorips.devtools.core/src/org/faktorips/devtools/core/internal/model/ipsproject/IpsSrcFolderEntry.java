@@ -236,9 +236,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-
+    public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, IpsObjectPathSearchContext searchContext) {
         IIpsPackageFragment pack = root.getIpsPackageFragment(qnt.getPackageName());
         if (pack == null) {
             return null;

@@ -323,14 +323,14 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testFindIpsSrcFile_cleanUpTest() throws Exception {
         IIpsPackageFragmentRoot root2 = newIpsPackageFragmentRoot(ipsProject, null, "root1");
         newIpsObject(root2, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
+        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
 
         IIpsSrcFile ipsSrcFile1 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
-                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), visitedEntries);
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
         IIpsSrcFile ipsSrcFile2 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
-                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), visitedEntries);
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
         IIpsSrcFile ipsSrcFile3 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
-                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), visitedEntries);
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
 
         assertSame(ipsSrcFile1, ipsSrcFile2);
         assertSame(ipsSrcFile1, ipsSrcFile3);

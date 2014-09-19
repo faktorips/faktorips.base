@@ -118,12 +118,12 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
+    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
         if (referencedIpsProject == null) {
             return null;
         }
-        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, visitedEntries);
+        // TODO set subsequent call
+        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, searchContext);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         element.setAttribute("referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         if (useNWDITrackPrefix) {
             // store attribute only if nwdi support is needed
-            element.setAttribute("useNWDITrackPrefix", Boolean.toString(useNWDITrackPrefix)); //$NON-NLS-1$ 
+            element.setAttribute("useNWDITrackPrefix", Boolean.toString(useNWDITrackPrefix)); //$NON-NLS-1$
         }
         return element;
     }

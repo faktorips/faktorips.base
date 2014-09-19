@@ -87,7 +87,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     public abstract boolean exists(QualifiedNameType qnt) throws CoreException;
 
     @Override
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException {
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) {
         IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
         if (file == null) {
             return null;
@@ -96,19 +96,15 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     }
 
     @Override
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) throws CoreException {
-        return findIpsSrcFile(qnt, null);
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) {
+        return findIpsSrcFile(qnt, new IpsObjectPathSearchContext());
     }
 
-    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        if (visitedEntries != null) {
-            if (visitedEntries.contains(this)) {
-                return null;
-            }
-            visitedEntries.add(this);
+    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
+        if (searchContext.visitAndConsiderContentsOf(this)) {
+            return findIpsSrcFileInternal(nameType, searchContext);
         }
-        return findIpsSrcFileInternal(nameType, visitedEntries);
+        return null;
     }
 
     /**
@@ -191,7 +187,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * entry.
      */
     protected abstract IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException;
+            IpsObjectPathSearchContext searchContext);
 
     /**
      * Returns all ips source files of the given type starting with the given prefix found on the

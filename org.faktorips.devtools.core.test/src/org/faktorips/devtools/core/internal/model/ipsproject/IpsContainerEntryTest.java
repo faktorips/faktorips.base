@@ -92,7 +92,7 @@ public class IpsContainerEntryTest {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
         IIpsObjectPathContainer ipsObjectPathContainer = mock(IIpsObjectPathContainer.class);
         when(ipsModel.getIpsObjectPathContainer(ipsProject, MY_ID, MY_OPTIONAL_PATH))
-                .thenReturn(ipsObjectPathContainer);
+        .thenReturn(ipsObjectPathContainer);
 
         boolean exists = ipsContainerEntry.exists(qnt);
 
@@ -116,11 +116,11 @@ public class IpsContainerEntryTest {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         IpsObjectPathEntry mockEntry = mockEntry(container);
-        HashSet<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
+        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
 
-        ipsContainerEntry.findIpsSrcFileInternal(qnt, visitedEntries);
+        ipsContainerEntry.findIpsSrcFileInternal(qnt, searchContext);
 
-        verify(mockEntry).findIpsSrcFileInternal(qnt, visitedEntries);
+        verify(mockEntry).findIpsSrcFileInternal(qnt, searchContext);
     }
 
     @Test
@@ -249,7 +249,7 @@ public class IpsContainerEntryTest {
     private IIpsObjectPathContainer mockContainer() {
         IIpsObjectPathContainer ipsObjectPathContainer = mock(IIpsObjectPathContainer.class);
         when(ipsModel.getIpsObjectPathContainer(ipsProject, MY_ID, MY_OPTIONAL_PATH))
-                .thenReturn(ipsObjectPathContainer);
+        .thenReturn(ipsObjectPathContainer);
         return ipsObjectPathContainer;
     }
 
