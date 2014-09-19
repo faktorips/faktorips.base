@@ -63,7 +63,7 @@ public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
     @Test
     public void testConsiderContentsOf_NotInitialCallNoReexport() {
         searchContext.setSubsequentCall();
-        entry.setReExported(false);
+        entry.setReexported(false);
 
         boolean considerContentsOf = searchContext.considerContentsOf(entry);
 
@@ -77,5 +77,32 @@ public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
 
         boolean visitAgain = searchContext.visit(entry);
         assertFalse(visitAgain);
+    }
+
+    @Test
+    public void testVisitAndConsiderContentsOf_NoReexport() {
+        searchContext.setSubsequentCall();
+        entry.setReexported(false);
+
+        boolean visitAndConsiderContent = searchContext.visitAndConsiderContentsOf(entry);
+
+        assertFalse(visitAndConsiderContent);
+    }
+
+    @Test
+    public void testVisitAndConsiderContentsOf_AlreadyVisited() {
+        searchContext.visit(entry);
+
+        boolean visitAndConsiderContent = searchContext.visitAndConsiderContentsOf(entry);
+
+        assertFalse(visitAndConsiderContent);
+    }
+
+    @Test
+    public void testVisitAndConsiderContentsOf() {
+
+        boolean visitAndConsiderContent = searchContext.visitAndConsiderContentsOf(entry);
+
+        assertTrue(visitAndConsiderContent);
     }
 }

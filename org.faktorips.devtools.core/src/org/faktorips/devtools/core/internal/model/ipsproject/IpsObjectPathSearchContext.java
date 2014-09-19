@@ -32,6 +32,11 @@ public class IpsObjectPathSearchContext {
         setState(State.INITIAL_CALL);
     }
 
+    /**
+     * Returns <code>true</code> if the content of the entry shall be considered and if this entry
+     * doesn't yet exist in the set of <code>visitedEntries</code> in this
+     * {@link IpsObjectPathSearchContext}. Otherwise it returns <code>false</code>.
+     */
     public boolean visitAndConsiderContentsOf(IIpsObjectPathEntry entry) {
         return visit(entry) && considerContentsOf(entry);
     }
@@ -58,8 +63,13 @@ public class IpsObjectPathSearchContext {
         visitedEntries.add(entry);
     }
 
+    /**
+     * Returns <code>true</code> if the content of this entry is applicable. If this
+     * {@link IpsObjectPathSearchContext} is not in it's initial state, or the entry shall not be
+     * considered, this method returns <code>true</code>.
+     */
     public boolean considerContentsOf(IIpsObjectPathEntry entry) {
-        return isInitialCall() || entry.isReExported();
+        return isInitialCall() || entry.isReexported();
     }
 
     /* private */boolean isInitialCall() {
@@ -74,11 +84,19 @@ public class IpsObjectPathSearchContext {
         this.state = state;
     }
 
+    /**
+     * Sets the current State of this {@link IpsObjectPathSearchContext} to
+     * <code>SUBSEQUENT_CALL</code>
+     */
     public void setSubsequentCall() {
         setState(State.SUBSEQUENT_CALL);
     }
 
-    public enum State {
+    /**
+     * Indicating the State of an {@link IpsObjectPathSearchContext}. The initial state is specified
+     * by <code>INITIAL_CALL</code>.
+     */
+    private enum State {
         INITIAL_CALL,
         SUBSEQUENT_CALL;
     }
