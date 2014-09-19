@@ -243,10 +243,10 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsReExported() {
-        IFolder src = ipsProject.getProject().getFolder("src");
-        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-        entry.setReExported(false);
-        assertTrue(entry.isReExported());
-    }
+        public void testIsReexported() {
+            IFolder src = ipsProject.getProject().getFolder("src");
+            IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
+            entry.setReexported(false);
+            assertTrue(entry.isReexported());
+        }
 }

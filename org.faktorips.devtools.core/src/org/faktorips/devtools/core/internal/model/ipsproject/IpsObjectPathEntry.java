@@ -71,12 +71,12 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     }
 
     @Override
-    public boolean isReExported() {
+    public boolean isReexported() {
         return reexported;
     }
 
     @Override
-    public void setReExported(boolean reexported) {
+    public void setReexported(boolean reexported) {
         this.reexported = reexported;
     }
 

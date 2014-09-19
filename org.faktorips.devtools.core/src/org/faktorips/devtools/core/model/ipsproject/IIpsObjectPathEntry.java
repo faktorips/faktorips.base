@@ -176,11 +176,11 @@ public interface IIpsObjectPathEntry {
     /**
      * Returns <code>true</code> if this entry should be reexported.
      */
-    public boolean isReExported();
+    public boolean isReexported();
 
     /**
      * Sets the flag that this entry should reexported.
      */
-    void setReExported(boolean reexported);
+    void setReexported(boolean reexported);
 
 }

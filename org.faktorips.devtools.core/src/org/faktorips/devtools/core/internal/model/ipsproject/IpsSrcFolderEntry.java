@@ -409,7 +409,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public boolean isReExported() {
+    public boolean isReexported() {
         return true;
     }
 }
