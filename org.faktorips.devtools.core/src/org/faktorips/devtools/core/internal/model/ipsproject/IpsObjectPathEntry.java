@@ -41,6 +41,8 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     public static final String XML_ATTRIBUTE_TYPE = "type"; //$NON-NLS-1$
 
+    public static final String XML_ATTRIBUTE_REEXPORTED = "reexported"; //$NON-NLS-1$
+
     private IpsObjectPath path;
 
     private boolean reexported = true;
@@ -205,15 +207,26 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     /**
      * Initializes the entry with the data stored in the xml element.
+     * 
+     * @param element the Top {@link Element}
+     * @param project The {@link IIpsProject}
      */
-    public abstract void initFromXml(Element element, IProject project);
+    protected void initFromXml(Element element, IProject project) {
+        if (element.hasAttribute(XML_ATTRIBUTE_REEXPORTED)) {
+            reexported = Boolean.valueOf(element.getAttribute(XML_ATTRIBUTE_REEXPORTED)).booleanValue();
+        }
+    }
 
     /**
      * Transforms the entry to an xml element.
      * 
      * @param doc The xml document used to created the element.
      */
-    public abstract Element toXml(Document doc);
+    protected Element toXml(Document doc) {
+        Element element = doc.createElement(XML_ELEMENT);
+        element.setAttribute(XML_ATTRIBUTE_REEXPORTED, Boolean.toString(reexported));
+        return element;
+    }
 
     /**
      * Returns the object path entry stored in the xml element.

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TestCases>
-	<Entry type="src" 
+	<Entry type="src"
+		reexported="true" 
 		sourceFolder="ipssrc" 
 		outputFolderGenerated="generated" 
 		basePackageGenerated="org.sample.generated"
 		outputFolderExtension="extensions" 
 		basePackageExtension="org.sample.extensions"/>
-	<Entry type="project" referencedIpsProject="RefProject"/>
+	<Entry type="project" reexported="false" referencedIpsProject="RefProject"/>
 </TestCases>

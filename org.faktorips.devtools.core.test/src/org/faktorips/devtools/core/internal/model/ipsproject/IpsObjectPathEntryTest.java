@@ -70,8 +70,10 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
         IIpsObjectPathEntry entry = IpsObjectPathEntry
                 .createFromXml(path, (Element)nl.item(0), ipsProject.getProject());
         assertEquals(IIpsObjectPathEntry.TYPE_SRC_FOLDER, entry.getType());
+        assertTrue(entry.isReexported());
         entry = IpsObjectPathEntry.createFromXml(path, (Element)nl.item(1), ipsProject.getProject());
         assertEquals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE, entry.getType());
+        assertFalse(entry.isReexported());
     }
 
     @Test

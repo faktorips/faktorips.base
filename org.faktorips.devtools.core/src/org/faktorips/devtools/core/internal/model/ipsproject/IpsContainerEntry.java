@@ -216,6 +216,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         containerTypeId = element.getAttribute(XML_ATTRIBUTE_CONTAINER);
         optionalPath = element.getAttribute(XML_ATTRIBUTE_PATH);
     }
@@ -225,7 +226,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
+        Element element = super.toXml(doc);
         element.setAttribute(XML_ATTRIBUTE_TYPE, TYPE_CONTAINER);
         element.setAttribute(XML_ATTRIBUTE_CONTAINER, containerTypeId);
         element.setAttribute(XML_ATTRIBUTE_PATH, optionalPath);

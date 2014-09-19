@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,6 +27,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -67,6 +69,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        ipsProject.setIpsObjectPath(path);
 
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
@@ -75,6 +78,47 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
         assertFalse(result.contains(c.getIpsSrcFile()));
+    }
+
+    @Test
+    public void testFindIpsSrcFiles_byQualifiedNameType() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        ipsProject.setIpsObjectPath(path);
+        entry.setReexported(false);
+
+        IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("a.A", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
+    public void testFindIpsSrcFiles_NoReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
+        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+        entry.setReexported(false);
+        entryRef.setReexported(false);
+
+        ipsProject.setIpsObjectPath(path);
+        refProject.setIpsObjectPath(pathRef);
+        refProject2.setIpsObjectPath(pathRef2);
+
+        IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNull(srcFile);
+
+        srcFile = entryRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
     }
 
     @Test
@@ -123,18 +167,22 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         entry.initFromXml(doc.getDocumentElement(), ipsProject.getProject());
         assertEquals(IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject"), entry.getReferencedIpsProject());
         assertFalse(entry.isUseNWDITrackPrefix());
+        assertFalse(entry.isReexported());
     }
 
     @Test
     public void testToXml() {
         IIpsProject refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject");
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path, refProject);
+        assertTrue(entry.isReexported());
+        entry.setReexported(false);
         Element element = entry.toXml(newDocument());
 
         entry = new IpsProjectRefEntry(path);
         entry.initFromXml(element, ipsProject.getProject());
         assertEquals(refProject, entry.getReferencedIpsProject());
         assertFalse(entry.isUseNWDITrackPrefix());
+        assertFalse(entry.isReexported());
     }
 
     @Test

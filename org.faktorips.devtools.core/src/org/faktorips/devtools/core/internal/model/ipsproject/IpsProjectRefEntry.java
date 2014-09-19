@@ -122,7 +122,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         if (referencedIpsProject == null) {
             return null;
         }
-        // TODO set subsequent call
+        searchContext.setSubsequentCall();
         return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, searchContext);
     }
 
@@ -141,6 +141,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         initUseNWDITrackPrefix(element);
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
         if (isUseNWDITrackPrefix()) {
@@ -224,8 +225,8 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
+        Element element = super.toXml(doc);
+        element.setAttribute(XML_ATTRIBUTE_TYPE, TYPE_PROJECT_REFERENCE);
         element.setAttribute("referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         if (useNWDITrackPrefix) {
             // store attribute only if nwdi support is needed
@@ -269,5 +270,4 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     public InputStream getResourceAsStream(String path) {
         return getReferencedIpsProject().getResourceAsStream(path);
     }
-
 }

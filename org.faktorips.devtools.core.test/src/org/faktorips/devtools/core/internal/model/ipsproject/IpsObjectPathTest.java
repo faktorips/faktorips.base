@@ -88,7 +88,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewSrcFolderEntry() throws CoreException {
+    public void testNewSrcFolderEntry() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(srcFolder);
@@ -223,7 +223,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetReferencedIpsProjects() throws CoreException {
+    public void testGetReferencedIpsProjects() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
         IIpsProject refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
@@ -239,7 +239,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetReferencedIpsProjects_refInContainer() throws CoreException {
+    public void testGetReferencedIpsProjects_refInContainer() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
         IIpsProject refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");

@@ -80,14 +80,15 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", getType()); //$NON-NLS-1$
+        Element element = super.toXml(doc);
+        element.setAttribute(XML_ATTRIBUTE_TYPE, getType());
         element.setAttribute(getXmlAttributePathName(), getXmlPathRepresentation());
         return element;
     }
 
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         String path = element.getAttribute(getXmlAttributePathName());
         try {
             if (StringUtils.isEmpty(path)) {

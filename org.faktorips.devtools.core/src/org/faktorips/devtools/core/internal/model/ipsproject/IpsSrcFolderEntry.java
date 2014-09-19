@@ -260,6 +260,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         String sourceFolderPath = element.getAttribute(PROPERTY_SOURCE_FOLDER);
         setSourceFolder(project.getFolder(new Path(sourceFolderPath)));
         String outputFolderPathMergable = element.getAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE);
@@ -282,7 +283,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
 
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(IpsObjectPathEntry.XML_ELEMENT);
+        Element element = super.toXml(doc);
         element.setAttribute(PROPERTY_TYPE, TYPE_SRC_FOLDER);
         element.setAttribute(PROPERTY_SOURCE_FOLDER, sourceFolder.getProjectRelativePath().toString());
         element.setAttribute(PROPERTY_OUTPUT_FOLDER_MERGABLE, outputFolderMergable == null ? StringUtils.EMPTY
