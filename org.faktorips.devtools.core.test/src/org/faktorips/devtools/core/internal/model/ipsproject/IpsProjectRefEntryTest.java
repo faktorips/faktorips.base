@@ -122,6 +122,30 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testFindIpsSrcFiles_WithReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
+        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+
+        ipsProject.setIpsObjectPath(path);
+        refProject.setIpsObjectPath(pathRef);
+        refProject2.setIpsObjectPath(pathRef2);
+
+        IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+
+        srcFile = entryRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
     public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
 
