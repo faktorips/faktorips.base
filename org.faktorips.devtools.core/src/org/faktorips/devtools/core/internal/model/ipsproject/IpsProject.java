@@ -1699,7 +1699,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return severity;
     }
 
-    private void validateIpsObjectPathCycle(MessageList result) throws CoreException {
+    private void validateIpsObjectPathCycle(MessageList result) {
         if (getIpsObjectPathInternal().detectCycle()) {
             String msg = Messages.IpsProject_msgCycleInIpsObjectPath;
             result.add(new Message(MSGCODE_CYCLE_IN_IPS_OBJECT_PATH, msg, Message.ERROR, this));

@@ -1881,15 +1881,103 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         ml = ipsProject10.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
-
         ml = ipsProject11.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
-
         ml = ipsProject12.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
-
         ml = ipsProject13.validate();
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+    }
+
+    @Test
+    public void testValidateIpsObjectPathCycle_ReexportedIsFalse() throws CoreException {
+        IIpsProject ipsProject2 = this.newIpsProject("TestProject2");
+        IIpsObjectPath path = ipsProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject).setReexported(false);
+        ipsProject2.setIpsObjectPath(path);
+
+        MessageList ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+
+        path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject2).setReexported(false);
+        ipsProject.setIpsObjectPath(path);
+
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(result);
+        // there is an cycle in the ref projects,
+        // if we get no stack overflow exception, then the test was successfully executed
+
+        ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+
+        path = ipsProject.getIpsObjectPath();
+        path.removeProjectRefEntry(ipsProject2);
+        ipsProject.setIpsObjectPath(path);
+
+        ml = ipsProject.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+    }
+
+    @Test
+    public void testValidateIpsObjectPathCycle_ReexportedIsFalse_ProjectHasSelfReference() throws CoreException {
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject).setReexported(false);
+        ipsProject.setIpsObjectPath(path);
+
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(result);
+        ipsProject.findIpsObject(new QualifiedNameType("xyz", IpsObjectType.PRODUCT_CMPT));
+        // there is an cycle in the ref projects,
+        // if we get no stack overflow exception, then the test was successfully executed
+
+        MessageList ml = ipsProject.validate();
+        assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+    }
+
+    @Test
+    public void testValidateIpsObjectPathCycle_ReexportedIsFalse_CycleInFourProjects() throws CoreException {
+        IIpsProject ipsProject10 = this.newIpsProject("TestProject10");
+        IIpsProject ipsProject11 = this.newIpsProject("TestProject11");
+        IIpsProject ipsProject12 = this.newIpsProject("TestProject12");
+        IIpsProject ipsProject13 = this.newIpsProject("TestProject13");
+
+        IIpsObjectPath path = ipsProject10.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject11).setReexported(false);
+        ipsProject10.setIpsObjectPath(path);
+
+        path = ipsProject10.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject12).setReexported(false);
+        ipsProject10.setIpsObjectPath(path);
+
+        path = ipsProject11.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject13).setReexported(false);
+        // invalid reference, should not result in a stack overflow exception
+        path.newIpsProjectRefEntry(ipsProject11).setReexported(false);
+        ipsProject11.setIpsObjectPath(path);
+
+        path = ipsProject12.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject13).setReexported(false);
+        ipsProject12.setIpsObjectPath(path);
+
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        ipsProject.findAllIpsSrcFiles(result);
+
+        MessageList ml = ipsProject10.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+
+        path = ipsProject13.getIpsObjectPath();
+        path.newIpsProjectRefEntry(ipsProject10).setReexported(false);
+        ipsProject13.setIpsObjectPath(path);
+
+        ml = ipsProject10.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        ml = ipsProject11.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        ml = ipsProject12.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
+        ml = ipsProject13.validate();
+        assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
     private void setMinRequiredVersion(String version) throws CoreException {
@@ -2176,15 +2264,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         return false;
     }
 
-    class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
-
-        @Override
-        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
-                throws CoreException {
-            throw new UnsupportedOperationException();
-        }
-    }
-
     @Test
     public void testFormulaLanguageLocale() throws CoreException {
         assertEquals(Locale.GERMAN, ipsProject.getFormulaLanguageLocale());
@@ -2229,5 +2308,14 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider = ipsProject.getVersionProvider();
 
         assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
+    }
+
+    class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
+
+        @Override
+        public AbstractIpsProjectMigrationOperation[] getMigrationOperations(IIpsProject projectToMigrate)
+                throws CoreException {
+            throw new UnsupportedOperationException();
+        }
     }
 }

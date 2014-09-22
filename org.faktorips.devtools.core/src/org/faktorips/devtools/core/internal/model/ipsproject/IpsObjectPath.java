@@ -627,27 +627,24 @@ public class IpsObjectPath implements IIpsObjectPath {
      * if there is a cycle in the ips object path entries of all referenced projects. Returns
      * <code>true</code> if a cycle was detected. Returns <code>false</code> if there is no cycle in
      * the ips object path.
-     * 
-     * @throws CoreException If an error occurs while resolving the object path entries.
      */
-    public boolean detectCycle() throws CoreException {
-        return detectCycleInternal(ipsProject, new HashSet<IIpsObjectPath>());
+    public boolean detectCycle() {
+        return detectCycleInternal(ipsProject, new IpsObjectPathSearchContext());
     }
 
-    public boolean detectCycleInternal(IIpsProject project, Set<IIpsObjectPath> visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
-            return false;
-        }
-        visitedEntries.add(this);
+    public boolean detectCycleInternal(IIpsProject project, IpsObjectPathSearchContext searchContext) {
 
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie instanceof IIpsProjectRefEntry) {
-                IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entrie).getReferencedIpsProject();
-                if (project.equals(refProject)) {
-                    return true;
-                }
-                if (refProject.getIpsObjectPathInternal().detectCycleInternal(project, visitedEntries)) {
-                    return true;
+        for (IIpsObjectPathEntry entry : entries) {
+            if (entry instanceof IIpsProjectRefEntry) {
+                if (searchContext.visitAndConsiderContentsOf(entry)) {
+                    IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entry).getReferencedIpsProject();
+                    if (project.equals(refProject)) {
+                        return true;
+                    }
+                    searchContext.setSubsequentCall();
+                    if (refProject.getIpsObjectPathInternal().detectCycleInternal(project, searchContext)) {
+                        return true;
+                    }
                 }
             }
         }
