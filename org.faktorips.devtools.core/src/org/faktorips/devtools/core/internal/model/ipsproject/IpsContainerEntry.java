@@ -200,11 +200,11 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    public InputStream getResourceAsStream(String resourcePath) {
+    public InputStream getResourceAsStream(String resourcePath, IpsObjectPathSearchContext searchContext) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
             if (entry.containsResource(resourcePath)) {
-                InputStream stream = entry.getResourceAsStream(resourcePath);
+                InputStream stream = entry.getResourceAsStream(resourcePath, searchContext);
                 return stream;
             }
         }

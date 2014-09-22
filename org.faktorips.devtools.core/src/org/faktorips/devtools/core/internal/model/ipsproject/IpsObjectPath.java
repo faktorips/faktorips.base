@@ -670,19 +670,29 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public boolean containsResource(String path) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(path)) {
+            if (entryContainsResource(path, entry)) {
                 return true;
             }
         }
         return false;
     }
 
+    private boolean entryContainsResource(String path, IIpsObjectPathEntry entry) {
+        if (entry instanceof IpsProjectRefEntry) {
+            return ((IpsProjectRefEntry)entry).containsResource(path, new IpsObjectPathSearchContext());
+        }
+        return entry.containsResource(path);
+    }
+
     @Override
     public InputStream getResourceAsStream(String path) {
+        return getResourceAsStream(path, new IpsObjectPathSearchContext());
+    }
+
+    /* private */InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext) {
         for (IIpsObjectPathEntry entry : entries) {
             if (entry.containsResource(path)) {
-                InputStream inputStream = entry.getResourceAsStream(path);
-                return inputStream;
+                return entry.getResourceAsStream(path, searchContext);
             }
         }
         return null;

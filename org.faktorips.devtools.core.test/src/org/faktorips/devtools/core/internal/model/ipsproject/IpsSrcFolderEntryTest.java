@@ -223,7 +223,8 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     private String getFileContent(String rootName, String fileName) throws CoreException, IOException {
-        InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName).getResourceAsStream(fileName);
+        InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName)
+                .getResourceAsStream(fileName, new IpsObjectPathSearchContext());
         return getFileContent(aStream);
     }
 
@@ -243,10 +244,10 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-        public void testIsReexported() {
-            IFolder src = ipsProject.getProject().getFolder("src");
-            IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
-            entry.setReexported(false);
-            assertTrue(entry.isReexported());
-        }
+    public void testIsReexported() {
+        IFolder src = ipsProject.getProject().getFolder("src");
+        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
+        entry.setReexported(false);
+        assertTrue(entry.isReexported());
+    }
 }

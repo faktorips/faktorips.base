@@ -137,7 +137,7 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public InputStream getResourceAsStream(String path) {
+    public InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext) {
         return archive.getResourceAsStream(path);
     }
 

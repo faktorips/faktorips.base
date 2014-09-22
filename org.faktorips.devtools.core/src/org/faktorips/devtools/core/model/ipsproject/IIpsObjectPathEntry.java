@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 import java.io.InputStream;
 
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathSearchContext;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -170,7 +171,7 @@ public interface IIpsObjectPathEntry {
      * @return The {@link InputStream} of the resource. Make sure to close the input stream after
      *         reading.
      */
-    public InputStream getResourceAsStream(String path);
+    public InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext);
 
     /**
      * Returns <code>true</code> if this entry should be reexported.

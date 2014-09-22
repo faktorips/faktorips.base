@@ -31,6 +31,7 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathSearchContext;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry.IpsStrorageFactory;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -99,7 +100,7 @@ public class IpsBundleEntryTest {
     @Test
     public void testGetResourceAsStream() throws Exception {
         initStorage();
-        ipsBundleEntry.getResourceAsStream("testAnyPath");
+        ipsBundleEntry.getResourceAsStream("testAnyPath", new IpsObjectPathSearchContext());
 
         verify(ipsJarBundle).getResourceAsStream("testAnyPath");
     }

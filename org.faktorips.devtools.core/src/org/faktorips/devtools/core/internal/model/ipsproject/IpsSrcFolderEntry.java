@@ -398,7 +398,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * Interprets the given path as relative to the referenced sourcefolder.
      */
     @Override
-    public InputStream getResourceAsStream(String pathAsString) {
+    public InputStream getResourceAsStream(String pathAsString, IpsObjectPathSearchContext searchContext) {
         IFile file = getSourceFolder().getFile(pathAsString);
         try {
             return file.getContents();
