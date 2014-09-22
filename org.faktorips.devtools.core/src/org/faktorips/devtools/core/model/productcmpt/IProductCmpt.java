@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
-        IPropertyValueContainer {
+IPropertyValueContainer {
 
     /**
      * The name of the product component type property
@@ -268,5 +268,16 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return A list containing every link of this product component and its generations
      */
     public List<IProductCmptLink> getLinksIncludingGenerations();
+
+    /**
+     * @param rolename The role name for the required content usage.
+     * @return The table content usage for the table structure usage with the given role name.
+     */
+    public ITableContentUsage getTableContentUsage(String rolename);
+
+    /**
+     * @return All table content usages defined by this product component.
+     */
+    public ITableContentUsage[] getTableContentUsages();
 
 }

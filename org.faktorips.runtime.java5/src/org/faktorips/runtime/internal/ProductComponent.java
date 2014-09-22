@@ -128,20 +128,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         }
         Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
         doInitPropertiesFromXml(propertyElements);
+        doInitTableUsagesFromXml(propertyElements);
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         initExtensionPropertiesFromXml(cmptElement);
-    }
-
-    /**
-     * 
-     * @param linkElements the XML elements used to initialize {@link ProductComponentLink}
-     *            instances.
-     */
-    protected void doInitReferencesFromXml(Map<String, List<Element>> linkElements) {
-        // nothing to do in the base class
-        //
-        // Note that the method is deliberately not declared as abstract to
-        // allow in subclasses calls to super.doInitReferencesFromXml().
     }
 
     /**
@@ -154,6 +143,31 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         //
         // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to super.doInitPropertiesFromXml().
+    }
+
+    /**
+     * Initializes the table content usages with the data in the map. The map contains the table
+     * structure usage roles as key and the qualified table content name as value.
+     * 
+     * @param map the map of property elements
+     */
+    protected void doInitTableUsagesFromXml(Map<String, Element> map) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitTableUsagesFromXml().
+    }
+
+    /**
+     * 
+     * @param linkElements the XML elements used to initialize {@link ProductComponentLink}
+     *            instances.
+     */
+    protected void doInitReferencesFromXml(Map<String, List<Element>> linkElements) {
+        // nothing to do in the base class
+        //
+        // Note that the method is deliberately not declared as abstract to
+        // allow in subclasses calls to super.doInitReferencesFromXml().
     }
 
     @Override
@@ -188,6 +202,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         Element prodCmptElement = document.createElement("ProductComponent");
         writeValidToToXml(prodCmptElement);
         writePropertiesToXml(prodCmptElement);
+        writeTableUsagesToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
         if (includeGenerations) {
@@ -223,6 +238,30 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     protected void writePropertiesToXml(Element element) {
         throw new UnsupportedOperationException(
                 "The method toXml() is currently not supported, as the required methods were not generated. To activate toXml() please check your FIPS Builder properties and make sure \"Generated toXml Support\" is set to true.");
+    }
+
+    /**
+     * This is a utility method called by generated code. The given {@link Element} is the element
+     * representing this {@link ProductComponent}.
+     * 
+     * @param element the element all table usages should be added to
+     */
+    protected void writeTableUsagesToXml(Element element) {
+        /*
+         * Nothing to be done base class. Note that this method is deliberately not declared
+         * abstract to allow calls to super.writeTableUsagesToXml() in subclasses.
+         */
+    }
+
+    /**
+     * This method is used for writing a table usage to the XML of the given {@link Element}.
+     * 
+     * @param element the element where the table usage will be added to
+     * @param structureUsage the value for the structureUsage XML attribute
+     * @param tableContentName the name of the used table content
+     */
+    protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
+        ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
     }
 
     public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {

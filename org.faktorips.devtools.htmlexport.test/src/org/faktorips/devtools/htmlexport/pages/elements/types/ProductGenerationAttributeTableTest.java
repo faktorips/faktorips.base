@@ -14,6 +14,9 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
 import org.junit.Test;
@@ -46,6 +49,30 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
 
         assertXPathExists(productGenerationAttributeTable, "//tr[@id='" + subTargetRole + "']");
         assertXPathNotExists(productGenerationAttributeTable, "//tr[@id='" + targetRole + "']");
+
+    }
+
+    @Test
+    public void testAddTablStuctureeUsages() throws Exception {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "productType");
+        ITableStructureUsage tableStructureUsage1 = productCmptType.newTableStructureUsage();
+        tableStructureUsage1.setRoleName("tableStructureUsage1");
+        tableStructureUsage1.setChangingOverTime(true);
+
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        productCmpt.newPropertyValue(tableStructureUsage1);
+
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
+        ITableStructureUsage tableStructureUsage2 = productCmptType.newTableStructureUsage();
+        tableStructureUsage2.setRoleName("tableStructureUsage2");
+        tableStructureUsage2.setChangingOverTime(true);
+        generation.newTableContentUsage(tableStructureUsage2);
+
+        ProductGenerationAttributeTable productGenerationAttributeTable = new ProductGenerationAttributeTable(
+                productCmpt, context);
+
+        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + tableStructureUsage1.getRoleName() + "']");
+        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + tableStructureUsage2.getRoleName() + "']");
 
     }
 }

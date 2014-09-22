@@ -197,4 +197,13 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertEquals("Foo", contentUsage.getLastResortCaption());
     }
 
+    @Test
+    public void testGetProductCmpt() {
+        assertNotNull(contentUsage.getProductCmpt());
+
+        ITableContentUsage contentUsagePC = (ITableContentUsage)cmpt.newPropertyValue(structUsage);
+        assertNotNull(contentUsagePC);
+        assertNotNull(contentUsagePC.getProductCmpt());
+        assertEquals(cmpt, contentUsagePC.getProductCmpt());
+    }
 }

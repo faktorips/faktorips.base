@@ -53,8 +53,7 @@ public class NewTableContentsOperation extends NewProductDefinitionOperation<New
     @Override
     protected void postProcess(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) {
         if (getPmo().getAddToTableUsage() != null
-                && IpsUIPlugin.getDefault().isGenerationEditable(
-                        getPmo().getAddToTableUsage().getProductCmptGeneration())) {
+                && IpsUIPlugin.isEditable(getPmo().getAddToTableUsage().getPropertyValueContainer().getIpsSrcFile())) {
             IIpsSrcFile addToIpsSrcFile = getPmo().getAddToTableUsage().getIpsSrcFile();
             boolean dirty = addToIpsSrcFile.isDirty();
             ITableContentUsage tableContentUsage = getPmo().getAddToTableUsage();

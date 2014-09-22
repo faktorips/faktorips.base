@@ -280,8 +280,10 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         generation.newFormula();
         generation.newFormula();
         generation.newAttributeValue();
+        generation.newTableContentUsage();
         newValidationRuleConfig();
         newValidationRuleConfig();
+
         Element element = generation.toXml(newDocument());
 
         IProductCmptGeneration copy = new ProductCmptGeneration();
@@ -291,6 +293,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, copy.getNumOfFormulas());
         assertEquals(1, copy.getNumOfAttributeValues());
         assertEquals(2, copy.getNumOfValidationRules());
+        assertEquals(1, copy.getNumOfTableContentUsages());
     }
 
     @Test
@@ -312,6 +315,9 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         List<IValidationRuleConfig> rules = generation.getValidationRuleConfigs();
         assertEquals(1, rules.size());
+
+        ITableContentUsage[] tableContentUsages = generation.getTableContentUsages();
+        assertEquals(1, tableContentUsages.length);
     }
 
     @Test
@@ -563,7 +569,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
-            Exception {
+    Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
@@ -584,7 +590,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
         ipsProject.getProperties()
-                .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+        .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
@@ -765,6 +771,42 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertEquals(2, detailList.size());
         assertEquals(dependencyDetail1, detailList.get(0));
         assertEquals(dependencyDetail2, detailList.get(1));
+    }
+
+    @Test
+    public void testAddRelatedTableContentsQualifiedNameTypes() {
+        ProductCmptGeneration generationSpy = spy((ProductCmptGeneration)generation);
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setRoleName("RateTable");
+        ITableContentUsage contentUsage = generation.newTableContentUsage(structureUsage);
+        assertEquals("RateTable", contentUsage.getStructureUsage());
+
+        Set<IDependency> dependenciesResult = new HashSet<IDependency>();
+        Map<IDependency, List<IDependencyDetail>> detailsResult = new HashMap<IDependency, List<IDependencyDetail>>();
+        generationSpy.dependsOn(dependenciesResult, detailsResult);
+
+        assertEquals(1, dependenciesResult.size());
+        assertEquals(1, detailsResult.size());
+    }
+
+    @Test
+    public void testGetPropertyValuesIncludingProductCmpt() throws Exception {
+        productCmptType.newProductCmptTypeAttribute("a1");
+        IAttributeValue valueA1 = generation.newAttributeValue();
+        valueA1.setAttribute("a1");
+
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("a2");
+        attribute.setChangingOverTime(false);
+        IAttributeValue valueA2 = (IAttributeValue)productCmpt.newPropertyValue(attribute);
+        valueA2.setAttribute("a2");
+
+        List<IAttributeValue> propertyValues = generation.getPropertyValuesIncludingProductCmpt(IAttributeValue.class);
+        assertTrue(propertyValues.contains(valueA1));
+        assertTrue(propertyValues.contains(valueA2));
+
+        List<IAttributeValue> propertyValuesGen = generation.getPropertyValues(IAttributeValue.class);
+        assertTrue(propertyValuesGen.contains(valueA1));
+        assertFalse(propertyValuesGen.contains(valueA2));
     }
 
 }

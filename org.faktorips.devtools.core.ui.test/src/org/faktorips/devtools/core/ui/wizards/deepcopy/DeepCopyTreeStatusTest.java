@@ -124,6 +124,7 @@ public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
             when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(
                     productCmptsGenerations[i]);
             when(productCmpts[i].findProductCmptType(any(IIpsProject.class))).thenReturn(types[i]);
+            when(productCmpts[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
             IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
             when(productCmpts[i].getIpsSrcFile()).thenReturn(srcFile);
             when(srcFile.getIpsProject()).thenReturn(childIpsProject);

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.productcmpttype;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osgi.util.NLS;
@@ -48,6 +49,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     /** Contains the related table structures identified by the full qualified name */
     private List<TableStructureReference> tableStructures = new ArrayList<TableStructureReference>();
+
+    /** Flag indicating if this {@link TableStructureUsage} is static */
+    private boolean changingOverTime = true;
 
     public TableStructureUsage(IProductCmptType pcType, String id) {
         super(pcType, id);
@@ -113,6 +117,9 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         super.initPropertiesFromXml(element, id);
         name = element.getAttribute(PROPERTY_ROLENAME);
         mandatoryTableContent = Boolean.valueOf(element.getAttribute(PROPERTY_MANDATORY_TABLE_CONTENT)).booleanValue();
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME)).booleanValue();
+        }
     }
 
     @Override
@@ -120,6 +127,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ROLENAME, name);
         element.setAttribute(PROPERTY_MANDATORY_TABLE_CONTENT, "" + mandatoryTableContent); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, "" + changingOverTime); //$NON-NLS-1$
     }
 
     @Override
@@ -276,12 +284,19 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     @Override
     public boolean isChangingOverTime() {
-        return true;
+        return changingOverTime;
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changingOverTime) {
+        boolean oldValue = this.changingOverTime;
+        this.changingOverTime = changingOverTime;
+        valueChanged(oldValue, changingOverTime, ITableStructureUsage.PROPERTY_CHANGING_OVER_TIME);
     }
 
     @Override
     public String getPropertyDatatype() {
-        return ""; //$NON-NLS-1$
+        return StringUtils.EMPTY;
     }
 
     @Override
@@ -302,7 +317,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     public static class TableStructureReference extends AtomicIpsObjectPart {
 
-        private String tableStructure = ""; //$NON-NLS-1$
+        private String tableStructure = StringUtils.EMPTY;
 
         public TableStructureReference(ITableStructureUsage tableStructureUsage, String id) {
             super(tableStructureUsage, id);

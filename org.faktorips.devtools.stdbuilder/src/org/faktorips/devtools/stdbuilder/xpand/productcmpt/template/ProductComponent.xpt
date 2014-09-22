@@ -36,6 +36,10 @@
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
 			
 			«EXPAND ProductAssociation::field FOREACH associations-»
+			
+			«EXPAND TableUsages::propertyField FOREACH tables-»
+			
+			«EXPAND TableUsages::memberField FOREACH tables-»
 
 		    /**
 		     * «localizedJDoc("CONSTRUCTOR", implClassName)»
@@ -52,6 +56,8 @@
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
+			
+			«EXPAND TableUsages::getterAndSetter FOREACH tables»
 			
 			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions»
 
@@ -80,6 +86,20 @@
 			«ENDIF»
 
 			«EXPAND ProductAssociation::doInitFromXmlMethod FOREACH associations-»
+			
+			
+			«IF containsTables-»
+			    /**
+			     * @generated
+			     */
+			    @Override
+			    protected void «doInitTableUsagesFromXml(Map("String", Element()) + " tableUsageMap")» {
+			        super.«doInitTableUsagesFromXml("tableUsageMap")»;
+			        «EXPAND TableUsages::doInitFromXmlMethodCall FOREACH tables-»
+			    }
+			«ENDIF»
+			
+			«EXPAND TableUsages::doInitFromXmlMethod FOREACH tables-»
 			
 			«EXPAND ProductCommons::writeToXmlMethods-»
 

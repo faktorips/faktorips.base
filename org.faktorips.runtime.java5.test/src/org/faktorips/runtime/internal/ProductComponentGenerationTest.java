@@ -27,6 +27,8 @@ import org.faktorips.valueset.IntegerRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class ProductComponentGenerationTest extends XmlAbstractTestCase {
 
@@ -108,5 +110,20 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         assertTrue(gen.isFormulaAvailable("testFormula"));
         assertFalse(gen.isFormulaAvailable("emptyFormula"));
         assertFalse(gen.isFormulaAvailable("notExistingFormula"));
+    }
+
+    @Test
+    public void testWriteTableUsageToXml() {
+        Element genElement = getTestDocument().getDocumentElement();
+        NodeList childNodes = genElement.getChildNodes();
+        assertEquals(31, childNodes.getLength());
+
+        gen.writeTableUsageToXml(genElement, "structureUsageValue", "tableContentNameValue");
+
+        assertEquals(32, childNodes.getLength());
+        Node namedItem = childNodes.item(31).getAttributes().getNamedItem("structureUsage");
+        assertEquals("structureUsageValue", namedItem.getNodeValue());
+        String nodeValue = childNodes.item(31).getFirstChild().getTextContent();
+        assertEquals("tableContentNameValue", nodeValue);
     }
 }
