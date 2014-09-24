@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
-import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -264,17 +263,12 @@ public interface IIpsObjectPath {
     public IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath);
 
     /**
+     * Returns the first {@link IIpsSrcFile} with the indicated qualified name type found on the
+     * path. Returns <code>null</code> if no such object is found.
      * 
-     * Returns all IPS source files within a IpsProject and it's references. {@link IIpsSrcFile}s in
-     * bundle-projects will always be included in the resulting list. The value of
-     * <code>respectReexport</code> indicates whether this method considers project references too.
-     * If the <code>respectReexport</code> is set to true, the {@link IIpsSrcFile}s of projects
-     * references will be included in the resulting list, otherwise they won't.
-     * 
-     * @param respectReexport indicates if {@link IIpsSrcFile} of non-bundle projects shall be
-     *            included in the result
+     * @param nameType representing the {@link QualifiedNameType} of the searched
+     *            {@link IIpsSrcFile}
+     * @return the found {@link IIpsSrcFile}
      */
-    public List<IIpsSrcFile> findAllIpsSrcFiles(boolean respectReexport);
-
-    IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 }

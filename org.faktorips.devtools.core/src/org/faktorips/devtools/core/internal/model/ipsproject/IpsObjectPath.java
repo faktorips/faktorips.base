@@ -734,12 +734,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
-    @Override
-    public List<IIpsSrcFile> findAllIpsSrcFiles(boolean respectReexport) {
-        // TODO to be implemented FIPS-3283
-        return null;
-    }
-
     private static class CachedSrcFile {
 
         private IIpsSrcFile file;
