@@ -9,4 +9,6 @@
 		outputFolderExtension="extensions" 
 		basePackageExtension="org.sample.extensions"/>
 	<Entry type="project" reexported="false" referencedIpsProject="RefProject"/>
+	
+	<Entry type="project" referencedIpsProject="RefProject2"/>
 </TestCases>

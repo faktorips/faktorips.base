@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -51,7 +50,7 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetIndex() throws CoreException {
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         assertEquals(1, path.getEntries().length);
 
         IIpsObjectPathEntry entry0 = path.getEntries()[0];
@@ -71,9 +70,21 @@ public class IpsObjectPathEntryTest extends AbstractIpsPluginTest {
                 .createFromXml(path, (Element)nl.item(0), ipsProject.getProject());
         assertEquals(IIpsObjectPathEntry.TYPE_SRC_FOLDER, entry.getType());
         assertTrue(entry.isReexported());
+
         entry = IpsObjectPathEntry.createFromXml(path, (Element)nl.item(1), ipsProject.getProject());
         assertEquals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE, entry.getType());
         assertFalse(entry.isReexported());
+    }
+
+    @Test
+    public void testCreateFromXml_DefaultReexport() {
+        Document doc = getTestDocument();
+        NodeList nl = doc.getDocumentElement().getElementsByTagName(IpsObjectPathEntry.XML_ELEMENT);
+
+        IIpsObjectPathEntry entry = IpsObjectPathEntry
+                .createFromXml(path, (Element)nl.item(2), ipsProject.getProject());
+        assertEquals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE, entry.getType());
+        assertTrue(entry.isReexported());
     }
 
     @Test

@@ -96,7 +96,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(srcFolder);
         assertEquals(path, entry0.getIpsObjectPath());
-        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        // default test project contains already 1 entry
+        assertEquals(2, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
 
         IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(srcFolder);
@@ -110,12 +111,14 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testNewProjectRefEntry() throws CoreException {
         IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry0.getIpsObjectPath());
-        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        // default test project contains already 1 entry
+        assertEquals(2, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
 
         IIpsProjectRefEntry entry1 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry1.getIpsObjectPath());
-        assertEquals(2, path.getEntries().length); // the same project should not be added twice
+        // the same project should not be added twice
+        assertEquals(2, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
         assertEquals(entry1, path.getEntries()[1]);
 
@@ -142,7 +145,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testRemoveProjectRefEntry() throws CoreException {
         IIpsProjectRefEntry entry0 = path.newIpsProjectRefEntry(ipsProject);
         assertEquals(path, entry0.getIpsObjectPath());
-        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        // default test project contains already 1 entry
+        assertEquals(2, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
         assertTrue(path.containsProjectRefEntry(ipsProject));
         path.removeProjectRefEntry(ipsProject);
@@ -177,7 +181,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IIpsArchiveEntry entry0 = path.newArchiveEntry(archiveFile.getLocation());
         IIpsArchive archive0 = entry0.getIpsArchive();
         assertEquals(path, entry0.getIpsObjectPath());
-        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        // default test project contains already 1 entry
+        assertEquals(2, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
         assertTrue(path.containsArchiveEntry(entry0.getIpsArchive()));
         path.removeArchiveEntry(archive0);
@@ -204,7 +209,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IFolder folder = ipsProject.getProject().getFolder("testfolder");
         IIpsSrcFolderEntry entry0 = path.newSourceFolderEntry(folder);
         assertEquals(path, entry0.getIpsObjectPath());
-        assertEquals(2, path.getEntries().length); // default test project contains already 1 entry
+        // default test project contains already 1 entry
+        assertEquals(2, path.getEntries().length);
         assertEquals(entry0, path.getEntries()[1]);
         assertTrue(path.containsSrcFolderEntry(folder));
         path.removeSrcFolderEntry(folder);
@@ -256,7 +262,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetProjectRefEntries_container() throws Exception {
+    public void testGetProjectRefEntries_container() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
         IIpsProject refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
@@ -432,9 +438,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testMoveEntries() throws Exception {
-
-        IIpsObjectPathEntry entry0 = path.getEntries()[0]; // default test project contains already
-        // 1 entry
+        // default test project contains already 1 entry
+        IIpsObjectPathEntry entry0 = path.getEntries()[0];
         IIpsSrcFolderEntry entry1 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src"));
         IIpsSrcFolderEntry entry2 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src2"));
         IIpsSrcFolderEntry entry3 = path.newSourceFolderEntry(ipsProject.getProject().getFolder("src3"));
@@ -445,14 +450,12 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         int[] newIndices = path.moveEntries(new int[] { 0, 1 }, false);
         assertEquals(4, path.getEntries().length);
         assertEquals(2, newIndices.length);
-        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1)); // check if the expected indices
-        // are contained in the
-        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2)); // returned array (no order
-        // guaranteed)
+        assertTrue((newIndices[0] == 1) || (newIndices[1] == 1));
+        // returned array (no order guaranteed)
+        assertTrue((newIndices[0] == 2) || (newIndices[1] == 2));
 
-        assertEquals(entry2, path.getEntries()[0]); // check if the IPS object path was really
-        // modified in the
-        assertEquals(entry0, path.getEntries()[1]); // expected manner
+        assertEquals(entry2, path.getEntries()[0]);
+        assertEquals(entry0, path.getEntries()[1]);
         assertEquals(entry1, path.getEntries()[2]);
         assertEquals(entry3, path.getEntries()[3]);
 
