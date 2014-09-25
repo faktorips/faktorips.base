@@ -153,10 +153,11 @@ public class IpsContainerEntryTest {
         IpsObjectPathEntry mockEntry = mockEntry(container);
         InputStream inputStream = mock(InputStream.class);
         when(mockEntry.containsResource(resourcePath)).thenReturn(true);
-        when(mockEntry.getResourceAsStream(resourcePath, new IpsObjectPathSearchContext())).thenReturn(inputStream);
+        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
+        when(mockEntry.getResourceAsStream(resourcePath, searchContext)).thenReturn(inputStream);
 
         InputStream resourceAsStream = ipsContainerEntry.getResourceAsStream(resourcePath,
-                new IpsObjectPathSearchContext());
+                searchContext);
 
         assertEquals(inputStream, resourceAsStream);
     }
