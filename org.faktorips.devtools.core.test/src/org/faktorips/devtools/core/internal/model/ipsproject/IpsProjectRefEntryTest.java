@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -28,7 +27,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -72,8 +70,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         ipsProject.setIpsObjectPath(path);
 
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
+        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, null, result, new HashSet<IIpsObjectPathEntry>());
 
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
@@ -167,7 +164,8 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
 
         ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result, new HashSet<IIpsObjectPathEntry>());
+        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result,
+                new HashSet<IIpsObjectPathEntry>());
 
         assertEquals(2, result.size());
         assertTrue(result.contains(a.getIpsSrcFile()));
@@ -175,7 +173,8 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertFalse(result.contains(c.getIpsSrcFile()));
 
         result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result, new HashSet<IIpsObjectPathEntry>());
+        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result,
+                new HashSet<IIpsObjectPathEntry>());
 
         assertEquals(2, result.size());
         assertTrue(result.contains(a2.getIpsSrcFile()));
@@ -212,7 +211,7 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     @Test
     public void testValidate() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
-        IIpsObjectPath path = props.getIpsObjectPath();
+        path = (IpsObjectPath)props.getIpsObjectPath();
         IIpsProject refProject = this.newIpsProject("TestProject2");
         path.newIpsProjectRefEntry(refProject);
         ipsProject.setProperties(props);

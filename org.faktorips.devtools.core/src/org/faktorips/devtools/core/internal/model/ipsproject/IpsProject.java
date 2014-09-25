@@ -874,6 +874,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
 
+    /**
+     * @deprecated this method is not actively used in F-IPS.
+     */
+    @Deprecated
     @Override
     public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
             throws CoreException {
@@ -883,6 +887,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return filesToIpsObjects(files).toArray(new IIpsObject[files.size()]);
     }
 
+    /**
+     * @deprecated this method is not actively used in F-IPS.
+     * 
+     * @throws CoreException if an error occurs while searching for the objects.
+     */
+    @Deprecated
     @Override
     public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
             throws CoreException {
@@ -893,11 +903,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * Searches all objects of the given type starting with the given prefix found on the project's
-     * path and adds them to the given result list.
+     * @deprecated this method is not actively used in F-IPS.
+     * 
+     *             Searches all objects of the given type starting with the given prefix found on
+     *             the project's path and adds them to the given result list.
      * 
      * @throws CoreException if an error occurs while searching for the objects.
      */
+    @Deprecated
     private void findIpsSrcFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
@@ -1015,9 +1028,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
             throws CoreException {
-
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, packageFragment, result, visitedEntries);
+        result.addAll(getIpsObjectPathInternal().findIpsSrcFilesInternal(ipsObjectType, packageFragment,
+                new HashSet<IIpsObjectPathEntry>()));
     }
 
     @Override
@@ -1034,8 +1046,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType) throws CoreException {
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
+        IIpsSrcFile[] ipsSrcFiles = getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType,
+                new HashSet<IIpsObjectPathEntry>());
+        result.addAll(Arrays.asList(ipsSrcFiles));
     }
 
     /**
@@ -1060,7 +1073,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         for (IpsObjectType ipsObjectType : ipsObjectTypes) {
-            getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, result, visitedEntries);
+            IIpsSrcFile[] ipsSrcFiles = getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, visitedEntries);
+            result.addAll(Arrays.asList(ipsSrcFiles));
             visitedEntries.clear();
         }
         return result;
@@ -1405,9 +1419,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes)
             throws CoreException {
-
         List<IProductCmpt> result = new ArrayList<IProductCmpt>();
-        getIpsObjectPathInternal().findAllProductCmpts(productCmptType, includeSubtypes, result);
+        IIpsSrcFile[] files = findAllProductCmptSrcFiles(productCmptType, includeSubtypes);
+        for (IIpsSrcFile iIpsSrcFile : files) {
+            result.add((IProductCmpt)iIpsSrcFile.getIpsObject());
+        }
         return result.toArray(new IProductCmpt[result.size()]);
     }
 

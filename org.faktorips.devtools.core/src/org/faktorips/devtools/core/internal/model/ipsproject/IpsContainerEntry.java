@@ -147,8 +147,9 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     }
 
     /**
-     * {@inheritDoc}
+     * @deprecated this method is not actively used in F-IPS.
      */
+    @Deprecated
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,

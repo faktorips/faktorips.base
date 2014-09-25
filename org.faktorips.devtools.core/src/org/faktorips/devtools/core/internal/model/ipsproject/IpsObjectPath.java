@@ -468,11 +468,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Searches all ips src files of the given type starting with the given prefix found on the path
-     * and adds them to the given result list.
+     * @deprecated this method is not actively used in F-IPS.
+     * 
+     *             Searches all ips src files of the given type starting with the given prefix found
+     *             on the path and adds them to the given result list.
      * 
      * @throws CoreException if an error occurs while searching for the source files.
      */
+    @Deprecated
     public void findIpsSrcFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
@@ -490,13 +493,29 @@ public class IpsObjectPath implements IIpsObjectPath {
     public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        findIpsSrcFiles(type, result, visitedEntries);
+        for (IIpsObjectPathEntry entry : entries) {
+            ((IpsObjectPathEntry)entry).findIpsSrcFilesInternal(type, null, result, visitedEntries);
+        }
         return result.toArray(new IIpsSrcFile[result.size()]);
     }
 
+    public List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type,
+            String packageFragment,
+            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        for (IIpsObjectPathEntry entrie : entries) {
+            ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
+        }
+        return result;
+    }
+
     /**
-     * Adds all ips source files of the given type found on the path to the result list.
+     * @deprecated This method is obsolete. Use
+     *             {@link #findIpsSrcFilesInternal(IpsObjectType, String, Set)} instead.
+     * 
+     *             Adds all ips source files of the given type found on the path to the result list.
      */
+    @Deprecated
     public void findIpsSrcFiles(IpsObjectType type, List<IIpsSrcFile> result, Set<IIpsObjectPathEntry> visitedEntries)
             throws CoreException {
         for (IIpsObjectPathEntry entrie : entries) {
@@ -504,6 +523,11 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
     }
 
+    /**
+     * @deprecated This method is obsolete. Use
+     *             {@link #findIpsSrcFilesInternal(IpsObjectType, String, Set)} instead.
+     */
+    @Deprecated
     public void findIpsSrcFiles(IpsObjectType type,
             String packageFragment,
             List<IIpsSrcFile> result,
@@ -514,10 +538,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Searches all product components that are based on the given product component type (either
-     * directly or because they are based on a subtype of the given type) and adds them to the
-     * result. If productCmptType is <code>null</code>, returns all product components found in the
-     * fragment root.
+     * /**
+     * 
+     * @deprecated This method is obsolete. Use \\TODO instead.
+     * 
+     *             Searches all product components that are based on the given product component
+     *             type (either directly or because they are based on a subtype of the given type)
+     *             and adds them to the result. If productCmptType is <code>null</code>, returns all
+     *             product components found in the fragment root.
      * 
      * @param productCmptType The product component type product components are searched for.
      * @param includeSubtypes If <code>true</code> is passed also product component that are based
@@ -525,6 +553,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      *            components that are directly based on the given type are returned.
      * @param result List in which the product components being found are stored in.
      */
+    @Deprecated
     public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes, List<IProductCmpt> result)
             throws CoreException {
 

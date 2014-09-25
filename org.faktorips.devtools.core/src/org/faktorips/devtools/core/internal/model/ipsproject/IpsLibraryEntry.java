@@ -37,6 +37,10 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
         super(ipsObjectPath);
     }
 
+    /**
+     * @deprecated this method is not actively used in F-IPS.
+     */
+    @Deprecated
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefixParam,

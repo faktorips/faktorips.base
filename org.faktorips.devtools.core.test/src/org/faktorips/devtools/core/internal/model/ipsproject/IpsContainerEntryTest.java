@@ -92,7 +92,7 @@ public class IpsContainerEntryTest {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
         IIpsObjectPathContainer ipsObjectPathContainer = mock(IIpsObjectPathContainer.class);
         when(ipsModel.getIpsObjectPathContainer(ipsProject, MY_ID, MY_OPTIONAL_PATH))
-        .thenReturn(ipsObjectPathContainer);
+                .thenReturn(ipsObjectPathContainer);
 
         boolean exists = ipsContainerEntry.exists(qnt);
 
@@ -135,20 +135,6 @@ public class IpsContainerEntryTest {
         ipsContainerEntry.findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
 
         verify(mockEntry).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-    }
-
-    @Test
-    public void testFindIpsSrcFilesStartingWithInternal() throws Exception {
-        IpsObjectType type = mock(IpsObjectType.class);
-        String prefix = "myPrefix";
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry mockEntry = mockEntry(container);
-        HashSet<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-
-        ipsContainerEntry.findIpsSrcFilesStartingWithInternal(type, prefix, true, result, visitedEntries);
-
-        verify(mockEntry).findIpsSrcFilesStartingWithInternal(type, prefix, true, result, visitedEntries);
     }
 
     @Test(expected = CoreRuntimeException.class)
@@ -250,7 +236,7 @@ public class IpsContainerEntryTest {
     private IIpsObjectPathContainer mockContainer() {
         IIpsObjectPathContainer ipsObjectPathContainer = mock(IIpsObjectPathContainer.class);
         when(ipsModel.getIpsObjectPathContainer(ipsProject, MY_ID, MY_OPTIONAL_PATH))
-        .thenReturn(ipsObjectPathContainer);
+                .thenReturn(ipsObjectPathContainer);
         return ipsObjectPathContainer;
     }
 

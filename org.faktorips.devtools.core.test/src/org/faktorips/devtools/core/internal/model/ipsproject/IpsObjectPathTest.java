@@ -16,16 +16,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -33,7 +29,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -284,39 +279,6 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFileStartingWith() throws CoreException {
-        IIpsProject ipsProject2 = newIpsProject("TestProject2");
-
-        path.newIpsProjectRefEntry(ipsProject2);
-        ipsProject.setIpsObjectPath(path);
-
-        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy");
-        IIpsObject obj2 = newIpsObject(ipsProject2, IpsObjectType.POLICY_CMPT_TYPE, "MotorPolicy2");
-
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        path.findIpsSrcFilesStartingWith(IpsObjectType.POLICY_CMPT_TYPE, "Motor", false, result, visitedEntries);
-        assertEquals(2, result.size());
-        assertTrue(result.contains(obj1.getIpsSrcFile()));
-        assertTrue(result.contains(obj2.getIpsSrcFile()));
-    }
-
-    @Test
-    public void testFindIpsSrcFiles() throws Exception {
-        IIpsObject obj1 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
-        IIpsObject obj2 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.B");
-        IIpsObject obj3 = newIpsObject(ipsProject, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.C");
-
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        path.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE, result, visitedEntries);
-
-        assertTrue(result.contains(obj1.getIpsSrcFile()));
-        assertTrue(result.contains(obj2.getIpsSrcFile()));
-        assertTrue(result.contains(obj3.getIpsSrcFile()));
-    }
-
-    @Test
     public void testFindIpsSrcFile_cleanUpTest() throws Exception {
         root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
         newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
@@ -422,17 +384,9 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertNotNull(ml.getMessageByCode(IIpsObjectPath.MSGCODE_DERIVED_OUTPUT_FOLDER_NOT_SPECIFIED));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testConstructor() {
-
-        try {
-            new IpsObjectPath(null);
-            fail();
-        } catch (Exception e) {
-        }
-
-        IpsProject ipsProject = new IpsProject();
-        IpsObjectPath path = new IpsObjectPath(ipsProject);
+        new IpsObjectPath(null);
         assertSame(ipsProject, path.getIpsProject());
     }
 

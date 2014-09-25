@@ -16,6 +16,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -110,8 +111,13 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     }
 
     /**
-     * Adds all ips source files of the given type found in the path entry to the result list.
+     * @deprecated This method is obsolete. Use
+     *             {@link #findIpsSrcFilesInternal(IpsObjectType, String, List, Set)} instead.
+     * 
+     *             Adds all ips source files of the given type found in the path entry to the result
+     *             list.
      */
+    @Deprecated
     public final void findIpsSrcFiles(IpsObjectType type,
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
@@ -125,6 +131,11 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
         findIpsSrcFilesInternal(type, null, result, visitedEntries);
     }
 
+    /**
+     * * @deprecated This method is obsolete. Use
+     * {@link #findIpsSrcFilesInternal(IpsObjectType, String, List, Set)} instead.
+     */
+    @Deprecated
     public final void findIpsSrcFiles(IpsObjectType type,
             String packageFragment,
             List<IIpsSrcFile> result,
@@ -140,13 +151,16 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     }
 
     /**
-     * Returns all isp source files of the given type starting with the given prefix found on the
-     * path.
+     * @deprecated this method is not actively used in F-IPS.
+     * 
+     *             Returns all isp source files of the given type starting with the given prefix
+     *             found on the path.
      * 
      * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
      * 
      * @throws CoreException if an error occurs while searching for the source files.
      */
+    @Deprecated
     public final void findIpsSrcFilesStartingWith(IpsObjectType type,
             String prefix,
             boolean ignoreCase,
@@ -192,13 +206,16 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
             IpsObjectPathSearchContext searchContext);
 
     /**
-     * Returns all ips source files of the given type starting with the given prefix found on the
-     * path.
+     * @deprecated this method is not actively used in F-IPS.
+     * 
+     *             Returns all {@link IpsSrcFile}s of the given type starting with the given prefix
+     *             found on the path.
      * 
      * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
      * 
      * @throws CoreException if an error occurs while searching for the source files.
      */
+    @Deprecated
     public abstract void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,
             boolean ignoreCase,

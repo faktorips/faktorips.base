@@ -112,8 +112,8 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
             List<IIpsSrcFile> result,
             Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
         if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFiles(type, packageFragment,
-                    result, visitedEntries);
+            result.addAll(((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFilesInternal(type,
+                    packageFragment, visitedEntries));
         }
     }
 
@@ -126,6 +126,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, searchContext);
     }
 
+    /**
+     * @deprecated This method is not actively used in F-IPS.
+     */
+    @Deprecated
     @Override
     public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
             String prefix,
