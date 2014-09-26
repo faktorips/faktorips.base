@@ -80,7 +80,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
                 HtmlExportMessages.ProjectOverviewPageElement_created)
                 + " " //$NON-NLS-1$
                 + new SimpleDateFormat(CREATION_TIME_DATE_FORMAT).format(new Date()), TextType.BLOCK, getContext())
-        .addStyles(Style.SMALL);
+                .addStyles(Style.SMALL);
         addPageElements(createCreationTime);
     }
 
@@ -123,17 +123,17 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.ProjectOverviewPageElement_referencedProjects), TextType.HEADING_3, getContext()));
-        if (objectPath.getReferencedIpsProjects().length == 0) {
+        if (objectPath.getDirectlyReferencedIpsProjects().size() == 0) {
             return wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                     HtmlExportMessages.ProjectOverviewPageElement_noReferencedProjects), getContext()));
         }
 
         List<String> referencedIpsProjectsName = new ArrayList<String>();
-        for (IIpsProject ipsProject : objectPath.getReferencedIpsProjects()) {
+        for (IIpsProject ipsProject : objectPath.getDirectlyReferencedIpsProjects()) {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-        .createTextPageElements(referencedIpsProjectsName)), getContext());
+                .createTextPageElements(referencedIpsProjectsName)), getContext());
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -158,7 +158,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         }
 
         ListPageElement referencingProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-        .createTextPageElements(referencingIpsProjectsName)), getContext());
+                .createTextPageElements(referencingIpsProjectsName)), getContext());
         return wrapper.addPageElements(referencingProjects);
     }
 
@@ -166,7 +166,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.ProjectOverviewPageElement_sourceFolder), TextType.HEADING_3, getContext()));
-        if (objectPath.getReferencedIpsProjects().length == 0) {
+        if (objectPath.getDirectlyReferencedIpsProjects().size() == 0) {
             return wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                     HtmlExportMessages.ProjectOverviewPageElement_noSourceFolder), getContext()));
         }
@@ -176,7 +176,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             sourceFolder.add(folderEntry.getSourceFolder().getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-        .createTextPageElements(sourceFolder)), getContext());
+                .createTextPageElements(sourceFolder)), getContext());
         return wrapper.addPageElements(referencedProjects);
     }
 
@@ -189,7 +189,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
                 new TextPageElement(getContext().getMessage(
                         HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
-                    getContext()), messageListTablePageElement }));
+                        getContext()), messageListTablePageElement }));
     }
 
     private MessageList validateLinkedObjects() {

@@ -915,7 +915,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         // if we change the ips project properties, the cache must be cleared and a new file
         // instance returned.
-        Thread.sleep(500); // sleep some time to make sure the .ipsproject file has definitly a new
+        // sleep some time to make sure the .ipsproject file has definitly a new
+        Thread.sleep(500);
         // modification stamp
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder newFolder = ipsProject.getProject().getFolder("newFolder");
@@ -947,7 +948,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         // if we change the ips project properties, the cache must be cleared and a new file
         // instance returned.
-        Thread.sleep(500); // sleep some time to make sure the .ipsproject file has definitly a new
+        // sleep some time to make sure the .ipsproject file has definitly a new
+        Thread.sleep(500);
         // modification stamp
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         IFolder newFolder = ipsProject.getProject().getFolder("newFolder");

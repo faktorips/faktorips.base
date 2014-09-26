@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -82,9 +83,17 @@ public interface IIpsObjectPath {
     public void setEntries(IIpsObjectPathEntry[] newEntries);
 
     /**
-     * Returns the IPS projects referenced by the object path.
+     * @deprecated this method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
+     * 
+     *             Returns the IPS projects referenced by the object path.
      */
+    @Deprecated
     public IIpsProject[] getReferencedIpsProjects();
+
+    /**
+     * Returns the IPS projects directly referenced by the object path.
+     */
+    public List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**
      * Factory method that creates a new source folder entry and adds it to the list of entries.

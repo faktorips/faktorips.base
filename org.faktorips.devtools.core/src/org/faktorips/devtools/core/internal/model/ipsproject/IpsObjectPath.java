@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.ipsproject.AbstractSearch.SearchEnum;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -209,13 +210,22 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
+    @Deprecated
     public IIpsProject[] getReferencedIpsProjects() {
         List<IIpsProject> projects = new ArrayList<IIpsProject>();
         IIpsProjectRefEntry[] projectRefEntries = getProjectRefEntries();
-        for (IIpsProjectRefEntry entrie : projectRefEntries) {
-            projects.add(entrie.getReferencedIpsProject());
+        for (IIpsProjectRefEntry entry : projectRefEntries) {
+            projects.add(entry.getReferencedIpsProject());
         }
         return projects.toArray(new IIpsProject[projects.size()]);
+    }
+
+    @Override
+    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
+        ProjectSearch projectSearch = new ProjectSearch();
+        projectSearch.setIncludeIndirect(false);
+        findAllReferencedProjects(projectSearch, new IpsObjectPathSearchContext(ipsProject));
+        return projectSearch.getProjects();
     }
 
     @Override
@@ -653,4 +663,40 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
 
     }
+
+    public List<IIpsProject> find() {
+        ProjectSearch projectSearch = new ProjectSearch();
+        findAllReferencedProjects(projectSearch, new IpsObjectPathSearchContext(ipsProject));
+        return projectSearch.getProjects();
+    }
+
+    private void findAllReferencedProjects(ProjectSearch search, IpsObjectPathSearchContext searchContext) {
+        for (IIpsObjectPathEntry entry : entries) {
+            SearchEnum findInEntry = findInEntry(search, searchContext, entry);
+            if (findInEntry.equals(SearchEnum.CONTINUE_SEARCH) && entry.isContainer()) {
+                List<IIpsObjectPathEntry> resolveEntries = ((IIpsContainerEntry)entry).resolveEntries();
+                for (IIpsObjectPathEntry containerChildEntry : resolveEntries) {
+                    findInEntry(search, searchContext, containerChildEntry);
+                }
+            }
+        }
+    }
+
+    private SearchEnum findInEntry(ProjectSearch search,
+            IpsObjectPathSearchContext searchContext,
+            IIpsObjectPathEntry entry) {
+        if (searchContext.visitAndConsiderContentsOf(entry)) {
+            SearchEnum searchEnum = search.processEntry(entry);
+            if (searchEnum.equals(SearchEnum.STOP_SEARCH)) {
+                return SearchEnum.STOP_SEARCH;
+            }
+        }
+        if (search.isIncludeIndirect() && entry.getType() == IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
+            IIpsProject referencedIpsProject = ((IIpsProjectRefEntry)entry).getReferencedIpsProject();
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findAllReferencedProjects(search,
+                    searchContext);
+        }
+        return SearchEnum.CONTINUE_SEARCH;
+    }
+
 }

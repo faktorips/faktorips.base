@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -56,8 +57,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IpsObjectPath path;
     private IIpsPackageFragmentRoot refProject2Root;
-    private IpsProject refProject;
-    private IpsProject refProject2;
+    private IIpsProject refProject;
+    private IIpsProject refProject2;
 
     @Override
     @Before
@@ -224,46 +225,47 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     @Test
     public void testGetReferencedIpsProjects() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
-        IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
-        IIpsProject refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
-        path.newIpsProjectRefEntry(refProject1);
+        refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
+        refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
+        path.newIpsProjectRefEntry(refProject);
         path.newSourceFolderEntry(srcFolder);
         path.newIpsProjectRefEntry(refProject2);
 
-        IIpsProject[] projects = path.getReferencedIpsProjects();
-        assertEquals(2, projects.length);
-        assertEquals(refProject1, projects[0]);
-        assertEquals(refProject2, projects[1]);
+        List<IIpsProject> projects = path.getDirectlyReferencedIpsProjects();
+        assertEquals(2, projects.size());
+        assertEquals(refProject, projects.get(0));
+        assertEquals(refProject2, projects.get(1));
     }
 
     @Test
     public void testGetReferencedIpsProjects_refInContainer() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
-        IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
-        IIpsProject refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
-        path.newIpsProjectRefEntry(refProject1);
+        refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
+        refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
+        path.newIpsProjectRefEntry(refProject);
         path.newSourceFolderEntry(srcFolder);
         path.newIpsProjectRefEntry(refProject2);
         IIpsObjectPathEntry[] entries = path.getEntries();
         IIpsContainerEntry newContainerEntry = mock(IIpsContainerEntry.class);
         path.setEntries(new IIpsObjectPathEntry[] { newContainerEntry });
+        when(newContainerEntry.getIpsProject()).thenReturn(ipsProject);
         when(newContainerEntry.getType()).thenReturn(IIpsObjectPathEntry.TYPE_CONTAINER);
         when(newContainerEntry.isContainer()).thenReturn(true);
         when(newContainerEntry.resolveEntries()).thenReturn(Arrays.asList(entries));
 
-        IIpsProject[] projects = path.getReferencedIpsProjects();
+        List<IIpsProject> projects = path.getDirectlyReferencedIpsProjects();
 
-        assertEquals(2, projects.length);
-        assertEquals(refProject1, projects[0]);
-        assertEquals(refProject2, projects[1]);
+        assertEquals(2, projects.size());
+        assertEquals(refProject, projects.get(0));
+        assertEquals(refProject2, projects.get(1));
     }
 
     @Test
     public void testGetProjectRefEntries_container() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
-        IIpsProject refProject1 = ipsProject.getIpsModel().getIpsProject("RefProject1");
-        IIpsProject refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
-        IIpsProjectRefEntry refEntry1 = path.newIpsProjectRefEntry(refProject1);
+        refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
+        refProject2 = ipsProject.getIpsModel().getIpsProject("RefProject2");
+        IIpsProjectRefEntry refEntry1 = path.newIpsProjectRefEntry(refProject);
         path.newSourceFolderEntry(srcFolder);
         IIpsProjectRefEntry refEntry2 = path.newIpsProjectRefEntry(refProject2);
         IIpsObjectPathEntry[] entries = path.getEntries();
@@ -285,6 +287,10 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         refProject2Root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
         newIpsObject(refProject2Root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
         IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
+        // public void testFindAllReferencedProjectsIpsSrcFile_cleanUpTest() throws Exception {
+        // root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
+        // newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
+        // IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
 
         IIpsSrcFile ipsSrcFile1 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
                 new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
@@ -456,13 +462,13 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindExistingContainer_noResult() throws Exception {
+    public void testFindAllReferencedProjectsExistingContainer_noResult() throws Exception {
 
         assertNull(path.findExistingContainer("containe", null));
     }
 
     @Test
-    public void testFindExistingContainer_noOptionalPath() throws Exception {
+    public void testFindAllReferencedProjectsExistingContainer_noOptionalPath() throws Exception {
         String containerTypeId = "anyContainerId";
         path.newSourceFolderEntry(ipsProject.getProject().getFolder("anyFolder"));
         IIpsContainerEntry containerEntry = path.newContainerEntry(containerTypeId, null);
@@ -473,7 +479,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindExistingContainer_withOptionalPath() throws Exception {
+    public void testFindAllReferencedProjectsExistingContainer_withOptionalPath() throws Exception {
         String containerTypeId = "anyContainerId";
         String optionalPath = "anyOptionalPath";
         path.newSourceFolderEntry(ipsProject.getProject().getFolder("anyFolder"));
@@ -508,8 +514,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     private void setUpReferencedProjects(boolean reexportProjects) throws CoreException {
-        refProject = (IpsProject)newIpsProject("RefProject");
-        refProject2 = (IpsProject)newIpsProject("RefProject2");
+        refProject = newIpsProject("RefProject");
+        refProject2 = newIpsProject("RefProject2");
         ipsProject = newIpsProject();
         refProject2Root = newIpsPackageFragmentRoot(refProject2, null, "packageFragment");
 
