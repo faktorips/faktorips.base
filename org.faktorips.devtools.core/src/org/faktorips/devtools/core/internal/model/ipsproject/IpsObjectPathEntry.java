@@ -100,7 +100,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) {
-        return findIpsSrcFile(qnt, new IpsObjectPathSearchContext());
+        return findIpsSrcFile(qnt, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
     public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
@@ -278,5 +278,4 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
         }
         throw new RuntimeException("Unknown entry type " + type); //$NON-NLS-1$
     }
-
 }

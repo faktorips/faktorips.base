@@ -65,9 +65,13 @@ public class IpsBundleEntryTest {
 
     private IpsBundleEntry ipsBundleEntry;
 
+    private IpsObjectPathSearchContext searchContext;
+
     @Before
     public void createIpsJarBundleEntry() throws Exception {
         ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
+        when(ipsProject.getName()).thenReturn("ipsProject");
+        searchContext = new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -100,7 +104,8 @@ public class IpsBundleEntryTest {
     @Test
     public void testGetResourceAsStream() throws Exception {
         initStorage();
-        ipsBundleEntry.getResourceAsStream("testAnyPath", new IpsObjectPathSearchContext());
+        when(ipsProject.getName()).thenReturn("ipsProject");
+        ipsBundleEntry.getResourceAsStream("testAnyPath", new IpsObjectPathSearchContext(ipsProject));
 
         verify(ipsJarBundle).getResourceAsStream("testAnyPath");
     }
@@ -208,7 +213,7 @@ public class IpsBundleEntryTest {
         String path = "myResourcePath";
         when(ipsJarBundle.contains(new Path(path))).thenReturn(true);
 
-        boolean exists = ipsBundleEntry.containsResource(path);
+        boolean exists = ipsBundleEntry.containsResource(path, searchContext);
 
         assertTrue(exists);
     }
@@ -218,7 +223,7 @@ public class IpsBundleEntryTest {
         initStorage();
         String path = "myResourcePath";
 
-        boolean exists = ipsBundleEntry.containsResource(path);
+        boolean exists = ipsBundleEntry.containsResource(path, searchContext);
 
         assertFalse(exists);
     }

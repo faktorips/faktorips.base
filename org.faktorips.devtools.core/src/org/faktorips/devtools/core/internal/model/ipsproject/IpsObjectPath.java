@@ -464,7 +464,7 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
-        return findIpsSrcFile(nameType, new IpsObjectPathSearchContext());
+        return findIpsSrcFile(nameType, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
     /**
@@ -571,7 +571,7 @@ public class IpsObjectPath implements IIpsObjectPath {
             QualifiedNameType cmptTypeQnt = new QualifiedNameType(
                     productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE),
                     IpsObjectType.PRODUCT_CMPT_TYPE);
-            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, new IpsObjectPathSearchContext());
+            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, new IpsObjectPathSearchContext(getIpsProject()));
             if (typeFoundFile == null) {
                 continue;
             }
@@ -658,7 +658,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * the ips object path.
      */
     public boolean detectCycle() {
-        return detectCycleInternal(ipsProject, new IpsObjectPathSearchContext());
+        return detectCycleInternal(ipsProject, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
     public boolean detectCycleInternal(IIpsProject project, IpsObjectPathSearchContext searchContext) {
@@ -670,7 +670,6 @@ public class IpsObjectPath implements IIpsObjectPath {
                     if (project.equals(refProject)) {
                         return true;
                     }
-                    searchContext.setSubsequentCall();
                     if (refProject.getIpsObjectPathInternal().detectCycleInternal(project, searchContext)) {
                         return true;
                     }
@@ -698,29 +697,27 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public boolean containsResource(String path) {
+        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(getIpsProject());
+        return containsResource(path, searchContext);
+    }
+
+    protected boolean containsResource(String path, IpsObjectPathSearchContext searchContext) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entryContainsResource(path, entry)) {
+            if (((IpsObjectPathEntry)entry).containsResource(path, searchContext)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean entryContainsResource(String path, IIpsObjectPathEntry entry) {
-        if (entry instanceof IpsProjectRefEntry) {
-            return ((IpsProjectRefEntry)entry).containsResource(path, new IpsObjectPathSearchContext());
-        }
-        return entry.containsResource(path);
-    }
-
     @Override
     public InputStream getResourceAsStream(String path) {
-        return getResourceAsStream(path, new IpsObjectPathSearchContext());
+        return getResourceAsStream(path, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
     /* private */InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(path)) {
+            if (((IpsObjectPathEntry)entry).containsResource(path, searchContext.getCopy())) {
                 return entry.getResourceAsStream(path, searchContext);
             }
         }

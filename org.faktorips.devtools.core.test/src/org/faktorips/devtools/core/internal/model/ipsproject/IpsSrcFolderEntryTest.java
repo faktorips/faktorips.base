@@ -46,12 +46,15 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IpsObjectPath path;
 
+    private IpsObjectPathSearchContext searchContext;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
+        searchContext = new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -222,9 +225,9 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("222", getFileContent("rootTwo", "file.txt"));
     }
 
-    private String getFileContent(String rootName, String fileName) throws CoreException, IOException {
+    private String getFileContent(String rootName, String fileName) throws IOException {
         InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName)
-                .getResourceAsStream(fileName, new IpsObjectPathSearchContext());
+                .getResourceAsStream(fileName, new IpsObjectPathSearchContext(ipsProject));
         return getFileContent(aStream);
     }
 
@@ -233,14 +236,14 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
         createFileWithContent((IFolder)root.getCorrespondingResource(), MY_RESOURCE_PATH, "asdfasf");
 
-        assertTrue(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
+        assertTrue(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH, searchContext));
     }
 
     @Test
     public void testContainsResource_false() throws Exception {
         IIpsPackageFragmentRoot root = newIpsPackageFragmentRoot(ipsProject, null, "rootOne");
 
-        assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
+        assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH, searchContext));
     }
 
     @Test

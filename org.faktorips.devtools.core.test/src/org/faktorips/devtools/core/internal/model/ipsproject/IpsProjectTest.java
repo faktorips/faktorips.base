@@ -1952,8 +1952,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         path = ipsProject11.getIpsObjectPath();
         path.newIpsProjectRefEntry(ipsProject13).setReexported(false);
-        // invalid reference, should not result in a stack overflow exception
-        path.newIpsProjectRefEntry(ipsProject11).setReexported(false);
         ipsProject11.setIpsObjectPath(path);
 
         path = ipsProject12.getIpsObjectPath();

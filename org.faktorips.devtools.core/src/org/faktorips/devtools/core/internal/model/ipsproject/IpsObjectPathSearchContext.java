@@ -13,23 +13,38 @@ import java.util.HashSet;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * The {@link IpsObjectPathSearchContext} stores different {@link IpsObjectPathEntry} within an
- * {@link IIpsObjectPath} in a set. {@link IpsObjectPathSearchContext} can have different states
- * which is amongst others an important indicator to decide whether an {@link IpsObjectPathEntry}
- * shall be stored in the given set or not. Keep in mind, that the
- * {@link IpsObjectPathSearchContext} can not return to it's <code>INITIALIZED_STATE</code> after
- * changing it to <code>SUBSEQUENT_STATE</code>.
+ * The {@link IpsObjectPathSearchContext} stores different {@link IpsObjectPathEntry}s within an
+ * {@link IIpsObjectPath} in a set. It also stores the name of the project where a method was called
+ * the first time. The initial project name is used to distinct if there is an initial or a
+ * subsequent method call.
  */
 public class IpsObjectPathSearchContext {
 
-    private State state;
+    private final String nameOfInitialProject;
     private HashSet<IIpsObjectPathEntry> visitedEntries;
 
-    public IpsObjectPathSearchContext() {
+    public IpsObjectPathSearchContext(IIpsProject initialProject) {
         visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        setState(State.INITIAL_CALL);
+        if (initialProject == null || initialProject.getName() == null) {
+            throw new IllegalArgumentException("The name of initial project must not be null."); //$NON-NLS-1$
+        }
+        nameOfInitialProject = initialProject.getName();
+    }
+
+    private IpsObjectPathSearchContext(String nameOfInitialProject2, HashSet<IIpsObjectPathEntry> visitedEntries2) {
+        visitedEntries = new HashSet<IIpsObjectPathEntry>(visitedEntries2);
+        nameOfInitialProject = nameOfInitialProject2;
+    }
+
+    /**
+     * Returns the name of the initial project. This is the project where a method (for example
+     * <code>findIpsSourceFile()</code>) was called the first time.
+     */
+    private String getNameOfInitialProject() {
+        return nameOfInitialProject;
     }
 
     /**
@@ -64,41 +79,28 @@ public class IpsObjectPathSearchContext {
     }
 
     /**
-     * Returns <code>true</code> if the content of this entry is applicable. If this
-     * {@link IpsObjectPathSearchContext} is not in it's initial state, or the entry shall not be
-     * considered, this method returns <code>true</code>.
+     * Returns <code>true</code> if the content of this entry is applicable. If there is no initial
+     * call, or the entry shall not be considered, this method returns <code>true</code>.
      */
     public boolean considerContentsOf(IIpsObjectPathEntry entry) {
-        return isInitialCall() || entry.isReexported();
-    }
-
-    /* private */boolean isInitialCall() {
-        return getState() == State.INITIAL_CALL;
-    }
-
-    private State getState() {
-        return state;
-    }
-
-    private void setState(State state) {
-        this.state = state;
+        return isInitialCall(entry) || entry.isReexported();
     }
 
     /**
-     * Sets the current State of this {@link IpsObjectPathSearchContext} to
-     * <code>SUBSEQUENT_CALL</code>
+     * Returns <code>true</code> if the initial project and the project of the
+     * {@link IIpsObjectPathEntry} are the same. This case indicates an initial method call. If the
+     * projects are not the same <code>false</code> is returned, which indicates a subsequent method
+     * call.
      */
-    public void setSubsequentCall() {
-        setState(State.SUBSEQUENT_CALL);
+    /* private */boolean isInitialCall(IIpsObjectPathEntry entry) {
+        return getNameOfInitialProject().equals(entry.getIpsProject().getName());
     }
 
     /**
-     * Indicating the State of an {@link IpsObjectPathSearchContext}. The initial state is specified
-     * by <code>INITIAL_CALL</code>.
+     * Returns a copy of this {@link IpsObjectPathSearchContext}.
      */
-    private enum State {
-        INITIAL_CALL,
-        SUBSEQUENT_CALL;
+    public IpsObjectPathSearchContext getCopy() {
+        return new IpsObjectPathSearchContext(nameOfInitialProject, visitedEntries);
     }
 
 }

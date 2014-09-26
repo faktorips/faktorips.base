@@ -122,7 +122,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
         if (referencedIpsProject == null) {
             return null;
         }
-        searchContext.setSubsequentCall();
         return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, searchContext);
     }
 
@@ -263,14 +262,10 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public boolean containsResource(String path) {
-        return getReferencedIpsProject().containsResource(path);
-    }
-
-    public boolean containsResource(String path, IpsObjectPathSearchContext searchContext) {
-        searchContext.setSubsequentCall();
+    public boolean containsResource(String resourcePath, IpsObjectPathSearchContext searchContext) {
         if (searchContext.visitAndConsiderContentsOf(this)) {
-            return getReferencedIpsProject().containsResource(path);
+            return ((IpsProject)getReferencedIpsProject()).getIpsObjectPathInternal().containsResource(resourcePath,
+                    searchContext);
         }
         return false;
     }
@@ -280,7 +275,6 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
      */
     @Override
     public InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext) {
-        searchContext.setSubsequentCall();
         if (searchContext.visitAndConsiderContentsOf(this)) {
             return getReferencedIpsProject().getResourceAsStream(path);
         }

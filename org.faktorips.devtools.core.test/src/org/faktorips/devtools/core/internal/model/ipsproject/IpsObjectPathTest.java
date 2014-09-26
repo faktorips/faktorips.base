@@ -55,7 +55,9 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     private static final String MY_RESOURCE_PATCH = "myResourcePatch";
     private IIpsProject ipsProject;
     private IpsObjectPath path;
-    private IIpsPackageFragmentRoot root;
+    private IIpsPackageFragmentRoot refProject2Root;
+    private IpsProject refProject;
+    private IpsProject refProject2;
 
     @Override
     @Before
@@ -280,9 +282,9 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindIpsSrcFile_cleanUpTest() throws Exception {
-        root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
-        newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
-        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
+        refProject2Root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
+        newIpsObject(refProject2Root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
+        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
 
         IIpsSrcFile ipsSrcFile1 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
                 new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
@@ -483,66 +485,43 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsResource_true() throws Exception {
-        IIpsProject mockProject = mock(IIpsProject.class);
-        IIpsProject mockProject2 = mock(IIpsProject.class);
-        path.newIpsProjectRefEntry(mockProject);
-        path.newIpsProjectRefEntry(mockProject2);
-        when(mockProject2.containsResource(MY_RESOURCE_PATCH)).thenReturn(true);
-
-        assertTrue(path.containsResource(MY_RESOURCE_PATCH));
-    }
-
-    @Test
-    public void testContainsResource_flase() throws Exception {
-        IIpsProject mockProject = mock(IIpsProject.class);
-        IIpsProject mockProject2 = mock(IIpsProject.class);
-        path.newIpsProjectRefEntry(mockProject);
-        path.newIpsProjectRefEntry(mockProject2);
-
-        assertFalse(path.containsResource(MY_RESOURCE_PATCH));
-    }
-
-    @Test
     public void testContainsResource_empty() throws Exception {
         assertFalse(path.containsResource(MY_RESOURCE_PATCH));
     }
 
     @Test
     public void testContainsResource_falseForIpsProjectRefEntry() throws Exception {
-        setUpReferencedProjects(true);
+        setUpReferencedProjects(false);
 
-        createFileWithContent((IFolder)root.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         assertFalse(path.containsResource("file.txt"));
     }
 
     @Test
     public void testContainsResource_trueForIpsProjectRefEntry() throws Exception {
-        setUpReferencedProjects(false);
+        setUpReferencedProjects(true);
 
-        createFileWithContent((IFolder)root.getCorrespondingResource(), "file.txt", "111");
+        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         assertTrue(path.containsResource("file.txt"));
     }
 
-    private void setUpReferencedProjects(boolean setReexportedFalseForRefrencedProject) throws CoreException {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+    private void setUpReferencedProjects(boolean reexportProjects) throws CoreException {
+        refProject = (IpsProject)newIpsProject("RefProject");
+        refProject2 = (IpsProject)newIpsProject("RefProject2");
         ipsProject = newIpsProject();
-        root = newIpsPackageFragmentRoot(refProject2, null, "packageFragment");
+        refProject2Root = newIpsPackageFragmentRoot(refProject2, null, "packageFragment");
 
         IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
         IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
         IIpsProjectRefEntry projectRefEntry = path.newIpsProjectRefEntry(refProject);
         IIpsProjectRefEntry projectRefEntry2 = pathRef.newIpsProjectRefEntry(refProject2);
+        projectRefEntry.setReexported(reexportProjects);
+        projectRefEntry2.setReexported(reexportProjects);
         ipsProject.setIpsObjectPath(path);
         refProject.setIpsObjectPath(pathRef);
         refProject2.setIpsObjectPath(pathRef2);
-        if (setReexportedFalseForRefrencedProject) {
-            projectRefEntry.setReexported(false);
-        }
-        projectRefEntry2.setReexported(false);
     }
 
     @Test
@@ -574,10 +553,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetResourceAsStream() throws CoreException, IOException {
-        root = newIpsPackageFragmentRoot(ipsProject, null, "packageFragment");
-        IpsProjectRefEntry entry = new IpsProjectRefEntry(path, ipsProject);
-        path.setEntries(new IIpsObjectPathEntry[] { entry });
-        createFileWithContent((IFolder)root.getCorrespondingResource(), "file.txt", "111");
+        setUpReferencedProjects(true);
+        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
 
         InputStream resourceAsStream = path.getResourceAsStream("file.txt");
         assertEquals("111", getFileContent(resourceAsStream));
@@ -585,12 +562,9 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetResourceAsStreamInternal() throws CoreException {
-        root = newIpsPackageFragmentRoot(ipsProject, null, "packageFragment");
-        createFileWithContent((IFolder)root.getCorrespondingResource(), "file.txt", "111");
-        IpsProjectRefEntry entry = new IpsProjectRefEntry(path, ipsProject);
-        path.setEntries(new IIpsObjectPathEntry[] { entry });
-        entry.setReexported(false);
-        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
+        setUpReferencedProjects(false);
+        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
+        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
 
         InputStream resourceAsStream = path.getResourceAsStream("file.txt", searchContext);
         assertNull(resourceAsStream);

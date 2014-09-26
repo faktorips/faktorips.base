@@ -49,12 +49,15 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
     private IpsObjectPath path;
 
+    private IpsObjectPathSearchContext searchContext;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
+        searchContext = new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -114,6 +117,25 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertNull(srcFile);
 
         srcFile = entryRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
+    public void testFindIpsSrcFiles_MultipleReferencesNoReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry refEntry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry refEntry2 = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject2);
+        refEntry.setReexported(false);
+        refEntry2.setReexported(false);
+
+        ipsProject.setIpsObjectPath(path);
+
+        IIpsSrcFile srcFile = path.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
         assertNotNull(srcFile);
         assertEquals("x.X", srcFile.getQualifiedNameType().getName());
     }
@@ -238,18 +260,22 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsResource_true() throws Exception {
-        IIpsProject referencedProject = mock(IIpsProject.class);
-        when(referencedProject.containsResource(MY_RESOURCE_PATH)).thenReturn(true);
-        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, referencedProject);
+        IpsProject referencedProject = mock(IpsProject.class);
+        IpsObjectPath ipsObjectPath = mock(IpsObjectPath.class);
+        when(ipsObjectPath.containsResource(MY_RESOURCE_PATH, searchContext)).thenReturn(true);
+        when(ipsObjectPath.getIpsProject()).thenReturn(referencedProject);
+        when(referencedProject.getIpsObjectPathInternal()).thenReturn(ipsObjectPath);
+        when(referencedProject.getName()).thenReturn("refProject");
+        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(ipsObjectPath, referencedProject);
 
-        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH));
+        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH, searchContext));
     }
 
     @Test
     public void testContainsResource_false() throws Exception {
         IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, ipsProject);
 
-        assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH));
+        assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH, searchContext));
     }
 
 }

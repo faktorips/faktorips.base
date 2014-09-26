@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import org.eclipse.core.runtime.CoreException;
@@ -22,26 +23,31 @@ import org.junit.Test;
 public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
+    private IIpsProject refProject;
     private IIpsObjectPathEntry entry;
+    private IIpsObjectPathEntry entryFromRefProject;
     private IpsObjectPath path;
+    private IpsObjectPath pathFromRefProject;
     private IpsObjectPathSearchContext searchContext;
 
     @Override
     @Before
     public void setUp() throws CoreException {
         ipsProject = newIpsProject("ipsProject");
-        searchContext = new IpsObjectPathSearchContext();
+        searchContext = new IpsObjectPathSearchContext(ipsProject);
         path = new IpsObjectPath(ipsProject);
         entry = new IpsProjectRefEntry(path);
+
+        refProject = newIpsProject("refProject");
+        pathFromRefProject = new IpsObjectPath(refProject);
+        entryFromRefProject = new IpsProjectRefEntry(pathFromRefProject);
     }
 
     @Test
     public void testInitialCall() {
-        assertTrue(searchContext.isInitialCall());
+        assertTrue(searchContext.isInitialCall(entry));
 
-        searchContext.setSubsequentCall();
-
-        assertFalse(searchContext.isInitialCall());
+        assertFalse(searchContext.isInitialCall(entryFromRefProject));
     }
 
     @Test
@@ -53,21 +59,18 @@ public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void testConsiderContentsOf_NotInitialCallButReexportTrue() {
-        searchContext.setSubsequentCall();
+        boolean considerContents = searchContext.considerContentsOf(entryFromRefProject);
 
-        boolean considerContentsOf = searchContext.considerContentsOf(entry);
-
-        assertTrue(considerContentsOf);
+        assertTrue(considerContents);
     }
 
     @Test
     public void testConsiderContentsOf_NotInitialCallNoReexport() {
-        searchContext.setSubsequentCall();
-        entry.setReexported(false);
+        entryFromRefProject.setReexported(false);
 
-        boolean considerContentsOf = searchContext.considerContentsOf(entry);
+        boolean considerContents = searchContext.considerContentsOf(entryFromRefProject);
 
-        assertFalse(considerContentsOf);
+        assertFalse(considerContents);
     }
 
     @Test
@@ -81,10 +84,9 @@ public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
 
     @Test
     public void testVisitAndConsiderContentsOf_NoReexport() {
-        searchContext.setSubsequentCall();
-        entry.setReexported(false);
+        entryFromRefProject.setReexported(false);
 
-        boolean visitAndConsiderContent = searchContext.visitAndConsiderContentsOf(entry);
+        boolean visitAndConsiderContent = searchContext.visitAndConsiderContentsOf(entryFromRefProject);
 
         assertFalse(visitAndConsiderContent);
     }
@@ -104,5 +106,18 @@ public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
         boolean visitAndConsiderContent = searchContext.visitAndConsiderContentsOf(entry);
 
         assertTrue(visitAndConsiderContent);
+    }
+
+    @Test
+    public void testGetCopy() {
+        IpsObjectPathSearchContext searchContextCopy = searchContext.getCopy();
+
+        assertNotSame(searchContext, searchContextCopy);
+    }
+
+    @Test
+    public void testGetCopy_visitSameEntry() {
+        assertTrue(searchContext.getCopy().visit(entry));
+        assertTrue(searchContext.visit(entry));
     }
 }

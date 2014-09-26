@@ -60,6 +60,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     private QualifiedNameType qntMotorPolicy;
     private QualifiedNameType qntMotorCollision;
 
+    private IpsObjectPathSearchContext searchContext;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -86,6 +88,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(archivePath);
         project.setIpsObjectPath(path);
+
+        searchContext = new IpsObjectPathSearchContext(project);
     }
 
     @Test
@@ -165,21 +169,21 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsResource_false() throws Exception {
-        boolean containsResource = entry.containsResource("asdasd");
+        boolean containsResource = entry.containsResource("asdasd", searchContext);
 
         assertFalse(containsResource);
     }
 
     @Test
     public void testContainsResource_ipsObject() throws Exception {
-        boolean containsResource = entry.containsResource("pack1/MotorPolicy.ipspolicycmpttype");
+        boolean containsResource = entry.containsResource("pack1/MotorPolicy.ipspolicycmpttype", searchContext);
 
         assertTrue(containsResource);
     }
 
     @Test
     public void testContainsResource_resource() throws Exception {
-        boolean containsResource = entry.containsResource("myTest.gif");
+        boolean containsResource = entry.containsResource("myTest.gif", searchContext);
 
         assertTrue(containsResource);
     }
