@@ -54,7 +54,7 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
      */
     public void setSelectedIpsSrcFile(IIpsSrcFile ipsSrcFile) {
         selectedIpsObject = ipsSrcFile.getQualifiedNameType();
-        String text = ipsSrcFile.getQualifiedNameType().getName() + " (" + ipsSrcFile.getIpsObjectType().getId() + ')'; //$NON-NLS-1$ 
+        String text = ipsSrcFile.getQualifiedNameType().getName() + " (" + ipsSrcFile.getIpsObjectType().getId() + ')'; //$NON-NLS-1$
         setText(text);
     }
 
@@ -75,7 +75,7 @@ public class FilteredIpsObjectTypeRefControl extends IpsObjectRefControl {
         return allowedIpsSrcFiles.toArray(new IIpsSrcFile[allowedIpsSrcFiles.size()]);
     }
 
-    public IIpsSrcFile findSelectedIpsSrcFile() throws CoreException {
+    public IIpsSrcFile findSelectedIpsSrcFile() {
         if (getIpsProjects().isEmpty()) {
             return null;
         }

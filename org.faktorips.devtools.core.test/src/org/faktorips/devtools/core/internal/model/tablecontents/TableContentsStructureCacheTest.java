@@ -245,7 +245,7 @@ public class TableContentsStructureCacheTest {
         when(project.findAllIpsSrcFiles(IpsObjectType.TABLE_CONTENTS)).thenReturn(Arrays.asList(files));
     }
 
-    private void setUpTableStructureIn(IIpsProject project) throws CoreException {
+    private void setUpTableStructureIn(IIpsProject project) {
         when(project.findIpsSrcFile(new QualifiedNameType(TABLE_STRUCTURE, IpsObjectType.TABLE_STRUCTURE))).thenReturn(
                 tableStructure);
     }

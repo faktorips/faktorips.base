@@ -136,8 +136,6 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
                     } else if (res == 1) {
                         // discard
                         objectPathsContainer.init(getIpsProject());
-                    } else {
-                        // apply later
                     }
                 }
             }

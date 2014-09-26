@@ -922,20 +922,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return objects.toArray(new IIpsObject[objects.size()]);
     }
 
-    private List<IIpsObject> filesToIpsObjects(List<IIpsSrcFile> files) {
-        List<IIpsObject> objects = new ArrayList<IIpsObject>(files.size());
-        for (IIpsSrcFile file : files) {
-            IIpsObject ipsObject = null;
-            if (file.exists()) {
-                ipsObject = file.getIpsObject();
-                if (ipsObject != null) {
-                    objects.add(ipsObject);
-                }
-            }
-        }
-        return objects;
-    }
-
     @SuppressWarnings("unchecked")
     private <T extends IIpsObject> List<T> filesToIpsObjects(List<IIpsSrcFile> files, Class<? extends T> clazz) {
 
