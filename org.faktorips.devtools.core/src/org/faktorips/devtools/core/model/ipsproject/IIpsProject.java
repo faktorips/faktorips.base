@@ -616,43 +616,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
 
     /**
-     * Puts all {@link IIpsSrcFile}s within this {@link IIpsProject} in the provided result list
-     * that match the selection parameters.
-     * 
-     * @param result the IPS source files that match the selection parameters are put in this list
-     * @param ipsObjectType the selection parameter for the IPS object type that is expected in the
-     *            IPS source file
-     * @param packageFragment the package fragment where to look for the IPS source file. If
-     *            <code>null</code> is specified all package fragments are considered
-     * 
-     * @throws CoreException if an exception occurs while searching
-     */
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
-            throws CoreException;
-
-    /**
      * Adds all IPS source files that are accessible through IPS source folder entries to the result
      * list.
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result);
-
-    /**
-     * Returns all objects of the given type starting with the given prefix found on the IPS object
-     * path.
-     * 
-     * @deprecated use IIpsProject#findIpsSrcFilesStartingWith(IProductCmptType, boolean) due to
-     *             better performance
-     */
-    @Deprecated
-    public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
-            throws CoreException;
-
-    /**
-     * Returns all IPS source files of the given type starting with the given prefix found on the
-     * IPS object path.
-     */
-    public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
-            throws CoreException;
 
     /**
      * Returns all product components that are based on the given product component type (either

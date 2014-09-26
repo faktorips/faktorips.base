@@ -10,13 +10,13 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -103,7 +103,8 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
         return findIpsSrcFile(qnt, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
-    public final IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
+    @Override
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
         if (searchContext.visitAndConsiderContentsOf(this)) {
             return findIpsSrcFileInternal(nameType, searchContext);
         }
@@ -111,67 +112,16 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     }
 
     /**
-     * @deprecated This method is obsolete. Use
-     *             {@link #findIpsSrcFilesInternal(IpsObjectType, String, List, Set)} instead.
      * 
-     *             Adds all ips source files of the given type found in the path entry to the result
-     *             list.
+     * 
+     * 
      */
-    @Deprecated
-    public final void findIpsSrcFiles(IpsObjectType type,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        if (visitedEntries != null) {
-            if (visitedEntries.contains(this)) {
-                return;
-            }
-            visitedEntries.add(this);
+    @Override
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
+        if (searchContext.visitAndConsiderContentsOf(this)) {
+            return findIpsSrcFilesInternal(type, searchContext);
         }
-        findIpsSrcFilesInternal(type, null, result, visitedEntries);
-    }
-
-    /**
-     * * @deprecated This method is obsolete. Use
-     * {@link #findIpsSrcFilesInternal(IpsObjectType, String, List, Set)} instead.
-     */
-    @Deprecated
-    public final void findIpsSrcFiles(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        if (visitedEntries != null) {
-            if (visitedEntries.contains(this)) {
-                return;
-            }
-            visitedEntries.add(this);
-        }
-        findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-    }
-
-    /**
-     * @deprecated this method is not actively used in F-IPS.
-     * 
-     *             Returns all isp source files of the given type starting with the given prefix
-     *             found on the path.
-     * 
-     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
-     * 
-     * @throws CoreException if an error occurs while searching for the source files.
-     */
-    @Deprecated
-    public final void findIpsSrcFilesStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        if (visitedEntries.contains(this)) {
-            return;
-        }
-        visitedEntries.add(this);
-        findIpsSrcFilesStartingWithInternal(type, prefix, ignoreCase, result, visitedEntries);
+        return Collections.emptyList();
     }
 
     /**
@@ -183,19 +133,14 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * search strategy.
      * 
      * @param type The result only contains {@link IIpsSrcFile source files} of this type
-     * @param packageFragment The package fragment in which all source files have to be. If this
-     *            parameter is <code>null</code> the result contains all {@link IIpsSrcFile source
-     *            files of this entry}
-     * @param result The result list containing all found files
-     * @param visitedEntries The already visited {@link IIpsObjectPathEntry}. If this entry consists
-     *            of multiple entries the implementation may need to add additional added entries.
-     *            This entry itself is already added to the set
+     * @param searchContext The current {@link IpsObjectPathSearchContext}
      */
-    protected void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        ((AbstractIpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFiles(type, packageFragment, result);
+    protected List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
+        try {
+            return getIpsPackageFragmentRoot().findAllIpsSrcFiles(type);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
@@ -204,23 +149,6 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      */
     protected abstract IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType,
             IpsObjectPathSearchContext searchContext);
-
-    /**
-     * @deprecated this method is not actively used in F-IPS.
-     * 
-     *             Returns all {@link IpsSrcFile}s of the given type starting with the given prefix
-     *             found on the path.
-     * 
-     * @param ignoreCase <code>true</code> if case differences should be ignored during the search.
-     * 
-     * @throws CoreException if an error occurs while searching for the source files.
-     */
-    @Deprecated
-    public abstract void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException;
 
     /**
      * Initializes the entry with the data stored in the xml element.

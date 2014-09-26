@@ -18,8 +18,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -72,8 +71,8 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
         ipsProject.setIpsObjectPath(path);
 
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, null, result, new HashSet<IIpsObjectPathEntry>());
+        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE,
+                new IpsObjectPathSearchContext(ipsProject));
 
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
@@ -87,8 +86,8 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-        ipsProject.setIpsObjectPath(path);
         entry.setReexported(false);
+        ipsProject.setIpsObjectPath(path);
 
         IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE));
         assertNotNull(srcFile);
@@ -162,47 +161,6 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         srcFile = entryRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
         assertNotNull(srcFile);
         assertEquals("x.X", srcFile.getQualifiedNameType().getName());
-    }
-
-    @Test
-    public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-
-        // policy cmpt types in ref project
-        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.A");
-        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.B");
-
-        // policy cmpt types in original project
-        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");
-
-        // policy cmpt types in ref project
-        IPolicyCmptType a2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.A");
-        IPolicyCmptType b2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.B");
-
-        // policy cmpt types in original project
-        IPolicyCmptType c2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.C");
-
-        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result,
-                new HashSet<IIpsObjectPathEntry>());
-
-        assertEquals(2, result.size());
-        assertTrue(result.contains(a.getIpsSrcFile()));
-        assertTrue(result.contains(b.getIpsSrcFile()));
-        assertFalse(result.contains(c.getIpsSrcFile()));
-
-        result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result,
-                new HashSet<IIpsObjectPathEntry>());
-
-        assertEquals(2, result.size());
-        assertTrue(result.contains(a2.getIpsSrcFile()));
-        assertTrue(result.contains(b2.getIpsSrcFile()));
-        assertFalse(result.contains(c2.getIpsSrcFile()));
-
     }
 
     @Test

@@ -11,8 +11,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
@@ -21,10 +19,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLibraryEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,35 +31,6 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     public IpsLibraryEntry(IpsObjectPath ipsObjectPath) {
         super(ipsObjectPath);
-    }
-
-    /**
-     * @deprecated this method is not actively used in F-IPS.
-     */
-    @Deprecated
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefixParam,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        String prefix = prefixParam;
-        if (ignoreCase) {
-            prefix = prefixParam.toLowerCase();
-        }
-
-        for (QualifiedNameType qnt : getIpsStorage().getQNameTypes()) {
-            String name = qnt.getUnqualifiedName();
-            if (ignoreCase) {
-                name = name.toLowerCase();
-            }
-            if (name.startsWith(prefix)) {
-                IIpsSrcFile file = getIpsSrcFile(qnt);
-                if (file.exists()) {
-                    result.add(file);
-                }
-            }
-        }
     }
 
     protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException;

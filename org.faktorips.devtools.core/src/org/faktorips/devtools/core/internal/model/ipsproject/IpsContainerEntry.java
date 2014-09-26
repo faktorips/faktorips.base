@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -124,7 +123,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
-            IIpsSrcFile file = ((IpsObjectPathEntry)entry).findIpsSrcFileInternal(nameType, searchContext);
+            IIpsSrcFile file = entry.findIpsSrcFile(nameType, searchContext);
             if (file != null) {
                 return file;
             }
@@ -134,34 +133,16 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
 
     /**
      * {@inheritDoc}
+     * 
      */
     @Override
-    protected void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+    protected List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         for (IIpsObjectPathEntry entry : entries) {
-            ((IpsObjectPathEntry)entry).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
+            result.addAll(entry.findIpsSrcFiles(type, searchContext));
         }
-    }
-
-    /**
-     * @deprecated this method is not actively used in F-IPS.
-     */
-    @Deprecated
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            ((IpsObjectPathEntry)entry).findIpsSrcFilesStartingWithInternal(type, prefix, ignoreCase, result,
-                    visitedEntries);
-        }
-
+        return result;
     }
 
     /**

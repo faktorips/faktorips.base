@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
@@ -107,39 +106,23 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
+    public List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
         if (referencedIpsProject != null) {
-            result.addAll(((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFilesInternal(type,
-                    packageFragment, visitedEntries));
+            return getIpsObjectPathFromReferencedIpsProject().findIpsSrcFiles(type, searchContext);
         }
+        return Collections.emptyList();
     }
 
     @Override
     protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
-        if (referencedIpsProject == null) {
-            return null;
+        if (referencedIpsProject != null) {
+            return getIpsObjectPathFromReferencedIpsProject().findIpsSrcFile(nameType, searchContext);
         }
-        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, searchContext);
+        return null;
     }
 
-    /**
-     * @deprecated This method is not actively used in F-IPS.
-     */
-    @Deprecated
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFilesStartingWith(type, prefix,
-                    ignoreCase, result, visitedEntries);
-        }
+    private IpsObjectPath getIpsObjectPathFromReferencedIpsProject() {
+        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal();
     }
 
     @Override

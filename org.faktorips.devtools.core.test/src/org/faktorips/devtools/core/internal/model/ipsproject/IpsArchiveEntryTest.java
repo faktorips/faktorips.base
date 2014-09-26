@@ -17,9 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -94,9 +92,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindIpsSrcFiles() throws Exception {
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        entry.findIpsSrcFilesInternal(IpsObjectType.POLICY_CMPT_TYPE, null, result, visitedEntries);
+        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE,
+                new IpsObjectPathSearchContext(project));
 
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);

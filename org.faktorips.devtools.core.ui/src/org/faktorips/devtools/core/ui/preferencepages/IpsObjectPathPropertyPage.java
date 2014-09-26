@@ -135,11 +135,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
                         performOk();
                     } else if (res == 1) {
                         // discard
-                        try {
-                            objectPathsContainer.init(getIpsProject());
-                        } catch (CoreException e) {
-                            IpsPlugin.logAndShowErrorDialog(e);
-                        }
+                        objectPathsContainer.init(getIpsProject());
                     } else {
                         // apply later
                     }
@@ -153,11 +149,7 @@ public class IpsObjectPathPropertyPage extends PropertyPage {
     public boolean performOk() {
         if (objectPathsContainer.hasChangesInDialog()) {
             objectPathsContainer.saveToIpsProjectFile();
-            try {
-                objectPathsContainer.init(getIpsProject());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            objectPathsContainer.init(getIpsProject());
         }
         return super.performOk();
     }

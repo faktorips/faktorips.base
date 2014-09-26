@@ -15,10 +15,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -29,7 +27,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -41,8 +38,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ArrayElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -468,140 +463,14 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * @deprecated this method is not actively used in F-IPS.
-     * 
-     *             Searches all ips src files of the given type starting with the given prefix found
-     *             on the path and adds them to the given result list.
-     * 
-     * @throws CoreException if an error occurs while searching for the source files.
-     */
-    @Deprecated
-    public void findIpsSrcFilesStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result, visitedEntries);
-        }
-    }
-
-    /**
-     * Returns all ips source files of the given type found on the path. Returns an empty array if
-     * no object is found.
-     */
-    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IIpsObjectPathEntry entry : entries) {
-            ((IpsObjectPathEntry)entry).findIpsSrcFilesInternal(type, null, result, visitedEntries);
-        }
-        return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    public List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-        }
-        return result;
-    }
-
-    /**
-     * @deprecated This method is obsolete. Use
-     *             {@link #findIpsSrcFilesInternal(IpsObjectType, String, Set)} instead.
-     * 
-     *             Adds all ips source files of the given type found on the path to the result list.
-     */
-    @Deprecated
-    public void findIpsSrcFiles(IpsObjectType type, List<IIpsSrcFile> result, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFiles(type, result, visitedEntries);
-        }
-    }
-
-    /**
-     * @deprecated This method is obsolete. Use
-     *             {@link #findIpsSrcFilesInternal(IpsObjectType, String, Set)} instead.
-     */
-    @Deprecated
-    public void findIpsSrcFiles(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
-        }
-    }
-
-    /**
-     * /**
-     * 
-     * @deprecated This method is obsolete. Use \\TODO instead.
-     * 
-     *             Searches all product components that are based on the given product component
-     *             type (either directly or because they are based on a subtype of the given type)
-     *             and adds them to the result. If productCmptType is <code>null</code>, returns all
-     *             product components found in the fragment root.
-     * 
-     * @param productCmptType The product component type product components are searched for.
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on sub types of the given policy component are returned, otherwise only product
-     *            components that are directly based on the given type are returned.
-     * @param result List in which the product components being found are stored in.
-     */
-    @Deprecated
-    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes, List<IProductCmpt> result)
-            throws CoreException {
-
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        List<IIpsSrcFile> allCmptFiles = new ArrayList<IIpsSrcFile>(100);
-        findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT, allCmptFiles, visitedEntries);
-        for (IIpsSrcFile productCmptFile : allCmptFiles) {
-            if (!productCmptFile.exists()) {
-                continue;
-            }
-            if (productCmptType == null) {
-                result.add((IProductCmpt)productCmptFile.getIpsObject());
-                continue;
-            }
-            QualifiedNameType cmptTypeQnt = new QualifiedNameType(
-                    productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE),
-                    IpsObjectType.PRODUCT_CMPT_TYPE);
-            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, new IpsObjectPathSearchContext(getIpsProject()));
-            if (typeFoundFile == null) {
-                continue;
-            }
-            if (productCmptType.getIpsSrcFile().equals(typeFoundFile)) {
-                result.add((IProductCmpt)productCmptFile.getIpsObject());
-            } else {
-                if (includeSubtypes) {
-                    IProductCmptType typeFound = (IProductCmptType)typeFoundFile.getIpsObject();
-                    if (typeFound.isSubtypeOf(productCmptType, ipsProject)) {
-                        result.add((IProductCmpt)productCmptFile.getIpsObject());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Adds all source files found in <code>IpsSrcFolderEntry</code>s on the path to the result
      * list.
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) {
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
+        for (IIpsObjectPathEntry entry : entries) {
+            if (entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
                 for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
-                    try {
-                        ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
+                    result.addAll(entry.findIpsSrcFiles(currentType, new IpsObjectPathSearchContext(getIpsProject())));
                 }
             }
         }
@@ -760,6 +629,18 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType) {
+        return findIpsSrcFiles(ipsObjectType, new IpsObjectPathSearchContext(getIpsProject()));
+    }
+
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType, IpsObjectPathSearchContext searchContext) {
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        for (IIpsObjectPathEntry entrie : entries) {
+            result.addAll(entrie.findIpsSrcFiles(ipsObjectType, searchContext));
+        }
+        return result;
+    }
+
     private static class CachedSrcFile {
 
         private IIpsSrcFile file;
@@ -772,5 +653,4 @@ public class IpsObjectPath implements IIpsObjectPath {
         }
 
     }
-
 }

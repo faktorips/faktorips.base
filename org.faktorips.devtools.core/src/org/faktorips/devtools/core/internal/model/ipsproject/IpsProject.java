@@ -62,7 +62,6 @@ import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
@@ -875,52 +874,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * @deprecated this method is not actively used in F-IPS.
-     */
-    @Deprecated
-    @Override
-    public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
-            throws CoreException {
-
-        List<IIpsSrcFile> files = new ArrayList<IIpsSrcFile>(1000);
-        findIpsSrcFilesStartingWith(type, prefix, ignoreCase, files);
-        return filesToIpsObjects(files).toArray(new IIpsObject[files.size()]);
-    }
-
-    /**
-     * @deprecated this method is not actively used in F-IPS.
-     * 
-     * @throws CoreException if an error occurs while searching for the objects.
-     */
-    @Deprecated
-    @Override
-    public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
-            throws CoreException {
-
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(1000);
-        findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result);
-        return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    /**
-     * @deprecated this method is not actively used in F-IPS.
-     * 
-     *             Searches all objects of the given type starting with the given prefix found on
-     *             the project's path and adds them to the given result list.
-     * 
-     * @throws CoreException if an error occurs while searching for the objects.
-     */
-    @Deprecated
-    private void findIpsSrcFilesStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result) throws CoreException {
-
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        getIpsObjectPathInternal().findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result, visitedEntries);
-    }
-
-    /**
      * @deprecated use this{@link #findIpsSrcFiles(IpsObjectType)} instead
      */
     @Override
@@ -1018,18 +971,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... ipsObjectTypes) {
-        try {
-            return findAllIpsSrcFilesInternal(ipsObjectTypes);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
-
-    @Override
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
-            throws CoreException {
-        result.addAll(getIpsObjectPathInternal().findIpsSrcFilesInternal(ipsObjectType, packageFragment,
-                new HashSet<IIpsObjectPathEntry>()));
+        return findAllIpsSrcFilesInternal(ipsObjectTypes);
     }
 
     @Override
@@ -1045,10 +987,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return null;
     }
 
-    private void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType) throws CoreException {
-        IIpsSrcFile[] ipsSrcFiles = getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType,
-                new HashSet<IIpsObjectPathEntry>());
-        result.addAll(Arrays.asList(ipsSrcFiles));
+    private void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType) {
+        result.addAll(getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType));
     }
 
     /**
@@ -1063,7 +1003,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         result.addAll(foundSrcFiles);
     }
 
-    protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypesVarArg) throws CoreException {
+    protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypesVarArg) {
         IpsObjectType[] ipsObjectTypes;
         if (ipsObjectTypesVarArg.length == 0) {
             ipsObjectTypes = getIpsModel().getIpsObjectTypes();
@@ -1071,11 +1011,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             ipsObjectTypes = ipsObjectTypesVarArg;
         }
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
         for (IpsObjectType ipsObjectType : ipsObjectTypes) {
-            IIpsSrcFile[] ipsSrcFiles = getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType, visitedEntries);
-            result.addAll(Arrays.asList(ipsSrcFiles));
-            visitedEntries.clear();
+            result.addAll(getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType));
         }
         return result;
     }
@@ -1175,7 +1112,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
-    private void findDatatypesDefinedByIpsObjects(Set<Datatype> result) throws CoreException {
+    private void findDatatypesDefinedByIpsObjects(Set<Datatype> result) {
         List<IIpsSrcFile> refDatatypeFiles = new ArrayList<IIpsSrcFile>();
         IpsObjectType[] objectTypes = getIpsModel().getIpsObjectTypes();
         for (IpsObjectType objectType : objectTypes) {

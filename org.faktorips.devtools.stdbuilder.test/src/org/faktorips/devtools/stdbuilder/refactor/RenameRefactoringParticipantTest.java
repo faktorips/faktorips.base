@@ -380,7 +380,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         private final IType javaEnum;
 
-        private AbstractEnumAttributeExpectations(IEnumType enumType) throws CoreException {
+        private AbstractEnumAttributeExpectations(IEnumType enumType) {
             ipsProject = enumType.getIpsProject();
             javaEnum = getJavaType("", enumType.getName(), true, false, ipsProject);
         }
@@ -408,7 +408,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         private final IType productClass;
 
-        private PolicyCmptTypeExpectations(IProductCmptType productCmptType) throws CoreException {
+        private PolicyCmptTypeExpectations(IProductCmptType productCmptType) {
             ipsProject = productCmptType.getIpsProject();
             productInterface = getJavaType("", getPublishedInterfaceName(productCmptType.getName(), ipsProject), true,
                     false, ipsProject);
@@ -431,7 +431,7 @@ public class RenameRefactoringParticipantTest extends RefactoringParticipantTest
 
         private final IType policyClass;
 
-        private ProductCmptTypeExpectations(IPolicyCmptType policyCmptType) throws CoreException {
+        private ProductCmptTypeExpectations(IPolicyCmptType policyCmptType) {
             ipsProject = policyCmptType.getIpsProject();
             policyClass = getJavaType("", policyCmptType.getName(), false, false, ipsProject);
         }

@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder.refactor;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IType;
@@ -19,7 +18,7 @@ import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 
-final class RefactoringTestUtil {
+public abstract class RefactoringTestUtil {
 
     /**
      * Returns the Java {@link IType} corresponding to the indicated package name, type name and
@@ -37,8 +36,9 @@ final class RefactoringTestUtil {
             String typeName,
             boolean publishedSource,
             boolean derivedSource,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
+        String newPackageName = packageName;
         IIpsSrcFolderEntry srcFolderEntry = ipsProject.getIpsObjectPath().getSourceFolderEntries()[0];
         IFolder javaSrcFolder = derivedSource ? srcFolderEntry.getOutputFolderForDerivedJavaFiles() : srcFolderEntry
                 .getOutputFolderForMergableJavaFiles();
@@ -49,10 +49,10 @@ final class RefactoringTestUtil {
         if (!(publishedSource)) {
             basePackageName += ".internal";
         }
-        if (packageName.length() > 0) {
-            packageName = "." + packageName;
+        if (newPackageName.length() > 0) {
+            newPackageName = "." + newPackageName;
         }
-        IPackageFragment javaPackage = javaRoot.getPackageFragment(basePackageName + packageName);
+        IPackageFragment javaPackage = javaRoot.getPackageFragment(basePackageName + newPackageName);
 
         return javaPackage.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION).getType(typeName);
     }

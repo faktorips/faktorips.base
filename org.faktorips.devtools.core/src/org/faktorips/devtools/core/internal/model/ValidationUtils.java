@@ -62,7 +62,7 @@ public class ValidationUtils {
             IIpsObjectPartContainer part,
             String propertyName,
             String msgCode,
-            MessageList list) throws CoreException {
+            MessageList list) {
 
         if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName, part, propertyName, msgCode, list)) {
             return false;
@@ -107,7 +107,7 @@ public class ValidationUtils {
             String propertyName,
             String msgCode,
             MessageList list,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName, part, propertyName, msgCode, list)) {
             return null;

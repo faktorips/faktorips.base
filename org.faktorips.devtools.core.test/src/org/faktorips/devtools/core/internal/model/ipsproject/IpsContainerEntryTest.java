@@ -22,13 +22,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -125,21 +122,7 @@ public class IpsContainerEntryTest {
 
         ipsContainerEntry.findIpsSrcFileInternal(qnt, searchContext);
 
-        verify(mockEntry).findIpsSrcFileInternal(qnt, searchContext);
-    }
-
-    @Test
-    public void testFindIpsSrcFilesInternal() throws Exception {
-        IpsObjectType type = mock(IpsObjectType.class);
-        String packageFragment = "myPackage";
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry mockEntry = mockEntry(container);
-        HashSet<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-
-        ipsContainerEntry.findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-
-        verify(mockEntry).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
+        verify(mockEntry).findIpsSrcFile(qnt, searchContext);
     }
 
     @Test(expected = CoreRuntimeException.class)

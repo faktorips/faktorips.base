@@ -11,8 +11,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -25,9 +23,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -246,16 +242,6 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
             return null;
         }
         return file;
-    }
-
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        ((IpsPackageFragmentRoot)getIpsPackageFragmentRoot()).findIpsSourceFilesStartingWithInternal(type, prefix,
-                ignoreCase, result);
     }
 
     @Override
