@@ -27,10 +27,10 @@ public class IpsObjectPathSearchContext {
     private HashSet<IIpsObjectPathEntry> visitedEntries;
 
     public IpsObjectPathSearchContext(IIpsProject initialProject) {
-        visitedEntries = new HashSet<IIpsObjectPathEntry>();
         if (initialProject == null || initialProject.getName() == null) {
             throw new IllegalArgumentException("The name of initial project must not be null."); //$NON-NLS-1$
         }
+        visitedEntries = new HashSet<IIpsObjectPathEntry>();
         nameOfInitialProject = initialProject.getName();
     }
 
