@@ -12,8 +12,11 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -61,6 +64,8 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
                 Messages.ProductCmptTypeMethodEditDialog_formulaCheckbox);
         getBindingContext().bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
+        createChangingOverTimeCheckbox(group);
+
         AbstractCheckbox checkboxOptional = toolkit.createCheckbox(group,
                 Messages.ProductCmptTypeMethodEditDialog_formulaMandatory);
         checkboxOptional.setToolTipText(Messages.ProductCmptTypeMethodEditDialog_formulaMandatoryHint);
@@ -83,6 +88,18 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_categoryLabel);
         createCategoryCombo(area);
+    }
+
+    private void createChangingOverTimeCheckbox(Composite workArea) {
+        Button changeOverTimeCheckbox = getToolkit().createButton(
+                workArea,
+                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
+                        SWT.CHECK);
+        getBindingContext().bindContent(changeOverTimeCheckbox, method,
+                IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME);
+        getBindingContext().bindEnabled(changeOverTimeCheckbox, method,
+                IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
     }
 
     private void createCategoryCombo(Composite workArea) {
