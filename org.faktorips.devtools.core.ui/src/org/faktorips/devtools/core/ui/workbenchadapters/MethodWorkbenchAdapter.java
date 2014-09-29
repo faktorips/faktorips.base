@@ -34,21 +34,26 @@ public class MethodWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IMethod) {
             IMethod method = (IMethod)ipsObjectPart;
-            String[] overlays = new String[4];
-            try {
-                if (method.findOverriddenMethod(method.getIpsProject()) != null) {
-                    overlays[3] = OverlayIcons.OVERRIDE_OVR;
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-            if (method.isAbstract()) {
-                overlays[1] = OverlayIcons.ABSTRACT_OVR;
-            }
+            String[] overlays = getOverlays(method);
             return IpsUIPlugin.getImageHandling().getSharedOverlayImage(METHOD_IMAGE_NAME, overlays);
         } else {
             return getDefaultImageDescriptor();
         }
+    }
+
+    protected String[] getOverlays(IMethod method) {
+        String[] overlays = new String[4];
+        try {
+            if (method.findOverriddenMethod(method.getIpsProject()) != null) {
+                overlays[3] = OverlayIcons.OVERRIDE_OVR;
+            }
+        } catch (CoreException e) {
+            IpsPlugin.log(e);
+        }
+        if (method.isAbstract()) {
+            overlays[1] = OverlayIcons.ABSTRACT_OVR;
+        }
+        return overlays;
     }
 
     @Override
