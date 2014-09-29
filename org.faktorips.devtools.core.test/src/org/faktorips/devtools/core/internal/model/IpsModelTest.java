@@ -95,7 +95,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateIpsProject() throws CoreException {
+    public void testCreateIpsProject() throws Exception {
         IProject project = newPlatformProject("TestProject");
         IJavaProject javaProject = addJavaCapabilities(project);
         IIpsProject ipsProject = model.createIpsProject(javaProject);
@@ -106,6 +106,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         assertEquals(0, path.getEntries().length);
         assertNotNull(path.getIpsProject());
         assertNotNull(path.getIpsProject().getName());
+        Thread.sleep(1000);
         IpsObjectPath path2 = ((IpsProject)ipsProject).getIpsObjectPathInternal();
         assertNotNull(path2.getIpsProject());
         assertNotNull(path2.getIpsProject().getName());
