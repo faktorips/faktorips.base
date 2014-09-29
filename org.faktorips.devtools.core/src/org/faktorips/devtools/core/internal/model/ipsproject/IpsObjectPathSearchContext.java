@@ -85,7 +85,10 @@ public class IpsObjectPathSearchContext {
      * returns <code>false</code> in that case.
      */
     public boolean considerContentsOf(IIpsObjectPathEntry entry) {
-        return isInitialCall(entry) || entry.isReexported();
+        if (entry != null) {
+            return isInitialCall(entry) || entry.isReexported();
+        }
+        return false;
     }
 
     /**

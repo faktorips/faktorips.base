@@ -74,6 +74,13 @@ public class IpsObjectPathSearchContextTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testConsiderContentsOf_EntryIsNull() {
+        boolean considerContents = searchContext.considerContentsOf(null);
+
+        assertFalse(considerContents);
+    }
+
+    @Test
     public void testVisit() {
         boolean visit = searchContext.visit(entry);
         assertTrue(visit);
