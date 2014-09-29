@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -29,6 +30,7 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
     public static final String PROPERTY_OVERLOADS_FORMULA = "overloadsFormula"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULA_MANDATORY = "formulaMandatory"; //$NON-NLS-1$
     public static final String PROPERTY_FORMULA_OPTIONAL_SUPPORTED = "formulaOptionalSupported"; //$NON-NLS-1$
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the data type of a formula signature definition is
@@ -120,4 +122,14 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * be the method that will be overloaded.
      */
     public void setOverloadsFormula(boolean overloadsFormula);
+
+    /**
+     * Configures this {@link IProductCmptTypeMethod} to change or be constant over time. If
+     * <code>true</code> every {@link IProductCmptGeneration} may specify a different value for this
+     * attribute. If <code>false</code> the value is the same for all generations.
+     * 
+     * @param changingOverTime indicates whether or not this attribute should change over time
+     */
+    public void setChangingOverTime(boolean changingOverTime);
+
 }

@@ -118,6 +118,13 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testIsChangingOverTime_NoFormulaSignatureDefinition() {
+        method.setChangingOverTime(false);
+        method.setFormulaSignatureDefinition(false);
+        assertTrue(method.isChangingOverTime());
+    }
+
+    @Test
     public void testValidate_DatatypeMustBeAValueDatatypeForFormulaSignature() throws CoreException {
         method.setDatatype("void");
         method.setFormulaSignatureDefinition(false);
@@ -159,12 +166,13 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(method.isAbstract());
         assertTrue(method.isOverloadsFormula());
         assertFalse(method.isFormulaMandatory());
+        assertFalse(method.isChangingOverTime());
     }
 
     @Test
     public void testToXmlDocument() {
         method = productCmptType.newProductCmptTypeMethod(); // => id=1, because it's the second
-                                                             // method
+        // method
         method.setName("getAge");
         method.setModifier(Modifier.PUBLIC);
         method.setDatatype("Decimal");
@@ -180,6 +188,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         param1.setDatatype("Money");
         method.setOverloadsFormula(true);
         method.setCategory("foo");
+        method.setChangingOverTime(false);
 
         Element element = method.toXml(newDocument());
 
@@ -201,6 +210,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals("Money", copyParams[1].getDatatype());
         assertTrue(copy.isOverloadsFormula());
         assertEquals("foo", copy.getCategory());
+        assertFalse(copy.isChangingOverTime());
     }
 
     @Test
