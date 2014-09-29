@@ -99,10 +99,12 @@ public class IpsModelTest extends AbstractIpsPluginTest {
         IIpsProject ipsProject = model.createIpsProject(javaProject);
         assertNotNull(ipsProject);
         assertNotNull(ipsProject.getName());
-        assertEquals(0, ipsProject.findDatatypes(true, false).length);
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         assertNotNull(path);
         assertEquals(0, path.getEntries().length);
+        assertNotNull(path.getIpsProject());
+        assertNotNull(path.getIpsProject().getName());
+        assertEquals(0, ipsProject.findDatatypes(true, false).length);
     }
 
     @Test
