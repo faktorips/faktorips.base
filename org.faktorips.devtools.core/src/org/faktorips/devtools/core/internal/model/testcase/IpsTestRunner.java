@@ -766,7 +766,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     private List<String> getAllRepositoryPackagesAsString(IIpsProject ipsProject) throws CoreException {
         List<String> repositoryPackages = new ArrayList<String>();
         getRepositoryPackages(ipsProject, repositoryPackages);
-        IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+        List<IIpsProject> ipsProjects = ipsProject.getDirectlyReferencedIpsProjects();
         for (IIpsProject ipsProject2 : ipsProjects) {
             getRepositoryPackages(ipsProject2, repositoryPackages);
         }
@@ -792,7 +792,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 }
             }
         }
-        IIpsProject[] ipsProjects = ipsProject.getReferencedIpsProjects();
+        List<IIpsProject> ipsProjects = ipsProject.getDirectlyReferencedIpsProjects();
         for (IIpsProject ipsProject2 : ipsProjects) {
             getRepositoryPackages(ipsProject2, repositoryPackages);
         }

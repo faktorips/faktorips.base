@@ -193,13 +193,24 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws CoreException;
 
     /**
-     * Returns all ips projects referenced in the project's IPS object path.
+     * @deprecated This method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
+     * 
+     *             Returns all ips projects referenced in the project's IPS object path.
      * 
      * @throws CoreException if an error occurs.
      * 
      * @see IIpsObjectPath
      */
+    @Deprecated
     public IIpsProject[] getReferencedIpsProjects() throws CoreException;
+
+    /**
+     * Returns all direct {@link IIpsProject}s referenced in the project's IPS object path.
+     * 
+     * @see IIpsObjectPath
+     */
+
+    public List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**
      * Returns <code>true</code> if this project is referenced by the other project. Returns

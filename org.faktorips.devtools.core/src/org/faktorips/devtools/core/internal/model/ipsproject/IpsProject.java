@@ -369,10 +369,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result;
     }
 
+    /**
+     * @deprecated This method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
+     */
     @Override
+    @Deprecated
     public IIpsProject[] getReferencedIpsProjects() throws CoreException {
         List<IIpsProject> projects = getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
         return projects.toArray(new IIpsProject[projects.size()]);
+    }
+
+    @Override
+    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
+        return getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
     }
 
     @Override
@@ -1215,7 +1224,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-        List<IIpsProject> referencedProjects = (ipsProject).getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
+        List<IIpsProject> referencedProjects = (ipsProject).getIpsObjectPathInternal()
+                .getDirectlyReferencedIpsProjects();
         IIpsProject[] projects = referencedProjects.toArray(new IIpsProject[referencedProjects.size()]);
         for (int i = 0; i < projects.length; i++) {
             if (!visitedProjects.contains(projects[i])) {
@@ -1262,7 +1272,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return datatype;
         }
 
-        List<IIpsProject> referencedProjects = (ipsProject).getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
+        List<IIpsProject> referencedProjects = (ipsProject).getIpsObjectPathInternal()
+                .getDirectlyReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
             if (!visitedProjects.contains(referencedProject)) {
                 visitedProjects.add(referencedProject);
@@ -1690,22 +1701,21 @@ public class IpsProject extends IpsElement implements IIpsProject {
     /**
      * Validates for duplicate base package generated entries inside the referenced project
      */
-    private void validateDuplicateTocFilePath(MessageList result) throws CoreException {
+    private void validateDuplicateTocFilePath(MessageList result) {
         // check for same toc file path in referenced projects (only product definition projects)
         List<IPath> tocPaths = collectTocPaths(getIpsArtefactBuilderSet(), this);
-
-        IIpsProject[] referencedProjects = getReferencedIpsProjects();
-        for (int i = 0; i < referencedProjects.length; i++) {
-            if (!isProductDefinitionProject() || !referencedProjects[i].isProductDefinitionProject()) {
+        List<IIpsProject> referencedProjects = getDirectlyReferencedIpsProjects();
+        for (IIpsProject referencedProject : referencedProjects) {
+            if (!isProductDefinitionProject() || !referencedProject.isProductDefinitionProject()) {
                 continue;
             }
-            IIpsArtefactBuilderSet builderSet = referencedProjects[i].getIpsArtefactBuilderSet();
-            List<IPath> tocPathsInRefProject = collectTocPaths(builderSet, referencedProjects[i]);
+            IIpsArtefactBuilderSet builderSet = referencedProject.getIpsArtefactBuilderSet();
+            List<IPath> tocPathsInRefProject = collectTocPaths(builderSet, referencedProject);
 
             for (IPath tocPath : tocPathsInRefProject) {
                 if (tocPaths.contains(tocPath)) {
                     String msg = NLS.bind(Messages.IpsProject_msgDuplicateTocFilePath, tocPath,
-                            referencedProjects[i].getName());
+                            referencedProject.getName());
                     result.add(new Message(MSGCODE_DUPLICATE_TOC_FILE_PATH_IN_DIFFERENT_PROJECTS, msg, Message.ERROR,
                             this));
                 }
