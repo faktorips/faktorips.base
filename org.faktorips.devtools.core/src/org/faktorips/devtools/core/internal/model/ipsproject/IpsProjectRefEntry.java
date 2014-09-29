@@ -106,7 +106,7 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
+    protected List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
         if (referencedIpsProject != null) {
             return getIpsObjectPathFromReferencedIpsProject().findIpsSrcFiles(type, searchContext);
         }

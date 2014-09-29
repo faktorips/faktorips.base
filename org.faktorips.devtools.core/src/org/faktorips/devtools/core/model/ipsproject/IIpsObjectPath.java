@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.message.MessageList;
 
@@ -280,4 +281,12 @@ public interface IIpsObjectPath {
      * @return the found {@link IIpsSrcFile}
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
+
+    /**
+     * Returns {@link IIpsSrcFile IPS source files} with the indicated {@link IpsObjectType}.
+     * 
+     * @param ipsObjectType representing the {@link IpsObjectType} of the searched
+     *            {@link IIpsSrcFile}s
+     */
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType);
 }

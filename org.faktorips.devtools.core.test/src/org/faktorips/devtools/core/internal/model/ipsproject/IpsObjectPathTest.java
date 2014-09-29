@@ -393,8 +393,14 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testConstructor() {
+    public void testConstructor_WithNull() {
         new IpsObjectPath(null);
+        assertSame(ipsProject, path.getIpsProject());
+    }
+
+    @Test
+    public void testConstructor() {
+        path = new IpsObjectPath(ipsProject);
         assertSame(ipsProject, path.getIpsProject());
     }
 

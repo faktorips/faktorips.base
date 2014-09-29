@@ -111,11 +111,6 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
         return null;
     }
 
-    /**
-     * 
-     * 
-     * 
-     */
     @Override
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
         if (searchContext.visitAndConsiderContentsOf(this)) {
@@ -125,7 +120,7 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     }
 
     /**
-     * Adds all objects of the given type found in the path entry to the result list.
+     * Returns all objects of the given type found in the path entry.
      * <p>
      * The default implementation simply delegates the request to the
      * {@link IIpsPackageFragmentRoot}. However you should overwrite this method if you either have
