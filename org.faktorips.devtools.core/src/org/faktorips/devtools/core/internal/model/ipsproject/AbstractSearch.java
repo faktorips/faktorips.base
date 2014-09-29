@@ -16,9 +16,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
  */
 public abstract class AbstractSearch {
 
-    public abstract SearchEnum processEntry(IIpsObjectPathEntry entry);
+    public abstract SearchState processEntry(IIpsObjectPathEntry entry);
 
-    public enum SearchEnum {
+    public enum SearchState {
         STOP_SEARCH,
         CONTINUE_SEARCH;
     }

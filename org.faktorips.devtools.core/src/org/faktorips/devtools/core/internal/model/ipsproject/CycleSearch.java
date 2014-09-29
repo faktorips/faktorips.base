@@ -9,40 +9,32 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 
-/**
- * An implementation of {@link AbstractSearch} in order to process {@link IpsProjectRefEntry}
- */
-public class ProjectSearch extends AbstractSearch {
+public class CycleSearch extends AbstractSearch {
 
-    private List<IIpsProject> projects = new ArrayList<IIpsProject>();
+    private boolean isCycleDetected = false;
+    private final IIpsProject initialProject;
 
-    private boolean isIncludeIndirect = true;
-
-    public void setIncludeIndirect(boolean isIncludeIndirect) {
-        this.isIncludeIndirect = isIncludeIndirect;
-    }
-
-    public boolean isIncludeIndirect() {
-        return isIncludeIndirect;
+    public CycleSearch(IIpsProject initialProject) {
+        this.initialProject = initialProject;
     }
 
     @Override
     public SearchState processEntry(IIpsObjectPathEntry entry) {
-        if (entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-            projects.add(((IIpsProjectRefEntry)entry).getReferencedIpsProject());
+        if (entry.getType() == IpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
+            if (initialProject.equals(((IIpsProjectRefEntry)entry).getReferencedIpsProject())) {
+                isCycleDetected = true;
+                return SearchState.STOP_SEARCH;
+            }
         }
         return SearchState.CONTINUE_SEARCH;
     }
 
-    public List<IIpsProject> getProjects() {
-        return projects;
+    public boolean isCycleDetected() {
+        return isCycleDetected;
     }
 
 }

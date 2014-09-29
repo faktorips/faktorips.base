@@ -399,7 +399,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         List<IIpsProject> referencedProjects = new ArrayList<IIpsProject>();
         IpsObjectPath otherPath = ((IpsProject)otherProject).getIpsObjectPathInternal();
         if (considerIndirect) {
-            referencedProjects = otherPath.find();
+            referencedProjects = otherPath.findAllReferencedIpsProjects();
         } else {
             referencedProjects = otherPath.getDirectlyReferencedIpsProjects();
         }

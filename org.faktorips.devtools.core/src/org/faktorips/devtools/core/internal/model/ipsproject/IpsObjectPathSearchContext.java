@@ -48,18 +48,18 @@ public class IpsObjectPathSearchContext {
     }
 
     /**
-     * Returns <code>true</code> if the content of the entry shall be considered and if this entry
-     * doesn't yet exist in the set of <code>visitedEntries</code> in this
-     * {@link IpsObjectPathSearchContext}. Otherwise it returns <code>false</code>.
+     * Returns <code>true</code> if the entry has not yet been visited and the contents of the entry
+     * should be considered (as in {@link #considerContentsOf(IIpsObjectPathEntry)}). Returns
+     * <code>false</code> otherwise.
      */
     public boolean visitAndConsiderContentsOf(IIpsObjectPathEntry entry) {
         return visit(entry) && considerContentsOf(entry);
     }
 
     /**
-     * Checks whether the given entry has been visited yet and caches it as visited at the same
-     * time. If the entry has already been visited, <code>false</code> is returned. If the entry has
-     * not yet been visited, it is registered as a visited entry and <code>true</code> is returned.
+     * Tries to visit the given entry. If the entry has already been visited, <code>false</code> is
+     * returned. If the entry has not yet been visited, it is registered as a visited entry and
+     * <code>true</code> is returned.
      * 
      * @param entry the entry to be visited
      * @return whether the entry can be visited.
@@ -79,8 +79,10 @@ public class IpsObjectPathSearchContext {
     }
 
     /**
-     * Returns <code>true</code> if the content of this entry is applicable. If there is no initial
-     * call, or the entry shall not be considered, this method returns <code>true</code>.
+     * Returns <code>true</code> if the contents of this entry should be considered in a search.
+     * Most of the time entries are included. However, when using bundles, entries with re-export=
+     * <code>false</code> ({@link IIpsObjectPathEntry#isReexported()}) are ignored. This method
+     * returns <code>false</code> in that case.
      */
     public boolean considerContentsOf(IIpsObjectPathEntry entry) {
         return isInitialCall(entry) || entry.isReexported();

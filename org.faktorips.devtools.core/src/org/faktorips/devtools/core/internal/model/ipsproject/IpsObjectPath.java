@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.ipsproject.AbstractSearch.SearchEnum;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -218,14 +217,6 @@ public class IpsObjectPath implements IIpsObjectPath {
             projects.add(entry.getReferencedIpsProject());
         }
         return projects.toArray(new IIpsProject[projects.size()]);
-    }
-
-    @Override
-    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
-        ProjectSearch projectSearch = new ProjectSearch();
-        projectSearch.setIncludeIndirect(false);
-        findAllReferencedProjects(projectSearch, new IpsObjectPathSearchContext(ipsProject));
-        return projectSearch.getProjects();
     }
 
     @Override
@@ -537,13 +528,16 @@ public class IpsObjectPath implements IIpsObjectPath {
      * the ips object path.
      */
     public boolean detectCycle() {
+        // AbstractSearch cycleSearch = new CycleSearch(getIpsProject());
+        // searchIpsObjectPath(cycleSearch);
+        // return cycleSearch.isCycleDetected();
         return detectCycleInternal(ipsProject, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
     public boolean detectCycleInternal(IIpsProject project, IpsObjectPathSearchContext searchContext) {
 
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry instanceof IIpsProjectRefEntry) {
+            if (entry.getType() == IpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
                 if (searchContext.visitAndConsiderContentsOf(entry)) {
                     IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entry).getReferencedIpsProject();
                     if (project.equals(refProject)) {
@@ -664,39 +658,44 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     }
 
-    public List<IIpsProject> find() {
+    @Override
+    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
         ProjectSearch projectSearch = new ProjectSearch();
-        findAllReferencedProjects(projectSearch, new IpsObjectPathSearchContext(ipsProject));
+        projectSearch.setIncludeIndirect(false);
+        searchIpsObjectPath(projectSearch);
         return projectSearch.getProjects();
     }
 
-    private void findAllReferencedProjects(ProjectSearch search, IpsObjectPathSearchContext searchContext) {
-        for (IIpsObjectPathEntry entry : entries) {
-            SearchEnum findInEntry = findInEntry(search, searchContext, entry);
-            if (findInEntry.equals(SearchEnum.CONTINUE_SEARCH) && entry.isContainer()) {
-                List<IIpsObjectPathEntry> resolveEntries = ((IIpsContainerEntry)entry).resolveEntries();
-                for (IIpsObjectPathEntry containerChildEntry : resolveEntries) {
-                    findInEntry(search, searchContext, containerChildEntry);
+    public List<IIpsProject> findAllReferencedIpsProjects() {
+        ProjectSearch projectSearch = new ProjectSearch();
+        searchIpsObjectPath(projectSearch);
+        return projectSearch.getProjects();
+    }
+
+    private void searchIpsObjectPath(ProjectSearch search) {
+        searchIpsObjectPath(search, new IpsObjectPathSearchContext(getIpsProject()));
+    }
+
+    private void searchIpsObjectPath(ProjectSearch search, IpsObjectPathSearchContext searchContext) {
+        for (IIpsObjectPathEntry entry : getEntries()) {
+            searchEntry(search, searchContext, entry);
+            if (entry.isContainer()) {
+                List<IIpsObjectPathEntry> childEntries = ((IIpsContainerEntry)entry).resolveEntries();
+                for (IIpsObjectPathEntry childEntry : childEntries) {
+                    searchEntry(search, searchContext, childEntry);
                 }
             }
         }
     }
 
-    private SearchEnum findInEntry(ProjectSearch search,
-            IpsObjectPathSearchContext searchContext,
-            IIpsObjectPathEntry entry) {
+    private void searchEntry(ProjectSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
         if (searchContext.visitAndConsiderContentsOf(entry)) {
-            SearchEnum searchEnum = search.processEntry(entry);
-            if (searchEnum.equals(SearchEnum.STOP_SEARCH)) {
-                return SearchEnum.STOP_SEARCH;
-            }
+            search.processEntry(entry);
         }
         if (search.isIncludeIndirect() && entry.getType() == IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
             IIpsProject referencedIpsProject = ((IIpsProjectRefEntry)entry).getReferencedIpsProject();
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findAllReferencedProjects(search,
-                    searchContext);
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().searchIpsObjectPath(search, searchContext);
         }
-        return SearchEnum.CONTINUE_SEARCH;
     }
 
 }

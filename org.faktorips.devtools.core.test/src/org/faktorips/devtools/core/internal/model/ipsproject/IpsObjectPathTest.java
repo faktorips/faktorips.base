@@ -283,7 +283,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFile_cleanUpTest() throws Exception {
+    public void testSearchIpsObjectPath2IpsSrcFile_cleanUpTest() throws Exception {
         refProject2Root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
         newIpsObject(refProject2Root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
         IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
