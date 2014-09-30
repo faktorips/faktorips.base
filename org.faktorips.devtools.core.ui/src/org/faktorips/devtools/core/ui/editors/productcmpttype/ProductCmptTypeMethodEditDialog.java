@@ -64,8 +64,6 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
                 Messages.ProductCmptTypeMethodEditDialog_formulaCheckbox);
         getBindingContext().bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
-        createChangingOverTimeCheckbox(group);
-
         AbstractCheckbox checkboxOptional = toolkit.createCheckbox(group,
                 Messages.ProductCmptTypeMethodEditDialog_formulaMandatory);
         checkboxOptional.setToolTipText(Messages.ProductCmptTypeMethodEditDialog_formulaMandatoryHint);
@@ -88,6 +86,8 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_categoryLabel);
         createCategoryCombo(area);
+
+        createChangingOverTimeCheckbox(group);
     }
 
     private void createChangingOverTimeCheckbox(Composite workArea) {
@@ -95,11 +95,9 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
                 workArea,
                 NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
-                        SWT.CHECK);
+                SWT.CHECK);
         getBindingContext().bindContent(changeOverTimeCheckbox, method,
                 IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME);
-        getBindingContext().bindEnabled(changeOverTimeCheckbox, method,
-                IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
     }
 
     private void createCategoryCombo(Composite workArea) {

@@ -66,7 +66,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         if (!formulaSignatureDefinition) {
             setFormulaName(StringUtils.EMPTY);
             overloadsFormula = false;
-            changingOverTime = true;
         } else {
             setAbstract(false);
         }

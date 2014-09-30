@@ -121,7 +121,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     public void testIsChangingOverTime_NoFormulaSignatureDefinition() {
         method.setChangingOverTime(false);
         method.setFormulaSignatureDefinition(false);
-        assertTrue(method.isChangingOverTime());
+        assertFalse(method.isChangingOverTime());
     }
 
     @Test
