@@ -548,7 +548,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
         IIpsProjectRefEntry projectRefEntry = path.newIpsProjectRefEntry(refProject);
         IIpsProjectRefEntry projectRefEntry2 = pathRef.newIpsProjectRefEntry(refProject2);
-        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+        pathRef.newIpsProjectRefEntry(refProject2);
 
         projectRefEntry.setReexported(reexportProjects);
         projectRefEntry2.setReexported(reexportProjects);

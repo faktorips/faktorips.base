@@ -1299,7 +1299,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return helper;
         }
 
-        IIpsProject[] projects = getIpsObjectPathInternal().getReferencedIpsProjects();
+        List<IIpsProject> projects = getDirectlyReferencedIpsProjects();
         for (IIpsProject project2 : projects) {
             helper = project2.getDatatypeHelper(datatype);
             if (helper != null) {
