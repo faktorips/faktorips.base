@@ -41,6 +41,18 @@
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 
+			«FOREACH methods AS this-»
+				«IF published-»
+					«IF !changingOverTime-»
+						«IF !formulaSignature-»
+							«EXPAND Methods::method-»
+						«ELSE-»
+							«EXPAND Methods::formulaMethod-»
+						«ENDIF-»
+					«ENDIF-»
+				«ENDIF-»
+			«ENDFOREACH-»
+			
 		 	«EXPAND ProductComponent::getProductComponentGeneration FOR productCmptGenerationNode»
 
 			«IF configurationForPolicyCmptType»

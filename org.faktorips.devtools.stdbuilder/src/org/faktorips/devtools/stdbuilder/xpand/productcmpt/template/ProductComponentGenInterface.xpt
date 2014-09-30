@@ -51,10 +51,12 @@
 			
 			«FOREACH methods AS this-»
 				«IF published-»
-					«IF !formulaSignature-»
-						«EXPAND Methods::method-»
-					«ELSE-»
-						«EXPAND Methods::formulaMethod-»
+					«IF changingOverTime-»
+						«IF !formulaSignature-»
+							«EXPAND Methods::method-»
+						«ELSE-»
+							«EXPAND Methods::formulaMethod-»
+						«ENDIF-»
 					«ENDIF-»
 				«ENDIF-»
 			«ENDFOREACH-»

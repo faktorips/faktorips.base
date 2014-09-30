@@ -61,6 +61,16 @@
 			
 			«EXPAND DerivedUnionAssociation::methodsForDerivedUnion(this) FOREACH subsettedDerivedUnions»
 
+			«FOREACH methods AS this-»
+				«IF !changingOverTime-»
+					«IF !formulaSignature-»
+						«EXPAND Methods::method-»
+					«ELSE-»
+						«EXPAND Methods::formulaMethod-»
+					«ENDIF-»
+				«ENDIF-»
+			«ENDFOREACH-»
+			
 	    	/**
 	     	* «inheritDoc()»
 	     	* 

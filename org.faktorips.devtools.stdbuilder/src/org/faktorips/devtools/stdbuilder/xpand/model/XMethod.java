@@ -225,4 +225,11 @@ public class XMethod extends AbstractGeneratorModelNode {
             throw new RuntimeException("The method " + getName() + " is no formula signature.");
         }
     }
+
+    public boolean isChangingOverTime() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            return ((IProductCmptTypeMethod)getMethod()).isChangingOverTime();
+        }
+        return true;
+    }
 }
