@@ -390,8 +390,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
+    public List<IIpsProject> getAllReferencedIpsProjects() {
+        return getReferencedIpsProjects(true);
+    }
+
+    @Override
     public List<IIpsProject> getDirectlyReferencedIpsProjects() {
-        return getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
+        return getReferencedIpsProjects(false);
     }
 
     @Override

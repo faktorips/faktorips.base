@@ -95,7 +95,7 @@ public interface IIpsObjectPath {
      * 
      * #see {@link #getDirectlyReferencedIpsProjects()}
      */
-    public List<IIpsProject> findAllReferencedIpsProjects();
+    public List<IIpsProject> getAllReferencedIpsProjects();
 
     /**
      * Factory method that creates a new source folder entry and adds it to the list of entries.

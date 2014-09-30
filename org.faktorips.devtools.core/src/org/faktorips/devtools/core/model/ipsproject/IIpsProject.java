@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -205,11 +206,19 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsProject[] getReferencedIpsProjects() throws CoreException;
 
     /**
-     * Returns all direct {@link IIpsProject}s referenced in the project's IPS object path.
+     * Returns all {@link IpsProject}s that are directly or indirectly referenced in the project's
+     * {@link IIpsObjectPath} to this ips project.
      * 
      * @see IIpsObjectPath
      */
+    public List<IIpsProject> getAllReferencedIpsProjects();
 
+    /**
+     * Returns all direct {@link IIpsProject}s referenced in the project's {@link IIpsObjectPath} to
+     * this ips project.
+     * 
+     * @see IIpsObjectPath
+     */
     public List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**

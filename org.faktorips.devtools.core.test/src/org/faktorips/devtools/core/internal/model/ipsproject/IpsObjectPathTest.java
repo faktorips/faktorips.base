@@ -261,7 +261,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllReferencedIpsProjects_refInContainer() throws CoreException {
+    public void testGetAllReferencedIpsProjects_refInContainer() throws CoreException {
         refProject = newIpsProject("RefProject");
         refProject2 = newIpsProject("RefProject2");
         IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
@@ -273,7 +273,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         refProject.setIpsObjectPath(pathRef);
         refProject2.setIpsObjectPath(pathRef2);
 
-        List<IIpsProject> projects = path.findAllReferencedIpsProjects();
+        List<IIpsProject> projects = path.getAllReferencedIpsProjects();
 
         assertEquals(1, projects.size());
         assertEquals(refProject, projects.get(0));

@@ -655,7 +655,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public List<IIpsProject> findAllReferencedIpsProjects() {
+    public List<IIpsProject> getAllReferencedIpsProjects() {
         return getReferencedIpsProjects(true);
     }
 
