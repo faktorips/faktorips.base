@@ -12,6 +12,11 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
+/**
+ * Created with an initial project this class searches for {@link IIpsProjectRefEntry project ref
+ * entries} that references the initial project. In this case a cycle is detected, thusly
+ * {@link #isCycleDetected()} returns <code>true</code> after performing the search.
+ */
 public class CycleSearch extends AbstractSearch {
 
     private boolean isCycleDetected = false;
@@ -32,6 +37,9 @@ public class CycleSearch extends AbstractSearch {
         return SearchState.CONTINUE_SEARCH;
     }
 
+    /**
+     * Returns <code>true</code> if a cycle was detected during a search, <code>false</code> else.
+     */
     public boolean isCycleDetected() {
         return isCycleDetected;
     }

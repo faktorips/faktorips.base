@@ -511,34 +511,15 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Check if there is a cycle inside the object path. All IIpsProjectRefEntries will be checked
-     * if there is a cycle in the ips object path entries of all referenced projects. Returns
-     * <code>true</code> if a cycle was detected. Returns <code>false</code> if there is no cycle in
-     * the ips object path.
+     * Checks if there is a cycle inside the object path. Considers project references transitively.
+     * <p>
+     * Returns <code>true</code> if a cycle was detected. Returns <code>false</code> if there is no
+     * cycle in this ips object path.
      */
     public boolean detectCycle() {
-        // AbstractSearch cycleSearch = new CycleSearch(getIpsProject());
-        // searchIpsObjectPath(cycleSearch);
-        // return cycleSearch.isCycleDetected();
-        return detectCycleInternal(ipsProject, new IpsObjectPathSearchContext(getIpsProject()));
-    }
-
-    public boolean detectCycleInternal(IIpsProject project, IpsObjectPathSearchContext searchContext) {
-
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.getType().equals(IpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-                if (searchContext.visitAndConsiderContentsOf(entry)) {
-                    IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entry).getReferencedIpsProject();
-                    if (project.equals(refProject)) {
-                        return true;
-                    }
-                    if (refProject.getIpsObjectPathInternal().detectCycleInternal(project, searchContext)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        CycleSearch cycleSearch = new CycleSearch(getIpsProject());
+        searchIpsObjectPath(cycleSearch);
+        return cycleSearch.isCycleDetected();
     }
 
     @Override
