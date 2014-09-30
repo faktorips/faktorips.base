@@ -208,34 +208,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         entries = newEntries;
     }
 
-    /**
-     * @deprecated this method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
-     */
-    @Override
-    @Deprecated
-    public IIpsProject[] getReferencedIpsProjects() {
-        List<IIpsProject> projects = new ArrayList<IIpsProject>();
-        IIpsProjectRefEntry[] projectRefEntries = getProjectRefEntries();
-        for (IIpsProjectRefEntry entry : projectRefEntries) {
-            projects.add(entry.getReferencedIpsProject());
-        }
-        return projects.toArray(new IIpsProject[projects.size()]);
-    }
-
-    /**
-     * Returns all relevant {@link IpsProject}s referenced in this {@link IpsObjectPath}. If
-     * <code>includeIndirect</code> is set to true all referenced {@link IpsProject}s will be shown
-     * in the resulting list. If <code>includeIndirect</code> is false only the directly referenced
-     * {@link IpsProject}s will be included in the resulting list.
-     */
-    public List<IIpsProject> getReferencedIpsProjects(boolean includeIndirect) {
-        if (includeIndirect) {
-            return findAllReferencedIpsProjects();
-        } else {
-            return getDirectlyReferencedIpsProjects();
-        }
-    }
-
     @Override
     public IIpsSrcFolderEntry newSourceFolderEntry(IFolder srcFolder) {
         IIpsSrcFolderEntry newEntry = new IpsSrcFolderEntry(this, srcFolder);
@@ -663,19 +635,28 @@ public class IpsObjectPath implements IIpsObjectPath {
         return result;
     }
 
-    @Override
-    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
+    /**
+     * Returns all accessible {@link IpsProject IPS projects} referenced in this
+     * {@link IpsObjectPath}. If <code>includeIndirect</code> is <code>true</code> all referenced
+     * {@link IpsProject IPS projects} will be added to the resulting list (references will be
+     * considered transitively). If <code>includeIndirect</code> is <code>false</code> only the
+     * directly referenced {@link IpsProject}s will be included in the resulting list.
+     */
+    public List<IIpsProject> getReferencedIpsProjects(boolean includeIndirect) {
         ProjectSearch projectSearch = new ProjectSearch();
-        projectSearch.setIncludeIndirect(false);
+        projectSearch.setIncludeIndirect(includeIndirect);
         searchIpsObjectPath(projectSearch);
         return projectSearch.getProjects();
     }
 
     @Override
+    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
+        return getReferencedIpsProjects(false);
+    }
+
+    @Override
     public List<IIpsProject> findAllReferencedIpsProjects() {
-        ProjectSearch projectSearch = new ProjectSearch();
-        searchIpsObjectPath(projectSearch);
-        return projectSearch.getProjects();
+        return getReferencedIpsProjects(true);
     }
 
     /**

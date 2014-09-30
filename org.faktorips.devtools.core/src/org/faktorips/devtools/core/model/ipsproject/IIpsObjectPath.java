@@ -85,20 +85,13 @@ public interface IIpsObjectPath {
     public void setEntries(IIpsObjectPathEntry[] newEntries);
 
     /**
-     * @deprecated this method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
-     * 
-     *             Returns the IPS projects referenced by the object path.
-     */
-    @Deprecated
-    public IIpsProject[] getReferencedIpsProjects();
-
-    /**
-     * Returns the IPS projects directly referenced by the object path.
+     * Returns the IPS projects directly referenced by this object path.
      */
     public List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**
-     * Returns all {@link IpsProject}s that are directly and indirectly referenced by the object path.
+     * Returns all {@link IpsProject}s that are directly or indirectly referenced by this object
+     * path.
      * 
      * #see {@link #getDirectlyReferencedIpsProjects()}
      */
