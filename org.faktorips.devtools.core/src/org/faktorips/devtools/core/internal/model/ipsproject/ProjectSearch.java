@@ -23,16 +23,6 @@ public class ProjectSearch extends AbstractSearch {
 
     private List<IIpsProject> projects = new ArrayList<IIpsProject>();
 
-    private boolean isIncludeIndirect = true;
-
-    public void setIncludeIndirect(boolean isIncludeIndirect) {
-        this.isIncludeIndirect = isIncludeIndirect;
-    }
-
-    public boolean isIncludeIndirect() {
-        return isIncludeIndirect;
-    }
-
     @Override
     public SearchState processEntry(IIpsObjectPathEntry entry) {
         if (entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {

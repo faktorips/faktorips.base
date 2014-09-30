@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -95,6 +96,13 @@ public interface IIpsObjectPath {
      * Returns the IPS projects directly referenced by the object path.
      */
     public List<IIpsProject> getDirectlyReferencedIpsProjects();
+
+    /**
+     * Returns all {@link IpsProject}s that are directly and indirectly referenced by the object path.
+     * 
+     * #see {@link #getDirectlyReferencedIpsProjects()}
+     */
+    public List<IIpsProject> findAllReferencedIpsProjects();
 
     /**
      * Factory method that creates a new source folder entry and adds it to the list of entries.

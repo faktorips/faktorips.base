@@ -24,7 +24,7 @@ public class CycleSearch extends AbstractSearch {
 
     @Override
     public SearchState processEntry(IIpsObjectPathEntry entry) {
-        if (entry.getType() == IpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
+        if (entry.getType().equals(IpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
             if (initialProject.equals(((IIpsProjectRefEntry)entry).getReferencedIpsProject())) {
                 isCycleDetected = true;
                 return SearchState.STOP_SEARCH;

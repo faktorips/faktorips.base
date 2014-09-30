@@ -375,8 +375,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     @Deprecated
     public IIpsProject[] getReferencedIpsProjects() throws CoreException {
-        List<IIpsProject> projects = getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
+        List<IIpsProject> projects = getDirectlyReferencedIpsProjects();
         return projects.toArray(new IIpsProject[projects.size()]);
+    }
+
+    /**
+     * Returns the relevant referenced {@link IpsProject}s. If <code>includeIndirect</code> is set
+     * to true all referenced {@link IpsProject}s will be shown in the resulting list. If
+     * <code>includeIndirect</code> is false only the directly referenced {@link IpsProject}s will
+     * be included in the resulting list.
+     */
+    public List<IIpsProject> getReferencedIpsProjects(boolean includeIndirect) {
+        return getIpsObjectPathInternal().getReferencedIpsProjects(includeIndirect);
     }
 
     @Override
@@ -394,25 +404,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private boolean isReferencedByInternal(IIpsProject otherProject, boolean considerIndirect) {
-        List<IIpsProject> referencedProjects = getReferencedProjects(otherProject, considerIndirect);
+        IpsObjectPath otherPath = ((IpsProject)otherProject).getIpsObjectPathInternal();
+        List<IIpsProject> referencedProjects = otherPath.getReferencedIpsProjects(considerIndirect);
         for (IIpsProject referencedProject : referencedProjects) {
             if (equals(referencedProject)) {
                 return true;
             }
         }
-
         return false;
-    }
-
-    private List<IIpsProject> getReferencedProjects(IIpsProject otherProject, boolean considerIndirect) {
-        List<IIpsProject> referencedProjects = new ArrayList<IIpsProject>();
-        IpsObjectPath otherPath = ((IpsProject)otherProject).getIpsObjectPathInternal();
-        if (considerIndirect) {
-            referencedProjects = otherPath.findAllReferencedIpsProjects();
-        } else {
-            referencedProjects = otherPath.getDirectlyReferencedIpsProjects();
-        }
-        return referencedProjects;
     }
 
     @Override
@@ -424,7 +423,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 result.add(project2);
             }
         }
-
         return result.toArray(new IIpsProject[result.size()]);
     }
 
@@ -1099,7 +1097,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             Set<Datatype> result) throws CoreException {
 
         getIpsModel().getDatatypesDefinedInProjectProperties(ipsProject, valuetypesOnly, includePrimitives, result);
-        List<IIpsProject> referencedProjects = ipsProject.getIpsObjectPathInternal().getDirectlyReferencedIpsProjects();
+        List<IIpsProject> referencedProjects = ipsProject.getDirectlyReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
             if (!visitedProjects.contains(referencedProject)) {
                 visitedProjects.add(referencedProject);
@@ -1224,13 +1222,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-        List<IIpsProject> referencedProjects = (ipsProject).getIpsObjectPathInternal()
-                .getDirectlyReferencedIpsProjects();
-        IIpsProject[] projects = referencedProjects.toArray(new IIpsProject[referencedProjects.size()]);
-        for (int i = 0; i < projects.length; i++) {
-            if (!visitedProjects.contains(projects[i])) {
-                visitedProjects.add(projects[i]);
-                datatype = findValueDatatype((IpsProject)projects[i], qualifiedName, visitedProjects);
+        List<IIpsProject> referencedProjects = ipsProject.getDirectlyReferencedIpsProjects();
+        for (IIpsProject referencedProject : referencedProjects) {
+            if (!visitedProjects.contains(referencedProject)) {
+                visitedProjects.add(referencedProject);
+                datatype = findValueDatatype((IpsProject)referencedProject, qualifiedName, visitedProjects);
                 if (datatype != null) {
                     return datatype;
                 }
@@ -1272,8 +1268,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return datatype;
         }
 
-        List<IIpsProject> referencedProjects = (ipsProject).getIpsObjectPathInternal()
-                .getDirectlyReferencedIpsProjects();
+        List<IIpsProject> referencedProjects = ipsProject.getDirectlyReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
             if (!visitedProjects.contains(referencedProject)) {
                 visitedProjects.add(referencedProject);

@@ -208,6 +208,9 @@ public class IpsObjectPath implements IIpsObjectPath {
         entries = newEntries;
     }
 
+    /**
+     * @deprecated this method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
+     */
     @Override
     @Deprecated
     public IIpsProject[] getReferencedIpsProjects() {
@@ -217,6 +220,20 @@ public class IpsObjectPath implements IIpsObjectPath {
             projects.add(entry.getReferencedIpsProject());
         }
         return projects.toArray(new IIpsProject[projects.size()]);
+    }
+
+    /**
+     * Returns all relevant {@link IpsProject}s referenced in this {@link IpsObjectPath}. If
+     * <code>includeIndirect</code> is set to true all referenced {@link IpsProject}s will be shown
+     * in the resulting list. If <code>includeIndirect</code> is false only the directly referenced
+     * {@link IpsProject}s will be included in the resulting list.
+     */
+    public List<IIpsProject> getReferencedIpsProjects(boolean includeIndirect) {
+        if (includeIndirect) {
+            return findAllReferencedIpsProjects();
+        } else {
+            return getDirectlyReferencedIpsProjects();
+        }
     }
 
     @Override
@@ -537,7 +554,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public boolean detectCycleInternal(IIpsProject project, IpsObjectPathSearchContext searchContext) {
 
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry.getType() == IpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
+            if (entry.getType().equals(IpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
                 if (searchContext.visitAndConsiderContentsOf(entry)) {
                     IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entry).getReferencedIpsProject();
                     if (project.equals(refProject)) {
@@ -638,15 +655,57 @@ public class IpsObjectPath implements IIpsObjectPath {
         return findIpsSrcFiles(ipsObjectType, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
-    /**
-     * finds all {@link IIpsSrcFile}s with the indicated {@link IpsObjectType}.
-     */
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType, IpsObjectPathSearchContext searchContext) {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IIpsObjectPathEntry entry : entries) {
-            result.addAll(entry.findIpsSrcFiles(ipsObjectType, searchContext));
+        for (IIpsObjectPathEntry entrie : entries) {
+            result.addAll(entrie.findIpsSrcFiles(ipsObjectType, searchContext));
         }
         return result;
+    }
+
+    @Override
+    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
+        ProjectSearch projectSearch = new ProjectSearch();
+        projectSearch.setIncludeIndirect(false);
+        searchIpsObjectPath(projectSearch);
+        return projectSearch.getProjects();
+    }
+
+    @Override
+    public List<IIpsProject> findAllReferencedIpsProjects() {
+        ProjectSearch projectSearch = new ProjectSearch();
+        searchIpsObjectPath(projectSearch);
+        return projectSearch.getProjects();
+    }
+
+    /**
+     * Searches all {@link IIpsObjectPathEntry}s for their appropriateness and safes them in
+     * {@link AbstractSearch}.
+     */
+    private void searchIpsObjectPath(AbstractSearch search) {
+        searchIpsObjectPath(search, new IpsObjectPathSearchContext(getIpsProject()));
+    }
+
+    private void searchIpsObjectPath(AbstractSearch search, IpsObjectPathSearchContext searchContext) {
+        for (IIpsObjectPathEntry entry : getEntries()) {
+            searchEntry(search, searchContext, entry);
+            if (entry.isContainer()) {
+                List<IIpsObjectPathEntry> childEntries = ((IIpsContainerEntry)entry).resolveEntries();
+                for (IIpsObjectPathEntry childEntry : childEntries) {
+                    searchEntry(search, searchContext, childEntry);
+                }
+            }
+        }
+    }
+
+    private void searchEntry(AbstractSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
+        if (searchContext.visitAndConsiderContentsOf(entry)) {
+            search.processEntry(entry);
+        }
+        if (search.isIncludeIndirect() && entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
+            IIpsProject referencedIpsProject = ((IIpsProjectRefEntry)entry).getReferencedIpsProject();
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().searchIpsObjectPath(search, searchContext);
+        }
     }
 
     private static class CachedSrcFile {
@@ -660,46 +719,6 @@ public class IpsObjectPath implements IIpsObjectPath {
             this.entryIndex = entryIndex;
         }
 
-    }
-
-    @Override
-    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
-        ProjectSearch projectSearch = new ProjectSearch();
-        projectSearch.setIncludeIndirect(false);
-        searchIpsObjectPath(projectSearch);
-        return projectSearch.getProjects();
-    }
-
-    public List<IIpsProject> findAllReferencedIpsProjects() {
-        ProjectSearch projectSearch = new ProjectSearch();
-        searchIpsObjectPath(projectSearch);
-        return projectSearch.getProjects();
-    }
-
-    private void searchIpsObjectPath(ProjectSearch search) {
-        searchIpsObjectPath(search, new IpsObjectPathSearchContext(getIpsProject()));
-    }
-
-    private void searchIpsObjectPath(ProjectSearch search, IpsObjectPathSearchContext searchContext) {
-        for (IIpsObjectPathEntry entry : getEntries()) {
-            searchEntry(search, searchContext, entry);
-            if (entry.isContainer()) {
-                List<IIpsObjectPathEntry> childEntries = ((IIpsContainerEntry)entry).resolveEntries();
-                for (IIpsObjectPathEntry childEntry : childEntries) {
-                    searchEntry(search, searchContext, childEntry);
-                }
-            }
-        }
-    }
-
-    private void searchEntry(ProjectSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
-        if (searchContext.visitAndConsiderContentsOf(entry)) {
-            search.processEntry(entry);
-        }
-        if (search.isIncludeIndirect() && entry.getType() == IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE) {
-            IIpsProject referencedIpsProject = ((IIpsProjectRefEntry)entry).getReferencedIpsProject();
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().searchIpsObjectPath(search, searchContext);
-        }
     }
 
 }

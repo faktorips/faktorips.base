@@ -261,6 +261,25 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetReferencedIpsProjects_refInContainererferg() throws CoreException {
+        refProject = newIpsProject("RefProject");
+        refProject2 = newIpsProject("RefProject2");
+        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
+        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+        entryRef.setReexported(false);
+        ipsProject.setIpsObjectPath(path);
+        refProject.setIpsObjectPath(pathRef);
+        refProject2.setIpsObjectPath(pathRef2);
+
+        List<IIpsProject> projects = path.findAllReferencedIpsProjects();
+
+        assertEquals(1, projects.size());
+        assertEquals(refProject, projects.get(0));
+    }
+
+    @Test
     public void testGetProjectRefEntries_container() {
         IFolder srcFolder = ipsProject.getProject().getFolder("src");
         refProject = ipsProject.getIpsModel().getIpsProject("RefProject1");
@@ -529,6 +548,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
         IIpsProjectRefEntry projectRefEntry = path.newIpsProjectRefEntry(refProject);
         IIpsProjectRefEntry projectRefEntry2 = pathRef.newIpsProjectRefEntry(refProject2);
+        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+
         projectRefEntry.setReexported(reexportProjects);
         projectRefEntry2.setReexported(reexportProjects);
         ipsProject.setIpsObjectPath(path);

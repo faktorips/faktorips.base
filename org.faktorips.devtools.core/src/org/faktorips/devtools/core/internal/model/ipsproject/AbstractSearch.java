@@ -16,7 +16,17 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
  */
 public abstract class AbstractSearch {
 
+    private boolean isIncludeIndirect = true;
+
     public abstract SearchState processEntry(IIpsObjectPathEntry entry);
+
+    public void setIncludeIndirect(boolean isIncludeIndirect) {
+        this.isIncludeIndirect = isIncludeIndirect;
+    }
+
+    public boolean isIncludeIndirect() {
+        return isIncludeIndirect;
+    }
 
     public enum SearchState {
         STOP_SEARCH,
