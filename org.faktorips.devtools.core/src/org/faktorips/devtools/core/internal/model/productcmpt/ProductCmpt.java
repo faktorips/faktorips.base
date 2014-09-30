@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +42,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptKind;
@@ -198,7 +200,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public boolean containsFormula() {
+    public boolean containsGenerationFormula() {
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : generations) {
             if (((ProductCmptGeneration)generation).containsFormula()) {
@@ -225,6 +227,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             ((ProductCmptGeneration)generation).dependsOn(dependencySet, details);
         }
         addRelatedTableContentsQualifiedNameTypes(dependencySet, details);
+        addDependenciesFromFormulaExpressions(dependencySet, details);
 
         return dependencySet.toArray(new IDependency[dependencySet.size()]);
     }
@@ -242,6 +245,30 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
                     IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        }
+    }
+
+    private void addDependenciesFromFormulaExpressions(Set<IDependency> dependencies,
+            Map<IDependency, List<IDependencyDetail>> details) {
+        IFormula[] formulas = getFormulas();
+        for (IFormula formula : formulas) {
+            Map<IDependency, ExpressionDependencyDetail> formulaDependencies = formula.dependsOn();
+            dependencies.addAll(formulaDependencies.keySet());
+            if (details != null) {
+                mergeDependencyDetails(details, formulaDependencies);
+            }
+        }
+    }
+
+    private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
+            Map<IDependency, ExpressionDependencyDetail> formulaDependencies) {
+        for (Entry<IDependency, ExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
+            List<IDependencyDetail> dependenciesDetailsList = details.get(entry.getKey());
+            if (dependenciesDetailsList == null) {
+                dependenciesDetailsList = new ArrayList<IDependencyDetail>();
+                details.put(entry.getKey(), dependenciesDetailsList);
+            }
+            dependenciesDetailsList.add(entry.getValue());
         }
     }
 
@@ -390,7 +417,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private boolean isAllowedPropertyType(IProductCmptProperty property) {
         return (property.getProductCmptPropertyType() == ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE)
-                || (property.getProductCmptPropertyType() == ProductCmptPropertyType.TABLE_STRUCTURE_USAGE);
+                || (property.getProductCmptPropertyType() == ProductCmptPropertyType.TABLE_STRUCTURE_USAGE)
+                || (property.getProductCmptPropertyType() == ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
     }
 
     @Override
@@ -407,12 +435,18 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
             return newLinkInternal;
         }
-        if (xmlTagName.equals(AttributeValue.TAG_NAME) || xmlTagName.equals(TableContentUsage.TAG_NAME)) {
+        if (isAllowedPropertyTagName(xmlTagName)) {
             IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, xmlTagName, id);
             return newPartThis;
         }
 
         return null;
+    }
+
+    private boolean isAllowedPropertyTagName(String xmlTagName) {
+        return xmlTagName.equals(AttributeValue.TAG_NAME)
+                || xmlTagName.equals(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueXmlTagName())
+                || xmlTagName.equals(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueXmlTagName());
     }
 
     @Override
@@ -651,4 +685,24 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
+    @Override
+    public IFormula[] getFormulas() {
+        List<IFormula> formulae = propertyValueCollection.getPropertyValues(IFormula.class);
+        return formulae.toArray(new IFormula[formulae.size()]);
+    }
+
+    @Override
+    public IFormula getFormula(String formulaName) {
+        return propertyValueCollection.getPropertyValue(IFormula.class, formulaName);
+    }
+
+    @Override
+    public boolean isContainingAvailableFormula() {
+        for (IFormula formula : getFormulas()) {
+            if (!formula.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

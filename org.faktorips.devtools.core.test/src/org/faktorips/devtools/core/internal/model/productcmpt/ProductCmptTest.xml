@@ -17,4 +17,7 @@
     <TableContentUsage id="10" structureUsage="staticTable">
         <TableContentName isNull="false">produkt.Table1</TableContentName>
     </TableContentUsage>
+    <Formula id="2" formulaSignature="PremiumCalculation">
+    	<Expression isNull="false">120EUR</Expression>
+    </Formula>
 </ProductCmpt>

@@ -16,15 +16,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -36,6 +41,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
 import org.faktorips.devtools.core.model.IDependency;
+import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -64,6 +70,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -428,6 +435,25 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXml_Formula() {
+        productCmpt.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals(1, productCmpt.getFormulas().length);
+        assertNotNull(productCmpt.getFormula("PremiumCalculation"));
+    }
+
+    @Test
+    public void testToXml_Formula() {
+        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
+                mock(IProductCmptType.class), "Id"));
+        newFormula.setExpression("anyExpression");
+        Element xml = productCmpt.toXml(newDocument());
+
+        ProductCmpt copy = new ProductCmpt();
+        copy.initFromXml(xml);
+        assertEquals(1, productCmpt.getFormulas().length);
+    }
+
+    @Test
     public void testToXml_Links() {
         attr2.setChangingOverTime(false);
         IProductCmptLink newLink = productCmpt.newLink("newLink");
@@ -443,22 +469,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsFormula() {
-        assertFalse(productCmpt.containsFormula());
+    public void testContainsGenerationFormula() {
+        assertFalse(productCmpt.containsGenerationFormula());
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2000, 1,
                 1));
         IProductCmptGeneration gen2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(2010, 1,
                 1));
         gen1.newFormula();
-        assertTrue(productCmpt.containsFormula());
+        assertTrue(productCmpt.containsGenerationFormula());
 
         for (IFormula formula : gen1.getFormulas()) {
             formula.delete();
         }
-        assertFalse(productCmpt.containsFormula());
+        assertFalse(productCmpt.containsGenerationFormula());
 
         gen2.newFormula();
-        assertTrue(productCmpt.containsFormula());
+        assertTrue(productCmpt.containsGenerationFormula());
     }
 
     @Test
@@ -748,6 +774,9 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                 .size());
+        assertEquals(1,
+                productCmpt.getPropertyValues(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueClass())
+                .size());
     }
 
     @Test
@@ -856,5 +885,132 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         assertEquals(1, productCmpt.getTableContentUsages().length);
         assertEquals(contentUsagePC, productCmpt.getTableContentUsages()[0]);
+    }
+
+    @Test
+    public void testGetFormulas() {
+        IFormula formula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
+                mock(IProductCmptType.class), "Id"));
+        assertNotNull(formula);
+
+        assertEquals(1, productCmpt.getFormulas().length);
+        assertEquals(formula, productCmpt.getFormulas()[0]);
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_noFormula() throws Exception {
+        assertFalse(productCmpt.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_anyEmptyFormula() throws Exception {
+        productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
+
+        assertFalse(productCmpt.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
+        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
+                mock(IProductCmptType.class), "Id"));
+        newFormula.setExpression("anyExpression");
+
+        assertTrue(productCmpt.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
+        productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
+        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
+                mock(IProductCmptType.class), "Id"));
+        newFormula.setExpression("anyExpression");
+
+        assertTrue(productCmpt.isContainingAvailableFormula());
+    }
+
+    @Test
+    public void testAddDependenciesFromFormulaExpressions() throws Exception {
+        ProductCmpt productCmptSpy = spy(productCmpt);
+        IDependency dependency = mock(IDependency.class);
+        ExpressionDependencyDetail dependencyDetail1 = mock(ExpressionDependencyDetail.class);
+        ExpressionDependencyDetail dependencyDetail2 = mock(ExpressionDependencyDetail.class);
+        IFormula formula1 = mock(IFormula.class);
+        IFormula formula2 = mock(IFormula.class);
+        when(productCmptSpy.getFormulas()).thenReturn(new IFormula[] { formula1, formula2 });
+        Map<IDependency, ExpressionDependencyDetail> dependencyMap1 = new HashMap<IDependency, ExpressionDependencyDetail>();
+        dependencyMap1.put(dependency, dependencyDetail1);
+        Map<IDependency, ExpressionDependencyDetail> dependencyMap2 = new HashMap<IDependency, ExpressionDependencyDetail>();
+        dependencyMap2.put(dependency, dependencyDetail2);
+        when(formula1.dependsOn()).thenReturn(dependencyMap1);
+        when(formula2.dependsOn()).thenReturn(dependencyMap2);
+
+        Map<IDependency, List<IDependencyDetail>> detailsResult = new HashMap<IDependency, List<IDependencyDetail>>();
+        productCmptSpy.dependsOn(detailsResult);
+
+        assertEquals(1, detailsResult.size());
+        assertThat(detailsResult.keySet(), hasItem(dependency));
+        List<? extends IDependencyDetail> detailList = detailsResult.get(dependency);
+        assertEquals(2, detailList.size());
+        assertEquals(dependencyDetail1, detailList.get(0));
+        assertEquals(dependencyDetail2, detailList.get(1));
+    }
+
+    @Test
+    public void testContainsDifferencesToModel_productCmptTypeFormula() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
+        newFormulaSignature.setChangingOverTime(false);
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newProductCmpt.newPropertyValue(newFormulaSignature);
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+    }
+
+    @Test
+    public void testFixDifferencesToModel_productCmptTypeFormula() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
+        newFormulaSignature.setChangingOverTime(false);
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+    }
+
+    @Test
+    public void testComputeDeltaToModel_productCmptTypeFormula() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
+        newFormulaSignature.setChangingOverTime(false);
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        IPropertyValueContainerToTypeDelta computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+
+        assertEquals(newProductCmpt, computeDeltaToModel.getPropertyValueContainer());
+        IDeltaEntry[] entries = computeDeltaToModel.getEntries();
+        assertEquals(1, entries.length);
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(newFormulaSignature.getFormulaName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+
+        newFormulaSignature.setChangingOverTime(true);
+        computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+        entries = computeDeltaToModel.getEntries();
+        assertEquals(0, entries.length);
+
+        newFormulaSignature.setChangingOverTime(false);
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+
+        newFormulaSignature.setChangingOverTime(true);
+        computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+        entries = computeDeltaToModel.getEntries();
+        assertEquals(1, entries.length);
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[0].getDeltaType());
+        assertEquals(newFormulaSignature.getFormulaName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
     }
 }

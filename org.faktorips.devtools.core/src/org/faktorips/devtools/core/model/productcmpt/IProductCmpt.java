@@ -31,7 +31,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
-IPropertyValueContainer {
+        IPropertyValueContainer {
 
     /**
      * The name of the product component type property
@@ -136,7 +136,7 @@ IPropertyValueContainer {
      * Returns <code>true</code> if any of the generations contain at least one formula. Returns
      * <code>false</code> otherwise.
      */
-    public boolean containsFormula();
+    public boolean containsGenerationFormula();
 
     /**
      * Returns the product component tree that is defined by this component as root and following
@@ -276,8 +276,30 @@ IPropertyValueContainer {
     public ITableContentUsage getTableContentUsage(String rolename);
 
     /**
-     * @return All table content usages defined by this product component.
+     * Returns all table content usages defined by this product component. Returns an empty array if
+     * the product component hasn't got a table content.
      */
     public ITableContentUsage[] getTableContentUsages();
+
+    /**
+     * Returns the formulas defined in this product component. Returns an empty array if the product
+     * component hasn't got a formula.
+     */
+    public IFormula[] getFormulas();
+
+    /**
+     * Returns the formula with given name or <code>null</code> if no such formula is found. Returns
+     * <code>null</code> if formulaName is <code>null</code>.
+     */
+    public IFormula getFormula(String formulaName);
+
+    /**
+     * Returns <code>true</code> if there is at least one formula that has an entered expression.
+     * Returns <code>false</code> if there is no formula or if every formula has no entered
+     * expression.
+     * 
+     * @return <code>true</code> for at least one available formula
+     */
+    public boolean isContainingAvailableFormula();
 
 }

@@ -131,12 +131,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
             Map<IDependency, ExpressionDependencyDetail> formulaDependencies) {
         for (Entry<IDependency, ExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
-            List<IDependencyDetail> ependenciesDetailsList = details.get(entry.getKey());
-            if (ependenciesDetailsList == null) {
-                ependenciesDetailsList = new ArrayList<IDependencyDetail>();
-                details.put(entry.getKey(), ependenciesDetailsList);
+            List<IDependencyDetail> dependenciesDetailsList = details.get(entry.getKey());
+            if (dependenciesDetailsList == null) {
+                dependenciesDetailsList = new ArrayList<IDependencyDetail>();
+                details.put(entry.getKey(), dependenciesDetailsList);
             }
-            ependenciesDetailsList.add(entry.getValue());
+            dependenciesDetailsList.add(entry.getValue());
         }
     }
 
