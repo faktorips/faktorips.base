@@ -72,7 +72,7 @@ public class AbstractProductCmptCollectorTest {
     private IProductCmptGeneration mockGenerationForFormula() {
         IFormula formula = mock(IFormula.class);
         IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
-        when(formula.getProductCmptGeneration()).thenReturn(generation);
+        when(formula.getPropertyValueContainer()).thenReturn(generation);
         when(finder.getExpression()).thenReturn(formula);
         return generation;
     }

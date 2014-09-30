@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -45,16 +46,15 @@ public class FormulaTest extends AbstractIpsPluginTest {
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
-
-        formula = new Formula(generation, "formula");
     }
 
     @Test
-    public void testGetTableContentUsages() throws Exception {
+    public void testGetTableContentUsages_ProductCmptGeneration() throws Exception {
+        formula = new Formula(generation, "formula");
         assertEquals(0, formula.getTableContentUsages().length);
 
         ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
-        structureUsageGen.setRoleName("RateTable");
+        structureUsageGen.setRoleName("RateTableGen");
         ITableContentUsage contentUsageGen = generation.newTableContentUsage(structureUsageGen);
 
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
@@ -69,4 +69,24 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertTrue(asList.contains(contentUsage));
     }
 
+    @Test
+    public void testGetTableContentUsages_ProductCmpt() throws Exception {
+        formula = new Formula(productCmpt, "formula");
+        assertEquals(0, formula.getTableContentUsages().length);
+
+        ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
+        structureUsageGen.setRoleName("RateTable");
+        ITableContentUsage contentUsageGen = generation.newTableContentUsage(structureUsageGen);
+
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setChangingOverTime(false);
+        structureUsage.setRoleName("RateTable");
+        ITableContentUsage contentUsage = (ITableContentUsage)productCmpt.newPropertyValue(structureUsageGen);
+
+        ITableContentUsage[] tableContentUsages = formula.getTableContentUsages();
+        assertEquals(1, tableContentUsages.length);
+        List<ITableContentUsage> asList = Arrays.asList(tableContentUsages);
+        assertFalse(asList.contains(contentUsageGen));
+        assertTrue(asList.contains(contentUsage));
+    }
 }
