@@ -1149,13 +1149,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return type;
         }
         int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
+        String resultingQName = qualifiedName;
         if (arrayDimension > 0) {
-            qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+            resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
         IpsObjectType[] objectTypes = getIpsModel().getIpsObjectTypes();
         for (IpsObjectType objectType : objectTypes) {
             if (objectType.isDatatype()) {
-                type = (Datatype)findIpsObject(objectType, qualifiedName);
+                type = (Datatype)findIpsObject(objectType, resultingQName);
                 if (type != null) {
                     break;
                 }
@@ -1168,10 +1169,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (type instanceof ValueDatatype) {
                 return new ArrayOfValueDatatype(type, arrayDimension);
             }
-            throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
+            throw new IllegalArgumentException("The qualified name: \"" + resultingQName + //$NON-NLS-1$
                     "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
         }
-        return getEnumTypeDatatypeAdapter(qualifiedName, this);
+        return getEnumTypeDatatypeAdapter(resultingQName, this);
     }
 
     private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject)
@@ -1195,10 +1196,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return null;
         }
         int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
+        String resultingQName = qualifiedName;
         if (arrayDimension > 0) {
-            qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+            resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
-        ValueDatatype type = findValueDatatype(this, qualifiedName, new HashSet<IIpsProject>());
+        ValueDatatype type = findValueDatatype(this, resultingQName, new HashSet<IIpsProject>());
         if (arrayDimension == 0) {
             return type;
         }
@@ -1206,7 +1208,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + resultingQName + //$NON-NLS-1$
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
@@ -1242,11 +1244,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
 
         int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
+        String resultingQName = qualifiedName;
         if (arrayDimension > 0) {
-            qualifiedName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+            resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
 
-        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, qualifiedName,
+        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, resultingQName,
                 new HashSet<IIpsProject>());
         if (arrayDimension == 0) {
             return type;
@@ -1255,7 +1258,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + qualifiedName + //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + resultingQName + //$NON-NLS-1$
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
@@ -1660,7 +1663,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (IIpsFeatureVersionManager manager : managers) {
             try {
                 manager.getMigrationOperations(this);
+                // CSOFF: IllegalCatch
             } catch (Exception e) {
+                // CSON: IllegalCatch
                 IpsPlugin.log(e);
                 String msg = NLS.bind(Messages.IpsProject_msgInvalidMigrationInformation, manager.getFeatureId());
                 result.add(new Message(MSGCODE_INVALID_MIGRATION_INFORMATION, msg, Message.ERROR, this));
