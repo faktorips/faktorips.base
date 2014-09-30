@@ -209,7 +209,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsValueSetTypeApplicable() throws CoreException {
+    public void testIsValueSetTypeApplicable() {
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.ENUM));
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.RANGE));
         assertTrue(ipsProject.isValueSetTypeApplicable(Datatype.INTEGER, ValueSetType.UNRESTRICTED));
@@ -383,7 +383,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertFalse(ipsProject.isJavaProjectErrorFree(true).booleanValue());
     }
 
-    private void makeIpsProjectDependOnBaseProject() throws CoreException {
+    private void makeIpsProjectDependOnBaseProject() {
         IIpsProjectProperties props = ipsProject.getProperties();
         IIpsObjectPath path = props.getIpsObjectPath();
         path.newIpsProjectRefEntry(baseProject);
@@ -398,7 +398,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetClassLoaderForJavaProject() throws CoreException {
+    public void testGetClassLoaderForJavaProject() {
         ClassLoader cl = ipsProject.getClassLoaderForJavaProject();
         assertNotNull(cl);
     }
@@ -571,7 +571,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      * resource change listener has removed the old prop file from the cache in the model.
      */
     @Test
-    public void testSetProperties_RacingCondition() throws CoreException {
+    public void testSetProperties_RacingCondition() {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setRuntimeIdPrefix("newPrefix");
         ipsProject.setProperties(props);
@@ -579,7 +579,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetProperties() throws CoreException {
+    public void testSetProperties() {
         IIpsProjectProperties props = ipsProject.getProperties();
         String builderSetId = props.getBuilderSetId();
         props.setBuilderSetId("myBuilder");
@@ -833,7 +833,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDatatypes4Parameters() throws CoreException {
+    public void testFindDatatypes4Parameters() {
         List<Datatype> disallowedTypesTest = new ArrayList<Datatype>(1);
         disallowedTypesTest.add(Datatype.STRING);
         Datatype[] types = ipsProject.findDatatypes(false, false, false, disallowedTypesTest);
@@ -1423,7 +1423,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetIpsObjectPath() throws CoreException {
+    public void testSetIpsObjectPath() {
         IFile projectFile = ipsProject.getIpsProjectPropertiesFile();
         long stamp = projectFile.getModificationStamp();
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
@@ -1982,7 +1982,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ml.getMessageByCode(IIpsProject.MSGCODE_CYCLE_IN_IPS_OBJECT_PATH));
     }
 
-    private void setMinRequiredVersion(String version) throws CoreException {
+    private void setMinRequiredVersion(String version) {
         IIpsProjectProperties props = ipsProject.getProperties();
         props.setMinRequiredVersionNumber("org.faktorips.feature", version);
         ipsProject.setProperties(props);
@@ -2216,7 +2216,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFormulaLanguageLocale() throws CoreException {
+    public void testFormulaLanguageLocale() {
         assertEquals(Locale.GERMAN, ipsProject.getFormulaLanguageLocale());
         IIpsProjectProperties properties = ipsProject.getProperties();
         properties.setFormulaLanguageLocale(Locale.ENGLISH);
