@@ -518,19 +518,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @return The first enumeration type identified by the given qualified name that has been
      *         found.
      * 
-     * @throws CoreException If an error occurs during the search.
      * @throws NullPointerException If qualifiedName is <code>null</code>.
      */
-    public IEnumType findEnumType(String qualifiedName) throws CoreException;
+    public IEnumType findEnumType(String qualifiedName);
 
     /**
      * Returns all {@link IEnumType} objects found in this IPS project. An empty list will be
      * returned if none is found.
-     * 
-     * @throws CoreException if an exception occurs while processing the search.
      */
-    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues)
-            throws CoreException;
+    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues);
 
     /**
      * Returns the first enumeration content that is found within this IPS project that references
