@@ -424,6 +424,16 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     }
 
     private void addFormulaRow(IProductCmptTypeMethod formulaSignature) {
+        IPageElement[] cells;
+        if (formulaSignature.isChangingOverTime()) {
+            cells = createChangeableFormulaRow(formulaSignature);
+        } else {
+            cells = createNotChangeableFormulaRow(formulaSignature);
+        }
+        addSubElement(new TableRowPageElement(cells, getContext()));
+    }
+
+    private IPageElement[] createChangeableFormulaRow(IProductCmptTypeMethod formulaSignature) {
         IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
 
         String labelValue = getContext().getLabel(formulaSignature);
@@ -437,7 +447,18 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             cells[i + 1] = new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(), getContext());
 
         }
-        addSubElement(new TableRowPageElement(cells, getContext()));
+        return cells;
+    }
+
+    private IPageElement[] createNotChangeableFormulaRow(IProductCmptTypeMethod formulaSignature) {
+        IPageElement[] cells = new IPageElement[productCmpt.getNumOfGenerations() + 1];
+        addFirstCellWithNotChangeable(cells, getContext().getLabel(formulaSignature));
+
+        IFormula formula = productCmpt.getFormula(formulaSignature.getFormulaName());
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            cells[i + 1] = new TextPageElement(formula == null ? NOT_AVAILABLE : formula.getExpression(), getContext());
+        }
+        return cells;
     }
 
     private void addAssociations() {
