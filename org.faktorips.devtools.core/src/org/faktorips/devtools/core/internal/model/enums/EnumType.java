@@ -606,8 +606,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Validates whether the <tt>IEnumContent</tt> specified by this <tt>IEnumType</tt> is already
      * used by another <tt>IEnumType</tt>.
      */
-    private void validateEnumContentAlreadyUsed(MessageList validationMessageList, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateEnumContentAlreadyUsed(MessageList validationMessageList, IIpsProject ipsProject) {
 
         IEnumContent enumContent = findEnumContent(ipsProject);
         if (enumContent != null && !enumContent.getEnumType().equals(getQualifiedName())) {
