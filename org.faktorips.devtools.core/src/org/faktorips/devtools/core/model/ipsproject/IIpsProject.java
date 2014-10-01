@@ -156,11 +156,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
      * build path. The parent of the new class loader is the System class loader.
      * 
-     * @throws CoreException if an error occurs while creating the classloader.
-     * 
      * @see ClassLoader#getSystemClassLoader()
      */
-    public ClassLoader getClassLoaderForJavaProject() throws CoreException;
+    public ClassLoader getClassLoaderForJavaProject();
 
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
@@ -168,12 +166,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @param parent The parent class loader.
      * 
-     * @throws CoreException if an error occurs while creating the classloader.
      * @throw {@link NullPointerException} if <code>parent</code> is <code>null</code>.
      * 
      * @since 3.1.0
      */
-    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent) throws CoreException;
+    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent);
 
     /**
      * Returns <code>true</code> if the corresponding Java Project doesn't contain any errors that
@@ -198,12 +195,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      *             Returns all ips projects referenced in the project's IPS object path.
      * 
-     * @throws CoreException if an error occurs.
-     * 
      * @see IIpsObjectPath
      */
     @Deprecated
-    public IIpsProject[] getReferencedIpsProjects() throws CoreException;
+    public IIpsProject[] getReferencedIpsProjects();
 
     /**
      * Returns all {@link IpsProject}s that are directly or indirectly referenced in the project's
@@ -365,15 +360,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * by the first one.
      * <p>
      * If the given ipsObject is <code>null</code>, the method returns <code>false</code>.
-     * 
-     * @throws CoreException if an error occurs while searching the path
      */
-    public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject) throws CoreException;
+    public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject);
 
     /**
      * Returns all output folders specified in the project's object path.
      */
-    public IFolder[] getOutputFolders() throws CoreException;
+    public IFolder[] getOutputFolders();
 
     /**
      * Sets the id of the current artifact builder.
@@ -381,7 +374,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProjectProperties to change the project properties
      */
     @Deprecated
-    public void setCurrentArtefactBuilderSet(String id) throws CoreException;
+    public void setCurrentArtefactBuilderSet(String id);
 
     /**
      * Sets the new object path.
@@ -394,7 +387,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProjectProperties to change the project properties
      */
     @Deprecated
-    public void setValueDatatypes(ValueDatatype[] types) throws CoreException;
+    public void setValueDatatypes(ValueDatatype[] types);
 
     /**
      * Returns the language in that the expression language's functions are used. E.g. the
@@ -475,7 +468,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the first object with the indicated qualified name type found on the object path.
      */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
+    public IIpsObject findIpsObject(QualifiedNameType nameType);
 
     /**
      * Returns the first policy component type with the given qualified name found on the path.

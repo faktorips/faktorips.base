@@ -171,14 +171,10 @@ public class DependencyGraph implements Serializable, IDependencyGraph {
         if (qName == null) {
             return;
         }
-        try {
-            removeDependency(qName);
-            IIpsObject ipsObject = ipsProject.findIpsObject(qName);
-            if (ipsObject != null) {
-                addEntries(ipsObject);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        removeDependency(qName);
+        IIpsObject ipsObject = ipsProject.findIpsObject(qName);
+        if (ipsObject != null) {
+            addEntries(ipsObject);
         }
     }
 

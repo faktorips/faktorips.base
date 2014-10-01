@@ -527,6 +527,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return file.equals(ipsObject.getIpsSrcFile());
     }
 
+    /**
+     * @deprecated use IIpsProjectProperties to change the project properties
+     */
+    @Deprecated
     @Override
     public void setCurrentArtefactBuilderSet(String id) {
         IIpsProjectProperties properties = getProperties();
@@ -540,6 +544,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         saveProjectProperties(properties);
     }
 
+    /**
+     * @deprecated use IIpsProjectProperties to change the project properties
+     */
+    @Deprecated
     @Override
     public void setValueDatatypes(ValueDatatype[] types) {
         String[] ids = new String[types.length];

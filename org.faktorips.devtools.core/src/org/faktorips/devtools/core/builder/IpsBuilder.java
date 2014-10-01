@@ -742,7 +742,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         private List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
         private List<IIpsSrcFile> changedAndAddedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
 
-        private IncBuildVisitor() throws CoreException {
+        private IncBuildVisitor() {
             outputFolders = getIpsProject().getOutputFolders();
         }
 

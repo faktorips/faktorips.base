@@ -91,7 +91,7 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFiles() throws Exception {
+    public void testFindIpsSrcFiles() {
         List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE,
                 new IpsObjectPathSearchContext(project));
 

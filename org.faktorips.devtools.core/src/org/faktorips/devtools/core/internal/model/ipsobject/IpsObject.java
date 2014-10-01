@@ -237,8 +237,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /** Validates whether there is another type in the object path with the same name. */
-    private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject) {
 
         IIpsObject otherIpsObject = ipsProject.findIpsObject(getQualifiedNameType());
         if (otherIpsObject != null && otherIpsObject != this) {
