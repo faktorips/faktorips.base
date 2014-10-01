@@ -406,27 +406,23 @@ public class CreateMissingEnumContentsWizard extends Wizard {
             public Object[] getElements(Object inputElement) {
                 treeStructure.clear();
                 List<IIpsPackageFragment> elements = new ArrayList<IIpsPackageFragment>();
-                try {
-                    IIpsProject targetProject = getTargetIpsProject();
-                    IIpsPackageFragmentRoot targetRoot = getTargetPackageFragmentRoot();
-                    if (targetProject != null) {
-                        for (IEnumType currentEnumType : findEnumTypesNeedingEnumContent(targetProject)) {
-                            String enumContentName = currentEnumType.getEnumContentName();
-                            String currentPackName = StringUtil.getPackageName(enumContentName);
-                            IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(currentPackName);
-                            List<IEnumType> list = treeStructure.get(pack);
-                            if (list == null) {
-                                list = new ArrayList<IEnumType>();
-                            }
-                            list.add(currentEnumType);
-                            treeStructure.put(pack, list);
-                            if (!(elements.contains(pack))) {
-                                elements.add(pack);
-                            }
+                IIpsProject targetProject = getTargetIpsProject();
+                IIpsPackageFragmentRoot targetRoot = getTargetPackageFragmentRoot();
+                if (targetProject != null) {
+                    for (IEnumType currentEnumType : findEnumTypesNeedingEnumContent(targetProject)) {
+                        String enumContentName = currentEnumType.getEnumContentName();
+                        String currentPackName = StringUtil.getPackageName(enumContentName);
+                        IIpsPackageFragment pack = targetRoot.getIpsPackageFragment(currentPackName);
+                        List<IEnumType> list = treeStructure.get(pack);
+                        if (list == null) {
+                            list = new ArrayList<IEnumType>();
+                        }
+                        list.add(currentEnumType);
+                        treeStructure.put(pack, list);
+                        if (!(elements.contains(pack))) {
+                            elements.add(pack);
                         }
                     }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
                 }
                 return elements.toArray();
             }
@@ -459,11 +455,8 @@ public class CreateMissingEnumContentsWizard extends Wizard {
              * 
              * @param ipsProject The IPS project (starting point) where <tt>IEnumType</tt>s needing
              *            <tt>IEnumContent</tt>s shall be searched.
-             * 
-             * @throws CoreException If an error occurs while searching the given IPS project for
-             *             <tt>IEnumType</tt>s.
              */
-            private List<IEnumType> findEnumTypesNeedingEnumContent(IIpsProject ipsProject) throws CoreException {
+            private List<IEnumType> findEnumTypesNeedingEnumContent(IIpsProject ipsProject) {
                 List<IEnumType> enumTypesInProject = ipsProject.findEnumTypes(false, true);
                 List<IEnumType> retEnumTypes = new ArrayList<IEnumType>(enumTypesInProject.size() / 2);
                 for (IEnumType currentEnumType : enumTypesInProject) {

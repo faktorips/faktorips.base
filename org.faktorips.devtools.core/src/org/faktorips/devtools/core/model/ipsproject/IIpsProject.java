@@ -532,10 +532,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the first enumeration content that is found within this IPS project that references
      * the provided enumeration type.
      * 
-     * @throws CoreException if an exception occurs while processing the search
      * @throws NullPointerException if the provided parameter is <code>null</code>
      */
-    public IEnumContent findEnumContent(IEnumType enumType) throws CoreException;
+    public IEnumContent findEnumContent(IEnumType enumType);
 
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
@@ -602,7 +601,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *             performance
      */
     @Deprecated
-    public void findAllIpsObjects(List<IIpsObject> result) throws CoreException;
+    public void findAllIpsObjects(List<IIpsObject> result);
 
     /**
      * Adds all IPS source files within this IpsProject and the IpsProjects this one depends on to

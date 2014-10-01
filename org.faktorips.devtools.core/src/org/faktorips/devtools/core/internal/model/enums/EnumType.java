@@ -995,7 +995,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumContent findEnumContent(IIpsProject ipsProject) throws CoreException {
+    public IEnumContent findEnumContent(IIpsProject ipsProject) {
         return ipsProject.findEnumContent(this);
     }
 

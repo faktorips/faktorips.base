@@ -1157,7 +1157,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public Datatype findDatatype(String qualifiedName) throws CoreException {
+    public Datatype findDatatype(String qualifiedName) {
         if (qualifiedName.equals(Datatype.VOID.getQualifiedName())) {
             return Datatype.VOID;
         }
@@ -1192,8 +1192,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getEnumTypeDatatypeAdapter(resultingQName, this);
     }
 
-    private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject)
-            throws CoreException {
+    private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject) {
 
         IIpsSrcFile enumTypeSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
         if (enumTypeSrcFile != null && enumTypeSrcFile.exists()) {
