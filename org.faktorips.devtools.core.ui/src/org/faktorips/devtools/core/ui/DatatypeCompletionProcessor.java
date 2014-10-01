@@ -87,8 +87,7 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
-            throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result) {
 
         prefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();

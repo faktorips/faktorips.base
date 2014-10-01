@@ -15,11 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.controls.contentproposal.ICachedContentProposalProvider;
 
@@ -128,12 +126,8 @@ public class DatatypeContentProposalProvider implements ICachedContentProposalPr
     }
 
     private Datatype[] findDataType() {
-        try {
-            return ipsProject.findDatatypes(isValueDatatypesOnly(), isIncludeVoid(), isIncludePrimitives(),
-                    getExcludedDatatypes(), isIncludeAbstract());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ipsProject.findDatatypes(isValueDatatypesOnly(), isIncludeVoid(), isIncludePrimitives(),
+                getExcludedDatatypes(), isIncludeAbstract());
     }
 
     @Override

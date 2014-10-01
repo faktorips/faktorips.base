@@ -616,7 +616,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use {@link #findAllIpsSrcFiles(IpsObjectType...)} instead
      */
     @Deprecated
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter) throws CoreException;
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter);
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
@@ -709,10 +709,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException;
+    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -720,11 +718,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives)
-            throws CoreException;
+    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -734,13 +729,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param includePrimitives true if primitive data types are included.
      * @param excludedDatatypes A list of data types that should NOT be included, may be
      *            <code>null</code> if none shall be excluded.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
-            List<Datatype> excludedDatatypes) throws CoreException;
+            List<Datatype> excludedDatatypes);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -751,14 +744,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param excludedDatatypes A list of data types that should NOT be included, may be
      *            code>null</code> if none shall be excluded.
      * @param includeAbstract true if abstract data types should be included.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
             List<Datatype> excludedDatatypes,
-            boolean includeAbstract) throws CoreException;
+            boolean includeAbstract);
 
     /**
      * Returns all enumeration data types accessible on the project's IPS object path.
