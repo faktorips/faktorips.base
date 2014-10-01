@@ -12,7 +12,6 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -31,50 +30,46 @@ import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
-import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
- * Generates the compilation unit that represents the product component generation. Note that only
- * for product component's that contain a config element of type formula a Java compilation unit is
- * generated. This is necessary as the formula is compiled into Java sourcecode and this Java
- * sourcecode is placed in the compilation unit generated for a product component's generation.
+ * Generates the compilation unit that represents the product component. Note that only for product
+ * component's that contain a config element of type formula a Java compilation unit is generated.
+ * This is necessary as the formula is compiled into Java sourcecode and this Java sourcecode is
+ * placed in the compilation unit generated for a product component's generation.
  * 
- * @author Jan Ortmann
  */
-public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder {
+public class ProductCmptCuBuilder extends DefaultJavaSourceFileBuilder {
 
     // property key for the constructor's Javadoc.
     private static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
 
-    // the product component generation sourcecode is generated for.
-    private IProductCmptGeneration generation;
+    // the product component sourcecode is generated for.
+    private IProductCmpt productCmpt;
 
     // builders needed
     private ProductCmptBuilder productCmptBuilder;
     private ProductCmptClassBuilder productCmptImplBuilder;
-    private ProductCmptGenerationClassBuilder productCmptGenImplBuilder;
 
     private MultiStatus buildStatus;
 
-    public ProductCmptGenerationCuBuilder(StandardBuilderSet builderSet, ProductCmptBuilder productCmptBuilder) {
-        super(builderSet, new LocalizedStringsSet(ProductCmptGenerationCuBuilder.class));
+    public ProductCmptCuBuilder(StandardBuilderSet builderSet, ProductCmptBuilder productCmptBuilder) {
+        super(builderSet, new LocalizedStringsSet(ProductCmptCuBuilder.class));
         this.productCmptBuilder = productCmptBuilder;
     }
 
@@ -86,17 +81,13 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         return (StandardBuilderSet)super.getBuilderSet();
     }
 
-    public void setProductCmptGeneration(IProductCmptGeneration generation) {
-        ArgumentCheck.notNull(generation);
-        this.generation = generation;
+    public void setProductCmpt(IProductCmpt productCmpt) {
+        ArgumentCheck.notNull(productCmpt);
+        this.productCmpt = productCmpt;
     }
 
     public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
         productCmptImplBuilder = builder;
-    }
-
-    public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
-        productCmptGenImplBuilder = builder;
     }
 
     @Override
@@ -104,33 +95,25 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
     }
 
-    public IProductCmptType getProductCmptType() {
-        try {
-            return generation.findProductCmptType(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
-    }
-
     @Override
     protected void generateCodeForJavatype() {
-        if (generation == null) {
+        if (productCmpt == null) {
             addToBuildStatus(new IpsStatus(
-                    "The generation needs to be set for this " + ProductCmptGenerationCuBuilder.class)); //$NON-NLS-1$
+                    "The product component needs to be set for this " + ProductCmptCuBuilder.class)); //$NON-NLS-1$
             return;
         }
         TypeSection mainSection = getMainTypeSection();
         mainSection.setClassModifier(Modifier.PUBLIC);
         try {
-            IProductCmptType pcType = generation.getProductCmpt().findProductCmptType(getIpsProject());
+            IProductCmptType pcType = productCmpt.findProductCmptType(getIpsProject());
             mainSection.setUnqualifiedName(getUnqualifiedClassName());
-            mainSection.setSuperClass(productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
+            mainSection.setSuperClass(productCmptImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile()));
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
 
         buildConstructor(mainSection.getConstructorBuilder());
-        IFormula[] formulas = generation.getFormulas();
+        IFormula[] formulas = productCmpt.getFormulas();
         for (final IFormula formula : formulas) {
             if (isGenerateFormula(formula)) {
                 generateMethodForFormula(formula, mainSection.getMethodBuilder());
@@ -160,32 +143,23 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
      * <p>
      * 
      * <pre>
-     * public MotorPolicyPk0(RuntimeRepository repository, String qName, Class policyComponentType) {
-     *     super(registry, qName, policyComponentType);
+     * public MotorPolicyPk0(IRuntimeRepository repository, String id, String kindId, String versionId) {
+     *     super(repository, id, kindId, versionId);
      * }
      * </pre>
      */
     private void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
-        Locale language = getLanguageUsedInGeneratedSourceCode();
-        String genName = getChangesInTimeNamingConvention(generation).getGenerationConceptNameSingular(language);
-        String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC, genName);
+        String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
         try {
+            //
             String className = getUnqualifiedClassName();
-            String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
-            String qualifiedClassName = getImplementationClassProductCmpt();
-            String[] argClassNames = new String[] { qualifiedClassName };
-            JavaCodeFragment body = new JavaCodeFragment("super(productCmpt);"); //$NON-NLS-1$
+            String[] argNames = new String[] { "repository", "id", "kindId", "versionId" }; //$NON-NLS-1$
+            String[] argClassNames = new String[] { "IRuntimeRepository", "String", "String", "String" };
+            JavaCodeFragment body = new JavaCodeFragment("super(repository, id, kindId, versionId);"); //$NON-NLS-1$
+            codeBuilder.addImport(IRuntimeRepository.class.getClass());
             codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
-        }
-    }
-
-    private String getImplementationClassProductCmpt() throws CoreException {
-        if (generation.getProductCmpt().isContainingAvailableFormula()) {
-            return productCmptBuilder.getQualifiedClassName(generation.getProductCmpt());
-        } else {
-            return productCmptImplBuilder.getQualifiedClassName(generation.findProductCmptType(getIpsProject()));
         }
     }
 
@@ -296,17 +270,14 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
 
     @Override
     protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes) {
-        IProductCmpt productCmpt = (IProductCmpt)ipsObject;
-        for (IIpsObjectGeneration currentGeneration : productCmpt.getGenerations()) {
-            IIpsSrcFile generationSrcFile = productCmptBuilder.getVirtualIpsSrcFile((IProductCmptGeneration)currentGeneration);
-            try {
-                String typeName = getUnqualifiedClassName(generationSrcFile);
-                ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName
-                        + JavaClassNaming.JAVA_EXTENSION);
-                javaTypes.add(compilationUnit.getType(typeName));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e.getMessage(), e);
-            }
+        IProductCmpt currentProductCmpt = (IProductCmpt)ipsObject;
+        IIpsSrcFile productCmptSrcFile = productCmptBuilder.getVirtualIpsSrcFile(currentProductCmpt);
+        try {
+            String typeName = getUnqualifiedClassName(productCmptSrcFile);
+            ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName + JavaClassNaming.JAVA_EXTENSION);
+            javaTypes.add(compilationUnit.getType(typeName));
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e.getMessage(), e);
         }
     }
 

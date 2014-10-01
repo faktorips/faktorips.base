@@ -37,10 +37,12 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
     private MultiStatus buildStatus;
     private ProductCmptGenerationCuBuilder generationBuilder;
+    private ProductCmptCuBuilder productCmptBuilder;
 
     public ProductCmptBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
         generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, this);
+        productCmptBuilder = new ProductCmptCuBuilder(builderSet, this);
     }
 
     @Override
@@ -49,6 +51,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
+        productCmptBuilder.setProductCmptImplBuilder(builder);
         generationBuilder.setProductCmptImplBuilder(builder);
     }
 
@@ -68,12 +71,14 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
+        productCmptBuilder.beforeBuildProcess(project, buildKind);
         generationBuilder.beforeBuildProcess(project, buildKind);
     }
 
     @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.afterBuildProcess(project, buildKind);
+        productCmptBuilder.afterBuildProcess(project, buildKind);
         generationBuilder.afterBuildProcess(project, buildKind);
     }
 
@@ -92,6 +97,9 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (productCmpt.isValid(getIpsProject())) {
+            if (mustFileBeBuild(productCmpt)) {
+                build(productCmpt);
+            }
             IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
             for (IIpsObjectGeneration generation : generations) {
                 if (mustFileBeBuild((IProductCmptGeneration)generation)) {
@@ -99,6 +107,16 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 }
             }
         }
+    }
+
+    private void build(IProductCmpt productCmpt) throws CoreException {
+        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(productCmpt);
+        productCmptBuilder.setProductCmpt(productCmpt);
+        productCmptBuilder.beforeBuild(ipsSrcFile, buildStatus);
+        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+            productCmptBuilder.build(ipsSrcFile);
+        }
+        productCmptBuilder.afterBuild(ipsSrcFile);
     }
 
     private void build(IProductCmptGeneration generation) throws CoreException {
@@ -115,6 +133,12 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder.setProductCmptGeneration(generation);
         IIpsSrcFile file = getVirtualIpsSrcFile(generation);
         return generationBuilder.getQualifiedClassName(file);
+    }
+
+    public String getQualifiedClassName(IProductCmpt productCmpt) throws CoreException {
+        productCmptBuilder.setProductCmpt(productCmpt);
+        IIpsSrcFile file = getVirtualIpsSrcFile(productCmpt);
+        return productCmptBuilder.getQualifiedClassName(file);
     }
 
     /**
@@ -134,6 +158,16 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
             return false;
         }
         if (productCmptGeneration.findProductCmptType(productCmptGeneration.getIpsProject()) == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean mustFileBeBuild(IProductCmpt productCmpt) throws CoreException {
+        if (!productCmpt.isContainingAvailableFormula()) {
+            return false;
+        }
+        if (productCmpt.findProductCmptType(productCmpt.getIpsProject()) == null) {
             return false;
         }
         return true;
@@ -174,6 +208,13 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
         name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
         return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
+                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
+    }
+
+    IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) {
+        String name = getUnchangedJavaSrcFilePrefix(productCmpt.getIpsSrcFile());
+        name = productCmpt.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
+        return productCmpt.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
                 .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
     }
 

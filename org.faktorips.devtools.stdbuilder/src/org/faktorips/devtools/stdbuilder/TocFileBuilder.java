@@ -366,8 +366,14 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 ProductCmptXMLBuilder.class).getXmlContentRelativeFile(productCmpt.getIpsSrcFile());
         String ipsObjectId = productCmpt.getRuntimeId();
         String ipsObjectQName = productCmpt.getQualifiedName();
-        String implementationClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(
-                pcType.getIpsSrcFile());
+
+        String implementationClass;
+        if (productCmpt.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+            implementationClass = getBuilderSet().getProductCmptBuilder().getQualifiedClassName(productCmpt);
+        } else {
+            implementationClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(
+                    pcType.getIpsSrcFile());
+        }
         String generationImplClass = getBuilderSet().getProductCmptGenImplClassBuilder().getQualifiedClassName(
                 pcType.getIpsSrcFile());
         String kindId = productCmpt.getKindId().getRuntimeId();
@@ -471,7 +477,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         }
         TocEntryObject entry = new EnumXmlAdapterTocEntry(enumType.getQualifiedName(), enumType.getQualifiedName(),
                 getBuilderSet().getBuilderById(BuilderKindIds.ENUM_XML_ADAPTER, EnumXmlAdapterBuilder.class)
-                        .getQualifiedClassName(enumType));
+                .getQualifiedClassName(enumType));
         return entry;
     }
 
