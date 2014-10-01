@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsLibraryEntry;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathEntry;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathSearchContext;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.ipsproject.LibraryIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer.IpsContainer4JdtClasspathContainer;
@@ -112,12 +111,12 @@ public class IpsBundleEntry extends IpsLibraryEntry {
     }
 
     @Override
-    public boolean containsResource(String resourcePath, IpsObjectPathSearchContext searchContext) {
+    public boolean containsResource(String resourcePath) {
         return ipsBundle.contains(new Path(resourcePath));
     }
 
     @Override
-    public InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext) {
+    public InputStream getResourceAsStream(String path) {
         return ipsBundle.getResourceAsStream(path);
     }
 

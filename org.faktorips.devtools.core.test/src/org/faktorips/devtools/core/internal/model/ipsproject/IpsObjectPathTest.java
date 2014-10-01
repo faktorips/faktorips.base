@@ -261,17 +261,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetAllReferencedIpsProjects_refInContainer() throws CoreException {
-        refProject = newIpsProject("RefProject");
-        refProject2 = newIpsProject("RefProject2");
-        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
-        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
-        path.newIpsProjectRefEntry(refProject);
-        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
-        entryRef.setReexported(false);
-        ipsProject.setIpsObjectPath(path);
-        refProject.setIpsObjectPath(pathRef);
-        refProject2.setIpsObjectPath(pathRef2);
+    public void testFindAllReferencedIpsProjects_refInContainer() throws CoreException {
+        setUpReferencedProjects(false);
 
         List<IIpsProject> projects = path.getAllReferencedIpsProjects();
 
@@ -541,7 +532,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     private void setUpReferencedProjects(boolean reexportProjects) throws CoreException {
         refProject = newIpsProject("RefProject");
         refProject2 = newIpsProject("RefProject2");
-        ipsProject = newIpsProject();
+        // ipsProject = newIpsProject();
         refProject2Root = newIpsPackageFragmentRoot(refProject2, null, "packageFragment");
 
         IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
@@ -597,9 +588,8 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testGetResourceAsStreamInternal() throws CoreException {
         setUpReferencedProjects(false);
         createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), "file.txt", "111");
-        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
 
-        InputStream resourceAsStream = path.getResourceAsStream("file.txt", searchContext);
+        InputStream resourceAsStream = path.getResourceAsStream("file.txt");
         assertNull(resourceAsStream);
     }
 

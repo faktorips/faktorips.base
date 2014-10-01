@@ -15,11 +15,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -27,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -48,15 +48,12 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
     private IpsObjectPath path;
 
-    private IpsObjectPathSearchContext searchContext;
-
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject("TestProject");
         path = new IpsObjectPath(ipsProject);
-        searchContext = new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -218,22 +215,22 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsResource_true() throws Exception {
-        IpsProject referencedProject = mock(IpsProject.class);
-        IpsObjectPath ipsObjectPath = mock(IpsObjectPath.class);
-        when(ipsObjectPath.containsResource(MY_RESOURCE_PATH, searchContext)).thenReturn(true);
-        when(ipsObjectPath.getIpsProject()).thenReturn(referencedProject);
-        when(referencedProject.getIpsObjectPathInternal()).thenReturn(ipsObjectPath);
-        when(referencedProject.getName()).thenReturn("refProject");
+        IIpsProject referencedProject = newIpsProject("refProj");
+
+        IpsObjectPath ipsObjectPath = new IpsObjectPath(referencedProject);
+        referencedProject.setIpsObjectPath(ipsObjectPath);
+        IIpsPackageFragmentRoot refProject2Root = newIpsPackageFragmentRoot(referencedProject, null, "root1");
+        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), MY_RESOURCE_PATH, "111");
         IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(ipsObjectPath, referencedProject);
 
-        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH, searchContext));
+        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH));
     }
 
     @Test
     public void testContainsResource_false() throws Exception {
         IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, ipsProject);
 
-        assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH, searchContext));
+        assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH));
     }
 
 }

@@ -55,8 +55,6 @@ public class IpsContainerEntryTest {
 
     private IpsContainerEntry ipsContainerEntry;
 
-    private IpsObjectPathSearchContext searchContext;
-
     @Before
     public void createIpsContainerEntry() throws Exception {
         ipsContainerEntry = new IpsContainerEntry(path);
@@ -66,7 +64,7 @@ public class IpsContainerEntryTest {
         when(ipsProject.getIpsModel()).thenReturn(ipsModel);
         when(ipsProject.getName()).thenReturn("ipsProject");
 
-        searchContext = new IpsObjectPathSearchContext(ipsProject);
+        new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -131,7 +129,7 @@ public class IpsContainerEntryTest {
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         mockEntry(container);
 
-        ipsContainerEntry.getResourceAsStream(resourcePath, new IpsObjectPathSearchContext(ipsProject));
+        ipsContainerEntry.getResourceAsStream(resourcePath);
     }
 
     @Test
@@ -140,11 +138,10 @@ public class IpsContainerEntryTest {
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         IpsObjectPathEntry mockEntry = mockEntry(container);
         InputStream inputStream = mock(InputStream.class);
-        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
-        when(mockEntry.getResourceAsStream(resourcePath, searchContext)).thenReturn(inputStream);
-        when(mockEntry.containsResource(resourcePath, searchContext)).thenReturn(true);
+        when(mockEntry.getResourceAsStream(resourcePath)).thenReturn(inputStream);
+        when(mockEntry.containsResource(resourcePath)).thenReturn(true);
 
-        InputStream resourceAsStream = ipsContainerEntry.getResourceAsStream(resourcePath, searchContext);
+        InputStream resourceAsStream = ipsContainerEntry.getResourceAsStream(resourcePath);
 
         assertEquals(inputStream, resourceAsStream);
     }
@@ -155,7 +152,7 @@ public class IpsContainerEntryTest {
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         mockEntry(container);
 
-        boolean containsResource = ipsContainerEntry.containsResource(resourcePath, searchContext);
+        boolean containsResource = ipsContainerEntry.containsResource(resourcePath);
 
         assertFalse(containsResource);
     }
@@ -165,9 +162,9 @@ public class IpsContainerEntryTest {
         String resourcePath = "myResourcePath";
         IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
         IpsObjectPathEntry entry = mockEntry(container);
-        when(entry.containsResource(resourcePath, searchContext)).thenReturn(true);
+        when(entry.containsResource(resourcePath)).thenReturn(true);
 
-        boolean containsResource = ipsContainerEntry.containsResource(resourcePath, searchContext);
+        boolean containsResource = ipsContainerEntry.containsResource(resourcePath);
 
         assertTrue(containsResource);
     }

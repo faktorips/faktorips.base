@@ -375,7 +375,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public boolean containsResource(String resourcePath, IpsObjectPathSearchContext searchContext) {
+    public boolean containsResource(String resourcePath) {
         IFile file = getSourceFolder().getFile(resourcePath);
         return file.exists();
     }
@@ -384,7 +384,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
      * Interprets the given path as relative to the referenced sourcefolder.
      */
     @Override
-    public InputStream getResourceAsStream(String pathAsString, IpsObjectPathSearchContext searchContext) {
+    public InputStream getResourceAsStream(String pathAsString) {
         IFile file = getSourceFolder().getFile(pathAsString);
         try {
             return file.getContents();

@@ -10,30 +10,41 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public class CycleSearch extends AbstractSearch {
+/**
+ * An implementation of {@link AbstractSearch} to determine if specific {@link IIpsObjectPathEntry}s
+ * contains specific resources.
+ */
+public class ResourceSearch extends AbstractSearch {
 
-    private boolean isCycleDetected = false;
-    private final IIpsProject initialProject;
+    private IIpsObjectPathEntry resource;
 
-    public CycleSearch(IIpsProject initialProject) {
-        this.initialProject = initialProject;
+    private final String path;
+
+    private boolean containsResource;
+
+    public ResourceSearch(String path) {
+        this.path = path;
     }
 
     @Override
     public SearchState processEntry(IIpsObjectPathEntry entry) {
-        if (isProjectRefEntry(entry)) {
-            if (initialProject.equals(getReferencedIpsProject(entry))) {
-                isCycleDetected = true;
+        if (!(isProjectRefEntry(entry)) || isContainerEntry(entry)) {
+            if (entry.containsResource(path)) {
+                resource = entry;
+                containsResource = true;
                 return SearchState.STOP_SEARCH;
             }
         }
         return SearchState.CONTINUE_SEARCH;
+
     }
 
-    public boolean isCycleDetected() {
-        return isCycleDetected;
+    public IIpsObjectPathEntry getResource() {
+        return resource;
     }
 
+    public boolean containsResource() {
+        return containsResource;
+    }
 }

@@ -168,10 +168,10 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
     }
 
     @Override
-    public boolean containsResource(String resourcePath, IpsObjectPathSearchContext searchContext) {
+    public boolean containsResource(String resourcePath) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(resourcePath, searchContext)) {
+            if (entry.containsResource(resourcePath)) {
                 return true;
             }
         }
@@ -182,11 +182,11 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    public InputStream getResourceAsStream(String resourcePath, IpsObjectPathSearchContext searchContext) {
+    public InputStream getResourceAsStream(String resourcePath) {
         List<IIpsObjectPathEntry> entries = resolveEntries();
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(resourcePath, searchContext)) {
-                InputStream stream = entry.getResourceAsStream(resourcePath, searchContext);
+            if (entry.containsResource(resourcePath)) {
+                InputStream stream = entry.getResourceAsStream(resourcePath);
                 return stream;
             }
         }

@@ -163,11 +163,10 @@ public interface IIpsObjectPathEntry {
      * relative to the entry's resource root.
      * 
      * @param resourcePath The path of the requested resource
-     * @param searchContext Is used to check if an entry is applicable
      * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
      *         not
      */
-    public boolean containsResource(String resourcePath, IpsObjectPathSearchContext searchContext);
+    public boolean containsResource(String resourcePath);
 
     /**
      * Returns an {@link InputStream} that provides a resource's/file's contents. The given path is
@@ -177,14 +176,13 @@ public interface IIpsObjectPathEntry {
      * <p>
      * This method may throw a {@link RuntimeException} or {@link CoreRuntimeException} if there
      * occur any exception while searching the requested resource. To avoid exceptions first check
-     * whether the resource exists in this entry by calling
-     * {@link #containsResource(String, IpsObjectPathSearchContext)}
+     * whether the resource exists in this entry by calling {@link #containsResource(String)}
      * 
      * @param path The path of the requested resource
      * @return The {@link InputStream} of the resource. Make sure to close the input stream after
      *         reading.
      */
-    public InputStream getResourceAsStream(String path, IpsObjectPathSearchContext searchContext);
+    public InputStream getResourceAsStream(String path);
 
     /**
      * Returns <code>true</code> if this entry should be reexported.

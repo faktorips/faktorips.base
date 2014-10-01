@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 
 /**
  * An implementation of {@link AbstractSearch} in order to process {@link IpsProjectRefEntry}
@@ -25,8 +24,8 @@ public class ProjectSearch extends AbstractSearch {
 
     @Override
     public SearchState processEntry(IIpsObjectPathEntry entry) {
-        if (entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
-            projects.add(((IIpsProjectRefEntry)entry).getReferencedIpsProject());
+        if (isProjectRefEntry(entry)) {
+            projects.add(getReferencedIpsProject(entry));
         }
         return SearchState.CONTINUE_SEARCH;
     }

@@ -31,7 +31,6 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathSearchContext;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry.IpsStrorageFactory;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -65,13 +64,10 @@ public class IpsBundleEntryTest {
 
     private IpsBundleEntry ipsBundleEntry;
 
-    private IpsObjectPathSearchContext searchContext;
-
     @Before
     public void createIpsJarBundleEntry() throws Exception {
         ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
         when(ipsProject.getName()).thenReturn("ipsProject");
-        searchContext = new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -105,7 +101,7 @@ public class IpsBundleEntryTest {
     public void testGetResourceAsStream() throws Exception {
         initStorage();
         when(ipsProject.getName()).thenReturn("ipsProject");
-        ipsBundleEntry.getResourceAsStream("testAnyPath", new IpsObjectPathSearchContext(ipsProject));
+        ipsBundleEntry.getResourceAsStream("testAnyPath");
 
         verify(ipsJarBundle).getResourceAsStream("testAnyPath");
     }
@@ -213,7 +209,7 @@ public class IpsBundleEntryTest {
         String path = "myResourcePath";
         when(ipsJarBundle.contains(new Path(path))).thenReturn(true);
 
-        boolean exists = ipsBundleEntry.containsResource(path, searchContext);
+        boolean exists = ipsBundleEntry.containsResource(path);
 
         assertTrue(exists);
     }
@@ -223,7 +219,7 @@ public class IpsBundleEntryTest {
         initStorage();
         String path = "myResourcePath";
 
-        boolean exists = ipsBundleEntry.containsResource(path, searchContext);
+        boolean exists = ipsBundleEntry.containsResource(path);
 
         assertFalse(exists);
     }

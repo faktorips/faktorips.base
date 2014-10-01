@@ -166,21 +166,21 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsResource_false() throws Exception {
-        boolean containsResource = entry.containsResource("asdasd", searchContext);
+        boolean containsResource = entry.containsResource("asdasd");
 
         assertFalse(containsResource);
     }
 
     @Test
     public void testContainsResource_ipsObject() throws Exception {
-        boolean containsResource = entry.containsResource("pack1/MotorPolicy.ipspolicycmpttype", searchContext);
+        boolean containsResource = entry.containsResource("pack1/MotorPolicy.ipspolicycmpttype");
 
         assertTrue(containsResource);
     }
 
     @Test
     public void testContainsResource_resource() throws Exception {
-        boolean containsResource = entry.containsResource("myTest.gif", searchContext);
+        boolean containsResource = entry.containsResource("myTest.gif");
 
         assertTrue(containsResource);
     }

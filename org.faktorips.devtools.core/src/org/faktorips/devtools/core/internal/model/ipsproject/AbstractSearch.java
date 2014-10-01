@@ -10,6 +10,8 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 
 /**
  * {@link AbstractSearch} is designed for processing different {@link IpsObjectPathEntry}s.
@@ -26,6 +28,18 @@ public abstract class AbstractSearch {
 
     public boolean isIncludeIndirect() {
         return isIncludeIndirect;
+    }
+
+    protected boolean isContainerEntry(IIpsObjectPathEntry entry) {
+        return entry.getType().equals(IIpsObjectPathEntry.TYPE_CONTAINER);
+    }
+
+    protected boolean isProjectRefEntry(IIpsObjectPathEntry entry) {
+        return entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
+    }
+
+    protected IIpsProject getReferencedIpsProject(IIpsObjectPathEntry entry) {
+        return ((IIpsProjectRefEntry)entry).getReferencedIpsProject();
     }
 
     public enum SearchState {
