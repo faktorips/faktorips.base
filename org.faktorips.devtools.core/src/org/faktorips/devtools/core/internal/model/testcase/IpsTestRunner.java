@@ -339,11 +339,11 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Create the string containing the additional repository packages
      */
     private String fillArgsRepositoryPackages(IIpsProject currentIpsProject) throws CoreException {
-        String argument = StringUtils.EMPTY;
+        StringBuffer argument = new StringBuffer();
         for (String repositoryPackages : getAllRepositoryPackagesAsString(currentIpsProject)) {
-            argument += BRACELEFT + repositoryPackages + BRACERIGHT;
+            argument.append(BRACELEFT + repositoryPackages + BRACERIGHT);
         }
-        return argument;
+        return argument.toString();
     }
 
     private IIpsProject getCurrentIpsProject(IIpsProject currentIpsProject) {
@@ -683,7 +683,7 @@ public class IpsTestRunner implements IIpsTestRunner {
         String failureDetailsLine = newLine.substring(SocketIpsTestRunner.TEST_FAILED.length());
         String qualifiedTest = failureDetailsLine.substring(0,
                 failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS));
-        ArrayList<String> failureTokens = new ArrayList<String>(5);
+        List<String> failureTokens = new ArrayList<String>(5);
         while (failureDetailsLine.length() > 0) {
             String token = ""; //$NON-NLS-1$
             int end = failureDetailsLine.indexOf(SocketIpsTestRunner.TEST_FAILED_DELIMITERS);
@@ -697,7 +697,7 @@ public class IpsTestRunner implements IIpsTestRunner {
             }
             failureTokens.add(token);
         }
-        notifyTestFailureOccured(qualifiedTest, failureTokens.toArray(new String[0]));
+        notifyTestFailureOccured(qualifiedTest, failureTokens.toArray(new String[failureTokens.size()]));
     }
 
     private void parseAllTestsStarted(String line, int count) {
