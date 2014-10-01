@@ -717,7 +717,7 @@ public class SourcePage extends WizardPage {
         }
 
         if (getWizard().getDeepCopyPreview().getErrorElements().size() != 0) {
-            setErrorMessage(Messages.SourcePage_msgCopyNotPossible // NLS-1$
+            setErrorMessage(Messages.SourcePage_msgCopyNotPossible
                     + getWizard().getDeepCopyPreview().getFirstErrorText());
             return;
         }
@@ -775,15 +775,20 @@ public class SourcePage extends WizardPage {
             getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    if (monitor == null) {
-                        monitor = new NullProgressMonitor();
-                    }
-                    monitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
-                    SubProgressMonitor subProgressMonitor = new SubProgressMonitor(monitor, 6);
+                    IProgressMonitor progressMonitor = createMonitorIfNull(monitor);
+                    progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
+                    SubProgressMonitor subProgressMonitor = new SubProgressMonitor(progressMonitor, 6);
                     getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
-                    monitor.worked(1);
+                    progressMonitor.worked(1);
                     tree.refresh();
-                    monitor.worked(1);
+                    progressMonitor.worked(1);
+                }
+
+                private IProgressMonitor createMonitorIfNull(IProgressMonitor monitor) {
+                    if (monitor == null) {
+                        return new NullProgressMonitor();
+                    }
+                    return monitor;
                 }
             });
         } catch (InvocationTargetException e) {
@@ -822,7 +827,7 @@ public class SourcePage extends WizardPage {
                     IProductCmptStructureReference reference = (IProductCmptStructureReference)evt.getSource();
                     if (reference.getParent() != null) {
                         // do not expand/collapse for root node
-                        if (evt.getNewValue().equals(true) || evt.getNewValue() == CopyOrLink.COPY) {
+                        if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
                             tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
                         } else {
                             tree.collapseToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);

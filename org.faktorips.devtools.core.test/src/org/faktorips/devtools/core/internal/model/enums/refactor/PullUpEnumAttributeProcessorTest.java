@@ -50,7 +50,7 @@ public class PullUpEnumAttributeProcessorTest {
     private IEnumAttribute enumAttribute;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(enumAttribute.getIpsProject()).thenReturn(ipsProject);
         when(enumAttribute.getEnumType()).thenReturn(enumType);
@@ -64,7 +64,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testCheckInitialConditionsThisLiteralNameEnumAttribute() throws CoreException {
+    public void testCheckInitialConditionsThisLiteralNameEnumAttribute() {
         enumAttribute = mock(IEnumLiteralNameAttribute.class);
         pullUpEnumAttributeProcessor = new PullUpEnumAttributeProcessor(enumAttribute);
 
@@ -75,7 +75,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testCheckInitialConditionsThisEnumTypeHasNoSuperEnumType() throws CoreException {
+    public void testCheckInitialConditionsThisEnumTypeHasNoSuperEnumType() {
         when(enumType.hasSuperEnumType()).thenReturn(false);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -85,7 +85,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testCheckInitialConditionsThisSuperEnumTypeCannotBeFound() throws CoreException {
+    public void testCheckInitialConditionsThisSuperEnumTypeCannotBeFound() {
         when(enumType.findSuperEnumType(ipsProject)).thenReturn(null);
 
         RefactoringStatus status = new RefactoringStatus();
@@ -95,7 +95,7 @@ public class PullUpEnumAttributeProcessorTest {
     }
 
     @Test
-    public void testCheckInitialConditionsThisValid() throws CoreException {
+    public void testCheckInitialConditionsThisValid() {
         RefactoringStatus status = new RefactoringStatus();
         pullUpEnumAttributeProcessor.checkInitialConditionsThis(status, progressMonitor);
 

@@ -178,7 +178,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
+    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) {
         if (superEnumTypeCandidate == null) {
             return false;
         }
@@ -195,7 +195,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException {
+    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) {
         if (equals(superEnumTypeCandidate)) {
             return true;
         }
@@ -652,7 +652,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
         }
     }
 
-    private IEnumAttribute getIdentifierAttribute() throws CoreException {
+    private IEnumAttribute getIdentifierAttribute() {
         IEnumAttribute identifierAttribute;
         if (hasSuperEnumType()) {
             identifierAttribute = findSuperEnumType(getIpsProject()).findIdentiferAttribute(getIpsProject());
@@ -740,7 +740,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
      * Returns all <tt>IEnumAttribute</tt>s that are defined in the supertype hierarchy of this
      * <tt>IEnumType</tt>.
      */
-    private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IIpsProject ipsProject) throws CoreException {
+    private List<IEnumAttribute> findAllAttributesInSupertypeHierarchy(IIpsProject ipsProject) {
         List<IEnumAttribute> returnAttributesList = new ArrayList<IEnumAttribute>();
 
         /*
@@ -759,7 +759,7 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException {
+    public IEnumType findSuperEnumType(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         if (!hasSuperEnumType()) {
@@ -881,12 +881,12 @@ public class EnumType extends EnumValueContainer implements IEnumType {
     }
 
     @Override
-    public boolean hasExistingSuperEnumType(IIpsProject ipsProject) throws CoreException {
+    public boolean hasExistingSuperEnumType(IIpsProject ipsProject) {
         return findSuperEnumType(ipsProject) != null;
     }
 
     @Override
-    public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException {
+    public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) {
         ArgumentCheck.notNull(ipsProject);
 
         final List<IEnumType> superEnumTypes = new ArrayList<IEnumType>();

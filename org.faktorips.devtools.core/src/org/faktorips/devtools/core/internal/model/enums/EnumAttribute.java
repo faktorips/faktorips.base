@@ -232,7 +232,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Validates the <tt>datatype</tt> property. */
-    private void validateDatatype(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateDatatype(MessageList list, IIpsProject ipsProject) {
         String text;
         Message validationMessage;
         IEnumType enumType = getEnumType();
@@ -306,7 +306,7 @@ public class EnumAttribute extends AtomicIpsObjectPart implements IEnumAttribute
     }
 
     /** Checks the existence of the attribute in the supertype hierarchy. */
-    private void validateInherited(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateInherited(MessageList list, IIpsProject ipsProject) {
         if (!(getEnumType().hasSuperEnumType())) {
             String text = Messages.EnumAttribute_InheritedButNoSupertype;
             Message validationMessage = new Message(MSGCODE_ENUM_ATTRIBUTE_INHERITED_BUT_NO_SUPERTYPE, text,

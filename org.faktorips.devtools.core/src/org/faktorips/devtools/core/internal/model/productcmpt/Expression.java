@@ -23,7 +23,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
@@ -224,19 +223,15 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         }
         IParameter[] params = method.getParameters();
         for (IParameter param : params) {
-            try {
-                Datatype datatype = ipsProject.findDatatype(param.getDatatype());
-                if (datatype instanceof EnumDatatype) {
-                    enumtypes.put(datatype.getName(), (EnumDatatype)datatype);
-                    continue;
-                }
-                if (datatype instanceof IPolicyCmptType) {
-                    IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
-                    EnumDatatypesCollector collector = new EnumDatatypesCollector(ipsProject, enumtypes);
-                    collector.start(policyCmptType);
-                }
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
+            Datatype datatype = ipsProject.findDatatype(param.getDatatype());
+            if (datatype instanceof EnumDatatype) {
+                enumtypes.put(datatype.getName(), (EnumDatatype)datatype);
+                continue;
+            }
+            if (datatype instanceof IPolicyCmptType) {
+                IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
+                EnumDatatypesCollector collector = new EnumDatatypesCollector(ipsProject, enumtypes);
+                collector.start(policyCmptType);
             }
         }
     }
@@ -246,11 +241,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             return;
         }
         ValueDatatype datatype = null;
-        try {
-            datatype = ipsProject.findValueDatatype(datatypeName);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        datatype = ipsProject.findValueDatatype(datatypeName);
         if (datatype instanceof EnumDatatype) {
             types.put(datatypeName, (EnumDatatype)datatype);
         }

@@ -58,8 +58,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     private QualifiedNameType qntMotorPolicy;
     private QualifiedNameType qntMotorCollision;
 
-    private IpsObjectPathSearchContext searchContext;
-
     @Override
     @Before
     public void setUp() throws Exception {
@@ -86,8 +84,6 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
         IIpsObjectPath path = project.getIpsObjectPath();
         entry = (IpsArchiveEntry)path.newArchiveEntry(archivePath);
         project.setIpsObjectPath(path);
-
-        searchContext = new IpsObjectPathSearchContext(project);
     }
 
     @Test

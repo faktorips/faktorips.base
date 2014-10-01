@@ -102,7 +102,7 @@ public class RenameEnumAttributeProcessor extends IpsRenameProcessor {
         }
     }
 
-    private void updateSubclassReferences() throws CoreException {
+    private void updateSubclassReferences() {
         for (IIpsSrcFile ipsSrcFile : enumTypeSrcFiles) {
             IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
             boolean isSubEnumType = enumType.isSubEnumTypeOf(getEnumType(), getIpsProject());

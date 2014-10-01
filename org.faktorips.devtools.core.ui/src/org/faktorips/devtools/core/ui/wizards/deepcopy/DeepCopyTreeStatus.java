@@ -164,29 +164,32 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     private LinkStatus setStatusInternal(IProductCmptStructureReference reference,
             Boolean checked,
             CopyOrLink copyOrLink) {
+        Boolean isChecked = checked;
+        CopyOrLink copyOrLinkStatus = copyOrLink;
         IIpsObjectPart part = reference.getWrapped();
         IProductCmpt parent = getProductCmpt(part);
         Map<IIpsObjectPart, LinkStatus> statusMap = getStatusMap(parent);
         LinkStatus linkStatus = statusMap.get(part);
         if (linkStatus == null) {
-            if (checked == null) {
-                checked = true;
+            if (isChecked == null) {
+                isChecked = true;
             }
-            if (copyOrLink == null) {
-                copyOrLink = CopyOrLink.COPY;
+            if (copyOrLinkStatus == null) {
+                copyOrLinkStatus = CopyOrLink.COPY;
             }
-            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checked, copyOrLink);
+            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), isChecked,
+                    copyOrLinkStatus);
         }
-        if (checked != null) {
+        if (isChecked != null) {
             if (reference.getParent() == null) {
                 // root node must be checked
                 linkStatus.setChecked(true);
             } else {
-                linkStatus.setChecked(checked);
+                linkStatus.setChecked(isChecked);
             }
         }
-        if (copyOrLink != null) {
-            linkStatus.setCopyOrLink(copyOrLink);
+        if (copyOrLinkStatus != null) {
+            linkStatus.setCopyOrLink(copyOrLinkStatus);
         }
         statusMap.put(part, linkStatus);
         return linkStatus;
@@ -304,12 +307,15 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public boolean isEnabled(IProductCmptStructureReference reference) {
         boolean enabled = isChecked(reference);
         IProductCmptStructureReference parent = reference;
-        while (enabled && (parent = parent.getParent()) != null) {
+        parent = parent.getParent();
+        while (enabled && parent != null) {
             if (parent instanceof IProductCmptTypeAssociationReference) {
+                parent = parent.getParent();
                 continue;
             } else {
                 LinkStatus status = getStatus(parent);
                 enabled = enabled && status.isChecked() && status.getCopyOrLink() == CopyOrLink.COPY;
+                parent = parent.getParent();
             }
         }
         return enabled;

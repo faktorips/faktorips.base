@@ -1207,7 +1207,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException {
+    public ValueDatatype findValueDatatype(String qualifiedName) {
         if (qualifiedName == null) {
             return null;
         }
@@ -1230,7 +1230,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private ValueDatatype findValueDatatype(IpsProject ipsProject,
             String qualifiedName,
-            Set<IIpsProject> visitedProjects) throws CoreException {
+            Set<IIpsProject> visitedProjects) {
 
         ValueDatatype datatype = getIpsModel().getValueDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
         if (datatype != null) {
@@ -1330,7 +1330,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public DatatypeHelper findDatatypeHelper(String qName) throws CoreException {
+    public DatatypeHelper findDatatypeHelper(String qName) {
         Datatype datatype = findDatatype(qName);
         return getDatatypeHelper(datatype);
     }

@@ -106,7 +106,7 @@ public class EnumTypeRefControl extends IpsObjectRefControl {
     }
 
     /** Returns whether the given <tt>IEnumType</tt> is a subtype of the current <tt>IEnumType</tt>. */
-    private boolean isSubtypeOfCurrentEnumType(IEnumType enumType) throws CoreException {
+    private boolean isSubtypeOfCurrentEnumType(IEnumType enumType) {
         if (currentEnumType == null) {
             return false;
         }

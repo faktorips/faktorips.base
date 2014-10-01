@@ -33,7 +33,6 @@ import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -140,7 +139,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return false;
     }
 
-    private Set<IIndex> getIndicesForKeysWithSameDatatypeSequence() throws CoreException {
+    private Set<IIndex> getIndicesForKeysWithSameDatatypeSequence() {
         List<IIndex> keys = getIndices();
         Set<IIndex> sameDatatype = new HashSet<IIndex>();
         int i = 0;
@@ -168,7 +167,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void buildFindMethodNames() throws CoreException {
+    private void buildFindMethodNames() {
         List<IIndex> keys = getIndices();
         Set<IIndex> keysWithSameDatatypeSequence = getIndicesForKeysWithSameDatatypeSequence();
         for (IIndex index : keys) {
@@ -192,7 +191,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private boolean compareByDatatypeOnly(IIndex first, IIndex second) throws CoreException {
+    private boolean compareByDatatypeOnly(IIndex first, IIndex second) {
 
         String[] firstkeyItems = first.getKeyItemNames();
         String[] secondkeyItems = second.getKeyItemNames();
@@ -975,7 +974,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return fragment;
     }
 
-    private Datatype getDatatypeForKeyName(String keyName) throws CoreException {
+    private Datatype getDatatypeForKeyName(String keyName) {
         IColumn column = getTableStructure().getColumn(keyName);
         if (column != null) {
             return findDatatype(column.getDatatype(), column.getIpsProject());
@@ -989,11 +988,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
     private String getJavaClassName(String keyName) {
         Datatype datatypeForKeyName;
-        try {
-            datatypeForKeyName = getDatatypeForKeyName(keyName);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        datatypeForKeyName = getDatatypeForKeyName(keyName);
         if (datatypeForKeyName != null) {
             return datatypeForKeyName.getJavaClassName();
         } else {
@@ -1010,7 +1005,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return docTags;
     }
 
-    static Datatype findDatatype(String name, IIpsProject ipsProject) throws CoreException {
+    static Datatype findDatatype(String name, IIpsProject ipsProject) {
         return ipsProject.findDatatype(name);
     }
 

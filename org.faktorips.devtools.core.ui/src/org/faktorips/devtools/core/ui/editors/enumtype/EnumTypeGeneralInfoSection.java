@@ -136,13 +136,9 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         link.addHyperlinkListener(new HyperlinkAdapter() {
             @Override
             public void linkActivated(HyperlinkEvent event) {
-                try {
-                    IEnumType supertype = enumType.findSuperEnumType(enumType.getIpsProject());
-                    if (supertype != null) {
-                        IpsUIPlugin.getDefault().openEditor(supertype);
-                    }
-                } catch (CoreException e) {
-                    throw new RuntimeException(e);
+                IEnumType supertype = enumType.findSuperEnumType(enumType.getIpsProject());
+                if (supertype != null) {
+                    IpsUIPlugin.getDefault().openEditor(supertype);
                 }
             }
         });

@@ -102,11 +102,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     @Override
     public void valueChanged(FieldValueChangedEvent e) {
         if (e.field == editFieldDatatypeOrRule) {
-            try {
-                datatypeChanged(editFieldDatatypeOrRule.getText());
-            } catch (CoreException ex) {
-                IpsPlugin.logAndShowErrorDialog(ex);
-            }
+            datatypeChanged(editFieldDatatypeOrRule.getText());
         }
         wizard.postAsyncRunnable(new Runnable() {
             @Override
@@ -122,7 +118,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     /**
      * Datatype or rule has changed.
      */
-    private void datatypeChanged(String newDatatypeOrRule) throws CoreException {
+    private void datatypeChanged(String newDatatypeOrRule) {
         if (newDatatypeOrRule.equals(prevDatatypeOrRule) || StringUtils.isEmpty(newDatatypeOrRule)) {
             return;
         }
@@ -140,11 +136,11 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
     /**
      * Finds and returns the datatype with the given name.
      */
-    private Datatype findDatatype(String datatype) throws CoreException {
+    private Datatype findDatatype(String datatype) {
         return wizard.getTestCaseType().getIpsProject().findDatatype(datatype);
     }
 
-    private boolean validatePage() throws CoreException {
+    private boolean validatePage() {
         setErrorMessage(null);
 
         ITestParameter newTestParameter = wizard.getNewCreatedTestParameter();
@@ -175,6 +171,10 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
             return false;
         }
 
+        return validatePolicyTypeParametersAndPage(newTestParameter);
+    }
+
+    private boolean validatePolicyTypeParametersAndPage(ITestParameter newTestParameter) {
         try {
             /*
              * special case for test policy cmpty type params check errors only for displayed
@@ -207,11 +207,7 @@ public class NewRootParamWizardPage extends WizardPage implements ValueChangeLis
      */
     private void updateSetPageComplete() {
         boolean completeAllowed = false;
-        try {
-            completeAllowed = validatePage();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        completeAllowed = validatePage();
         super.setPageComplete(completeAllowed);
     }
 

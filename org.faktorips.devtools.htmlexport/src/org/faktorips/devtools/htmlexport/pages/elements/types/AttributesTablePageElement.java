@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
@@ -51,7 +48,8 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
 
     @Override
     protected List<IPageElement> createRowWithIpsObjectPart(IAttribute attribute) {
-        IPageElement[] textPageElements = new PageElementUtils(getContext()).createTextPageElements(getAttributeData(attribute));
+        IPageElement[] textPageElements = new PageElementUtils(getContext())
+                .createTextPageElements(getAttributeData(attribute));
         textPageElements[0].setAnchor(new PageElementUtils(getContext()).createAnchorId(attribute));
         return Arrays.asList(textPageElements);
     }
@@ -68,15 +66,8 @@ public abstract class AttributesTablePageElement extends AbstractIpsObjectPartsC
         attributeData.add(attribute.getDatatype());
         attributeData.add(attribute.getModifier().toString());
 
-        try {
-            attributeData.add(getContext().getDatatypeFormatter().formatValue(
-                    getContext().getIpsProject().findValueDatatype(attribute.getDatatype()),
-                    attribute.getDefaultValue()));
-        } catch (CoreException e) {
-            getContext().addStatus(new IpsStatus(IStatus.WARNING, "Unable to find ValueDatatype for attribute " //$NON-NLS-1$
-                    + attribute.getName()));
-            attributeData.add(attribute.getDefaultValue());
-        }
+        attributeData.add(getContext().getDatatypeFormatter().formatValue(
+                getContext().getIpsProject().findValueDatatype(attribute.getDatatype()), attribute.getDefaultValue()));
 
         attributeData.add(getContext().getDescription(attribute));
 

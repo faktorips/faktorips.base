@@ -754,19 +754,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the first data type found on the path with the given qualified name. Returns
      * <code>null</code> if no data type with the given name is found.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data type.
      */
-    public Datatype findDatatype(String qualifiedName) throws CoreException;
+    public Datatype findDatatype(String qualifiedName);
 
     /**
      * Returns the first value data type found on the path with the given qualified name. Returns
      * <code>null</code> if no value data type with the given name is found. Returns
      * <code>null</code> if qualifiedName is <code>null</code>.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data type.
      */
-    public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException;
+    public ValueDatatype findValueDatatype(String qualifiedName);
 
     /**
      * Returns the code generation helper for the given data type or <code>null</code> if no helper
@@ -779,10 +775,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * is available for the given data type.
      * 
      * @param qName The qualified data type name.
-     * 
-     * @throws CoreException if an error occurs while searching for the data type.
      */
-    public DatatypeHelper findDatatypeHelper(String qName) throws CoreException;
+    public DatatypeHelper findDatatypeHelper(String qName);
 
     /**
      * Returns the value set types that are allowed for the given data type. The type
