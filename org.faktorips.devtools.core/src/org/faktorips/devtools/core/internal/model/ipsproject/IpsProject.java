@@ -1590,6 +1590,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return getPropertiesInternal().getProductCmptNamingStrategy();
     }
 
+    /**
+     * @deprecated Use {@link org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties} to
+     *             change the project properties.
+     */
+    @Deprecated
     @Override
     public void addDynamicValueDataType(DynamicValueDatatype newDatatype) {
         (getPropertiesInternal()).addDefinedDatatype(newDatatype);

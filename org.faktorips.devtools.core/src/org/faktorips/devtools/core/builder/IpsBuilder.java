@@ -176,7 +176,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
     }
 
-    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) throws CoreException {
+    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) {
         Long timestamp = lastModificationTimestampForBuilderSets.get(project.getName());
         if (timestamp == null) {
             lastModificationTimestampForBuilderSets.put(project.getName(), project.getReadOnlyProperties()

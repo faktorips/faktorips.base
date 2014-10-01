@@ -689,20 +689,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns all product component generation that refer to the given object, identified by the
      * qualified name type. Returns an empty array if none is found.
-     * 
-     * @throws CoreException if an exception occurs while searching.
      */
-    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
-            throws CoreException;
+    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType);
 
     /**
      * Returns the super type of the given policy component type, and all policy component types
      * that refer to the given policy component type. Returns an empty array if no references or
      * super types are found.
-     * 
-     * @throws CoreException if an exception occurs while searching.
      */
-    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException;
+    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -753,10 +748,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns all enumeration data types accessible on the project's IPS object path.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
-    public EnumDatatype[] findEnumDatatypes() throws CoreException;
+    public EnumDatatype[] findEnumDatatypes();
 
     /**
      * Returns the first data type found on the path with the given qualified name. Returns
@@ -810,7 +803,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * If this method returns <code>true</code>, it is guaranteed that the value set type is
      * returned by {@link #getValueSetTypes(ValueDatatype)}.
      */
-    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType) throws CoreException;
+    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType);
 
     /**
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If
@@ -821,10 +814,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Reinitializes the <code>IpsProject</code>s <code>IpsArtefactBuilderSet</code>.
-     * 
-     * @throws CoreException when an exception arises during re-initialization
      */
-    public void reinitializeIpsArtefactBuilderSet() throws CoreException;
+    public void reinitializeIpsArtefactBuilderSet();
 
     /**
      * Returns the runtime id prefix configured for this project.
@@ -856,7 +847,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *             change the project properties.
      */
     @Deprecated
-    public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
+    public void addDynamicValueDataType(DynamicValueDatatype newDatatype);
 
     /**
      * Validates the project and returns the result as list of messages.
@@ -907,10 +898,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * @return All test cases contained in this project.
-     * 
-     * @throws CoreException If a problem occurs during examination.
      */
-    public List<ITestCase> getAllTestCases() throws CoreException;
+    public List<ITestCase> getAllTestCases();
 
     /**
      * Returning the format for the product definition version of this project. The version format
@@ -918,13 +907,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * {@link IIpsProjectProperties}.
      * 
      * @return The {@link IVersionFormat} that is configured for this project
-     * @throws CoreException in case of exception
      * @deprecated This version format is only valid in case of a configured
      *             {@link IReleaseAndDeploymentOperation}. Use {@link #getVersionProvider()} instead
      *             to always get a valid {@link IVersionFormat}.
      */
     @Deprecated
-    public IVersionFormat getVersionFormat() throws CoreException;
+    public IVersionFormat getVersionFormat();
 
     /**
      * Returns the {@link IVersionProvider} that is configured for this project. This may be an

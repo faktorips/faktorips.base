@@ -238,11 +238,7 @@ public class XPolicyAttribute extends XAttribute {
     }
 
     private boolean isValueSetTypeSupported(ValueSetType valueSetType) {
-        try {
-            return getIpsProject().isValueSetTypeApplicable(getDatatype(), valueSetType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getIpsProject().isValueSetTypeApplicable(getDatatype(), valueSetType);
     }
 
     public String getNewRangeExpression(String lowerBoundExp,
