@@ -68,96 +68,13 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
         ipsProject.setIpsObjectPath(path);
 
-        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE,
-                new IpsObjectPathSearchContext(ipsProject));
+        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        assertTrue(result.isEmpty());
 
+        result = refProject.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
         assertFalse(result.contains(c.getIpsSrcFile()));
-    }
-
-    @Test
-    public void testFindIpsSrcFiles_byQualifiedNameType() throws Exception {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-        newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
-
-        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-        entry.setReexported(false);
-        ipsProject.setIpsObjectPath(path);
-
-        IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE));
-        assertNotNull(srcFile);
-        assertEquals("a.A", srcFile.getQualifiedNameType().getName());
-    }
-
-    @Test
-    public void testFindIpsSrcFiles_NoReexport() throws Exception {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
-        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
-
-        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
-        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
-        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
-        entry.setReexported(false);
-        entryRef.setReexported(false);
-
-        ipsProject.setIpsObjectPath(path);
-        refProject.setIpsObjectPath(pathRef);
-        refProject2.setIpsObjectPath(pathRef2);
-
-        IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
-        assertNull(srcFile);
-
-        srcFile = entryRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
-        assertNotNull(srcFile);
-        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
-    }
-
-    @Test
-    public void testFindIpsSrcFiles_MultipleReferencesNoReexport() throws Exception {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
-        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
-
-        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        IpsProjectRefEntry refEntry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-        IpsProjectRefEntry refEntry2 = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject2);
-        refEntry.setReexported(false);
-        refEntry2.setReexported(false);
-
-        ipsProject.setIpsObjectPath(path);
-
-        IIpsSrcFile srcFile = path.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
-        assertNotNull(srcFile);
-        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
-    }
-
-    @Test
-    public void testFindIpsSrcFiles_WithReexport() throws Exception {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
-        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
-
-        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
-        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
-        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
-
-        ipsProject.setIpsObjectPath(path);
-        refProject.setIpsObjectPath(pathRef);
-        refProject2.setIpsObjectPath(pathRef2);
-
-        IIpsSrcFile srcFile = entry.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
-        assertNotNull(srcFile);
-
-        srcFile = entryRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
-        assertNotNull(srcFile);
-        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
     }
 
     @Test
@@ -233,4 +150,9 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH));
     }
 
+    @Test
+    public void testFindIpsScrFile() {
+        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, ipsProject);
+        assertNull(projectRefEntry.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
 }

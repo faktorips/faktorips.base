@@ -232,7 +232,7 @@ public class IpsSrcFolderEntry extends IpsObjectPathEntry implements IIpsSrcFold
     }
 
     @Override
-    public IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType qnt, IpsObjectPathSearchContext searchContext) {
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) {
         IIpsPackageFragment pack = root.getIpsPackageFragment(qnt.getPackageName());
         if (pack == null) {
             return null;

@@ -19,8 +19,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 public abstract class AbstractSearch {
 
     private boolean isIncludeIndirect = true;
+    private SearchState lastSearchState = SearchState.CONTINUE_SEARCH;
 
-    public abstract SearchState processEntry(IIpsObjectPathEntry entry);
+    /**
+     * Process the {@link IIpsObjectPathEntry}.
+     * 
+     * @param entry the current {@link IIpsObjectPathEntry}
+     */
+    public abstract void processEntry(IIpsObjectPathEntry entry);
 
     public void setIncludeIndirect(boolean isIncludeIndirect) {
         this.isIncludeIndirect = isIncludeIndirect;
@@ -38,12 +44,31 @@ public abstract class AbstractSearch {
         return entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
     }
 
+    protected boolean isSrcFolderEntry(IIpsObjectPathEntry entry) {
+        return entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER);
+    }
+
     protected IIpsProject getReferencedIpsProject(IIpsObjectPathEntry entry) {
         return ((IIpsProjectRefEntry)entry).getReferencedIpsProject();
+    }
+
+    /**
+     * Returns <code>true</code> if the last {@link SearchState} is {@link SearchState#STOP_SEARCH}.
+     */
+    public boolean isStopSearch() {
+        return lastSearchState.isStopSearch();
+    }
+
+    protected void setStopSearch() {
+        this.lastSearchState = SearchState.STOP_SEARCH;
     }
 
     public enum SearchState {
         STOP_SEARCH,
         CONTINUE_SEARCH;
+
+        public boolean isStopSearch() {
+            return this.equals(STOP_SEARCH);
+        }
     }
 }

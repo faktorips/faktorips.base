@@ -87,9 +87,8 @@ public class IpsArchiveEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindIpsSrcFiles() {
-        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE,
-                new IpsObjectPathSearchContext(project));
+    public void testFindIpsSrcFiles() throws Exception {
+        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
 
         IIpsObject motorPolicy = project.findIpsObject(qntMotorPolicy);
         IIpsObject motorCollision = project.findIpsObject(qntMotorCollision);

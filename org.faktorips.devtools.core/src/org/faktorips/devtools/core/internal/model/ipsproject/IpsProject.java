@@ -794,12 +794,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public IIpsObject findIpsObject(QualifiedNameType nameType) {
-        IIpsSrcFile file = findIpsSrcFile(nameType.getIpsObjectType(), nameType.getName());
+        IIpsSrcFile file = findIpsSrcFile(nameType);
         if (file == null) {
             return null;
         }
 
         return file.getIpsObject();
+    }
+
+    @Override
+    public boolean findDublicateIpsSrcFile(QualifiedNameType qNameType) {
+        return getIpsObjectPathInternal().findDublicateIpsSrcFile(qNameType);
+    }
+
+    @Override
+    public boolean findDublicateIpsSrcFile(IpsObjectType type, String qualifiedName) {
+        return findDublicateIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
 
     @Override
@@ -978,8 +988,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) {
-        List<IIpsSrcFile> foundSrcFiles = findAllIpsSrcFilesInternal(getIpsModel().getIpsObjectTypes());
-        result.addAll(foundSrcFiles);
+        result.addAll(findAllIpsSrcFilesInternal());
     }
 
     @Override
@@ -1012,22 +1021,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     @Deprecated
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] ipsObjectTypes) {
-        List<IIpsSrcFile> foundSrcFiles = findAllIpsSrcFilesInternal(ipsObjectTypes);
-        result.addAll(foundSrcFiles);
+        result.addAll(findAllIpsSrcFilesInternal(ipsObjectTypes));
     }
 
     protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypesVarArg) {
-        IpsObjectType[] ipsObjectTypes;
-        if (ipsObjectTypesVarArg.length == 0) {
-            ipsObjectTypes = getIpsModel().getIpsObjectTypes();
-        } else {
-            ipsObjectTypes = ipsObjectTypesVarArg;
-        }
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IpsObjectType ipsObjectType : ipsObjectTypes) {
-            result.addAll(getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType));
-        }
-        return result;
+        return getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectTypesVarArg);
     }
 
     @Override

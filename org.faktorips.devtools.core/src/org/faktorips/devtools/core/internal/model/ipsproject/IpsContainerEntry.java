@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -120,29 +121,16 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            IIpsSrcFile file = entry.findIpsSrcFile(nameType, searchContext);
-            if (file != null) {
-                return file;
-            }
-        }
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
         return null;
     }
 
     /**
      * {@inheritDoc}
-     * 
      */
     @Override
-    protected List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IIpsObjectPathEntry entry : entries) {
-            result.addAll(entry.findIpsSrcFiles(type, searchContext));
-        }
-        return result;
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
+        return Collections.emptyList();
     }
 
     /**

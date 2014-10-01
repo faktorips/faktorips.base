@@ -284,10 +284,20 @@ public interface IIpsObjectPath {
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 
     /**
+     * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
+     * name type found on the path. Returns <code>false</code> if no such object is found or just
+     * one {@link IIpsSrcFile} was found.
+     * 
+     * @param nameType representing the {@link QualifiedNameType} of the searched
+     *            {@link IIpsSrcFile}
+     */
+    public boolean findDublicateIpsSrcFile(QualifiedNameType nameType);
+
+    /**
      * Returns {@link IIpsSrcFile IPS source files} with the indicated {@link IpsObjectType}.
      * 
      * @param ipsObjectType representing the {@link IpsObjectType} of the searched
      *            {@link IIpsSrcFile}s
      */
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType);
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType... ipsObjectType);
 }

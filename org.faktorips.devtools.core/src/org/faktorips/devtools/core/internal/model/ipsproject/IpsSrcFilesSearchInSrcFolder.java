@@ -9,28 +9,23 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
- * An implementation of {@link AbstractSearch} in order to process {@link IpsProjectRefEntry}
+ * An implementation of {@link AbstractSearch} in order to process {@link IpsObjectType
+ * IpsObjectTypes} in IIpsObjectPathEntry.TYPE_SRC_FOLDER.
  */
-public class ProjectSearch extends AbstractSearch {
+public class IpsSrcFilesSearchInSrcFolder extends IpsSrcFilesSearch {
 
-    private List<IIpsProject> projects = new ArrayList<IIpsProject>();
+    public IpsSrcFilesSearchInSrcFolder(IpsObjectType... ipsObjectTypesVarArg) {
+        super(ipsObjectTypesVarArg);
+    }
 
     @Override
     public void processEntry(IIpsObjectPathEntry entry) {
-        if (isProjectRefEntry(entry)) {
-            projects.add(getReferencedIpsProject(entry));
+        if (isSrcFolderEntry(entry)) {
+            super.processEntry(entry);
         }
     }
-
-    public List<IIpsProject> getProjects() {
-        return projects;
-    }
-
 }

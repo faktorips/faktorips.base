@@ -527,8 +527,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         // create a second object with the same qualified name that shadows the first object
         IIpsObject obj2 = newPolicyCmptType(ipsProject, "Object");
-        assertTrue(ipsProject.isAccessibleViaIpsObjectPath(obj2));
-        assertFalse(ipsProject.isAccessibleViaIpsObjectPath(obj1));
+        assertFalse(ipsProject.isAccessibleViaIpsObjectPath(obj2));
+        assertTrue(ipsProject.isAccessibleViaIpsObjectPath(obj1));
     }
 
     @Test

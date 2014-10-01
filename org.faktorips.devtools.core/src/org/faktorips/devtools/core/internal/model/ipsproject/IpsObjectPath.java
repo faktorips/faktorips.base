@@ -25,7 +25,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -73,7 +72,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private IIpsProject ipsProject;
 
     /** map with QualifiedNameTypes as keys and cached IpsSrcFiles as values. */
-    private Map<QualifiedNameType, CachedSrcFile> lookupCache = new HashMap<QualifiedNameType, CachedSrcFile>(1000);
+    private Map<QualifiedNameType, IIpsSrcFile> lookupCache = new HashMap<QualifiedNameType, IIpsSrcFile>(1000);
 
     /**
      * if set to true, the {@link IIpsObjectPathEntry entries} are read from the manifest.mf and if
@@ -416,40 +415,31 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first ips source file with the indicated qualified name type found on the path.
      * Returns <code>null</code> if no such object is found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
-
-        int maxEntriesToSearch = entries.length;
-        CachedSrcFile cachedSrcFile = lookupCache.get(nameType);
+    @Override
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
+        IIpsSrcFile cachedSrcFile = lookupCache.get(nameType);
         if (cachedSrcFile != null) {
-            if (!cachedSrcFile.file.exists()) {
+            if (!cachedSrcFile.exists()) {
                 lookupCache.remove(nameType);
-                cachedSrcFile = null;
             } else {
-                if (cachedSrcFile.entryIndex == 0) {
-                    /*
-                     * if the file was found via the first entry, it is not possible that a file
-                     * with the same name has been added to another entry that now shadows the found
-                     * file.
-                     */
-                    return cachedSrcFile.file;
-                } else {
-                    maxEntriesToSearch = cachedSrcFile.entryIndex;
-                }
+                return cachedSrcFile;
             }
         }
-        for (int i = 0; i < maxEntriesToSearch; i++) {
-            IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(nameType, searchContext);
-            if (ipsSrcFile != null) {
-                lookupCache.put(nameType, new CachedSrcFile(ipsSrcFile, i));
-                return ipsSrcFile;
-            }
+        IpsSrcFileSearch search = new IpsSrcFileSearch(nameType);
+        searchIpsObjectPath(search);
+        IIpsSrcFile ipsSrcFile = search.getIpsSrcFile();
+        if (ipsSrcFile != null) {
+            lookupCache.put(nameType, ipsSrcFile);
+            return ipsSrcFile;
         }
-        return cachedSrcFile == null ? null : cachedSrcFile.file;
+        return null;
     }
 
     @Override
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
-        return findIpsSrcFile(nameType, new IpsObjectPathSearchContext(getIpsProject()));
+    public boolean findDublicateIpsSrcFile(QualifiedNameType nameType) {
+        DublicateIpsSrcFileSearch search = new DublicateIpsSrcFileSearch(nameType);
+        searchIpsObjectPath(search);
+        return search.foundDublicateIpsSrcFile();
     }
 
     /**
@@ -457,13 +447,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * list.
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) {
-        for (IIpsObjectPathEntry entry : entries) {
-            if (isSrcFolderEntry(entry)) {
-                for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
-                    result.addAll(entry.findIpsSrcFiles(currentType, new IpsObjectPathSearchContext(getIpsProject())));
-                }
-            }
-        }
+        result.addAll(findIpsSrcFilesInSrcFolder());
     }
 
     @Override
@@ -591,20 +575,17 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
-    @Override
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType) {
-        return findIpsSrcFiles(ipsObjectType, new IpsObjectPathSearchContext(getIpsProject()));
+    private List<IIpsSrcFile> findIpsSrcFilesInSrcFolder(IpsObjectType... ipsObjectType) {
+        IpsSrcFilesSearch search = new IpsSrcFilesSearchInSrcFolder(ipsObjectType);
+        searchIpsObjectPath(search);
+        return search.getIpsSrcFiles();
     }
 
-    /**
-     * finds all {@link IIpsSrcFile}s with the indicated {@link IpsObjectType}.
-     */
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType, IpsObjectPathSearchContext searchContext) {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IIpsObjectPathEntry entry : entries) {
-            result.addAll(entry.findIpsSrcFiles(ipsObjectType, searchContext));
-        }
-        return result;
+    @Override
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType... ipsObjectType) {
+        IpsSrcFilesSearch search = new IpsSrcFilesSearch(ipsObjectType);
+        searchIpsObjectPath(search);
+        return search.getIpsSrcFiles();
     }
 
     /**
@@ -642,11 +623,23 @@ public class IpsObjectPath implements IIpsObjectPath {
     private void searchIpsObjectPath(AbstractSearch search, IpsObjectPathSearchContext searchContext) {
         for (IIpsObjectPathEntry entry : getEntries()) {
             searchEntry(search, searchContext, entry);
+            if (search.isStopSearch()) {
+                break;
+            }
             if (entry.isContainer()) {
-                List<IIpsObjectPathEntry> childEntries = ((IIpsContainerEntry)entry).resolveEntries();
-                for (IIpsObjectPathEntry childEntry : childEntries) {
-                    searchEntry(search, searchContext, childEntry);
-                }
+                searchContainerIpsObjectPath(search, searchContext, entry);
+            }
+        }
+    }
+
+    private void searchContainerIpsObjectPath(AbstractSearch search,
+            IpsObjectPathSearchContext searchContext,
+            IIpsObjectPathEntry entry) {
+        List<IIpsObjectPathEntry> childEntries = ((IIpsContainerEntry)entry).resolveEntries();
+        for (IIpsObjectPathEntry childEntry : childEntries) {
+            searchEntry(search, searchContext, childEntry);
+            if (search.isStopSearch()) {
+                break;
             }
         }
     }
@@ -654,7 +647,9 @@ public class IpsObjectPath implements IIpsObjectPath {
     private void searchEntry(AbstractSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
         if (searchContext.visitAndConsiderContentsOf(entry)) {
             search.processEntry(entry);
-            searchReferencedProject(search, searchContext, entry);
+            if (!search.isStopSearch()) {
+                searchReferencedProject(search, searchContext, entry);
+            }
         }
     }
 
@@ -671,21 +666,7 @@ public class IpsObjectPath implements IIpsObjectPath {
         return entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
     }
 
-    private boolean isSrcFolderEntry(IIpsObjectPathEntry entrie) {
-        return entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER);
+    private boolean isSrcFolderEntry(IIpsObjectPathEntry entry) {
+        return entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER);
     }
-
-    private static class CachedSrcFile {
-
-        private IIpsSrcFile file;
-        private int entryIndex;
-
-        public CachedSrcFile(IIpsSrcFile file, int entryIndex) {
-            super();
-            this.file = file;
-            this.entryIndex = entryIndex;
-        }
-
-    }
-
 }

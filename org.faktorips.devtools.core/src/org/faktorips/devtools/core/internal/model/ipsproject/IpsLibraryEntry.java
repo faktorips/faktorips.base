@@ -33,12 +33,12 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
         super(ipsObjectPath);
     }
 
-    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException;
-
     protected abstract IIpsStorage getIpsStorage();
 
+    protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException;
+
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
         if (getIpsStorage() == null || nameType == null) {
             return null;
         } else if (getIpsStorage().contains(nameType.toPath())) {

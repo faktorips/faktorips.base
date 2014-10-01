@@ -296,18 +296,13 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     public void testSearchIpsObjectPath2IpsSrcFile_cleanUpTest() throws Exception {
         refProject2Root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
         newIpsObject(refProject2Root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
-        IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext(ipsProject);
-        // public void testFindAllReferencedProjectsIpsSrcFile_cleanUpTest() throws Exception {
-        // root = newIpsPackageFragmentRoot(ipsProject, null, "root1");
-        // newIpsObject(root, IpsObjectType.PRODUCT_CMPT_TYPE, "a.b.A");
-        // IpsObjectPathSearchContext searchContext = new IpsObjectPathSearchContext();
 
         IIpsSrcFile ipsSrcFile1 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
-                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE));
         IIpsSrcFile ipsSrcFile2 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
-                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE));
         IIpsSrcFile ipsSrcFile3 = ((IpsProject)ipsProject).getIpsObjectPathInternal().findIpsSrcFile(
-                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE), searchContext);
+                new QualifiedNameType("a.b.A", IpsObjectType.PRODUCT_CMPT_TYPE));
 
         assertSame(ipsSrcFile1, ipsSrcFile2);
         assertSame(ipsSrcFile1, ipsSrcFile3);
@@ -593,4 +588,133 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertNull(resourceAsStream);
     }
 
+    @Test
+    public void testFindIpsSrcFile_byQualifiedNameType() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        entry.setReexported(false);
+        ipsProject.setIpsObjectPath(path);
+
+        IIpsSrcFile srcFile = path.findIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("a.A", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
+    public void testFindIpsSrcFile_NoReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
+        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+        entry.setReexported(false);
+        entryRef.setReexported(false);
+
+        ipsProject.setIpsObjectPath(path);
+        refProject.setIpsObjectPath(pathRef);
+        refProject2.setIpsObjectPath(pathRef2);
+
+        IIpsSrcFile srcFile = path.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNull(srcFile);
+
+        srcFile = pathRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
+    public void testFindIpsSrcFile_MultipleReferencesNoReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry refEntry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry refEntry2 = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject2);
+        refEntry.setReexported(false);
+        refEntry2.setReexported(false);
+
+        ipsProject.setIpsObjectPath(path);
+
+        IIpsSrcFile srcFile = path.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
+    public void testFindIpsSrcFile_WithReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
+        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
+        path.newIpsProjectRefEntry(refProject);
+        pathRef.newIpsProjectRefEntry(refProject2);
+
+        ipsProject.setIpsObjectPath(path);
+        refProject.setIpsObjectPath(pathRef);
+        refProject2.setIpsObjectPath(pathRef2);
+
+        IIpsSrcFile srcFile = path.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+
+        srcFile = pathRef.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE));
+        assertNotNull(srcFile);
+        assertEquals("x.X", srcFile.getQualifiedNameType().getName());
+    }
+
+    @Test
+    public void testFindDublicateIpsSrcFile_byQualifiedNameType() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        entry.setReexported(false);
+        ipsProject.setIpsObjectPath(path);
+
+        assertFalse(path.findDublicateIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE)));
+
+        newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.A");
+
+        assertTrue(path.findDublicateIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
+
+    @Test
+    public void testFindDublicateIpsSrcFile_NoReexport() throws Exception {
+        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
+        IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
+        newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
+
+        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
+        IpsObjectPath pathRef = (IpsObjectPath)refProject.getIpsObjectPath();
+        IpsObjectPath pathRef2 = (IpsObjectPath)refProject2.getIpsObjectPath();
+        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        IpsProjectRefEntry entryRef = (IpsProjectRefEntry)pathRef.newIpsProjectRefEntry(refProject2);
+        entry.setReexported(false);
+        entryRef.setReexported(false);
+
+        ipsProject.setIpsObjectPath(path);
+        refProject.setIpsObjectPath(pathRef);
+        refProject2.setIpsObjectPath(pathRef2);
+
+        assertFalse(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+
+        newPolicyCmptTypeWithoutProductCmptType(refProject, "x.X");
+
+        assertFalse(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+
+        newPolicyCmptTypeWithoutProductCmptType(ipsProject, "x.X");
+
+        assertTrue(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
 }

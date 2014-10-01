@@ -581,6 +581,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
 
+    public boolean findDublicateIpsSrcFile(QualifiedNameType qNameType);
+
+    public boolean findDublicateIpsSrcFile(IpsObjectType type, String qualifiedName);
+
     /**
      * Returns all objects of the given type found on the class path.
      * 

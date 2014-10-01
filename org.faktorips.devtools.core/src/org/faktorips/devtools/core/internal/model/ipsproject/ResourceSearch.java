@@ -28,15 +28,14 @@ public class ResourceSearch extends AbstractSearch {
     }
 
     @Override
-    public SearchState processEntry(IIpsObjectPathEntry entry) {
+    public void processEntry(IIpsObjectPathEntry entry) {
         if (!(isProjectRefEntry(entry)) || isContainerEntry(entry)) {
             if (entry.containsResource(path)) {
                 resource = entry;
                 containsResource = true;
-                return SearchState.STOP_SEARCH;
+                setStopSearch();
             }
         }
-        return SearchState.CONTINUE_SEARCH;
 
     }
 

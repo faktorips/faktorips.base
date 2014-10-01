@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -18,14 +17,15 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.PlatformObject;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.util.ArgumentCheck;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -90,37 +90,15 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
     public abstract boolean exists(QualifiedNameType qnt) throws CoreException;
 
     @Override
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) {
-        IIpsSrcFile file = findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
-        if (file == null) {
-            return null;
-        }
-        return file.getIpsObject();
-    }
-
-    @Override
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qnt) {
-        return findIpsSrcFile(qnt, new IpsObjectPathSearchContext(getIpsProject()));
-    }
-
-    @Override
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext) {
-        if (searchContext.visitAndConsiderContentsOf(this)) {
-            return findIpsSrcFileInternal(nameType, searchContext);
-        }
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
         return null;
     }
 
-    @Override
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
-        if (searchContext.visitAndConsiderContentsOf(this)) {
-            return findIpsSrcFilesInternal(type, searchContext);
-        }
-        return Collections.emptyList();
-    }
-
     /**
-     * Returns all objects of the given type found in the path entry.
+     * Returns all objects of the given type found in this path entry and this entry only.
+     * <p>
+     * Returns an empty list for entries that do not contain any source files themselves but act as
+     * composite entries. E.g. {@link IIpsProjectRefEntry} and {@link IIpsContainerEntry}.
      * <p>
      * The default implementation simply delegates the request to the
      * {@link IIpsPackageFragmentRoot}. However you should overwrite this method if you either have
@@ -128,22 +106,15 @@ public abstract class IpsObjectPathEntry extends PlatformObject implements IIpsO
      * search strategy.
      * 
      * @param type The result only contains {@link IIpsSrcFile source files} of this type
-     * @param searchContext The current {@link IpsObjectPathSearchContext}
      */
-    protected List<IIpsSrcFile> findIpsSrcFilesInternal(IpsObjectType type, IpsObjectPathSearchContext searchContext) {
+    @Override
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
         try {
             return getIpsPackageFragmentRoot().findAllIpsSrcFiles(type);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
-
-    /**
-     * Returns the first ips source file with the indicated qualified name type found in the path
-     * entry.
-     */
-    protected abstract IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType,
-            IpsObjectPathSearchContext searchContext);
 
     /**
      * Initializes the entry with the data stored in the xml element.

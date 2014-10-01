@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathSearchContext;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -139,24 +137,14 @@ public interface IIpsObjectPathEntry {
     public MessageList validate();
 
     /**
-     * Returns the IPS object with the indicated type and qualified name.
-     */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName);
-
-    /**
      * Returns the IPS source file with the indicated qualified name type.
      */
     public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 
     /**
-     * Returns the IPS source file with the indicated qualified name type.
-     */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, IpsObjectPathSearchContext searchContext);
-
-    /**
      * Returns IPS source files with the {@link IpsObjectType}.
      */
-    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type, IpsObjectPathSearchContext searchContext);
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType);
 
     /**
      * This method checks whether this entry has a resource with the specified path. The path is

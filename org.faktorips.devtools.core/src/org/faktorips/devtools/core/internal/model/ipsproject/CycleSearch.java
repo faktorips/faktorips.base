@@ -31,14 +31,13 @@ public class CycleSearch extends AbstractSearch {
     }
 
     @Override
-    public SearchState processEntry(IIpsObjectPathEntry entry) {
+    public void processEntry(IIpsObjectPathEntry entry) {
         if (isProjectRefEntry(entry)) {
             if (initialProject.equals(getReferencedIpsProject(entry))) {
                 isCycleDetected = true;
-                return SearchState.STOP_SEARCH;
+                setStopSearch();
             }
         }
-        return SearchState.CONTINUE_SEARCH;
     }
 
     /**
