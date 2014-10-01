@@ -1233,8 +1233,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
         List<IIpsSrcFile> result = ipsProject.findAllTableContentsSrcFiles(ts0);
         assertEquals(2, result.size());
-        assertEquals(tc0.getIpsSrcFile(), result.get(0));
-        assertEquals(tc2.getIpsSrcFile(), result.get(1));
+        assertThat(result, hasItem(tc0.getIpsSrcFile()));
+        assertThat(result, hasItem(tc2.getIpsSrcFile()));
 
         result = ipsProject.findAllTableContentsSrcFiles(null);
         assertEquals(3, result.size());

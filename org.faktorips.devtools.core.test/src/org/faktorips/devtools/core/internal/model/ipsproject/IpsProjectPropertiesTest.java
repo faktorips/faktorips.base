@@ -57,7 +57,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = this.newIpsProject();
-        properties = new IpsProjectProperties();
+        properties = new IpsProjectProperties(ipsProject);
         properties.addSupportedLanguage(Locale.ENGLISH);
         properties.addSupportedLanguage(Locale.GERMAN);
     }
@@ -87,7 +87,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_RequiredFeatures() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList ml = props.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IIpsProjectProperties.MSGCODE_MISSING_MIN_FEATURE_ID));
 
@@ -113,7 +113,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_DefinedDatatypes() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
         DynamicValueDatatype dynDatatype = new DynamicValueDatatype(ipsProject);
@@ -128,7 +128,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_PredefinedDatatypes() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
         props.setPredefinedDatatypesUsed(ipsProject.getIpsModel().getPredefinedValueDatatypes());
@@ -145,7 +145,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_SupportedLanguagesIsoConformity() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
 
@@ -163,7 +163,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_SupportedLanguagesDefaultLanguage() throws CoreException {
-        IIpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
         MessageList list = props.validate(ipsProject);
         int numOfMessages = list.size();
 
@@ -184,7 +184,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testOptionalConstraints() {
-        IpsProjectProperties props = new IpsProjectProperties();
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
         // tests non-defaults, too.
         for (int i = 0; i < 4; ++i) {
@@ -194,7 +194,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             props.setPersistenceSupport((i & 1) == 1);
 
             Element projectEl = props.toXml(newDocument());
-            props = new IpsProjectProperties();
+            props = new IpsProjectProperties(ipsProject);
             props.initFromXml(ipsProject, projectEl);
 
             assertEquals(props.isDerivedUnionIsImplementedRuleEnabled(), (i & 1) == 1);
@@ -208,7 +208,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void testToXml() {
         // 1) Create a properties object ...
-        IpsProjectProperties props = new IpsProjectProperties();
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         props.setModelProject(true);
         props.setProductDefinitionProject(true);
         props.setJavaProjectContainsClassesForDynamicDatatypes(true);
@@ -265,7 +265,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         Element projectEl = props.toXml(newDocument());
 
         // 3) ... then compare the XML element to the configuration.
-        props = new IpsProjectProperties();
+        props = new IpsProjectProperties(ipsProject);
         props.initFromXml(ipsProject, projectEl);
         assertTrue(props.isModelProject());
         assertTrue(props.isProductDefinitionProject());
@@ -322,7 +322,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     @Test
     public void testAddDefinedDatatype() {
-        IIpsProjectProperties props = new IpsProjectProperties();
+        IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
         DynamicValueDatatype type1 = new DynamicValueDatatype(ipsProject);
         type1.setQualifiedName("type1");
@@ -536,7 +536,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     protected IpsProjectProperties initPropertiesWithDocumentElement() {
         Element docEl = getTestDocument().getDocumentElement();
-        IpsProjectProperties props = new IpsProjectProperties();
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         props.initFromXml(ipsProject, docEl);
         return props;
     }

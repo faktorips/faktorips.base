@@ -971,10 +971,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     private IpsProjectProperties readProjectProperties(IpsProject ipsProject) {
         IFile file = ipsProject.getIpsProjectPropertiesFile();
-        IpsProjectProperties data = new IpsProjectProperties();
-        data.setCreatedFromParsableFileContents(false);
+        IpsProjectProperties properties = new IpsProjectProperties(ipsProject);
+        properties.setCreatedFromParsableFileContents(false);
         if (!file.exists()) {
-            return data;
+            return properties;
         }
         Document doc;
         InputStream is;
@@ -983,37 +983,37 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         } catch (CoreException e1) {
             IpsPlugin.log(new IpsStatus("Error reading project file contents " //$NON-NLS-1$
                     + file, e1));
-            return data;
+            return properties;
         }
         try {
             doc = IpsPlugin.getDefault().getDocumentBuilder().parse(is);
         } catch (SAXException e) {
             IpsPlugin.log(new IpsStatus("Error parsing project file " + file, e)); //$NON-NLS-1$
-            return data;
+            return properties;
         } catch (IOException e) {
             IpsPlugin.log(new IpsStatus("Error accessing project file " + file, e)); //$NON-NLS-1$
-            return data;
+            return properties;
         } finally {
             try {
                 is.close();
             } catch (IOException e) {
                 IpsPlugin.log(new IpsStatus("Error closing input stream after reading project file " //$NON-NLS-1$
                         + file, e));
-                return data;
+                return properties;
             }
         }
         try {
-            data = IpsProjectProperties.createFromXml(ipsProject, doc.getDocumentElement());
-            data.setCreatedFromParsableFileContents(true);
+            properties = IpsProjectProperties.createFromXml(ipsProject, doc.getDocumentElement());
+            properties.setCreatedFromParsableFileContents(true);
             // CSOFF: IllegalCatch
         } catch (Exception e) {
             IpsPlugin.log(new IpsStatus("Error creating properties from xml, file:  " //$NON-NLS-1$
                     + file, e));
-            data.setCreatedFromParsableFileContents(false);
+            properties.setCreatedFromParsableFileContents(false);
         }
         // CSON: IllegalCatch
-        data.setLastPersistentModificationTimestamp(file.getModificationStamp());
-        return data;
+        properties.setLastPersistentModificationTimestamp(file.getModificationStamp());
+        return properties;
     }
 
     @Override

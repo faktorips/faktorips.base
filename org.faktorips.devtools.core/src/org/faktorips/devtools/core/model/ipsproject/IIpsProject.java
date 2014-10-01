@@ -302,11 +302,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the project's properties. Note that the method returns a copy of the properties, not
      * a reference. In order to update the project's properties the modified properties object has
      * to be set in the project via setProperties().
+     * <p>
+     * Creating a copy of the project properties is costly. If read only access is required, use
+     * {@link #getReadOnlyProperties()} instead.
      */
     public IIpsProjectProperties getProperties();
 
     /**
-     * Returns a read only object of the project's properties.
+     * Returns a read only copy of the project's properties.
      */
     public IIpsProjectProperties getReadOnlyProperties();
 
