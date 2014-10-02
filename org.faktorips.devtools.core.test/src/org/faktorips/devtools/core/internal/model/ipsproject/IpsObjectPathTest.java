@@ -717,4 +717,5 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
 
         assertTrue(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
     }
+
 }

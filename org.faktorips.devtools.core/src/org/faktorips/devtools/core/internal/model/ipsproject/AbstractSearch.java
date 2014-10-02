@@ -36,10 +36,6 @@ public abstract class AbstractSearch {
         return isIncludeIndirect;
     }
 
-    protected boolean isContainerEntry(IIpsObjectPathEntry entry) {
-        return entry.getType().equals(IIpsObjectPathEntry.TYPE_CONTAINER);
-    }
-
     protected boolean isProjectRefEntry(IIpsObjectPathEntry entry) {
         return entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
     }

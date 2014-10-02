@@ -533,10 +533,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     public InputStream getResourceAsStream(String path) {
         ResourceSearch resourceSearch = new ResourceSearch(path);
         searchIpsObjectPath(resourceSearch);
-        if (resourceSearch.containsResource()) {
-            return resourceSearch.getResource().getResourceAsStream(path);
-        }
-        return null;
+        return resourceSearch.getResourceAsStream();
     }
 
     @Override

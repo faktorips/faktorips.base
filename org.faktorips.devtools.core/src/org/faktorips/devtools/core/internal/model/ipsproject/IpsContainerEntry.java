@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -155,14 +154,11 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsResource(String resourcePath) {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(resourcePath)) {
-                return true;
-            }
-        }
         return false;
     }
 
@@ -171,14 +167,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public InputStream getResourceAsStream(String resourcePath) {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(resourcePath)) {
-                InputStream stream = entry.getResourceAsStream(resourcePath);
-                return stream;
-            }
-        }
-        throw new CoreRuntimeException("Resource " + resourcePath + " was not found in container " + getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        return null;
     }
 
     /**

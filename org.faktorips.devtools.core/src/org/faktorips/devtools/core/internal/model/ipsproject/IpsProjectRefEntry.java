@@ -231,14 +231,11 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
     @Override
     public boolean containsResource(String path) {
-        return getReferencedIpsProject().containsResource(path);
+        return false;
     }
 
-    /**
-     * Interprets the given path as project-relative path.
-     */
     @Override
     public InputStream getResourceAsStream(String path) {
-        return getReferencedIpsProject().getResourceAsStream(path);
+        return null;
     }
 }

@@ -18,7 +18,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -26,7 +25,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -128,19 +126,6 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         ml = ipsProject.validate();
         assertEquals(1, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsObjectPathEntry.MSGCODE_PROJECT_NOT_SPECIFIED));
-    }
-
-    @Test
-    public void testContainsResource_true() throws Exception {
-        IIpsProject referencedProject = newIpsProject("refProj");
-
-        IpsObjectPath ipsObjectPath = new IpsObjectPath(referencedProject);
-        referencedProject.setIpsObjectPath(ipsObjectPath);
-        IIpsPackageFragmentRoot refProject2Root = newIpsPackageFragmentRoot(referencedProject, null, "root1");
-        createFileWithContent((IFolder)refProject2Root.getCorrespondingResource(), MY_RESOURCE_PATH, "111");
-        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(ipsObjectPath, referencedProject);
-
-        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH));
     }
 
     @Test

@@ -9,12 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
+import java.io.InputStream;
+
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 
 /**
- * An implementation of {@link AbstractSearch} to determine if specific {@link IIpsObjectPathEntry}s
- * contains specific resources.
+ * By using a specific path a {@link ResourceSearch} can determine if the according resources can be
+ * found and it can return the stream of the found {@link IIpsObjectPathEntry}.
  */
+
 public class ResourceSearch extends AbstractSearch {
 
     private IIpsObjectPathEntry resource;
@@ -29,18 +32,19 @@ public class ResourceSearch extends AbstractSearch {
 
     @Override
     public void processEntry(IIpsObjectPathEntry entry) {
-        if (!(isProjectRefEntry(entry)) || isContainerEntry(entry)) {
-            if (entry.containsResource(path)) {
-                resource = entry;
-                containsResource = true;
-                setStopSearch();
-            }
+        if (entry.containsResource(path)) {
+            resource = entry;
+            containsResource = true;
+            setStopSearch();
         }
-
     }
 
-    public IIpsObjectPathEntry getResource() {
-        return resource;
+    public InputStream getResourceAsStream() {
+        if (resource != null) {
+            return resource.getResourceAsStream(path);
+        } else {
+            return null;
+        }
     }
 
     public boolean containsResource() {
