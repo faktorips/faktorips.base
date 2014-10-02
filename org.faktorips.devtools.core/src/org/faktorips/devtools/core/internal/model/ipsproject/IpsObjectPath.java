@@ -596,10 +596,13 @@ public class IpsObjectPath implements IIpsObjectPath {
         return findIpsSrcFiles(ipsObjectType, new IpsObjectPathSearchContext(getIpsProject()));
     }
 
+    /**
+     * finds all {@link IIpsSrcFile}s with the indicated {@link IpsObjectType}.
+     */
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType, IpsObjectPathSearchContext searchContext) {
         List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            result.addAll(entrie.findIpsSrcFiles(ipsObjectType, searchContext));
+        for (IIpsObjectPathEntry entry : entries) {
+            result.addAll(entry.findIpsSrcFiles(ipsObjectType, searchContext));
         }
         return result;
     }
