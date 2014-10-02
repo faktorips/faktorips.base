@@ -582,9 +582,25 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
 
-    public boolean findDublicateIpsSrcFile(QualifiedNameType qNameType);
+    /**
+     * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
+     * name type found on the path. Returns <code>false</code> if no such object is found or just
+     * one {@link IIpsSrcFile} was found.
+     * 
+     * @param qNameType representing the {@link QualifiedNameType} of the searched
+     *            {@link IIpsSrcFile}
+     */
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType qNameType);
 
-    public boolean findDublicateIpsSrcFile(IpsObjectType type, String qualifiedName);
+    /**
+     * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
+     * name type found on the path. Returns <code>false</code> if no such object is found or just
+     * one {@link IIpsSrcFile} was found.
+     * 
+     * @param type representing the {@link IpsObjectType} of the searched {@link IIpsSrcFile}
+     * @param qualifiedName representing the qualified name of the searched {@link IIpsSrcFile}
+     */
+    public boolean findDuplicateIpsSrcFile(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns all objects of the given type found on the class path.

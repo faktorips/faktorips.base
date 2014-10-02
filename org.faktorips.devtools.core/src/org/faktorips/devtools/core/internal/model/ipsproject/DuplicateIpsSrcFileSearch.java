@@ -14,16 +14,17 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 
 /**
- * An implementation of {@link AbstractSearch} in order to process {@link IIpsSrcFile}.
+ * An implementation of {@link AbstractSearch} in order to search for duplicate {@link IIpsSrcFile
+ * IIpsSrcFiles}.
  */
-public class DublicateIpsSrcFileSearch extends IpsSrcFileSearch {
+public class DuplicateIpsSrcFileSearch extends IpsSrcFileSearch {
 
     private boolean foundIpsSrcFile = false;
 
     /**
      * @param qualifiedNameType the {@link QualifiedNameType} for the search.
      */
-    public DublicateIpsSrcFileSearch(QualifiedNameType qualifiedNameType) {
+    public DuplicateIpsSrcFileSearch(QualifiedNameType qualifiedNameType) {
         super(qualifiedNameType);
     }
 
@@ -40,7 +41,10 @@ public class DublicateIpsSrcFileSearch extends IpsSrcFileSearch {
         }
     }
 
-    public boolean foundDublicateIpsSrcFile() {
+    /**
+     * Returns <code>true</code> if a duplicate {@link IIpsSrcFile} was found.
+     */
+    public boolean foundDuplicateIpsSrcFile() {
         return foundIpsSrcFile;
     }
 }

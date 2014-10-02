@@ -436,10 +436,10 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     @Override
-    public boolean findDublicateIpsSrcFile(QualifiedNameType nameType) {
-        DublicateIpsSrcFileSearch search = new DublicateIpsSrcFileSearch(nameType);
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType nameType) {
+        DuplicateIpsSrcFileSearch search = new DuplicateIpsSrcFileSearch(nameType);
         searchIpsObjectPath(search);
-        return search.foundDublicateIpsSrcFile();
+        return search.foundDuplicateIpsSrcFile();
     }
 
     /**

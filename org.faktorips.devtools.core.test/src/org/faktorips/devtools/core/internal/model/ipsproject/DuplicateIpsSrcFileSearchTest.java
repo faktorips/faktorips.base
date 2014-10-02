@@ -23,14 +23,14 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.junit.Test;
 
-public class DublicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
+public class DuplicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
 
-    private DublicateIpsSrcFileSearch search;
+    private DuplicateIpsSrcFileSearch search;
 
     @Test
     public void testProcessEntry_FoundDublicateIpsSourceFile() throws Exception {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
-        search = new DublicateIpsSrcFileSearch(qnt);
+        search = new DuplicateIpsSrcFileSearch(qnt);
 
         IIpsSrcFolderEntry entry = mock(IIpsSrcFolderEntry.class);
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
@@ -40,7 +40,7 @@ public class DublicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
         search.processEntry(entry);
         assertFalse(search.isStopSearch());
         assertEquals(ipsSrcFile, search.getIpsSrcFile());
-        assertFalse(search.foundDublicateIpsSrcFile());
+        assertFalse(search.foundDuplicateIpsSrcFile());
 
         IIpsSrcFolderEntry entry2 = mock(IIpsSrcFolderEntry.class);
         IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
@@ -50,14 +50,14 @@ public class DublicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
 
         assertTrue(search.isStopSearch());
         assertEquals(ipsSrcFile, search.getIpsSrcFile());
-        assertTrue(search.foundDublicateIpsSrcFile());
+        assertTrue(search.foundDuplicateIpsSrcFile());
 
     }
 
     @Test
     public void testProcessEntry_NoDublicateIpsSourceFile() throws Exception {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
-        search = new DublicateIpsSrcFileSearch(qnt);
+        search = new DuplicateIpsSrcFileSearch(qnt);
 
         IIpsSrcFolderEntry entry = mock(IIpsSrcFolderEntry.class);
         when(entry.findIpsSrcFile(qnt)).thenReturn(null);
@@ -65,7 +65,7 @@ public class DublicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
         search.processEntry(entry);
         assertFalse(search.isStopSearch());
         assertNull(search.getIpsSrcFile());
-        assertFalse(search.foundDublicateIpsSrcFile());
+        assertFalse(search.foundDuplicateIpsSrcFile());
 
         IIpsSrcFolderEntry entry2 = mock(IIpsSrcFolderEntry.class);
         IIpsSrcFile ipsSrcFile2 = mock(IIpsSrcFile.class);
@@ -75,13 +75,13 @@ public class DublicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
         assertFalse(search.isStopSearch());
         assertNotNull(search.getIpsSrcFile());
         assertEquals(ipsSrcFile2, search.getIpsSrcFile());
-        assertFalse(search.foundDublicateIpsSrcFile());
+        assertFalse(search.foundDuplicateIpsSrcFile());
     }
 
     @Test
     public void testProcessEntry_NoIpsSourceFile() throws Exception {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
-        search = new DublicateIpsSrcFileSearch(qnt);
+        search = new DuplicateIpsSrcFileSearch(qnt);
 
         IIpsSrcFolderEntry entry = mock(IIpsSrcFolderEntry.class);
         when(entry.findIpsSrcFile(qnt)).thenReturn(null);
@@ -89,13 +89,13 @@ public class DublicateIpsSrcFileSearchTest extends AbstractIpsPluginTest {
         search.processEntry(entry);
         assertFalse(search.isStopSearch());
         assertNull(search.getIpsSrcFile());
-        assertFalse(search.foundDublicateIpsSrcFile());
+        assertFalse(search.foundDuplicateIpsSrcFile());
 
         IIpsSrcFolderEntry entry2 = mock(IIpsSrcFolderEntry.class);
         when(entry2.findIpsSrcFile(qnt)).thenReturn(null);
         search.processEntry(entry2);
         assertFalse(search.isStopSearch());
         assertNull(search.getIpsSrcFile());
-        assertFalse(search.foundDublicateIpsSrcFile());
+        assertFalse(search.foundDuplicateIpsSrcFile());
     }
 }

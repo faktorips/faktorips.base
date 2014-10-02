@@ -291,7 +291,7 @@ public interface IIpsObjectPath {
      * @param nameType representing the {@link QualifiedNameType} of the searched
      *            {@link IIpsSrcFile}
      */
-    public boolean findDublicateIpsSrcFile(QualifiedNameType nameType);
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType nameType);
 
     /**
      * Returns {@link IIpsSrcFile IPS source files} with the indicated {@link IpsObjectType}.

@@ -239,7 +239,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     /** Validates whether there is another type in the object path with the same name. */
     private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject) {
 
-        if (ipsProject.findDublicateIpsSrcFile(getQualifiedNameType())) {
+        if (ipsProject.findDuplicateIpsSrcFile(getQualifiedNameType())) {
             list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD, NLS.bind(
                     Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()), Message.WARNING, this));
         }

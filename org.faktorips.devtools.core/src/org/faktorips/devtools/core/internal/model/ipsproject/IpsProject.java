@@ -802,13 +802,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public boolean findDublicateIpsSrcFile(QualifiedNameType qNameType) {
-        return getIpsObjectPathInternal().findDublicateIpsSrcFile(qNameType);
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType qNameType) {
+        return getIpsObjectPathInternal().findDuplicateIpsSrcFile(qNameType);
     }
 
     @Override
-    public boolean findDublicateIpsSrcFile(IpsObjectType type, String qualifiedName) {
-        return findDublicateIpsSrcFile(new QualifiedNameType(qualifiedName, type));
+    public boolean findDuplicateIpsSrcFile(IpsObjectType type, String qualifiedName) {
+        return findDuplicateIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
 
     @Override

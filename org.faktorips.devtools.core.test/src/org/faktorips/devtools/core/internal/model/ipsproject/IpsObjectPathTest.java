@@ -682,11 +682,11 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         entry.setReexported(false);
         ipsProject.setIpsObjectPath(path);
 
-        assertFalse(path.findDublicateIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertFalse(path.findDuplicateIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE)));
 
         newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.A");
 
-        assertTrue(path.findDublicateIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(path.findDuplicateIpsSrcFile(new QualifiedNameType("a.A", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
     @Test
@@ -707,15 +707,15 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         refProject.setIpsObjectPath(pathRef);
         refProject2.setIpsObjectPath(pathRef2);
 
-        assertFalse(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertFalse(path.findDuplicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
 
         newPolicyCmptTypeWithoutProductCmptType(refProject, "x.X");
 
-        assertFalse(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertFalse(path.findDuplicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
 
         newPolicyCmptTypeWithoutProductCmptType(ipsProject, "x.X");
 
-        assertTrue(path.findDublicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+        assertTrue(path.findDuplicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
     }
 
 }
