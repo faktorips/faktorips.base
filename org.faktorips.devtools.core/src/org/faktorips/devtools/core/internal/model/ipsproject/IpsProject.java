@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -1100,25 +1099,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (includeVoid) {
             result.add(Datatype.VOID);
         }
-        Set<IIpsProject> visitedProjects = new HashSet<IIpsProject>();
-        getDatatypesDefinedInProjectPropertiesInclSubprojects(this, valuetypesOnly, includePrimitives, visitedProjects,
-                result);
-    }
-
-    private void getDatatypesDefinedInProjectPropertiesInclSubprojects(IpsProject ipsProject,
-            boolean valuetypesOnly,
-            boolean includePrimitives,
-            Set<IIpsProject> visitedProjects,
-            Set<Datatype> result) {
-
-        getIpsModel().getDatatypesDefinedInProjectProperties(ipsProject, valuetypesOnly, includePrimitives, result);
-        List<IIpsProject> referencedProjects = ipsProject.getDirectlyReferencedIpsProjects();
+        getIpsModel().getDatatypesDefinedInProjectProperties(this, valuetypesOnly, includePrimitives, result);
+        List<IIpsProject> referencedProjects = getAllReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
-            if (!visitedProjects.contains(referencedProject)) {
-                visitedProjects.add(referencedProject);
-                getDatatypesDefinedInProjectPropertiesInclSubprojects(((IpsProject)referencedProject), valuetypesOnly,
-                        includePrimitives, visitedProjects, result);
-            }
+            getIpsModel().getDatatypesDefinedInProjectProperties(referencedProject, valuetypesOnly, includePrimitives,
+                    result);
         }
     }
 
@@ -1214,7 +1199,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (arrayDimension > 0) {
             resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
-        ValueDatatype type = findValueDatatype(this, resultingQName, new HashSet<IIpsProject>());
+        ValueDatatype type = findValueDatatypeInclSubprojects(this, resultingQName);
         if (arrayDimension == 0) {
             return type;
         }
@@ -1226,9 +1211,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
-    private ValueDatatype findValueDatatype(IpsProject ipsProject,
-            String qualifiedName,
-            Set<IIpsProject> visitedProjects) {
+    private ValueDatatype findValueDatatypeInclSubprojects(IpsProject ipsProject, String qualifiedName) {
 
         ValueDatatype datatype = getIpsModel().getValueDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
         if (datatype != null) {
@@ -1238,17 +1221,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (datatype != null) {
             return datatype;
         }
-        List<IIpsProject> referencedProjects = ipsProject.getDirectlyReferencedIpsProjects();
+        datatype = findValueDatatypeInReferencedProjects(ipsProject, qualifiedName);
+
+        return datatype;
+    }
+
+    private ValueDatatype findValueDatatypeInReferencedProjects(IpsProject ipsProject, String qualifiedName) {
+        ValueDatatype datatype;
+        List<IIpsProject> referencedProjects = ipsProject.getAllReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
-            if (!visitedProjects.contains(referencedProject)) {
-                visitedProjects.add(referencedProject);
-                datatype = findValueDatatype((IpsProject)referencedProject, qualifiedName, visitedProjects);
-                if (datatype != null) {
-                    return datatype;
-                }
+            datatype = getIpsModel().getValueDatatypeDefinedInProjectProperties(referencedProject, qualifiedName);
+            if (datatype != null) {
+                return datatype;
+            }
+            datatype = getEnumTypeDatatypeAdapter(qualifiedName, referencedProject);
+            if (datatype != null) {
+                return datatype;
             }
         }
-
         return null;
     }
 
@@ -1263,8 +1253,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
         }
 
-        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, resultingQName,
-                new HashSet<IIpsProject>());
+        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, resultingQName);
         if (arrayDimension == 0) {
             return type;
         }
@@ -1276,27 +1265,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
-    private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IpsProject ipsProject,
-            String qualifiedName,
-            HashSet<IIpsProject> visitedProjects) {
-
+    private Datatype findDatatypeDefinedInProjectPropertiesInclSubprojects(IIpsProject ipsProject, String qualifiedName) {
         Datatype datatype = getIpsModel().getDatatypeDefinedInProjectProperties(ipsProject, qualifiedName);
         if (datatype != null) {
             return datatype;
         }
 
-        List<IIpsProject> referencedProjects = ipsProject.getDirectlyReferencedIpsProjects();
+        List<IIpsProject> referencedProjects = ipsProject.getAllReferencedIpsProjects();
         for (IIpsProject referencedProject : referencedProjects) {
-            if (!visitedProjects.contains(referencedProject)) {
-                visitedProjects.add(referencedProject);
-                datatype = findDatatypeDefinedInProjectPropertiesInclSubprojects((IpsProject)referencedProject,
-                        qualifiedName, visitedProjects);
-                if (datatype != null) {
-                    return datatype;
-                }
+            datatype = getIpsModel().getDatatypeDefinedInProjectProperties(referencedProject, qualifiedName);
+            if (datatype != null) {
+                return datatype;
             }
         }
-
         return null;
     }
 

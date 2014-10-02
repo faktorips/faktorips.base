@@ -210,7 +210,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns all direct {@link IIpsProject}s referenced in the project's {@link IIpsObjectPath} to
-     * this ips project.
+     * this ips project. For all referenced ips projects @see {@link #getAllReferencedIpsProjects()}
+     * .
      * 
      * @see IIpsObjectPath
      */
