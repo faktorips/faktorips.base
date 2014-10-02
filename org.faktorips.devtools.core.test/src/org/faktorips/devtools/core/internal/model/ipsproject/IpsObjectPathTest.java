@@ -673,7 +673,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDublicateIpsSrcFile_byQualifiedNameType() throws Exception {
+    public void testFindDuplicateIpsSrcFile_byQualifiedNameType() throws Exception {
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
         newPolicyCmptTypeWithoutProductCmptType(refProject, "a.A");
 
@@ -690,7 +690,7 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindDublicateIpsSrcFile_NoReexport() throws Exception {
+    public void testFindDuplicateIpsSrcFile_NoReexport() throws Exception {
         IpsProject refProject = (IpsProject)newIpsProject("RefProject");
         IpsProject refProject2 = (IpsProject)newIpsProject("RefProject2");
         newPolicyCmptTypeWithoutProductCmptType(refProject2, "x.X");
