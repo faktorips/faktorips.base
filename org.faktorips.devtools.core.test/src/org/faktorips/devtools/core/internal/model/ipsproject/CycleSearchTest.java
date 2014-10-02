@@ -55,4 +55,10 @@ public class CycleSearchTest {
 
         assertTrue(cycleSearch.isCycleDetected());
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCycleSearch_InitialProjectIsNull() {
+        CycleSearch cycleSearchWithNullProject = new CycleSearch(null);
+        cycleSearchWithNullProject.processEntry(ipsProjectRefEntry);
+    }
 }

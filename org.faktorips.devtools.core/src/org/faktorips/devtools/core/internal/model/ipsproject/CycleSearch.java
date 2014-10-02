@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 
 /**
  * Created with an initial project this class searches for {@link IIpsProjectRefEntry project ref
@@ -23,6 +24,9 @@ public class CycleSearch extends AbstractSearch {
     private final IIpsProject initialProject;
 
     public CycleSearch(IIpsProject initialProject) {
+        if (initialProject == null) {
+            throw new IllegalArgumentException("The initial project must not be null."); //$NON-NLS-1$
+        }
         this.initialProject = initialProject;
     }
 
