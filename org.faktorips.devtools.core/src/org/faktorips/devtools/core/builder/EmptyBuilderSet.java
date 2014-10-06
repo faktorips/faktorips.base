@@ -53,7 +53,7 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     @Override
     public CompilationResult<JavaCodeFragment> getTableAccessCode(String tableContentsQualifiedName,
             ITableAccessFunction fct,
-            CompilationResult<JavaCodeFragment>[] argResults) throws CoreException {
+            CompilationResult<JavaCodeFragment>[] argResults) {
 
         Datatype returnType = fct.getIpsProject().findDatatype(fct.getType());
         JavaCodeFragment code = new JavaCodeFragment();
