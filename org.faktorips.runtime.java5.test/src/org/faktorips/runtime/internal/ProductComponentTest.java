@@ -11,7 +11,9 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
@@ -50,7 +52,8 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     // the verify for the parameterized map cannot be type safe
     @Test
     public void testCallInitMethodsOnInitFromXML() {
-        ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository, "id", "productKindId",
+                "versionId"));
         Element element = setUpElement();
 
         cmpt.initFromXml(element);
@@ -58,6 +61,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         verify(cmpt).doInitPropertiesFromXml(anyMap());
         verify(cmpt).doInitReferencesFromXml(anyMap());
         verify(cmpt).doInitTableUsagesFromXml(anyMap());
+        verify(cmpt).doInitFormulaFromXml(element);
     }
 
     private Element setUpElement() {
@@ -114,15 +118,25 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     public void testWriteTableUsageToXml() {
         Element prodCmptElement = getTestDocument().getDocumentElement();
         NodeList childNodes = prodCmptElement.getChildNodes();
-        assertEquals(5, childNodes.getLength());
+        assertEquals(9, childNodes.getLength());
 
         pc.writeTableUsageToXml(prodCmptElement, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(6, childNodes.getLength());
-        Node namedItem = childNodes.item(5).getAttributes().getNamedItem("structureUsage");
+        assertEquals(10, childNodes.getLength());
+        Node namedItem = childNodes.item(9).getAttributes().getNamedItem("structureUsage");
         assertEquals("structureUsageValue", namedItem.getNodeValue());
-        String nodeValue = childNodes.item(5).getFirstChild().getTextContent();
+        String nodeValue = childNodes.item(9).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
+    }
+
+    @Test
+    public void testIsFormulaAvailable() {
+        Element genElement = getTestDocument().getDocumentElement();
+        pc.initFromXml(genElement);
+
+        assertTrue(pc.isFormulaAvailable("testFormula"));
+        assertFalse(pc.isFormulaAvailable("emptyFormula"));
+        assertFalse(pc.isFormulaAvailable("notExistingFormula"));
     }
 
     /**
