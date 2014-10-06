@@ -179,4 +179,14 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
         root.delete();
     }
 
+    @Test
+    public void testEquals() throws Exception {
+        assertTrue(root.equals(root));
+
+        LibraryIpsPackageFragmentRoot sameAsRootOtherProject = new LibraryIpsPackageFragmentRoot(newIpsProject(),
+                root.getIpsStorage());
+
+        assertTrue(root.equals(sameAsRootOtherProject));
+    }
+
 }
