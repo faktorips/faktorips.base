@@ -83,6 +83,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectNamingConventions;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
@@ -629,6 +630,45 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testFindDatatype_IndirectRefProject() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(true);
+
+        assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
+    }
+
+    @Test
+    public void testFindDatatype_IndirectRefProject_ReexportedIsFalse() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(false);
+
+        assertNull(ipsProject.findDatatype("Integer"));
+    }
+
+    /**
+     * Creates a setup where ipsProject is referencing baseProject indirectly over refProject:
+     * <em>ipsProject -> refProject -> baseProject</em>.
+     * <p>
+     * Only baseProject has a datatype of type <code>Integer</code>.
+     */
+    private void makeIpsProjectDependOnBaseProjectIndirect(boolean reexported) throws CoreException {
+        IIpsProjectProperties props = ipsProject.getProperties();
+        props.setPredefinedDatatypesUsed(new String[] {});
+        ipsProject.setProperties(props);
+        assertNull(ipsProject.findDatatype("Integer"));
+
+        IIpsProject refProject = newIpsProject("RefProject");
+        IIpsProjectProperties refProps = refProject.getProperties();
+        refProps.setPredefinedDatatypesUsed(new String[] {});
+        IIpsObjectPath refPath = refProps.getIpsObjectPath();
+        IIpsProjectRefEntry refEntry = refPath.newIpsProjectRefEntry(baseProject);
+        refEntry.setReexported(reexported);
+        refProject.setProperties(refProps);
+
+        IIpsObjectPath path = ipsProject.getIpsObjectPath();
+        path.newIpsProjectRefEntry(refProject);
+        ipsProject.setIpsObjectPath(path);
+    }
+
+    @Test
     public void testFindValueDatatype() throws CoreException {
         assertNull(ipsProject.findValueDatatype(null));
 
@@ -646,10 +686,24 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findValueDatatype("Integer"));
 
         makeIpsProjectDependOnBaseProject();
-        assertEquals(Datatype.INTEGER, ipsProject.findDatatype("Integer"));
+        assertEquals(Datatype.INTEGER, ipsProject.findValueDatatype("Integer"));
 
         newPolicyCmptType(ipsProject, "Policy");
         assertNull(ipsProject.findValueDatatype("Policy"));
+    }
+
+    @Test
+    public void testFindValueDatatype_IndirectRefProject() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(true);
+
+        assertEquals(Datatype.INTEGER, ipsProject.findValueDatatype("Integer"));
+    }
+
+    @Test
+    public void testFindValueDatatype_IndirectRefProject_ReexportedIsFalse() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(false);
+
+        assertNull(ipsProject.findValueDatatype("Integer"));
     }
 
     @Test
@@ -850,6 +904,23 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         testEnumType.setAbstract(false);
         types = ipsProject.findDatatypes(false, false, false, null, true);
         assertTrue(Arrays.asList(types).contains(new EnumTypeDatatypeAdapter(testEnumType, null)));
+    }
+
+    @Test
+    public void testFindDatatypes_IndirectRefProject() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(true);
+
+        Datatype[] datatypes = ipsProject.findDatatypes(false, false);
+        assertEquals(1, datatypes.length);
+        assertEquals(Datatype.INTEGER, datatypes[0]);
+    }
+
+    @Test
+    public void testFindDatatypes_IndirectRefProject_ReexportedIsFalse() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(false);
+
+        Datatype[] datatypes = ipsProject.findDatatypes(false, false);
+        assertEquals(0, datatypes.length);
     }
 
     @Test
