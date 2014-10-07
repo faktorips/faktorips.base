@@ -23,7 +23,9 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
     private static final IIpsElement[] NO_CHILDREN = new IIpsElement[0];
 
     // FIXME make private
+    // CSOFF: VisibilityModifierCheck
     protected String name;
+    // CSON: VisibilityModifierCheck
     private IIpsElement parent;
 
     public IpsElement(IIpsElement parent, String name) {
