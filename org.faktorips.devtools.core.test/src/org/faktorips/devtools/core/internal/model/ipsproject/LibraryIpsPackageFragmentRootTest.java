@@ -187,6 +187,7 @@ public class LibraryIpsPackageFragmentRootTest extends AbstractIpsPluginTest {
                 root.getIpsStorage());
 
         assertTrue(root.equals(sameAsRootOtherProject));
+        assertEquals(root.hashCode(), sameAsRootOtherProject.hashCode());
     }
 
 }

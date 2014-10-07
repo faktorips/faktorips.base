@@ -167,10 +167,12 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     /**
      * {@inheritDoc}
      * <p>
-     * Equals without checking the parent. We need to overwrite the default implementation in
-     * {@link IIpsElement} because if we have {@link LibraryIpsSrcFile LibraryIpsSrcFiles} from
-     * different projects references the same jar file the {@link LibraryIpsPackageFragmentRoot} is
-     * the same but only the {@link IIpsProject} is different.
+     * Checks if two objects are "equal" without considering the parent. If
+     * {@link LibraryIpsSrcFile LibraryIpsSrcFiles} from different projects refer the same jar file
+     * and the {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is
+     * different, the default implementation in {@link IIpsElement} may yield misleadingly
+     * <code>false</code>. Therefore we need to overwrite the default implementation in
+     * {@link IIpsElement}.
      */
     @Override
     public boolean equals(Object obj) {
