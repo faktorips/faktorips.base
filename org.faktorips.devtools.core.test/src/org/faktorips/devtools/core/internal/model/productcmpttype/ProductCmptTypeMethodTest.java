@@ -183,6 +183,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     public void testInitFromXml_defaultValues() {
         Element docElement = getTestDocument().getDocumentElement();
         method.initFromXml(XmlUtil.getElement(docElement, "Method", 1));
+        assertEquals("43", method.getId());
         assertTrue(method.isFormulaSignatureDefinition());
         assertEquals(StringUtils.EMPTY, method.getFormulaName());
         assertEquals(StringUtils.EMPTY, method.getDatatype());

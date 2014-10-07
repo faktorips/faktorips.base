@@ -125,7 +125,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
         element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
         element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
-        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, "" + changingOverTime); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
     }
 
     @Override
