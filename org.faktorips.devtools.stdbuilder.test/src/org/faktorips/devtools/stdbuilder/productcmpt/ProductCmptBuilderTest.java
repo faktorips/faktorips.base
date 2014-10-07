@@ -21,10 +21,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -40,7 +40,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
 
     private IPolicyCmptType type;
     private IProductCmptType productCmptType;
-    private IProductCmpt productCmpt;
+    private ProductCmpt productCmpt;
     private IProductCmptGeneration productCmptGen;
 
     private ProductCmptBuilder builder;
@@ -57,6 +57,14 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         method.setName("age");
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
+
+        IProductCmptTypeMethod staticMethod = productCmptType.newProductCmptTypeMethod();
+        staticMethod.setDatatype(Datatype.INTEGER.getQualifiedName());
+        staticMethod.setName("staticAge");
+        staticMethod.setFormulaSignatureDefinition(true);
+        staticMethod.setFormulaName("StaticAgeCalculation");
+        staticMethod.setChangingOverTime(false);
+
         assertFalse(type.validate(ipsProject).containsErrorMsg());
         type.getIpsSrcFile().save(true, null);
 
@@ -66,6 +74,10 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         IFormula ce = productCmptGen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
+        IFormula staticFormula = productCmpt.newFormula();
+        staticFormula.setFormulaSignature(staticMethod.getFormulaName());
+        staticFormula.setExpression("42");
+
         productCmpt.getIpsSrcFile().save(true, null);
         assertFalse(productCmpt.validate(ipsProject).containsErrorMsg());
 
@@ -84,6 +96,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         productCmpt.getIpsSrcFile().save(true, null);
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
         assertTrue(builder.getGeneratedJavaFile(productCmptGen).exists());
+        assertTrue(builder.getGeneratedJavaFile(productCmpt).exists());
     }
 
     @Test

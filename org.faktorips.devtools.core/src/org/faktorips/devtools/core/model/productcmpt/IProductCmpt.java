@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
@@ -294,12 +295,14 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public IFormula getFormula(String formulaName);
 
     /**
-     * Returns <code>true</code> if there is at least one formula that has an entered expression.
-     * Returns <code>false</code> if there is no formula or if every formula has no entered
-     * expression.
-     * 
-     * @return <code>true</code> for at least one available formula
+     * Creates a new formula.
      */
-    public boolean isContainingAvailableFormula();
+    public IFormula newFormula();
+
+    /**
+     * Creates a new formula based on the given signature. If signature is <code>null</code> the
+     * formula is still created, but no reference to a signature is set.
+     */
+    public IFormula newFormula(IProductCmptTypeMethod signature);
 
 }

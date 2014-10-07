@@ -283,7 +283,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         String methodName = method.getName();
         // extend the method signature with the given parameter names
         methodsBuilder
-        .signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, true);
+                .signature(modifier, returnClass, methodName, parameterInSignatur, parameterTypesInSignatur, true);
 
         methodsBuilder.append(" throws ");
         methodsBuilder.appendClassName(FormulaExecutionException.class);
@@ -298,7 +298,8 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
     protected void getGeneratedJavaTypesThis(IIpsObject ipsObject, IPackageFragment fragment, List<IType> javaTypes) {
         IProductCmpt productCmpt = (IProductCmpt)ipsObject;
         for (IIpsObjectGeneration currentGeneration : productCmpt.getGenerations()) {
-            IIpsSrcFile generationSrcFile = productCmptBuilder.getVirtualIpsSrcFile((IProductCmptGeneration)currentGeneration);
+            IIpsSrcFile generationSrcFile = productCmptBuilder
+                    .getVirtualIpsSrcFile((IProductCmptGeneration)currentGeneration);
             try {
                 String typeName = getUnqualifiedClassName(generationSrcFile);
                 ICompilationUnit compilationUnit = fragment.getCompilationUnit(typeName

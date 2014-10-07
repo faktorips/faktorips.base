@@ -746,37 +746,37 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testNewPropertyValue() throws Exception {
         assertEquals(0,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
         productCmpt.newPropertyValue(attr);
         assertEquals(1,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
         productCmpt.newPropertyValue(attr2);
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
 
         productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
         productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
         productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), ""));
         assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
                 .size());
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
         productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "BaseMethod"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                .size());
+                        .size());
         assertEquals(1,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueClass())
-                .size());
+                        .size());
     }
 
     @Test
@@ -1012,5 +1012,27 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(1, entries.length);
         assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[0].getDeltaType());
         assertEquals(newFormulaSignature.getFormulaName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+    }
+
+    @Test
+    public void testNewFormula() throws CoreException {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmptTypeMethod formulaSignature = newProductCmptType.newFormulaSignature("newFormula");
+
+        ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+        IFormula formula = productCmpt.newFormula(formulaSignature);
+
+        assertNotNull(formula);
+        assertEquals(formulaSignature.getFormulaName(), formula.getFormulaSignature());
+    }
+
+    @Test
+    public void testNewFormula2() throws CoreException {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+        IFormula formula = productCmpt.newFormula();
+
+        assertNotNull(formula);
+        assertEquals("", formula.getFormulaSignature());
     }
 }

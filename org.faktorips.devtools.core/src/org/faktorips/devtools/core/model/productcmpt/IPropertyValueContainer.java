@@ -105,4 +105,13 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
      */
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns <code>true</code> if there is at least one formula that has an entered expression.
+     * Returns <code>false</code> if there is no formula or if every formula has no entered
+     * expression.
+     * 
+     * @return <code>true</code> for at least one available formula
+     */
+    public boolean isContainingAvailableFormula();
+
 }
