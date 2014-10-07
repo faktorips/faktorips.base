@@ -18,6 +18,10 @@ import org.faktorips.devtools.core.ui.OverlayIcons;
 
 public class ProductCmptTypeMethodWorkbenchAdapter extends MethodWorkbenchAdapter {
 
+    /**
+     * If the given {@link IIpsObjectPart} is of type {@link IProductCmptTypeMethod} and the method
+     * is not changing over time, the static indicator "S" is drawn as overlay on the method icon.
+     */
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IProductCmptTypeMethod) {
