@@ -105,8 +105,10 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
-                .booleanValue();
+        if (element.hasAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION)) {
+            formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
+                    .booleanValue();
+        }
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA));
         String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
         formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);

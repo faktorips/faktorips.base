@@ -15,5 +15,9 @@
 			mandatory="false" 
 			overloadsFormula="true"
 			changingOverTime="false" />
+	<Method id="43"/>
 
+	<Method id="44"
+				formulaSignatureDefinition="false" />
+	
 </TestData>

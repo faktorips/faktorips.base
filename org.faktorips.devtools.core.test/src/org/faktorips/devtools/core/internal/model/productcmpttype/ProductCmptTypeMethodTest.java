@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
@@ -122,6 +123,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         method.setChangingOverTime(false);
         method.setFormulaSignatureDefinition(false);
         assertFalse(method.isChangingOverTime());
+        assertFalse(method.isFormulaSignatureDefinition());
     }
 
     @Test
@@ -167,6 +169,28 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertTrue(method.isOverloadsFormula());
         assertFalse(method.isFormulaMandatory());
         assertFalse(method.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitFromXml_formulaSignature() {
+        Element docElement = getTestDocument().getDocumentElement();
+        method.initFromXml(XmlUtil.getElement(docElement, "Method", 2));
+        assertEquals("44", method.getId());
+        assertFalse(method.isFormulaSignatureDefinition());
+    }
+
+    @Test
+    public void testInitFromXml_defaultValues() {
+        Element docElement = getTestDocument().getDocumentElement();
+        method.initFromXml(XmlUtil.getElement(docElement, "Method", 1));
+        assertTrue(method.isFormulaSignatureDefinition());
+        assertEquals(StringUtils.EMPTY, method.getFormulaName());
+        assertEquals(StringUtils.EMPTY, method.getDatatype());
+        assertEquals(Modifier.PUBLISHED, method.getModifier());
+        assertFalse(method.isAbstract());
+        assertFalse(method.isOverloadsFormula());
+        assertTrue(method.isFormulaMandatory());
+        assertTrue(method.isChangingOverTime());
     }
 
     @Test
