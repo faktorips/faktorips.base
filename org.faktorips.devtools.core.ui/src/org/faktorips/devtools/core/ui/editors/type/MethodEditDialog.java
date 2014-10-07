@@ -37,19 +37,46 @@ import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 public class MethodEditDialog extends IpsPartEditDialog2 {
 
+    private IMethod method;
+    private Combo modifierCombo;
+    private Button abstractCheckbox;
+    private Text nameText;
+    private DatatypeRefControl datatypeControl;
+
     private Button changeOverTimeCheckbox;
-
-    protected IMethod method;
-    protected Combo modifierCombo;
-    protected Button abstractCheckbox;
-    protected Text nameText;
-    protected DatatypeRefControl datatypeControl;
-
     private ParametersEditControl parametersControl;
 
     public MethodEditDialog(IMethod method, Shell parentShell) {
         super(method, parentShell, Messages.MethodEditDialog_title, true);
         this.method = method;
+    }
+
+    public IMethod getMethod() {
+        return method;
+    }
+
+    public Combo getModifierCombo() {
+        return modifierCombo;
+    }
+
+    public Button getAbstractCheckbox() {
+        return abstractCheckbox;
+    }
+
+    public Text getNameText() {
+        return nameText;
+    }
+
+    public DatatypeRefControl getDatatypeControl() {
+        return datatypeControl;
+    }
+
+    public Button getChangeOverTimeCheckbox() {
+        return changeOverTimeCheckbox;
+    }
+
+    public ParametersEditControl getParametersControl() {
+        return parametersControl;
     }
 
     @Override
