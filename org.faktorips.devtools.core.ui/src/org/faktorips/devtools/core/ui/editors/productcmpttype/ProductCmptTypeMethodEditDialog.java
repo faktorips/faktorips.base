@@ -12,11 +12,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -86,18 +83,11 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
 
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_categoryLabel);
         createCategoryCombo(area);
-
-        createChangingOverTimeCheckbox(group);
     }
 
-    private void createChangingOverTimeCheckbox(Composite workArea) {
-        Button changeOverTimeCheckbox = getToolkit().createButton(
-                workArea,
-                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
-                SWT.CHECK);
-        getBindingContext().bindContent(changeOverTimeCheckbox, method,
-                IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME);
+    @Override
+    protected boolean isProdCmptTypeEditDialog() {
+        return true;
     }
 
     private void createCategoryCombo(Composite workArea) {

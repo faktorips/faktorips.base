@@ -687,8 +687,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IFormula[] getFormulas() {
-        List<IFormula> formulae = propertyValueCollection.getPropertyValues(IFormula.class);
-        return formulae.toArray(new IFormula[formulae.size()]);
+        List<IFormula> formulas = propertyValueCollection.getPropertyValues(IFormula.class);
+        return formulas.toArray(new IFormula[formulas.size()]);
     }
 
     @Override
