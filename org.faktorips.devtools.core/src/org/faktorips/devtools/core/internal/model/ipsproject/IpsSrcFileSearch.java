@@ -14,9 +14,8 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 
 /**
- * An implementation of {@link AbstractSearch} in order to process {@link IIpsSrcFile}. This class
- * is used to search an {@link IIpsSrcFile} at an {@link IIpsObjectPathEntry entry}. The search is
- * based on the given {@link QualifiedNameType}.
+ * An implementation of {@link AbstractSearch} in order to search an {@link IIpsSrcFile} at an
+ * {@link IIpsObjectPathEntry entry}. The search is based on the given {@link QualifiedNameType}.
  */
 public class IpsSrcFileSearch extends AbstractSearch {
 
