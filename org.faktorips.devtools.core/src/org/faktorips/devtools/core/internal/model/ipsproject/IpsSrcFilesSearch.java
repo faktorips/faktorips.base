@@ -19,7 +19,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 
 /**
  * An implementation of {@link AbstractSearch} in order to process {@link IpsObjectType
- * IpsObjectTypes}.
+ * IpsObjectTypes}. This class is used to search {@link IIpsSrcFile IIpsSrcFiles} at an
+ * {@link IIpsObjectPathEntry entry}. The search is based on the given {@link IpsObjectType
+ * IpsObjectTypes}. The found {@link IIpsSrcFile IIpsSrcFiles} are stored in a list.
  */
 public class IpsSrcFilesSearch extends AbstractSearch {
 

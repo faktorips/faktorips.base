@@ -120,14 +120,6 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
         return Collections.emptyList();
     }

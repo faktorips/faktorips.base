@@ -19,7 +19,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 public abstract class AbstractSearch {
 
     private boolean isIncludeIndirect = true;
-    private SearchState lastSearchState = SearchState.CONTINUE_SEARCH;
+    private SearchState searchState = SearchState.CONTINUE_SEARCH;
 
     /**
      * Process the {@link IIpsObjectPathEntry}.
@@ -49,14 +49,14 @@ public abstract class AbstractSearch {
     }
 
     /**
-     * Returns <code>true</code> if the last {@link SearchState} is {@link SearchState#STOP_SEARCH}.
+     * Returns <code>true</code> if the {@link SearchState} is {@link SearchState#STOP_SEARCH}.
      */
     public boolean isStopSearch() {
-        return lastSearchState.isStopSearch();
+        return searchState.isStopSearch();
     }
 
     protected void setStopSearch() {
-        this.lastSearchState = SearchState.STOP_SEARCH;
+        this.searchState = SearchState.STOP_SEARCH;
     }
 
     public enum SearchState {

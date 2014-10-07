@@ -584,7 +584,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
-     * name type found on the path. Returns <code>false</code> if no such object is found or just
+     * name type is found on the path. Returns <code>false</code> if no such object is found or just
      * one {@link IIpsSrcFile} was found.
      * 
      * @param qNameType representing the {@link QualifiedNameType} of the searched
@@ -594,7 +594,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
-     * name type found on the path. Returns <code>false</code> if no such object is found or just
+     * name type is found on the path. Returns <code>false</code> if no such object is found or just
      * one {@link IIpsSrcFile} was found.
      * 
      * @param type representing the {@link IpsObjectType} of the searched {@link IIpsSrcFile}
