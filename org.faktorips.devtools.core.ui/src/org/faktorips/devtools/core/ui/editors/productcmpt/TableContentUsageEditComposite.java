@@ -27,12 +27,10 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * 
  * @since 3.6
  * 
- * @author Alexander Weickmann
- * 
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -43,10 +41,11 @@ EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        createTableContentEditField(editFields);
+        TextButtonField tcuField = createTableContentEditField(editFields);
+        addMovingChangingOverTimeDecorationIfRequired(tcuField);
     }
 
-    private void createTableContentEditField(List<EditField<?>> editFields) {
+    private TextButtonField createTableContentEditField(List<EditField<?>> editFields) {
         TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(getPropertyValue().getIpsProject(),
                 this, getToolkit(), getPropertyValue());
 
@@ -54,6 +53,6 @@ EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
         editField.setSupportsNullStringRepresentation(false);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), ITableContentUsage.PROPERTY_TABLE_CONTENT);
+        return editField;
     }
-
 }

@@ -1141,22 +1141,22 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     @Override
     public Datatype findDatatype(String qualifiedName) {
-        if (qualifiedName.equals(Datatype.VOID.getQualifiedName())) {
+        String qualifiedNameDatatype = qualifiedName;
+        if (qualifiedNameDatatype.equals(Datatype.VOID.getQualifiedName())) {
             return Datatype.VOID;
         }
-        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(qualifiedName);
+        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(qualifiedNameDatatype);
         if (type != null) {
             return type;
         }
-        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
-        String resultingQName = qualifiedName;
+        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedNameDatatype);
         if (arrayDimension > 0) {
-            resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+            qualifiedNameDatatype = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedNameDatatype);
         }
         IpsObjectType[] objectTypes = getIpsModel().getIpsObjectTypes();
         for (IpsObjectType objectType : objectTypes) {
             if (objectType.isDatatype()) {
-                type = (Datatype)findIpsObject(objectType, resultingQName);
+                type = (Datatype)findIpsObject(objectType, qualifiedNameDatatype);
                 if (type != null) {
                     break;
                 }
@@ -1169,10 +1169,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (type instanceof ValueDatatype) {
                 return new ArrayOfValueDatatype(type, arrayDimension);
             }
-            throw new IllegalArgumentException("The qualified name: \"" + resultingQName + //$NON-NLS-1$
+            throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype + //$NON-NLS-1$
                     "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
         }
-        return getEnumTypeDatatypeAdapter(resultingQName, this);
+        return getEnumTypeDatatypeAdapter(qualifiedNameDatatype, this);
     }
 
     private EnumTypeDatatypeAdapter getEnumTypeDatatypeAdapter(String qualifiedName, IIpsProject ipsProject) {
@@ -1194,12 +1194,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (qualifiedName == null) {
             return null;
         }
-        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
-        String resultingQName = qualifiedName;
+        String qualifiedNameDatatype = qualifiedName;
+        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedNameDatatype);
         if (arrayDimension > 0) {
-            resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+            qualifiedNameDatatype = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedNameDatatype);
         }
-        ValueDatatype type = findValueDatatypeInclSubprojects(this, resultingQName);
+        ValueDatatype type = findValueDatatypeInclSubprojects(this, qualifiedNameDatatype);
         if (arrayDimension == 0) {
             return type;
         }
@@ -1207,7 +1207,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + resultingQName + //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype + //$NON-NLS-1$
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
@@ -1246,14 +1246,13 @@ public class IpsProject extends IpsElement implements IIpsProject {
         if (qualifiedName == null) {
             return null;
         }
-
-        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedName);
-        String resultingQName = qualifiedName;
+        String qualifiedNameDatatype = qualifiedName;
+        int arrayDimension = ArrayOfValueDatatype.getDimension(qualifiedNameDatatype);
         if (arrayDimension > 0) {
-            resultingQName = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedName);
+            qualifiedNameDatatype = ArrayOfValueDatatype.getBasicDatatypeName(qualifiedNameDatatype);
         }
 
-        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, resultingQName);
+        Datatype type = findDatatypeDefinedInProjectPropertiesInclSubprojects(this, qualifiedNameDatatype);
         if (arrayDimension == 0) {
             return type;
         }
@@ -1261,7 +1260,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return new ArrayOfValueDatatype(type, arrayDimension);
         }
 
-        throw new IllegalArgumentException("The qualified name: \"" + resultingQName + //$NON-NLS-1$
+        throw new IllegalArgumentException("The qualified name: \"" + qualifiedNameDatatype + //$NON-NLS-1$
                 "\" specifies an array of a non value datatype. This is currently not supported."); //$NON-NLS-1$
     }
 
@@ -1475,6 +1474,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
         } else if (IpsObjectType.TABLE_CONTENTS.equals(qualifiedNameType.getIpsObjectType())) {
             for (IIpsSrcFile ipsSrcFile : allProductCmpts) {
+                findReferencingProductCmptsToTableContents((IProductCmpt)ipsSrcFile.getIpsObject(), qualifiedName,
+                        result);
                 findReferencingProductCmptGenerationsToTableContents((IProductCmpt)ipsSrcFile.getIpsObject(),
                         qualifiedName, result);
             }
@@ -1496,6 +1497,18 @@ public class IpsProject extends IpsElement implements IIpsProject {
         for (IProductCmptLink link : links) {
             if (link.getTarget().equals(qualifiedProductCmptName)) {
                 result.add(link.getProductCmptLinkContainer());
+            }
+        }
+    }
+
+    private void findReferencingProductCmptsToTableContents(IProductCmpt toBeSearched,
+            String qualifiedTableContentsName,
+            Set<IProductPartsContainer> result) {
+        ITableContentUsage[] tcus = toBeSearched.getTableContentUsages();
+        for (ITableContentUsage tcu : tcus) {
+            if (tcu.getTableContentName().equals(qualifiedTableContentsName)) {
+                result.add(toBeSearched);
+                break;
             }
         }
     }

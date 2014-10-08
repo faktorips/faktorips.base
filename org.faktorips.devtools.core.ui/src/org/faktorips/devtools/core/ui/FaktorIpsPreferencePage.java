@@ -33,6 +33,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
     @Override
     protected void createFieldEditors() {
         createNullRepresentationField();
+        createDatatypeFormattingField();
         createProductCmptPostfixField();
         createChangesOverTimeField();
         createEnumTypeDisplayField();
@@ -50,7 +51,7 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         // TODO FIPS-1029
         // createRefactoringModeField();
 
-        createDatatypeFormattingField();
+        createCopyWizardModeField();
     }
 
     private void createNullRepresentationField() {
@@ -184,6 +185,18 @@ public class FaktorIpsPreferencePage extends FieldEditorPreferencePage implement
         ComboFieldEditor field = new ComboFieldEditor(IpsPreferences.DATATYPE_FORMATTING_LOCALE,
                 Messages.FaktorIpsPreferencePage_LabelFormattingOfValues, localeDisplayNameValues,
                 getFieldEditorParent());
+        addField(field);
+    }
+
+    private void createCopyWizardModeField() {
+        RadioGroupFieldEditor field = new RadioGroupFieldEditor(IpsPreferences.COPY_WIZARD_MODE,
+                Messages.FaktorIpsPreferencePage_CopyWizardModeTitle, 3, new String[][] {
+                        { Messages.FaktorIpsPreferencePage_CopyWizardModeCopy, IpsPreferences.COPY_WIZARD_MODE_COPY },
+                        { Messages.FaktorIpsPreferencePage_CopyWizardModeLink, IpsPreferences.COPY_WIZARD_MODE_LINK },
+                        { Messages.FaktorIpsPreferencePage_CopyWizardModeSmartMode,
+                                IpsPreferences.COPY_WIZARD_MODE_SMARTMODE }, }, getFieldEditorParent(), true);
+        field.getRadioBoxControl(getFieldEditorParent()).getChildren()[2]
+                .setToolTipText(Messages.FaktorIpsPreferencePage_CopyWizardModeTooltip);
         addField(field);
     }
 

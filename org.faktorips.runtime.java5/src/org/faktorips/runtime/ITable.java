@@ -17,5 +17,10 @@ package org.faktorips.runtime;
  */
 public interface ITable {
 
-    public final static String TAG_NAME = "TableContents";
+    public static final String TAG_NAME = "TableContents";
+
+    /**
+     * Returns the qualified name of this table.
+     */
+    String getName();
 }

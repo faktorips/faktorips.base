@@ -110,7 +110,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+                            IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -622,4 +622,10 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return linksAsList;
     }
 
+    @Override
+    public <T extends IPropertyValue> List<T> getPropertyValuesIncludingProductCmpt(Class<T> type) {
+        List<T> values = getProductCmpt().getPropertyValues(type);
+        values.addAll(getPropertyValues(type));
+        return values;
+    }
 }

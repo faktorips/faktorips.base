@@ -16,29 +16,48 @@ import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentLink;
+import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.XmlAbstractTestCase;
+import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class ProductComponentTest {
+public class ProductComponentTest extends XmlAbstractTestCase {
+
+    private IRuntimeRepository repository;
+    private ProductComponent pc;
+
+    @Before
+    public void setUp() {
+        repository = new InMemoryRuntimeRepository();
+        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+    }
 
     @SuppressWarnings("unchecked")
     // the verify for the parameterized map cannot be type safe
     @Test
-    public void testCallInitReferencesOnInitFromXML() {
+    public void testCallInitMethodsOnInitFromXML() {
         ProductComponent cmpt = mock(ProductComponent.class, CALLS_REAL_METHODS);
         Element element = setUpElement();
 
         cmpt.initFromXml(element);
 
+        verify(cmpt).doInitPropertiesFromXml(anyMap());
         verify(cmpt).doInitReferencesFromXml(anyMap());
+        verify(cmpt).doInitTableUsagesFromXml(anyMap());
     }
 
     private Element setUpElement() {
@@ -68,5 +87,67 @@ public class ProductComponentTest {
         IProductComponentLink<? extends IProductComponent> link = cmpt.getLink("", null);
 
         assertNull(link);
+    }
+
+    @Test
+    public void testCallWriteMethodsOnToXML() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        Document document = mock(Document.class);
+        Element prodCmptElement = mock(Element.class);
+        Document ownerDocument = mock(Document.class);
+        Element validToElement = mock(Element.class);
+        when(document.createElement("ProductComponent")).thenReturn(prodCmptElement);
+        when(prodCmptElement.getOwnerDocument()).thenReturn(ownerDocument);
+        when(ownerDocument.createElement("validTo")).thenReturn(validToElement);
+
+        cmpt.toXml(document, false);
+
+        verify(cmpt).writePropertiesToXml(prodCmptElement);
+        verify(cmpt).writeTableUsagesToXml(prodCmptElement);
+        verify(cmpt).writeReferencesToXml(prodCmptElement);
+        verify(cmpt).writeExtensionPropertiesToXml(prodCmptElement);
+    }
+
+    @Test
+    public void testWriteTableUsageToXml() {
+        Element prodCmptElement = getTestDocument().getDocumentElement();
+        NodeList childNodes = prodCmptElement.getChildNodes();
+        assertEquals(5, childNodes.getLength());
+
+        pc.writeTableUsageToXml(prodCmptElement, "structureUsageValue", "tableContentNameValue");
+
+        assertEquals(6, childNodes.getLength());
+        Node namedItem = childNodes.item(5).getAttributes().getNamedItem("structureUsage");
+        assertEquals("structureUsageValue", namedItem.getNodeValue());
+        String nodeValue = childNodes.item(5).getFirstChild().getTextContent();
+        assertEquals("tableContentNameValue", nodeValue);
+    }
+
+    /**
+     * Test class for testing the {@link ProductComponent#toXml(Document) toXml} method. This class
+     * is used instead of {@link TestProductComponent} because the method
+     * {@link #writePropertiesToXml(Element)} has to be overridden for some tests here.
+     */
+    public static class ProductComponentTestClass extends ProductComponent {
+
+        public ProductComponentTestClass(IRuntimeRepository repository, String id, String productKindId,
+                String versionId) {
+            super(repository, id, productKindId, versionId);
+        }
+
+        @Override
+        public IConfigurableModelObject createPolicyComponent() {
+            return null;
+        }
+
+        @Override
+        protected void writePropertiesToXml(Element element) {
+            /*
+             * Nothing to be done. This method is overridden to avoid throwing
+             * UnsupportedOperationException in super class implementation.
+             */
+        }
     }
 }

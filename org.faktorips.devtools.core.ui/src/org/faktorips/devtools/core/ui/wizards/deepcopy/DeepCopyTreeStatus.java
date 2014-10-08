@@ -15,8 +15,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -48,6 +51,14 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     private Map<IProductCmptLink, IProductCmpt> associationLinks;
 
+    private final IpsPreferences ipsPreferences;
+
+    private IIpsProject rootIpsProject;
+
+    public DeepCopyTreeStatus() {
+        ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+    }
+
     /**
      * Initializes the tree status for all references in the structure with default values
      * 
@@ -56,6 +67,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     public void initialize(IProductCmptTreeStructure structure) {
         treeStatus = new HashMap<IProductCmpt, Map<IIpsObjectPart, LinkStatus>>();
         associationLinks = new HashMap<IProductCmptLink, IProductCmpt>();
+        rootIpsProject = structure.getRoot().getProductCmpt().getIpsProject();
         HashMap<IProductCmptLink, IProductCmpt> associationLinksCopy = new HashMap<IProductCmptLink, IProductCmpt>();
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference instanceof IProductCmptTypeAssociationReference) {
@@ -101,7 +113,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         LinkStatus linkStatus = statusMap.get(part);
         if (linkStatus == null) {
             // if there is no status yet, create a new one with default values and return it
-            return setStatusInternal(reference, null, null);
+            return updateLinkStatusFor(reference, null, null);
         }
         if (associationLinks.containsKey(part)) {
             // FIPS-3: Associations which target is copied by this deep copy operation should also
@@ -153,39 +165,43 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     }
 
     /**
-     * Setting the status for the {@link IProductCmptLink} with the value of checked and copyOrLink.
-     * If checked or copyOrLink is null and there is previous value for this status, the old status
-     * is preserved. If there was no previous status, the defaults (true, COPY) are set.
+     * Updates the link status for the given reference with the values for "checked" and
+     * "copyOrLink". Passing <code>null</code> for "checked" or "copyOrLink" preserves the value set
+     * in the existing link status. If there is no existing link status, a new one is created. If,
+     * in this case, <code>null</code> is passed for "checked" and "copyOrLink", the new
+     * {@link LinkStatus} will be initialized with the default values <code>true</code> and COPY
+     * respectively.
      * 
-     * @param reference The {@link IIpsObjectPart} the status should be set for
+     * @param reference The {@link IIpsObjectPart} the status should be updated for
      * @param checked the checked status or null to preserve the previous value (if any)
      * @param copyOrLink the copy or link status or null to preserve the previous value (if any)
+     * @return the updated or newly created {@link LinkStatus}
      */
-    private LinkStatus setStatusInternal(IProductCmptStructureReference reference,
+    private LinkStatus updateLinkStatusFor(IProductCmptStructureReference reference,
             Boolean checked,
             CopyOrLink copyOrLink) {
-        Boolean isChecked = checked;
         CopyOrLink copyOrLinkStatus = copyOrLink;
         IIpsObjectPart part = reference.getWrapped();
         IProductCmpt parent = getProductCmpt(part);
         Map<IIpsObjectPart, LinkStatus> statusMap = getStatusMap(parent);
         LinkStatus linkStatus = statusMap.get(part);
+
+        Boolean checkedStatus = checked;
         if (linkStatus == null) {
-            if (isChecked == null) {
-                isChecked = true;
+            if (checkedStatus == null) {
+                checkedStatus = true;
             }
             if (copyOrLinkStatus == null) {
-                copyOrLinkStatus = CopyOrLink.COPY;
+                copyOrLinkStatus = getInitCopyOrLinkFromPreferences(reference);
             }
-            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), isChecked,
+            linkStatus = new LinkStatus(reference.getWrapped(), reference.getWrappedIpsObject(), checkedStatus,
                     copyOrLinkStatus);
         }
-        if (isChecked != null) {
-            if (reference.getParent() == null) {
-                // root node must be checked
+        if (checkedStatus != null) {
+            if (reference.isRoot()) {
                 linkStatus.setChecked(true);
             } else {
-                linkStatus.setChecked(isChecked);
+                linkStatus.setChecked(checkedStatus);
             }
         }
         if (copyOrLinkStatus != null) {
@@ -193,6 +209,29 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         }
         statusMap.put(part, linkStatus);
         return linkStatus;
+    }
+
+    private CopyOrLink getInitCopyOrLinkFromPreferences(IProductCmptStructureReference reference) {
+        if (reference.isRoot()) {
+            return CopyOrLink.COPY;
+        }
+        CopyOrLink copyOrLinkMode;
+        if (ipsPreferences.isCopyWizardModeCopy()) {
+            copyOrLinkMode = CopyOrLink.COPY;
+        } else if (ipsPreferences.isCopyWizardModeLink()) {
+            copyOrLinkMode = CopyOrLink.LINK;
+        } else {
+            copyOrLinkMode = getCopyOrLinkInSmartMode(reference);
+        }
+        return copyOrLinkMode;
+    }
+
+    private CopyOrLink getCopyOrLinkInSmartMode(IProductCmptStructureReference reference) {
+        if (rootIpsProject.equals(reference.getIpsProject())) {
+            return CopyOrLink.COPY;
+        } else {
+            return CopyOrLink.LINK;
+        }
     }
 
     /**
@@ -223,11 +262,10 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     public boolean isChecked(IProductCmptStructureReference reference) {
         if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
-            if (reference.getParent() != null) {
-                return getStatus(reference).isChecked();
-            } else {
-                // getParent() is null --> Root node
+            if (reference.isRoot()) {
                 return true;
+            } else {
+                return getStatus(reference).isChecked();
             }
         } else if (reference instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociationReference associationReference = (IProductCmptTypeAssociationReference)reference;
@@ -274,7 +312,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         boolean oldValue;
         LinkStatus status = getStatus(reference);
         oldValue = status.isChecked();
-        setStatusInternal(reference, value, null);
+        updateLinkStatusFor(reference, value, null);
         return oldValue;
     }
 
@@ -289,7 +327,7 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
         if (reference instanceof IProductCmptReference || reference instanceof IProductCmptStructureTblUsageReference) {
             LinkStatus status = getStatus(reference);
             CopyOrLink oldValue = status.getCopyOrLink();
-            setStatusInternal(reference, null, value);
+            updateLinkStatusFor(reference, null, value);
             if (oldValue != null && !oldValue.equals(value)) {
                 notifyListeners(new PropertyChangeEvent(reference, LinkStatus.COPY_OR_LINK, oldValue, value));
             }
@@ -306,17 +344,13 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
      */
     public boolean isEnabled(IProductCmptStructureReference reference) {
         boolean enabled = isChecked(reference);
-        IProductCmptStructureReference parent = reference;
-        parent = parent.getParent();
+        IProductCmptStructureReference parent = reference.getParent();
         while (enabled && parent != null) {
-            if (parent instanceof IProductCmptTypeAssociationReference) {
-                parent = parent.getParent();
-                continue;
-            } else {
+            if (!(parent instanceof IProductCmptTypeAssociationReference)) {
                 LinkStatus status = getStatus(parent);
                 enabled = enabled && status.isChecked() && status.getCopyOrLink() == CopyOrLink.COPY;
-                parent = parent.getParent();
             }
+            parent = parent.getParent();
         }
         return enabled;
     }

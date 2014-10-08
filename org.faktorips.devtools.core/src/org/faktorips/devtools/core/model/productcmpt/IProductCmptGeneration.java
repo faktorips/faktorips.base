@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
-        IProductCmptLinkContainer {
+IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -289,5 +289,11 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * an {@link IValidationRule} is set.
      */
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
+
+    /**
+     * Returns a list containing the property values of the given class defined in the product
+     * component and this product component generation.
+     */
+    public <T extends IPropertyValue> List<T> getPropertyValuesIncludingProductCmpt(Class<T> type);
 
 }

@@ -59,10 +59,12 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.message.MessageList;
@@ -98,7 +100,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         attr.setName("TypeAttr1");
         attr2 = new ProductCmptTypeAttribute(type, "IDAttr2");
         attr2.setName("TypeAttr2");
-
     }
 
     @Test
@@ -376,6 +377,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IConfigElement ce1 = gen1.newConfigElement();
         ce1.setValue("0.15");
         productCmpt.newGeneration();
+
         Element element = productCmpt.toXml(newDocument());
         ProductCmpt copy = new ProductCmpt();
         copy.initFromXml(element);
@@ -406,6 +408,23 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IAttributeValue copyAttributeValue = copy.getAttributeValue(attr2.getName());
         assertNotNull(copyAttributeValue);
         assertEquals(propertyValue.getName(), copyAttributeValue.getName());
+    }
+
+    @Test
+    public void testInitFromXml_TableContentUsage() {
+        productCmpt.initFromXml(getTestDocument().getDocumentElement());
+        assertEquals(1, productCmpt.getTableContentUsages().length);
+        assertNotNull(productCmpt.getTableContentUsage("staticTable"));
+    }
+
+    @Test
+    public void testToXml_TableContentUsage() {
+        productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), "tc"));
+        Element xml = productCmpt.toXml(newDocument());
+
+        ProductCmpt copy = new ProductCmpt();
+        copy.initFromXml(xml);
+        assertEquals(1, productCmpt.getTableContentUsages().length);
     }
 
     @Test
@@ -582,6 +601,68 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(newAttribute.getName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
     }
 
+    @Test
+    public void testContainsDifferencesToModel_productCmptTypeTableContent() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
+        tableStructureUsage.setRoleName("TSU");
+        tableStructureUsage.setChangingOverTime(false);
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newProductCmpt.newPropertyValue(tableStructureUsage);
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+    }
+
+    @Test
+    public void testFixDifferencesToModel_productCmptTypeTableContent() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
+        tableStructureUsage.setRoleName("TSU");
+        tableStructureUsage.setChangingOverTime(false);
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        assertTrue(newProductCmpt.containsDifferenceToModel(ipsProject));
+
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+        assertFalse(newProductCmpt.containsDifferenceToModel(ipsProject));
+    }
+
+    @Test
+    public void testComputeDeltaToModel_productCmptTypeTableContent() throws Exception {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
+        tableStructureUsage.setRoleName("TSU");
+        tableStructureUsage.setChangingOverTime(false);
+
+        ProductCmpt newProductCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        IPropertyValueContainerToTypeDelta computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+
+        assertEquals(newProductCmpt, computeDeltaToModel.getPropertyValueContainer());
+        IDeltaEntry[] entries = computeDeltaToModel.getEntries();
+        assertEquals(1, entries.length);
+        assertEquals(DeltaType.MISSING_PROPERTY_VALUE, entries[0].getDeltaType());
+        assertEquals(tableStructureUsage.getRoleName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+
+        tableStructureUsage.setChangingOverTime(true);
+        computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+        entries = computeDeltaToModel.getEntries();
+        assertEquals(0, entries.length);
+
+        tableStructureUsage.setChangingOverTime(false);
+        newProductCmpt.fixAllDifferencesToModel(ipsProject);
+
+        tableStructureUsage.setChangingOverTime(true);
+        computeDeltaToModel = newProductCmpt.computeDeltaToModel(ipsProject);
+        entries = computeDeltaToModel.getEntries();
+        assertEquals(1, entries.length);
+        assertEquals(DeltaType.VALUE_WITHOUT_PROPERTY, entries[0].getDeltaType());
+        assertEquals(tableStructureUsage.getRoleName(), ((IDeltaEntryForProperty)entries[0]).getPropertyName());
+    }
+
     /**
      * Test method for
      * {@link org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport#fixAllDifferencesToModel(IIpsProject)}
@@ -636,35 +717,37 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPropertyValue() {
+    public void testNewPropertyValue() throws Exception {
         assertEquals(0,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(attr);
         assertEquals(1,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(attr2);
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
 
         productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), ""));
+        assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
+                .size());
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
         productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "BaseMethod"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+                .size());
     }
 
     @Test
@@ -696,6 +779,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         when(element.getNodeName()).thenReturn(ValidationRule.TAG_NAME);
         part = productCmpt.newPartThis(element, "vRuleID");
         assertNull(part);
+
+        when(element.getNodeName()).thenReturn(TableContentUsage.TAG_NAME);
+        part = productCmpt.newPartThis(element, "TCUID");
+        assertNotNull(part);
+
     }
 
     @Test
@@ -760,4 +848,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(links, linksIncludingGenerations);
     }
 
+    @Test
+    public void testGetTableContentUsages() throws Exception {
+        ITableContentUsage contentUsagePC = (ITableContentUsage)productCmpt.newPropertyValue(new TableStructureUsage(
+                mock(IProductCmptType.class), ""));
+        assertNotNull(contentUsagePC);
+
+        assertEquals(1, productCmpt.getTableContentUsages().length);
+        assertEquals(contentUsagePC, productCmpt.getTableContentUsages()[0]);
+    }
 }

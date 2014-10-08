@@ -23,8 +23,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsPreferences;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -32,13 +36,14 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
+import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTypeAssociationReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.LinkStatus.CopyOrLink;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DeepCopyTreeStatusTest {
+public class DeepCopyTreeStatusTest extends AbstractIpsPluginTest {
 
     private DeepCopyTreeStatus deepCopyTreeStatus;
     private IProductCmptType[] types;
@@ -47,9 +52,39 @@ public class DeepCopyTreeStatusTest {
     private IProductCmptLink[] links;
     private IProductCmptGeneration[] productCmptsGenerations;
     private ProductCmptTreeStructure structure;
+    private IpsPreferences ipsPreferences;
+    private String mode;
 
+    @Override
     @Before
     public void setUp() throws Exception {
+        super.setUp();
+        ipsPreferences = IpsPlugin.getDefault().getIpsPreferences();
+        getCopyWizardMode();
+    }
+
+    private void getCopyWizardMode() {
+        if (ipsPreferences.isCopyWizardModeCopy()) {
+            mode = IpsPreferences.COPY_WIZARD_MODE_COPY;
+        } else if (ipsPreferences.isCopyWizardModeLink()) {
+            mode = IpsPreferences.COPY_WIZARD_MODE_LINK;
+        } else {
+            mode = IpsPreferences.COPY_WIZARD_MODE_SMARTMODE;
+        }
+    }
+
+    @Override
+    public void tearDown() throws Exception {
+        super.tearDown();
+        ipsPreferences.setCopyWizardMode(mode);
+    }
+
+    private void initStructure() throws Exception {
+        IIpsProject ipsProject = mock(IIpsProject.class);
+        initStructure(ipsProject, ipsProject);
+    }
+
+    private void initStructure(IIpsProject rootIpsProject, IIpsProject childIpsProject) throws Exception {
         types = new IProductCmptType[6];
         for (int i = 0; i < types.length; i++) {
             types[i] = mock(IProductCmptType.class);
@@ -89,8 +124,12 @@ public class DeepCopyTreeStatusTest {
             when(productCmpts[i].getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(
                     productCmptsGenerations[i]);
             when(productCmpts[i].findProductCmptType(any(IIpsProject.class))).thenReturn(types[i]);
+            when(productCmpts[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
+            IIpsSrcFile srcFile = mock(IIpsSrcFile.class);
+            when(productCmpts[i].getIpsSrcFile()).thenReturn(srcFile);
+            when(srcFile.getIpsProject()).thenReturn(childIpsProject);
+            when(productCmpts[i].getIpsProject()).thenReturn(rootIpsProject);
             when(productCmptsGenerations[i].getTableContentUsages()).thenReturn(new ITableContentUsage[0]);
-
             links[i] = mock(IProductCmptLink.class);
         }
 
@@ -158,6 +197,8 @@ public class DeepCopyTreeStatusTest {
 
     @Test
     public void testIsEnabled() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_COPY);
+        initStructure();
         Set<IProductCmptStructureReference> allCopyEnabledElements = deepCopyTreeStatus.getAllEnabledElements(
                 CopyOrLink.COPY, structure, true);
         // 6 product components + 2 are referenced twice (productCmpts[2] and productCmpts[5])
@@ -177,8 +218,7 @@ public class DeepCopyTreeStatusTest {
         allLinkEnabledElements = deepCopyTreeStatus.getAllEnabledElements(CopyOrLink.LINK, structure, true);
         assertEquals(1, allLinkEnabledElements.size());
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
-            if (reference.getParent() == r1
-                    || (reference.getParent() != null && reference.getParent().getParent() == r1)) {
+            if (reference.getParent() == r1 || (!reference.isRoot() && reference.getParent().getParent() == r1)) {
                 assertFalse(deepCopyTreeStatus.isEnabled(reference));
             } else {
                 assertTrue(deepCopyTreeStatus.isEnabled(reference));
@@ -192,12 +232,75 @@ public class DeepCopyTreeStatusTest {
         assertEquals(0, allLinkEnabledElements.size());
         for (IProductCmptStructureReference reference : structure.toSet(false)) {
             if (reference == r1 || reference.getParent() == r1
-                    || (reference.getParent() != null && reference.getParent().getParent() == r1)) {
+                    || (!reference.isRoot() && reference.getParent().getParent() == r1)) {
                 assertFalse(deepCopyTreeStatus.isEnabled(reference));
             } else {
                 assertTrue(deepCopyTreeStatus.isEnabled(reference));
             }
         }
+    }
 
+    @Test
+    public void testgetCopyOrLink_CopyModus() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_COPY);
+        initStructure();
+
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
+            } else {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
+            }
+        }
+    }
+
+    @Test
+    public void testgetCopyOrLink_LinkModus() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_LINK);
+        initStructure();
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            if (reference.isRoot()) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
+            } else if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
+            } else {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.LINK));
+            }
+        }
+    }
+
+    @Test
+    public void testgetCopyOrLink_SmartModusSameIpsProject() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
+        initStructure();
+
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            if (reference.isRoot()) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
+            } else if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
+            } else {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
+            }
+        }
+    }
+
+    @Test
+    public void testgetCopyOrLink_SmartModusOtherIpsProject() throws Exception {
+        ipsPreferences.setCopyWizardMode(IpsPreferences.COPY_WIZARD_MODE_SMARTMODE);
+        IIpsProject rootIpsProject = mock(IIpsProject.class);
+        IIpsProject childIpsProject = mock(IIpsProject.class);
+
+        initStructure(rootIpsProject, childIpsProject);
+
+        for (IProductCmptStructureReference reference : structure.toSet(false)) {
+            if (reference.isRoot()) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.COPY));
+            } else if (reference instanceof IProductCmptTypeAssociationReference) {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.UNDEFINED));
+            } else {
+                assertTrue(deepCopyTreeStatus.getCopyOrLink(reference).equals(CopyOrLink.LINK));
+            }
+        }
     }
 }

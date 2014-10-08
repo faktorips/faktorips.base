@@ -54,6 +54,11 @@ public abstract class ProductCmptStructureReference extends PlatformObject imple
     }
 
     @Override
+    public boolean isRoot() {
+        return getParent() == null;
+    }
+
+    @Override
     public ProductCmptStructureReference[] getChildren() {
         return children;
     }

@@ -14,8 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.CellEditor.LayoutData;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -23,6 +27,8 @@ import org.eclipse.swt.widgets.Layout;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -214,5 +220,82 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      * @throws CoreException if an error occurs while creating the edit fields
      */
     protected abstract void createEditFields(List<EditField<?>> editFields) throws CoreException;
+
+    /**
+     * Adds a "S"-decoration to the editcomposite's field if the propertyValue is <em>not</em>
+     * changing over time.
+     * 
+     * @param editField the edit field whose control should be decorated with an "S".
+     */
+    protected void addChangingOverTimeDecorationIfRequired(EditField<?> editField) {
+        addChangingOverTimeDecorationIfRequired(editField, 0);
+    }
+
+    /**
+     * Adds a "S"-decoration to the editcomposite's field if the propertyValue is <em>not</em>
+     * changing over time. The decoration moves 7 pixels to the left, if the field has focus.
+     * <p>
+     * Use this method for edit composites that provide context proposals. On gaining focus, the "S"
+     * decoration is moved to the left to prevent overlay with the context proposal icon.
+     * 
+     * @see #addChangingOverTimeDecorationIfRequired(EditField)
+     * @param editField the edit field whose control should be decorated with an "S".
+     */
+    protected void addMovingChangingOverTimeDecorationIfRequired(EditField<?> editField) {
+        addChangingOverTimeDecorationIfRequired(editField, 7);
+    }
+
+    private void addChangingOverTimeDecorationIfRequired(EditField<?> editField, int pixelsToLeftUponControlFocus) {
+        if (propertyIsNotChangingOverTime()) {
+            addChangingOverTimeDecoration(editField, pixelsToLeftUponControlFocus);
+        }
+    }
+
+    private boolean propertyIsNotChangingOverTime() {
+        return getProperty() != null && !getProperty().isChangingOverTime();
+    }
+
+    private void addChangingOverTimeDecoration(EditField<?> editField, int pixelsToLeftUponControlFocus) {
+        final ControlDecoration controlDecoration = new ControlDecoration(editField.getControl(), SWT.LEFT | SWT.TOP,
+                this.getParent());
+        controlDecoration.setDescriptionText(NLS.bind(
+                Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+        controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
+        controlDecoration.setMarginWidth(1);
+
+        addFocusListenerIfRequired(editField, controlDecoration, pixelsToLeftUponControlFocus);
+    }
+
+    private void addFocusListenerIfRequired(EditField<?> editField,
+            final ControlDecoration controlDecoration,
+            int pixelsToLeftUponControlFocus) {
+        if (pixelsToLeftUponControlFocus > 0) {
+            editField.getControl().addFocusListener(
+                    new MoveDecorationFocusListener(controlDecoration, pixelsToLeftUponControlFocus));
+        }
+    }
+
+    private static class MoveDecorationFocusListener implements FocusListener {
+
+        private final ControlDecoration controlDecoration;
+        private final int pixelsToLeftUponControlFocus;
+
+        public MoveDecorationFocusListener(ControlDecoration controlDecoration, int pixelsToLeftUponControlFocus) {
+            this.controlDecoration = controlDecoration;
+            this.pixelsToLeftUponControlFocus = pixelsToLeftUponControlFocus;
+        }
+
+        @Override
+        public void focusGained(FocusEvent e) {
+            controlDecoration.setMarginWidth(pixelsToLeftUponControlFocus);
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            controlDecoration.setMarginWidth(0);
+        }
+
+    }
 
 }

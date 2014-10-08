@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -50,22 +51,22 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
      */
     private String structureUsage = ""; //$NON-NLS-1$
 
-    public TableContentUsage(IPropertyValueContainer generation, String id) {
-        super(generation, id);
+    public TableContentUsage() {
+        super();
     }
 
-    public TableContentUsage(IPropertyValueContainer generation, String id, String structureUsage) {
-        super(generation, id);
+    public TableContentUsage(IPropertyValueContainer parent, String id) {
+        super(parent, id);
+    }
+
+    public TableContentUsage(IPropertyValueContainer parent, String id, String structureUsage) {
+        super(parent, id);
         this.structureUsage = structureUsage;
     }
 
     @Override
     public final IPropertyValueContainer getPropertyValueContainer() {
         return (IPropertyValueContainer)getParent();
-    }
-
-    public TableContentUsage() {
-        super();
     }
 
     @Override
@@ -88,13 +89,30 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return tableContentName;
     }
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @deprecated As of 3.14 {@link TableContentUsage table content usages} can be part of both
+     *             {@link IProductCmpt product components} and {@link ProductCmptGeneration product
+     *             component generations}. Use {@link #getPropertyValueContainer()} and the common
+     *             interface {@link IPropertyValueContainer} instead.
+     */
     @Override
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration() {
-        return (ProductCmptGeneration)getParent();
+        if (getParent() instanceof IProductCmptGeneration) {
+            return (ProductCmptGeneration)getParent();
+        }
+        return null;
+    }
+
+    @Override
+    public IProductCmpt getProductCmpt() {
+        return getPropertyValueContainer().getProductCmpt();
     }
 
     private IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
-        return getProductCmptGeneration().findProductCmptType(ipsProject);
+        return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
     @Override
@@ -196,12 +214,12 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     public String getCaption(Locale locale) throws CoreException {
         ArgumentCheck.notNull(locale);
 
-        String caption = null;
-        ITableStructureUsage structureUsage = findTableStructureUsage(getIpsProject());
-        if (structureUsage != null) {
-            caption = structureUsage.getLabelValue(locale);
+        ITableStructureUsage currentStructureUsage = findTableStructureUsage(getIpsProject());
+        if (currentStructureUsage != null) {
+            return currentStructureUsage.getLabelValue(locale);
+        } else {
+            return null;
         }
-        return caption;
     }
 
     @Override

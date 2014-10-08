@@ -21,6 +21,7 @@ import org.faktorips.valueset.UnrestrictedValueSet;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -118,5 +119,20 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         node = (Element)configElements.item(6);
         valueSet = ValueToXmlHelper.getUnrestrictedValueSet(node, "ValueSet");
         assertFalse(valueSet.containsNull());
+    }
+
+    @Test
+    public void testAddTableUsageToElement() {
+        Element element = getTestDocument().getDocumentElement();
+        NodeList childNodes = element.getChildNodes();
+        assertEquals(25, childNodes.getLength());
+
+        ValueToXmlHelper.addTableUsageToElement(element, "structureUsageValue", "tableContentNameValue");
+
+        assertEquals(26, childNodes.getLength());
+        Node namedItem = childNodes.item(25).getAttributes().getNamedItem("structureUsage");
+        assertEquals("structureUsageValue", namedItem.getNodeValue());
+        String nodeValue = childNodes.item(25).getFirstChild().getTextContent();
+        assertEquals("tableContentNameValue", nodeValue);
     }
 }

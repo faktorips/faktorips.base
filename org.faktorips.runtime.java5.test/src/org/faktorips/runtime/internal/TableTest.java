@@ -12,25 +12,35 @@ package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.values.Decimal;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * 
  * @author Peter Erzberger
  */
+@RunWith(MockitoJUnitRunner.class)
 public class TableTest extends XmlAbstractTestCase {
 
     private TestTable table;
 
+    @Mock
+    private TableContentTocEntry tocEntry;
+
     @Before
     public void setUp() throws Exception {
         table = new TestTable();
+        when(tocEntry.getIpsObjectId()).thenReturn(getClass().getName());
     }
 
     @Test
@@ -46,7 +56,7 @@ public class TableTest extends XmlAbstractTestCase {
             throw new RuntimeException("Can't find resource " + resourceName);
         }
 
-        table.initFromXml(is, null);
+        table.initFromXml(is, null, tocEntry.getIpsObjectId());
 
         TestTableRow row = table.rows.get(0);
         assertNull(row.getCompany());
@@ -62,6 +72,8 @@ public class TableTest extends XmlAbstractTestCase {
         assertEquals("BBV", row.getCompany());
         assertEquals(Integer.valueOf("1"), row.getGender());
         assertEquals(Decimal.valueOf("0.35"), row.getRate());
+
+        assertEquals(getClass().getName(), table.getName());
     }
 
 }

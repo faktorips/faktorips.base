@@ -25,4 +25,7 @@
     </Formula>
     <Link id="3" association="coverage" target="CollisionCoverage" minCardinality="2" maxCardinality="3"/>
     <ValidationRuleConfig id="4" active="true"/>
+    <TableContentUsage id="123" structureUsage="tableWithNoRange">
+            <TableContentName isNull="false">tables.TableWithNoRange</TableContentName>
+    </TableContentUsage>
 </Generation>

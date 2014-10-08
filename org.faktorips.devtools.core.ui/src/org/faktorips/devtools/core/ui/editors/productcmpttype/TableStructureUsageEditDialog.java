@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -112,6 +113,8 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
         getToolkit().createFormLabel(workArea, Messages.TableStructureUsageEditDialog_categoryLabel);
         createCategoryCombo(workArea);
 
+        createChangingOverTimeCheckbox(workArea);
+
         createExtFactoryControls(workArea);
 
         getToolkit().createVerticalSpacer(c, 10);
@@ -121,6 +124,17 @@ public class TableStructureUsageEditDialog extends IpsPartEditDialog2 {
         createTableStructureComposite(grp);
 
         return c;
+    }
+
+    private void createChangingOverTimeCheckbox(Composite workArea) {
+        getToolkit().createFormLabel(workArea, ""); //$NON-NLS-1$
+        Button changeOverTimeCheckbox = getToolkit().createButton(
+                workArea,
+                NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
+                SWT.CHECK);
+        getBindingContext().bindContent(changeOverTimeCheckbox, tableStructureUsage,
+                ITableStructureUsage.PROPERTY_CHANGING_OVER_TIME);
     }
 
     private void createCategoryCombo(Composite workArea) {

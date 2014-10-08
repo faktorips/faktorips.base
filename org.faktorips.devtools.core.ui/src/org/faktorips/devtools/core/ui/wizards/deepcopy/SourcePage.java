@@ -775,20 +775,16 @@ public class SourcePage extends WizardPage {
             getWizard().getContainer().run(false, false, new IRunnableWithProgress() {
                 @Override
                 public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-                    IProgressMonitor progressMonitor = createMonitorIfNull(monitor);
+                    IProgressMonitor progressMonitor = monitor;
+                    if (progressMonitor == null) {
+                        progressMonitor = new NullProgressMonitor();
+                    }
                     progressMonitor.beginTask(Messages.ReferenceAndPreviewPage_msgValidateCopy, 8);
                     SubProgressMonitor subProgressMonitor = new SubProgressMonitor(progressMonitor, 6);
                     getWizard().getDeepCopyPreview().createTargetNodes(subProgressMonitor);
                     progressMonitor.worked(1);
                     tree.refresh();
                     progressMonitor.worked(1);
-                }
-
-                private IProgressMonitor createMonitorIfNull(IProgressMonitor monitor) {
-                    if (monitor == null) {
-                        return new NullProgressMonitor();
-                    }
-                    return monitor;
                 }
             });
         } catch (InvocationTargetException e) {
@@ -825,8 +821,7 @@ public class SourcePage extends WizardPage {
                     || evt.getPropertyName().equals(LinkStatus.COPY_OR_LINK)) {
                 if (evt.getSource() instanceof IProductCmptStructureReference) {
                     IProductCmptStructureReference reference = (IProductCmptStructureReference)evt.getSource();
-                    if (reference.getParent() != null) {
-                        // do not expand/collapse for root node
+                    if (!reference.isRoot()) {
                         if (Boolean.TRUE.equals(evt.getNewValue()) || evt.getNewValue() == CopyOrLink.COPY) {
                             tree.expandToLevel(reference, CheckboxTreeViewer.ALL_LEVELS);
                         } else {

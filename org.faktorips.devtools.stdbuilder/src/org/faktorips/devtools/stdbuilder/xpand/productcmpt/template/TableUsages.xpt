@@ -60,6 +60,9 @@
 «ENDDEFINE»
 
 «DEFINE doInitFromXmlMethod FOR XTableUsage-»
+	/**
+     * @generated
+     */
 	private void «method(methodNameDoInitFromXml, Map("String", Element()), " tableUsageMap")» {
         Element element = tableUsageMap.get(«constantNameTable»);
         if (element != null) {

@@ -357,13 +357,15 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
          */
     }
 
+    /**
+     * This method is used for writing a table usage to the XML of the given {@link Element}.
+     * 
+     * @param element the element where the table usage will be added to
+     * @param structureUsage the value for the structureUsage XML attribute
+     * @param tableContentName the name of the used table content
+     */
     protected void writeTableUsageToXml(Element element, String structureUsage, String tableContentName) {
-        Element tableContentElement = element.getOwnerDocument().createElement(
-                ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE);
-        tableContentElement.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_STRUCTURE_USAGE, structureUsage);
-        ValueToXmlHelper.addValueToElement(tableContentName, tableContentElement,
-                ValueToXmlHelper.XML_TAG_TABLE_CONTENT_NAME);
-        element.appendChild(tableContentElement);
+        ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
     }
 
     /**

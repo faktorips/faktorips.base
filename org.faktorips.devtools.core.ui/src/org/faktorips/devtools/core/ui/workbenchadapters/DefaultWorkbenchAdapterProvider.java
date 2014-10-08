@@ -183,9 +183,8 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         register(ProductCmptTypeAssociation.class, new AssociationWorkbenchAdapter());
         register(ProductCmptTypeAttribute.class, attributeWA);
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TableStructure.gif", true); //$NON-NLS-1$
-        IpsElementWorkbenchAdapter tableStructureUsageWA = new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor);
-        register(TableStructureUsage.class, tableStructureUsageWA);
-        register(TableStructureReference.class, tableStructureUsageWA);
+        register(TableStructureUsage.class, new TableStructureUsageWorkbenchAdapter(imageDescriptor));
+        register(TableStructureReference.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 
         // ProductCmpt
         register(AttributeValue.class, new AttributeValueWorkbenchAdapter());
