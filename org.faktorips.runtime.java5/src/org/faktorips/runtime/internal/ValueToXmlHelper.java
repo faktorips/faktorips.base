@@ -10,6 +10,11 @@
 
 package org.faktorips.runtime.internal;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
+import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.values.DefaultInternationalString;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.w3c.dom.CDATASection;
@@ -299,5 +304,32 @@ public class ValueToXmlHelper {
             }
         }
         return new UnrestrictedValueSet<T>(true);
+    }
+
+    /**
+     * Adds the formulas with formulaSignature, expression and compiled expression to the given
+     * Element.
+     * 
+     * @param element the element to add the formulas
+     * @param formulaEvaluator the {@link IFormulaEvaluator} for the compiled expressions
+     * @param availableFormulars the available formulas
+     */
+    public static void addFormulasToElement(final Element element,
+            final IFormulaEvaluator formulaEvaluator,
+            final Map<String, String> availableFormulars) {
+        if (formulaEvaluator != null && availableFormulars != null) {
+            for (Entry<String, String> expressionEntry : availableFormulars.entrySet()) {
+                Element formula = element.getOwnerDocument().createElement(ProductComponentXmlUtil.XML_TAG_FORMULA);
+                formula.setAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE, expressionEntry.getKey());
+                ValueToXmlHelper.addValueToElement(expressionEntry.getValue(), formula,
+                        ProductComponentXmlUtil.XML_TAG_EXPRESSION);
+
+                String compiledExpression = formulaEvaluator.getNameToExpressionMap().get(expressionEntry.getKey());
+
+                ValueToXmlHelper.addCDataValueToElement(compiledExpression, formula,
+                        AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+                element.appendChild(formula);
+            }
+        }
     }
 }

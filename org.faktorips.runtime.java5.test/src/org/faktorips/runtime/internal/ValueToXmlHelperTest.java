@@ -15,8 +15,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.faktorips.runtime.XmlAbstractTestCase;
+import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.valueset.UnrestrictedValueSet;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -134,5 +140,27 @@ public class ValueToXmlHelperTest extends XmlAbstractTestCase {
         assertEquals("structureUsageValue", namedItem.getNodeValue());
         String nodeValue = childNodes.item(25).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
+    }
+
+    @Test
+    public void testAddFormulasToElement() throws Exception {
+        Element element = getTestDocument().getDocumentElement();
+        Map<String, String> availableFormulars = new LinkedHashMap<String, String>();
+        Map<String, String> nameToExpressionMap = new LinkedHashMap<String, String>();
+        IFormulaEvaluator formulaEvaluator = mock(IFormulaEvaluator.class);
+        when(formulaEvaluator.getNameToExpressionMap()).thenReturn(nameToExpressionMap);
+
+        ValueToXmlHelper.addFormulasToElement(element, formulaEvaluator, availableFormulars);
+        assertEquals(0, element.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA).getLength());
+
+        availableFormulars.put("testFormula1", "NeueExpression1");
+        availableFormulars.put("testFormula2", "NeueExpression2");
+        nameToExpressionMap.put("testFormula1", "compiledExpression1");
+        nameToExpressionMap.put("testFormula2", "compiledExpression2");
+
+        availableFormulars.put("testFormula3", "NeueExpression3");
+
+        ValueToXmlHelper.addFormulasToElement(element, formulaEvaluator, availableFormulars);
+        assertEquals(3, element.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA).getLength());
     }
 }

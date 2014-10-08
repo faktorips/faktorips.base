@@ -15,18 +15,15 @@ import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Base class for all product components.
@@ -196,21 +193,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
-                Map<String, String> expressions = new LinkedHashMap<String, String>();
-                NodeList formulas = genElement.getElementsByTagName(ProductComponentXmlUtil.XML_TAG_FORMULA);
-                for (int i = 0; i < formulas.getLength(); i++) {
-                    Element aFormula = (Element)formulas.item(i);
-                    String name = aFormula.getAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE);
-                    NodeList nodeList = aFormula
-                            .getElementsByTagName(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
-                    if (nodeList.getLength() == 1) {
-                        Element expression = (Element)nodeList.item(0);
-                        String formulaExpression = expression.getTextContent();
-                        expressions.put(name, formulaExpression);
-                    } else {
-                        throw new RuntimeException("Expression for Formula: " + name + " not found");
-                    }
-                }
+                Map<String, String> expressions = ProductComponentXmlUtil.getComopiledExpressionsFromFormulas(genElement);
                 formulaEvaluator = factory.createFormulaEvaluator(this, expressions);
             }
         }
@@ -352,20 +335,6 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     protected void writeFormulaToXml(Element element) {
-        for (Entry<String, String> expressionEntry : availableFormulars.entrySet()) {
-            Element formula = element.getOwnerDocument().createElement(ProductComponentXmlUtil.XML_TAG_FORMULA);
-            formula.setAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE, expressionEntry.getKey());
-            ValueToXmlHelper.addValueToElement(expressionEntry.getValue(), formula,
-                    ProductComponentXmlUtil.XML_TAG_EXPRESSION);
-
-            if (formulaEvaluator != null) {
-                String compiledExpression = formulaEvaluator.getNameToExpressionMap().get(expressionEntry.getKey());
-
-                ValueToXmlHelper.addCDataValueToElement(compiledExpression, formula,
-                        AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
-            }
-
-            element.appendChild(formula);
-        }
+        ValueToXmlHelper.addFormulasToElement(element, formulaEvaluator, availableFormulars);
     }
 }
