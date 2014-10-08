@@ -17,7 +17,8 @@ import org.faktorips.runtime.FormulaExecutionException;
 
 /**
  * An abstract implementation of {@link IFormulaEvaluator} holding the product component generation
- * and handles the exceptions thrown by the {@link #evaluateInternal(String, Object...)} method.
+ * or product component and handles the exceptions thrown by the
+ * {@link #evaluateInternal(String, Object...)} method.
  * <p>
  * There is no method to set the compiled formula expression because the expressions have to be set
  * by the {@link IFormulaEvaluatorFactory} while creating the evaluator.

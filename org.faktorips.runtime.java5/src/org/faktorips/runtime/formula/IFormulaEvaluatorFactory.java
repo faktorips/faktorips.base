@@ -26,8 +26,8 @@ public interface IFormulaEvaluatorFactory {
 
     /**
      * This method creates a new formula evaluator. The evaluator getting the product component
-     * generation in which context the formulas have to be evaluated and a list of compiled formula
-     * expressions.
+     * generation or product component in which context the formulas have to be evaluated and a list
+     * of compiled formula expressions.
      * 
      * @param object The {@link IProductComponentGeneration} or {@link IProductComponent} in which
      *            context a formula have to be executed
