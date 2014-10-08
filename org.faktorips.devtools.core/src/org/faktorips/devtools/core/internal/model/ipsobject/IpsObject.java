@@ -95,7 +95,7 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     @Override
     public String getQualifiedName() {
         String folderName = getParent().getParent().getName();
-        if (folderName.equals("")) { //$NON-NLS-1$
+        if (folderName.isEmpty()) {
             return getName();
         }
 
@@ -237,11 +237,9 @@ public abstract class IpsObject extends IpsObjectPartContainer implements IIpsOb
     }
 
     /** Validates whether there is another type in the object path with the same name. */
-    private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private void validateSecondIpsObjectWithSameNameTypeInIpsObjectPath(MessageList list, IIpsProject ipsProject) {
 
-        IIpsObject otherIpsObject = ipsProject.findIpsObject(getQualifiedNameType());
-        if (otherIpsObject != null && otherIpsObject != this) {
+        if (ipsProject.findDuplicateIpsSrcFile(getQualifiedNameType())) {
             list.add(new Message(MSGCODE_SAME_IPSOBJECT_IN_IPSOBEJECTPATH_AHEAD, NLS.bind(
                     Messages.IpsObject_msg_OtherIpsObjectAlreadyInPathAhead, getIpsProject()), Message.WARNING, this));
         }

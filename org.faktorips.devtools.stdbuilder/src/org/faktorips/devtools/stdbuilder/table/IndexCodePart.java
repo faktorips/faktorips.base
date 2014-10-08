@@ -12,9 +12,7 @@ package org.faktorips.devtools.stdbuilder.table;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.tablestructure.IColumnRange;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
 import org.faktorips.devtools.core.model.tablestructure.IKeyItem;
@@ -176,11 +174,7 @@ class IndexCodePart {
 
     protected String getJavaClassName(IKeyItem keyItem) {
         Datatype datatypeForKeyName;
-        try {
-            datatypeForKeyName = TableImplBuilder.findDatatype(keyItem.getDatatype(), index.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        datatypeForKeyName = TableImplBuilder.findDatatype(keyItem.getDatatype(), index.getIpsProject());
         if (datatypeForKeyName != null) {
             return datatypeForKeyName.getJavaClassName();
         } else {

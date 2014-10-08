@@ -11,13 +11,11 @@
 package org.faktorips.devtools.core.ui.editors.testcasetype;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.testcasetype.TestParameterType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -40,55 +38,6 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
 
     private BindingContext bindingContext = new BindingContext();
     private PmoTestAttribute testAttribute;
-
-    /**
-     * Presentation model object for the new test attribute.
-     * 
-     * @author Joerg Ortmann
-     */
-    public class PmoTestAttribute {
-
-        public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
-        public static final String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
-        public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
-
-        private String name;
-        private TestParameterType testParameterType;
-        private String datatype;
-
-        public String getDatatype() {
-            return datatype;
-        }
-
-        public void setDatatype(String datatype) {
-            this.datatype = datatype;
-            valueChanged();
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-            valueChanged();
-        }
-
-        public TestParameterType getTestParameterType() {
-            return testParameterType;
-        }
-
-        public void setTestParameterType(TestParameterType testParameterType) {
-            this.testParameterType = testParameterType;
-            valueChanged();
-        }
-
-        private void valueChanged() {
-            // if the value has changed then the button state must be updated
-            // to enable or disable the finish button
-            TestAttributeDefinitionWizardPage.this.getContainer().updateButtons();
-        }
-    }
 
     protected TestAttributeDefinitionWizardPage(NewTestAttributeWizard wizard) {
         super(PAGE_ID, Messages.TestAttributeDefinitionWizardPage_wizardPageTitle, null);
@@ -159,22 +108,17 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
      */
     public boolean isValid() {
         setErrorMessage(null);
-        try {
-            if (StringUtils.isEmpty(testAttributeNameText.getText())) {
-                setErrorMessage(Messages.TestAttributeDefinitionWizardPage_errorMessageEmptyName);
-                return false;
-            }
-            if (StringUtils.isEmpty(datatypeRefControl.getText())) {
-                setErrorMessage(Messages.TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype);
-                return false;
-            }
-            if (wizard.getIpsProjekt().findDatatype(datatypeRefControl.getText()) == null) {
-                setErrorMessage(NLS.bind(Messages.TestAttributeDefinitionWizardPage_errorMessageDatatypeNotFound,
-                        testAttribute.getDatatype()));
-                return false;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+        if (StringUtils.isEmpty(testAttributeNameText.getText())) {
+            setErrorMessage(Messages.TestAttributeDefinitionWizardPage_errorMessageEmptyName);
+            return false;
+        }
+        if (StringUtils.isEmpty(datatypeRefControl.getText())) {
+            setErrorMessage(Messages.TestAttributeDefinitionWizardPage_TestAttributeDefinitionWizardPage_errorMessageEmptyDatatype);
+            return false;
+        }
+        if (wizard.getIpsProjekt().findDatatype(datatypeRefControl.getText()) == null) {
+            setErrorMessage(NLS.bind(Messages.TestAttributeDefinitionWizardPage_errorMessageDatatypeNotFound,
+                    testAttribute.getDatatype()));
             return false;
         }
         return true;
@@ -185,6 +129,55 @@ public class TestAttributeDefinitionWizardPage extends WizardPage {
         super.dispose();
         if (bindingContext != null) {
             bindingContext.dispose();
+        }
+    }
+
+    /**
+     * Presentation model object for the new test attribute.
+     * 
+     * @author Joerg Ortmann
+     */
+    public class PmoTestAttribute {
+    
+        public static final String PROPERTY_NAME = "name"; //$NON-NLS-1$
+        public static final String PROPERTY_TEST_PARAMETER_TYPE = "testParameterType"; //$NON-NLS-1$
+        public static final String PROPERTY_DATATYPE = "datatype"; //$NON-NLS-1$
+    
+        private String name;
+        private TestParameterType testParameterType;
+        private String datatype;
+    
+        public String getDatatype() {
+            return datatype;
+        }
+    
+        public void setDatatype(String datatype) {
+            this.datatype = datatype;
+            valueChanged();
+        }
+    
+        public String getName() {
+            return name;
+        }
+    
+        public void setName(String name) {
+            this.name = name;
+            valueChanged();
+        }
+    
+        public TestParameterType getTestParameterType() {
+            return testParameterType;
+        }
+    
+        public void setTestParameterType(TestParameterType testParameterType) {
+            this.testParameterType = testParameterType;
+            valueChanged();
+        }
+    
+        private void valueChanged() {
+            // if the value has changed then the button state must be updated
+            // to enable or disable the finish button
+            TestAttributeDefinitionWizardPage.this.getContainer().updateButtons();
         }
     }
 }

@@ -208,10 +208,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *            <tt>IEnumType</tt>.
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
-     * @throws CoreException If an error occurs while searching the type hierarchy.
      */
-    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
+    public boolean isSubEnumTypeOf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject);
 
     /**
      * Returns <tt>true</tt> if this <tt>IEnumType</tt> is a sub enumeration type of the given
@@ -223,9 +221,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching the type hierarchy.
      */
-    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject) throws CoreException;
+    public boolean isSubEnumTypeOrSelf(IEnumType superEnumTypeCandidate, IIpsProject ipsProject);
 
     /**
      * Searches and returns the super enumeration type of this <tt>IEnumType</tt> if any is
@@ -237,11 +234,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *            enumeration type. This is not necessarily the project this <tt>IEnumType</tt> is
      *            part of.
      * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the super
-     *             enumeration type.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public IEnumType findSuperEnumType(IIpsProject ipsProject) throws CoreException;
+    public IEnumType findSuperEnumType(IIpsProject ipsProject);
 
     /**
      * Searches and returns all enumeration types that subclass this enumeration type.
@@ -595,10 +590,8 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      * 
      * @param ipsProject The <tt>IIpsProject</tt> that provides the object path that is used to
      *            search for the super enumeration type.
-     * 
-     * @throws CoreException If an error occurs while searching for the super enumeration type.
      */
-    public boolean hasExistingSuperEnumType(IIpsProject ipsProject) throws CoreException;
+    public boolean hasExistingSuperEnumType(IIpsProject ipsProject);
 
     /** Returns if this <tt>IEnumType</tt> is abstract. */
     public boolean isAbstract();
@@ -618,11 +611,9 @@ public interface IEnumType extends IEnumValueContainer, IIpsMetaClass, IVersionC
      *            enumeration types. This is not necessarily the project this
      *            <tt>IEnumAttribute</tt> is part of.
      * 
-     * @throws CoreException If an error occurs while searching the given IPS project for the super
-     *             enumeration types.
      * @throws NullPointerException If <tt>ipsProject</tt> is <tt>null</tt>.
      */
-    public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject) throws CoreException;
+    public List<IEnumType> findAllSuperEnumTypes(IIpsProject ipsProject);
 
     /**
      * Returns a list containing all <tt>IEnumAttribute</tt>s from the super type hierarchy that

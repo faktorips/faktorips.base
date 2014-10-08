@@ -12,13 +12,12 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -121,47 +120,8 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      * {@inheritDoc}
      */
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            IIpsSrcFile file = ((IpsObjectPathEntry)entry).findIpsSrcFileInternal(nameType, visitedEntries);
-            if (file != null) {
-                return file;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            ((IpsObjectPathEntry)entry).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            ((IpsObjectPathEntry)entry).findIpsSrcFilesStartingWithInternal(type, prefix, ignoreCase, result,
-                    visitedEntries);
-        }
-
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
+        return Collections.emptyList();
     }
 
     /**
@@ -186,14 +146,11 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public boolean containsResource(String path) {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(path)) {
-                return true;
-            }
-        }
+    public boolean containsResource(String resourcePath) {
         return false;
     }
 
@@ -202,14 +159,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public InputStream getResourceAsStream(String resourcePath) {
-        List<IIpsObjectPathEntry> entries = resolveEntries();
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(resourcePath)) {
-                InputStream stream = entry.getResourceAsStream(resourcePath);
-                return stream;
-            }
-        }
-        throw new CoreRuntimeException("Resource " + resourcePath + " was not found in container " + getName()); //$NON-NLS-1$ //$NON-NLS-2$
+        return null;
     }
 
     /**
@@ -217,6 +167,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         containerTypeId = element.getAttribute(XML_ATTRIBUTE_CONTAINER);
         optionalPath = element.getAttribute(XML_ATTRIBUTE_PATH);
     }
@@ -226,7 +177,7 @@ public class IpsContainerEntry extends IpsObjectPathEntry implements IIpsContain
      */
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
+        Element element = super.toXml(doc);
         element.setAttribute(XML_ATTRIBUTE_TYPE, TYPE_CONTAINER);
         element.setAttribute(XML_ATTRIBUTE_CONTAINER, containerTypeId);
         element.setAttribute(XML_ATTRIBUTE_PATH, optionalPath);

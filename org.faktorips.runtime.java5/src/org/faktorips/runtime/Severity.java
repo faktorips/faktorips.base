@@ -12,8 +12,6 @@ package org.faktorips.runtime;
 
 /**
  * Enum indicating the kind of severity a message can have
- * 
- * @author IMaazi
  */
 
 public enum Severity {

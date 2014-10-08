@@ -22,7 +22,6 @@ import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -97,15 +96,10 @@ public final class MoveRenameIpsObjectHelper {
      */
     public List<IIpsSrcFile> getAffectedIpsSrcFiles() {
         List<IIpsSrcFile> ipsSrcFiles = new ArrayList<IIpsSrcFile>(getDependencies().length);
-        try {
-            ipsSrcFiles.add(toBeRefactored.getIpsSrcFile());
-            for (IDependency dependency : getDependencies()) {
-                IIpsSrcFile ipsSrcFile = getDependencyToProject().get(dependency)
-                        .findIpsSrcFile(dependency.getSource());
-                ipsSrcFiles.add(ipsSrcFile);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        ipsSrcFiles.add(toBeRefactored.getIpsSrcFile());
+        for (IDependency dependency : getDependencies()) {
+            IIpsSrcFile ipsSrcFile = getDependencyToProject().get(dependency).findIpsSrcFile(dependency.getSource());
+            ipsSrcFiles.add(ipsSrcFile);
         }
         return ipsSrcFiles;
     }

@@ -131,7 +131,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     public ValueDatatype getValueDatatype() {
         try {
             // TODO getIpsProject() needs to be replaced with a paramter!
-            return ((IValueSetOwner)parent).findValueDatatype(getIpsProject());
+            return ((IValueSetOwner)getParent()).findValueDatatype(getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -142,7 +142,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
-        return ((IValueSetOwner)parent).findValueDatatype(ipsProject);
+        return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
     }
 
     @Override

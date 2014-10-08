@@ -239,19 +239,15 @@ public class EnumAttributesSection extends SimpleIpsPartsSection {
         }
 
         private void updateInheritButtonEnabledState() {
-            try {
-                /*
-                 * SW 6.12.2013: Effective Java 2nd Ed. P. 89:
-                 * "Constructors must not invoke overridable methods"
-                 */
-                IEnumType enumTypeFromSuperclass = (IEnumType)getIpsObject();
-                boolean superEnumTypeExists = enumTypeFromSuperclass.hasExistingSuperEnumType(enumTypeFromSuperclass
-                        .getIpsProject());
-                inheritButton.setEnabled(superEnumTypeExists
-                        && IpsUIPlugin.isEditable(enumTypeFromSuperclass.getIpsSrcFile()));
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            /*
+             * SW 6.12.2013: Effective Java 2nd Ed. P. 89:
+             * "Constructors must not invoke overridable methods"
+             */
+            IEnumType enumTypeFromSuperclass = (IEnumType)getIpsObject();
+            boolean superEnumTypeExists = enumTypeFromSuperclass.hasExistingSuperEnumType(enumTypeFromSuperclass
+                    .getIpsProject());
+            inheritButton.setEnabled(superEnumTypeExists
+                    && IpsUIPlugin.isEditable(enumTypeFromSuperclass.getIpsSrcFile()));
         }
 
         /**

@@ -67,8 +67,7 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
         ITableContents contents = getTableContents(typeToExport);
         ITableRows currentTableRows = contents.getTableRows();
 
-        progressMonitor
-                .beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentTableRows.getNumOfRows());
+        progressMonitor.beginTask(Messages.TableExportOperation_labelMonitorTitle, 2 + currentTableRows.getNumOfRows());
 
         initWorkbookAndSheet();
         progressMonitor.worked(1);
@@ -128,15 +127,12 @@ public class ExcelTableExportOperation extends AbstractExcelExportOperation {
      * @param structure The structure the content is bound to.
      * @param monitor The monitor to display the progress.
      * @param exportColumnHeaderRow column header names included or not.
-     * 
-     * @throws CoreException thrown if an error occurs during the search for the datatypes of the
-     *             structure.
      */
     private void exportDataCells(Sheet sheet,
             ITableRows generation,
             ITableStructure structure,
             IProgressMonitor monitor,
-            boolean exportColumnHeaderRow) throws CoreException {
+            boolean exportColumnHeaderRow) {
 
         ITableContents contents = getTableContents(typeToExport);
 

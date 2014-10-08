@@ -41,7 +41,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
      * creates a page, which represents the given enumContent according to the given context
      * 
      */
-    protected EnumContentContentPageElement(IEnumContent object, DocumentationContext context) throws CoreException {
+    protected EnumContentContentPageElement(IEnumContent object, DocumentationContext context) {
         super(object, context);
         this.enumType = object.getIpsProject().findEnumType(object.getEnumType());
     }
@@ -53,7 +53,7 @@ public class EnumContentContentPageElement extends AbstractIpsObjectContentPageE
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(
                 new TextPageElement(IpsObjectType.ENUM_TYPE.getDisplayName() + ": ", //$NON-NLS-1$
                         getContext())).addPageElements(
-                                new PageElementUtils(getContext()).createLinkPageElement(getContext(), getEnumType(),
+                new PageElementUtils(getContext()).createLinkPageElement(getContext(), getEnumType(),
                         TargetType.CONTENT, getEnumType().getQualifiedName(), true)));
 
         addValuesTable();

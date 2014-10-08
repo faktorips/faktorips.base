@@ -68,7 +68,7 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
 
         when(spiedProject.getFile(IpsBundleManifest.MANIFEST_NAME)).thenReturn(file);
 
-        properties = new IpsProjectProperties();
+        properties = new IpsProjectProperties(ipsProject);
         properties.addSupportedLanguage(Locale.ENGLISH);
         properties.addSupportedLanguage(Locale.GERMAN);
 
@@ -108,7 +108,7 @@ public class IpsProjectPropertiesWithIpsBundleManifestTest extends AbstractIpsPl
 
     protected IpsProjectProperties initPropertiesWithDocumentElement() {
         Element docEl = getTestDocument().getDocumentElement();
-        IpsProjectProperties props = new IpsProjectProperties();
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         props.initFromXml(ipsProject, docEl);
         return props;
     }

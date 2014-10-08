@@ -46,7 +46,7 @@ public abstract class AbstractIpsPackageFragmentRoot extends IpsElement implemen
 
     @Override
     public IIpsProject getIpsProject() {
-        return (IIpsProject)parent;
+        return (IIpsProject)getParent();
     }
 
     @Override

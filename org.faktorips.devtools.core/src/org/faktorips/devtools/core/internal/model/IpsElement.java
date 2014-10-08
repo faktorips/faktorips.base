@@ -20,10 +20,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 public abstract class IpsElement extends PlatformObject implements IIpsElement {
 
-    protected String name; // FIXME make private
-    protected IIpsElement parent; // FIXME make private
+    private static final IIpsElement[] NO_CHILDREN = new IIpsElement[0];
 
-    final static IIpsElement[] NO_CHILDREN = new IIpsElement[0];
+    // FIXME make private
+    // CSOFF: VisibilityModifierCheck
+    protected String name;
+    // CSON: VisibilityModifierCheck
+    private IIpsElement parent;
 
     public IpsElement(IIpsElement parent, String name) {
         this.parent = parent;
@@ -101,18 +104,40 @@ public abstract class IpsElement extends PlatformObject implements IIpsElement {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
+        return result;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof IIpsElement)) {
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
             return false;
         }
-        IIpsElement other = (IIpsElement)o;
-        return other.getName().equals(getName())
-                && ((parent == null && other.getParent() == null) || (parent != null && parent
-                        .equals(other.getParent())));
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        IpsElement other = (IpsElement)obj;
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (getParent() == null) {
+            if (other.getParent() != null) {
+                return false;
+            }
+        } else if (!getParent().equals(other.getParent())) {
+            return false;
+        }
+        return true;
     }
 
     @Override

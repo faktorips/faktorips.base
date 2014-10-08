@@ -58,7 +58,7 @@ public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject
         return existingRoots;
     }
 
-    /* private */List<IIpsObjectPathContainer> getContainerEntries(IIpsProject project) throws CoreException {
+    /* private */List<IIpsObjectPathContainer> getContainerEntries(IIpsProject project) {
         IIpsObjectPath ipsObjectPath = project.getIpsObjectPath();
         IIpsObjectPathEntry[] entries = ipsObjectPath.getEntries();
 

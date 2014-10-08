@@ -26,7 +26,6 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.DatatypeDependency;
 import org.faktorips.devtools.core.model.DependencyType;
@@ -429,7 +428,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveCONFIGURESDependencyForPolicyComponent() throws CoreException {
+    public void testCollectDependencies_ResolveCONFIGURESDependencyForPolicyComponent() {
         when(dependencyGraph1.getDependants(superPolicyCmptType)).thenReturn(
                 new IDependency[] { depConfiguresSuperProductCmptToSuperPolicyCmptType });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
@@ -703,7 +702,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContent() throws CoreException {
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContent() {
         when(ipsProject1.findIpsObject(enumContent)).thenReturn(enumContentObject);
         when(enumContentObject.getEnumType()).thenReturn("enumType");
         when(enumContentObject.findEnumType(ipsProject1)).thenReturn(enumTypeObject);
@@ -723,8 +722,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjects()
-            throws CoreException {
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjects() {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
         when(dependencyGraph2.getDependants(superProductCmptType)).thenReturn(new IDependency[] { depSubtype });
         when(dependencyGraph2.getDependants(enumType)).thenReturn(new IDependency[] { depInstanceOfEnum });
@@ -749,8 +747,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentNotInOtherProjects()
-            throws CoreException {
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentNotInOtherProjects() {
         when(ipsProject1.findReferencingProjects(false)).thenReturn(new IIpsProject[] { ipsProject2, ipsProject3 });
         when(ipsProject2.findReferencingProjects(false)).thenReturn(new IIpsProject[] {});
         when(ipsProject3.isReferencing(ipsProject2)).thenReturn(false);
@@ -774,8 +771,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndREFERENCE()
-            throws CoreException {
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndREFERENCE() {
         IpsObjectDependency refDependency = IpsObjectDependency.createReferenceDependency(superProductCmptType,
                 superPolicyCmptType);
         when(dependencyGraph1.getDependants(enumType)).thenReturn(
@@ -836,8 +832,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndCONFIGURATION()
-            throws CoreException {
+    public void testCollectDependencies_ResolveDatatypeDependenciesForEnumContentOverDependentProjectsAndCONFIGURATION() {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(
                 new IDependency[] { depDatatypeSuperPolicyCmptTypeToEnumType });
         when(dependencyGraph1.getDependants(superPolicyCmptType)).thenReturn(
@@ -867,7 +862,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveReferenceDependencyOnEnumContent() throws CoreException {
+    public void testCollectDependencies_ResolveReferenceDependencyOnEnumContent() {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype, depInstanceOfEnum });
         when(dependencyGraph1.getDependants(superProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt3 });
@@ -890,8 +885,7 @@ public class DependencyResolverTest {
     }
 
     @Test
-    public void testCollectDependencies_ResolveReferenceDependencyOnEnumContentOverDependentProjects()
-            throws CoreException {
+    public void testCollectDependencies_ResolveReferenceDependencyOnEnumContentOverDependentProjects() {
         when(dependencyGraph1.getDependants(enumType)).thenReturn(new IDependency[] { depDatatype });
         when(dependencyGraph2.getDependants(superProductCmptType)).thenReturn(
                 new IDependency[] { depInstanceOfProductCmpt3 });

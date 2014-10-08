@@ -15,10 +15,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -27,9 +25,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -41,8 +37,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.ArrayElementMover;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -78,7 +72,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private IIpsProject ipsProject;
 
     /** map with QualifiedNameTypes as keys and cached IpsSrcFiles as values. */
-    private Map<QualifiedNameType, CachedSrcFile> lookupCache = new HashMap<QualifiedNameType, CachedSrcFile>(1000);
+    private Map<QualifiedNameType, IIpsSrcFile> lookupCache = new HashMap<QualifiedNameType, IIpsSrcFile>(1000);
 
     /**
      * if set to true, the {@link IIpsObjectPathEntry entries} are read from the manifest.mf and if
@@ -132,7 +126,7 @@ public class IpsObjectPath implements IIpsObjectPath {
     private List<IIpsProjectRefEntry> collectProjectRefEntries(IIpsObjectPathEntry[] objectPathEntries) {
         List<IIpsProjectRefEntry> projectRefEntries = new ArrayList<IIpsProjectRefEntry>();
         for (IIpsObjectPathEntry entry : objectPathEntries) {
-            if (entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE)) {
+            if (isProjectRefEntry(entry)) {
                 projectRefEntries.add((IIpsProjectRefEntry)entry);
             } else if (entry.isContainer()) {
                 List<IIpsObjectPathEntry> resolveEntries = ((IIpsContainerEntry)entry).resolveEntries();
@@ -146,9 +140,9 @@ public class IpsObjectPath implements IIpsObjectPath {
     @Override
     public IIpsSrcFolderEntry[] getSourceFolderEntries() {
         List<IIpsSrcFolderEntry> srcEntries = new ArrayList<IIpsSrcFolderEntry>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-                srcEntries.add((IIpsSrcFolderEntry)entrie);
+        for (IIpsObjectPathEntry entry : entries) {
+            if (isSrcFolderEntry(entry)) {
+                srcEntries.add((IIpsSrcFolderEntry)entry);
             }
         }
         return srcEntries.toArray(new IIpsSrcFolderEntry[srcEntries.size()]);
@@ -211,16 +205,6 @@ public class IpsObjectPath implements IIpsObjectPath {
         System.arraycopy(entries, 0, newEntries, 0, i);
         System.arraycopy(entries, i + 1, newEntries, i, entries.length - i - 1);
         entries = newEntries;
-    }
-
-    @Override
-    public IIpsProject[] getReferencedIpsProjects() {
-        List<IIpsProject> projects = new ArrayList<IIpsProject>();
-        IIpsProjectRefEntry[] projectRefEntries = getProjectRefEntries();
-        for (IIpsProjectRefEntry entrie : projectRefEntries) {
-            projects.add(entrie.getReferencedIpsProject());
-        }
-        return projects.toArray(new IIpsProject[projects.size()]);
     }
 
     @Override
@@ -431,129 +415,31 @@ public class IpsObjectPath implements IIpsObjectPath {
      * Returns the first ips source file with the indicated qualified name type found on the path.
      * Returns <code>null</code> if no such object is found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-
-        int maxEntriesToSearch = entries.length;
-        CachedSrcFile cachedSrcFile = lookupCache.get(nameType);
+    @Override
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
+        IIpsSrcFile cachedSrcFile = lookupCache.get(nameType);
         if (cachedSrcFile != null) {
-            if (!cachedSrcFile.file.exists()) {
+            if (!cachedSrcFile.exists()) {
                 lookupCache.remove(nameType);
-                cachedSrcFile = null;
             } else {
-                if (cachedSrcFile.entryIndex == 0) {
-                    /*
-                     * if the file was found via the first entry, it is not possible that a file
-                     * with the same name has been added to another entry that now shadows the found
-                     * file.
-                     */
-                    return cachedSrcFile.file;
-                } else {
-                    maxEntriesToSearch = cachedSrcFile.entryIndex;
-                }
+                return cachedSrcFile;
             }
         }
-        for (int i = 0; i < maxEntriesToSearch; i++) {
-            IIpsSrcFile ipsSrcFile = ((IpsObjectPathEntry)entries[i]).findIpsSrcFile(nameType, visitedEntries);
-            if (ipsSrcFile != null) {
-                lookupCache.put(nameType, new CachedSrcFile(ipsSrcFile, i));
-                return ipsSrcFile;
-            }
+        IpsSrcFileSearch search = new IpsSrcFileSearch(nameType);
+        searchIpsObjectPath(search);
+        IIpsSrcFile ipsSrcFile = search.getIpsSrcFile();
+        if (ipsSrcFile != null) {
+            lookupCache.put(nameType, ipsSrcFile);
+            return ipsSrcFile;
         }
-        return cachedSrcFile == null ? null : cachedSrcFile.file;
+        return null;
     }
 
-    /**
-     * Searches all ips src files of the given type starting with the given prefix found on the path
-     * and adds them to the given result list.
-     * 
-     * @throws CoreException if an error occurs while searching for the source files.
-     */
-    public void findIpsSrcFilesStartingWith(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFilesStartingWith(type, prefix, ignoreCase, result, visitedEntries);
-        }
-    }
-
-    /**
-     * Returns all ips source files of the given type found on the path. Returns an empty array if
-     * no object is found.
-     */
-    public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        findIpsSrcFiles(type, result, visitedEntries);
-        return result.toArray(new IIpsSrcFile[result.size()]);
-    }
-
-    /**
-     * Adds all ips source files of the given type found on the path to the result list.
-     */
-    public void findIpsSrcFiles(IpsObjectType type, List<IIpsSrcFile> result, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFiles(type, result, visitedEntries);
-        }
-    }
-
-    public void findIpsSrcFiles(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        for (IIpsObjectPathEntry entrie : entries) {
-            ((IpsObjectPathEntry)entrie).findIpsSrcFiles(type, packageFragment, result, visitedEntries);
-        }
-    }
-
-    /**
-     * Searches all product components that are based on the given product component type (either
-     * directly or because they are based on a subtype of the given type) and adds them to the
-     * result. If productCmptType is <code>null</code>, returns all product components found in the
-     * fragment root.
-     * 
-     * @param productCmptType The product component type product components are searched for.
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on sub types of the given policy component are returned, otherwise only product
-     *            components that are directly based on the given type are returned.
-     * @param result List in which the product components being found are stored in.
-     */
-    public void findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes, List<IProductCmpt> result)
-            throws CoreException {
-
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        List<IIpsSrcFile> allCmptFiles = new ArrayList<IIpsSrcFile>(100);
-        findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT, allCmptFiles, visitedEntries);
-        for (IIpsSrcFile productCmptFile : allCmptFiles) {
-            if (!productCmptFile.exists()) {
-                continue;
-            }
-            if (productCmptType == null) {
-                result.add((IProductCmpt)productCmptFile.getIpsObject());
-                continue;
-            }
-            QualifiedNameType cmptTypeQnt = new QualifiedNameType(
-                    productCmptFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE),
-                    IpsObjectType.PRODUCT_CMPT_TYPE);
-            visitedEntries.clear();
-            IIpsSrcFile typeFoundFile = findIpsSrcFile(cmptTypeQnt, visitedEntries);
-            if (typeFoundFile == null) {
-                continue;
-            }
-            if (productCmptType.getIpsSrcFile().equals(typeFoundFile)) {
-                result.add((IProductCmpt)productCmptFile.getIpsObject());
-            } else {
-                if (includeSubtypes) {
-                    IProductCmptType typeFound = (IProductCmptType)typeFoundFile.getIpsObject();
-                    if (typeFound.isSubtypeOf(productCmptType, ipsProject)) {
-                        result.add((IProductCmpt)productCmptFile.getIpsObject());
-                    }
-                }
-            }
-        }
+    @Override
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType nameType) {
+        DuplicateIpsSrcFileSearch search = new DuplicateIpsSrcFileSearch(nameType);
+        searchIpsObjectPath(search);
+        return search.foundDuplicateIpsSrcFile();
     }
 
     /**
@@ -561,18 +447,7 @@ public class IpsObjectPath implements IIpsObjectPath {
      * list.
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result) {
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER)) {
-                for (IpsObjectType currentType : IpsPlugin.getDefault().getIpsModel().getIpsObjectTypes()) {
-                    try {
-                        ((IpsObjectPathEntry)entrie).findIpsSrcFilesInternal(currentType, null, result, visitedEntries);
-                    } catch (CoreException e) {
-                        throw new CoreRuntimeException(e);
-                    }
-                }
-            }
-        }
+        result.addAll(findIpsSrcFilesInSrcFolder());
     }
 
     @Override
@@ -620,35 +495,15 @@ public class IpsObjectPath implements IIpsObjectPath {
     }
 
     /**
-     * Check if there is a cycle inside the object path. All IIpsProjectRefEntries will be checked
-     * if there is a cycle in the ips object path entries of all referenced projects. Returns
-     * <code>true</code> if a cycle was detected. Returns <code>false</code> if there is no cycle in
-     * the ips object path.
-     * 
-     * @throws CoreException If an error occurs while resolving the object path entries.
+     * Checks if there is a cycle inside the object path. Considers project references transitively.
+     * <p>
+     * Returns <code>true</code> if a cycle was detected. Returns <code>false</code> if there is no
+     * cycle in this ips object path.
      */
-    public boolean detectCycle() throws CoreException {
-        return detectCycleInternal(ipsProject, new HashSet<IIpsObjectPath>());
-    }
-
-    public boolean detectCycleInternal(IIpsProject project, Set<IIpsObjectPath> visitedEntries) throws CoreException {
-        if (visitedEntries.contains(this)) {
-            return false;
-        }
-        visitedEntries.add(this);
-
-        for (IIpsObjectPathEntry entrie : entries) {
-            if (entrie instanceof IIpsProjectRefEntry) {
-                IpsProject refProject = (IpsProject)((IIpsProjectRefEntry)entrie).getReferencedIpsProject();
-                if (project.equals(refProject)) {
-                    return true;
-                }
-                if (refProject.getIpsObjectPathInternal().detectCycleInternal(project, visitedEntries)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    public boolean detectCycle() {
+        CycleSearch cycleSearch = new CycleSearch(getIpsProject());
+        searchIpsObjectPath(cycleSearch);
+        return cycleSearch.isCycleDetected();
     }
 
     @Override
@@ -669,23 +524,16 @@ public class IpsObjectPath implements IIpsObjectPath {
 
     @Override
     public boolean containsResource(String path) {
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(path)) {
-                return true;
-            }
-        }
-        return false;
+        ResourceSearch resourceSearch = new ResourceSearch(path);
+        searchIpsObjectPath(resourceSearch);
+        return resourceSearch.containsResource();
     }
 
     @Override
     public InputStream getResourceAsStream(String path) {
-        for (IIpsObjectPathEntry entry : entries) {
-            if (entry.containsResource(path)) {
-                InputStream inputStream = entry.getResourceAsStream(path);
-                return inputStream;
-            }
-        }
-        return null;
+        ResourceSearch resourceSearch = new ResourceSearch(path);
+        searchIpsObjectPath(resourceSearch);
+        return resourceSearch.getResourceAsStream();
     }
 
     @Override
@@ -724,16 +572,98 @@ public class IpsObjectPath implements IIpsObjectPath {
         return null;
     }
 
-    private static class CachedSrcFile {
+    private List<IIpsSrcFile> findIpsSrcFilesInSrcFolder(IpsObjectType... ipsObjectType) {
+        IpsSrcFilesSearch search = new IpsSrcFilesSearchInSrcFolder(ipsObjectType);
+        searchIpsObjectPath(search);
+        return search.getIpsSrcFiles();
+    }
 
-        private IIpsSrcFile file;
-        private int entryIndex;
+    @Override
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType... ipsObjectType) {
+        IpsSrcFilesSearch search = new IpsSrcFilesSearch(ipsObjectType);
+        searchIpsObjectPath(search);
+        return search.getIpsSrcFiles();
+    }
 
-        public CachedSrcFile(IIpsSrcFile file, int entryIndex) {
-            super();
-            this.file = file;
-            this.entryIndex = entryIndex;
+    /**
+     * Returns all accessible {@link IpsProject IPS projects} referenced in this
+     * {@link IpsObjectPath}. If <code>includeIndirect</code> is <code>true</code> all referenced
+     * {@link IpsProject IPS projects} will be added to the resulting list (references will be
+     * considered transitively). If <code>includeIndirect</code> is <code>false</code> only the
+     * directly referenced {@link IpsProject}s will be included in the resulting list.
+     */
+    public List<IIpsProject> getReferencedIpsProjects(boolean includeIndirect) {
+        ProjectSearch projectSearch = new ProjectSearch();
+        projectSearch.setIncludeIndirect(includeIndirect);
+        searchIpsObjectPath(projectSearch);
+        return projectSearch.getProjects();
+    }
+
+    @Override
+    public List<IIpsProject> getDirectlyReferencedIpsProjects() {
+        return getReferencedIpsProjects(false);
+    }
+
+    @Override
+    public List<IIpsProject> getAllReferencedIpsProjects() {
+        return getReferencedIpsProjects(true);
+    }
+
+    /**
+     * Searches all {@link IIpsObjectPathEntry}s for their appropriateness and safes them in
+     * {@link AbstractSearch}.
+     */
+    private void searchIpsObjectPath(AbstractSearch search) {
+        searchIpsObjectPath(search, new IpsObjectPathSearchContext(getIpsProject()));
+    }
+
+    private void searchIpsObjectPath(AbstractSearch search, IpsObjectPathSearchContext searchContext) {
+        for (IIpsObjectPathEntry entry : getEntries()) {
+            searchEntry(search, searchContext, entry);
+            if (search.isStopSearch()) {
+                break;
+            }
+            if (entry.isContainer()) {
+                searchContainerIpsObjectPath(search, searchContext, entry);
+            }
         }
+    }
 
+    private void searchContainerIpsObjectPath(AbstractSearch search,
+            IpsObjectPathSearchContext searchContext,
+            IIpsObjectPathEntry entry) {
+        List<IIpsObjectPathEntry> childEntries = ((IIpsContainerEntry)entry).resolveEntries();
+        for (IIpsObjectPathEntry childEntry : childEntries) {
+            searchEntry(search, searchContext, childEntry);
+            if (search.isStopSearch()) {
+                break;
+            }
+        }
+    }
+
+    private void searchEntry(AbstractSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
+        if (searchContext.visitAndConsiderContentsOf(entry)) {
+            search.processEntry(entry);
+            if (!search.isStopSearch()) {
+                searchReferencedProject(search, searchContext, entry);
+            }
+        }
+    }
+
+    private void searchReferencedProject(AbstractSearch search,
+            IpsObjectPathSearchContext searchContext,
+            IIpsObjectPathEntry entry) {
+        if (search.isIncludeIndirect() && isProjectRefEntry(entry)) {
+            IIpsProject referencedIpsProject = search.getReferencedIpsProject(entry);
+            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().searchIpsObjectPath(search, searchContext);
+        }
+    }
+
+    private boolean isProjectRefEntry(IIpsObjectPathEntry entry) {
+        return entry.getType().equals(IIpsObjectPathEntry.TYPE_PROJECT_REFERENCE);
+    }
+
+    private boolean isSrcFolderEntry(IIpsObjectPathEntry entry) {
+        return entry.getType().equals(IIpsObjectPathEntry.TYPE_SRC_FOLDER);
     }
 }

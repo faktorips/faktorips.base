@@ -180,13 +180,13 @@ public class DeepCopyTreeStatus extends PresentationModelObject {
     private LinkStatus updateLinkStatusFor(IProductCmptStructureReference reference,
             Boolean checked,
             CopyOrLink copyOrLink) {
+        CopyOrLink copyOrLinkStatus = copyOrLink;
         IIpsObjectPart part = reference.getWrapped();
         IProductCmpt parent = getProductCmpt(part);
         Map<IIpsObjectPart, LinkStatus> statusMap = getStatusMap(parent);
         LinkStatus linkStatus = statusMap.get(part);
 
         Boolean checkedStatus = checked;
-        CopyOrLink copyOrLinkStatus = copyOrLink;
         if (linkStatus == null) {
             if (checkedStatus == null) {
                 checkedStatus = true;

@@ -81,11 +81,7 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     @Override
     public Datatype getType() {
-        try {
-            return getIpsProject().findValueDatatype(fct.getType());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return getIpsProject().findValueDatatype(fct.getType());
     }
 
     @Override

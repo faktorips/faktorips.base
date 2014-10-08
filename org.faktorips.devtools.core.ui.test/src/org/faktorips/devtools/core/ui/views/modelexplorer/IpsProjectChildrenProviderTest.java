@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -80,7 +79,7 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetContainerEntries() throws CoreException {
+    public void testGetContainerEntries() {
         List<IIpsObjectPathContainer> entries = hierarchyProvider.getContainerEntries(project);
 
         assertEquals(1, entries.size());

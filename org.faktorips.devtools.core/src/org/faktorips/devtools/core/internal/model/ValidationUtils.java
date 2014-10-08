@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
@@ -62,7 +61,7 @@ public class ValidationUtils {
             IIpsObjectPartContainer part,
             String propertyName,
             String msgCode,
-            MessageList list) throws CoreException {
+            MessageList list) {
 
         if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName, part, propertyName, msgCode, list)) {
             return false;
@@ -107,7 +106,7 @@ public class ValidationUtils {
             String propertyName,
             String msgCode,
             MessageList list,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         if (!checkStringPropertyNotEmpty(objectName, propertyDisplayName, part, propertyName, msgCode, list)) {
             return null;
@@ -144,7 +143,7 @@ public class ValidationUtils {
             String propertyName,
             String msgcode,
             MessageList list,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, msgcode, list)) { //$NON-NLS-1$
             return null;
@@ -187,7 +186,7 @@ public class ValidationUtils {
             IIpsObjectPart part,
             String propertyName,
             String msgcode,
-            MessageList list) throws CoreException {
+            MessageList list) {
 
         if (!checkStringPropertyNotEmpty(datatypeName, "Datatype", part, propertyName, msgcode, list)) { //$NON-NLS-1$
             return null;
@@ -224,7 +223,7 @@ public class ValidationUtils {
             String value,
             IIpsObjectPart part,
             String propertyName,
-            MessageList list) throws CoreException {
+            MessageList list) {
 
         return checkValue(part.getIpsProject().findValueDatatype(valueDatatype), value, part, propertyName, list);
     }

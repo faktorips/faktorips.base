@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -92,11 +91,7 @@ public class TableAccessFunction implements ITableAccessFunction {
             argTypes = new ArrayList<Datatype>();
             IIpsProject project = getIpsProject();
             for (String argType : argTypeNames) {
-                try {
-                    argTypes.add(project.findValueDatatype(argType));
-                } catch (CoreException e) {
-                    throw new RuntimeException("Error searching for datatype " + argType, e); //$NON-NLS-1$
-                }
+                argTypes.add(project.findValueDatatype(argType));
             }
             argTypes = Collections.unmodifiableList(argTypes);
         }

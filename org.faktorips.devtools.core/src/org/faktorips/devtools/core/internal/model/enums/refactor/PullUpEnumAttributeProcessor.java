@@ -103,7 +103,7 @@ public class PullUpEnumAttributeProcessor extends IpsPullUpProcessor {
      * has a super enumeration type and if it has that the super enumeration type can be found.
      */
     @Override
-    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) throws CoreException {
+    protected void checkInitialConditionsThis(RefactoringStatus status, IProgressMonitor pm) {
         if (getEnumAttribute() instanceof IEnumLiteralNameAttribute) {
             status.addFatalError(Messages.PullUpEnumAttributeProcessor_msgLiteralNameAttributeCannotBePulledUp);
             return;

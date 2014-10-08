@@ -490,11 +490,7 @@ public class FixEnumContentWizard extends Wizard {
             enumTypeRefControl.getTextControl().addModifyListener(new ModifyListener() {
                 @Override
                 public void modifyText(ModifyEvent event) {
-                    try {
-                        enumTypeModified(enumTypeRefControl);
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
-                    }
+                    enumTypeModified(enumTypeRefControl);
                 }
             });
 
@@ -513,7 +509,7 @@ public class FixEnumContentWizard extends Wizard {
          * Update the wizards message area and check for page complete when the field to choose an
          * <tt>IEnumType</tt> has been modified.
          */
-        private void enumTypeModified(IpsObjectRefControl enumTypeRefControl) throws CoreException {
+        private void enumTypeModified(IpsObjectRefControl enumTypeRefControl) {
             setMessage(Messages.FixEnumContentWizard_msgChooseEnumType);
 
             String text = enumTypeRefControl.getText();

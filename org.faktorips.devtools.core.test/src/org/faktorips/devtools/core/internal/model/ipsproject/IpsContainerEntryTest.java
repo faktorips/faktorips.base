@@ -20,15 +20,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
@@ -65,6 +60,9 @@ public class IpsContainerEntryTest {
         ipsContainerEntry.setOptionalPath(MY_OPTIONAL_PATH);
         when(path.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getIpsModel()).thenReturn(ipsModel);
+        when(ipsProject.getName()).thenReturn("ipsProject");
+
+        new IpsObjectPathSearchContext(ipsProject);
     }
 
     @Test
@@ -112,89 +110,9 @@ public class IpsContainerEntryTest {
     }
 
     @Test
-    public void testFindIpsSrcFileInternal() throws Exception {
+    public void testFindIpsSrcFile() throws Exception {
         QualifiedNameType qnt = mock(QualifiedNameType.class);
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry mockEntry = mockEntry(container);
-        HashSet<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-
-        ipsContainerEntry.findIpsSrcFileInternal(qnt, visitedEntries);
-
-        verify(mockEntry).findIpsSrcFileInternal(qnt, visitedEntries);
-    }
-
-    @Test
-    public void testFindIpsSrcFilesInternal() throws Exception {
-        IpsObjectType type = mock(IpsObjectType.class);
-        String packageFragment = "myPackage";
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry mockEntry = mockEntry(container);
-        HashSet<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-
-        ipsContainerEntry.findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-
-        verify(mockEntry).findIpsSrcFilesInternal(type, packageFragment, result, visitedEntries);
-    }
-
-    @Test
-    public void testFindIpsSrcFilesStartingWithInternal() throws Exception {
-        IpsObjectType type = mock(IpsObjectType.class);
-        String prefix = "myPrefix";
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry mockEntry = mockEntry(container);
-        HashSet<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-
-        ipsContainerEntry.findIpsSrcFilesStartingWithInternal(type, prefix, true, result, visitedEntries);
-
-        verify(mockEntry).findIpsSrcFilesStartingWithInternal(type, prefix, true, result, visitedEntries);
-    }
-
-    @Test(expected = CoreRuntimeException.class)
-    public void testGetResourceAsStream_throwCoreException() throws Exception {
-        String resourcePath = "myResourcePath";
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        mockEntry(container);
-
-        ipsContainerEntry.getResourceAsStream(resourcePath);
-    }
-
-    @Test
-    public void testGetResourceAsStream_find() throws Exception {
-        String resourcePath = "myResourcePath";
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry mockEntry = mockEntry(container);
-        InputStream inputStream = mock(InputStream.class);
-        when(mockEntry.containsResource(resourcePath)).thenReturn(true);
-        when(mockEntry.getResourceAsStream(resourcePath)).thenReturn(inputStream);
-
-        InputStream resourceAsStream = ipsContainerEntry.getResourceAsStream(resourcePath);
-
-        assertEquals(inputStream, resourceAsStream);
-    }
-
-    @Test
-    public void testContainsRsource_false() throws Exception {
-        String resourcePath = "myResourcePath";
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        mockEntry(container);
-
-        boolean containsResource = ipsContainerEntry.containsResource(resourcePath);
-
-        assertFalse(containsResource);
-    }
-
-    @Test
-    public void testContainsRsource_ture() throws Exception {
-        String resourcePath = "myResourcePath";
-        IIpsObjectPathContainer container = mock(IIpsObjectPathContainer.class);
-        IpsObjectPathEntry entry = mockEntry(container);
-        when(entry.containsResource(resourcePath)).thenReturn(true);
-
-        boolean containsResource = ipsContainerEntry.containsResource(resourcePath);
-
-        assertTrue(containsResource);
+        assertNull(ipsContainerEntry.findIpsSrcFile(qnt));
     }
 
     @Test
@@ -239,6 +157,7 @@ public class IpsContainerEntryTest {
         String myRootName = "myRootName";
         IIpsObjectPathContainer container = mockContainer();
         IpsObjectPathEntry entry = mockEntry(container);
+        when(entry.isContainer()).thenReturn(true);
         when(entry.getIpsPackageFragmentRootName()).thenReturn(null);
 
         IIpsObjectPathEntry resolvedEntry = ipsContainerEntry.getResolvedEntry(myRootName);

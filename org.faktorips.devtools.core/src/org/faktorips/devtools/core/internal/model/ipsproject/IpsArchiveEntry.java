@@ -132,8 +132,8 @@ public class IpsArchiveEntry extends IpsLibraryEntry implements IIpsArchiveEntry
     }
 
     @Override
-    public boolean containsResource(String path) {
-        return archive.contains(new Path(path));
+    public boolean containsResource(String resourcePath) {
+        return archive.contains(new Path(resourcePath));
     }
 
     @Override

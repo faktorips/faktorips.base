@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -98,7 +99,7 @@ public class ClassLoaderProvider {
     /**
      * Returns the classloader for the Java project this is a provider for.
      */
-    public ClassLoader getClassLoader() throws CoreException {
+    public ClassLoader getClassLoader() {
         if (classLoader == null) {
             try {
                 setUpTempFileDir();
@@ -115,7 +116,9 @@ public class ClassLoaderProvider {
                                 IResourceChangeEvent.POST_CHANGE | IResourceChangeEvent.PRE_BUILD);
 
             } catch (IOException e) {
-                throw new CoreException(new IpsStatus(e));
+                throw new CoreRuntimeException(new IpsStatus(e));
+            } catch (CoreException ce) {
+                throw new CoreRuntimeException(ce);
             }
         }
         return classLoader;

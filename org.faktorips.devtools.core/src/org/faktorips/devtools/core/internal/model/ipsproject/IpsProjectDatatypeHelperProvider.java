@@ -1,18 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 
- * 3. 
- *  
- * Please see LICENSE.txt for full license terms, including the additional permissions and 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
- *******************************************************************************/package org.faktorips.devtools.core.internal.model.ipsproject;
+ *******************************************************************************/
+package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.BaseDatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.fl.DatatypeHelperProvider;
 
@@ -25,10 +24,6 @@ class IpsProjectDatatypeHelperProvider implements DatatypeHelperProvider<JavaCod
 
     @Override
     public BaseDatatypeHelper<JavaCodeFragment> getDatatypeHelper(Datatype datatype) {
-        try {
-            return ipsProject.findDatatypeHelper(datatype.getQualifiedName());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ipsProject.findDatatypeHelper(datatype.getQualifiedName());
     }
 }

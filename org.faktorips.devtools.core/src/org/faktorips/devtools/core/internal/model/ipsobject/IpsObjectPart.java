@@ -181,11 +181,11 @@ public abstract class IpsObjectPart extends IpsObjectPartContainer implements II
         } else if (!id.equals(other.id)) {
             return false;
         }
-        if (parent == null) {
-            if (other.parent != null) {
+        if (getParent() == null) {
+            if (other.getParent() != null) {
                 return false;
             }
-        } else if (!parent.equals(other.parent)) {
+        } else if (!getParent().equals(other.getParent())) {
             return false;
         }
         return true;

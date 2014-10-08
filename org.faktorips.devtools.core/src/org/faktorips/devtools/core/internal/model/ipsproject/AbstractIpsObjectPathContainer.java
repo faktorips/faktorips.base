@@ -10,10 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -63,15 +61,11 @@ public abstract class AbstractIpsObjectPathContainer implements IIpsObjectPathCo
      * Returns the ips project's object path.
      */
     public IpsObjectPath getIpsObjectPath() {
-        try {
-            IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
-            if (ipsObjectPath instanceof IpsObjectPath) {
-                return (IpsObjectPath)ipsObjectPath;
-            } else {
-                return null;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IIpsObjectPath ipsObjectPath = getIpsProject().getIpsObjectPath();
+        if (ipsObjectPath instanceof IpsObjectPath) {
+            return (IpsObjectPath)ipsObjectPath;
+        } else {
+            return null;
         }
     }
 }

@@ -143,7 +143,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private String builderSetId = ""; //$NON-NLS-1$
     private IIpsArtefactBuilderSetConfigModel builderSetConfig = new IpsArtefactBuilderSetConfigModel();
 
-    private IIpsObjectPath path = new IpsObjectPath(new IpsProject());
+    private IIpsObjectPath path = null;
 
     private String[] predefinedDatatypesUsed = new String[0];
 
@@ -177,8 +177,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private String versionProviderId;
 
-    public IpsProjectProperties() {
+    public IpsProjectProperties(IIpsProject ipsProject) {
         super();
+        path = new IpsObjectPath(ipsProject);
     }
 
     /**
@@ -192,7 +193,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     public static final IpsProjectProperties createFromXml(IpsProject ipsProject, Element element) {
-        IpsProjectProperties data = new IpsProjectProperties();
+        IpsProjectProperties data = new IpsProjectProperties(ipsProject);
         data.initFromXml(ipsProject, element);
         return data;
     }
@@ -216,7 +217,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             validateVersion(list);
             validateSupportedLanguages(list);
             return list;
+            // CSOFF: IllegalCatch
         } catch (RuntimeException e) {
+            // CSON: IllegalCatch
             // if runtime exceptions are not converted into core exceptions the stack trace gets
             // lost in the logging file and they are hard to find
             throw new CoreException(new IpsStatus(e));
@@ -824,9 +827,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         int length = nl.getLength();
         for (int i = 0; i < length; i++) {
             Element child = (Element)nl.item(i);
-            Attr path = child.getAttributeNode("path"); //$NON-NLS-1$
-            if (path != null && StringUtils.isNotEmpty(path.getValue())) {
-                resourcesPathExcludedFromTheProductDefiniton.add(path.getValue());
+            Attr resourcePath = child.getAttributeNode("path"); //$NON-NLS-1$
+            if (resourcePath != null && StringUtils.isNotEmpty(resourcePath.getValue())) {
+                resourcesPathExcludedFromTheProductDefiniton.add(resourcePath.getValue());
             }
         }
     }
@@ -888,18 +891,22 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             String value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
             boolean enable = Boolean.valueOf(value).booleanValue();
 
-            if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
-                derivedUnionIsImplementedRuleEnabled = enable;
-            } else if (name.equals(SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE)) {
-                referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
-            } else if (name.equals(SETTING_RULES_WITHOUT_REFERENCE)) {
-                rulesWithoutReferencesAllowed = enable;
-            } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
-                setSharedDetailToMasterAssociations(enable);
-            } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
-                setAssociationsInFormulas(enable);
-            }
+            applySetting(name, enable);
             initFunctionsLanguageLocale(name, value);
+        }
+    }
+
+    private void applySetting(String name, boolean enable) {
+        if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
+            derivedUnionIsImplementedRuleEnabled = enable;
+        } else if (name.equals(SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE)) {
+            referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
+        } else if (name.equals(SETTING_RULES_WITHOUT_REFERENCE)) {
+            rulesWithoutReferencesAllowed = enable;
+        } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
+            setSharedDetailToMasterAssociations(enable);
+        } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
+            setAssociationsInFormulas(enable);
         }
     }
 
@@ -935,10 +942,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             return;
         }
         String value = defaultCurrencyElement.getAttribute(DEFAULT_CURRENCY_VALUE_ATTR);
+        defaultCurrency = readDefaultCurrency(value);
+    }
+
+    private Currency readDefaultCurrency(String value) {
         try {
-            defaultCurrency = Currency.getInstance(value);
+            return Currency.getInstance(value);
         } catch (IllegalArgumentException e) {
-            // use default value
+            return defaultCurrency;
         }
     }
 

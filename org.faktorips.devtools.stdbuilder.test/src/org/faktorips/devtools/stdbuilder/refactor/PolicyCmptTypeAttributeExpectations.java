@@ -17,7 +17,6 @@ import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.get
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -46,7 +45,7 @@ final class PolicyCmptTypeAttributeExpectations {
     private final IType productGenClass;
 
     PolicyCmptTypeAttributeExpectations(IPolicyCmptTypeAttribute policyCmptTypeAttribute,
-            IPolicyCmptType policyCmptType, IProductCmptType productCmptType) throws CoreException {
+            IPolicyCmptType policyCmptType, IProductCmptType productCmptType) {
 
         ipsProject = policyCmptType.getIpsProject();
         this.policyCmptTypeAttribute = policyCmptTypeAttribute;
@@ -59,12 +58,11 @@ final class PolicyCmptTypeAttributeExpectations {
         productGenClass = getProductGenClass(productCmptType);
     }
 
-    void check(String oldName, String newName, String datatypeSignature) throws CoreException {
+    void check(String oldName, String newName, String datatypeSignature) {
         check(oldName, newName, policyCmptType, productCmptType, datatypeSignature);
     }
 
-    void check(IPolicyCmptType oldPolicyCmptType, IProductCmptType oldProductCmptType, String datatypeSignature)
-            throws CoreException {
+    void check(IPolicyCmptType oldPolicyCmptType, IProductCmptType oldProductCmptType, String datatypeSignature) {
 
         check(policyCmptTypeAttribute.getName(), policyCmptTypeAttribute.getName(), oldPolicyCmptType,
                 oldProductCmptType, datatypeSignature);
@@ -74,7 +72,7 @@ final class PolicyCmptTypeAttributeExpectations {
             String newName,
             IPolicyCmptType oldPolicyCmptType,
             IProductCmptType oldProductCmptType,
-            String datatypeSignature) throws CoreException {
+            String datatypeSignature) {
 
         ValueSetType valueSetType = policyCmptTypeAttribute.getValueSet().getValueSetType();
 
@@ -93,7 +91,7 @@ final class PolicyCmptTypeAttributeExpectations {
             String newName,
             IPolicyCmptType oldPolicyCmptType,
             IProductCmptType oldProductCmptType,
-            String datatypeSignature) throws CoreException {
+            String datatypeSignature) {
 
         String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
         String newNameCamelCase = StringUtil.toCamelCase(newName, true);
@@ -136,8 +134,7 @@ final class PolicyCmptTypeAttributeExpectations {
                 new String[] { unresolvedParam(IValidationContext.class) }).exists());
     }
 
-    private void checkValueSetEnum(String oldName, String newName, IProductCmptType oldProductCmptType)
-            throws CoreException {
+    private void checkValueSetEnum(String oldName, String newName, IProductCmptType oldProductCmptType) {
 
         String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
         String newNameCamelCase = StringUtil.toCamelCase(newName, true);
@@ -158,8 +155,7 @@ final class PolicyCmptTypeAttributeExpectations {
                 new String[] { unresolvedParam(IValidationContext.class) }).exists());
     }
 
-    private void checkValueSetRange(String oldName, String newName, IProductCmptType oldProductCmptType)
-            throws CoreException {
+    private void checkValueSetRange(String oldName, String newName, IProductCmptType oldProductCmptType) {
 
         String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
         String newNameCamelCase = StringUtil.toCamelCase(newName, true);
@@ -180,22 +176,22 @@ final class PolicyCmptTypeAttributeExpectations {
                 new String[] { unresolvedParam(IValidationContext.class) }).exists());
     }
 
-    private IType getPolicyInterface(IPolicyCmptType policyCmptType) throws CoreException {
+    private IType getPolicyInterface(IPolicyCmptType policyCmptType) {
         return getJavaType("", getPublishedInterfaceName(policyCmptType.getName(), ipsProject), true, false, ipsProject);
     }
 
-    private IType getPolicyClass(IPolicyCmptType policyCmptType) throws CoreException {
+    private IType getPolicyClass(IPolicyCmptType policyCmptType) {
         return getJavaType("", policyCmptType.getName(), false, false, ipsProject);
     }
 
-    private IType getProductGenInterface(IProductCmptType productCmptType) throws CoreException {
+    private IType getProductGenInterface(IProductCmptType productCmptType) {
         return getJavaType(
                 "",
                 getPublishedInterfaceName(productCmptType.getName() + getGenerationConceptNameAbbreviation(ipsProject),
                         ipsProject), true, false, ipsProject);
     }
 
-    private IType getProductGenClass(IProductCmptType productCmptType) throws CoreException {
+    private IType getProductGenClass(IProductCmptType productCmptType) {
         return getJavaType("", productCmptType.getName() + getGenerationConceptNameAbbreviation(ipsProject), false,
                 false, ipsProject);
     }

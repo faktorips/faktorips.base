@@ -80,8 +80,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_CreateIpsSrcFileOfCorrectNameAndType() throws CoreException, InvocationTargetException,
-            InterruptedException {
+    public void testRun_CreateIpsSrcFileOfCorrectNameAndType() throws InvocationTargetException, InterruptedException {
 
         TestProductDefinitionPMO pmo = new TestProductDefinitionPMO();
         pmo.setIpsProject(ipsProject);
@@ -110,7 +109,7 @@ public class NewProductDefinitionOperationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_IpsSrcFileShouldBeClean() throws CoreException, InvocationTargetException, InterruptedException {
+    public void testRun_IpsSrcFileShouldBeClean() throws InvocationTargetException, InterruptedException {
         TestProductDefinitionPMO pmo = new TestProductDefinitionPMO();
         pmo.setIpsProject(ipsProject);
         pmo.setIpsPackage(ipsProject.getIpsPackageFragmentRoots()[0].getDefaultIpsPackageFragment());

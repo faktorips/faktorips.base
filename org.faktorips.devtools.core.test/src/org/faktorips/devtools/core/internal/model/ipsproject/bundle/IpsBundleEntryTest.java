@@ -67,6 +67,7 @@ public class IpsBundleEntryTest {
     @Before
     public void createIpsJarBundleEntry() throws Exception {
         ipsBundleEntry = new IpsBundleEntry(ipsObjectPath);
+        when(ipsProject.getName()).thenReturn("ipsProject");
     }
 
     @Test
@@ -99,6 +100,7 @@ public class IpsBundleEntryTest {
     @Test
     public void testGetResourceAsStream() throws Exception {
         initStorage();
+        when(ipsProject.getName()).thenReturn("ipsProject");
         ipsBundleEntry.getResourceAsStream("testAnyPath");
 
         verify(ipsJarBundle).getResourceAsStream("testAnyPath");

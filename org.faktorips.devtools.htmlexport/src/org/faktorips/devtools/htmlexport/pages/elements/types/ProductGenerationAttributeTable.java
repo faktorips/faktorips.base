@@ -591,16 +591,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
     private String getValueOfAttribute(IAttributeValue attributeValue, IAttribute attribute) {
 
         String value;
-        try {
-            value = getContext().getDatatypeFormatter().formatValue(
-                    productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
-                    attributeValue == null ? null : attributeValue.getPropertyValue());
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR, "Error formating AttributeValue " + attribute.getName(), e)); //$NON-NLS-1$
-            value = attributeValue == null || attributeValue.getPropertyValue() == null ? getContext().getMessage(
-                    "ProductGenerationAttributeTable_undefined") : attributeValue.getPropertyValue(); //$NON-NLS-1$
-        }
+        value = getContext().getDatatypeFormatter().formatValue(
+                productCmpt.getIpsProject().findValueDatatype(attribute.getDatatype()),
+                attributeValue == null ? null : attributeValue.getPropertyValue());
         return value;
     }
 

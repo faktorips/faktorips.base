@@ -11,8 +11,8 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
@@ -107,40 +106,13 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
     }
 
     @Override
-    public void findIpsSrcFilesInternal(IpsObjectType type,
-            String packageFragment,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFiles(type, packageFragment,
-                    result, visitedEntries);
-        }
-    }
-
-    @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
-        if (referencedIpsProject == null) {
-            return null;
-        }
-        return ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFile(nameType, visitedEntries);
-    }
-
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefix,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-
-        if (referencedIpsProject != null) {
-            ((IpsProject)referencedIpsProject).getIpsObjectPathInternal().findIpsSrcFilesStartingWith(type, prefix,
-                    ignoreCase, result, visitedEntries);
-        }
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType type) {
+        return Collections.emptyList();
     }
 
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         initUseNWDITrackPrefix(element);
         String projectName = element.getAttribute("referencedIpsProject"); //$NON-NLS-1$
         if (isUseNWDITrackPrefix()) {
@@ -224,12 +196,12 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", TYPE_PROJECT_REFERENCE); //$NON-NLS-1$
+        Element element = super.toXml(doc);
+        element.setAttribute(XML_ATTRIBUTE_TYPE, TYPE_PROJECT_REFERENCE);
         element.setAttribute("referencedIpsProject", referencedIpsProject == null ? "" : referencedIpsProject.getName()); //$NON-NLS-1$ //$NON-NLS-2$
         if (useNWDITrackPrefix) {
             // store attribute only if nwdi support is needed
-            element.setAttribute("useNWDITrackPrefix", Boolean.toString(useNWDITrackPrefix)); //$NON-NLS-1$ 
+            element.setAttribute("useNWDITrackPrefix", Boolean.toString(useNWDITrackPrefix)); //$NON-NLS-1$
         }
         return element;
     }
@@ -259,15 +231,11 @@ public class IpsProjectRefEntry extends IpsObjectPathEntry implements IIpsProjec
 
     @Override
     public boolean containsResource(String path) {
-        return getReferencedIpsProject().containsResource(path);
+        return false;
     }
 
-    /**
-     * Interprets the given path as project-relative path.
-     */
     @Override
     public InputStream getResourceAsStream(String path) {
-        return getReferencedIpsProject().getResourceAsStream(path);
+        return null;
     }
-
 }

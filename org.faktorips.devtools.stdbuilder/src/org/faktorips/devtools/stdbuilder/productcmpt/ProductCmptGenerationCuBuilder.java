@@ -254,8 +254,7 @@ public class ProductCmptGenerationCuBuilder extends DefaultJavaSourceFileBuilder
         }
     }
 
-    public void generateSignatureForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    public void generateSignatureForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder methodsBuilder) {
 
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier();
