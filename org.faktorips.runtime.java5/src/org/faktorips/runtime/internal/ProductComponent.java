@@ -12,7 +12,6 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +20,6 @@ import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
-import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -54,9 +52,8 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     // limitation
     private DateTime validTo;
 
-    private IFormulaEvaluator formulaEvaluator;
-
-    private Map<String, String> availableFormulars = new LinkedHashMap<String, String>();
+    // handles the formulas
+    private final FormulaHandler formulaHandler;
 
     /**
      * Creates a new product component with the indicate id, kind id and version id.
@@ -87,6 +84,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.id = id;
         this.productKindId = productKindId;
         this.versionId = versionId;
+        this.formulaHandler = new FormulaHandler(this.repository);
     }
 
     public String getKindId() {
@@ -122,7 +120,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     public IFormulaEvaluator getFormulaEvaluator() {
-        return formulaEvaluator;
+        return formulaHandler.getFormulaEvaluator();
     }
 
     /**
@@ -171,37 +169,18 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
-     * Initializes all formulas contained by genElement. If formula evaluation is supported, the map
-     * contains the compiled expression for every formula. *
-     * <p>
-     * IPSPV-199 : changed that <code>availableFormulas</code> is not overridden, because if the
-     * method <code>initFromXML</code> is called twice, the product variant would have no formulas.
-     * 
-     * <p>
-     * SW 29.02.2012: TODO ProductVariants call initFromXML() twice. As of yet no formulas can be
-     * varied and thus the formula-evaluator should not be overridden if it already exists. This is
-     * a rather dirty fix for the current problems. A clean solution would be to extend the
-     * {@link IFormulaEvaluator} interface with an updateExpression() method, that will then be
-     * called for each formula found in the XML. see FIPS-995
+     * Initializes all formulas contained by Element. If formula evaluation is supported, the map
+     * contains the compiled expression for every formula.
      */
-    protected void doInitFormulaFromXml(Element genElement) {
-        availableFormulars.putAll(ProductComponentXmlUtil.getAvailableFormulars(genElement));
-
-        if (formulaEvaluator != null) {
-            return;
-        }
-        if (getRepository() != null) {
-            IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
-            if (factory != null) {
-                Map<String, String> expressions = ProductComponentXmlUtil.getCompiledExpressionsFromFormulas(genElement);
-                formulaEvaluator = factory.createFormulaEvaluator(this, expressions);
-            }
-        }
+    protected void doInitFormulaFromXml(Element element) {
+        formulaHandler.doInitFormulaFromXml(element);
     }
 
+    /**
+     * Returns <code>true</code> if the expression of the given formulaSignature not empty.
+     */
     protected boolean isFormulaAvailable(String formularSignature) {
-        String expression = availableFormulars.get(formularSignature);
-        return !IpsStringUtils.isBlank(expression);
+        return formulaHandler.isFormulaAvailable(formularSignature);
     }
 
     /**
@@ -334,7 +313,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
          */
     }
 
+    /**
+     * This method is used for writing a formulas to the XML of the given {@link Element}.
+     */
     protected void writeFormulaToXml(Element element) {
-        ValueToXmlHelper.addFormulasToElement(element, formulaEvaluator, availableFormulars);
+        formulaHandler.writeFormulaToXml(element);
     }
 }

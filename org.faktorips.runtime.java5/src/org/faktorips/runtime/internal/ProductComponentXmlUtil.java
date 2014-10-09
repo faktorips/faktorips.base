@@ -16,7 +16,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.faktorips.runtime.formula.AbstractFormulaEvaluator;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -129,30 +128,4 @@ final class ProductComponentXmlUtil {
         }
         return availableFormulas;
     }
-
-    /**
-     * Returns a set containing the formulaSignatures and the compiled expressions of all available
-     * formulas found in the indicated xml element.
-     * 
-     * @param element An xml element containing the data.
-     * @throws NullPointerException if element is <code>null</code>.
-     */
-    static Map<String, String> getCompiledExpressionsFromFormulas(Element element) {
-        Map<String, String> expressions = new LinkedHashMap<String, String>();
-        NodeList formulas = element.getElementsByTagName(XML_TAG_FORMULA);
-        for (int i = 0; i < formulas.getLength(); i++) {
-            Element aFormula = (Element)formulas.item(i);
-            String name = aFormula.getAttribute(XML_ATTRIBUTE_FORMULA_SIGNATURE);
-            NodeList nodeList = aFormula.getElementsByTagName(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
-            if (nodeList.getLength() == 1) {
-                Element expression = (Element)nodeList.item(0);
-                String formulaExpression = expression.getTextContent();
-                expressions.put(name, formulaExpression);
-            } else {
-                throw new RuntimeException("Expression for Formula: " + name + " not found");
-            }
-        }
-        return expressions;
-    }
-
 }

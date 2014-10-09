@@ -90,19 +90,4 @@ public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {
         assertTrue(availableFormulas.containsKey("whitespaceFormula"));
         assertTrue(IpsStringUtils.isEmpty(availableFormulas.get("whitespaceFormula")));
     }
-
-    @Test
-        public void testGetCompiledExpressionsFromFormulas() {
-            Element genEl = getTestDocument().getDocumentElement();
-            Map<String, String> expressions = ProductComponentXmlUtil.getCompiledExpressionsFromFormulas(genEl);
-    
-            assertEquals(3, expressions.size());
-            assertTrue(expressions.containsKey("testFormula"));
-            assertFalse(IpsStringUtils.isEmpty(expressions.get("testFormula")));
-            assertTrue(expressions.containsKey("emptyFormula"));
-            assertFalse(IpsStringUtils.isEmpty(expressions.get("emptyFormula")));
-            assertTrue(expressions.containsKey("whitespaceFormula"));
-            assertFalse(IpsStringUtils.isEmpty(expressions.get("whitespaceFormula")));
-    
-        }
 }
