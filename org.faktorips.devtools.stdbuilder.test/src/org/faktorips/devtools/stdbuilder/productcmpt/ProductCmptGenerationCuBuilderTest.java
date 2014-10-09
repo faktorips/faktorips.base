@@ -33,6 +33,8 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
 
     private IProductCmptGeneration secondGeneration;
 
+    private ProductCmptCuBuilder cuBuilder;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -47,9 +49,9 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
         GregorianCalendar secondDate = new GregorianCalendar();
         firstDate.set(2010, 2, 20);
         secondGeneration.setValidFrom(secondDate);
+        cuBuilder = new ProductCmptCuBuilder(builderSet);
 
-        ProductCmptBuilder productCmptBuilder = new ProductCmptBuilder(builderSet);
-        builder = new ProductCmptGenerationCuBuilder(builderSet, productCmptBuilder);
+        builder = new ProductCmptGenerationCuBuilder(builderSet, cuBuilder);
     }
 
     @Test

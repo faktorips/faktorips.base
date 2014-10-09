@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -41,8 +39,8 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
     public ProductCmptBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
-        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, this);
-        productCmptCuBuilder = new ProductCmptCuBuilder(builderSet, this);
+        productCmptCuBuilder = new ProductCmptCuBuilder(builderSet);
+        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, productCmptCuBuilder);
     }
 
     @Override
@@ -110,35 +108,23 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     private void build(IProductCmpt productCmpt) throws CoreException {
-        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(productCmpt);
-        productCmptCuBuilder.setProductCmpt(productCmpt);
-        productCmptCuBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            productCmptCuBuilder.build(ipsSrcFile);
-        }
-        productCmptCuBuilder.afterBuild(ipsSrcFile);
+        productCmptCuBuilder.callBuildProcess(productCmpt, buildStatus);
     }
 
     private void build(IProductCmptGeneration generation) throws CoreException {
-        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(generation);
-        generationBuilder.setProductCmptGeneration(generation);
-        generationBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            generationBuilder.build(ipsSrcFile);
-        }
-        generationBuilder.afterBuild(ipsSrcFile);
+        generationBuilder.callBuildProcess(generation, buildStatus);
+    }
+
+    public String getImplementationClass(IProductCmpt productCmpt) throws CoreException {
+        return generationBuilder.getImplementationClassProductCmpt(productCmpt);
     }
 
     public String getQualifiedClassName(IProductCmptGeneration generation) throws CoreException {
-        generationBuilder.setProductCmptGeneration(generation);
-        IIpsSrcFile file = getVirtualIpsSrcFile(generation);
-        return generationBuilder.getQualifiedClassName(file);
+        return generationBuilder.getQualifiedClassNameOfProductCmpt(generation);
     }
 
     public String getQualifiedClassName(IProductCmpt productCmpt) throws CoreException {
-        productCmptCuBuilder.setProductCmpt(productCmpt);
-        IIpsSrcFile file = getVirtualIpsSrcFile(productCmpt);
-        return productCmptCuBuilder.getQualifiedClassName(file);
+        return productCmptCuBuilder.getQualifiedClassNameOfProductCmpt(productCmpt);
     }
 
     /**
@@ -150,15 +136,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         if (!requiresJavaCompilationUnit(container)) {
             return null;
         }
-        if (container instanceof IProductCmpt) {
-            IProductCmpt cmpt = (IProductCmpt)container;
-            productCmptCuBuilder.setProductCmpt(cmpt);
-            return productCmptCuBuilder.getJavaFile(getVirtualIpsSrcFile(cmpt));
-        } else {
-            IProductCmptGeneration gen = (IProductCmptGeneration)container;
-            generationBuilder.setProductCmptGeneration(gen);
-            return generationBuilder.getJavaFile(getVirtualIpsSrcFile(gen));
-        }
+        return generationBuilder.getGeneratedJavaFile((IProductCmptGeneration)container);
     }
 
     private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) throws CoreException {
@@ -177,7 +155,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         // so we can get the exact file names, as the generation's valid from is part of the file
         // name
         // instead we delete all file that start with the common prefix.
-        String prefix = getJavaSrcFilePrefix(deletedFile);
+        String prefix = generationBuilder.getJavaSrcFilePrefix(deletedFile);
         // get a file handle in the
         IFile file = generationBuilder.getJavaFile(deletedFile);
         // target folder
@@ -190,47 +168,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
                 member.delete(true, null);
             }
         }
-    }
-
-    /**
-     * Constructs a virtual ips source file. the name is derived from the product component and the
-     * generation's valid from date. This is done to use the superclass' mechanism to derive the (to
-     * be generated) Java sourcefile for a given ips src file.
-     */
-    IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) {
-        GregorianCalendar validFrom = generation.getValidFrom();
-        int month = validFrom.get(Calendar.MONTH) + 1;
-        int date = validFrom.get(Calendar.DATE);
-        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + validFrom.get(Calendar.YEAR)
-                + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
-                + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
-        name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
-        return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
-                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
-    }
-
-    IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) {
-        String name = getUnchangedJavaSrcFilePrefix(productCmpt.getIpsSrcFile());
-        name = productCmpt.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
-        return productCmpt.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
-                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
-    }
-
-    /**
-     * Returns the prefix that is common to the Java source file for all generations.
-     */
-    private String getJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getIpsProject().getProductCmptNamingStrategy()
-                .getJavaClassIdentifier(getUnchangedJavaSrcFilePrefix(file));
-    }
-
-    /**
-     * Returns the prefix that is common to the Java source file for all generations before the
-     * project's naming strategy is applied to replace characters that aren't allowed in Java class
-     * names.
-     */
-    private String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getQualifiedNameType().getUnqualifiedName() + ' ';
     }
 
     @Override
