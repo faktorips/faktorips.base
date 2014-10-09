@@ -49,7 +49,7 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
 
     @Override
     void setProperty(IProductCmpt propertyContainer) {
-        setProductCmpt(productCmpt);
+        setProductCmpt(propertyContainer);
     }
 
     private void setProductCmpt(IProductCmpt productCmpt) {

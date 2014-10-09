@@ -14,6 +14,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.jdt.core.IJavaElement;
@@ -269,6 +270,11 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
             build(ipsSrcFile);
         }
         afterBuild(ipsSrcFile);
+    }
+
+    IFile getGeneratedJavaFile(T property) throws CoreException {
+        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(property);
+        return getJavaFile(ipsSrcFile);
     }
 
     abstract String getSuperClassQualifiedClassName() throws CoreException;

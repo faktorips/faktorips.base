@@ -136,7 +136,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         if (!requiresJavaCompilationUnit(container)) {
             return null;
         }
-        return generationBuilder.getGeneratedJavaFile((IProductCmptGeneration)container);
+        if (container instanceof IProductCmpt) {
+            return productCmptCuBuilder.getGeneratedJavaFile((IProductCmpt)container);
+        } else {
+            return generationBuilder.getGeneratedJavaFile((IProductCmptGeneration)container);
+        }
     }
 
     private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) throws CoreException {

@@ -16,7 +16,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -58,11 +57,6 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
         super(builderSet, ProductCmptGenerationCuBuilder.class);
         this.productCmptCuBuilder = productCmptCuBuilder;
 
-    }
-
-    IFile getGeneratedJavaFile(IProductCmptGeneration gen) throws CoreException {
-        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(gen);
-        return getJavaFile(ipsSrcFile);
     }
 
     private void setProductCmptGeneration(IProductCmptGeneration generation) {
@@ -129,7 +123,7 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
 
     String getImplementationClassProductCmpt(IProductCmpt productCmpt) throws CoreException {
         if (productCmpt.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            return productCmptCuBuilder.getQualifiedClassName(productCmpt);
+            return productCmptCuBuilder.getQualifiedClassNameOfProductCmpt(productCmpt);
         } else {
             return getProductCmptImplBuilder().getQualifiedClassName(productCmpt.findProductCmptType(getIpsProject()));
         }
