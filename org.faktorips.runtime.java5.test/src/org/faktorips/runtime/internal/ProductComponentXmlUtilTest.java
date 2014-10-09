@@ -92,17 +92,17 @@ public class ProductComponentXmlUtilTest extends XmlAbstractTestCase {
     }
 
     @Test
-    public void testGetComopiledExpressionsFromFormulas() {
-        Element genEl = getTestDocument().getDocumentElement();
-        Map<String, String> expressions = ProductComponentXmlUtil.getComopiledExpressionsFromFormulas(genEl);
-
-        assertEquals(3, expressions.size());
-        assertTrue(expressions.containsKey("testFormula"));
-        assertFalse(IpsStringUtils.isEmpty(expressions.get("testFormula")));
-        assertTrue(expressions.containsKey("emptyFormula"));
-        assertFalse(IpsStringUtils.isEmpty(expressions.get("emptyFormula")));
-        assertTrue(expressions.containsKey("whitespaceFormula"));
-        assertFalse(IpsStringUtils.isEmpty(expressions.get("whitespaceFormula")));
-
-    }
+        public void testGetCompiledExpressionsFromFormulas() {
+            Element genEl = getTestDocument().getDocumentElement();
+            Map<String, String> expressions = ProductComponentXmlUtil.getCompiledExpressionsFromFormulas(genEl);
+    
+            assertEquals(3, expressions.size());
+            assertTrue(expressions.containsKey("testFormula"));
+            assertFalse(IpsStringUtils.isEmpty(expressions.get("testFormula")));
+            assertTrue(expressions.containsKey("emptyFormula"));
+            assertFalse(IpsStringUtils.isEmpty(expressions.get("emptyFormula")));
+            assertTrue(expressions.containsKey("whitespaceFormula"));
+            assertFalse(IpsStringUtils.isEmpty(expressions.get("whitespaceFormula")));
+    
+        }
 }

@@ -137,7 +137,7 @@ final class ProductComponentXmlUtil {
      * @param element An xml element containing the data.
      * @throws NullPointerException if element is <code>null</code>.
      */
-    static Map<String, String> getComopiledExpressionsFromFormulas(Element element) {
+    static Map<String, String> getCompiledExpressionsFromFormulas(Element element) {
         Map<String, String> expressions = new LinkedHashMap<String, String>();
         NodeList formulas = element.getElementsByTagName(XML_TAG_FORMULA);
         for (int i = 0; i < formulas.getLength(); i++) {

@@ -193,7 +193,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         if (getRepository() != null) {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
-                Map<String, String> expressions = ProductComponentXmlUtil.getComopiledExpressionsFromFormulas(genElement);
+                Map<String, String> expressions = ProductComponentXmlUtil.getCompiledExpressionsFromFormulas(genElement);
                 formulaEvaluator = factory.createFormulaEvaluator(this, expressions);
             }
         }

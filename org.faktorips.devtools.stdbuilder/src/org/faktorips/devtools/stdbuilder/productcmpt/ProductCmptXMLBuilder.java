@@ -79,6 +79,13 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
             updateTargetRuntimeId(productCmpt, root);
 
+            if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
+                IFormula[] formulas = productCmpt.getFormulas();
+                NodeList formulaElements = root.getElementsByTagName(Formula.TAG_NAME);
+                expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements,
+                        buildStatus);
+            }
+
             IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
             NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
             for (int i = 0; i < generations.length; i++) {
