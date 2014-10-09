@@ -170,6 +170,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                     this, IMethod.PROPERTY_ABSTRACT));
         }
         validateOverloadedFormulaSignature(result, ipsProject);
+        validateChangingOverTime(result, ipsProject);
     }
 
     protected void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -191,6 +192,28 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             result.add(new Message(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_MANDATORY,
                     Messages.ProductCmptTypeMethod_msgOptionalNotAllowedBecauseNotOptionalInSupertypeHierarchy,
                     Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY));
+        }
+    }
+
+    protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) throws CoreException {
+        if (!StringUtils.isEmpty(getName())) {
+            IMethod overridden = findOverriddenMethod(ipsProject);
+            if (overridden == null) {
+                return;
+            }
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)overridden;
+            if (method.isChangingOverTime() && !isChangingOverTime()) {
+                result.add(new Message(
+                        IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME,
+                        Messages.ProductCmptTypeMethod_msgNotChangingOverTimelNotAllowedBecauseChangingOverTimeInSupertypeHierarchy,
+                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME));
+            }
+            if (isChangingOverTime() && !method.isChangingOverTime()) {
+                result.add(new Message(
+                        IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME,
+                        Messages.ProductCmptTypeMethod_msgChangingOverTimelNotAllowedBecauseNotChangingOverTimeInSupertypeHierarchy,
+                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME));
+            }
         }
     }
 

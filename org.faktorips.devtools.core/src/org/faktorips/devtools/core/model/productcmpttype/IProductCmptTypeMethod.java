@@ -52,6 +52,12 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
     public static final String MSGCODE_FORMULA_MUSTBE_MANDATORY = IBaseMethod.MSGCODE_PREFIX
             + "NotOptionalIfNotOptionalInTypeHierarchy"; //$NON-NLS-1$
 
+    public static final String MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME = IBaseMethod.MSGCODE_PREFIX
+            + "ChangingOverTimeIfNotChangingOverTimeInTypeHierarchy"; //$NON-NLS-1$
+
+    public static final String MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME = IBaseMethod.MSGCODE_PREFIX
+            + "NotChangingOverTimeIfChangingOverTimeInTypeHierarchy"; //$NON-NLS-1$
+
     /**
      * Returns the product component type this method belongs to.
      */
