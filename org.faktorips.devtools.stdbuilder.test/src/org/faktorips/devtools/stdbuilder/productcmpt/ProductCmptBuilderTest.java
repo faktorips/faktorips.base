@@ -74,8 +74,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         IFormula ce = productCmptGen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
-        IFormula staticFormula = productCmpt.newFormula();
-        staticFormula.setFormulaSignature(staticMethod.getFormulaName());
+        IFormula staticFormula = (IFormula)productCmpt.newPropertyValue(staticMethod);
         staticFormula.setExpression("42");
 
         productCmpt.getIpsSrcFile().save(true, null);

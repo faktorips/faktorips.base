@@ -25,7 +25,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProduc
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
 /**
@@ -293,16 +292,5 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * <code>null</code> if formulaName is <code>null</code>.
      */
     public IFormula getFormula(String formulaName);
-
-    /**
-     * Creates a new formula.
-     */
-    public IFormula newFormula();
-
-    /**
-     * Creates a new formula based on the given signature. If signature is <code>null</code> the
-     * formula is still created, but no reference to a signature is set.
-     */
-    public IFormula newFormula(IProductCmptTypeMethod signature);
 
 }

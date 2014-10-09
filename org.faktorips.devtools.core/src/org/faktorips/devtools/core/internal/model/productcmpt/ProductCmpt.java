@@ -57,7 +57,6 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptT
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
@@ -707,17 +706,4 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return false;
     }
 
-    @Override
-    public IFormula newFormula() {
-        IFormula formula = propertyValueCollection.newPropertyValue(this, getNextPartId(), IFormula.class);
-        objectHasChanged();
-        return formula;
-    }
-
-    @Override
-    public IFormula newFormula(IProductCmptTypeMethod signature) {
-        IFormula formula = propertyValueCollection.newPropertyValue(this, signature, getNextPartId(), IFormula.class);
-        objectHasChanged();
-        return formula;
-    }
 }

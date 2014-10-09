@@ -1020,7 +1020,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmptTypeMethod formulaSignature = newProductCmptType.newFormulaSignature("newFormula");
 
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
-        IFormula formula = productCmpt.newFormula(formulaSignature);
+        IFormula formula = (IFormula)productCmpt.newPropertyValue(formulaSignature);
 
         assertNotNull(formula);
         assertEquals(formulaSignature.getFormulaName(), formula.getFormulaSignature());
@@ -1030,7 +1030,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testNewFormula2() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
-        IFormula formula = productCmpt.newFormula();
+        IFormula formula = productCmpt.newPart(IFormula.class);
 
         assertNotNull(formula);
         assertEquals("", formula.getFormulaSignature());
