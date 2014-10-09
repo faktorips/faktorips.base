@@ -99,7 +99,7 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
             String[] argNames = new String[] { "repository", "id", "kindId", "versionId" }; //$NON-NLS-1$
             String[] argClassNames = new String[] { "IRuntimeRepository", "String", "String", "String" };
             JavaCodeFragment body = new JavaCodeFragment("super(repository, id, kindId, versionId);"); //$NON-NLS-1$
-            codeBuilder.addImport(IRuntimeRepository.class.getClass());
+            codeBuilder.addImport(IRuntimeRepository.class);
             codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
