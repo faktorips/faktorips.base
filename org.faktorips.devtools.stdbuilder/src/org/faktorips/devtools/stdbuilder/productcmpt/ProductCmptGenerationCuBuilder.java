@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -89,7 +88,8 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
     @Override
     protected void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
         Locale language = getLanguageUsedInGeneratedSourceCode();
-        String genName = getChangesInTimeNamingConvention(getPropertyValueContainer()).getGenerationConceptNameSingular(language);
+        String genName = getChangesInTimeNamingConvention(getPropertyValueContainer())
+                .getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(AbstractProductCuBuilder.CONSTRUCTOR_JAVADOC, genName);
         try {
             String className = getUnqualifiedClassName();
@@ -136,11 +136,6 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
     protected String getSuperClassQualifiedClassName() throws CoreException {
         IProductCmptType pcType = getPropertyValueContainer().getProductCmpt().findProductCmptType(getIpsProject());
         return productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile());
-    }
-
-    @Override
-    protected IFormula[] getFormulas() {
-        return getPropertyValueContainer().getFormulas();
     }
 
 }

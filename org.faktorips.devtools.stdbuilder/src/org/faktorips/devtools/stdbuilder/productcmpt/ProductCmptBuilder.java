@@ -123,10 +123,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return generationBuilder.getQualifiedClassName(generation);
     }
 
-    public String getQualifiedClassName(IProductCmpt productCmpt) throws CoreException {
-        return productCmptCuBuilder.getQualifiedClassName(productCmpt);
-    }
-
     /**
      * Returns the Java sourcefile that is generated for the given {@link IPropertyValueContainer}
      * or <code>null</code> if no sourcefile is generated. In this case the product component or the

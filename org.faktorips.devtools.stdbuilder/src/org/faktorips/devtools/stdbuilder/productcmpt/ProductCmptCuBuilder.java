@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -104,11 +103,6 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
     protected String getSuperClassQualifiedClassName() throws CoreException {
         IProductCmptType pcType = getPropertyValueContainer().findProductCmptType(getIpsProject());
         return getProductCmptImplBuilder().getQualifiedClassName(pcType.getIpsSrcFile());
-    }
-
-    @Override
-    protected IFormula[] getFormulas() {
-        return getPropertyValueContainer().getFormulas();
     }
 
 }

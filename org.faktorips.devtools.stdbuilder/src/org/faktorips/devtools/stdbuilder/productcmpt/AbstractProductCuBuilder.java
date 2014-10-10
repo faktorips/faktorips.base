@@ -130,7 +130,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         }
 
         buildConstructor(mainSection.getConstructorBuilder());
-        IFormula[] formulas = getFormulas();
+        List<IFormula> formulas = getFormulas();
         for (final IFormula formula : formulas) {
             if (isGenerateFormula(formula)) {
                 generateMethodForFormula(formula, mainSection.getMethodBuilder());
@@ -289,9 +289,11 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         return propertyValueContainer;
     }
 
-    protected abstract String getSuperClassQualifiedClassName() throws CoreException;
+    private List<IFormula> getFormulas() {
+        return getPropertyValueContainer().getPropertyValues(IFormula.class);
+    }
 
-    protected abstract IFormula[] getFormulas();
+    protected abstract String getSuperClassQualifiedClassName() throws CoreException;
 
     protected abstract void buildConstructor(JavaCodeFragmentBuilder constructorBuilder);
 
