@@ -399,15 +399,20 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     public boolean equals(Object obj) {
         if (obj instanceof EnumTypeDatatypeAdapter) {
             EnumTypeDatatypeAdapter other = (EnumTypeDatatypeAdapter)obj;
-            if (other.enumContent == null && enumContent == null) {
-                return enumType.equals(other.enumType);
-            } else if ((other.enumContent == null && enumContent != null)
-                    || (other.enumContent != null && enumContent == null)) {
-                return false;
-            }
-            return enumType.equals(other.enumType) && enumContent.equals(other.enumContent);
+            return enumType.equals(other.enumType) && contentsEqual(other);
         }
         return super.equals(obj);
+    }
+
+    private boolean contentsEqual(EnumTypeDatatypeAdapter other) {
+        if (enumContent == null && other.enumContent == null) {
+            return true;
+        } else if ((other.enumContent == null && enumContent != null)
+                || (other.enumContent != null && enumContent == null)) {
+            return false;
+        } else {
+            return enumContent.equals(other.enumContent);
+        }
     }
 
     @Override
@@ -418,6 +423,27 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     @Override
     public String toString() {
         return getEnumValueContainer().getQualifiedName();
+    }
+
+    /**
+     * Returns <code>true</code> if this adapter and the given adapter should be considered equal
+     * when comparing value sets.
+     * <p>
+     * In contrast to {@link #equals(Object)} this method also returns <code>true</code> if this
+     * adapter has a content and the other does not, as well as the other way round. This is the
+     * case when an attribute is overwritten in a custom project that also introduces a enum
+     * content. See test cases for further info.
+     */
+    public boolean equalsForContainsValueSet(EnumTypeDatatypeAdapter subDatatype) {
+        return enumType.equals(subDatatype.enumType) && contentsEqualForContainsValueSet(subDatatype);
+    }
+
+    private boolean contentsEqualForContainsValueSet(EnumTypeDatatypeAdapter subDatatype) {
+        if (enumContent == null || subDatatype.enumContent == null) {
+            return true;
+        } else {
+            return enumContent.equals(subDatatype.enumContent);
+        }
     }
 
 }

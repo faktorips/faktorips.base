@@ -159,7 +159,11 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public boolean containsValueSet(IValueSet subset) {
         ValueDatatype datatype = getValueDatatype();
-        if (!checkDatatypes(subset, datatype)) {
+
+        if (!(subset instanceof EnumValueSet)) {
+            return false;
+        }
+        if (!datatypesCompatible(subset, datatype)) {
             return false;
         }
         if (!isContainsNull() && subset.isContainsNull()) {
@@ -174,13 +178,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return containsAllValues(subset);
     }
 
-    private boolean checkDatatypes(IValueSet subset, ValueDatatype datatype) {
+    private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype) {
         ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
-        if (datatype == null || !datatype.equals(subDatatype)) {
-            return false;
+        if (enumDatatypeEqualForContainsValueSet(datatype, subDatatype)) {
+            return true;
         }
-
-        if (!(subset instanceof EnumValueSet)) {
+        if (datatype == null || !datatype.equals(subDatatype)) {
             return false;
         }
         return true;
