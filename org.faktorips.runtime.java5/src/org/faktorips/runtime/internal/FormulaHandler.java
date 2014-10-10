@@ -115,17 +115,18 @@ class FormulaHandler {
     protected void addFormulasToElement(final Element element,
             final IFormulaEvaluator formulaEvaluator,
             final Map<String, String> availableFormulars) {
-        if (formulaEvaluator != null && availableFormulars != null) {
+        if (availableFormulars != null) {
             for (Entry<String, String> expressionEntry : availableFormulars.entrySet()) {
                 Element formula = element.getOwnerDocument().createElement(ProductComponentXmlUtil.XML_TAG_FORMULA);
                 formula.setAttribute(ProductComponentXmlUtil.XML_ATTRIBUTE_FORMULA_SIGNATURE, expressionEntry.getKey());
                 ValueToXmlHelper.addValueToElement(expressionEntry.getValue(), formula,
                         ProductComponentXmlUtil.XML_TAG_EXPRESSION);
+                if (formulaEvaluator != null) {
+                    String compiledExpression = formulaEvaluator.getNameToExpressionMap().get(expressionEntry.getKey());
 
-                String compiledExpression = formulaEvaluator.getNameToExpressionMap().get(expressionEntry.getKey());
-
-                ValueToXmlHelper.addCDataValueToElement(compiledExpression, formula,
-                        AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+                    ValueToXmlHelper.addCDataValueToElement(compiledExpression, formula,
+                            AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+                }
                 element.appendChild(formula);
             }
         }
