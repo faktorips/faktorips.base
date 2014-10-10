@@ -36,6 +36,7 @@ import org.faktorips.devtools.stdbuilder.StdBuilderHelper;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.runtime.FormulaExecutionException;
+import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -46,13 +47,15 @@ import org.faktorips.util.LocalizedStringsSet;
 public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer> extends DefaultJavaSourceFileBuilder {
 
     // property key for the constructor's Javadoc.
-    static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
+    public static final String CONSTRUCTOR_JAVADOC = "CONSTRUCTOR_JAVADOC"; //$NON-NLS-1$
 
     private ProductCmptClassBuilder productCmptImplBuilder;
 
     private MultiStatus buildStatus;
 
     private Class<?> cuBuilderClazz;
+
+    private T propertyValueContainer;
 
     public AbstractProductCuBuilder(StandardBuilderSet builderSet, Class<?> clazz) {
         super(builderSet, new LocalizedStringsSet(clazz));
@@ -95,14 +98,14 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
     }
 
     @Override
-    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
-            IIpsObjectPartContainer ipsObjectPartContainer) {
-        // no IJavaElement generated here
+    public boolean isBuildingPublishedSourceFile() {
+        return false;
     }
 
     @Override
-    public boolean isBuildingPublishedSourceFile() {
-        return false;
+    protected void getGeneratedJavaElementsThis(List<IJavaElement> javaElements,
+            IIpsObjectPartContainer ipsObjectPartContainer) {
+        // no IJavaElement generated here
     }
 
     @Override
@@ -112,7 +115,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
     @Override
     protected void generateCodeForJavatype() {
-        if (getProperty() == null) {
+        if (getPropertyValueContainer() == null) {
             addToBuildStatus(new IpsStatus("The product component needs to be set for this " + cuBuilderClazz)); //$NON-NLS-1$
             return;
         }
@@ -135,6 +138,43 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         }
     }
 
+    public void callBuildProcess(T propertyValueContainer, MultiStatus buildStatus) throws CoreException {
+        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(propertyValueContainer);
+        setPropertyValueContainer(propertyValueContainer);
+        beforeBuild(ipsSrcFile, buildStatus);
+        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+            build(ipsSrcFile);
+        }
+        afterBuild(ipsSrcFile);
+    }
+
+    public IFile getGeneratedJavaFile(T propertyValueContainer) throws CoreException {
+        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(propertyValueContainer);
+        return getJavaFile(ipsSrcFile);
+    }
+
+    /**
+     * Returns the prefix that is common to the Java source file for all generations.
+     */
+    public String getJavaSrcFilePrefix(IIpsSrcFile file) {
+        return file.getIpsProject().getProductCmptNamingStrategy()
+                .getJavaClassIdentifier(getUnchangedJavaSrcFilePrefix(file));
+    }
+
+    /**
+     * Returns the prefix that is common to the Java source file for all generations before the
+     * project's naming strategy is applied to replace characters that aren't allowed in Java class
+     * names.
+     */
+    protected String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) {
+        return file.getQualifiedNameType().getUnqualifiedName() + ' ';
+    }
+
+    public String getQualifiedClassName(T propertyValueContainer) throws CoreException {
+        IIpsSrcFile file = getVirtualIpsSrcFile(propertyValueContainer);
+        return getQualifiedClassName(file);
+    }
+
     private boolean isGenerateFormula(final IFormula formula) {
         try {
             if (!formula.isValid(getIpsProject())) {
@@ -153,7 +193,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
     /**
      * Generates the method to compute a value as specified by a formula configuration element and
      */
-    public void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) {
+    private void generateMethodForFormula(IFormula formula, JavaCodeFragmentBuilder builder) {
         generateMethodForFormula(formula, builder, true);
     }
 
@@ -240,53 +280,21 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         methodsBuilder.appendClassName(FormulaExecutionException.class);
     }
 
-    /**
-     * Returns the prefix that is common to the Java source file for all generations.
-     */
-    String getJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getIpsProject().getProductCmptNamingStrategy()
-                .getJavaClassIdentifier(getUnchangedJavaSrcFilePrefix(file));
+    protected void setPropertyValueContainer(T propertyValueContainer) {
+        ArgumentCheck.notNull(propertyValueContainer);
+        this.propertyValueContainer = propertyValueContainer;
     }
 
-    /**
-     * Returns the prefix that is common to the Java source file for all generations before the
-     * project's naming strategy is applied to replace characters that aren't allowed in Java class
-     * names.
-     */
-    String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getQualifiedNameType().getUnqualifiedName() + ' ';
+    protected T getPropertyValueContainer() {
+        return propertyValueContainer;
     }
 
-    String getQualifiedClassNameOfProductCmpt(T propertyContainer) throws CoreException {
-        IIpsSrcFile file = getVirtualIpsSrcFile(propertyContainer);
-        return getQualifiedClassName(file);
-    }
+    protected abstract String getSuperClassQualifiedClassName() throws CoreException;
 
-    void callBuildProcess(T propertyContainer, MultiStatus buildStatus) throws CoreException {
-        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(propertyContainer);
-        setProperty(propertyContainer);
-        beforeBuild(ipsSrcFile, buildStatus);
-        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            build(ipsSrcFile);
-        }
-        afterBuild(ipsSrcFile);
-    }
+    protected abstract IFormula[] getFormulas();
 
-    IFile getGeneratedJavaFile(T property) throws CoreException {
-        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(property);
-        return getJavaFile(ipsSrcFile);
-    }
+    protected abstract void buildConstructor(JavaCodeFragmentBuilder constructorBuilder);
 
-    abstract String getSuperClassQualifiedClassName() throws CoreException;
-
-    abstract IFormula[] getFormulas();
-
-    abstract void buildConstructor(JavaCodeFragmentBuilder constructorBuilder);
-
-    abstract IIpsSrcFile getVirtualIpsSrcFile(T propertyContainer);
-
-    abstract void setProperty(T propertyContainer);
-
-    abstract T getProperty();
+    protected abstract IIpsSrcFile getVirtualIpsSrcFile(T propertyContainer);
 
 }

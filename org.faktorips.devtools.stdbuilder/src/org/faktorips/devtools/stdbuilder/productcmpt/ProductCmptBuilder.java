@@ -120,11 +120,11 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     public String getQualifiedClassName(IProductCmptGeneration generation) throws CoreException {
-        return generationBuilder.getQualifiedClassNameOfProductCmpt(generation);
+        return generationBuilder.getQualifiedClassName(generation);
     }
 
     public String getQualifiedClassName(IProductCmpt productCmpt) throws CoreException {
-        return productCmptCuBuilder.getQualifiedClassNameOfProductCmpt(productCmpt);
+        return productCmptCuBuilder.getQualifiedClassName(productCmpt);
     }
 
     /**

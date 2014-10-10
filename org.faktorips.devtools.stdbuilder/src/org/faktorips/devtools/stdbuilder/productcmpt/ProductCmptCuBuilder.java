@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.ProductComponent;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Generates special runtime classes for product components. These classes are themselves subclasses
@@ -43,37 +42,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt> {
 
-    // the product component sourcecode is generated for.
-    private IProductCmpt productCmpt;
-
     public ProductCmptCuBuilder(StandardBuilderSet builderSet) {
         super(builderSet, ProductCmptCuBuilder.class);
-    }
-
-    @Override
-    void setProperty(IProductCmpt propertyContainer) {
-        setProductCmpt(propertyContainer);
-    }
-
-    private void setProductCmpt(IProductCmpt productCmpt) {
-        ArgumentCheck.notNull(productCmpt);
-        this.productCmpt = productCmpt;
-    }
-
-    @Override
-    IProductCmpt getProperty() {
-        return productCmpt;
-    }
-
-    @Override
-    IFormula[] getFormulas() {
-        return productCmpt.getFormulas();
-    }
-
-    @Override
-    String getSuperClassQualifiedClassName() throws CoreException {
-        IProductCmptType pcType = productCmpt.findProductCmptType(getIpsProject());
-        return getProductCmptImplBuilder().getQualifiedClassName(pcType.getIpsSrcFile());
     }
 
     @Override
@@ -94,7 +64,7 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
      * </pre>
      */
     @Override
-    void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
+    protected void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
         String javaDoc = getLocalizedText(CONSTRUCTOR_JAVADOC);
         try {
             //
@@ -123,11 +93,22 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
     }
 
     @Override
-    IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) {
+    protected IIpsSrcFile getVirtualIpsSrcFile(IProductCmpt productCmpt) {
         String name = getUnchangedJavaSrcFilePrefix(productCmpt.getIpsSrcFile());
         name = productCmpt.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
         return productCmpt.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
                 .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
+    }
+
+    @Override
+    protected String getSuperClassQualifiedClassName() throws CoreException {
+        IProductCmptType pcType = getPropertyValueContainer().findProductCmptType(getIpsProject());
+        return getProductCmptImplBuilder().getQualifiedClassName(pcType.getIpsSrcFile());
+    }
+
+    @Override
+    protected IFormula[] getFormulas() {
+        return getPropertyValueContainer().getFormulas();
     }
 
 }

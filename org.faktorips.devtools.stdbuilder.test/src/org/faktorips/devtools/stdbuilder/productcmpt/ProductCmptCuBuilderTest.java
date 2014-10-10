@@ -58,7 +58,7 @@ public class ProductCmptCuBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testGetGeneratedJavaElements() throws CoreException {
         generatedJavaElements = builder.getGeneratedJavaElements(productCmpt);
-        String qualifiedClassNameOfProductCmpt = builder.getQualifiedClassNameOfProductCmpt(productCmpt);
+        String qualifiedClassNameOfProductCmpt = builder.getQualifiedClassName(productCmpt);
         assertTrue(qualifiedClassNameOfProductCmpt.contains(PRODUCT_CMPT_NAME));
 
     }

@@ -35,7 +35,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
-import org.faktorips.util.ArgumentCheck;
 
 /**
  * Generates special runtime classes for product component generations. These classes are themselves
@@ -48,9 +47,6 @@ import org.faktorips.util.ArgumentCheck;
  */
 public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IProductCmptGeneration> {
 
-    // the product component generation sourcecode is generated for.
-    private IProductCmptGeneration generation;
-
     // builders needed
     private ProductCmptGenerationClassBuilder productCmptGenImplBuilder;
     private ProductCmptCuBuilder productCmptCuBuilder;
@@ -61,37 +57,21 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
 
     }
 
-    private void setProductCmptGeneration(IProductCmptGeneration generation) {
-        ArgumentCheck.notNull(generation);
-        this.generation = generation;
-    }
-
-    @Override
-    public IFormula[] getFormulas() {
-        return generation.getFormulas();
-    }
-
-    @Override
-    String getSuperClassQualifiedClassName() throws CoreException {
-        IProductCmptType pcType = generation.getProductCmpt().findProductCmptType(getIpsProject());
-        return productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile());
-    }
-
     public void setProductCmptGenImplBuilder(ProductCmptGenerationClassBuilder builder) {
         productCmptGenImplBuilder = builder;
+    }
+
+    public String getImplementationClassProductCmpt(IProductCmpt productCmpt) throws CoreException {
+        if (productCmpt.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+            return productCmptCuBuilder.getQualifiedClassName(productCmpt);
+        } else {
+            return getProductCmptImplBuilder().getQualifiedClassName(productCmpt.findProductCmptType(getIpsProject()));
+        }
     }
 
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
-    }
-
-    public IProductCmptType getProductCmptType() {
-        try {
-            return generation.findProductCmptType(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
     }
 
     /**
@@ -107,27 +87,19 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
      * </pre>
      */
     @Override
-    void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
+    protected void buildConstructor(JavaCodeFragmentBuilder codeBuilder) {
         Locale language = getLanguageUsedInGeneratedSourceCode();
-        String genName = getChangesInTimeNamingConvention(generation).getGenerationConceptNameSingular(language);
+        String genName = getChangesInTimeNamingConvention(getPropertyValueContainer()).getGenerationConceptNameSingular(language);
         String javaDoc = getLocalizedText(AbstractProductCuBuilder.CONSTRUCTOR_JAVADOC, genName);
         try {
             String className = getUnqualifiedClassName();
             String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
-            String qualifiedClassName = getImplementationClassProductCmpt(generation.getProductCmpt());
+            String qualifiedClassName = getImplementationClassProductCmpt(getPropertyValueContainer().getProductCmpt());
             String[] argClassNames = new String[] { qualifiedClassName };
             JavaCodeFragment body = new JavaCodeFragment("super(productCmpt);"); //$NON-NLS-1$
             codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
-        }
-    }
-
-    String getImplementationClassProductCmpt(IProductCmpt productCmpt) throws CoreException {
-        if (productCmpt.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            return productCmptCuBuilder.getQualifiedClassNameOfProductCmpt(productCmpt);
-        } else {
-            return getProductCmptImplBuilder().getQualifiedClassName(productCmpt.findProductCmptType(getIpsProject()));
         }
     }
 
@@ -148,7 +120,7 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
     }
 
     @Override
-    IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) {
+    protected IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) {
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(Calendar.MONTH) + 1;
         int date = validFrom.get(Calendar.DATE);
@@ -161,13 +133,14 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
     }
 
     @Override
-    void setProperty(IProductCmptGeneration propertyContainer) {
-        setProductCmptGeneration(propertyContainer);
+    protected String getSuperClassQualifiedClassName() throws CoreException {
+        IProductCmptType pcType = getPropertyValueContainer().getProductCmpt().findProductCmptType(getIpsProject());
+        return productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile());
     }
 
     @Override
-    IProductCmptGeneration getProperty() {
-        return generation;
+    protected IFormula[] getFormulas() {
+        return getPropertyValueContainer().getFormulas();
     }
 
 }
