@@ -34,15 +34,17 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.runtime.internal.ProductComponentGeneration;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Generates the compilation unit that represents the product component generation. Note that only
- * for product component's that contain a config element of type formula a Java compilation unit is
- * generated. This is necessary as the formula is compiled into Java sourcecode and this Java
- * sourcecode is placed in the compilation unit generated for a product component's generation.
+ * Generates special runtime classes for product component generations. These classes are themselves
+ * subclasses of the normally generated {@link ProductComponentGeneration} classes. Their sole
+ * purpose is to provide the compiled to java source code for all formula expressions contained in
+ * the product component generation.
  * 
- * @author Jan Ortmann
+ * Accordingly only for product component generations that contain formulas (and entered
+ * expressions) such Java compilation units are generated.
  */
 public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IProductCmptGeneration> {
 
