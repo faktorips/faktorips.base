@@ -465,4 +465,42 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME, list.getMessage(0).getCode());
     }
 
+    @Test
+    public void testValidateThis_IsFormulaSignatureDefinition() throws CoreException {
+        setUpOverriddenMethod();
+        method.setFormulaSignatureDefinition(true);
+
+        MessageList list = new MessageList();
+        ((ProductCmptTypeMethod)method).validateThis(list, ipsProject);
+
+        assertEquals(1, list.size());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+    }
+
+    @Test
+    public void testValidateThis_IsNotFormulaSignatureDefinition() throws CoreException {
+        setUpOverriddenMethod();
+        method.setFormulaSignatureDefinition(false);
+
+        MessageList list = new MessageList();
+        ((ProductCmptTypeMethod)method).validateThis(list, ipsProject);
+
+        assertEquals(1, list.size());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+    }
+
+    private void setUpOverriddenMethod() throws CoreException {
+        method.setOverloadsFormula(false);
+        method.setFormulaName("testName");
+        method.setChangingOverTime(false);
+        method.setName("computeTestName");
+        method.setDatatype("Integer");
+        ProductCmptType superType = newProductCmptType(ipsProject, "SuperType");
+        productCmptType.setSupertype("SuperType");
+        IProductCmptTypeMethod superMethod = superType.newFormulaSignature("testName");
+        superMethod.setChangingOverTime(true);
+        superMethod.setName("computeTestName");
+        superMethod.setDatatype("Integer");
+    }
+
 }

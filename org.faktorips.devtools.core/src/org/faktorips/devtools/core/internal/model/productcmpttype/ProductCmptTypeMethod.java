@@ -147,6 +147,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
+        validateChangingOverTime(result, ipsProject);
         if (!isFormulaSignatureDefinition()) {
             return;
         }
@@ -170,7 +171,6 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
                     this, IMethod.PROPERTY_ABSTRACT));
         }
         validateOverloadedFormulaSignature(result, ipsProject);
-        validateChangingOverTime(result, ipsProject);
     }
 
     protected void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -205,13 +205,13 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
             if (method.isChangingOverTime() && !isChangingOverTime()) {
                 result.add(new Message(
                         IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME,
-                        Messages.ProductCmptTypeMethod_msgNotChangingOverTimelNotAllowedBecauseChangingOverTimeInSupertypeHierarchy,
+                        Messages.ProductCmptTypeMethod_msgNotChangingOverTimeNotAllowedBecauseChangingOverTimeInSupertypeHierarchy,
                         Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME));
             }
             if (isChangingOverTime() && !method.isChangingOverTime()) {
                 result.add(new Message(
                         IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME,
-                        Messages.ProductCmptTypeMethod_msgChangingOverTimelNotAllowedBecauseNotChangingOverTimeInSupertypeHierarchy,
+                        Messages.ProductCmptTypeMethod_msgChangingOverTimeNotAllowedBecauseNotChangingOverTimeInSupertypeHierarchy,
                         Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME));
             }
         }
