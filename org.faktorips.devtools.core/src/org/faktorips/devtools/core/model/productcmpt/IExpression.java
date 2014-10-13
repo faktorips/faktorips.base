@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.builder.flidentifier.AttributeParser;
 import org.faktorips.devtools.core.internal.model.productcmpt.ExpressionDependencyDetail;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.IDependency;
@@ -136,8 +137,13 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
     EnumDatatype[] getEnumDatatypesAllowedInFormula();
 
     /**
-     * Returns all Attributes of the {@link ProductCmptType}
+     * @deprecated This method is not appropriate for this class. As it's result has only been used
+     *             for {@link AttributeParser}, the implementation of this class is now only
+     *             available in {@link AttributeParser} in order to prevent duplicate code.
+     * 
+     *             Returns all Attributes of the {@link ProductCmptType}
      */
+    @Deprecated
     List<IAttribute> findMatchingProductCmptTypeAttributes();
 
     /**
@@ -160,4 +166,5 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      *         dependency details
      */
     public Map<IDependency, ExpressionDependencyDetail> dependsOn();
+
 }

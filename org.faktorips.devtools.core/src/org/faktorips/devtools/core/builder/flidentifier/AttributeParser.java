@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -111,9 +113,7 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     protected List<IAttribute> findAttributes() {
-        if (isContextTypeFormulaType()) {
-            return getExpression().findMatchingProductCmptTypeAttributes();
-        } else if (isAllowedType()) {
+        if (isAllowedType()) {
             return getPolicyAndProductAttributesFromIType();
         } else {
             return Collections.emptyList();
@@ -155,10 +155,23 @@ public class AttributeParser extends TypeBasedIdentifierParser {
 
     private List<IAttribute> findAllAttributesFor(IType contextType) {
         try {
+            if (isNotChangingOverTimeMethod(contextType)) {
+                return ((IProductCmptType)contextType).findNotChangingOverTimeAttributes(getIpsProject());
+            }
             return contextType.findAllAttributes(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    private boolean isNotChangingOverTimeMethod(IType contextType) {
+        if (contextType.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
+            IFormulaMethod method = getExpression().findFormulaSignature(getIpsProject());
+            if (method instanceof IProductCmptTypeMethod) {
+                return !((IProductCmptTypeMethod)method).isChangingOverTime();
+            }
+        }
+        return false;
     }
 
     private List<IAttribute> findProductAttributesIfAvailable(IType contextType) {

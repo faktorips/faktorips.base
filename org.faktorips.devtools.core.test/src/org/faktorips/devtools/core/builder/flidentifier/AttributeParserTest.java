@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNod
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -93,7 +94,13 @@ public class AttributeParserTest extends AbstractParserTest {
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
-        .thenReturn(true);
+                .thenReturn(true);
+        when(getProductCmptType().getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
+        when(otherType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
+        when(prodType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
+        when(policyType.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+        when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(method);
+        when(method.isChangingOverTime()).thenReturn(true);
     }
 
     @Test
@@ -107,7 +114,7 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_findAttributeInExpressionType() throws Exception {
-        when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
+        when(getProductCmptType().findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
         getParsingContext().pushNode(new TestNode(getProductCmptType()));
         when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(method);
         when(method.isChangingOverTime()).thenReturn(true);
@@ -196,6 +203,21 @@ public class AttributeParserTest extends AbstractParserTest {
 
         List<IAttribute> attributeList = spy.findAttributes();
         assertEquals(3, attributeList.size());
+    }
+
+    @Test
+    public void testfindAttributes_staticAttributes() throws CoreException {
+        AttributeParser spy = spy(attributeParser);
+        ArrayList<IAttribute> arrayList = new ArrayList<IAttribute>();
+        arrayList.add(attribute);
+        when(spy.getContextType()).thenReturn(prodType);
+        when(prodType.findNotChangingOverTimeAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute3));
+        when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
+        when(method.isChangingOverTime()).thenReturn(false);
+
+        List<IAttribute> attributeList = spy.findAttributes();
+
+        assertEquals(1, attributeList.size());
     }
 
     @Test

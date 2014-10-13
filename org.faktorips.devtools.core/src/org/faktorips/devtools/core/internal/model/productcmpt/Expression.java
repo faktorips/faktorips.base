@@ -88,6 +88,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     public abstract IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     @Override
+    @Deprecated
     public List<IAttribute> findMatchingProductCmptTypeAttributes() {
         final IProductCmptType productCmptType = findProductCmptType(getIpsProject());
         if (productCmptType != null) {
