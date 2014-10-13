@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
@@ -143,6 +144,11 @@ public class IdentifierParserTest {
     public void createIdentifierParser() throws Exception {
         mockEnum();
         identifierParser = new IdentifierParser(expression, ipsProject, identifierFilter);
+        when(type.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+        when(type1.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+        when(type2.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+        when(type3.getIpsObjectType()).thenReturn(IpsObjectType.POLICY_CMPT_TYPE);
+        when(productCmptType.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
     }
 
     private void mockEnum() throws Exception {
