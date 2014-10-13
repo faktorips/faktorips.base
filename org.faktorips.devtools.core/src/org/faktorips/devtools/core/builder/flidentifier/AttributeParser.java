@@ -26,7 +26,9 @@ import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.fl.ExprCompiler;
@@ -89,13 +91,23 @@ public class AttributeParser extends TypeBasedIdentifierParser {
         for (IAttribute anAttribute : attributes) {
             if (attributeName.equals(anAttribute.getName())) {
                 if (isAllowd(anAttribute, defaultValueAccess)) {
-                    return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isListOfTypeContext());
+                    return nodeFactory().createAttributeNode(anAttribute, defaultValueAccess, isStaticContext(),
+                            isListOfTypeContext());
                 } else {
                     return createInvalidIdentifierNode();
                 }
             }
         }
         return null;
+    }
+
+    private boolean isStaticContext() {
+        if (isContextTypeFormulaType()) {
+            IFormula expression = (IFormula)getParsingContext().getExpression();
+            IProductCmptTypeMethod method = expression.findFormulaSignature(getIpsProject());
+            return !method.isChangingOverTime();
+        }
+        return false;
     }
 
     protected List<IAttribute> findAttributes() {

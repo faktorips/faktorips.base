@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
@@ -77,6 +78,9 @@ public class AttributeParserTest extends AbstractParserTest {
     @Mock
     private IdentifierFilter identifierFilter;
 
+    @Mock
+    private IProductCmptTypeMethod method;
+
     private AttributeParser attributeParser;
 
     @Before
@@ -89,7 +93,7 @@ public class AttributeParserTest extends AbstractParserTest {
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(getIpsProject())).thenReturn(Datatype.INTEGER);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
-                .thenReturn(true);
+        .thenReturn(true);
     }
 
     @Test
@@ -105,7 +109,8 @@ public class AttributeParserTest extends AbstractParserTest {
     public void testParse_findAttributeInExpressionType() throws Exception {
         when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
         getParsingContext().pushNode(new TestNode(getProductCmptType()));
-
+        when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(method);
+        when(method.isChangingOverTime()).thenReturn(true);
         AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE
                 .length()));
 

@@ -35,11 +35,14 @@ public class AttributeNode extends IdentifierNode {
 
     private final IIpsProject ipsProject;
 
-    AttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes, IIpsProject ipsProject,
-            TextRegion textRegion) throws CoreException {
+    private final boolean staticContext;
+
+    AttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean staticContext, boolean listOfTypes,
+            IIpsProject ipsProject, TextRegion textRegion) throws CoreException {
         super(attribute.findDatatype(ipsProject), listOfTypes, textRegion);
         this.attribute = attribute;
         this.defaultValueAccess = defaultValueAccess;
+        this.staticContext = staticContext;
         this.ipsProject = ipsProject;
     }
 
@@ -55,4 +58,7 @@ public class AttributeNode extends IdentifierNode {
         return ipsProject;
     }
 
+    public boolean isStaticContext() {
+        return staticContext;
+    }
 }
