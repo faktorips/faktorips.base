@@ -123,22 +123,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         return generationBuilder.getQualifiedClassName(generation);
     }
 
-    /**
-     * Returns the Java sourcefile that is generated for the given {@link IPropertyValueContainer}
-     * or <code>null</code> if no sourcefile is generated. In this case the product component or the
-     * respective generation contain no formula.
-     */
-    public IFile getGeneratedJavaFile(IPropertyValueContainer container) throws CoreException {
-        if (!requiresJavaCompilationUnit(container)) {
-            return null;
-        }
-        if (container instanceof IProductCmpt) {
-            return productCmptCuBuilder.getGeneratedJavaFile((IProductCmpt)container);
-        } else {
-            return generationBuilder.getGeneratedJavaFile((IProductCmptGeneration)container);
-        }
-    }
-
     private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) throws CoreException {
         if (!container.isContainingAvailableFormula()) {
             return false;
