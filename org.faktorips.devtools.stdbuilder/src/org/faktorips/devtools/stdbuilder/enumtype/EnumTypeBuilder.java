@@ -243,7 +243,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void generateMessageHelperVar(JavaCodeFragmentBuilder memberVarBuilder) throws CoreException {
+    private void generateMessageHelperVar(JavaCodeFragmentBuilder memberVarBuilder) {
         if (isMessageHelperNeeded()) {
             memberVarBuilder.javaDoc("", ANNOTATION_GENERATED);
             JavaCodeFragment expression = new JavaCodeFragment();
@@ -506,7 +506,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
     private JavaCodeFragment getNewInstanceCodeFragmentForEnumTypesWithDeferredContent(IEnumType enumType,
             String valueOrExpression,
             boolean isExpression,
-            JavaCodeFragment repositoryExp) throws CoreException {
+            JavaCodeFragment repositoryExp) {
         IEnumAttribute attribute = getIdentifierAttribute(enumType);
         DatatypeHelper datatypeHelper = getDatatypeHelper(attribute, true);
         JavaCodeFragment fragment = new JavaCodeFragment();
@@ -1146,7 +1146,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private void generateMethodGetValueBy(JavaCodeFragmentBuilder methodBuilder,
             IEnumType enumType,
-            IEnumAttribute currentEnumAttribute) throws CoreException {
+            IEnumAttribute currentEnumAttribute) {
         String parameterName = getMemberVarName(currentEnumAttribute);
         DatatypeHelper datatypeHelper = getDatatypeHelper(currentEnumAttribute, false);
 
@@ -1169,7 +1169,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private JavaCodeFragment generateGetValueByExpression(IEnumAttribute currentEnumAttribute,
             String parameterName,
-            DatatypeHelper datatypeHelper) throws CoreException {
+            DatatypeHelper datatypeHelper) {
         if (currentEnumAttribute.findIsIdentifier(getIpsProject())) {
             return generateGetValueByIdHashmap(currentEnumAttribute);
         } else {
@@ -1221,7 +1221,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      */
     private JavaCodeFragment generateGetValueByForLoop(IEnumAttribute currentEnumAttribute,
             DatatypeHelper datatypeHelper,
-            String parameterName) throws CoreException {
+            String parameterName) {
         JavaCodeFragment loopCode = new JavaCodeFragment();
         loopCode.append("for(");
         loopCode.appendClassName(getQualifiedClassName(getEnumType()));
