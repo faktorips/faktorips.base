@@ -66,7 +66,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IAssociation;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -1299,18 +1298,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     List<IProductCmptPropertyReference> getPropertyReferences() {
         return new ArrayList<IProductCmptPropertyReference>(propertyReferences.getBackingList());
-    }
-
-    @Override
-    public List<IAttribute> findNotChangingOverTimeAttributes(IIpsProject ipsProject) throws CoreException {
-        List<IAttribute> notChangingOverTimeAttributes = new ArrayList<IAttribute>();
-        List<IAttribute> allAttributes = findAllAttributes(ipsProject);
-        for (IAttribute attribute : allAttributes) {
-            if (!((ProductCmptTypeAttribute)attribute).isChangingOverTime()) {
-                notChangingOverTimeAttributes.add(attribute);
-            }
-        }
-        return notChangingOverTimeAttributes;
     }
 
     /**

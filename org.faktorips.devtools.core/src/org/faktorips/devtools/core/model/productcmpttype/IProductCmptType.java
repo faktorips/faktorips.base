@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
-import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -708,17 +707,5 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      *            {@link IProductCmptProperty} to
      */
     public void changeCategoryAndDeferPolicyChange(IProductCmptProperty property, String category);
-
-    /**
-     * Returns all of this type's attributes and the attributes within the supertype hierarchy that
-     * are not changing over time. It also considers overridden attributes that are not changing
-     * over time. That means if an attribute has been overridden by a subtype this attribute
-     * instance will be in the returned array all attributes in the supertype hierarchy with the
-     * same name will be neglected.
-     * 
-     * @throws CoreException If an exception occurs while collecting those attributes that are not
-     *             changing over time.
-     */
-    public List<IAttribute> findNotChangingOverTimeAttributes(IIpsProject ipsProject) throws CoreException;
 
 }

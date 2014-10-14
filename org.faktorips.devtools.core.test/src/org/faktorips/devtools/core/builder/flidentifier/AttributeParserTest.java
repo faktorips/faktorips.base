@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.InvalidIdentifierNode;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -66,6 +67,9 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @Mock
     private IAttribute attribute3;
+
+    @Mock
+    private ProductCmptTypeAttribute attribute4;
 
     @Mock
     private IType otherType;
@@ -208,11 +212,12 @@ public class AttributeParserTest extends AbstractParserTest {
     @Test
     public void testfindAttributes_staticAttributes() throws CoreException {
         AttributeParser spy = spy(attributeParser);
-        ArrayList<IAttribute> arrayList = new ArrayList<IAttribute>();
-        arrayList.add(attribute);
-        when(spy.getContextType()).thenReturn(prodType);
-        when(prodType.findNotChangingOverTimeAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute3));
-        when(prodType.findAllAttributes(getIpsProject())).thenReturn(listOfAttributes());
+        List<IAttribute> arrayList = new ArrayList<IAttribute>();
+        arrayList.add(attribute4);
+        doReturn(prodType).when(spy).getContextType();
+        doReturn(true).when(spy).isContextTypeFormulaType();
+        doReturn(false).when(attribute4).isChangingOverTime();
+        when(prodType.findAllAttributes(getIpsProject())).thenReturn(arrayList);
         when(method.isChangingOverTime()).thenReturn(false);
 
         List<IAttribute> attributeList = spy.findAttributes();

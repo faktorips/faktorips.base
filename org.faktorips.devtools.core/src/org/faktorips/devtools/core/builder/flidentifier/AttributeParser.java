@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeType;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.fl.IdentifierKind;
 import org.faktorips.devtools.core.internal.fl.IdentifierFilter;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -113,6 +114,9 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     }
 
     protected List<IAttribute> findAttributes() {
+        if (isContextTypeFormulaType()) {
+            return getMatchingProductCmptTypeAttributes();
+        }
         if (isAllowedType()) {
             return getPolicyAndProductAttributesFromIType();
         } else {
@@ -155,20 +159,40 @@ public class AttributeParser extends TypeBasedIdentifierParser {
 
     private List<IAttribute> findAllAttributesFor(IType contextType) {
         try {
-            if (isNotChangingOverTimeMethod(contextType)) {
-                return ((IProductCmptType)contextType).findNotChangingOverTimeAttributes(getIpsProject());
-            }
             return contextType.findAllAttributes(getIpsProject());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
     }
 
-    private boolean isNotChangingOverTimeMethod(IType contextType) {
+    private List<IAttribute> getMatchingProductCmptTypeAttributes() {
+        try {
+            if (!isChangingOverTimeMethod(getContextType())) {
+                return notChangingOverTimeAttributes(((IProductCmptType)getContextType()));
+            } else {
+                return findAllAttributesFor(getContextType());
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    private List<IAttribute> notChangingOverTimeAttributes(IProductCmptType productCmptType) throws CoreException {
+        List<IAttribute> notChangingOverTimeAttributes = new ArrayList<IAttribute>();
+        List<IAttribute> allAttributes = productCmptType.findAllAttributes(getIpsProject());
+        for (IAttribute attribute : allAttributes) {
+            if (!((ProductCmptTypeAttribute)attribute).isChangingOverTime()) {
+                notChangingOverTimeAttributes.add(attribute);
+            }
+        }
+        return notChangingOverTimeAttributes;
+    }
+
+    private boolean isChangingOverTimeMethod(IType contextType) {
         if (contextType.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT_TYPE)) {
             IFormulaMethod method = getExpression().findFormulaSignature(getIpsProject());
             if (method instanceof IProductCmptTypeMethod) {
-                return !((IProductCmptTypeMethod)method).isChangingOverTime();
+                return ((IProductCmptTypeMethod)method).isChangingOverTime();
             }
         }
         return false;
