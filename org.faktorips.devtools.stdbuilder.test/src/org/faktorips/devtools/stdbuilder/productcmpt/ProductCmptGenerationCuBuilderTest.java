@@ -10,11 +10,13 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
 
 import org.eclipse.jdt.core.IType;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
@@ -25,7 +27,7 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
 
     private static final String PRODUCT_CMPT_NAME = "Product";
 
-    private ProductCmptGenerationCuBuilder builder;
+    private AbstractProductCuBuilder<IProductCmptGeneration> builder;
 
     private IProductCmpt productCmpt;
 
@@ -62,6 +64,44 @@ public class ProductCmptGenerationCuBuilderTest extends AbstractStdBuilderTest {
 
     private IType getGeneratedJavaClass(String generationNamePart) {
         return getGeneratedJavaClass(productCmpt, true, PRODUCT_CMPT_NAME + generationNamePart);
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_noFormula() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+
+        assertFalse(builder.isContainingAvailableFormula(generation));
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_anyEmptyFormula() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        generation.newFormula();
+
+        assertFalse(builder.isContainingAvailableFormula(generation));
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        IFormula newFormula = generation.newFormula();
+        newFormula.setExpression("anyExpression");
+
+        assertTrue(builder.isContainingAvailableFormula(generation));
+    }
+
+    @Test
+    public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
+                2010, 0, 1));
+        generation.newFormula();
+        IFormula newFormula = generation.newFormula();
+        newFormula.setExpression("anyExpression");
+
+        assertTrue(builder.isContainingAvailableFormula(generation));
     }
 
 }

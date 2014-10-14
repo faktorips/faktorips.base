@@ -569,7 +569,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
-    Exception {
+            Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
@@ -590,7 +590,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
         ipsProject.getProperties()
-        .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+                .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
@@ -703,44 +703,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         List<IProductCmptLink> linksIncludingGenerations = generation1.getLinksIncludingProductCmpt();
         assertEquals(links, linksIncludingGenerations);
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_noFormula() throws Exception {
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
-                2010, 0, 1));
-
-        assertFalse(generation.isContainingAvailableFormula());
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_anyEmptyFormula() throws Exception {
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
-                2010, 0, 1));
-        generation.newFormula();
-
-        assertFalse(generation.isContainingAvailableFormula());
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
-                2010, 0, 1));
-        IFormula newFormula = generation.newFormula();
-        newFormula.setExpression("anyExpression");
-
-        assertTrue(generation.isContainingAvailableFormula());
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
-        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
-                2010, 0, 1));
-        generation.newFormula();
-        IFormula newFormula = generation.newFormula();
-        newFormula.setExpression("anyExpression");
-
-        assertTrue(generation.isContainingAvailableFormula());
     }
 
     @Test

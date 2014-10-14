@@ -24,8 +24,10 @@ import org.faktorips.devtools.core.builder.BuilderHelper;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -161,10 +163,10 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
      * names.
      */
     protected String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getQualifiedNameType().getUnqualifiedName() + ' ';
+        return file.getQualifiedNameType().getUnqualifiedName();
     }
 
-    public String getQualifiedClassName(T propertyValueContainer) throws CoreException {
+    public String getQualifiedClassName(T propertyValueContainer) {
         IIpsSrcFile file = getVirtualIpsSrcFile(propertyValueContainer);
         return getQualifiedClassName(file);
     }
@@ -293,4 +295,46 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
 
     protected abstract IIpsSrcFile getVirtualIpsSrcFile(T propertyContainer);
 
+    /**
+     * Returns <code>true</code> if there is at least one formula that has an entered expression.
+     * Returns <code>false</code> if there is no formula or if every formula has no entered
+     * expression.
+     * 
+     * @param container The product component or product component generation that may contain the
+     *            formulas
+     * @return <code>true</code> for at least one available formula
+     */
+    public boolean isContainingAvailableFormula(IPropertyValueContainer container) {
+        for (IFormula formula : container.getPropertyValues(IFormula.class)) {
+            if (!formula.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected IIpsObject findProductCmptType(IIpsProject ipsProject) {
+        try {
+            return getPropertyValueContainer().findProductCmptType(ipsProject);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
+    /**
+     * Returns the qualified name of the class where the formula or method is implemented.
+     * 
+     * @param container The product component or product component generation that may contain the
+     *            formula or method
+     */
+    public String getImplementationClass(T container) {
+        if (isContainingAvailableFormula(container) && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
+            return getQualifiedClassName(container);
+        } else {
+            setPropertyValueContainer(container);
+            return getQualifiedClassNameFromImplBuilder();
+        }
+    }
+
+    protected abstract String getQualifiedClassNameFromImplBuilder();
 }

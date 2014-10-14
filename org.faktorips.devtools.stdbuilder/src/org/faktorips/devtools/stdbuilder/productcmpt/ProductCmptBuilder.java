@@ -57,7 +57,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder.setProductCmptGenImplBuilder(builder);
     }
 
-    public ProductCmptGenerationCuBuilder getGenerationBuilder() {
+    public AbstractProductCuBuilder<IProductCmptGeneration> getGenerationBuilder() {
         return generationBuilder;
     }
 
@@ -115,16 +115,20 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder.callBuildProcess(generation, buildStatus);
     }
 
-    public String getImplementationClass(IProductCmpt productCmpt) throws CoreException {
-        return generationBuilder.getImplementationClassProductCmpt(productCmpt);
+    public String getImplementationClass(IProductCmpt productCmpt) {
+        return productCmptCuBuilder.getImplementationClass(productCmpt);
     }
 
-    public String getQualifiedClassName(IProductCmptGeneration generation) throws CoreException {
+    public String getImplementationClass(IProductCmptGeneration generation) {
+        return generationBuilder.getImplementationClass(generation);
+    }
+
+    public String getQualifiedClassName(IProductCmptGeneration generation) {
         return generationBuilder.getQualifiedClassName(generation);
     }
 
     private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) throws CoreException {
-        if (!container.isContainingAvailableFormula()) {
+        if (!isContainingAvailableFormula(container)) {
             return false;
         }
         if (container.findProductCmptType(container.getIpsProject()) == null) {
@@ -162,6 +166,28 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public boolean isBuildingInternalArtifacts() {
         return getBuilderSet().isGeneratePublishedInterfaces();
+    }
+
+    /**
+     * Returns <code>true</code> if there is at least one formula that has an entered expression.
+     * Returns <code>false</code> if there is no formula or if every formula has no entered
+     * expression.
+     * 
+     * @param container The product component or product component generation that may contain the
+     *            formulas
+     * @return <code>true</code> for at least one available formula
+     */
+    public boolean isContainingAvailableFormula(IPropertyValueContainer container) {
+        AbstractProductCuBuilder<? extends IPropertyValueContainer> cuBuilder = getCuBuilderFor(container);
+        return cuBuilder.isContainingAvailableFormula(container);
+    }
+
+    private AbstractProductCuBuilder<? extends IPropertyValueContainer> getCuBuilderFor(IPropertyValueContainer container) {
+        if (container instanceof IProductCmpt) {
+            return productCmptCuBuilder;
+        } else {
+            return generationBuilder;
+        }
     }
 
 }

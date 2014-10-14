@@ -898,37 +898,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsContainingAvailableFormula_noFormula() throws Exception {
-        assertFalse(productCmpt.isContainingAvailableFormula());
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_anyEmptyFormula() throws Exception {
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
-
-        assertFalse(productCmpt.isContainingAvailableFormula());
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_anyAvailableFormula() throws Exception {
-        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
-                mock(IProductCmptType.class), "Id"));
-        newFormula.setExpression("anyExpression");
-
-        assertTrue(productCmpt.isContainingAvailableFormula());
-    }
-
-    @Test
-    public void testIsContainingAvailableFormula_twoFormulas() throws Exception {
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(mock(IProductCmptType.class), "Id"));
-        IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
-                mock(IProductCmptType.class), "Id"));
-        newFormula.setExpression("anyExpression");
-
-        assertTrue(productCmpt.isContainingAvailableFormula());
-    }
-
-    @Test
     public void testAddDependenciesFromFormulaExpressions() throws Exception {
         ProductCmpt productCmptSpy = spy(productCmpt);
         IDependency dependency = mock(IDependency.class);

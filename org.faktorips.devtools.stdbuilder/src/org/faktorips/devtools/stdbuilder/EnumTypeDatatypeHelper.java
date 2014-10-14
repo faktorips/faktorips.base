@@ -85,12 +85,7 @@ public class EnumTypeDatatypeHelper extends AbstractDatatypeHelper {
      */
     @Override
     public String getJavaClassName() {
-        try {
-            return enumTypeBuilder.getQualifiedClassName(enumTypeAdapter.getEnumType().getIpsSrcFile());
-        } catch (CoreException e) {
-            throw new RuntimeException("An exception occurred while trying to determine the java class name "
-                    + "of the enum type: " + enumTypeAdapter.getQualifiedName(), e);
-        }
+        return enumTypeBuilder.getQualifiedClassName(enumTypeAdapter.getEnumType().getIpsSrcFile());
     }
 
     @Override

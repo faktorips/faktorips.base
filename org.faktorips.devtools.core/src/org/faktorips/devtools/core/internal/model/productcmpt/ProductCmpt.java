@@ -695,15 +695,4 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     public IFormula getFormula(String formulaName) {
         return propertyValueCollection.getPropertyValue(IFormula.class, formulaName);
     }
-
-    @Override
-    public boolean isContainingAvailableFormula() {
-        for (IFormula formula : getFormulas()) {
-            if (!formula.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 }

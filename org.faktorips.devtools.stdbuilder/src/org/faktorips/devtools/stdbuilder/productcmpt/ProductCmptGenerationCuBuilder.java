@@ -60,14 +60,6 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
         productCmptGenImplBuilder = builder;
     }
 
-    public String getImplementationClassProductCmpt(IProductCmpt productCmpt) throws CoreException {
-        if (productCmpt.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            return productCmptCuBuilder.getQualifiedClassName(productCmpt);
-        } else {
-            return getProductCmptImplBuilder().getQualifiedClassName(productCmpt.findProductCmptType(getIpsProject()));
-        }
-    }
-
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) {
         return IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType());
@@ -94,7 +86,8 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
         try {
             String className = getUnqualifiedClassName();
             String[] argNames = new String[] { "productCmpt" }; //$NON-NLS-1$
-            String qualifiedClassName = getImplementationClassProductCmpt(getPropertyValueContainer().getProductCmpt());
+            String qualifiedClassName = productCmptCuBuilder.getImplementationClass(getPropertyValueContainer()
+                    .getProductCmpt());
             String[] argClassNames = new String[] { qualifiedClassName };
             JavaCodeFragment body = new JavaCodeFragment("super(productCmpt);"); //$NON-NLS-1$
             codeBuilder.method(Modifier.PUBLIC, null, className, argNames, argClassNames, body, javaDoc);
@@ -124,7 +117,7 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
         GregorianCalendar validFrom = generation.getValidFrom();
         int month = validFrom.get(Calendar.MONTH) + 1;
         int date = validFrom.get(Calendar.DATE);
-        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + validFrom.get(Calendar.YEAR)
+        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + ' ' + validFrom.get(Calendar.YEAR)
                 + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
                 + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
         name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
@@ -136,6 +129,11 @@ public class ProductCmptGenerationCuBuilder extends AbstractProductCuBuilder<IPr
     protected String getSuperClassQualifiedClassName() throws CoreException {
         IProductCmptType pcType = getPropertyValueContainer().getProductCmpt().findProductCmptType(getIpsProject());
         return productCmptGenImplBuilder.getQualifiedClassName(pcType.getIpsSrcFile());
+    }
+
+    @Override
+    protected String getQualifiedClassNameFromImplBuilder() {
+        return productCmptGenImplBuilder.getQualifiedClassName(findProductCmptType(getIpsProject()));
     }
 
 }

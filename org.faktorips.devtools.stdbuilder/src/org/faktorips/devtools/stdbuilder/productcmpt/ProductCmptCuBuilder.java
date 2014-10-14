@@ -105,4 +105,8 @@ public class ProductCmptCuBuilder extends AbstractProductCuBuilder<IProductCmpt>
         return getProductCmptImplBuilder().getQualifiedClassName(pcType.getIpsSrcFile());
     }
 
+    @Override
+    protected String getQualifiedClassNameFromImplBuilder() {
+        return getProductCmptImplBuilder().getQualifiedClassName(findProductCmptType(getIpsProject()));
+    }
 }
