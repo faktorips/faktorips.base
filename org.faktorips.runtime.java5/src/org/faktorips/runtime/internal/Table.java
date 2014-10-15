@@ -74,11 +74,27 @@ public abstract class Table<T> implements ITable {
     public void initFromXml(InputStream is, IRuntimeRepository productRepository, String qualifiedTableName)
             throws Exception {
         rows = new ArrayList<T>(200);
+        name = qualifiedTableName;
         SAXParser saxParser = SAXParserFactory.newInstance().newSAXParser();
         saxParser.parse(new InputSource(is), new TableSaxHandler(this, productRepository));
         ((ArrayList<T>)rows).trimToSize();
+        init();
+    }
+
+    protected void init() {
         initKeyMaps();
-        name = qualifiedTableName;
+        performAdditionalInitializations();
+    }
+
+    /**
+     * Template method to perform additional initializations. Is called during the initialization of
+     * the table (from XML), right after {@link #initKeyMaps()}.
+     * <p>
+     * Subclasses may override to provide an implementation. The default implementation is empty, so
+     * no super-call is necessary.
+     */
+    protected void performAdditionalInitializations() {
+        // implementation provided by subclasses
     }
 
     /**
