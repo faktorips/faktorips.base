@@ -25,7 +25,6 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
-import org.faktorips.devtools.core.builder.flidentifier.AttributeParser;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.BaseIpsObjectPart;
 import org.faktorips.devtools.core.model.IDependency;
@@ -88,13 +87,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     @Override
     public abstract IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
-    /**
-     * @deprecated This method is not appropriate for this class. As it's result has only been used
-     *             for {@link AttributeParser}, the implementation of this class is now only
-     *             available in {@link AttributeParser} in order to prevent duplicate code.
-     */
     @Override
-    @Deprecated
     public List<IAttribute> findMatchingProductCmptTypeAttributes() {
         final IProductCmptType productCmptType = findProductCmptType(getIpsProject());
         if (productCmptType != null) {

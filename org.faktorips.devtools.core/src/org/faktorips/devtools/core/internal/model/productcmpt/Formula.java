@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -104,6 +106,22 @@ public class Formula extends Expression implements IFormula {
             return getPropertyValueContainer().findProductCmptType(ipsProject);
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public List<IAttribute> findMatchingProductCmptTypeAttributes() {
+        List<IAttribute> allAttributes = super.findMatchingProductCmptTypeAttributes();
+        if (!getPropertyValueContainer().isChangingOverTimeContainer()) {
+            List<IAttribute> notChangingOverTimeAttributes = new ArrayList<IAttribute>();
+            for (IAttribute attribute : allAttributes) {
+                if (!((ProductCmptTypeAttribute)attribute).isChangingOverTime()) {
+                    notChangingOverTimeAttributes.add(attribute);
+                }
+            }
+            return notChangingOverTimeAttributes;
+        } else {
+            return allAttributes;
         }
     }
 

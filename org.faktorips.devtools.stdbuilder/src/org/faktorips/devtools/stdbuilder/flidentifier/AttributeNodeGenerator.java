@@ -22,6 +22,8 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
@@ -44,9 +46,12 @@ import org.faktorips.fl.CompilationResultImpl;
  */
 public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
 
+    private IExpression expression;
+
     public AttributeNodeGenerator(IdentifierNodeGeneratorFactory<JavaCodeFragment> nodeBuilderFactory,
-            StandardBuilderSet builderSet) {
+            IExpression expression, StandardBuilderSet builderSet) {
         super(nodeBuilderFactory, builderSet);
+        this.expression = expression;
     }
 
     @Override
@@ -173,16 +178,11 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
      */
     private String getProductCmptOrGenerationGetterCode(IProductCmptTypeAttribute attribute, IPolicyCmptType policyType) {
         XPolicyCmptClass xPolicyCmptClass = getModelNode(policyType, XPolicyCmptClass.class);
-        if (isChangingOverTime(attribute)) {
+        if (attribute.isChangingOverTime()) {
             return xPolicyCmptClass.getMethodNameGetProductCmptGeneration() + "().";
         } else {
             return xPolicyCmptClass.getMethodNameGetProductCmpt() + "().";
         }
-    }
-
-    private boolean isChangingOverTime(IProductCmptTypeAttribute attribute) {
-        XProductAttribute xProductAttribute = getModelNode(attribute, XProductAttribute.class);
-        return xProductAttribute.isChangingOverTime();
     }
 
     /**
@@ -192,11 +192,20 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
      */
     private String getProductCmptGetterCodeIfRequired(final AttributeNode node) {
         IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)node.getAttribute();
-        if (!isChangingOverTime(attribute) && !node.isStaticContext()) {
+        if (!attribute.isChangingOverTime() && isChanginOverTimeContext()) {
             XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
             return xProductCmptClass.getMethodNameGetProductCmpt() + "().";
         } else {
             return StringUtils.EMPTY;
+        }
+    }
+
+    private boolean isChanginOverTimeContext() {
+        if (expression instanceof IFormula) {
+            IFormula formula = (IFormula)expression;
+            return formula.getPropertyValueContainer().isChangingOverTimeContainer();
+        } else {
+            return false;
         }
     }
 

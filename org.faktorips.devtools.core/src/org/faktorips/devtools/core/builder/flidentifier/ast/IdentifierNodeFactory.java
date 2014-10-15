@@ -80,13 +80,10 @@ public class IdentifierNodeFactory {
      *            {@link ListOfTypeDatatype}
      * @return The new {@link AttributeNode} or an {@link InvalidIdentifierNode}.
      */
-    public IdentifierNode createAttributeNode(IAttribute attribute,
-            boolean defaultValueAccess,
-            boolean staticContext,
-            boolean listOfTypes) {
+    public IdentifierNode createAttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes) {
         try {
-            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, staticContext, listOfTypes,
-                    ipsProject, textRegion);
+            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, ipsProject,
+                    textRegion);
             if (attributeNode.getDatatype() == null) {
                 return createInvalidNoDatatype(attribute.getDatatype());
             }

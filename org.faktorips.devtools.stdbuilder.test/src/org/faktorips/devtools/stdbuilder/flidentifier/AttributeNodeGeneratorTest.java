@@ -26,8 +26,12 @@ import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNodeFactor
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.util.TextRegion;
 import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
@@ -58,6 +62,12 @@ public class AttributeNodeGeneratorTest {
     @Mock
     private CompilationResult<JavaCodeFragment> contextCompilationResult;
 
+    @Mock
+    private IExpression expression;
+
+    @Mock
+    private IFormula formula;
+
     private AttributeNodeGenerator attributeNodeGenerator;
 
     private AttributeNode attributeNode;
@@ -67,12 +77,12 @@ public class AttributeNodeGeneratorTest {
     @Before
     public void createAttributeNodeGenerator() {
         when(builderSet.getIpsProject()).thenReturn(ipsProject);
-        attributeNodeGenerator = new AttributeNodeGenerator(factory, builderSet);
+        attributeNodeGenerator = new AttributeNodeGenerator(factory, expression, builderSet);
     }
 
-    private void createAttributeNode(boolean isDefault, boolean isStaticContext) throws CoreException {
+    private void createAttributeNode(boolean isDefault) throws CoreException {
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.STRING);
-        attributeNode = createAttributeNode(isDefault, isStaticContext, false);
+        attributeNode = createAttributeNode(isDefault, false);
         when(contextCompilationResult.getDatatype()).thenReturn(Datatype.INTEGER);
         when(contextCompilationResult.getCodeFragment()).thenReturn(new JavaCodeFragment("this"));
     }
@@ -80,7 +90,7 @@ public class AttributeNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_PolicyCmptTypeAttribute() throws Exception {
         attribute = mock(IPolicyCmptTypeAttribute.class);
-        createAttributeNode(false, false);
+        createAttributeNode(false);
         XPolicyAttribute xPolicyAttribute = mock(XPolicyAttribute.class);
         when(xPolicyAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(builderSet.getModelNode(attribute, XPolicyAttribute.class)).thenReturn(xPolicyAttribute);
@@ -96,7 +106,7 @@ public class AttributeNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_PolicyCmptTypeAttributeDefault() throws Exception {
         attribute = mock(IPolicyCmptTypeAttribute.class);
-        createAttributeNode(true, false);
+        createAttributeNode(true);
         IType type = mock(IType.class);
         when(attribute.getType()).thenReturn(type);
         XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
@@ -117,7 +127,7 @@ public class AttributeNodeGeneratorTest {
     @Test
     public void testGetCompilationResult_ProductCmptTypeAttributeChangingOverTime() throws Exception {
         attribute = mock(IProductCmptTypeAttribute.class);
-        createAttributeNode(false, false);
+        createAttributeNode(false);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(xProductAttribute.isChangingOverTime()).thenReturn(true);
@@ -131,9 +141,14 @@ public class AttributeNodeGeneratorTest {
     }
 
     @Test
-    public void testGetCompilationResult_ProductCmptTypeAttribute() throws Exception {
+    public void testGetCompilationResult_ProductCmptTypeAttribute_changingOverTimeFormula() throws Exception {
+        attributeNodeGenerator = new AttributeNodeGenerator(factory, formula, builderSet);
+        IPropertyValueContainer container = mock(IPropertyValueContainer.class);
+        when(formula.getPropertyValueContainer()).thenReturn(container);
+        when(container.isChangingOverTimeContainer()).thenReturn(true);
+
         attribute = mock(IProductCmptTypeAttribute.class);
-        createAttributeNode(false, false);
+        createAttributeNode(false);
         IType type = mock(IType.class);
         when(attribute.getType()).thenReturn(type);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
@@ -154,9 +169,14 @@ public class AttributeNodeGeneratorTest {
     }
 
     @Test
-    public void testGetCompilationResult_ProductCmptTypeAttribute_StaticContext() throws Exception {
+    public void testGetCompilationResult_ProductCmptTypeAttribute_staticFormula() throws Exception {
+        attributeNodeGenerator = new AttributeNodeGenerator(factory, formula, builderSet);
+        IPropertyValueContainer container = mock(IPropertyValueContainer.class);
+        when(formula.getPropertyValueContainer()).thenReturn(container);
+        when(container.isChangingOverTimeContainer()).thenReturn(false);
+
         attribute = mock(IProductCmptTypeAttribute.class);
-        createAttributeNode(false, true);
+        createAttributeNode(false);
         IType type = mock(IType.class);
         when(attribute.getType()).thenReturn(type);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
@@ -166,6 +186,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
+        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -180,7 +201,7 @@ public class AttributeNodeGeneratorTest {
         attribute = mock(IPolicyCmptTypeAttribute.class);
         IPolicyCmptType type = mock(IPolicyCmptType.class);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
-        attributeNode = createAttributeNode(false, false, true);
+        attributeNode = createAttributeNode(false, true);
 
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("hsVertrag.getDeckungen()");
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
@@ -206,7 +227,7 @@ public class AttributeNodeGeneratorTest {
         attribute = mock(IPolicyCmptTypeAttribute.class);
         IPolicyCmptType type = mock(IPolicyCmptType.class);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.PRIMITIVE_INT);
-        attributeNode = createAttributeNode(false, false, true);
+        attributeNode = createAttributeNode(false, true);
 
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment("hsVertrag.getDeckungen()");
         when(contextCompilationResult.getCodeFragment()).thenReturn(javaCodeFragment);
@@ -233,15 +254,15 @@ public class AttributeNodeGeneratorTest {
         attribute = mock(IPolicyCmptTypeAttribute.class);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.INTEGER);
         when(attribute.getDatatype()).thenReturn("Integer");
-        attributeNode = createAttributeNode(false, false, false);
+        attributeNode = createAttributeNode(false, false);
         ListOfTypeDatatype listofTypeDatatype = mock(ListOfTypeDatatype.class);
         when(contextCompilationResult.getDatatype()).thenReturn(listofTypeDatatype);
         attributeNodeGenerator.getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
     }
 
-    private AttributeNode createAttributeNode(boolean defaultAccess, boolean isStaticContext, boolean listOfType) {
+    private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
         return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, 0), ipsProject)
-                .createAttributeNode(attribute, defaultAccess, isStaticContext, listOfType);
+                .createAttributeNode(attribute, defaultAccess, listOfType);
     }
 
     @Test
@@ -260,7 +281,7 @@ public class AttributeNodeGeneratorTest {
     @Test
     public void testGetParameterAttributeGetterNameChangingOverTime() throws CoreException {
         XPolicyCmptClass xPolicyCmptClass = initMocksForTestgetParameterAttributeGetterName(true);
-        when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getMethodPolicyProdCmpt");
+        when(xPolicyCmptClass.getMethodNameGetProductCmptGeneration()).thenReturn("getMethodPolicyProdCmptGen");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -273,7 +294,7 @@ public class AttributeNodeGeneratorTest {
     private XPolicyCmptClass initMocksForTestgetParameterAttributeGetterName(boolean isChangingOverTime)
             throws CoreException {
         attribute = mock(IProductCmptTypeAttribute.class);
-        createAttributeNode(false, false);
+        createAttributeNode(false);
 
         IPolicyCmptType datatypePolicy = mock(IPolicyCmptType.class);
         IType type = mock(IType.class);
@@ -284,7 +305,7 @@ public class AttributeNodeGeneratorTest {
         when(attribute.getType()).thenReturn(type);
         when(builderSet.getModelNode(attribute, XProductAttribute.class)).thenReturn(xProductAttribute);
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
-        when(xProductAttribute.isChangingOverTime()).thenReturn(isChangingOverTime);
+        when(((IProductCmptProperty)attribute).isChangingOverTime()).thenReturn(isChangingOverTime);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
         when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
         when(contextCompilationResult.getDatatype()).thenReturn(datatypePolicy);

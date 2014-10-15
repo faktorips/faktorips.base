@@ -166,6 +166,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public boolean isChangingOverTimeContainer() {
+        return false;
+    }
+
+    @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
         IProductCmptType type = ProductCmptValidations.validateProductCmptType(this, productCmptType, list, ipsProject);
@@ -490,7 +495,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean isContainerFor(IProductCmptProperty property) {
-        return !property.isChangingOverTime();
+        return property.isChangingOverTime() == isChangingOverTimeContainer();
     }
 
     @Override
@@ -606,7 +611,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean isContainerFor(IProductCmptTypeAssociation association) {
-        return !association.isChangingOverTime();
+        return association.isChangingOverTime() == isChangingOverTimeContainer();
     }
 
     @Override
