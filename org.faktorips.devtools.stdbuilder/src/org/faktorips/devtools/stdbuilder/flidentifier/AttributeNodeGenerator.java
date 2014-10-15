@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.stdbuilder.GeneratorRuntimeException;
@@ -167,7 +168,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
             return getProductCmptOrGenerationGetterCode((IProductCmptTypeAttribute)node.getAttribute(),
                     (IPolicyCmptType)contextDatatype);
         } else {
-            return getProductCmptGetterCodeIfRequired(node);
+            return getProductCmptGetterCodeIfRequired(node, contextDatatype);
         }
     }
 
@@ -190,9 +191,9 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
      * is changing over time or the code for getting the product component if the attribute is
      * static.
      */
-    private String getProductCmptGetterCodeIfRequired(final AttributeNode node) {
+    private String getProductCmptGetterCodeIfRequired(final AttributeNode node, Datatype contextDatatype) {
         IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)node.getAttribute();
-        if (!attribute.isChangingOverTime() && isChanginOverTimeContext()) {
+        if (!attribute.isChangingOverTime() && isChanginOverTimeContext(contextDatatype)) {
             XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
             return xProductCmptClass.getMethodNameGetProductCmpt() + "().";
         } else {
@@ -200,10 +201,17 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         }
     }
 
-    private boolean isChanginOverTimeContext() {
+    private boolean isChanginOverTimeContext(Datatype contextDatatype) {
         if (expression instanceof IFormula) {
             IFormula formula = (IFormula)expression;
-            return formula.getPropertyValueContainer().isChangingOverTimeContainer();
+            IProductCmptType productCmptType = formula.findProductCmptType(getIpsProject());
+            if (productCmptType != null && productCmptType.equals(contextDatatype)) {
+                return formula.getPropertyValueContainer().isChangingOverTimeContainer();
+            } else {
+                // the contextDatatype seems to be the type of a parameter and hence it would always
+                // be a generation.
+                return true;
+            }
         } else {
             return false;
         }
