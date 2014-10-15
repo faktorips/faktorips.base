@@ -338,6 +338,6 @@ public class GeneratorModelContext {
     public boolean isGenerateConvenienceGetters() {
         Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
-        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
     }
 }
