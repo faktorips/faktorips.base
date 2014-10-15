@@ -120,7 +120,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     private IpsResourceChangeListener resourceListener;
 
     /** Flag that indicates if non ips projects will be excluded or not. */
-    private boolean excludeNoIpsProjects = false;
+    private boolean excludeNoIpsProjects = true;
 
     /**
      * Decorator for problems in ips objects. This decorator is adjusted according to the current

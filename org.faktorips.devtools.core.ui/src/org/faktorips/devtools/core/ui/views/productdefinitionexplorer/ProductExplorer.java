@@ -62,7 +62,7 @@ public class ProductExplorer extends ModelExplorer {
      */
     private static final String MEMENTO = "productExplorer.memento"; //$NON-NLS-1$
 
-    private boolean excludeNoIpsProductDefinitionProjects = false;
+    private boolean excludeNoIpsProductDefinitionProjects = true;
 
     private ProductExplorerFilter filter;
 
@@ -195,13 +195,13 @@ public class ProductExplorer extends ModelExplorer {
         private static final String TEAM_MENU                           = "team.main"; //$NON-NLS-1$
         private static final String COMPARE_WITH_MENU                   = "compareWithMenu"; //$NON-NLS-1$
         private static final String REPLACE_WITH_MENU                   = "replaceWithMenu"; //$NON-NLS-1$
-        
+
         private static final String TEAM_GROUP_1                        = "group1"; //$NON-NLS-1$
         private static final String TEAM_GROUP_2                        = "group2"; //$NON-NLS-1$
         private static final String TEAM_GROUP_3                        = "group3"; //$NON-NLS-1$
         private static final String TEAM_GROUP_4                        = "group4"; //$NON-NLS-1$
         private static final String TEAM_GROUP_6                        = "group6"; //$NON-NLS-1$
-        
+
         private static final String CVS_SYNC                            = "org.eclipse.team.cvs.ui.sync"; //$NON-NLS-1$
         private static final String CVS_COMMIT                          = "org.eclipse.team.ccvs.ui.commit"; //$NON-NLS-1$
         private static final String CVS_UPDATE                          = "org.eclipse.team.ccvs.ui.update"; //$NON-NLS-1$
@@ -210,7 +210,7 @@ public class ProductExplorer extends ModelExplorer {
         private static final String CVS_SWITCH_BRANCH                   = "org.eclipse.team.cvs.ui.updateSwitch"; //$NON-NLS-1$
         private static final String CVS_SHOW_RESOURCE_HISTORY           = "org.eclipse.team.cvs.ui.showHistory"; //$NON-NLS-1$
         private static final String CVS_RESTORE_FROM_REPOSITORY         = "org.eclipse.team.ccvs.ui.restoreFromRepository"; //$NON-NLS-1$
-        
+
         private static final String SUBVERSIVE_SYNC                     = "org.eclipse.team.svn.ui.action.local.SynchronizeAction"; //$NON-NLS-1$
         private static final String SUBVERSIVE_COMMIT                   = "org.eclipse.team.svn.ui.action.local.CommitAction"; //$NON-NLS-1$
         private static final String SUBVERSIVE_UPDATE                   = "org.eclipse.team.svn.ui.action.local.UpdateAction"; //$NON-NLS-1$
@@ -220,7 +220,7 @@ public class ProductExplorer extends ModelExplorer {
         private static final String SUBVERSIVE_BRANCH                   = "org.eclipse.team.svn.ui.action.local.BranchAction"; //$NON-NLS-1$
         private static final String SUBVERSIVE_SWITCH_BRANCH            = "org.eclipse.team.svn.ui.action.local.SwitchAction"; //$NON-NLS-1$
         private static final String SUBVERSIVE_SHOW_RESOURCE_HISTORY    = "org.eclipse.team.svn.ui.action.local.ShowHistoryAction"; //$NON-NLS-1$
-        
+
         private static final String SUBCLIPSE_SYNC                      = "org.tigris.subversion.subclipse.synchronize"; //$NON-NLS-1$
         private static final String SUBCLIPSE_COMMIT                    = "org.tigris.subversion.subclipse.ui.commit"; //$NON-NLS-1$
         private static final String SUBCLIPSE_UPDATE                    = "org.tigris.subversion.subclipse.ui.update"; //$NON-NLS-1$
