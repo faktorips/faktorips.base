@@ -163,6 +163,14 @@
                name="serializablePolicyCmpts"
                type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="false"
+               description="Enables the generation of getter methods of ProductComponentType attributes in the according PolicyCmptType class."
+               disableValue="false"
+               label="Generate convenience getters"
+               name="generateConvenienceGetters"
+               type="boolean">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

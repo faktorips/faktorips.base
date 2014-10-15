@@ -527,6 +527,10 @@ public abstract class AbstractGeneratorModelNode {
         return getContext().isGenerateSerializablePolicyCmptSupport();
     }
 
+    public boolean isGenerateConvenienceGetters() {
+        return getContext().isGenerateConvenienceGetters();
+    }
+
     /**
      * Returns whether to generate camel case constant names with underscore separator or without.
      * For example if this property is true, the constant for the property

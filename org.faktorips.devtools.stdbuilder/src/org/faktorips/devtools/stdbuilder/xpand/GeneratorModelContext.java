@@ -334,4 +334,10 @@ public class GeneratorModelContext {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT);
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
+
+    public boolean isGenerateConvenienceGetters() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
+                StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
+        return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
+    }
 }
