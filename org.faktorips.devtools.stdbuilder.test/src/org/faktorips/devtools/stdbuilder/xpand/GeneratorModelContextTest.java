@@ -102,4 +102,9 @@ public class GeneratorModelContextTest {
         assertTrue(generatorModelContext.isGenerateConvenienceGetters());
     }
 
+    @Test
+    public void testTest() {
+        assertTrue(generatorModelContext.isGenerateConvenienceGetters());
+    }
+
 }
