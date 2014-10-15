@@ -60,11 +60,13 @@ public interface IProductPartsContainer extends IIpsObjectPartContainer {
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns <code>true</code> if this container contains parts that may change over time, that
-     * means this container is a generation. Returns <code>false</code> if the container only
-     * contains static parts.
+     * Returns <code>true</code> if this container may contains parts that could change over time,
+     * for example a product component generation. Returns <code>false</code> if the container could
+     * only contains static parts.
+     * <p>
+     * If the container may contain both this method have to return <code>true</code>.
      * 
-     * @return <code>true</code> if this container only contains parts that may change over time
+     * @return <code>true</code> if this container may contains parts that could change over time.
      */
     public boolean isChangingOverTimeContainer();
 

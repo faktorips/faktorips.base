@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -170,14 +171,15 @@ public class AttributeNodeGeneratorTest {
 
     @Test
     public void testGetCompilationResult_ProductCmptTypeAttribute_staticFormula() throws Exception {
+        attribute = mock(IProductCmptTypeAttribute.class);
+        createAttributeNode(false);
+        IProductCmptType type = mock(IProductCmptType.class);
         attributeNodeGenerator = new AttributeNodeGenerator(factory, formula, builderSet);
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(formula.getPropertyValueContainer()).thenReturn(container);
+        when(formula.findProductCmptType(ipsProject)).thenReturn(type);
         when(container.isChangingOverTimeContainer()).thenReturn(false);
-
-        attribute = mock(IProductCmptTypeAttribute.class);
-        createAttributeNode(false);
-        IType type = mock(IType.class);
+        when(contextCompilationResult.getDatatype()).thenReturn(type);
         when(attribute.getType()).thenReturn(type);
         XProductAttribute xProductAttribute = mock(XProductAttribute.class);
         XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
@@ -262,7 +264,7 @@ public class AttributeNodeGeneratorTest {
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
         return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, 0), ipsProject)
-                .createAttributeNode(attribute, defaultAccess, listOfType);
+        .createAttributeNode(attribute, defaultAccess, listOfType);
     }
 
     @Test

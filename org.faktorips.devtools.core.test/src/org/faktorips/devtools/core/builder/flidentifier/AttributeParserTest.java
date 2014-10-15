@@ -118,10 +118,11 @@ public class AttributeParserTest extends AbstractParserTest {
 
     @Test
     public void testParse_findAttributeInExpressionType() throws Exception {
-        when(getProductCmptType().findAllAttributes(getIpsProject())).thenReturn(Arrays.asList(attribute));
+        when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(Arrays.asList(attribute));
         getParsingContext().pushNode(new TestNode(getProductCmptType()));
         when(getExpression().findFormulaSignature(getIpsProject())).thenReturn(method);
         when(method.isChangingOverTime()).thenReturn(true);
+
         AttributeNode attributeNode = (AttributeNode)attributeParser.parse(new TextRegion(MY_ATTRIBUTE, 0, MY_ATTRIBUTE
                 .length()));
 
@@ -210,15 +211,14 @@ public class AttributeParserTest extends AbstractParserTest {
     }
 
     @Test
-    public void testfindAttributes_staticAttributes() throws CoreException {
+    public void testfindAttributes_staticAttributes() {
         AttributeParser spy = spy(attributeParser);
         List<IAttribute> arrayList = new ArrayList<IAttribute>();
         arrayList.add(attribute4);
-        doReturn(prodType).when(spy).getContextType();
         doReturn(true).when(spy).isContextTypeFormulaType();
         doReturn(false).when(attribute4).isChangingOverTime();
-        when(prodType.findAllAttributes(getIpsProject())).thenReturn(arrayList);
         when(method.isChangingOverTime()).thenReturn(false);
+        when(getExpression().findMatchingProductCmptTypeAttributes()).thenReturn(arrayList);
 
         List<IAttribute> attributeList = spy.findAttributes();
 
