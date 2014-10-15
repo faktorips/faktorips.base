@@ -529,7 +529,8 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns whether or not getters of the {@link ProductCmptType} should be generated.
+     * Returns whether or not getter methods of {@link ProductCmptType} attributes in the according
+     * {@link IPolicyCmptType} class should be generated.
      */
     public boolean isGenerateConvenienceGetters() {
         return getContext().isGenerateConvenienceGetters();
