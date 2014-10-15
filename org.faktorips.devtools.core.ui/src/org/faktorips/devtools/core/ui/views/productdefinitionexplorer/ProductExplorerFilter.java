@@ -45,7 +45,7 @@ public class ProductExplorerFilter extends ViewerFilter {
                 if (!((IIpsProject)element).isProductDefinitionProject()) {
                     return false;
                 }
-            } else if (element instanceof IProject && ((IProject)element).isOpen()) {
+            } else if (element instanceof IProject) {
                 return false;
             }
         }

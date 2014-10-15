@@ -53,7 +53,7 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMe
  */
 public class ProductExplorer extends ModelExplorer {
 
-    public static String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
+    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
 
     private static final String EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY = "exclude_non_ipsproddef_projects"; //$NON-NLS-1$
 
@@ -68,13 +68,15 @@ public class ProductExplorer extends ModelExplorer {
 
     public ProductExplorer() {
         super();
-        supportCategories = true;
+        setSupportCategories(true);
     }
 
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-        labelProvider.setProductDefinitionLabelProvider(true);
+        getContentProvider().setExcludeNoIpsProjects(false);
+        getLabelProvider().setProductDefinitionLabelProvider(true);
+        getTreeViewer().refresh();
     }
 
     @Override
@@ -97,7 +99,7 @@ public class ProductExplorer extends ModelExplorer {
      */
     @Override
     protected ModelContentProvider createContentProvider() {
-        return new ProductContentProvider(config, layoutStyle);
+        return new ProductContentProvider(getConfig(), getLayoutStyle());
     }
 
     @Override
@@ -152,7 +154,7 @@ public class ProductExplorer extends ModelExplorer {
             public void run() {
                 excludeNoIpsProductDefinitionProjects = !excludeNoIpsProductDefinitionProjects;
                 filter.setExcludeNoIpsProductDefinitionProjects(excludeNoIpsProductDefinitionProjects);
-                treeViewer.refresh();
+                getTreeViewer().refresh();
             }
 
             @Override
@@ -165,17 +167,17 @@ public class ProductExplorer extends ModelExplorer {
 
     @Override
     protected void createContextMenu() {
-        final ProductMenuBuilder menuBuilder = new ProductMenuBuilder(this, config, getViewSite(), getSite(),
-                treeViewer);
+        final ProductMenuBuilder menuBuilder = new ProductMenuBuilder(this, getConfig(), getViewSite(), getSite(),
+                getTreeViewer());
 
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(menuBuilder);
 
-        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
-        treeViewer.getControl().setMenu(contextMenu);
+        Menu contextMenu = manager.createContextMenu(getTreeViewer().getControl());
+        getTreeViewer().getControl().setMenu(contextMenu);
 
-        getSite().registerContextMenu(manager, treeViewer);
+        getSite().registerContextMenu(manager, getTreeViewer());
         menuBuilder.registerAdditionsCleaner(manager);
         /*
          * We need to register the team cleaner via another menu listener because the team menu
@@ -311,7 +313,7 @@ public class ProductExplorer extends ModelExplorer {
 
             boolean advancedTeamFunctionsEnabled = IpsPlugin.getDefault().getIpsPreferences()
                     .isAvancedTeamFunctionsForProductDefExplorerEnabled();
-            if (advancedTeamFunctionsEnabled || config.representsProject(structuredSelection.getFirstElement())) {
+            if (advancedTeamFunctionsEnabled || getConfig().representsProject(structuredSelection.getFirstElement())) {
                 configureAdvancedCvsTeamActions();
                 configureAdvancedSubversiveTeamActions();
                 configureAdvancedSubclipseTeamActions();
