@@ -53,7 +53,7 @@ import org.faktorips.devtools.core.ui.views.modelexplorer.ModelExplorerContextMe
  */
 public class ProductExplorer extends ModelExplorer {
 
-    public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
+    public static final String EXTENSION_ID_PRODUCTDEFINITIONEXPLORER = "org.faktorips.devtools.core.ui.views.productDefinitionExplorer"; //$NON-NLS-1$
 
     private static final String EXCLUDE_NON_IPSPRODDEF_PROJECTS_KEY = "exclude_non_ipsproddef_projects"; //$NON-NLS-1$
 
