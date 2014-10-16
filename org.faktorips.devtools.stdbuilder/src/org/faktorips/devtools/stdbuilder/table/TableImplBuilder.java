@@ -79,6 +79,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
     private static final String METHOD_NAME_ROW = "Row";
     private static final String METHOD_NAME_FIND_ROW = METHOD_NAME_FIND + METHOD_NAME_ROW;
 
+    private static final String INIT_METHOD = "init";
     private static final String INIT_KEY_MAPS = "initKeyMaps";
 
     private TableRowBuilder tableRowBuilder;
@@ -331,9 +332,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             code.appendClassName(qualifiedTableRowName);
             code.append('>');
         }
-        code.appendln("(content.size());");
-        code.appendln("rows.addAll(content);");
-        code.append(INIT_KEY_MAPS);
+        code.appendln("(content);");
+        code.append(INIT_METHOD);
         code.append("();");
         code.appendln("}");
     }
