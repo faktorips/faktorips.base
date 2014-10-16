@@ -94,15 +94,15 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void createExtensionProperties(Composite workArea) {
-        createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_TOP);
-        createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        if (!newGenerationDialog) {
+            createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_TOP);
+            createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        }
     }
 
     private void createExtensionProperties(Composite workArea, String position) {
-        if (!newGenerationDialog) {
-            extFactory.createControls(workArea, getToolkit(), getIpsPart(), position);
-            extFactory.bind(getBindingContext());
-        }
+        extFactory.createControls(workArea, getToolkit(), getIpsPart(), position);
+        extFactory.bind(getBindingContext());
     }
 
     @Override
