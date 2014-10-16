@@ -65,7 +65,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
         this.newGenerationDialog = newGenerationDialog;
         this.pmo = new GenerationEditDialogPMO(generation);
-        extFactory = new ExtensionPropertyControlFactory(generation);
+        this.extFactory = new ExtensionPropertyControlFactory(generation);
     }
 
     @Override
@@ -86,16 +86,21 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         getToolkit().createLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
         DateControl dateControl = new DateControl(workArea, getToolkit());
         Text textControl = dateControl.getTextControl();
-
         dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
+
         createExtensionProperties(workArea);
+
         return workArea;
     }
 
     private void createExtensionProperties(Composite workArea) {
+        createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_TOP);
+        createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_BOTTOM);
+    }
+
+    private void createExtensionProperties(Composite workArea, String position) {
         if (!newGenerationDialog) {
-            extFactory.createControls(workArea, getToolkit(), getIpsPart(),
-                    IExtensionPropertyDefinition.POSITION_BOTTOM);
+            extFactory.createControls(workArea, getToolkit(), getIpsPart(), position);
             extFactory.bind(getBindingContext());
         }
     }
