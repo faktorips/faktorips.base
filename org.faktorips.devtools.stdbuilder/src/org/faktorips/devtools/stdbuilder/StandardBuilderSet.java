@@ -34,6 +34,8 @@ import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -153,6 +155,12 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * @see Serializable
      */
     public static final String CONFIG_PROPERTY_GENERATE_SERIALIZABLE_POLICY_CMPTS_SUPPORT = "serializablePolicyCmpts"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that enables/disables the generation of getter methods of
+     * {@link ProductCmptType} attributes in the according {@link PolicyCmptType} class.
+     */
+    public static final String CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS = "generateConvenienceGetters"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether to generate camel case constant
