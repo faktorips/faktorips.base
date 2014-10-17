@@ -13,6 +13,9 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.ILabeledElement;
 
 /**
  * This is the {@link CellLabelProvider} for the column of the elements
@@ -24,12 +27,23 @@ final class ElementLabelProvider extends CellLabelProvider {
     public void update(ViewerCell cell) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)cell.getElement();
 
-        if (model.getSearchedElement() == null) {
-            cell.setText(StringUtils.EMPTY);
-        } else {
-            cell.setText(model.getSearchedElement().getName());
-        }
-
+        cell.setText(getLabelOrName(model.getSearchedElement()));
     }
 
+    /**
+     * Returns the label or name of the given {@link IIpsElement}. If no label is set, the name of
+     * the {@link IIpsElement ipsElement} will be returned. If the {@link IIpsElement ipsElement} is
+     * <code>null</code> an empty <code>String</code> is returned.
+     * 
+     * @param ipsElement the {@link IIpsElement} to get the label or name
+     */
+    public String getLabelOrName(IIpsElement ipsElement) {
+        if (ipsElement == null) {
+            return StringUtils.EMPTY;
+        } else if (ipsElement instanceof ILabeledElement) {
+            return IpsPlugin.getMultiLanguageSupport().getLocalizedLabel((ILabeledElement)ipsElement);
+        } else {
+            return ipsElement.getName();
+        }
+    }
 }

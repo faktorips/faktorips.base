@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Combo;
@@ -29,8 +28,11 @@ import org.faktorips.devtools.core.ui.table.IpsCellEditor;
  */
 final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
 
+    private ElementLabelProvider elementLabelProvider;
+
     public ElementEditingSupport(TableViewer viewer) {
         super(viewer);
+        elementLabelProvider = new ElementLabelProvider();
     }
 
     @Override
@@ -43,8 +45,9 @@ final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
         List<? extends IIpsElement> searchableElements = model.getSearchableElements();
         String[] searchableElementsNames = new String[searchableElements.size()];
         for (int i = 0; i < searchableElementsNames.length; i++) {
-            searchableElementsNames[i] = searchableElements.get(i).getName();
+            searchableElementsNames[i] = elementLabelProvider.getLabelOrName(searchableElements.get(i));
         }
+
         combo.setItems(searchableElementsNames);
 
         return new ComboCellEditor(combo);
@@ -59,10 +62,8 @@ final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
     @Override
     protected Object getValue(Object element) {
         ProductSearchConditionPresentationModel model = (ProductSearchConditionPresentationModel)element;
-
         IIpsElement searchedElement = model.getSearchedElement();
-
-        return searchedElement == null ? StringUtils.EMPTY : searchedElement.getName();
+        return elementLabelProvider.getLabelOrName(searchedElement);
     }
 
     @Override
@@ -72,7 +73,7 @@ final class ElementEditingSupport extends EnhancedCellTrackingEditingSupport {
         List<? extends IIpsElement> searchableElements = model.getSearchableElements();
 
         for (IIpsElement searchableElement : searchableElements) {
-            if (searchableElement.getName().equals(value)) {
+            if (elementLabelProvider.getLabelOrName(searchableElement).equals(value)) {
                 model.setSearchedElement(searchableElement);
                 getViewer().refresh();
                 return;
