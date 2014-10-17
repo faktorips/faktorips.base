@@ -62,7 +62,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected void checkJavaSourceFilesPolicyCmptType(String originalPackageName,
             String originalName,
             String targetPackageName,
-            String newName) throws CoreException {
+            String newName) {
 
         assertFalse(getJavaType(originalPackageName, getPublishedInterfaceName(originalName, ipsProject), true, false,
                 ipsProject).exists());
@@ -76,7 +76,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected void checkJavaSourceFilesProductCmptType(String originalPackageName,
             String originalName,
             String targetPackageName,
-            String newName) throws CoreException {
+            String newName) {
 
         assertFalse(getJavaType(originalPackageName, originalName, false, false, ipsProject).exists());
         assertFalse(getJavaType(originalPackageName, getPublishedInterfaceName(originalName, ipsProject), true, false,
@@ -100,7 +100,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected void checkJavaSourceFilesEnumType(String originalPackageName,
             String originalName,
             String targetPackageName,
-            String newName) throws CoreException {
+            String newName) {
 
         assertFalse(getJavaType(originalPackageName, originalName, true, false, ipsProject).exists());
         assertFalse(getJavaType(originalPackageName, originalName + "XmlAdapter", false, true, ipsProject).exists());
@@ -112,7 +112,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected void checkJavaSourceFilesTableStructure(String originalPackageName,
             String originalName,
             String targetPackageName,
-            String newName) throws CoreException {
+            String newName) {
 
         assertFalse(getJavaType(originalPackageName, originalName, false, false, ipsProject).exists());
         assertFalse(getJavaType(originalPackageName, originalName + "Row", false, false, ipsProject).exists());
@@ -124,7 +124,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected void checkJavaSourceFilesTestCaseType(String originalPackageName,
             String originalName,
             String targetPackageName,
-            String newName) throws CoreException {
+            String newName) {
 
         assertFalse(getJavaType(originalPackageName, originalName, false, false, ipsProject).exists());
 
@@ -134,7 +134,7 @@ public abstract class RefactoringParticipantTest extends AbstractStdBuilderTest 
     protected void checkJavaSourceFilesBusinessFunction(String originalPackageName,
             String originalName,
             String targetPackageName,
-            String newName) throws CoreException {
+            String newName) {
 
         assertFalse(getJavaType(originalPackageName, originalName, true, false, ipsProject).exists());
 

@@ -87,16 +87,15 @@ public class DatatypeCompletionProcessor extends AbstractCompletionProcessor {
     }
 
     @Override
-    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result)
-            throws Exception {
+    protected void doComputeCompletionProposals(String prefix, int documentOffset, List<ICompletionProposal> result) {
 
-        prefix = prefix.toLowerCase();
+        String lowerCasePrefix = prefix.toLowerCase();
         DefaultLabelProvider labelProvider = new DefaultLabelProvider();
         List<Datatype> foundTypes = new ArrayList<Datatype>();
         Datatype[] types = ipsProject.findDatatypes(valuetypesOnly, includeVoid, includePrimitives, excludedDatatypes,
                 includeAbstract);
         for (Datatype type : types) {
-            if (type.getName().toLowerCase().startsWith(prefix)) {
+            if (type.getName().toLowerCase().startsWith(lowerCasePrefix)) {
                 foundTypes.add(type);
             }
         }

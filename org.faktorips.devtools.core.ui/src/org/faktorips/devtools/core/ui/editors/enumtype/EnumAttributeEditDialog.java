@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -248,33 +247,29 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
         disallowedDatatypes.add(new EnumTypeDatatypeAdapter(enumType, null));
 
         // Go once over all EnumTypeDatatypeAdapters.
-        try {
-            for (EnumDatatype currentEnumDatatype : ipsProject.findEnumDatatypes()) {
-                if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter) {
-                    EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)currentEnumDatatype;
-                    IEnumType enumTypeOfDatatype = adapter.getEnumType();
+        for (EnumDatatype currentEnumDatatype : ipsProject.findEnumDatatypes()) {
+            if (currentEnumDatatype instanceof EnumTypeDatatypeAdapter) {
+                EnumTypeDatatypeAdapter adapter = (EnumTypeDatatypeAdapter)currentEnumDatatype;
+                IEnumType enumTypeOfDatatype = adapter.getEnumType();
 
-                    // Continue if it is the parent EnumType that we have already disallowed.
-                    if (enumTypeOfDatatype.equals(enumType)) {
+                // Continue if it is the parent EnumType that we have already disallowed.
+                if (enumTypeOfDatatype.equals(enumType)) {
+                    continue;
+                }
+
+                // Disallow if it is not containing values while the parent EnumType does.
+                if (enumType.isInextensibleEnum()) {
+                    if (enumTypeOfDatatype.isExtensible()) {
+                        disallowedDatatypes.add(adapter);
                         continue;
                     }
+                }
 
-                    // Disallow if it is not containing values while the parent EnumType does.
-                    if (enumType.isInextensibleEnum()) {
-                        if (enumTypeOfDatatype.isExtensible()) {
-                            disallowedDatatypes.add(adapter);
-                            continue;
-                        }
-                    }
-
-                    // Disallow if it is a subtype of the parent EnumType.
-                    if (enumTypeOfDatatype.isSubEnumTypeOf(enumType, ipsProject)) {
-                        disallowedDatatypes.add(adapter);
-                    }
+                // Disallow if it is a subtype of the parent EnumType.
+                if (enumTypeOfDatatype.isSubEnumTypeOf(enumType, ipsProject)) {
+                    disallowedDatatypes.add(adapter);
                 }
             }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
         }
 
         datatypeControl.setDisallowedDatatypes(disallowedDatatypes);
@@ -371,14 +366,10 @@ public class EnumAttributeEditDialog extends IpsPartEditDialog2 {
 
     private void checkEnumTypeAndDatatypeEnumTypeExtensible(IEnumAttribute enumAttribute) {
         IEnumType enumType = enumAttribute.getEnumType();
-        try {
-            Datatype ipsDatatype = enumType.getIpsProject().findDatatype(enumAttribute.getDatatype());
-            if (enumType.isExtensible() && DatatypeUtil.isExtensibleEnumType(ipsDatatype)) {
-                setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
-                        StringUtil.unqualifiedName(ipsDatatype.getQualifiedName())));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        Datatype ipsDatatype = enumType.getIpsProject().findDatatype(enumAttribute.getDatatype());
+        if (enumType.isExtensible() && DatatypeUtil.isExtensibleEnumType(ipsDatatype)) {
+            setInfoText(NLS.bind(Messages.EnumAttributeEditDialog_EnumAttribute_EnumDatatypeExtensibleShowHint,
+                    StringUtil.unqualifiedName(ipsDatatype.getQualifiedName())));
         }
     }
 

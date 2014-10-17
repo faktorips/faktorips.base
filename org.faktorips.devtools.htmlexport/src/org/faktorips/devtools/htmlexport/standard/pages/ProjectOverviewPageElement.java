@@ -92,12 +92,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.ProjectOverviewPageElement_paths), TextType.HEADING_2, getContext()));
         IIpsObjectPath objectPath;
-        try {
-            objectPath = getProject().getIpsObjectPath();
-        } catch (CoreException e) {
-            getContext().addStatus(new IpsStatus(IStatus.ERROR, "Error getting IpsObjectPath of project", e)); //$NON-NLS-1$
-            return;
-        }
+        objectPath = getProject().getIpsObjectPath();
 
         wrapper.addPageElements(createArchiveEntriesList(objectPath));
         wrapper.addPageElements(createReferencedIpsProjectList(objectPath));
@@ -128,13 +123,13 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.ProjectOverviewPageElement_referencedProjects), TextType.HEADING_3, getContext()));
-        if (objectPath.getReferencedIpsProjects().length == 0) {
+        if (objectPath.getDirectlyReferencedIpsProjects().size() == 0) {
             return wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                     HtmlExportMessages.ProjectOverviewPageElement_noReferencedProjects), getContext()));
         }
 
         List<String> referencedIpsProjectsName = new ArrayList<String>();
-        for (IIpsProject ipsProject : objectPath.getReferencedIpsProjects()) {
+        for (IIpsProject ipsProject : objectPath.getDirectlyReferencedIpsProjects()) {
             referencedIpsProjectsName.add(ipsProject.getName());
         }
         ListPageElement referencedProjects = new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
@@ -171,7 +166,7 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
         ICompositePageElement wrapper = new WrapperPageElement(WrapperType.BLOCK, getContext());
         wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                 HtmlExportMessages.ProjectOverviewPageElement_sourceFolder), TextType.HEADING_3, getContext()));
-        if (objectPath.getReferencedIpsProjects().length == 0) {
+        if (objectPath.getDirectlyReferencedIpsProjects().size() == 0) {
             return wrapper.addPageElements(new TextPageElement(getContext().getMessage(
                     HtmlExportMessages.ProjectOverviewPageElement_noSourceFolder), getContext()));
         }
@@ -192,8 +187,8 @@ public class ProjectOverviewPageElement extends AbstractRootPageElement {
             return;
         }
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-            new TextPageElement(getContext().getMessage(
-                    HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
+                new TextPageElement(getContext().getMessage(
+                        HtmlExportMessages.ProjectOverviewPageElement_validationErros), TextType.HEADING_2,
                         getContext()), messageListTablePageElement }));
     }
 

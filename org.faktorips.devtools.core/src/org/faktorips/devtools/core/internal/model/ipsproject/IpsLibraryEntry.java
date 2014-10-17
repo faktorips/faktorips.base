@@ -11,8 +11,6 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
@@ -21,10 +19,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsLibraryEntry;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -37,38 +33,12 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
         super(ipsObjectPath);
     }
 
-    @Override
-    public void findIpsSrcFilesStartingWithInternal(IpsObjectType type,
-            String prefixParam,
-            boolean ignoreCase,
-            List<IIpsSrcFile> result,
-            Set<IIpsObjectPathEntry> visitedEntries) throws CoreException {
-        String prefix = prefixParam;
-        if (ignoreCase) {
-            prefix = prefixParam.toLowerCase();
-        }
-
-        for (QualifiedNameType qnt : getIpsStorage().getQNameTypes()) {
-            String name = qnt.getUnqualifiedName();
-            if (ignoreCase) {
-                name = name.toLowerCase();
-            }
-            if (name.startsWith(prefix)) {
-                IIpsSrcFile file = getIpsSrcFile(qnt);
-                if (file.exists()) {
-                    result.add(file);
-                }
-            }
-        }
-    }
+    protected abstract IIpsStorage getIpsStorage();
 
     protected abstract IIpsSrcFile getIpsSrcFile(QualifiedNameType qnt) throws CoreException;
 
-    protected abstract IIpsStorage getIpsStorage();
-
     @Override
-    protected IIpsSrcFile findIpsSrcFileInternal(QualifiedNameType nameType, Set<IIpsObjectPathEntry> visitedEntries)
-            throws CoreException {
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) {
         if (getIpsStorage() == null || nameType == null) {
             return null;
         } else if (getIpsStorage().contains(nameType.toPath())) {
@@ -81,14 +51,15 @@ public abstract class IpsLibraryEntry extends IpsObjectPathEntry implements IIps
 
     @Override
     public Element toXml(Document doc) {
-        Element element = doc.createElement(XML_ELEMENT);
-        element.setAttribute("type", getType()); //$NON-NLS-1$
+        Element element = super.toXml(doc);
+        element.setAttribute(XML_ATTRIBUTE_TYPE, getType());
         element.setAttribute(getXmlAttributePathName(), getXmlPathRepresentation());
         return element;
     }
 
     @Override
     public void initFromXml(Element element, IProject project) {
+        super.initFromXml(element, project);
         String path = element.getAttribute(getXmlAttributePathName());
         try {
             if (StringUtils.isEmpty(path)) {

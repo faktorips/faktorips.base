@@ -111,8 +111,8 @@ public class IpsBundleEntry extends IpsLibraryEntry {
     }
 
     @Override
-    public boolean containsResource(String path) {
-        return ipsBundle.contains(new Path(path));
+    public boolean containsResource(String resourcePath) {
+        return ipsBundle.contains(new Path(resourcePath));
     }
 
     @Override

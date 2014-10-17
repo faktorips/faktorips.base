@@ -14,8 +14,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
@@ -161,11 +159,7 @@ public class DependencyResolver {
     }
 
     private IEnumContent findEnumContentIpsObject(QualifiedNameType root) {
-        try {
-            return (IEnumContent)ipsProject.findIpsObject(root);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return (IEnumContent)ipsProject.findIpsObject(root);
     }
 
     private IIpsProject getEnumTypeProject(IEnumContent enumContent) {

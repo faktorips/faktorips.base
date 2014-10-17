@@ -11,10 +11,11 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsContainerEntry;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -138,24 +139,27 @@ public interface IIpsObjectPathEntry {
     public MessageList validate();
 
     /**
-     * Returns the IPS object with the indicated type and qualified name.
-     */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
-
-    /**
      * Returns the IPS source file with the indicated qualified name type.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType) throws CoreException;
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
 
     /**
-     * This method checks whether this entry has a resource with the specified path. The path is
-     * relative to the entry's resource root.
+     * Returns IPS source files with the {@link IpsObjectType}.
+     */
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType ipsObjectType);
+
+    /**
+     * This method checks whether this entry has a resource with the specified path.
+     * {@link IpsProjectRefEntry}s and {@link IpsContainerEntry}s return always <code>false</code>
+     * as they can not directly contain a resource with a specified path. The path is relative to
+     * the entry's resource root.
      * 
-     * @param path The path of the requested resource
+     * 
+     * @param resourcePath The path of the requested resource
      * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
      *         not
      */
-    public boolean containsResource(String path);
+    public boolean containsResource(String resourcePath);
 
     /**
      * Returns an {@link InputStream} that provides a resource's/file's contents. The given path is
@@ -165,12 +169,25 @@ public interface IIpsObjectPathEntry {
      * <p>
      * This method may throw a {@link RuntimeException} or {@link CoreRuntimeException} if there
      * occur any exception while searching the requested resource. To avoid exceptions first check
-     * whether the resource exists in this entry by calling {@link #containsResource(String)}
+     * whether the resource exists in this entry by calling {@link #containsResource(String)}. As
+     * {@link IpsProjectRefEntry}s and {@link IpsContainerEntry} always return <code>false</code>
+     * when calling calling {@link #containsResource(String)}, this method returns null for those
+     * entries.
      * 
      * @param path The path of the requested resource
      * @return The {@link InputStream} of the resource. Make sure to close the input stream after
      *         reading.
      */
     public InputStream getResourceAsStream(String path);
+
+    /**
+     * Returns <code>true</code> if this entry should be reexported.
+     */
+    public boolean isReexported();
+
+    /**
+     * Sets the flag that this entry should reexported.
+     */
+    void setReexported(boolean reexported);
 
 }

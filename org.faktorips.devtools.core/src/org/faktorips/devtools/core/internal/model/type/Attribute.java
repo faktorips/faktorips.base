@@ -78,7 +78,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         return project.findValueDatatype(datatype);
     }
 
-    public ValueDatatype findValueDatatype(IIpsProject project) throws CoreException {
+    public ValueDatatype findValueDatatype(IIpsProject project) {
         return project.findValueDatatype(datatype);
     }
 

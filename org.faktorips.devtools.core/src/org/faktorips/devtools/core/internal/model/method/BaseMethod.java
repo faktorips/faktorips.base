@@ -246,7 +246,7 @@ public class BaseMethod extends BaseIpsObjectPart implements IBaseMethod {
      * Sets the name with the parent's name
      */
     public void synchronizeName() {
-        name = parent.getName();
+        name = getParent().getName();
     }
 
     /**

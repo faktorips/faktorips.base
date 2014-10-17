@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.ipsproject.jdtcontainer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.core.resources.IProject;
@@ -72,19 +73,19 @@ public class JdtClasspathEntryCreatorTest {
     @Mock
     private MessageList bundleMessageList;
 
-    private EntryCreator entryCreateor;
+    private EntryCreator entryCreator;
 
     @Before
     public void createJdtClasspathEntryCreator() throws Exception {
-        entryCreateor = new EntryCreator(entry, ipsObjectPath);
-        entryCreateor.setReferenceFactory(referenceFactory);
+        entryCreator = new EntryCreator(entry, ipsObjectPath);
+        entryCreator.setReferenceFactory(referenceFactory);
     }
 
     @Test
     public void testCreateIpsProjectRefEntry_notExisingProject() throws Exception {
         mockEntryAndPath();
 
-        IIpsProjectRefEntry ipsProjectRefEntry = entryCreateor.createIpsProjectRefEntry();
+        IIpsProjectRefEntry ipsProjectRefEntry = entryCreator.createIpsProjectRefEntry();
 
         assertNull(ipsProjectRefEntry);
     }
@@ -95,9 +96,20 @@ public class JdtClasspathEntryCreatorTest {
         mockReferences();
         when(refProject.exists()).thenReturn(true);
 
-        IIpsProjectRefEntry ipsProjectRefEntry = entryCreateor.createIpsProjectRefEntry();
+        IIpsProjectRefEntry ipsProjectRefEntry = entryCreator.createIpsProjectRefEntry();
 
         assertEquals(expectedProjectReference, ipsProjectRefEntry);
+    }
+
+    @Test
+    public void testCreateIpsProjectRefEntry_reexportFalse() throws Exception {
+        mockEntryAndPath();
+        mockReferences();
+        when(refProject.exists()).thenReturn(true);
+
+        entryCreator.createIpsProjectRefEntry();
+
+        verify(expectedProjectReference).setReexported(false);
     }
 
     @Test
@@ -108,7 +120,7 @@ public class JdtClasspathEntryCreatorTest {
         when(archiveMessageList.containsErrorMsg()).thenReturn(true);
         when(bundleMessageList.containsErrorMsg()).thenReturn(true);
 
-        IpsObjectPathEntry libraryEntry = entryCreateor.createLibraryEntry();
+        IpsObjectPathEntry libraryEntry = entryCreator.createLibraryEntry();
 
         assertNull(libraryEntry);
     }
@@ -119,7 +131,7 @@ public class JdtClasspathEntryCreatorTest {
         mockProject();
         mockReferences();
 
-        IpsObjectPathEntry libraryEntry = entryCreateor.createLibraryEntry();
+        IpsObjectPathEntry libraryEntry = entryCreator.createLibraryEntry();
 
         assertEquals(expectedArchiveEntry, libraryEntry);
     }
@@ -131,7 +143,7 @@ public class JdtClasspathEntryCreatorTest {
         mockReferences();
         when(archiveMessageList.containsErrorMsg()).thenReturn(true);
 
-        IpsObjectPathEntry libraryEntry = entryCreateor.createLibraryEntry();
+        IpsObjectPathEntry libraryEntry = entryCreator.createLibraryEntry();
 
         assertEquals(expectedBundleEntry, libraryEntry);
     }

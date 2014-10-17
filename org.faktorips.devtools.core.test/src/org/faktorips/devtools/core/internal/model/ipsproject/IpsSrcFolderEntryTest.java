@@ -222,7 +222,7 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertEquals("222", getFileContent("rootTwo", "file.txt"));
     }
 
-    private String getFileContent(String rootName, String fileName) throws CoreException, IOException {
+    private String getFileContent(String rootName, String fileName) throws IOException {
         InputStream aStream = ipsProject.getIpsObjectPath().getEntry(rootName).getResourceAsStream(fileName);
         return getFileContent(aStream);
     }
@@ -242,4 +242,11 @@ public class IpsSrcFolderEntryTest extends AbstractIpsPluginTest {
         assertFalse(root.getIpsObjectPathEntry().containsResource(MY_RESOURCE_PATH));
     }
 
+    @Test
+    public void testIsReexported() {
+        IFolder src = ipsProject.getProject().getFolder("src");
+        IIpsSrcFolderEntry entry = path.newSourceFolderEntry(src);
+        entry.setReexported(false);
+        assertTrue(entry.isReexported());
+    }
 }

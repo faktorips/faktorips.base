@@ -51,7 +51,6 @@ public class EnumTypeValidations {
      * @param superEnumTypeQualifiedName The qualified name of the super <tt>IEnumType</tt>.
      * @param ipsProject The IPS object path of this IPS project will be searched.
      * 
-     * @throws CoreException If an error occurs while searching for the super <tt>IEnumType</tt>.
      * @throws IllegalArgumentException If <tt>superEnumTypeQualifiedName</tt> is an empty string.
      * @throws NullPointerException If <tt>validationMessageList</tt>,
      *             <tt>superEnumTypeQualifiedName</tt> or <tt>ipsProject</tt> is <tt>null</tt>.
@@ -59,7 +58,7 @@ public class EnumTypeValidations {
     public static void validateSuperEnumType(MessageList validationMessageList,
             IEnumType enumType,
             String superEnumTypeQualifiedName,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         ArgumentCheck.notNull(new Object[] { validationMessageList, superEnumTypeQualifiedName, ipsProject });
         ArgumentCheck.isTrue(StringUtils.isNotEmpty(superEnumTypeQualifiedName));

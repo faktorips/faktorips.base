@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
@@ -45,7 +44,7 @@ public class IndexCodePartTest {
     }
 
     @Before
-    public void mockProjectDatatypes() throws CoreException {
+    public void mockProjectDatatypes() {
         when(ipsProject.findDatatype("Integer")).thenReturn(Datatype.INTEGER);
         when(ipsProject.findDatatype("String")).thenReturn(Datatype.STRING);
         when(ipsProject.findDatatype("Money")).thenReturn(Datatype.MONEY);

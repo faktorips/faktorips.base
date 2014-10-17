@@ -10,12 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.model;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 
@@ -43,11 +41,7 @@ public class XParameter extends AbstractGeneratorModelNode {
     }
 
     protected Datatype getDatatype() {
-        try {
-            return getIpsProject().findDatatype(getParameter().getDatatype());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getIpsProject().findDatatype(getParameter().getDatatype());
     }
 
     public String getNullExpression() {

@@ -66,7 +66,7 @@ public class Migration_3_6_0_rfinal extends AbstractIpsProjectMigrationOperation
 
         IpsProject ipsProject = (IpsProject)getIpsProject();
         IFile file = ipsProject.getIpsProjectPropertiesFile();
-        IpsProjectProperties data = new IpsProjectProperties();
+        IpsProjectProperties data = new IpsProjectProperties(ipsProject);
         data.setCreatedFromParsableFileContents(false);
         if (!file.exists()) {
             return msgResultList;

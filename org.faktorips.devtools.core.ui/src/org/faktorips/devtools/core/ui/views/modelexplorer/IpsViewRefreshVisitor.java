@@ -20,7 +20,6 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -135,12 +134,8 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
             return false;
         }
         if (isManifestFile(resource)) {
-            try {
-                if (getIpsProject(resource).getIpsObjectPath().isUsingManifest()) {
-                    registerForRefresh(IpsPlugin.getDefault().getIpsModel());
-                }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            if (getIpsProject(resource).getIpsObjectPath().isUsingManifest()) {
+                registerForRefresh(IpsPlugin.getDefault().getIpsModel());
             }
             return false;
         }
@@ -173,19 +168,23 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
             }
             registerForRefresh(parentEl);
             return false;
-        } else { // changed ips element
-            if (delta.getResource().getType() == IResource.FILE) {
-                // this applies for ips source files *and* ips package fragment roots based on
-                // ips archives!
-                registerForRefresh(ipsElement);
-                return false;
-            } else {
-                // This branch is for example executed if a team private member like a CVS folder
-                // has changed.
-                registerForUpdate(ipsElement);
-            }
+        } else {
+            return processChangedIpsElement(delta, ipsElement);
         }
-        return true;
+    }
+
+    private boolean processChangedIpsElement(IResourceDelta delta, IIpsElement ipsElement) {
+        if (delta.getResource().getType() == IResource.FILE) {
+            // this applies for ips source files *and* ips package fragment roots based on
+            // ips archives!
+            registerForRefresh(ipsElement);
+            return false;
+        } else {
+            // This branch is for example executed if a team private member like a CVS folder
+            // has changed.
+            registerForUpdate(ipsElement);
+            return true;
+        }
     }
 
     private IIpsProject getIpsProject(IResource resource) {
@@ -211,8 +210,7 @@ public class IpsViewRefreshVisitor implements IResourceDeltaVisitor {
         if (!objectsToRefresh.add(resourceOrIpsElement)) {
             return;
         }
-        objectsToUpdate.remove(resourceOrIpsElement); // if the element is refresh, no need to
-        // update it.
+        objectsToUpdate.remove(resourceOrIpsElement);
         registerForUpdate(getParent(resourceOrIpsElement));
     }
 

@@ -86,7 +86,7 @@ public class DeepCopyPreview {
                 errorElements.put(
                         element,
                         NLS.bind(Messages.SourcePage_msgInvalidPattern, getPresentationModel().getSearchInput())
-                        + e.getLocalizedMessage());
+                                + e.getLocalizedMessage());
                 progressMonitor.done();
                 return;
             } catch (IllegalArgumentException e) {
@@ -183,16 +183,12 @@ public class DeepCopyPreview {
     }
 
     private boolean isExistingIpsSrcFile(String packageName, String ipsSrcFileName, String fileExtension) {
-        try {
-            String qualifiedName = packageName + IIpsPackageFragment.SEPARATOR + ipsSrcFileName
-                    + QualifiedNameType.FILE_EXTENSION_SEPERATOR + fileExtension;
-            QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(qualifiedName);
-            IIpsProject ipsProject = presentationModel.getIpsProject();
-            IIpsSrcFile fileInProjects = ipsProject.findIpsSrcFile(qualifedNameType);
-            return fileInProjects != null && fileInProjects.exists();
-        } catch (CoreException e) {
-            return false;
-        }
+        String qualifiedName = packageName + IIpsPackageFragment.SEPARATOR + ipsSrcFileName
+                + QualifiedNameType.FILE_EXTENSION_SEPERATOR + fileExtension;
+        QualifiedNameType qualifedNameType = QualifiedNameType.newQualifedNameType(qualifiedName);
+        IIpsProject ipsProject = presentationModel.getIpsProject();
+        IIpsSrcFile fileInProjects = ipsProject.findIpsSrcFile(qualifedNameType);
+        return fileInProjects != null && fileInProjects.exists();
     }
 
     private boolean isNameChanged(IIpsObject correspondingIpsObject, String newName) {

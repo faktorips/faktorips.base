@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.stdbuilder;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.Signature;
 import org.faktorips.codegen.DatatypeHelper;
@@ -149,12 +148,8 @@ public final class StdBuilderHelper {
             IIpsProject ipsProject) {
 
         String qualifiedJavaClassName;
-        try {
-            qualifiedJavaClassName = transformDatatypeToJavaClassName(datatype.getQualifiedName(),
-                    resolveToPublishedInterface, builderSet, ipsProject);
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        qualifiedJavaClassName = transformDatatypeToJavaClassName(datatype.getQualifiedName(),
+                resolveToPublishedInterface, builderSet, ipsProject);
         String unqualifiedJavaClassName = QNameUtil.getUnqualifiedName(qualifiedJavaClassName);
         return Signature.createTypeSignature(unqualifiedJavaClassName, false);
     }
@@ -162,7 +157,7 @@ public final class StdBuilderHelper {
     public static String transformDatatypeToJavaClassName(String qualifiedDatatypeName,
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
         Datatype datatype = ipsProject.findDatatype(qualifiedDatatypeName);
         if (datatype.isVoid()) {
             return "void";
@@ -173,7 +168,7 @@ public final class StdBuilderHelper {
     public static String[] transformParameterTypesToJavaClassNames(IParameter[] params,
             boolean resolveToPublishedInterface,
             StandardBuilderSet builderSet,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         String[] javaClasses = new String[params.length];
         for (int i = 0; i < params.length; i++) {

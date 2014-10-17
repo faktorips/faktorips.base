@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.enums;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -21,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.valueset.ContainsValueSetEnumDatatpeTest;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -42,6 +44,8 @@ public class EnumTypeDatatypeAdapterTest {
 
     @Mock
     private IEnumType enumType;
+    @Mock
+    private IEnumType enumType2;
 
     @Mock
     private IEnumContent enumContent;
@@ -236,6 +240,76 @@ public class EnumTypeDatatypeAdapterTest {
     private void setUpEnumValueWithIndex(String enumName, IEnumValue value, int index) throws CoreException {
         setUpEnumValue(enumName, value);
         Mockito.when(enumType.getIndexOfEnumValue(value)).thenReturn(index);
+    }
+
+    @Test
+    public void testEquals() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, enumContent);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, enumContent);
+
+        assertReflexiveEqual(adapter1, adapter2);
+    }
+
+    @Test
+    public void testEquals_nullContent() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, enumContent);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, null);
+
+        assertReflexiveUnequal(adapter1, adapter2);
+    }
+
+    @Test
+    public void testEquals_bothNullContents() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, null);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, null);
+
+        assertReflexiveEqual(adapter1, adapter2);
+    }
+
+    @Test
+    public void testEquals_differentEnumTypes() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, null);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType2, null);
+
+        assertReflexiveUnequal(adapter1, adapter2);
+    }
+
+    @Test
+    public void testEquals_differentEnumTypes_sameContents() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, enumContent);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType2, enumContent);
+
+        assertReflexiveUnequal(adapter1, adapter2);
+    }
+
+    @Test
+    public void testEquals_differentEnumTypes_nullContent() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, null);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType2, enumContent);
+
+        assertReflexiveUnequal(adapter1, adapter2);
+    }
+
+    private void assertReflexiveEqual(EnumTypeDatatypeAdapter adapter1, EnumTypeDatatypeAdapter adapter2) {
+        assertTrue(adapter1.equals(adapter2));
+        assertTrue(adapter2.equals(adapter1));
+    }
+
+    private void assertReflexiveUnequal(EnumTypeDatatypeAdapter adapter1, EnumTypeDatatypeAdapter adapter2) {
+        assertFalse(adapter1.equals(adapter2));
+        assertFalse(adapter2.equals(adapter1));
+    }
+
+    /**
+     * @see ContainsValueSetEnumDatatpeTest
+     */
+    @Test
+    public void equalsForContainsValueSet_nullContent() {
+        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, enumContent);
+        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, null);
+
+        assertTrue(adapter1.equalsForContainsValueSet(adapter2));
+        assertTrue(adapter2.equalsForContainsValueSet(adapter1));
     }
 
 }

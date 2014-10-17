@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -155,11 +156,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
      * build path. The parent of the new class loader is the System class loader.
      * 
-     * @throws CoreException if an error occurs while creating the classloader.
-     * 
      * @see ClassLoader#getSystemClassLoader()
      */
-    public ClassLoader getClassLoaderForJavaProject() throws CoreException;
+    public ClassLoader getClassLoaderForJavaProject();
 
     /**
      * Returns a new ClassLoader that loads the classes that are accessible via the Java project's
@@ -167,12 +166,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      * @param parent The parent class loader.
      * 
-     * @throws CoreException if an error occurs while creating the classloader.
      * @throw {@link NullPointerException} if <code>parent</code> is <code>null</code>.
      * 
      * @since 3.1.0
      */
-    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent) throws CoreException;
+    public ClassLoader getClassLoaderForJavaProject(ClassLoader parent);
 
     /**
      * Returns <code>true</code> if the corresponding Java Project doesn't contain any errors that
@@ -193,13 +191,31 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public Boolean isJavaProjectErrorFree(boolean checkRequiredJavaProjects) throws CoreException;
 
     /**
-     * Returns all ips projects referenced in the project's IPS object path.
+     * @deprecated This method is obsolete. Use {@link #getDirectlyReferencedIpsProjects()} instead.
      * 
-     * @throws CoreException if an error occurs.
+     *             Returns all ips projects referenced in the project's IPS object path.
      * 
      * @see IIpsObjectPath
      */
-    public IIpsProject[] getReferencedIpsProjects() throws CoreException;
+    @Deprecated
+    public IIpsProject[] getReferencedIpsProjects();
+
+    /**
+     * Returns all {@link IpsProject}s that are directly or indirectly referenced in the project's
+     * {@link IIpsObjectPath} to this ips project.
+     * 
+     * @see IIpsObjectPath
+     */
+    public List<IIpsProject> getAllReferencedIpsProjects();
+
+    /**
+     * Returns all direct {@link IIpsProject}s referenced in the project's {@link IIpsObjectPath} to
+     * this ips project. For all referenced ips projects @see {@link #getAllReferencedIpsProjects()}
+     * .
+     * 
+     * @see IIpsObjectPath
+     */
+    public List<IIpsProject> getDirectlyReferencedIpsProjects();
 
     /**
      * Returns <code>true</code> if this project is referenced by the other project. Returns
@@ -282,11 +298,14 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the project's properties. Note that the method returns a copy of the properties, not
      * a reference. In order to update the project's properties the modified properties object has
      * to be set in the project via setProperties().
+     * <p>
+     * Creating a copy of the project properties is costly. If read only access is required, use
+     * {@link #getReadOnlyProperties()} instead.
      */
     public IIpsProjectProperties getProperties();
 
     /**
-     * Returns a read only object of the project's properties.
+     * Returns a read only copy of the project's properties.
      */
     public IIpsProjectProperties getReadOnlyProperties();
 
@@ -325,10 +344,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a copy of the project's object path. Note that a copy and not a reference is
      * returned. If you want to update the project's path, the updated object path has to b e
      * explicitly set on the project via the <code>setIpsObjectPath()</code> method.
-     * 
-     * @throws CoreException if an error occurs while retrieving the path
      */
-    public IIpsObjectPath getIpsObjectPath() throws CoreException;
+    public IIpsObjectPath getIpsObjectPath();
 
     /**
      * Returns <code>true</code> if the given object is accessible via the project's object path,
@@ -344,15 +361,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * by the first one.
      * <p>
      * If the given ipsObject is <code>null</code>, the method returns <code>false</code>.
-     * 
-     * @throws CoreException if an error occurs while searching the path
      */
-    public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject) throws CoreException;
+    public boolean isAccessibleViaIpsObjectPath(IIpsObject ipsObject);
 
     /**
      * Returns all output folders specified in the project's object path.
      */
-    public IFolder[] getOutputFolders() throws CoreException;
+    public IFolder[] getOutputFolders();
 
     /**
      * Sets the id of the current artifact builder.
@@ -360,7 +375,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProjectProperties to change the project properties
      */
     @Deprecated
-    public void setCurrentArtefactBuilderSet(String id) throws CoreException;
+    public void setCurrentArtefactBuilderSet(String id);
 
     /**
      * Sets the new object path.
@@ -373,7 +388,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use IIpsProjectProperties to change the project properties
      */
     @Deprecated
-    public void setValueDatatypes(ValueDatatype[] types) throws CoreException;
+    public void setValueDatatypes(ValueDatatype[] types);
 
     /**
      * Returns the language in that the expression language's functions are used. E.g. the
@@ -454,7 +469,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the first object with the indicated qualified name type found on the object path.
      */
-    public IIpsObject findIpsObject(QualifiedNameType nameType) throws CoreException;
+    public IIpsObject findIpsObject(QualifiedNameType nameType);
 
     /**
      * Returns the first policy component type with the given qualified name found on the path.
@@ -504,28 +519,23 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @return The first enumeration type identified by the given qualified name that has been
      *         found.
      * 
-     * @throws CoreException If an error occurs during the search.
      * @throws NullPointerException If qualifiedName is <code>null</code>.
      */
-    public IEnumType findEnumType(String qualifiedName) throws CoreException;
+    public IEnumType findEnumType(String qualifiedName);
 
     /**
      * Returns all {@link IEnumType} objects found in this IPS project. An empty list will be
      * returned if none is found.
-     * 
-     * @throws CoreException if an exception occurs while processing the search.
      */
-    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues)
-            throws CoreException;
+    public List<IEnumType> findEnumTypes(boolean includeAbstract, boolean includeNotContainingValues);
 
     /**
      * Returns the first enumeration content that is found within this IPS project that references
      * the provided enumeration type.
      * 
-     * @throws CoreException if an exception occurs while processing the search
      * @throws NullPointerException if the provided parameter is <code>null</code>
      */
-    public IEnumContent findEnumContent(IEnumType enumType) throws CoreException;
+    public IEnumContent findEnumContent(IEnumType enumType);
 
     /**
      * Returns the product component with the given runtime id or <code>null</code> if no such
@@ -563,14 +573,34 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns the first IPS source file on the IPS object path with the the indicated qualified
      * name and type. Returns <code>null</code> if no such file was found.
      */
-    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType) throws CoreException;
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType qNameType);
 
     /**
      * Returns the first IPS source file with the the indicated IPS object type and qualified name
      * found on the object path.<br>
      * Returns <code>null</code> if the source file wasn't found (not exists).
      */
-    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName) throws CoreException;
+    public IIpsSrcFile findIpsSrcFile(IpsObjectType type, String qualifiedName);
+
+    /**
+     * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
+     * name type is found on the path. Returns <code>false</code> if no such object is found or just
+     * one {@link IIpsSrcFile} was found.
+     * 
+     * @param qNameType representing the {@link QualifiedNameType} of the searched
+     *            {@link IIpsSrcFile}
+     */
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType qNameType);
+
+    /**
+     * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
+     * name type is found on the path. Returns <code>false</code> if no such object is found or just
+     * one {@link IIpsSrcFile} was found.
+     * 
+     * @param type representing the {@link IpsObjectType} of the searched {@link IIpsSrcFile}
+     * @param qualifiedName representing the qualified name of the searched {@link IIpsSrcFile}
+     */
+    public boolean findDuplicateIpsSrcFile(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns all objects of the given type found on the class path.
@@ -592,7 +622,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *             performance
      */
     @Deprecated
-    public void findAllIpsObjects(List<IIpsObject> result) throws CoreException;
+    public void findAllIpsObjects(List<IIpsObject> result);
 
     /**
      * Adds all IPS source files within this IpsProject and the IpsProjects this one depends on to
@@ -607,7 +637,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @deprecated use {@link #findAllIpsSrcFiles(IpsObjectType...)} instead
      */
     @Deprecated
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter) throws CoreException;
+    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter);
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
@@ -618,43 +648,10 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public List<IIpsSrcFile> findAllIpsSrcFiles(IpsObjectType... filter);
 
     /**
-     * Puts all {@link IIpsSrcFile}s within this {@link IIpsProject} in the provided result list
-     * that match the selection parameters.
-     * 
-     * @param result the IPS source files that match the selection parameters are put in this list
-     * @param ipsObjectType the selection parameter for the IPS object type that is expected in the
-     *            IPS source file
-     * @param packageFragment the package fragment where to look for the IPS source file. If
-     *            <code>null</code> is specified all package fragments are considered
-     * 
-     * @throws CoreException if an exception occurs while searching
-     */
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType, String packageFragment)
-            throws CoreException;
-
-    /**
      * Adds all IPS source files that are accessible through IPS source folder entries to the result
      * list.
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result);
-
-    /**
-     * Returns all objects of the given type starting with the given prefix found on the IPS object
-     * path.
-     * 
-     * @deprecated use IIpsProject#findIpsSrcFilesStartingWith(IProductCmptType, boolean) due to
-     *             better performance
-     */
-    @Deprecated
-    public IIpsObject[] findIpsObjectsStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
-            throws CoreException;
-
-    /**
-     * Returns all IPS source files of the given type starting with the given prefix found on the
-     * IPS object path.
-     */
-    public IIpsSrcFile[] findIpsSrcFilesStartingWith(IpsObjectType type, String prefix, boolean ignoreCase)
-            throws CoreException;
 
     /**
      * Returns all product components that are based on the given product component type (either
@@ -713,30 +710,23 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns all product component generation that refer to the given object, identified by the
      * qualified name type. Returns an empty array if none is found.
-     * 
-     * @throws CoreException if an exception occurs while searching.
      */
-    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType)
-            throws CoreException;
+    public IProductPartsContainer[] findReferencingProductCmptGenerations(QualifiedNameType qualifiedNameType);
 
     /**
      * Returns the super type of the given policy component type, and all policy component types
      * that refer to the given policy component type. Returns an empty array if no references or
      * super types are found.
-     * 
-     * @throws CoreException if an exception occurs while searching.
      */
-    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType) throws CoreException;
+    public IPolicyCmptType[] findReferencingPolicyCmptTypes(IPolicyCmptType pcType);
 
     /**
      * Returns all data types accessible on the project's path.
      * 
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid) throws CoreException;
+    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -744,11 +734,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param valuetypesOnly true if only value data types should be returned.
      * @param includeVoid true if <code>Datatype.VOID</code> should be included.
      * @param includePrimitives true if primitive data types are included.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
-    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives)
-            throws CoreException;
+    public Datatype[] findDatatypes(boolean valuetypesOnly, boolean includeVoid, boolean includePrimitives);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -758,13 +745,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param includePrimitives true if primitive data types are included.
      * @param excludedDatatypes A list of data types that should NOT be included, may be
      *            <code>null</code> if none shall be excluded.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
-            List<Datatype> excludedDatatypes) throws CoreException;
+            List<Datatype> excludedDatatypes);
 
     /**
      * Returns all data types accessible on the project's path.
@@ -775,38 +760,30 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @param excludedDatatypes A list of data types that should NOT be included, may be
      *            code>null</code> if none shall be excluded.
      * @param includeAbstract true if abstract data types should be included.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
     public Datatype[] findDatatypes(boolean valuetypesOnly,
             boolean includeVoid,
             boolean includePrimitives,
             List<Datatype> excludedDatatypes,
-            boolean includeAbstract) throws CoreException;
+            boolean includeAbstract);
 
     /**
      * Returns all enumeration data types accessible on the project's IPS object path.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data types.
      */
-    public EnumDatatype[] findEnumDatatypes() throws CoreException;
+    public EnumDatatype[] findEnumDatatypes();
 
     /**
      * Returns the first data type found on the path with the given qualified name. Returns
      * <code>null</code> if no data type with the given name is found.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data type.
      */
-    public Datatype findDatatype(String qualifiedName) throws CoreException;
+    public Datatype findDatatype(String qualifiedName);
 
     /**
      * Returns the first value data type found on the path with the given qualified name. Returns
      * <code>null</code> if no value data type with the given name is found. Returns
      * <code>null</code> if qualifiedName is <code>null</code>.
-     * 
-     * @throws CoreException if an exception occurs while searching for the data type.
      */
-    public ValueDatatype findValueDatatype(String qualifiedName) throws CoreException;
+    public ValueDatatype findValueDatatype(String qualifiedName);
 
     /**
      * Returns the code generation helper for the given data type or <code>null</code> if no helper
@@ -819,10 +796,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * is available for the given data type.
      * 
      * @param qName The qualified data type name.
-     * 
-     * @throws CoreException if an error occurs while searching for the data type.
      */
-    public DatatypeHelper findDatatypeHelper(String qName) throws CoreException;
+    public DatatypeHelper findDatatypeHelper(String qName);
 
     /**
      * Returns the value set types that are allowed for the given data type. The type
@@ -843,7 +818,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * If this method returns <code>true</code>, it is guaranteed that the value set type is
      * returned by {@link #getValueSetTypes(ValueDatatype)}.
      */
-    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType) throws CoreException;
+    public boolean isValueSetTypeApplicable(ValueDatatype datatype, ValueSetType valueSetType);
 
     /**
      * Returns the <code>IpsArtefactBuilderSet</code> that is currently active for this project. If
@@ -854,10 +829,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * Reinitializes the <code>IpsProject</code>s <code>IpsArtefactBuilderSet</code>.
-     * 
-     * @throws CoreException when an exception arises during re-initialization
      */
-    public void reinitializeIpsArtefactBuilderSet() throws CoreException;
+    public void reinitializeIpsArtefactBuilderSet();
 
     /**
      * Returns the runtime id prefix configured for this project.
@@ -889,7 +862,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      *             change the project properties.
      */
     @Deprecated
-    public void addDynamicValueDataType(DynamicValueDatatype newDatatype) throws CoreException;
+    public void addDynamicValueDataType(DynamicValueDatatype newDatatype);
 
     /**
      * Validates the project and returns the result as list of messages.
@@ -940,10 +913,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
 
     /**
      * @return All test cases contained in this project.
-     * 
-     * @throws CoreException If a problem occurs during examination.
      */
-    public List<ITestCase> getAllTestCases() throws CoreException;
+    public List<ITestCase> getAllTestCases();
 
     /**
      * Returning the format for the product definition version of this project. The version format
@@ -951,13 +922,12 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * {@link IIpsProjectProperties}.
      * 
      * @return The {@link IVersionFormat} that is configured for this project
-     * @throws CoreException in case of exception
      * @deprecated This version format is only valid in case of a configured
      *             {@link IReleaseAndDeploymentOperation}. Use {@link #getVersionProvider()} instead
      *             to always get a valid {@link IVersionFormat}.
      */
     @Deprecated
-    public IVersionFormat getVersionFormat() throws CoreException;
+    public IVersionFormat getVersionFormat();
 
     /**
      * Returns the {@link IVersionProvider} that is configured for this project. This may be an

@@ -67,7 +67,7 @@ public class XPolicyAttributeTest {
     private DatatypeHelper datatypeHelper;
 
     @Before
-    public void createXPolicyAttribute() throws Exception {
+    public void createXPolicyAttribute() {
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(attribute.getIpsProject()).thenReturn(ipsProject);
         datatypeHelper = mock(DatatypeHelper.class);

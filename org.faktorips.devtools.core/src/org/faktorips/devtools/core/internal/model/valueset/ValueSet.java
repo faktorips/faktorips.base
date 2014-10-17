@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -131,7 +132,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     public ValueDatatype getValueDatatype() {
         try {
             // TODO getIpsProject() needs to be replaced with a paramter!
-            return ((IValueSetOwner)parent).findValueDatatype(getIpsProject());
+            return ((IValueSetOwner)getParent()).findValueDatatype(getIpsProject());
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
@@ -142,7 +143,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
-        return ((IValueSetOwner)parent).findValueDatatype(ipsProject);
+        return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
     }
 
     @Override
@@ -275,5 +276,16 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     protected boolean isContainingNullAllowed() {
         ValueDatatype dataType = getValueDatatype();
         return dataType == null || !dataType.isPrimitive();
+    }
+
+    protected boolean enumDatatypeEqualForContainsValueSet(ValueDatatype datatype, ValueDatatype subDatatype) {
+        if (!bothEnumTypeAdapters(datatype, subDatatype)) {
+            return false;
+        }
+        return ((EnumTypeDatatypeAdapter)datatype).equalsForContainsValueSet((EnumTypeDatatypeAdapter)subDatatype);
+    }
+
+    private boolean bothEnumTypeAdapters(ValueDatatype datatype, ValueDatatype subDatatype) {
+        return datatype instanceof EnumTypeDatatypeAdapter && subDatatype instanceof EnumTypeDatatypeAdapter;
     }
 }

@@ -19,14 +19,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.internal.model.IpsElement;
+import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsStorage;
 
 /**
+ * {@link IIpsPackageFragmentRoot} for Libraries.
  * 
  * @author Jan Ortmann
  */
@@ -149,6 +154,47 @@ public class LibraryIpsPackageFragmentRoot extends AbstractIpsPackageFragmentRoo
     public void delete() throws CoreException {
         throw new UnsupportedOperationException("IPS Package Fragment Roots that are stored" + //$NON-NLS-1$
                 " in an archive cannot be deleted."); //$NON-NLS-1$
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Checks if two objects are "equal" without considering the parent. If
+     * {@link LibraryIpsSrcFile LibraryIpsSrcFiles} from different projects refer the same jar file
+     * and the {@link LibraryIpsPackageFragmentRoot} is the same but the {@link IIpsProject} is
+     * different, the default implementation in {@link IIpsElement} may yield misleadingly
+     * <code>false</code>. Therefore we need to overwrite the default implementation in
+     * {@link IIpsElement}.
+     */
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        IpsElement other = (IpsElement)obj;
+        if (getName() == null) {
+            if (other.getName() != null) {
+                return false;
+            }
+        } else if (!getName().equals(other.getName())) {
+            return false;
+        }
+        return true;
     }
 
 }

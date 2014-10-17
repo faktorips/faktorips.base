@@ -11,11 +11,16 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -80,9 +85,17 @@ public interface IIpsObjectPath {
     public void setEntries(IIpsObjectPathEntry[] newEntries);
 
     /**
-     * Returns the IPS projects referenced by the object path.
+     * Returns the IPS projects directly referenced by this object path.
      */
-    public IIpsProject[] getReferencedIpsProjects();
+    public List<IIpsProject> getDirectlyReferencedIpsProjects();
+
+    /**
+     * Returns all {@link IpsProject}s that are directly or indirectly referenced by this object
+     * path.
+     * 
+     * #see {@link #getDirectlyReferencedIpsProjects()}
+     */
+    public List<IIpsProject> getAllReferencedIpsProjects();
 
     /**
      * Factory method that creates a new source folder entry and adds it to the list of entries.
@@ -218,8 +231,8 @@ public interface IIpsObjectPath {
     public int[] moveEntries(int[] indices, boolean up);
 
     /**
-     * This method checks whether this object path has a resource with the specified path. The path is
-     * relative to any entry's root.
+     * This method checks whether this object path has a resource with the specified path. The path
+     * is relative to any entry's root.
      * 
      * @param path The path of the requested resource
      * @return <code>true</code> if the resource could be found in this entry, <code>false</code> if
@@ -260,4 +273,31 @@ public interface IIpsObjectPath {
      */
     public IIpsContainerEntry newContainerEntry(String containerTypeId, String optionalPath);
 
+    /**
+     * Returns the first {@link IIpsSrcFile} with the indicated qualified name type found on the
+     * path. Returns <code>null</code> if no such object is found.
+     * 
+     * @param nameType representing the {@link QualifiedNameType} of the searched
+     *            {@link IIpsSrcFile}
+     * @return the found {@link IIpsSrcFile}
+     */
+    public IIpsSrcFile findIpsSrcFile(QualifiedNameType nameType);
+
+    /**
+     * Returns <code>true</code> if more than one {@link IIpsSrcFile} with the indicated qualified
+     * name type found on the path. Returns <code>false</code> if no such object is found or just
+     * one {@link IIpsSrcFile} was found.
+     * 
+     * @param nameType representing the {@link QualifiedNameType} of the searched
+     *            {@link IIpsSrcFile}
+     */
+    public boolean findDuplicateIpsSrcFile(QualifiedNameType nameType);
+
+    /**
+     * Returns {@link IIpsSrcFile IPS source files} with the indicated {@link IpsObjectType}.
+     * 
+     * @param ipsObjectType representing the {@link IpsObjectType} of the searched
+     *            {@link IIpsSrcFile}s
+     */
+    public List<IIpsSrcFile> findIpsSrcFiles(IpsObjectType... ipsObjectType);
 }

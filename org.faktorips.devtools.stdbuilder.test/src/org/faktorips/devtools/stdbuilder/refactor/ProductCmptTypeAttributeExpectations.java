@@ -16,7 +16,6 @@ import static org.faktorips.devtools.stdbuilder.refactor.RefactoringTestUtil.get
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -41,7 +40,7 @@ final class ProductCmptTypeAttributeExpectations {
     private final IType productGenClass;
 
     ProductCmptTypeAttributeExpectations(IProductCmptTypeAttribute productCmptTypeAttribute,
-            IProductCmptType productCmptType, IPolicyCmptType policyCmptType) throws CoreException {
+            IProductCmptType productCmptType, IPolicyCmptType policyCmptType) {
 
         ipsProject = productCmptType.getIpsProject();
         this.productCmptTypeAttribute = productCmptTypeAttribute;
@@ -53,12 +52,11 @@ final class ProductCmptTypeAttributeExpectations {
         policyClass = getPolicyClass(policyCmptType);
     }
 
-    void check(String oldName, String newName, String datatypeSignature) throws CoreException {
+    void check(String oldName, String newName, String datatypeSignature) {
         check(oldName, newName, productCmptType, policyCmptType, datatypeSignature);
     }
 
-    void check(IProductCmptType oldProductCmptType, IPolicyCmptType oldPolicyCmptType, String datatypeSignature)
-            throws CoreException {
+    void check(IProductCmptType oldProductCmptType, IPolicyCmptType oldPolicyCmptType, String datatypeSignature) {
 
         check(productCmptTypeAttribute.getName(), productCmptTypeAttribute.getName(), oldProductCmptType,
                 oldPolicyCmptType, datatypeSignature);
@@ -68,7 +66,7 @@ final class ProductCmptTypeAttributeExpectations {
             String newName,
             IProductCmptType oldProductCmptType,
             IPolicyCmptType oldPolicyCmptType,
-            String datatypeSignature) throws CoreException {
+            String datatypeSignature) {
 
         String oldNameCamelCase = StringUtil.toCamelCase(oldName, true);
         String newNameCamelCase = StringUtil.toCamelCase(newName, true);
@@ -90,19 +88,19 @@ final class ProductCmptTypeAttributeExpectations {
         assertTrue(policyClass.getMethod("get" + newNameCamelCase, new String[0]).exists());
     }
 
-    private IType getProductGenInterface(IProductCmptType productCmptType) throws CoreException {
+    private IType getProductGenInterface(IProductCmptType productCmptType) {
         return getJavaType(
                 "",
                 getPublishedInterfaceName(productCmptType.getName() + getGenerationConceptNameAbbreviation(ipsProject),
                         ipsProject), true, false, ipsProject);
     }
 
-    private IType getProductGenClass(IProductCmptType productCmptType) throws CoreException {
+    private IType getProductGenClass(IProductCmptType productCmptType) {
         return getJavaType("", productCmptType.getName() + getGenerationConceptNameAbbreviation(ipsProject), false,
                 false, ipsProject);
     }
 
-    private IType getPolicyClass(IPolicyCmptType policyCmptType) throws CoreException {
+    private IType getPolicyClass(IPolicyCmptType policyCmptType) {
         return getJavaType("", policyCmptType.getName(), false, false, ipsProject);
     }
 

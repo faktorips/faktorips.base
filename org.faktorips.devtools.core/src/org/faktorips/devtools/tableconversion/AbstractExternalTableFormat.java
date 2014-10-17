@@ -147,7 +147,7 @@ public abstract class AbstractExternalTableFormat implements ITableFormat {
         }
     }
 
-    protected Datatype[] getDatatypes(ITableStructure structure) throws CoreException {
+    protected Datatype[] getDatatypes(ITableStructure structure) {
         IColumn[] columns = structure.getColumns();
         Datatype[] datatypes = new Datatype[columns.length];
         for (int i = 0; i < columns.length; i++) {

@@ -45,7 +45,9 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragment;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
@@ -93,15 +95,21 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testCreateIpsProject() throws CoreException {
+    public void testCreateIpsProject() throws Exception {
         IProject project = newPlatformProject("TestProject");
         IJavaProject javaProject = addJavaCapabilities(project);
         IIpsProject ipsProject = model.createIpsProject(javaProject);
         assertNotNull(ipsProject);
-        assertEquals(0, ipsProject.findDatatypes(true, false).length);
+        assertNotNull(ipsProject.getName());
         IIpsObjectPath path = ipsProject.getIpsObjectPath();
         assertNotNull(path);
         assertEquals(0, path.getEntries().length);
+        assertNotNull(path.getIpsProject());
+        assertNotNull(path.getIpsProject().getName());
+        Thread.sleep(1000);
+        IpsObjectPath path2 = ((IpsProject)ipsProject).getIpsObjectPathInternal();
+        assertNotNull(path2.getIpsProject());
+        assertNotNull(path2.getIpsProject().getName());
     }
 
     @Test

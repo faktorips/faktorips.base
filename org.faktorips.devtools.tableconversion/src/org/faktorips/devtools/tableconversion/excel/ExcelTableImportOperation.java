@@ -47,9 +47,9 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
      */
     private ITableRows targetGeneration;
 
-    public ExcelTableImportOperation(ITableStructure structure, String sourceFile,
-            ITableRows targetGeneration, ExcelTableFormat format, String nullRepresentationString,
-            boolean ignoreColumnHeaderRow, MessageList list, boolean importIntoExisting) {
+    public ExcelTableImportOperation(ITableStructure structure, String sourceFile, ITableRows targetGeneration,
+            ExcelTableFormat format, String nullRepresentationString, boolean ignoreColumnHeaderRow, MessageList list,
+            boolean importIntoExisting) {
 
         super(sourceFile, format, nullRepresentationString, ignoreColumnHeaderRow, list, importIntoExisting);
         this.structure = structure;
@@ -59,14 +59,10 @@ public class ExcelTableImportOperation extends AbstractExcelImportOperation {
 
     @Override
     protected void initDatatypes() {
-        try {
-            IColumn[] columns = structure.getColumns();
-            datatypes = new Datatype[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        IColumn[] columns = structure.getColumns();
+        datatypes = new Datatype[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
         }
     }
 

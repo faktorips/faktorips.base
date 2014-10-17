@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPathEntry;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsBundleEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
@@ -71,11 +72,20 @@ public class JdtClasspathEntryCreator {
             return null;
         }
 
+        /**
+         * {@link IIpsProjectRefEntry} instances created by this method are always marked as
+         * re-export=<code>false</code>. The flag tells the {@link IIpsObjectPath} to not follow
+         * these project references. Otherwise IPS objects might be found multiple times and thus
+         * cause errors, due to the fact that all transitive references have already been resolved
+         * by the JDT container.
+         */
         IIpsProjectRefEntry createIpsProjectRefEntry() {
             IPath path = entry.getPath();
             IIpsProject ipsProject = referenceFactory.getIpsProject(path);
             if (ipsProject.exists()) {
-                return referenceFactory.createProjectRefEntry(ipsProject);
+                IpsProjectRefEntry refEntry = referenceFactory.createProjectRefEntry(ipsProject);
+                refEntry.setReexported(false);
+                return refEntry;
             }
             return null;
         }

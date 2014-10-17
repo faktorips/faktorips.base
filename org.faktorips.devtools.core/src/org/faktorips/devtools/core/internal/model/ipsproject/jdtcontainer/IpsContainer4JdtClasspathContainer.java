@@ -26,15 +26,21 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.Messages;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectRefEntry;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
  * An ips object path container entry that is based on a JDT classpath container.
+ * <p>
+ * {@link IIpsProjectRefEntry} instances resolved/created by this container are always marked as
+ * re-export= <code>false</code>. The flag tells the {@link IIpsObjectPath} to not follow these
+ * project references. Otherwise IPS objects might be found multiple times and thus cause errors,
+ * due to the fact that all transitive references have already been resolved by the JDT container.
  * 
- * @author Jan Ortmann
  */
 public class IpsContainer4JdtClasspathContainer extends AbstractIpsObjectPathContainer {
 

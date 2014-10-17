@@ -62,14 +62,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
     }
 
     private void initDatatypes() {
-        try {
-            IColumn[] columns = structure.getColumns();
-            datatypes = new Datatype[columns.length];
-            for (int i = 0; i < columns.length; i++) {
-                datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
-            }
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
+        IColumn[] columns = structure.getColumns();
+        datatypes = new Datatype[columns.length];
+        for (int i = 0; i < columns.length; i++) {
+            datatypes[i] = structure.getIpsProject().findDatatype(columns[i].getDatatype());
         }
     }
 

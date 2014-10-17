@@ -131,7 +131,7 @@ public class IpsObjectCompletionProcessor extends AbstractCompletionProcessor {
             }
 
             // find packages of projects, the project of this compeltion processor refers to...
-            IIpsProject[] projects = prj.getIpsObjectPath().getReferencedIpsProjects();
+            List<IIpsProject> projects = prj.getDirectlyReferencedIpsProjects();
             for (IIpsProject project : projects) {
                 roots = project.getIpsPackageFragmentRoots();
                 for (IIpsPackageFragmentRoot root : roots) {

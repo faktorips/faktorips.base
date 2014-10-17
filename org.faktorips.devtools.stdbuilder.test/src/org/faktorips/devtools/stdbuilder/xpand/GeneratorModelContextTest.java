@@ -88,4 +88,18 @@ public class GeneratorModelContextTest {
         assertFalse(generatorModelContext.isGenerateSerializablePolicyCmptSupport());
     }
 
+    @Test
+    public void testIsGenerateConvenienceGetters_False() {
+        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS))
+                .thenReturn(false);
+        assertFalse(generatorModelContext.isGenerateConvenienceGetters());
+    }
+
+    @Test
+    public void testIsGenerateConvenienceGetters_True() {
+        when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS))
+                .thenReturn(true);
+        assertTrue(generatorModelContext.isGenerateConvenienceGetters());
+    }
+
 }

@@ -176,7 +176,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         return IpsPlugin.getDefault().getIpsPreferences().isWorkingModeBrowse();
     }
 
-    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) throws CoreException {
+    private IIpsArtefactBuilderSet getBuilderSetReInitialisedIfNecessary(IIpsProject project) {
         Long timestamp = lastModificationTimestampForBuilderSets.get(project.getName());
         if (timestamp == null) {
             lastModificationTimestampForBuilderSets.put(project.getName(), project.getReadOnlyProperties()
@@ -742,7 +742,7 @@ public class IpsBuilder extends IncrementalProjectBuilder {
         private List<IIpsSrcFile> removedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
         private List<IIpsSrcFile> changedAndAddedIpsSrcFiles = new ArrayList<IIpsSrcFile>(100);
 
-        private IncBuildVisitor() throws CoreException {
+        private IncBuildVisitor() {
             outputFolders = getIpsProject().getOutputFolders();
         }
 

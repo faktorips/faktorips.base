@@ -85,7 +85,7 @@ public class IpsObjectPathContainer {
     /**
      * @param ipsProject The IPS project to configure.
      */
-    public void init(IIpsProject ipsProject) throws CoreException {
+    public void init(IIpsProject ipsProject) {
         currentIpsProject = ipsProject;
         ipsObjectPath = ipsProject.getIpsObjectPath();
         bindingContext = new BindingContext();

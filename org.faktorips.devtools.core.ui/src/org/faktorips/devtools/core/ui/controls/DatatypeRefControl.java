@@ -12,11 +12,9 @@ package org.faktorips.devtools.core.ui.controls;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.DatatypeSelectionDialog;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -95,25 +93,21 @@ public class DatatypeRefControl extends TextButtonControl {
 
     @Override
     protected void buttonClicked() {
-        try {
-            DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());
-            dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed(),
-                    getPrimitivesAllowed(), getDisallowedDatatypes(), isAbstractAllowed()));
-            if (dialog.open() == Window.OK) {
-                String textToSet = ""; //$NON-NLS-1$
-                if (dialog.getResult().length > 0) {
-                    Datatype datatype = (Datatype)dialog.getResult()[0];
-                    textToSet = datatype.getQualifiedName();
-                }
-                try {
-                    immediatelyNotifyListener = true;
-                    getTextControl().setText(textToSet);
-                } finally {
-                    immediatelyNotifyListener = false;
-                }
+        DatatypeSelectionDialog dialog = new DatatypeSelectionDialog(getShell());
+        dialog.setElements(ipsProject.findDatatypes(isOnlyValueDatatypesAllowed(), isVoidAllowed(),
+                getPrimitivesAllowed(), getDisallowedDatatypes(), isAbstractAllowed()));
+        if (dialog.open() == Window.OK) {
+            String textToSet = ""; //$NON-NLS-1$
+            if (dialog.getResult().length > 0) {
+                Datatype datatype = (Datatype)dialog.getResult()[0];
+                textToSet = datatype.getQualifiedName();
             }
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
+            try {
+                immediatelyNotifyListener = true;
+                getTextControl().setText(textToSet);
+            } finally {
+                immediatelyNotifyListener = false;
+            }
         }
     }
 }

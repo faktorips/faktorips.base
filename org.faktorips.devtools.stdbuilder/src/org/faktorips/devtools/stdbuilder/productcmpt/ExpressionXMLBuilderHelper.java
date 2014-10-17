@@ -13,13 +13,11 @@ package org.faktorips.devtools.stdbuilder.productcmpt;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.BuilderHelper;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IParameter;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -129,20 +127,16 @@ public class ExpressionXMLBuilderHelper {
     }
 
     private void generateFormulaMethodSignature(IMethod method, JavaCodeFragmentBuilder builder) {
-        try {
-            int modifier = method.getJavaModifier();
-            String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), false,
-                    getStandardBuilderSet(), getIpsProject());
-            String methodName = method.getName();
+        int modifier = method.getJavaModifier();
+        String returnClass = StdBuilderHelper.transformDatatypeToJavaClassName(method.getDatatype(), false,
+                getStandardBuilderSet(), getIpsProject());
+        String methodName = method.getName();
 
-            IParameter[] parameters = method.getParameters();
-            String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
-            String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, false,
-                    getStandardBuilderSet(), getIpsProject());
-            // extend the method signature with the given parameter names
-            builder.signature(modifier, returnClass, methodName, parameterNames, parameterTypes, false);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        IParameter[] parameters = method.getParameters();
+        String[] parameterNames = BuilderHelper.extractParameterNames(parameters);
+        String[] parameterTypes = StdBuilderHelper.transformParameterTypesToJavaClassNames(parameters, false,
+                getStandardBuilderSet(), getIpsProject());
+        // extend the method signature with the given parameter names
+        builder.signature(modifier, returnClass, methodName, parameterNames, parameterTypes, false);
     }
 }

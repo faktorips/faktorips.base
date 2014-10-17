@@ -105,6 +105,10 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         ValueDatatype datatype = getValueDatatype();
         ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
 
+        if (enumDatatypeEqualForContainsValueSet(datatype, subDatatype)) {
+            return true;
+        }
+
         if (datatype == null || !datatype.equals(subDatatype)) {
             return false;
         }

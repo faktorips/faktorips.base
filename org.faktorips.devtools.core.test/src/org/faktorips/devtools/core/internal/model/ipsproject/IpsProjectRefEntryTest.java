@@ -13,20 +13,17 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
-import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -67,53 +64,15 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
 
         path = (IpsObjectPath)ipsProject.getIpsObjectPath();
         IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
+        ipsProject.setIpsObjectPath(path);
 
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        Set<IIpsObjectPathEntry> visitedEntries = new HashSet<IIpsObjectPathEntry>();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, result, visitedEntries);
+        List<IIpsSrcFile> result = entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        assertTrue(result.isEmpty());
 
+        result = refProject.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         assertTrue(result.contains(a.getIpsSrcFile()));
         assertTrue(result.contains(b.getIpsSrcFile()));
         assertFalse(result.contains(c.getIpsSrcFile()));
-    }
-
-    @Test
-    public void testFindIpsSrcFilesWithPackageFragment() throws Exception {
-        IpsProject refProject = (IpsProject)newIpsProject("RefProject");
-
-        // policy cmpt types in ref project
-        IPolicyCmptType a = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.A");
-        IPolicyCmptType b = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.c.B");
-
-        // policy cmpt types in original project
-        IPolicyCmptType c = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.c.C");
-
-        // policy cmpt types in ref project
-        IPolicyCmptType a2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.A");
-        IPolicyCmptType b2 = newPolicyCmptTypeWithoutProductCmptType(refProject, "a.b.d.B");
-
-        // policy cmpt types in original project
-        IPolicyCmptType c2 = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "a.b.d.C");
-
-        path = (IpsObjectPath)ipsProject.getIpsObjectPath();
-        IpsProjectRefEntry entry = (IpsProjectRefEntry)path.newIpsProjectRefEntry(refProject);
-
-        ArrayList<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.c", result, new HashSet<IIpsObjectPathEntry>());
-
-        assertEquals(2, result.size());
-        assertTrue(result.contains(a.getIpsSrcFile()));
-        assertTrue(result.contains(b.getIpsSrcFile()));
-        assertFalse(result.contains(c.getIpsSrcFile()));
-
-        result = new ArrayList<IIpsSrcFile>();
-        entry.findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE, "a.b.d", result, new HashSet<IIpsObjectPathEntry>());
-
-        assertEquals(2, result.size());
-        assertTrue(result.contains(a2.getIpsSrcFile()));
-        assertTrue(result.contains(b2.getIpsSrcFile()));
-        assertFalse(result.contains(c2.getIpsSrcFile()));
-
     }
 
     @Test
@@ -123,24 +82,28 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
         entry.initFromXml(doc.getDocumentElement(), ipsProject.getProject());
         assertEquals(IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject"), entry.getReferencedIpsProject());
         assertFalse(entry.isUseNWDITrackPrefix());
+        assertFalse(entry.isReexported());
     }
 
     @Test
     public void testToXml() {
         IIpsProject refProject = IpsPlugin.getDefault().getIpsModel().getIpsProject("RefProject");
         IpsProjectRefEntry entry = new IpsProjectRefEntry(path, refProject);
+        assertTrue(entry.isReexported());
+        entry.setReexported(false);
         Element element = entry.toXml(newDocument());
 
         entry = new IpsProjectRefEntry(path);
         entry.initFromXml(element, ipsProject.getProject());
         assertEquals(refProject, entry.getReferencedIpsProject());
         assertFalse(entry.isUseNWDITrackPrefix());
+        assertFalse(entry.isReexported());
     }
 
     @Test
     public void testValidate() throws CoreException {
         IIpsProjectProperties props = ipsProject.getProperties();
-        IIpsObjectPath path = props.getIpsObjectPath();
+        path = (IpsObjectPath)props.getIpsObjectPath();
         IIpsProject refProject = this.newIpsProject("TestProject2");
         path.newIpsProjectRefEntry(refProject);
         ipsProject.setProperties(props);
@@ -166,19 +129,15 @@ public class IpsProjectRefEntryTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsResource_true() throws Exception {
-        IIpsProject referencedProject = mock(IIpsProject.class);
-        when(referencedProject.containsResource(MY_RESOURCE_PATH)).thenReturn(true);
-        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, referencedProject);
-
-        assertTrue(projectRefEntry.containsResource(MY_RESOURCE_PATH));
-    }
-
-    @Test
     public void testContainsResource_false() throws Exception {
         IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, ipsProject);
 
         assertFalse(projectRefEntry.containsResource(MY_RESOURCE_PATH));
     }
 
+    @Test
+    public void testFindIpsScrFile() {
+        IpsProjectRefEntry projectRefEntry = new IpsProjectRefEntry(path, ipsProject);
+        assertNull(projectRefEntry.findIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
 }

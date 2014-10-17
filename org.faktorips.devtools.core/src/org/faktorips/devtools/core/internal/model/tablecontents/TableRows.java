@@ -188,7 +188,7 @@ public class TableRows extends IpsObjectPart implements ITableRows {
     }
 
     public ITableContents getTableContents() {
-        return (ITableContents)parent;
+        return (ITableContents)getParent();
     }
 
     @Override

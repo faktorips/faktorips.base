@@ -371,7 +371,7 @@ public abstract class Association extends TypePart implements IAssociation {
         validateConstrain(list, ipsProject);
     }
 
-    private void validateTarget(MessageList list) throws CoreException {
+    private void validateTarget(MessageList list) {
         ValidationUtils.checkIpsObjectReference(target, getIpsObject().getIpsObjectType(), "target", this, //$NON-NLS-1$
                 PROPERTY_TARGET, MSGCODE_TARGET_DOES_NOT_EXIST, list);
     }
