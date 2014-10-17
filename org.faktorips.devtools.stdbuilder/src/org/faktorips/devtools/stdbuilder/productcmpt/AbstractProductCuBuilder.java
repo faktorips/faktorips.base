@@ -249,8 +249,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
         }
     }
 
-    private void generateSignatureForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder methodsBuilder)
-            throws CoreException {
+    private void generateSignatureForModelMethod(IProductCmptTypeMethod method, JavaCodeFragmentBuilder methodsBuilder) {
 
         IParameter[] parameters = method.getParameters();
         int modifier = method.getJavaModifier();

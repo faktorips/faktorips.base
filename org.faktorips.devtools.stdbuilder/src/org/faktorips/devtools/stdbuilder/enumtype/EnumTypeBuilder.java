@@ -210,8 +210,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         generateCodeForMethods(mainSection.getMethodBuilder());
     }
 
-    private void setupSupertypeAndInterfaces(IEnumType enumType, TypeSection mainSection, String typeName)
-            throws CoreException {
+    private void setupSupertypeAndInterfaces(IEnumType enumType, TypeSection mainSection, String typeName) {
         List<String> implementedInterfaces = new ArrayList<String>(5);
 
         IEnumType superEnumType = enumType.findSuperEnumType(getIpsProject());
