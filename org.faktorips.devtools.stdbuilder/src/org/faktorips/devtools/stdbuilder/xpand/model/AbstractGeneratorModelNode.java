@@ -28,6 +28,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -525,6 +526,14 @@ public abstract class AbstractGeneratorModelNode {
      */
     public boolean isGenerateSerializablePolicyCmptsSupport() {
         return getContext().isGenerateSerializablePolicyCmptSupport();
+    }
+
+    /**
+     * Returns whether or not getter methods of {@link ProductCmptType} attributes in the according
+     * {@link IPolicyCmptType} class should be generated.
+     */
+    public boolean isGenerateConvenienceGetters() {
+        return getContext().isGenerateConvenienceGetters();
     }
 
     /**

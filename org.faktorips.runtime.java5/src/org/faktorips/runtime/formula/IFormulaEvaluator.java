@@ -12,12 +12,11 @@ package org.faktorips.runtime.formula;
 
 import java.util.Map;
 
-import org.faktorips.runtime.IProductComponentGeneration;
-
 /**
- * Evaluates the formulas of a product component generation. This interface only provides methods to
- * get the configured product component generation and to evaluate already configured formulas. The
- * code of the formulas is set while creating the evaluator by an {@link IFormulaEvaluatorFactory}.
+ * Evaluates the formulas of a product component or product component generation. This interface
+ * only provides methods to get the configured product component generation and to evaluate already
+ * configured formulas. The code of the formulas is set while creating the evaluator by an
+ * {@link IFormulaEvaluatorFactory}.
  * 
  * 
  * @author dirmeier
@@ -25,9 +24,9 @@ import org.faktorips.runtime.IProductComponentGeneration;
 public interface IFormulaEvaluator {
 
     /**
-     * Returns the product component generation this is an evaluator for.
+     * Returns the product component generation or product component this is an evaluator for.
      */
-    public IProductComponentGeneration getProductComponentGeneration();
+    public Object getObject();
 
     /**
      * Evaluates the formula with the given name and the specified parameters.

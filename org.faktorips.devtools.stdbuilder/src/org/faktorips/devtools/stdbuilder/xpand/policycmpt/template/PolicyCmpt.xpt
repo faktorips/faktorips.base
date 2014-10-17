@@ -72,7 +72,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		«EXPAND constructors-»
 		
-		«EXPAND getterForProductAttributes(this) FOREACH productAttributes-»
+		«IF generateConvenienceGetters-»
+			«EXPAND getterForProductAttributes(this) FOREACH productAttributes-»
+		«ENDIF»		
 		
 		«FOREACH attributes AS this-»
 			«EXPAND PolicyCmptAttribute::allowedValuesMethod-»

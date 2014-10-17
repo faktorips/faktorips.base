@@ -101,7 +101,8 @@ public class AttributeParser extends TypeBasedIdentifierParser {
     protected List<IAttribute> findAttributes() {
         if (isContextTypeFormulaType()) {
             return getExpression().findMatchingProductCmptTypeAttributes();
-        } else if (isAllowedType()) {
+        }
+        if (isAllowedType()) {
             return getPolicyAndProductAttributesFromIType();
         } else {
             return Collections.emptyList();

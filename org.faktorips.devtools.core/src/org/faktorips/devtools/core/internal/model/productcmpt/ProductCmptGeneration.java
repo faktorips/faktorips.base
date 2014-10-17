@@ -110,7 +110,7 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -131,13 +131,18 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     private void mergeDependencyDetails(Map<IDependency, List<IDependencyDetail>> details,
             Map<IDependency, ExpressionDependencyDetail> formulaDependencies) {
         for (Entry<IDependency, ExpressionDependencyDetail> entry : formulaDependencies.entrySet()) {
-            List<IDependencyDetail> ependenciesDetailsList = details.get(entry.getKey());
-            if (ependenciesDetailsList == null) {
-                ependenciesDetailsList = new ArrayList<IDependencyDetail>();
-                details.put(entry.getKey(), ependenciesDetailsList);
+            List<IDependencyDetail> dependenciesDetailsList = details.get(entry.getKey());
+            if (dependenciesDetailsList == null) {
+                dependenciesDetailsList = new ArrayList<IDependencyDetail>();
+                details.put(entry.getKey(), dependenciesDetailsList);
             }
-            ependenciesDetailsList.add(entry.getValue());
+            dependenciesDetailsList.add(entry.getValue());
         }
+    }
+
+    @Override
+    public boolean isChangingOverTimeContainer() {
+        return true;
     }
 
     @Override
@@ -369,16 +374,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public ITableContentUsage[] getTableContentUsages() {
         List<ITableContentUsage> usages = propertyValueCollection.getPropertyValues(ITableContentUsage.class);
         return usages.toArray(new ITableContentUsage[usages.size()]);
-    }
-
-    @Override
-    public boolean isContainingAvailableFormula() {
-        for (IFormula formula : getFormulas()) {
-            if (!formula.isEmpty()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

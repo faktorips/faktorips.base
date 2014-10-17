@@ -38,10 +38,23 @@
 	</Formula>
 	<Formula formulaSignature="emptyFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b3">
 		<Expression isNull="false"></Expression>
+		<compiledExpression>
+		<![CDATA[
+			public int computeEmptyFormula() {
+				return null;
+			}
+		]]>
+		</compiledExpression>
 	</Formula>
 	<Formula formulaSignature="whitespaceFormula" id="03ce6253-2b4f-4fa7-b07b-9571293bc4b3">
-		<Expression isNull="false">
-		</Expression>
+		<Expression isNull="false"> </Expression>
+		<compiledExpression>
+		<![CDATA[
+			public int computeWhiteSpaceFormula() {
+				return null;
+			}
+		]]>
+		</compiledExpression>
 	</Formula>
 	<ValidationRuleConfig ruleName="Regel1" active="true"/>
 	<ValidationRuleConfig ruleName="RegelZwei" active="false"/>

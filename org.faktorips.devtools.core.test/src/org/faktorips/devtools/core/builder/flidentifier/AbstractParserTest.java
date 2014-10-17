@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.MultiLanguageSupport;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -24,7 +25,7 @@ import org.mockito.Mock;
 public class AbstractParserTest {
 
     @Mock
-    private IExpression expression;
+    private IFormula expression;
 
     @Mock
     private IIpsProject ipsProject;

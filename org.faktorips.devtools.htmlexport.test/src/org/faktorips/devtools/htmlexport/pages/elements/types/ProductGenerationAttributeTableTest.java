@@ -12,10 +12,12 @@ package org.faktorips.devtools.htmlexport.pages.elements.types;
 
 import java.util.GregorianCalendar;
 
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.htmlexport.pages.standard.AbstractXmlUnitHtmlExportTest;
@@ -57,7 +59,7 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "productType");
         ITableStructureUsage tableStructureUsage1 = productCmptType.newTableStructureUsage();
         tableStructureUsage1.setRoleName("tableStructureUsage1");
-        tableStructureUsage1.setChangingOverTime(true);
+        tableStructureUsage1.setChangingOverTime(false);
 
         ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
         productCmpt.newPropertyValue(tableStructureUsage1);
@@ -71,8 +73,30 @@ public class ProductGenerationAttributeTableTest extends AbstractXmlUnitHtmlExpo
         ProductGenerationAttributeTable productGenerationAttributeTable = new ProductGenerationAttributeTable(
                 productCmpt, context);
 
-        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + tableStructureUsage1.getRoleName() + "']");
+        assertXPathExists(productGenerationAttributeTable, "//td/descendant::span");
         assertXPathExists(productGenerationAttributeTable, "//td[. = '" + tableStructureUsage2.getRoleName() + "']");
+    }
+
+    @Test
+    public void testAddFormulas() throws Exception {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "productType");
+        IProductCmptTypeMethod formulaProductCmpt = productCmptType.newFormulaSignature("ProduktFormel");
+        formulaProductCmpt.setDatatype(Datatype.STRING.getName());
+        formulaProductCmpt.setChangingOverTime(false);
+
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "productCmpt");
+        productCmpt.newPropertyValue(formulaProductCmpt);
+
+        IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar());
+        IProductCmptTypeMethod formulaProductCmptGen = productCmptType.newFormulaSignature("ProduktFormelGen");
+        formulaProductCmptGen.setDatatype(Datatype.STRING.getName());
+        generation.newFormula(formulaProductCmptGen);
+
+        ProductGenerationAttributeTable productGenerationAttributeTable = new ProductGenerationAttributeTable(
+                productCmpt, context);
+
+        assertXPathExists(productGenerationAttributeTable, "//td/descendant::span");
+        assertXPathExists(productGenerationAttributeTable, "//td[. = '" + formulaProductCmptGen.getFormulaName() + "']");
 
     }
 }

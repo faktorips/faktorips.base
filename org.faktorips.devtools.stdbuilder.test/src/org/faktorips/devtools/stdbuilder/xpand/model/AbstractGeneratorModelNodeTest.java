@@ -159,4 +159,22 @@ public class AbstractGeneratorModelNodeTest {
         assertFalse(modelNode.isGenerateSerializablePolicyCmptsSupport());
     }
 
+    @Test
+    public void testIsGenerateConvenienceGetterst_False() {
+        when(modelContext.isGenerateConvenienceGetters()).thenReturn(false);
+        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
+
+        assertFalse(modelNode.isGenerateConvenienceGetters());
+    }
+
+    @Test
+    public void testIsGenerateConvenienceGetters_True() {
+        when(modelContext.isGenerateConvenienceGetters()).thenReturn(true);
+        IpsObjectPartContainer part = mock(IpsObjectPartContainer.class);
+        AbstractGeneratorModelNode modelNode = new GenericGeneratorModelNode(part, modelContext, modelService);
+
+        assertTrue(modelNode.isGenerateConvenienceGetters());
+    }
+
 }

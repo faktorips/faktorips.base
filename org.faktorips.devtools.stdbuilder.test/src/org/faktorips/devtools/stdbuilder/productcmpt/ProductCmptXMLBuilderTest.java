@@ -68,6 +68,13 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         method.setFormulaSignatureDefinition(true);
         method.setFormulaName("AgeCalculation");
 
+        IProductCmptTypeMethod staticMethod = productCmptType.newProductCmptTypeMethod();
+        staticMethod.setDatatype(Datatype.INTEGER.getQualifiedName());
+        staticMethod.setName("staticAge");
+        staticMethod.setFormulaSignatureDefinition(true);
+        staticMethod.setFormulaName("StaticAgeCalculation");
+        staticMethod.setChangingOverTime(false);
+
         assertTrue(productCmptType.isValid(ipsProject));
 
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
@@ -86,9 +93,12 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         productCmpt = newProductCmpt(productCmptType, "ProductCmpt");
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
         gen.setValidFrom(new GregorianCalendar(2006, 0, 1));
-        IFormula ce = gen.newFormula();
-        ce.setFormulaSignature(method.getFormulaName());
-        ce.setExpression("42");
+        IFormula formula = gen.newFormula();
+        formula.setFormulaSignature(method.getFormulaName());
+        formula.setExpression("42");
+
+        IFormula staticFormula = (IFormula)productCmpt.newPropertyValue(staticMethod);
+        staticFormula.setExpression("42");
 
         refTarget = newProductCmpt(productCmptType, "RefProduct");
         refTarget.newGeneration(gen.getValidFrom());

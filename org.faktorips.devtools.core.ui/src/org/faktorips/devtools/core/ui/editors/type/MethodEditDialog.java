@@ -10,9 +10,12 @@
 
 package org.faktorips.devtools.core.ui.editors.type;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -21,30 +24,59 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.method.IParameter;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ITypePart;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.DatatypeRefControl;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
 
 public class MethodEditDialog extends IpsPartEditDialog2 {
 
-    protected IMethod method;
+    private IMethod method;
+    private Combo modifierCombo;
+    private Button abstractCheckbox;
+    private Text nameText;
+    private DatatypeRefControl datatypeControl;
 
-    protected Combo modifierCombo;
-    protected Checkbox abstractCheckbox;
-    protected Text nameText;
-    protected DatatypeRefControl datatypeControl;
-
+    private Button changeOverTimeCheckbox;
     private ParametersEditControl parametersControl;
 
     public MethodEditDialog(IMethod method, Shell parentShell) {
         super(method, parentShell, Messages.MethodEditDialog_title, true);
         this.method = method;
+    }
+
+    public IMethod getMethod() {
+        return method;
+    }
+
+    public Combo getModifierCombo() {
+        return modifierCombo;
+    }
+
+    public Button getAbstractCheckbox() {
+        return abstractCheckbox;
+    }
+
+    public Text getNameText() {
+        return nameText;
+    }
+
+    public DatatypeRefControl getDatatypeControl() {
+        return datatypeControl;
+    }
+
+    public Button getChangeOverTimeCheckbox() {
+        return changeOverTimeCheckbox;
+    }
+
+    public ParametersEditControl getParametersControl() {
+        return parametersControl;
     }
 
     @Override
@@ -58,10 +90,12 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         return folder;
     }
 
-    private Control createGeneralPage(TabFolder folder) {
+    protected Control createGeneralPage(TabFolder folder) {
 
         Composite c = createTabItemComposite(folder, 1, false);
+
         Composite workArea = getToolkit().createGridComposite(c, 1, false, false);
+
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
 
         createAdditionalControlsOnGeneralPage(workArea, getToolkit());
@@ -69,25 +103,13 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         Group methodSignatureGroup = getToolkit().createGroup(workArea, Messages.MethodEditDialog_signatureGroup);
         Composite propertyPane = getToolkit().createLabelEditColumnComposite(methodSignatureGroup);
 
-        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
-        modifierCombo = getToolkit().createCombo(propertyPane);
-        modifierCombo.setFocus();
-        getBindingContext().bindContent(modifierCombo, method, ITypePart.PROPERTY_MODIFIER, Modifier.class);
-
-        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAbstract);
-        abstractCheckbox = getToolkit().createCheckbox(propertyPane);
-        getBindingContext().bindContent(abstractCheckbox, method, IMethod.PROPERTY_ABSTRACT);
-
-        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelType);
-        datatypeControl = getToolkit().createDatatypeRefEdit(method.getIpsProject(), propertyPane);
-        datatypeControl.setVoidAllowed(true);
-        datatypeControl.setOnlyValueDatatypesAllowed(false);
-        datatypeControl.setAbstractAllowed(true);
-        getBindingContext().bindContent(datatypeControl, method, IMethod.PROPERTY_DATATYPE);
-
-        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);
-        nameText = getToolkit().createText(propertyPane);
-        getBindingContext().bindContent(nameText, method, IIpsElement.PROPERTY_NAME);
+        createModifierLabel(propertyPane);
+        if (isProdCmptTypeEditDialog()) {
+            createChangingOverTimeCheckbox(propertyPane);
+        }
+        createAbstractCheckbox(propertyPane);
+        createDatatypeSection(propertyPane);
+        createNameLabel(propertyPane);
 
         // parameters
         parametersControl = new ParametersEditControl(methodSignatureGroup, getToolkit(), SWT.NONE,
@@ -98,6 +120,49 @@ public class MethodEditDialog extends IpsPartEditDialog2 {
         parametersControl.setInput(method);
 
         return c;
+    }
+
+    private void createModifierLabel(Composite propertyPane) {
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelAccesModifier);
+        modifierCombo = getToolkit().createCombo(propertyPane);
+        modifierCombo.setFocus();
+        getBindingContext().bindContent(modifierCombo, method, ITypePart.PROPERTY_MODIFIER, Modifier.class);
+    }
+
+    private void createAbstractCheckbox(Composite propertyPane) {
+        getToolkit().createFormLabel(propertyPane, StringUtils.EMPTY);
+        abstractCheckbox = getToolkit().createButton(propertyPane, Messages.MethodEditDialog_labelAbstract, SWT.CHECK);
+        getBindingContext().bindContent(abstractCheckbox, method, IMethod.PROPERTY_ABSTRACT);
+    }
+
+    private void createNameLabel(Composite propertyPane) {
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelName);
+        nameText = getToolkit().createText(propertyPane);
+        getBindingContext().bindContent(nameText, method, IIpsElement.PROPERTY_NAME);
+    }
+
+    protected boolean isProdCmptTypeEditDialog() {
+        return false;
+    }
+
+    private void createChangingOverTimeCheckbox(Composite propertyPane) {
+        getToolkit().createFormLabel(propertyPane, StringUtils.EMPTY);
+        changeOverTimeCheckbox = getToolkit().createButton(
+                propertyPane,
+                NLS.bind(Messages.MethodEditDialog_labelChangeOverTimeCheckbox, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
+                SWT.CHECK);
+        getBindingContext().bindContent(changeOverTimeCheckbox, method,
+                IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME);
+    }
+
+    private void createDatatypeSection(Composite propertyPane) {
+        getToolkit().createFormLabel(propertyPane, Messages.MethodEditDialog_labelType);
+        datatypeControl = getToolkit().createDatatypeRefEdit(method.getIpsProject(), propertyPane);
+        datatypeControl.setVoidAllowed(true);
+        datatypeControl.setOnlyValueDatatypesAllowed(false);
+        datatypeControl.setAbstractAllowed(true);
+        getBindingContext().bindContent(datatypeControl, method, IMethod.PROPERTY_DATATYPE);
     }
 
     protected void createAdditionalControlsOnGeneralPage(@SuppressWarnings("unused") Composite parent,
