@@ -60,7 +60,7 @@ public class TypeSelectionComposite extends Composite {
     private Label title;
     private TableViewer listViewer;
     private StructuredViewerField<IIpsObject> listViewerField;
-    private Label description;
+    private Text description;
     private final PresentationModelObject pmo;
     private final String property;
     private BindingContext bindingContext;
@@ -132,18 +132,7 @@ public class TypeSelectionComposite extends Composite {
         listViewer.getControl().setLayoutData(listLayoutData);
         listViewerField = new StructuredViewerField<IIpsObject>(listViewer, IIpsObject.class);
 
-        Composite descriptionComposite = new Composite(this, SWT.BORDER);
-        GridData descriptionCompositeData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        GridLayout descriptionCompositeLayout = new GridLayout();
-        descriptionCompositeLayout.marginHeight = 3;
-        descriptionCompositeLayout.marginWidth = 3;
-        descriptionComposite.setLayoutData(descriptionCompositeData);
-        descriptionComposite.setLayout(descriptionCompositeLayout);
-
-        GridData descriptionLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        descriptionLayoutData.heightHint = 50;
-        descriptionLayoutData.widthHint = 50;
-        description = toolkit.createLabel(descriptionComposite, StringUtils.EMPTY, SWT.WRAP, descriptionLayoutData);
+        description = toolkit.createMultilineText(this);
 
         bindContent();
     }
@@ -197,6 +186,7 @@ public class TypeSelectionComposite extends Composite {
             } else {
                 description.setText(descriptionString);
                 description.setEnabled(true);
+                description.setEditable(false);
             }
         }
     }
