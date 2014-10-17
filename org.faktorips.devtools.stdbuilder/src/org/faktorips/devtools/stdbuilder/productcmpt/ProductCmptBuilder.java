@@ -10,8 +10,7 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -19,28 +18,29 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.builder.AbstractArtefactBuilder;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
 
 /**
  * 
- * @author Jan Ortmann
  */
 public class ProductCmptBuilder extends AbstractArtefactBuilder {
 
     private MultiStatus buildStatus;
     private ProductCmptGenerationCuBuilder generationBuilder;
+    private ProductCmptCuBuilder productCmptCuBuilder;
 
     public ProductCmptBuilder(StandardBuilderSet builderSet) {
         super(builderSet);
-        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, this);
+        productCmptCuBuilder = new ProductCmptCuBuilder(builderSet);
+        generationBuilder = new ProductCmptGenerationCuBuilder(builderSet, productCmptCuBuilder);
     }
 
     @Override
@@ -49,6 +49,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     }
 
     public void setProductCmptImplBuilder(ProductCmptClassBuilder builder) {
+        productCmptCuBuilder.setProductCmptImplBuilder(builder);
         generationBuilder.setProductCmptImplBuilder(builder);
     }
 
@@ -56,7 +57,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         generationBuilder.setProductCmptGenImplBuilder(builder);
     }
 
-    public ProductCmptGenerationCuBuilder getGenerationBuilder() {
+    public AbstractProductCuBuilder<IProductCmptGeneration> getGenerationBuilder() {
         return generationBuilder;
     }
 
@@ -68,12 +69,14 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public void beforeBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.beforeBuildProcess(project, buildKind);
+        productCmptCuBuilder.beforeBuildProcess(project, buildKind);
         generationBuilder.beforeBuildProcess(project, buildKind);
     }
 
     @Override
     public void afterBuildProcess(IIpsProject project, int buildKind) throws CoreException {
         super.afterBuildProcess(project, buildKind);
+        productCmptCuBuilder.afterBuildProcess(project, buildKind);
         generationBuilder.afterBuildProcess(project, buildKind);
     }
 
@@ -92,48 +95,43 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     public void build(IIpsSrcFile ipsSrcFile) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
         if (productCmpt.isValid(getIpsProject())) {
-            IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-            for (IIpsObjectGeneration generation : generations) {
-                if (mustFileBeBuild((IProductCmptGeneration)generation)) {
-                    build((IProductCmptGeneration)generation);
+            if (requiresJavaCompilationUnit(productCmpt)) {
+                build(productCmpt);
+            }
+            List<IProductCmptGeneration> generations = productCmpt.getProductCmptGenerations();
+            for (IProductCmptGeneration generation : generations) {
+                if (requiresJavaCompilationUnit(generation)) {
+                    build(generation);
                 }
             }
         }
     }
 
+    private void build(IProductCmpt productCmpt) throws CoreException {
+        productCmptCuBuilder.callBuildProcess(productCmpt, buildStatus);
+    }
+
     private void build(IProductCmptGeneration generation) throws CoreException {
-        IIpsSrcFile ipsSrcFile = getVirtualIpsSrcFile(generation);
-        generationBuilder.setProductCmptGeneration(generation);
-        generationBuilder.beforeBuild(ipsSrcFile, buildStatus);
-        if (getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-            generationBuilder.build(ipsSrcFile);
-        }
-        generationBuilder.afterBuild(ipsSrcFile);
+        generationBuilder.callBuildProcess(generation, buildStatus);
     }
 
-    public String getQualifiedClassName(IProductCmptGeneration generation) throws CoreException {
-        generationBuilder.setProductCmptGeneration(generation);
-        IIpsSrcFile file = getVirtualIpsSrcFile(generation);
-        return generationBuilder.getQualifiedClassName(file);
+    public String getImplementationClass(IProductCmpt productCmpt) {
+        return productCmptCuBuilder.getImplementationClass(productCmpt);
     }
 
-    /**
-     * Returns the Java sourcefile that is generated for the given generation or <code>null</code>
-     * if no sourcefile is generated, because the product component doesn't contain a formula.
-     */
-    public IFile getGeneratedJavaFile(IProductCmptGeneration gen) throws CoreException {
-        if (!mustFileBeBuild(gen)) {
-            return null;
-        }
-        generationBuilder.setProductCmptGeneration(gen);
-        return generationBuilder.getJavaFile(getVirtualIpsSrcFile(gen));
+    public String getImplementationClass(IProductCmptGeneration generation) {
+        return generationBuilder.getImplementationClass(generation);
     }
 
-    private boolean mustFileBeBuild(IProductCmptGeneration productCmptGeneration) throws CoreException {
-        if (!productCmptGeneration.isContainingAvailableFormula()) {
+    public String getQualifiedClassName(IProductCmptGeneration generation) {
+        return generationBuilder.getQualifiedClassName(generation);
+    }
+
+    private boolean requiresJavaCompilationUnit(IPropertyValueContainer container) throws CoreException {
+        if (!isContainingAvailableFormula(container)) {
             return false;
         }
-        if (productCmptGeneration.findProductCmptType(productCmptGeneration.getIpsProject()) == null) {
+        if (container.findProductCmptType(container.getIpsProject()) == null) {
             return false;
         }
         return true;
@@ -145,7 +143,7 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         // so we can get the exact file names, as the generation's valid from is part of the file
         // name
         // instead we delete all file that start with the common prefix.
-        String prefix = getJavaSrcFilePrefix(deletedFile);
+        String prefix = generationBuilder.getJavaSrcFilePrefix(deletedFile);
         // get a file handle in the
         IFile file = generationBuilder.getJavaFile(deletedFile);
         // target folder
@@ -160,40 +158,6 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
         }
     }
 
-    /**
-     * Constructs a virtual ips source file. the name is derived from the product component and the
-     * generation's valid from date. This is done to use the superclass' mechanism to derive the (to
-     * be generated) Java sourcefile for a given ips src file.
-     */
-    IIpsSrcFile getVirtualIpsSrcFile(IProductCmptGeneration generation) {
-        GregorianCalendar validFrom = generation.getValidFrom();
-        int month = validFrom.get(Calendar.MONTH) + 1;
-        int date = validFrom.get(Calendar.DATE);
-        String name = getUnchangedJavaSrcFilePrefix(generation.getIpsSrcFile()) + validFrom.get(Calendar.YEAR)
-                + (month < 10 ? "0" + month : "" + month) //$NON-NLS-1$ //$NON-NLS-2$
-                + (date < 10 ? "0" + date : "" + date); //$NON-NLS-1$ //$NON-NLS-2$
-        name = generation.getIpsProject().getProductCmptNamingStrategy().getJavaClassIdentifier(name);
-        return generation.getProductCmpt().getIpsSrcFile().getIpsPackageFragment()
-                .getIpsSrcFile(IpsObjectType.PRODUCT_CMPT.getFileName(name));
-    }
-
-    /**
-     * Returns the prefix that is common to the Java source file for all generations.
-     */
-    private String getJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getIpsProject().getProductCmptNamingStrategy()
-                .getJavaClassIdentifier(getUnchangedJavaSrcFilePrefix(file));
-    }
-
-    /**
-     * Returns the prefix that is common to the Java source file for all generations before the
-     * project's naming strategy is applied to replace characters that aren't allowed in Java class
-     * names.
-     */
-    private String getUnchangedJavaSrcFilePrefix(IIpsSrcFile file) {
-        return file.getQualifiedNameType().getUnqualifiedName() + ' ';
-    }
-
     @Override
     public boolean buildsDerivedArtefacts() {
         return true;
@@ -202,6 +166,28 @@ public class ProductCmptBuilder extends AbstractArtefactBuilder {
     @Override
     public boolean isBuildingInternalArtifacts() {
         return getBuilderSet().isGeneratePublishedInterfaces();
+    }
+
+    /**
+     * Returns <code>true</code> if there is at least one formula that has an entered expression.
+     * Returns <code>false</code> if there is no formula or if every formula has no entered
+     * expression.
+     * 
+     * @param container The product component or product component generation that may contain the
+     *            formulas
+     * @return <code>true</code> for at least one available formula
+     */
+    public boolean isContainingAvailableFormula(IPropertyValueContainer container) {
+        AbstractProductCuBuilder<? extends IPropertyValueContainer> cuBuilder = getCuBuilderFor(container);
+        return cuBuilder.isContainingAvailableFormula(container);
+    }
+
+    private AbstractProductCuBuilder<? extends IPropertyValueContainer> getCuBuilderFor(IPropertyValueContainer container) {
+        if (container instanceof IProductCmpt) {
+            return productCmptCuBuilder;
+        } else {
+            return generationBuilder;
+        }
     }
 
 }

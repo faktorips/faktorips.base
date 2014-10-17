@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.internal.model.method.Parameter;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ValidationRuleConf
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeMethod;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage.TableStructureReference;
 import org.faktorips.devtools.core.internal.model.tablecontents.Row;
@@ -64,7 +66,6 @@ import org.faktorips.devtools.core.internal.model.testcasetype.TestCaseType;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestPolicyCmptTypeParameter;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestRuleParameter;
 import org.faktorips.devtools.core.internal.model.testcasetype.TestValueParameter;
-import org.faktorips.devtools.core.internal.model.type.Method;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -148,7 +149,8 @@ public class DefaultWorkbenchAdapterProvider implements IWorkbenchAdapterProvide
         DefaultIpsObjectPartWorkbenchAdapter formulaWA = new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor);
 
         // Type
-        register(Method.class, new MethodWorkbenchAdapter());
+        register(PolicyCmptTypeMethod.class, new MethodWorkbenchAdapter());
+        register(ProductCmptTypeMethod.class, new ProductCmptTypeMethodWorkbenchAdapter());
         imageDescriptor = IpsUIPlugin.getImageHandling().getSharedImageDescriptor("Parameter.gif", true); //$NON-NLS-1$
         register(Parameter.class, new DefaultIpsObjectPartWorkbenchAdapter(imageDescriptor));
 

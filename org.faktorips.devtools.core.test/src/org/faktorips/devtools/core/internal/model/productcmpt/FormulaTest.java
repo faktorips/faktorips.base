@@ -10,7 +10,10 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +25,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,16 +50,15 @@ public class FormulaTest extends AbstractIpsPluginTest {
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
-
-        formula = new Formula(generation, "formula");
     }
 
     @Test
-    public void testGetTableContentUsages() throws Exception {
+    public void testGetTableContentUsages_ProductCmptGeneration() throws Exception {
+        formula = new Formula(generation, "formula");
         assertEquals(0, formula.getTableContentUsages().length);
 
         ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
-        structureUsageGen.setRoleName("RateTable");
+        structureUsageGen.setRoleName("RateTableGen");
         ITableContentUsage contentUsageGen = generation.newTableContentUsage(structureUsageGen);
 
         ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
@@ -67,6 +71,53 @@ public class FormulaTest extends AbstractIpsPluginTest {
         List<ITableContentUsage> asList = Arrays.asList(tableContentUsages);
         assertTrue(asList.contains(contentUsageGen));
         assertTrue(asList.contains(contentUsage));
+    }
+
+    @Test
+    public void testGetTableContentUsages_ProductCmpt() throws Exception {
+        formula = new Formula(productCmpt, "formula");
+        assertEquals(0, formula.getTableContentUsages().length);
+
+        ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
+        structureUsageGen.setRoleName("RateTable");
+        ITableContentUsage contentUsageGen = generation.newTableContentUsage(structureUsageGen);
+
+        ITableStructureUsage structureUsage = productCmptType.newTableStructureUsage();
+        structureUsage.setChangingOverTime(false);
+        structureUsage.setRoleName("RateTable");
+        ITableContentUsage contentUsage = (ITableContentUsage)productCmpt.newPropertyValue(structureUsageGen);
+
+        ITableContentUsage[] tableContentUsages = formula.getTableContentUsages();
+        assertEquals(1, tableContentUsages.length);
+        List<ITableContentUsage> asList = Arrays.asList(tableContentUsages);
+        assertFalse(asList.contains(contentUsageGen));
+        assertTrue(asList.contains(contentUsage));
+    }
+
+    @Test
+    public void testFindMatchingProductCmptTypeAttributes_changingOverTime() throws Exception {
+        IAttribute changingAttr = productCmptType.newProductCmptTypeAttribute("test1");
+        IProductCmptTypeAttribute staticAttr = productCmptType.newProductCmptTypeAttribute("test2");
+        staticAttr.setChangingOverTime(false);
+        formula = new Formula(generation, "formula");
+
+        List<IAttribute> matchingProductCmptTypeAttributes = formula.findMatchingProductCmptTypeAttributes();
+
+        assertThat(matchingProductCmptTypeAttributes, hasItems(changingAttr, staticAttr));
+        assertEquals(2, matchingProductCmptTypeAttributes.size());
+    }
+
+    @Test
+    public void testFindMatchingProductCmptTypeAttributes_NOTchangingOverTime() throws Exception {
+        productCmptType.newProductCmptTypeAttribute("test1");
+        IProductCmptTypeAttribute staticAttr = productCmptType.newProductCmptTypeAttribute("test2");
+        staticAttr.setChangingOverTime(false);
+        formula = new Formula(productCmpt, "formula");
+
+        List<IAttribute> matchingProductCmptTypeAttributes = formula.findMatchingProductCmptTypeAttributes();
+
+        assertThat(matchingProductCmptTypeAttributes, hasItems((IAttribute)staticAttr));
+        assertEquals(1, matchingProductCmptTypeAttributes.size());
     }
 
 }

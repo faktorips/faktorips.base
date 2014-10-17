@@ -19,6 +19,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -51,6 +52,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     // limitation
     private DateTime validTo;
 
+    // handles the formulas
+    private final FormulaHandler formulaHandler;
+
     /**
      * Creates a new product component with the indicate id, kind id and version id.
      * 
@@ -80,6 +84,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.id = id;
         this.productKindId = productKindId;
         this.versionId = versionId;
+        this.formulaHandler = new FormulaHandler(this.repository);
     }
 
     public String getKindId() {
@@ -114,6 +119,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return getRepository().getLatestProductComponentGeneration(this);
     }
 
+    public IFormulaEvaluator getFormulaEvaluator() {
+        return formulaHandler.getFormulaEvaluator();
+    }
+
     /**
      * Initializes the generation with the data from the xml element.
      * 
@@ -129,6 +138,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         Map<String, Element> propertyElements = ProductComponentXmlUtil.getPropertyElements(cmptElement);
         doInitPropertiesFromXml(propertyElements);
         doInitTableUsagesFromXml(propertyElements);
+        doInitFormulaFromXml(cmptElement);
         doInitReferencesFromXml(ProductComponentXmlUtil.getLinkElements(cmptElement));
         initExtensionPropertiesFromXml(cmptElement);
     }
@@ -156,6 +166,21 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         //
         // Note that the method is deliberately not declared as abstract to
         // allow in subclasses calls to super.doInitTableUsagesFromXml().
+    }
+
+    /**
+     * Initializes all formulas contained by Element. If formula evaluation is supported, the map
+     * contains the compiled expression for every formula.
+     */
+    protected void doInitFormulaFromXml(Element element) {
+        formulaHandler.doInitFormulaFromXml(element);
+    }
+
+    /**
+     * Returns <code>true</code> if the expression of the given formulaSignature not empty.
+     */
+    protected boolean isFormulaAvailable(String formularSignature) {
+        return formulaHandler.isFormulaAvailable(formularSignature);
     }
 
     /**
@@ -203,6 +228,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         writeValidToToXml(prodCmptElement);
         writePropertiesToXml(prodCmptElement);
         writeTableUsagesToXml(prodCmptElement);
+        writeFormulaToXml(prodCmptElement);
         writeReferencesToXml(prodCmptElement);
         writeExtensionPropertiesToXml(prodCmptElement);
         if (includeGenerations) {
@@ -287,4 +313,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
          */
     }
 
+    /**
+     * This method is used for writing a formulas to the XML of the given {@link Element}.
+     */
+    protected void writeFormulaToXml(Element element) {
+        formulaHandler.writeFormulaToXml(element);
+    }
 }

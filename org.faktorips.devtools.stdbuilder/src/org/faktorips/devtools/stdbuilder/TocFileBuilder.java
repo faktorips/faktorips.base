@@ -366,8 +366,8 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 ProductCmptXMLBuilder.class).getXmlContentRelativeFile(productCmpt.getIpsSrcFile());
         String ipsObjectId = productCmpt.getRuntimeId();
         String ipsObjectQName = productCmpt.getQualifiedName();
-        String implementationClass = getBuilderSet().getProductCmptImplClassBuilder().getQualifiedClassName(
-                pcType.getIpsSrcFile());
+
+        String implementationClass = getBuilderSet().getProductCmptBuilder().getImplementationClass(productCmpt);
         String generationImplClass = getBuilderSet().getProductCmptGenImplClassBuilder().getQualifiedClassName(
                 pcType.getIpsSrcFile());
         String kindId = productCmpt.getKindId().getRuntimeId();
@@ -384,13 +384,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
                 continue;
             }
             IProductCmptGeneration gen = (IProductCmptGeneration)generation;
-            String generationClassName;
-            if (gen.isContainingAvailableFormula() && getBuilderSet().getFormulaCompiling().isCompileToSubclass()) {
-                generationClassName = getBuilderSet().getProductCmptBuilder().getQualifiedClassName(
-                        (IProductCmptGeneration)generation);
-            } else {
-                generationClassName = getBuilderSet().getProductCmptGenImplClassBuilder().getQualifiedClassName(pcType);
-            }
+            String generationClassName = getBuilderSet().getProductCmptBuilder().getImplementationClass(gen);
             genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlContentRelativeFile
                     .toString()));
         }
@@ -439,7 +433,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
     }
 
     /** Creates a toc entry for the given enum content. */
-    public TocEntryObject createTocEntry(IEnumContent enumContent) throws CoreException {
+    public TocEntryObject createTocEntry(IEnumContent enumContent) {
         IEnumType enumType = enumContent.findEnumType(enumContent.getIpsProject());
         if (enumType == null) {
             return null;
@@ -462,7 +456,7 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
         return entry;
     }
 
-    public TocEntryObject createTocEntry(IEnumType enumType) throws CoreException {
+    public TocEntryObject createTocEntry(IEnumType enumType) {
         if (!getBuilderSet().isGenerateJaxbSupport() || !ComplianceCheck.isComplianceLevelAtLeast5(getIpsProject())) {
             return null;
         }

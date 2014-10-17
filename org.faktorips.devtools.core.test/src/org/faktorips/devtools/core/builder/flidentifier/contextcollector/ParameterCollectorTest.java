@@ -69,7 +69,7 @@ public class ParameterCollectorTest {
     public void setUpFinderAndFormula() throws CoreException {
         when(finder.getExpression()).thenReturn(formula);
         when(finder.getIpsProject()).thenReturn(ipsProject);
-        when(formula.getProductCmptGeneration()).thenReturn(generation);
+        when(formula.getPropertyValueContainer()).thenReturn(generation);
         when(generation.findPolicyCmptType(ipsProject)).thenReturn(policyCmptType);
         when(generation.getProductCmpt()).thenReturn(productCmpt);
         when(policyCmptType.isSubtypeOrSameType(policyCmptType, ipsProject)).thenReturn(true);

@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
@@ -39,6 +42,9 @@ import org.w3c.dom.NodeList;
  */
 public class ExpressionXMLBuilderHelper {
 
+    private final IIpsProject ipsProject;
+    private final StandardBuilderSet standardBuilderSet;
+
     /**
      * Creates a new {@link ExpressionXMLBuilderHelper} that uses the given
      * {@link StandardBuilderSet} to determine Java representations for given formula signature
@@ -51,9 +57,6 @@ public class ExpressionXMLBuilderHelper {
         this.standardBuilderSet = builderSet;
         this.ipsProject = builderSet.getIpsProject();
     }
-
-    private IIpsProject ipsProject;
-    private StandardBuilderSet standardBuilderSet;
 
     private IIpsProject getIpsProject() {
         return ipsProject;
@@ -79,29 +82,48 @@ public class ExpressionXMLBuilderHelper {
             IExpression[] formulas,
             NodeList formulaElements,
             MultiStatus buildStatus) {
-        for (int formulaIndex = 0; formulaIndex < formulas.length; formulaIndex++) {
-            IFormula formula = (IFormula)formulas[formulaIndex];
-            IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
+        Map<String, IExpression> formulaMap = getFormulas(formulas);
+        for (int formulaIndex = 0; formulaIndex < formulaElements.getLength(); formulaIndex++) {
             Element formulaElement = (Element)formulaElements.item(formulaIndex);
-            if (method != null && formulaElement != null) {
-                Element javaExpression = document.createElement(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
-                JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
-                IProductCmptTypeMethod formulaSignature = formula.findFormulaSignature(getIpsProject());
-                JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula,
-                        formulaSignature, buildStatus);
-
-                generateFormulaMethodSignature(method, builder);
-
-                builder.openBracket();
-                builder.append("return ").append(formulaFragment).append(';');
-                builder.closeBracket().appendln();
-                String sourceCode = builder.getFragment().getImportDeclaration().toString() + '\n'
-                        + builder.getFragment().getSourcecode();
-                CDATASection javaCode = document.createCDATASection(sourceCode);
-                javaExpression.appendChild(javaCode);
-                formulaElement.appendChild(javaExpression);
+            if (formulaElement != null) {
+                String attribute = formulaElement.getAttribute(IExpression.PROPERTY_FORMULA_SIGNATURE_NAME);
+                IFormula formula = (IFormula)formulaMap.get(attribute);
+                if (formula != null) {
+                    IProductCmptTypeMethod method = formula.findFormulaSignature(getIpsProject());
+                    if (method != null) {
+                        Element javaExpression = document
+                                .createElement(AbstractFormulaEvaluator.COMPILED_EXPRESSION_XML_TAG);
+                        String sourceCode = generateJavaCode(formula, method, buildStatus);
+                        CDATASection javaCode = document.createCDATASection(sourceCode);
+                        javaExpression.appendChild(javaCode);
+                        formulaElement.appendChild(javaExpression);
+                    }
+                }
             }
         }
+    }
+
+    protected String generateJavaCode(IFormula formula, IProductCmptTypeMethod method, MultiStatus buildStatus) {
+        JavaCodeFragmentBuilder builder = new JavaCodeFragmentBuilder().appendln();
+        JavaCodeFragment formulaFragment = ExpressionBuilderHelper.compileFormulaToJava(formula, method, buildStatus);
+
+        generateFormulaMethodSignature(method, builder);
+
+        builder.openBracket();
+        builder.append("return ").append(formulaFragment).append(';');
+        builder.closeBracket().appendln();
+        String sourceCode = builder.getFragment().getImportDeclaration().toString() + '\n'
+                + builder.getFragment().getSourcecode();
+        return sourceCode;
+    }
+
+    private Map<String, IExpression> getFormulas(IExpression[] formulas) {
+        Map<String, IExpression> formulaMap = new HashMap<String, IExpression>();
+        for (int i = 0; i < formulas.length; i++) {
+            IExpression expression = formulas[i];
+            formulaMap.put(expression.getFormulaSignature(), expression);
+        }
+        return formulaMap;
     }
 
     private void generateFormulaMethodSignature(IMethod method, JavaCodeFragmentBuilder builder) {

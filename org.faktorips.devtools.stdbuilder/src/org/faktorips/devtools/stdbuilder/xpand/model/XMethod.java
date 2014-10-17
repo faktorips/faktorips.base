@@ -88,8 +88,7 @@ public class XMethod extends AbstractGeneratorModelNode {
     protected String getJavaClassName(Datatype datatype) {
         boolean resolveTypesToPublishedInterface = (getMethod().getModifier().isPublished() || getMethod() instanceof IPolicyCmptTypeMethod)
                 && isGeneratePublishedInterfaces();
-        boolean useGeneration = (getMethod() instanceof IProductCmptTypeMethod)
-                && ((IProductCmptTypeMethod)getMethod()).isChangingOverTime();
+        boolean useGeneration = getMethod() instanceof IProductCmptTypeMethod;
         return getJavaClassName(datatype, useGeneration, resolveTypesToPublishedInterface);
     }
 
@@ -224,5 +223,12 @@ public class XMethod extends AbstractGeneratorModelNode {
         } else {
             throw new RuntimeException("The method " + getName() + " is no formula signature.");
         }
+    }
+
+    public boolean isChangingOverTime() {
+        if (getMethod() instanceof IProductCmptTypeMethod) {
+            return ((IProductCmptTypeMethod)getMethod()).isChangingOverTime();
+        }
+        return true;
     }
 }

@@ -74,6 +74,7 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         TextButtonField editField = new TextButtonField(formulaEditControl);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
+        addChangingOverTimeDecorationIfRequired(editField);
     }
 
     @Override

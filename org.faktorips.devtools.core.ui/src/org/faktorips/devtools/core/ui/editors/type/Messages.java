@@ -41,6 +41,7 @@ public class Messages extends NLS {
     public static String MethodEditDialog_labelType;
     public static String MethodEditDialog_labelName;
     public static String MethodEditDialog_labelParameters;
+    public static String MethodEditDialog_labelChangeOverTimeCheckbox;
 
     public static String OverrideMethodDialog_labelSelectMethods;
     public static String OverrideMethodDialog_title;

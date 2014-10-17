@@ -32,7 +32,6 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -93,6 +92,14 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
                             buildStatus);
                 }
             }
+
+            if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
+                IFormula[] formulas = productCmpt.getFormulas();
+                NodeList formulaElements = root.getElementsByTagName(Formula.TAG_NAME);
+                expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements,
+                        buildStatus);
+            }
+
             try {
                 super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
             } catch (TransformerException e) {
@@ -103,8 +110,7 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
         }
     }
 
-    private void updateTargetRuntimeId(IProductCmptLinkContainer linkContainer, Element linkContainerElement)
-            throws DOMException {
+    private void updateTargetRuntimeId(IProductCmptLinkContainer linkContainer, Element linkContainerElement) {
         List<Element> linkElements = getLinkElements(linkContainerElement);
         List<IProductCmptLink> links = linkContainer.getLinksAsList();
         for (int i = 0; i < links.size(); i++) {

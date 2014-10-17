@@ -160,4 +160,5 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
      *         dependency details
      */
     public Map<IDependency, ExpressionDependencyDetail> dependsOn();
+
 }

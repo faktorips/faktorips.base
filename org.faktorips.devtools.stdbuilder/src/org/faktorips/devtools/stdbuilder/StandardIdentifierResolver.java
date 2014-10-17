@@ -44,7 +44,7 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
 
     @Override
     protected IdentifierNodeGeneratorFactory<JavaCodeFragment> getGeneratorFactory() {
-        return new StdIdentifierNodeGeneratorFactory(builderSet, getExprCompiler());
+        return new StdIdentifierNodeGeneratorFactory(builderSet, getExpression(), getExprCompiler());
     }
 
     @Override
@@ -55,10 +55,15 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
     private static class StdIdentifierNodeGeneratorFactory implements IdentifierNodeGeneratorFactory<JavaCodeFragment> {
 
         private final StandardBuilderSet builderSet;
+
         private final ExtendedExprCompiler exprCompiler;
 
-        public StdIdentifierNodeGeneratorFactory(StandardBuilderSet builderSet, ExtendedExprCompiler exprCompiler) {
+        private final IExpression expression;
+
+        public StdIdentifierNodeGeneratorFactory(StandardBuilderSet builderSet, IExpression expression,
+                ExtendedExprCompiler exprCompiler) {
             this.builderSet = builderSet;
+            this.expression = expression;
             this.exprCompiler = exprCompiler;
         }
 
@@ -74,7 +79,7 @@ public class StandardIdentifierResolver extends AbstractIdentifierResolver<JavaC
 
         @Override
         public IdentifierNodeGenerator<JavaCodeFragment> getGeneratorForAttributeNode() {
-            return new AttributeNodeGenerator(this, builderSet);
+            return new AttributeNodeGenerator(this, expression, builderSet);
         }
 
         /**

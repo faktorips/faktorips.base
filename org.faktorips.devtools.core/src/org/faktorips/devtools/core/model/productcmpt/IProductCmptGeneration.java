@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
-IProductCmptLinkContainer {
+        IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -255,15 +255,6 @@ IProductCmptLinkContainer {
      * formula is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);
-
-    /**
-     * Returns <code>true</code> if there is at least one formula that has an entered expression.
-     * Returns <code>false</code> if there is no formula or if every formula has no entered
-     * expression.
-     * 
-     * @return <code>true</code> for at least one available formula
-     */
-    public boolean isContainingAvailableFormula();
 
     /**
      * Returns the number of validation rules defined (or configured respectively) in this
