@@ -306,6 +306,16 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
             Class<?> productCmptClass = getClass(productCmptClassName, cl);
             return implClass.getConstructor(new Class[] { productCmptClass });
         } catch (NoSuchMethodException e) {
+            return getProdGenerationConstructorForSuperClass(implClass, tocEntry);
+        }
+    }
+
+    private Constructor<?> getProdGenerationConstructorForSuperClass(Class<?> implClass, GenerationTocEntry tocEntry) {
+        try {
+            String productCmptClassName = tocEntry.getParent().getImplementationClassName();
+            Class<?> productCmptClass = getClass(productCmptClassName, cl);
+            return implClass.getConstructor(new Class[] { productCmptClass.getSuperclass() });
+        } catch (NoSuchMethodException e) {
             throw new RuntimeException("Can't get constructor for class " + implClass.getName() + " , toc entry "
                     + tocEntry, e);
         }
