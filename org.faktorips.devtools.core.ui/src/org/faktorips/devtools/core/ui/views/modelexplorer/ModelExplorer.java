@@ -80,7 +80,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     public static final String EXTENSION_ID = "org.faktorips.devtools.core.ui.views.modelExplorer"; //$NON-NLS-1$
 
     /** The filter group in the context menu of the model explorer. */
-    protected static String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
+    protected static final String MENU_FILTER_GROUP = "group.filter"; //$NON-NLS-1$
 
     /** Used for saving the current filter into an eclipse <tt>Memento</tt>. */
     protected static final String FILTER_KEY = "filter"; //$NON-NLS-1$
@@ -95,21 +95,21 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     private static final String LAYOUT_STYLE_KEY = "style"; //$NON-NLS-1$
 
     /** The tree viewer displaying the object model. */
-    protected TreeViewer treeViewer;
+    private TreeViewer treeViewer;
 
     /** Label provider for the tree viewer. */
-    protected ModelLabelProvider labelProvider;
+    private ModelLabelProvider labelProvider;
 
     /** The model explorer configuration containing the allowed types. */
-    protected ModelExplorerConfiguration config;
+    private final ModelExplorerConfiguration config;
 
     /**
      * LayoutStyle flat or hierarchical.
      */
-    protected LayoutStyle layoutStyle = LayoutStyle.HIERACHICAL;
+    private LayoutStyle layoutStyle = LayoutStyle.HIERACHICAL;
 
     /** Flag that indicates whether linking is enabled. */
-    protected boolean linkingEnabled;
+    private boolean linkingEnabled;
 
     /** Listener for activation of editors. */
     private ActivationListener editorActivationListener;
@@ -120,7 +120,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     private IpsResourceChangeListener resourceListener;
 
     /** Flag that indicates if non ips projects will be excluded or not. */
-    private boolean excludeNoIpsProjects = false;
+    private boolean excludeNoIpsProjects = true;
 
     /**
      * Decorator for problems in ips objects. This decorator is adjusted according to the current
@@ -131,7 +131,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     private ToggleLinkingAction toggleLinking;
 
-    protected boolean supportCategories = false;
+    private boolean supportCategories = false;
 
     private ModelExplorerSorter sorter;
 
@@ -160,7 +160,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
      * contents.
      */
     protected ModelContentProvider createContentProvider() {
-        return new ModelContentProvider(config, layoutStyle);
+        return new ModelContentProvider(getConfig(), layoutStyle);
     }
 
     @Override
@@ -170,25 +170,25 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
         labelProvider = new ModelLabelProvider();
         treeViewer = new TreeViewer(parent);
-        treeViewer.setContentProvider(contentProvider);
+        getTreeViewer().setContentProvider(contentProvider);
         IDecoratorManager decoManager = IpsPlugin.getDefault().getWorkbench().getDecoratorManager();
-        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(labelProvider,
+        DecoratingLabelProvider decoProvider = new DecoratingLabelProvider(getLabelProvider(),
                 decoManager.getLabelDecorator());
-        treeViewer.setLabelProvider(decoProvider);
-        sorter = new ModelExplorerSorter(supportCategories);
-        treeViewer.setSorter(sorter);
-        treeViewer.setInput(IpsPlugin.getDefault().getIpsModel());
+        getTreeViewer().setLabelProvider(decoProvider);
+        sorter = new ModelExplorerSorter(isSupportCategories());
+        getTreeViewer().setSorter(sorter);
+        getTreeViewer().setInput(IpsPlugin.getDefault().getIpsModel());
 
-        treeViewer.addDoubleClickListener(new ModelExplorerDoubleclickListener(treeViewer));
-        treeViewer.addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
-                new IpsElementDragListener(treeViewer));
-        treeViewer.addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
+        getTreeViewer().addDoubleClickListener(new ModelExplorerDoubleclickListener(getTreeViewer()));
+        getTreeViewer().addDragSupport(DND.DROP_LINK | DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
+                new IpsElementDragListener(getTreeViewer()));
+        getTreeViewer().addDropSupport(DND.DROP_MOVE, new Transfer[] { FileTransfer.getInstance() },
                 new ModelExplorerDropListener());
-        createFilters(treeViewer);
+        createFilters(getTreeViewer());
 
-        getSite().setSelectionProvider(treeViewer);
+        getSite().setSelectionProvider(getTreeViewer());
 
-        resourceListener = new IpsResourceChangeListener(treeViewer);
+        resourceListener = new IpsResourceChangeListener(getTreeViewer());
         ResourcesPlugin.getWorkspace().addResourceChangeListener(resourceListener, IResourceChangeEvent.POST_BUILD);
 
         /*
@@ -244,10 +244,10 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     private void setSelectionInTree(Object objectToSelect) {
         IStructuredSelection newSelection = new StructuredSelection(objectToSelect);
-        if (treeViewer.getSelection().equals(newSelection)) {
-            treeViewer.getTree().showSelection();
+        if (getTreeViewer().getSelection().equals(newSelection)) {
+            getTreeViewer().getTree().showSelection();
         } else {
-            treeViewer.setSelection(newSelection, true);
+            getTreeViewer().setSelection(newSelection, true);
         }
     }
 
@@ -292,7 +292,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         menuManager.add(new Separator(MENU_FILTER_GROUP));
 
         Action groupForCategories = createGroupCategoriesAction();
-        groupForCategories.setChecked(supportCategories);
+        groupForCategories.setChecked(isSupportCategories());
         menuManager.add(groupForCategories);
 
         addProjectFilterAction(menuManager);
@@ -311,10 +311,11 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
     protected void createContextMenu() {
         MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new ModelExplorerContextMenuBuilder(this, config, getViewSite(), getSite(), treeViewer));
-        Menu contextMenu = manager.createContextMenu(treeViewer.getControl());
-        treeViewer.getControl().setMenu(contextMenu);
-        getSite().registerContextMenu(manager, treeViewer);
+        manager.addMenuListener(new ModelExplorerContextMenuBuilder(this, getConfig(), getViewSite(), getSite(),
+                getTreeViewer()));
+        Menu contextMenu = manager.createContextMenu(getTreeViewer().getControl());
+        getTreeViewer().getControl().setMenu(contextMenu);
+        getSite().registerContextMenu(manager, getTreeViewer());
     }
 
     private void createToolBar() {
@@ -324,22 +325,27 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         retargetAction.setImageDescriptor(refreshAction.getImageDescriptor());
         retargetAction.setToolTipText(refreshAction.getToolTipText());
         getViewSite().getActionBars().getToolBarManager().add(retargetAction);
-        getViewSite().getActionBars().getToolBarManager().add(new CollapseAllAction(treeViewer));
+        getViewSite().getActionBars().getToolBarManager().add(new CollapseAllAction(getTreeViewer()));
         getViewSite().getActionBars().getToolBarManager().add(toggleLinking);
 
     }
 
     @Override
     public void setFocus() {
-        if (treeViewer == null || treeViewer.getControl() == null || treeViewer.getControl().isDisposed()) {
+        if (getTreeViewer() == null || getTreeViewer().getControl() == null
+                || getTreeViewer().getControl().isDisposed()) {
             return;
         }
-        treeViewer.getControl().setFocus();
+        getTreeViewer().getControl().setFocus();
     }
 
     /** Answers whether this part shows the packagFragments flat or hierarchical */
     private boolean isFlatLayout() {
         return layoutStyle == LayoutStyle.FLAT;
+    }
+
+    protected LayoutStyle getLayoutStyle() {
+        return layoutStyle;
     }
 
     /**
@@ -352,11 +358,11 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         // TODO see declaration
         // ipsDecorator.setFlatLayout(isFlatLayout());
         contentProvider.setLayoutStyle(newStyle);
-        labelProvider.setIsFlatLayout(isFlatLayout());
+        getLabelProvider().setIsFlatLayout(isFlatLayout());
 
-        treeViewer.getControl().setRedraw(false);
-        treeViewer.refresh();
-        treeViewer.getControl().setRedraw(true);
+        getTreeViewer().getControl().setRedraw(false);
+        getTreeViewer().refresh();
+        getTreeViewer().getControl().setRedraw(true);
     }
 
     /**
@@ -376,7 +382,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
                 Integer linkingValue = layout.getInteger(LINK_TO_EDITOR_KEY);
                 layoutStyle = layoutValue == null ? LayoutStyle.HIERACHICAL : LayoutStyle.getById(layoutValue);
                 excludeNoIpsProjects = filterValue == null ? false : filterValue.intValue() == 1;
-                supportCategories = groupByValue == null ? supportCategories : groupByValue.intValue() == 1;
+                setSupportCategories(groupByValue == null ? isSupportCategories() : groupByValue.intValue() == 1);
                 linkingEnabled = linkingValue == null ? false : linkingValue.intValue() == 1;
             }
         }
@@ -414,7 +420,7 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
         IMemento layout = memento.createChild(MEMENTO);
         layout.putInteger(LAYOUT_STYLE_KEY, layoutStyle.getId());
         layout.putInteger(FILTER_KEY, excludeNoIpsProjects ? 1 : 0);
-        layout.putInteger(GROUP_BY_KEY, supportCategories ? 1 : 0);
+        layout.putInteger(GROUP_BY_KEY, isSupportCategories() ? 1 : 0);
         layout.putInteger(LINK_TO_EDITOR_KEY, linkingEnabled ? 1 : 0);
     }
 
@@ -485,24 +491,24 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     private void selectAndReveal(Object aObject) {
         // The reveal does not always works with the setSelection(..., true) (Eclipse 3.4)
-        treeViewer.reveal(aObject);
+        getTreeViewer().reveal(aObject);
         StructuredSelection selection = new StructuredSelection(aObject);
-        treeViewer.setSelection(selection, true);
-        if (!treeViewer.getSelection().equals(selection)) {
+        getTreeViewer().setSelection(selection, true);
+        if (!getTreeViewer().getSelection().equals(selection)) {
             // If the IpsObject is not expanded yet, the parts are not loaded in the model explorer.
             // We have to expand the IpsObject (indeed it is the IpsSrcFile) and then select the
             // part again.
             if (aObject instanceof IIpsObjectPart) {
                 IIpsObjectPart ipsObjectPart = (IIpsObjectPart)aObject;
-                treeViewer.expandToLevel(ipsObjectPart.getIpsSrcFile(), 1);
-                treeViewer.setSelection(selection, true);
+                getTreeViewer().expandToLevel(ipsObjectPart.getIpsSrcFile(), 1);
+                getTreeViewer().setSelection(selection, true);
             }
         }
     }
 
     @Override
     protected ISelection getSelection() {
-        return treeViewer.getSelection();
+        return getTreeViewer().getSelection();
     }
 
     /** Returns the content provider. */
@@ -518,6 +524,76 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
      */
     protected boolean isModelExplorer() {
         return true;
+    }
+
+    private Action createShowNoIpsProjectsAction() {
+        return new Action(Messages.ModelExplorer_menuShowIpsProjectsOnly_Title, IAction.AS_CHECK_BOX) {
+            @Override
+            public ImageDescriptor getImageDescriptor() {
+                return null;
+            }
+    
+            @Override
+            public void run() {
+                excludeNoIpsProjects = !excludeNoIpsProjects;
+                contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
+                getTreeViewer().refresh();
+            }
+    
+            @Override
+            public String getToolTipText() {
+                return Messages.ModelExplorer_menuShowIpsProjectsOnly_Tooltip;
+            }
+        };
+    }
+
+    protected Action createGroupCategoriesAction() {
+        return new Action(Messages.ModelExplorer_menuGroupCategories_Title, IAction.AS_CHECK_BOX) {
+            @Override
+            public String getToolTipText() {
+                return Messages.ModelExplorer_menuGroupCategories_Tooltip;
+            }
+    
+            @Override
+            public void run() {
+                setSupportCategories(!isSupportCategories());
+                sorter.setSupportCategories(isSupportCategories());
+                getTreeViewer().refresh();
+            }
+        };
+    }
+
+    /**
+     * 
+     * Activate a context that this view uses. It will be tied to this * view activation events and
+     * will be removed when the view is
+     * 
+     * disposed.
+     */
+    
+    private void activateContext() {
+        IContextService service = (IContextService)getSite().getService(IContextService.class);
+        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
+    }
+
+    protected TreeViewer getTreeViewer() {
+        return treeViewer;
+    }
+
+    protected ModelLabelProvider getLabelProvider() {
+        return labelProvider;
+    }
+
+    protected ModelExplorerConfiguration getConfig() {
+        return config;
+    }
+
+    protected boolean isSupportCategories() {
+        return supportCategories;
+    }
+
+    protected void setSupportCategories(boolean supportCategories) {
+        this.supportCategories = supportCategories;
     }
 
     /** Internal part and shell activation listener. */
@@ -661,53 +737,4 @@ public class ModelExplorer extends AbstractShowInSupportingViewPart {
 
     }
 
-    private Action createShowNoIpsProjectsAction() {
-        return new Action(Messages.ModelExplorer_menuShowIpsProjectsOnly_Title, IAction.AS_CHECK_BOX) {
-            @Override
-            public ImageDescriptor getImageDescriptor() {
-                return null;
-            }
-
-            @Override
-            public void run() {
-                excludeNoIpsProjects = !excludeNoIpsProjects;
-                contentProvider.setExcludeNoIpsProjects(excludeNoIpsProjects);
-                treeViewer.refresh();
-            }
-
-            @Override
-            public String getToolTipText() {
-                return Messages.ModelExplorer_menuShowIpsProjectsOnly_Tooltip;
-            }
-        };
-    }
-
-    protected Action createGroupCategoriesAction() {
-        return new Action(Messages.ModelExplorer_menuGroupCategories_Title, IAction.AS_CHECK_BOX) {
-            @Override
-            public String getToolTipText() {
-                return Messages.ModelExplorer_menuGroupCategories_Tooltip;
-            }
-
-            @Override
-            public void run() {
-                supportCategories = !supportCategories;
-                sorter.setSupportCategories(supportCategories);
-                treeViewer.refresh();
-            }
-        };
-    }
-
-    /**
-     * 
-     * Activate a context that this view uses. It will be tied to this * view activation events and
-     * will be removed when the view is
-     * 
-     * disposed.
-     */
-
-    private void activateContext() {
-        IContextService service = (IContextService)getSite().getService(IContextService.class);
-        service.activateContext("org.faktorips.devtools.core.ui.views.modelExplorer.context"); //$NON-NLS-1$
-    }
 }
