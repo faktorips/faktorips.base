@@ -47,25 +47,6 @@ import org.faktorips.runtime.IProductComponent;
  */
 public class ProductAttributeConditionType extends AbstractAttributeConditionType {
 
-    private static final class ProductAttributeArgumentProvider implements IOperandProvider {
-        private final IAttribute attribute;
-
-        public ProductAttributeArgumentProvider(IAttribute attribute) {
-            this.attribute = attribute;
-        }
-
-        @Override
-        public Object getSearchOperand(IProductPartsContainer productPartsContainer) {
-            List<IAttributeValue> attributeValues = productPartsContainer.getProductParts(IAttributeValue.class);
-            for (IAttributeValue attributeValue : attributeValues) {
-                if (attributeValue.getAttribute().equals(attribute.getName())) {
-                    return attributeValue.getValueHolder();
-                }
-            }
-            return null;
-        }
-    }
-
     @Override
     public List<IIpsElement> getSearchableElements(IProductCmptType element) {
         try {
@@ -92,7 +73,7 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
         }
 
         if (isMultiValueAttribute(searchableElement)) {
-            searchOperatorTypes.removeAll(searchOperatorTypes);
+            searchOperatorTypes.clear();
             searchOperatorTypes.addAll(Arrays.asList(ContainsSearchOperatorType.values()));
         }
 
@@ -112,5 +93,24 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
     @Override
     public String getName() {
         return Messages.ProductAttributeCondition_conditionName;
+    }
+
+    private static final class ProductAttributeArgumentProvider implements IOperandProvider {
+        private final IAttribute attribute;
+
+        public ProductAttributeArgumentProvider(IAttribute attribute) {
+            this.attribute = attribute;
+        }
+
+        @Override
+        public Object getSearchOperand(IProductPartsContainer productPartsContainer) {
+            List<IAttributeValue> attributeValues = productPartsContainer.getProductParts(IAttributeValue.class);
+            for (IAttributeValue attributeValue : attributeValues) {
+                if (attributeValue.getAttribute().equals(attribute.getName())) {
+                    return attributeValue.getValueHolder();
+                }
+            }
+            return null;
+        }
     }
 }
