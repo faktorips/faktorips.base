@@ -22,6 +22,7 @@ import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.runtime.IProductComponent;
 
@@ -38,6 +39,8 @@ import org.faktorips.runtime.IProductComponent;
  * the {@link IAttribute} is a {@link String}</li>
  * <li>the {@link ComparableSearchOperatorType ComparableSearchOperatorTypes}, if the
  * {@link ValueDatatype} of the {@link IAttribute} is a {@link Comparable}</li>
+ * <li>the {@link ContainsSearchOperator ContainsSearchOperator}, if the {@link IAttribute} is a
+ * {@link IProductCmptTypeAttribute multiValueAttribute}</li>
  * </ul>
  * 
  * @author dicker
@@ -52,11 +55,11 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
         }
 
         @Override
-        public String getSearchOperand(IProductPartsContainer productPartsContainer) {
+        public Object getSearchOperand(IProductPartsContainer productPartsContainer) {
             List<IAttributeValue> attributeValues = productPartsContainer.getProductParts(IAttributeValue.class);
             for (IAttributeValue attributeValue : attributeValues) {
                 if (attributeValue.getAttribute().equals(attribute.getName())) {
-                    return attributeValue.getPropertyValue();
+                    return attributeValue.getValueHolder();
                 }
             }
             return null;
@@ -88,7 +91,17 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
             searchOperatorTypes.addAll(Arrays.asList(ComparableSearchOperatorType.values()));
         }
 
+        if (isMultiValueAttribute(searchableElement)) {
+            searchOperatorTypes.removeAll(searchOperatorTypes);
+            searchOperatorTypes.addAll(Arrays.asList(ContainsSearchOperatorType.values()));
+        }
+
         return searchOperatorTypes;
+    }
+
+    private boolean isMultiValueAttribute(IIpsElement searchableElement) {
+        return searchableElement instanceof IProductCmptTypeAttribute
+                && ((IProductCmptTypeAttribute)searchableElement).isMultiValueAttribute();
     }
 
     @Override
