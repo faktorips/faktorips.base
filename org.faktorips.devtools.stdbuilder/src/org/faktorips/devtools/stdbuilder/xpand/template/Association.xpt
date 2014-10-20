@@ -28,7 +28,7 @@
 			 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 			 * @generated
 			 */
-		     public «IF !genInterface()»abstract«ENDIF» «List_(targetInterfaceName)» «method(methodNameGetter)»;
+		     public «IF !genInterface()»abstract«ENDIF» «List_("? extends "+ targetInterfaceName)» «method(methodNameGetter)»;
 
 			/**
 		     * «localizedJDoc("METHOD_GET_NUM_OF", getName(true))»
