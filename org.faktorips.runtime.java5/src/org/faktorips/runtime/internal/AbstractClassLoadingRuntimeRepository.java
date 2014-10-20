@@ -10,6 +10,7 @@
 
 package org.faktorips.runtime.internal;
 
+import java.beans.Expression;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -282,43 +283,21 @@ public abstract class AbstractClassLoadingRuntimeRepository extends AbstractTocB
     protected ProductComponentGeneration createProductComponentGenerationInstance(GenerationTocEntry tocEntry,
             ProductComponent productCmpt) {
         ProductComponentGeneration productCmptGen;
+        // CSOFF: IllegalCatch
+        // Must catch Exception because of ugly java API in Expression
         try {
-            Constructor<?> constructor = getProdGenerationConstructor(tocEntry);
-            productCmptGen = (ProductComponentGeneration)constructor.newInstance(new Object[] { productCmpt });
-        } catch (IllegalAccessException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InstantiationException e) {
-            throw createCannotInstantiateException(e, tocEntry);
-        } catch (InvocationTargetException e) {
+            Class<?> implClass = getClass(getProductComponentGenerationImplClass(tocEntry), cl);
+            Expression expression = new Expression(implClass, "new", new Object[] { productCmpt });
+            productCmptGen = (ProductComponentGeneration)expression.getValue();
+        } catch (Exception e) {
             throw createCannotInstantiateException(e, tocEntry);
         }
+        // CSON: IllegalCatch
         return productCmptGen;
     }
 
     private RuntimeException createCannotInstantiateException(Exception e, TocEntry tocEntry) {
         return new RuntimeException("Can't create instance for toc entry " + tocEntry, e);
-    }
-
-    private Constructor<?> getProdGenerationConstructor(GenerationTocEntry tocEntry) {
-        Class<?> implClass = getClass(getProductComponentGenerationImplClass(tocEntry), cl);
-        try {
-            String productCmptClassName = tocEntry.getParent().getImplementationClassName();
-            Class<?> productCmptClass = getClass(productCmptClassName, cl);
-            return implClass.getConstructor(new Class[] { productCmptClass });
-        } catch (NoSuchMethodException e) {
-            return getProdGenerationConstructorForSuperClass(implClass, tocEntry);
-        }
-    }
-
-    private Constructor<?> getProdGenerationConstructorForSuperClass(Class<?> implClass, GenerationTocEntry tocEntry) {
-        try {
-            String productCmptClassName = tocEntry.getParent().getImplementationClassName();
-            Class<?> productCmptClass = getClass(productCmptClassName, cl);
-            return implClass.getConstructor(new Class[] { productCmptClass.getSuperclass() });
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Can't get constructor for class " + implClass.getName() + " , toc entry "
-                    + tocEntry, e);
-        }
     }
 
     /**
