@@ -21,8 +21,8 @@ import org.faktorips.datatype.ValueDatatype;
 public class EqualitySearchOperator extends AbstractStringSearchOperator<EqualitySearchOperatorType> {
 
     public EqualitySearchOperator(ValueDatatype valueDatatype, EqualitySearchOperatorType searchOperatorType,
-            IOperandProvider OperandProvider, String argument) {
-        super(valueDatatype, searchOperatorType, OperandProvider, argument);
+            IOperandProvider operandProvider, String argument) {
+        super(valueDatatype, searchOperatorType, operandProvider, argument);
     }
 
     @Override
@@ -33,7 +33,12 @@ public class EqualitySearchOperator extends AbstractStringSearchOperator<Equalit
     private boolean checkEquality(String operand) {
         if (getArgument() == null) {
             return operand == null;
+        } else {
+            try {
+                return getValueDatatype().areValuesEqual(operand, getArgument());
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
         }
-        return getValueDatatype().areValuesEqual(operand, getArgument());
     }
 }

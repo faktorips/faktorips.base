@@ -171,15 +171,22 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation only throws an {@link IllegalArgumentException} if both values are the
+     * same using the {@link String#equals(Object)} compare. If the values are different this method
+     * always returns <code>false</code> also if one value may not be part of the enum. This is done
+     * because of performance issues.
+     */
     @Override
     public boolean areValuesEqual(String valueA, String valueB) {
         if (ObjectUtils.equals(valueA, valueB)) {
             if (isParsable(valueA)) {
                 return true;
             } else {
-                throw new IllegalArgumentException("Either the value of parameter valueA=" + valueA //$NON-NLS-1$
-                        + " or the one of parameter valueB=" //$NON-NLS-1$
-                        + " is not part of this enumeration type. Therefore the equality cannot be determined."); //$NON-NLS-1$
+                throw new IllegalArgumentException(
+                        "The values seems to be equal but the value " + valueA + " is not parseable by the enum " + this); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return false;
