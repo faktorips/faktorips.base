@@ -3,6 +3,8 @@ package org.faktorips.runtime.internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyMapOf;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,25 +14,46 @@ import java.util.Map;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
+import org.faktorips.runtime.formula.IFormulaEvaluatorFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.w3c.dom.Element;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FormulaHandlerTest extends XmlAbstractTestCase {
 
-    private FormulaHandler formulaHandler;
+    @Mock
+    private Object callerObject;
+
+    @Mock
+    private IFormulaEvaluatorFactory factory;
+
+    @Mock
     private InMemoryRuntimeRepository repository;
+
+    @Mock
+    private IFormulaEvaluator formulaEvaluator;
+
+    private FormulaHandler formulaHandler;
 
     @Before
     public void setUp() throws Exception {
-        repository = new InMemoryRuntimeRepository();
-        formulaHandler = new FormulaHandler(repository);
+        formulaHandler = new FormulaHandler(callerObject, repository);
+        when(repository.getFormulaEvaluatorFactory()).thenReturn(factory);
+        when(factory.createFormulaEvaluator(eq(callerObject), anyMapOf(String.class, String.class))).thenReturn(
+                formulaEvaluator);
     }
 
     @Test
     public void testDoInitFormulaFromXml() {
         Element element = getTestDocument().getDocumentElement();
         formulaHandler.doInitFormulaFromXml(element);
+
+        assertEquals(formulaEvaluator, formulaHandler.getFormulaEvaluator());
+
     }
 
     @Test
