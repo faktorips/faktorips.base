@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -80,24 +83,54 @@ public class Formula extends Expression implements IFormula {
         return getExpression();
     }
 
+    /**
+     * Returns the generation this formula belongs to.
+     * 
+     * @deprecated As of 3.14 a {@link Formula} can be part of both {@link IProductCmpt product
+     *             components} and {@link ProductCmptGeneration product component generations}. Use
+     *             {@link #getPropertyValueContainer()} and the common interface
+     *             {@link IPropertyValueContainer} instead.
+     */
+    @Deprecated
     @Override
     public IProductCmptGeneration getProductCmptGeneration() {
-        return (IProductCmptGeneration)getParent();
+        if (getPropertyValueContainer() instanceof IProductCmptGeneration) {
+            return (ProductCmptGeneration)getPropertyValueContainer();
+        }
+        return null;
     }
 
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         try {
-            return getProductCmptGeneration().findProductCmptType(ipsProject);
+            return getPropertyValueContainer().findProductCmptType(ipsProject);
         } catch (final CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
     }
 
     @Override
+    public List<IAttribute> findMatchingProductCmptTypeAttributes() {
+        List<IAttribute> allAttributes = super.findMatchingProductCmptTypeAttributes();
+        if (!getPropertyValueContainer().isChangingOverTimeContainer()) {
+            List<IAttribute> notChangingOverTimeAttributes = new ArrayList<IAttribute>();
+            for (IAttribute attribute : allAttributes) {
+                if (!((ProductCmptTypeAttribute)attribute).isChangingOverTime()) {
+                    notChangingOverTimeAttributes.add(attribute);
+                }
+            }
+            return notChangingOverTimeAttributes;
+        } else {
+            return allAttributes;
+        }
+    }
+
+    @Override
     protected ITableContentUsage[] getTableContentUsages() {
-        List<ITableContentUsage> usages = getProductCmptGeneration().getPropertyValuesIncludingProductCmpt(
-                ITableContentUsage.class);
+        List<ITableContentUsage> usages = getPropertyValueContainer().getPropertyValues(ITableContentUsage.class);
+        if (getPropertyValueContainer() instanceof IProductCmptGeneration) {
+            usages.addAll(getPropertyValueContainer().getProductCmpt().getPropertyValues(ITableContentUsage.class));
+        }
         return usages.toArray(new ITableContentUsage[usages.size()]);
     }
 
@@ -105,7 +138,7 @@ public class Formula extends Expression implements IFormula {
     protected void collectEnumTypesFromAttributes(Map<String, EnumDatatype> enumTypes) {
         try {
             IIpsProject ipsProject = getIpsProject();
-            IProductCmptType productCmptType = getProductCmptGeneration().findProductCmptType(ipsProject);
+            IProductCmptType productCmptType = findProductCmptType(ipsProject);
             if (productCmptType != null) {
                 List<IAttribute> attributes = productCmptType.findAllAttributes(ipsProject);
                 for (IAttribute attribute : attributes) {

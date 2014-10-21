@@ -167,8 +167,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *   }
      * </pre>
      */
-    private void generateMethodMarshal(JavaCodeFragmentBuilder builder, DatatypeHelper datatypeHelper)
-            throws CoreException {
+    private void generateMethodMarshal(JavaCodeFragmentBuilder builder, DatatypeHelper datatypeHelper) {
 
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("if(value == null)"); //$NON-NLS-1$
@@ -198,8 +197,7 @@ public class EnumXmlAdapterBuilder extends DefaultJavaSourceFileBuilder {
      *  }
      * </pre>
      */
-    private void generateMethodUnMarshal(JavaCodeFragmentBuilder builder, DatatypeHelper datatypeHelper)
-            throws CoreException {
+    private void generateMethodUnMarshal(JavaCodeFragmentBuilder builder, DatatypeHelper datatypeHelper) {
 
         JavaCodeFragment body = new JavaCodeFragment();
         body.appendln("if(id == null)"); //$NON-NLS-1$

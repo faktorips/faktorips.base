@@ -103,11 +103,11 @@ final class ProductComponentXmlUtil {
     }
 
     /**
-     * Returns a set containing the formulaSignatures of all available formulars (with a not empty
-     * expression) found in the indicated generation's xml element.
+     * Returns a set containing the formulaSignatures and expression of all available formulas (with
+     * a not empty expression) found in the indicated xml element.
      * 
-     * @param element An xml element containing a product component generation's data.
-     * @throws NullPointerException if genElement is <code>null</code>.
+     * @param element An xml element containing the data.
+     * @throws NullPointerException if element is <code>null</code>.
      */
     static final Map<String, String> getAvailableFormulars(Element element) {
         Map<String, String> availableFormulas = new LinkedHashMap<String, String>();
@@ -128,5 +128,4 @@ final class ProductComponentXmlUtil {
         }
         return availableFormulas;
     }
-
 }

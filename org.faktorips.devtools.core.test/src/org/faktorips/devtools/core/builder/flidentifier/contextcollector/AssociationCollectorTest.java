@@ -180,7 +180,7 @@ public class AssociationCollectorTest {
         List<IProductCmptLink> links = createLinks();
         when(contextProductCmptGeneration.getLinksAsList(matchingAssociation.getName())).thenReturn(links);
         when(contextProductCmpt2.getLatestProductCmptGeneration()).thenReturn(contextProductCmptGeneration);
-        when(expression.getProductCmptGeneration()).thenReturn(null);
+        when(expression.getPropertyValueContainer()).thenReturn(null);
 
         Set<IProductCmpt> contextProductCmpts = associationCollector.getContextProductCmpts();
 
@@ -201,7 +201,7 @@ public class AssociationCollectorTest {
         GregorianCalendar validFrom = mock(GregorianCalendar.class);
         IProductCmptGeneration generation = mock(IProductCmptGeneration.class);
         when(generation.getValidFrom()).thenReturn(validFrom);
-        when(expression.getProductCmptGeneration()).thenReturn(generation);
+        when(expression.getPropertyValueContainer()).thenReturn(generation);
         return validFrom;
     }
 

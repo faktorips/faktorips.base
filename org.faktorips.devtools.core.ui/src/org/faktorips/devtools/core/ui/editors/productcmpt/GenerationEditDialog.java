@@ -19,7 +19,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
@@ -43,6 +45,8 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
     private IProductCmptGeneration next;
     private boolean newGenerationDialog = false;
 
+    private ExtensionPropertyControlFactory extFactory;
+
     /**
      * Creates a new dialog to edit and create a product cmpt generation
      * 
@@ -61,6 +65,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         this.next = (IProductCmptGeneration)generation.getNextByValidDate();
         this.newGenerationDialog = newGenerationDialog;
         this.pmo = new GenerationEditDialogPMO(generation);
+        this.extFactory = new ExtensionPropertyControlFactory(generation);
     }
 
     @Override
@@ -81,9 +86,23 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
         getToolkit().createLabel(workArea, Messages.GenerationEditDialog_labelValidFrom);
         DateControl dateControl = new DateControl(workArea, getToolkit());
         Text textControl = dateControl.getTextControl();
-
         dateField = new FormattingTextField<GregorianCalendar>(textControl, GregorianCalendarFormat.newInstance());
+
+        createExtensionProperties(workArea);
+
         return workArea;
+    }
+
+    private void createExtensionProperties(Composite workArea) {
+        if (!newGenerationDialog) {
+            createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_TOP);
+            createExtensionProperties(workArea, IExtensionPropertyDefinition.POSITION_BOTTOM);
+        }
+    }
+
+    private void createExtensionProperties(Composite workArea, String position) {
+        extFactory.createControls(workArea, getToolkit(), getIpsPart(), position);
+        extFactory.bind(getBindingContext());
     }
 
     @Override

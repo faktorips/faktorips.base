@@ -38,11 +38,11 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
     protected Composite createWorkAreaThis(Composite parent) {
         Composite c = super.createWorkAreaThis(parent);
 
-        nameText.addFocusListener(new FocusAdapter() {
+        getNameText().addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
-                if (StringUtils.isEmpty(method.getName())) {
-                    method.setName(getProductCmptTypeMethod().getDefaultMethodName());
+                if (StringUtils.isEmpty(getMethod().getName())) {
+                    getMethod().setName(getProductCmptTypeMethod().getDefaultMethodName());
                 }
             }
         });
@@ -51,7 +51,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
     }
 
     private IProductCmptTypeMethod getProductCmptTypeMethod() {
-        return (IProductCmptTypeMethod)method;
+        return (IProductCmptTypeMethod)getMethod();
     }
 
     @Override
@@ -59,30 +59,38 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         Composite group = toolkit.createGroup(parent, Messages.ProductCmptTypeMethodEditDialog_formulaGroup);
         AbstractCheckbox checkbox = toolkit.createCheckbox(group,
                 Messages.ProductCmptTypeMethodEditDialog_formulaCheckbox);
-        getBindingContext().bindContent(checkbox, method, IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
+        getBindingContext().bindContent(checkbox, getMethod(),
+                IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
         AbstractCheckbox checkboxOptional = toolkit.createCheckbox(group,
                 Messages.ProductCmptTypeMethodEditDialog_formulaMandatory);
         checkboxOptional.setToolTipText(Messages.ProductCmptTypeMethodEditDialog_formulaMandatoryHint);
-        getBindingContext().bindContent(checkboxOptional, method, IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY);
-        getBindingContext().bindEnabled(checkboxOptional, method,
+        getBindingContext().bindContent(checkboxOptional, getMethod(),
+                IProductCmptTypeMethod.PROPERTY_FORMULA_MANDATORY);
+        getBindingContext().bindEnabled(checkboxOptional, getMethod(),
                 IProductCmptTypeMethod.PROPERTY_FORMULA_OPTIONAL_SUPPORTED);
 
         AbstractCheckbox overloadsFormula = toolkit.createCheckbox(group,
                 Messages.ProductCmptTypeMethodEditDialog_labelOverloadsFormula);
-        getBindingContext().bindContent(overloadsFormula, method, IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA);
-        getBindingContext().bindEnabled(overloadsFormula, method,
+        getBindingContext().bindContent(overloadsFormula, getMethod(),
+                IProductCmptTypeMethod.PROPERTY_OVERLOADS_FORMULA);
+        getBindingContext().bindEnabled(overloadsFormula, getMethod(),
                 IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
         Composite area = getToolkit().createLabelEditColumnComposite(group);
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_formulaNameLabel);
         Text formulaNameText = toolkit.createText(area);
-        getBindingContext().bindContent(formulaNameText, method, IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
-        getBindingContext().bindEnabled(formulaNameText, method,
+        getBindingContext().bindContent(formulaNameText, getMethod(), IProductCmptTypeMethod.PROPERTY_FORMULA_NAME);
+        getBindingContext().bindEnabled(formulaNameText, getMethod(),
                 IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
 
         toolkit.createLabel(area, Messages.ProductCmptTypeMethodEditDialog_categoryLabel);
         createCategoryCombo(area);
+    }
+
+    @Override
+    protected boolean isProdCmptTypeEditDialog() {
+        return true;
     }
 
     private void createCategoryCombo(Composite workArea) {
@@ -102,7 +110,7 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
         });
 
         getBindingContext().bindContent(comboViewerField, pmo, CategoryPmo.PROPERTY_CATEGORY);
-        getBindingContext().bindEnabled(comboViewerField.getCombo(), method,
+        getBindingContext().bindEnabled(comboViewerField.getCombo(), getMethod(),
                 IProductCmptTypeMethod.PROPERTY_FORMULA_SIGNATURE_DEFINITION);
     }
 
@@ -110,9 +118,9 @@ public class ProductCmptTypeMethodEditDialog extends MethodEditDialog {
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
         if (event.getIpsSrcFile().equals(getIpsPart().getIpsSrcFile())) {
-            IProductCmptTypeMethod tMethod = (IProductCmptTypeMethod)method;
-            datatypeControl.setVoidAllowed(!tMethod.isFormulaSignatureDefinition());
-            datatypeControl.setOnlyValueDatatypesAllowed(tMethod.isFormulaSignatureDefinition());
+            IProductCmptTypeMethod tMethod = (IProductCmptTypeMethod)getMethod();
+            getDatatypeControl().setVoidAllowed(!tMethod.isFormulaSignatureDefinition());
+            getDatatypeControl().setOnlyValueDatatypesAllowed(tMethod.isFormulaSignatureDefinition());
             setLabelCompositeEnabled(tMethod.isFormulaSignatureDefinition());
         }
     }

@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.tablecontents.IRow;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -95,27 +96,31 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
     protected void editNextColumn() {
         if (isAtNewColumn()) {
             fireApplyEditorValue();
-            if (isAtNewRow()) {
-                if (isRowCreating()) {
-                    /*
-                     * in GTK / Linux appending a new row resetting the selected column to -1 so we
-                     * safe the currently selected column
-                     */
-                    int currentRow = getCurrentRow();
-                    appendTableRow();
-                    tableViewer.getTable().select(currentRow);
-                } else {
-                    /*
-                     * This will ensure that if the cursor is in the last row and last column,
-                     * hitting tab will set the focus to the table so that if tab is pressed again,
-                     * the next UI element will be focused
-                     */
-                    tableViewer.getTable().forceFocus();
-                }
-            }
+            appendRowIfNecessary();
             editCell(getNextRow(), getNextColumn());
         } else {
             editCell(getCurrentRow(), getNextColumn());
+        }
+    }
+
+    private void appendRowIfNecessary() {
+        if (isAtNewRow()) {
+            if (isRowCreating()) {
+                /*
+                 * in GTK / Linux appending a new row resetting the selected column to -1 so we safe
+                 * the currently selected column
+                 */
+                int currentRow = getCurrentRow();
+                appendTableRow();
+                tableViewer.getTable().select(currentRow);
+            } else {
+                /*
+                 * This will ensure that if the cursor is in the last row and last column, hitting
+                 * tab will set the focus to the table so that if tab is pressed again, the next UI
+                 * element will be focused
+                 */
+                tableViewer.getTable().forceFocus();
+            }
         }
     }
 
@@ -216,9 +221,15 @@ public class TableViewerTraversalStrategy extends TableTraversalStrategy {
         if (columnIndex != getColumnIndex() || rowIndex != getCurrentRow()) {
             Object element = tableViewer.getElementAt(rowIndex);
             if (element != null) {
+                scrollToColumn(columnIndex);
                 tableViewer.editElement(element, columnIndex);
             }
         }
+    }
+
+    private void scrollToColumn(int columnIndex) {
+        Table table = tableViewer.getTable();
+        table.showColumn(table.getColumn(columnIndex));
     }
 
     /**

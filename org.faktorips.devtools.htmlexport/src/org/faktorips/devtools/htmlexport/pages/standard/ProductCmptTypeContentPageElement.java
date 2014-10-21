@@ -157,6 +157,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
     }
 
     private static final class TableMethodContentPageElement extends MethodsTablePageElement {
+
+        private static final String IS_FALSE = "-"; //$NON-NLS-1$
+        private static final String IS_TRUE = "X"; //$NON-NLS-1$
+
         private TableMethodContentPageElement(IType type, DocumentationContext context) {
             super(type, context);
         }
@@ -166,7 +170,10 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
             List<String> headline = super.getHeadlineWithIpsObjectPart();
             headline.add(getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_formulaName));
-
+            addHeadlineAndColumnLayout(headline,
+                    getContext()
+                            .getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),
+                    Style.CENTER);
             return headline;
         }
 
@@ -176,7 +183,7 @@ public class ProductCmptTypeContentPageElement extends AbstractTypeContentPageEl
 
             IProductCmptTypeMethod productMethod = (IProductCmptTypeMethod)method;
             methodData.add(productMethod.getFormulaName());
-
+            methodData.add(productMethod.isChangingOverTime() ? IS_TRUE : IS_FALSE);
             return methodData;
         }
     }

@@ -95,10 +95,16 @@ public interface ValueDatatype extends Datatype {
     public int compare(String valueA, String valueB) throws UnsupportedOperationException;
 
     /**
-     * @return <code>true</code> if the both given strings represent the same value defined by this
-     *         datatype. The String " 1" (a blank followed by the char '1') and "1" (just the char
-     *         '1') are equal if the datatype is an Integer, but will not be equal if the datatype
-     *         is a String.
+     * Returns <code>true</code> if the both given strings represent the same value defined by this
+     * datatype. The String " 1" (a blank followed by the char '1') and "1" (just the char '1') are
+     * equal if the datatype is an Integer, but will not be equal if the datatype is a String.
+     * 
+     * @param valueA The first parameter to compare
+     * @param valueB The second parameter to compare
+     * 
+     * @return <code>true</code> if the two values are equal according to the datatype, returns
+     *         <code>false</code> if they are different.
+     * 
      * @throws IllegalArgumentException if one of the parameter values doesn't exist in the value
      *             set of this datatype.
      */

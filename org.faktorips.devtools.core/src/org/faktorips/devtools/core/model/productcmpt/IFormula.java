@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.faktorips.devtools.core.internal.model.productcmpt.Formula;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 
@@ -23,7 +25,13 @@ public interface IFormula extends IPropertyValue, IExpression {
 
     /**
      * Returns the generation this formula belongs to.
+     * 
+     * @deprecated As of 3.14 a {@link Formula} can be part of both {@link IProductCmpt product
+     *             components} and {@link ProductCmptGeneration product component generations}. Use
+     *             {@link #getPropertyValueContainer()} and the common interface
+     *             {@link IPropertyValueContainer} instead.
      */
+    @Deprecated
     public IProductCmptGeneration getProductCmptGeneration();
 
     /**

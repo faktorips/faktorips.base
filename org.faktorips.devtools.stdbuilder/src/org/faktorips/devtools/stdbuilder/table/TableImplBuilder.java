@@ -359,7 +359,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
     }
 
-    private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+    private void createGetInstanceMethodForSingleContent(JavaCodeFragmentBuilder codeBuilder) {
         String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return repository.getTable(");
@@ -372,7 +372,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 getLocalizedText(GET_INSTANCE_JAVADOC), ANNOTATION_GENERATED);
     }
 
-    private void createGetInstanceMethodForMultipleContents(JavaCodeFragmentBuilder codeBuilder) throws CoreException {
+    private void createGetInstanceMethodForMultipleContents(JavaCodeFragmentBuilder codeBuilder) {
         String qualifiedClassName = getQualifiedClassName(getTableStructure().getIpsSrcFile());
         JavaCodeFragment methodBody = new JavaCodeFragment();
         methodBody.append("return (");

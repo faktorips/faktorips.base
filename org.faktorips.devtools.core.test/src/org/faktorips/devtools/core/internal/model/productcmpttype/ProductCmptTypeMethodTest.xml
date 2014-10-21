@@ -5,6 +5,19 @@
 -->
 <TestData>
 
-	<Method id="42" name="calcPremium" datatype="Money" modifier="public" abstract="true" formulaName="Premium" formulaSignatureDefinition="true" mandatory="false" overloadsFormula="true" />
+	<Method id="42" 
+			name="calcPremium" 
+			datatype="Money" 
+			modifier="public" 
+			abstract="true" 
+			formulaName="Premium" 
+			formulaSignatureDefinition="true" 
+			mandatory="false" 
+			overloadsFormula="true"
+			changingOverTime="false" />
+	<Method id="43"/>
 
+	<Method id="44"
+				formulaSignatureDefinition="false" />
+	
 </TestData>

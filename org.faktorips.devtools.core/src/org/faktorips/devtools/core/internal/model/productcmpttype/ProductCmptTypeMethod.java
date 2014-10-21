@@ -42,6 +42,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     private String formulaName = StringUtils.EMPTY;
 
+    /** Flag indicating if this is static */
+    private boolean changingOverTime = true;
+
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
     }
@@ -102,12 +105,17 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
-                .booleanValue();
+        if (element.hasAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION)) {
+            formulaSignatureDefinition = Boolean.valueOf(element.getAttribute(PROPERTY_FORMULA_SIGNATURE_DEFINITION))
+                    .booleanValue();
+        }
         overloadsFormula = Boolean.valueOf(element.getAttribute(PROPERTY_OVERLOADS_FORMULA));
         String mandatoryXml = element.getAttribute(XML_FORMULA_MANDATORY);
         formulaMandatory = StringUtils.isEmpty(mandatoryXml) ? true : Boolean.valueOf(mandatoryXml);
         formulaName = element.getAttribute(PROPERTY_FORMULA_NAME);
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            changingOverTime = Boolean.valueOf(element.getAttribute(PROPERTY_CHANGING_OVER_TIME)).booleanValue();
+        }
     }
 
     @Override
@@ -117,6 +125,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         element.setAttribute(PROPERTY_OVERLOADS_FORMULA, String.valueOf(overloadsFormula));
         element.setAttribute(XML_FORMULA_MANDATORY, String.valueOf(formulaMandatory));
         element.setAttribute(PROPERTY_FORMULA_NAME, String.valueOf(formulaName));
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
     }
 
     @Override
@@ -138,6 +147,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
+        validateChangingOverTime(result, ipsProject);
         if (!isFormulaSignatureDefinition()) {
             return;
         }
@@ -185,9 +195,31 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         }
     }
 
+    protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) throws CoreException {
+        if (!StringUtils.isEmpty(getName())) {
+            IMethod overridden = findOverriddenMethod(ipsProject);
+            if (overridden == null) {
+                return;
+            }
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)overridden;
+            if (method.isChangingOverTime() && !isChangingOverTime()) {
+                result.add(new Message(
+                        IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME,
+                        Messages.ProductCmptTypeMethod_msgNotChangingOverTimeNotAllowedBecauseChangingOverTimeInSupertypeHierarchy,
+                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME));
+            }
+            if (isChangingOverTime() && !method.isChangingOverTime()) {
+                result.add(new Message(
+                        IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME,
+                        Messages.ProductCmptTypeMethod_msgChangingOverTimeNotAllowedBecauseNotChangingOverTimeInSupertypeHierarchy,
+                        Message.ERROR, this, IProductCmptTypeMethod.PROPERTY_CHANGING_OVER_TIME));
+            }
+        }
+    }
+
     @Override
     public boolean isChangingOverTime() {
-        return true;
+        return changingOverTime;
     }
 
     @Override
@@ -238,6 +270,13 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         String oldFormulaName = getFormulaName();
         this.formulaName = newFormulaName;
         valueChanged(oldFormulaName, formulaName, PROPERTY_FORMULA_NAME);
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changingOverTime) {
+        boolean oldValue = this.changingOverTime;
+        this.changingOverTime = changingOverTime;
+        valueChanged(oldValue, changingOverTime, PROPERTY_CHANGING_OVER_TIME);
     }
 
     /**

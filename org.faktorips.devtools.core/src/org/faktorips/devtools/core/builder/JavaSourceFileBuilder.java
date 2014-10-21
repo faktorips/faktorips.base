@@ -339,9 +339,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @param ipsSrcFile the IPS source file.
      * 
-     * @throws CoreException is delegated from calls to other methods
      */
-    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) throws CoreException {
+    public String getQualifiedClassName(IIpsSrcFile ipsSrcFile) {
         return getJavaClassNaming().getQualifiedClassName(ipsSrcFile, BuilderAspect.getValue(generatesInterface()),
                 getJavaClassNameProvider());
     }
@@ -352,7 +351,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @param ipsObject the IPS object.
      */
-    public String getQualifiedClassName(IIpsObject ipsObject) throws CoreException {
+    public String getQualifiedClassName(IIpsObject ipsObject) {
         return getQualifiedClassName(ipsObject.getIpsSrcFile());
     }
 
@@ -362,9 +361,8 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      * 
      * @return the qualified class name
      * 
-     * @throws CoreException is delegated from calls to other methods
      */
-    public String getQualifiedClassName() throws CoreException {
+    public String getQualifiedClassName() {
         return getQualifiedClassName(getIpsSrcFile());
     }
 
