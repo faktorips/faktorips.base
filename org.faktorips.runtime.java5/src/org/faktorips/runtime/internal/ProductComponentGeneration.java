@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
  * 
  */
 public abstract class ProductComponentGeneration extends RuntimeObject implements IProductComponentGeneration,
-IXmlPersistenceSupport {
+        IXmlPersistenceSupport {
 
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
@@ -52,7 +52,7 @@ IXmlPersistenceSupport {
 
     public ProductComponentGeneration(ProductComponent productCmpt) {
         this.productCmpt = productCmpt;
-        this.formulaHandler = new FormulaHandler(getRepository());
+        this.formulaHandler = new FormulaHandler(this, getRepository());
     }
 
     /**
