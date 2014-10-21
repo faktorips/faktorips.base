@@ -18,12 +18,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
@@ -127,7 +129,7 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
 
         IOperandProvider operandProvider = condition.createOperandProvider(attribut);
 
-        assertEquals(value, operandProvider.getSearchOperand(generation));
+        assertEquals(value, ((SingleValueHolder)operandProvider.getSearchOperand(generation)).getValue().getContent());
     }
 
     @Test
@@ -143,7 +145,32 @@ public class ProductAttributeConditionTest extends AbstractIpsPluginTest {
 
         IOperandProvider operandProvider = condition.createOperandProvider(attribut);
 
-        assertEquals(value, operandProvider.getSearchOperand(productCmpt));
+        assertEquals(value, ((SingleValueHolder)operandProvider.getSearchOperand(productCmpt)).getValue().getContent());
+    }
+
+    @Test
+    public void testOperandProvider_MultiValueAttribute() throws CoreException {
+        String value1 = "monatlich";
+        String value2 = "taeglich";
+
+        IProductCmptTypeAttribute attribut = productCmptType.newProductCmptTypeAttribute("zahlweise");
+        attribut.setMultiValueAttribute(true);
+
+        ProductCmpt productCmpt = newProductCmpt(productCmptType, "ich.bin.ein.Baustein");
+        ProductCmptGeneration generation = (ProductCmptGeneration)productCmpt.newGeneration();
+        IAttributeValue attributeValue = generation.newAttributeValue(attribut);
+        SingleValueHolder singleValueHolder1 = new SingleValueHolder(attributeValue, value1);
+        SingleValueHolder singleValueHolder2 = new SingleValueHolder(attributeValue, value2);
+        List<SingleValueHolder> singleValueHolderList = new ArrayList<SingleValueHolder>();
+        singleValueHolderList.add(singleValueHolder1);
+        singleValueHolderList.add(singleValueHolder2);
+        attributeValue.setValueHolder(new MultiValueHolder(attributeValue, singleValueHolderList));
+
+        IOperandProvider operandProvider = condition.createOperandProvider(attribut);
+
+        List<SingleValueHolder> valueList = ((MultiValueHolder)operandProvider.getSearchOperand(generation)).getValue();
+        assertEquals(value1, valueList.get(0).getValue().getContent());
+        assertEquals(value2, valueList.get(1).getValue().getContent());
     }
 
 }

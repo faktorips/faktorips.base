@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
 
 /**
@@ -22,7 +21,7 @@ import org.faktorips.devtools.core.ui.search.matcher.WildcardMatcher;
  * 
  * @author dicker
  */
-public class LikeSearchOperator extends AbstractSearchOperator<LikeSearchOperatorType> {
+public class LikeSearchOperator extends AbstractStringSearchOperator<LikeSearchOperatorType> {
 
     private final WildcardMatcher matcher;
 
@@ -33,14 +32,7 @@ public class LikeSearchOperator extends AbstractSearchOperator<LikeSearchOperato
     }
 
     @Override
-    protected boolean check(Object searchOperand, IProductPartsContainer productPartsContainer) {
-        if (searchOperand instanceof String) {
-            return checkInternal((String)searchOperand);
-        }
-        return false;
-    }
-
-    private boolean checkInternal(String searchOperand) {
+    boolean checkInternal(String searchOperand) {
         return matcher.isMatching(searchOperand) == getSearchOperatorType().isNegation();
     }
 

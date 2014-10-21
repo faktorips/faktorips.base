@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
 /**
@@ -28,8 +29,11 @@ public abstract class AbstractStringSearchOperator<S extends ISearchOperatorType
 
     @Override
     protected final boolean check(Object operand, IProductPartsContainer productPartsContainer) {
-        if (operand instanceof String && getValueDatatype().isParsable((String)operand)) {
-            return checkInternal((String)operand);
+        if (operand instanceof SingleValueHolder) {
+            Object operandContent = ((SingleValueHolder)operand).getValue().getContent();
+            if (operandContent instanceof String && getValueDatatype().isParsable((String)operandContent)) {
+                return checkInternal((String)operandContent);
+            }
         }
         return false;
     }

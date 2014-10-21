@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
 
@@ -40,10 +41,10 @@ public abstract class AbstractSearchOperator<S extends ISearchOperatorType> impl
     }
 
     /**
-     * returns true, if the given {@link IProductCmptGeneration} is a hit regarding the given
-     * searchOperand
+     * returns true, if the given {@link IProductCmpt} or {@link IProductCmptGeneration} is a hit
+     * regarding the given searchOperand
      */
-    protected abstract boolean check(Object searchOperand, IProductPartsContainer productCmptGeneration);
+    protected abstract boolean check(Object searchOperand, IProductPartsContainer productPartsContainer);
 
     public S getSearchOperatorType() {
         return searchOperatorType;

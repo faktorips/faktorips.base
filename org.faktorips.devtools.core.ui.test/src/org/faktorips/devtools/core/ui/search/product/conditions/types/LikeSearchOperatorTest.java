@@ -13,33 +13,50 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LikeSearchOperatorTest {
+
+    @Mock
+    private IAttributeValue attributeValue;
+
+    private SingleValueHolder singleValueHolder1 = new SingleValueHolder(attributeValue, "VollKasko");
+    private SingleValueHolder singleValueHolder2 = new SingleValueHolder(attributeValue, "kasko");
+    private SingleValueHolder singleValueHolder3 = new SingleValueHolder(attributeValue, "VollKaskoLvb");
+    private SingleValueHolder singleValueHolder4 = new SingleValueHolder(attributeValue, "VollKaskko");
+    private SingleValueHolder singleValueHolder5 = new SingleValueHolder(attributeValue, "");
 
     @Test
     public void testLike() {
         LikeSearchOperatorType likeType = LikeSearchOperatorType.LIKE;
 
-        LikeSearchOperator searchOperator = (LikeSearchOperator)likeType.createSearchOperator(null, null, "*kas?o");
+        LikeSearchOperator searchOperator = (LikeSearchOperator)likeType.createSearchOperator(null,
+                new StringDatatype(), "*kas?o");
 
-        assertTrue(searchOperator.check("VollKasko", null));
-        assertTrue(searchOperator.check("kasko", null));
-        assertFalse(searchOperator.check("VollKaskoLvb", null));
+        assertTrue(searchOperator.check(singleValueHolder1, null));
+        assertTrue(searchOperator.check(singleValueHolder2, null));
+        assertFalse(searchOperator.check(singleValueHolder3, null));
         assertFalse(searchOperator.check(null, null));
-        assertFalse(searchOperator.check("VollKaskko", null));
-        assertFalse(searchOperator.check("", null));
+        assertFalse(searchOperator.check(singleValueHolder4, null));
+        assertFalse(searchOperator.check(singleValueHolder5, null));
 
         LikeSearchOperatorType likeTypeNot = LikeSearchOperatorType.NOT_LIKE;
 
-        LikeSearchOperator searchOperatorNot = (LikeSearchOperator)likeTypeNot.createSearchOperator(null, null,
-                "*kas?o");
+        LikeSearchOperator searchOperatorNot = (LikeSearchOperator)likeTypeNot.createSearchOperator(null,
+                new StringDatatype(), "*kas?o");
 
-        assertFalse(searchOperatorNot.check("VollKasko", null));
-        assertFalse(searchOperatorNot.check("kasko", null));
-        assertTrue(searchOperatorNot.check("VollKaskoLvb", null));
+        assertFalse(searchOperatorNot.check(singleValueHolder1, null));
+        assertFalse(searchOperatorNot.check(singleValueHolder2, null));
+        assertTrue(searchOperatorNot.check(singleValueHolder3, null));
         assertFalse(searchOperatorNot.check(null, null));
-        assertTrue(searchOperatorNot.check("VollKaskko", null));
-        assertTrue(searchOperatorNot.check("", null));
+        assertTrue(searchOperatorNot.check(singleValueHolder4, null));
+        assertTrue(searchOperatorNot.check(singleValueHolder5, null));
     }
 }

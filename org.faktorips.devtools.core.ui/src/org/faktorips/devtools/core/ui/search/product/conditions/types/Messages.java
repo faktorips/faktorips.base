@@ -29,6 +29,7 @@ public class Messages extends NLS {
     public static String ProductComponentAssociationCondition_association;
     public static String ReferenceSearchOperatorType_labelDoesNotReference;
     public static String ReferenceSearchOperatorType_labelReferences;
+    public static String ContainsSearchOperatorType__labelContains;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
