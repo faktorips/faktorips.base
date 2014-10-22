@@ -115,6 +115,12 @@ public interface IPersistentAttributeInfo extends IPersistentTypePartInfo {
             + "PersistenceattrColnameMustBeEmpty"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the column name must not contain whitespace.
+     */
+    public static final String MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS = MSGCODE_PREFIX
+            + "PersistenceattrColnameMustNotContainWhitespaceCharacters"; //$NON-NLS-1$
+
+    /**
      * Returns the {@link IPolicyCmptTypeAttribute} this info object belongs to.
      */
     public IPolicyCmptTypeAttribute getPolicyComponentTypeAttribute();
