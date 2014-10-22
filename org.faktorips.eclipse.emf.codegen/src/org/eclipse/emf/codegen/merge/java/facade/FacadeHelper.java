@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.codegen.merge.java.JControlModel;
-import org.eclipse.emf.codegen.util.CodeGenUtil;
 
 public abstract class FacadeHelper {
     protected static final String CLASS_PREFIX = "org.eclipse.emf.codegen.merge.java.facade.J";
@@ -394,16 +393,14 @@ public abstract class FacadeHelper {
     }
 
     /**
-     * Formats the specified string using the
-     * {@link CodeGenUtil#convertFormat(String, boolean, String)} method.
+     * Formats the specified string.
      * 
      * @param value
      * @return the formatted String.
      */
     public String applyFormatRules(String value) {
         // do not crash when control model is not set
-        return getControlModel() == null ? value : CodeGenUtil.convertFormat(getControlModel()
-                .getLeadingTabReplacement(), getControlModel().convertToStandardBraceStyle(), value);
+        return value;
     }
 
     /**

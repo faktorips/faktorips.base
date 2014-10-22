@@ -33,31 +33,263 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
-class PrefixHandler {
-    protected String classPrefix;
-
-    protected PrefixHandler() {
-        super();
-    }
-
-    protected PrefixHandler(String classPrefix) {
-        this.classPrefix = classPrefix;
-    }
-
-    protected void setClassPrefix(String classPrefix) {
-        this.classPrefix = classPrefix;
-    }
-
-    public String getClassPrefix() {
-        return classPrefix;
-    }
-}
-
 /**
  * A control model that provides dictionaries and rules to drive a merge process.
  */
 public class JControlModel extends PrefixHandler {
+
     protected final static Class<?>[] NO_PARAMETER_TYPES = new Class<?>[0];
+
+    static Map<String, Class<?>> classNameToClassMap = new HashMap<String, Class<?>>();
+
+    public static Class<?> classForClassName(String classPrefix, String className) {
+        if (classPrefix != null) {
+            className = classPrefix + className;
+        }
+
+        Class<?> result = classNameToClassMap.get(className);
+        if (result == null) {
+            try {
+                result = Class.forName(className);
+                classNameToClassMap.put(className, result);
+            } catch (ClassNotFoundException exception) {
+                // We expect this failure when running stand-alone
+                //
+                if (EMFPlugin.IS_ECLIPSE_RUNNING) {
+                    CodeGenPlugin.INSTANCE.log(exception);
+                }
+
+                // JControlModel.class is used with classNames that were not found
+                //
+                classNameToClassMap.put(className, JControlModel.class);
+            }
+        }
+        return result == JControlModel.class ? null : result;
+    }
+
+    protected FacadeHelper facadeHelper;
+
+    protected List<DictionaryPattern> dictionaryPatterns;
+    protected List<PullRule> pullRules;
+    protected List<PushRule> pushRules;
+    protected List<SweepRule> sweepRules;
+    protected List<SortRule> sortRules;
+    protected List<MatchRule> matchRules;
+    protected Pattern blockPattern;
+    protected Pattern noImportPattern;
+    protected String redirect;
+
+    protected boolean indentIsSet = false;
+    protected String indent;
+    protected boolean standardBraceStyleIsSet = false;
+    protected boolean standardBraceStyle;
+
+    public JControlModel() {
+        super();
+    }
+
+    protected void setFacadeHelper(FacadeHelper facadeHelper) {
+        if (this.facadeHelper != null) {
+            this.facadeHelper.setControlModel(null);
+            if (dictionaryPatterns != null) {
+                dictionaryPatterns.clear();
+            }
+            if (pullRules != null) {
+                pullRules.clear();
+            }
+            if (pushRules != null) {
+                pushRules.clear();
+            }
+            if (sweepRules != null) {
+                sweepRules.clear();
+            }
+            if (sortRules != null) {
+                sortRules.clear();
+            }
+            if (matchRules != null) {
+                matchRules.clear();
+            }
+            blockPattern = null;
+            noImportPattern = null;
+            redirect = null;
+        }
+
+        this.facadeHelper = facadeHelper;
+
+        if (facadeHelper != null) {
+            setClassPrefix(facadeHelper.getClassPrefix());
+            facadeHelper.setControlModel(this);
+        }
+    }
+
+    public FacadeHelper getFacadeHelper() {
+        return facadeHelper;
+    }
+
+    public boolean convertToStandardBraceStyle() {
+        return standardBraceStyle;
+    }
+
+    public void setConvertToStandardBraceStyle(boolean standardBraceStyle) {
+        standardBraceStyleIsSet = true;
+        this.standardBraceStyle = standardBraceStyle;
+    }
+
+    public String getLeadingTabReplacement() {
+        return indent;
+    }
+
+    public void setLeadingTabReplacement(String indent) {
+        indentIsSet = true;
+        this.indent = indent;
+    }
+
+    public String getRedirect() {
+        return redirect;
+    }
+
+    public Pattern getBlockPattern() {
+        return blockPattern;
+    }
+
+    public Pattern getNoImportPattern() {
+        return noImportPattern;
+    }
+
+    public List<DictionaryPattern> getDictionaryPatterns() {
+        if (dictionaryPatterns == null) {
+            dictionaryPatterns = new ArrayList<DictionaryPattern>();
+        }
+        return dictionaryPatterns;
+    }
+
+    public List<PullRule> getPullRules() {
+        if (pullRules == null) {
+            pullRules = new ArrayList<PullRule>();
+        }
+        return pullRules;
+    }
+
+    public List<PushRule> getPushRules() {
+        if (pushRules == null) {
+            pushRules = new ArrayList<PushRule>();
+        }
+        return pushRules;
+    }
+
+    public List<SweepRule> getSweepRules() {
+        if (sweepRules == null) {
+            sweepRules = new ArrayList<SweepRule>();
+        }
+        return sweepRules;
+    }
+
+    public List<SortRule> getSortRules() {
+        if (sortRules == null) {
+            sortRules = new ArrayList<SortRule>();
+        }
+        return sortRules;
+    }
+
+    public List<MatchRule> getMatchRules() {
+        if (matchRules == null) {
+            matchRules = new ArrayList<MatchRule>();
+        }
+        return matchRules;
+    }
+
+    public boolean canMerge() {
+        FacadeHelper facadeHelper = getFacadeHelper();
+        return facadeHelper != null && facadeHelper.canMerge();
+    }
+
+    public void initialize(FacadeHelper facadeHelper, String uri) {
+        setFacadeHelper(facadeHelper);
+        initialize(uri);
+    }
+
+    protected void initialize(String uri) {
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        documentBuilderFactory.setValidating(false);
+        try {
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.parse(new InputSource(uri));
+            initialize(document.getDocumentElement());
+        } catch (Exception exception) {
+            CodeGenPlugin.INSTANCE.log(exception);
+        }
+    }
+
+    protected void initialize(Element element) {
+        if (element.getLocalName().equals("options")) {
+            if (!standardBraceStyleIsSet && "standard".equals(element.getAttributeNS(null, "braceStyle"))) {
+                standardBraceStyle = true;
+            }
+
+            if (!indentIsSet && element.hasAttributeNS(null, "indent")) {
+                indent = element.getAttributeNS(null, "indent");
+            }
+
+            if (element.hasAttributeNS(null, "redirect")) {
+                redirect = element.getAttributeNS(null, "redirect");
+            }
+
+            if (element.hasAttributeNS(null, "block")) {
+                blockPattern = Pattern.compile(element.getAttributeNS(null, "block"), Pattern.MULTILINE
+                        | Pattern.DOTALL);
+            }
+
+            if (element.hasAttributeNS(null, "noImport")) {
+                noImportPattern = Pattern.compile(element.getAttributeNS(null, "noImport"), Pattern.MULTILINE
+                        | Pattern.DOTALL);
+            }
+
+            String classPrefix = getClassPrefix();
+            for (Node child = element.getFirstChild(); child != null; child = child.getNextSibling()) {
+                if (child.getNodeType() == Node.ELEMENT_NODE) {
+                    Element elementChild = (Element)child;
+                    if (elementChild.getLocalName().equals("dictionaryPattern")) {
+                        getDictionaryPatterns().add(createDictionaryPattern(classPrefix, elementChild));
+                    } else if (elementChild.getLocalName().equals("pull")) {
+                        getPullRules().add(createPullRule(classPrefix, elementChild));
+                    } else if (elementChild.getLocalName().equals("push")) {
+                        getPushRules().add(createPushRule(classPrefix, elementChild));
+                    } else if (elementChild.getLocalName().equals("sweep")) {
+                        getSweepRules().add(createSweepRule(classPrefix, elementChild));
+                    } else if (elementChild.getLocalName().equals("sort")) {
+                        getSortRules().add(createSortRule(classPrefix, elementChild));
+                    } else if (elementChild.getLocalName().equals("match")) {
+                        getMatchRules().add(createMatchRule(classPrefix, elementChild));
+                    }
+                }
+            }
+        }
+    }
+
+    protected DictionaryPattern createDictionaryPattern(String classPrefix, Element elementChild) {
+        return new DictionaryPattern(classPrefix, elementChild);
+    }
+
+    protected PullRule createPullRule(String classPrefix, Element elementChild) {
+        return new PullRule(classPrefix, elementChild);
+    }
+
+    protected PushRule createPushRule(String classPrefix, Element elementChild) {
+        return new PushRule(classPrefix, elementChild);
+    }
+
+    protected SweepRule createSweepRule(String classPrefix, Element elementChild) {
+        return new SweepRule(classPrefix, elementChild);
+    }
+
+    protected SortRule createSortRule(String classPrefix, Element elementChild) {
+        return new SortRule(classPrefix, elementChild);
+    }
+
+    protected MatchRule createMatchRule(String classPrefix, Element elementChild) {
+        return new MatchRule(classPrefix, elementChild);
+    }
 
     public static class Feature extends PrefixHandler {
         protected Class<?> featureClass;
@@ -116,6 +348,9 @@ public class JControlModel extends PrefixHandler {
             pattern = Pattern.compile(element.getAttribute("match"), Pattern.MULTILINE | Pattern.DOTALL);
         }
 
+        /**
+         * @param classPrefix
+         */
         protected Feature createFeature(String classPrefix, String path, Class<?>[] parameterTypes) {
             return new Feature(getClassPrefix(), path, parameterTypes);
         }
@@ -209,6 +444,9 @@ public class JControlModel extends PrefixHandler {
             }
         }
 
+        /**
+         * @param classPrefix
+         */
         protected Feature createFeature(String classPrefix, String path, Class<?>[] parameterTypes) {
             return new Feature(getClassPrefix(), path, parameterTypes);
         }
@@ -545,33 +783,6 @@ public class JControlModel extends PrefixHandler {
         }
     }
 
-    static Map<String, Class<?>> classNameToClassMap = new HashMap<String, Class<?>>();
-
-    public static Class<?> classForClassName(String classPrefix, String className) {
-        if (classPrefix != null) {
-            className = classPrefix + className;
-        }
-
-        Class<?> result = classNameToClassMap.get(className);
-        if (result == null) {
-            try {
-                result = Class.forName(className);
-                classNameToClassMap.put(className, result);
-            } catch (ClassNotFoundException exception) {
-                // We expect this failure when running stand-alone
-                //
-                if (EMFPlugin.IS_ECLIPSE_RUNNING) {
-                    CodeGenPlugin.INSTANCE.log(exception);
-                }
-
-                // JControlModel.class is used with classNames that were not found
-                //
-                classNameToClassMap.put(className, JControlModel.class);
-            }
-        }
-        return result == JControlModel.class ? null : result;
-    }
-
     /**
      * <p>
      * During the merge, the current state of the nodes of a tree is applied to the nodes of another
@@ -634,6 +845,9 @@ public class JControlModel extends PrefixHandler {
             }
         }
 
+        /**
+         * @param classPrefix
+         */
         protected Feature createFeature(String classPrefix, String path, Class<?>[] parameterTypes) {
             return new Feature(getClassPrefix(), path, parameterTypes);
         }
@@ -678,228 +892,25 @@ public class JControlModel extends PrefixHandler {
             this.stopMatching = stopMatching;
         }
     }
+}
 
-    protected FacadeHelper facadeHelper;
+class PrefixHandler {
 
-    protected List<DictionaryPattern> dictionaryPatterns;
-    protected List<PullRule> pullRules;
-    protected List<PushRule> pushRules;
-    protected List<SweepRule> sweepRules;
-    protected List<SortRule> sortRules;
-    protected List<MatchRule> matchRules;
-    protected Pattern blockPattern;
-    protected Pattern noImportPattern;
-    protected String redirect;
+    protected String classPrefix;
 
-    protected boolean indentIsSet = false;
-    protected String indent;
-    protected boolean standardBraceStyleIsSet = false;
-    protected boolean standardBraceStyle;
-
-    public JControlModel() {
+    protected PrefixHandler() {
         super();
     }
 
-    protected void setFacadeHelper(FacadeHelper facadeHelper) {
-        if (this.facadeHelper != null) {
-            this.facadeHelper.setControlModel(null);
-            if (dictionaryPatterns != null) {
-                dictionaryPatterns.clear();
-            }
-            if (pullRules != null) {
-                pullRules.clear();
-            }
-            if (pushRules != null) {
-                pushRules.clear();
-            }
-            if (sweepRules != null) {
-                sweepRules.clear();
-            }
-            if (sortRules != null) {
-                sortRules.clear();
-            }
-            if (matchRules != null) {
-                matchRules.clear();
-            }
-            blockPattern = null;
-            noImportPattern = null;
-            redirect = null;
-        }
-
-        this.facadeHelper = facadeHelper;
-
-        if (facadeHelper != null) {
-            setClassPrefix(facadeHelper.getClassPrefix());
-            facadeHelper.setControlModel(this);
-        }
+    protected PrefixHandler(String classPrefix) {
+        this.classPrefix = classPrefix;
     }
 
-    public FacadeHelper getFacadeHelper() {
-        return facadeHelper;
+    protected void setClassPrefix(String classPrefix) {
+        this.classPrefix = classPrefix;
     }
 
-    public boolean convertToStandardBraceStyle() {
-        return standardBraceStyle;
-    }
-
-    public void setConvertToStandardBraceStyle(boolean standardBraceStyle) {
-        standardBraceStyleIsSet = true;
-        this.standardBraceStyle = standardBraceStyle;
-    }
-
-    public String getLeadingTabReplacement() {
-        return indent;
-    }
-
-    public void setLeadingTabReplacement(String indent) {
-        indentIsSet = true;
-        this.indent = indent;
-    }
-
-    public String getRedirect() {
-        return redirect;
-    }
-
-    public Pattern getBlockPattern() {
-        return blockPattern;
-    }
-
-    public Pattern getNoImportPattern() {
-        return noImportPattern;
-    }
-
-    public List<DictionaryPattern> getDictionaryPatterns() {
-        if (dictionaryPatterns == null) {
-            dictionaryPatterns = new ArrayList<DictionaryPattern>();
-        }
-        return dictionaryPatterns;
-    }
-
-    public List<PullRule> getPullRules() {
-        if (pullRules == null) {
-            pullRules = new ArrayList<PullRule>();
-        }
-        return pullRules;
-    }
-
-    public List<PushRule> getPushRules() {
-        if (pushRules == null) {
-            pushRules = new ArrayList<PushRule>();
-        }
-        return pushRules;
-    }
-
-    public List<SweepRule> getSweepRules() {
-        if (sweepRules == null) {
-            sweepRules = new ArrayList<SweepRule>();
-        }
-        return sweepRules;
-    }
-
-    public List<SortRule> getSortRules() {
-        if (sortRules == null) {
-            sortRules = new ArrayList<SortRule>();
-        }
-        return sortRules;
-    }
-
-    public List<MatchRule> getMatchRules() {
-        if (matchRules == null) {
-            matchRules = new ArrayList<MatchRule>();
-        }
-        return matchRules;
-    }
-
-    public boolean canMerge() {
-        FacadeHelper facadeHelper = getFacadeHelper();
-        return facadeHelper != null && facadeHelper.canMerge();
-    }
-
-    public void initialize(FacadeHelper facadeHelper, String uri) {
-        setFacadeHelper(facadeHelper);
-        initialize(uri);
-    }
-
-    protected void initialize(String uri) {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        documentBuilderFactory.setValidating(false);
-        try {
-            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-            Document document = documentBuilder.parse(new InputSource(uri));
-            initialize(document.getDocumentElement());
-        } catch (Exception exception) {
-            CodeGenPlugin.INSTANCE.log(exception);
-        }
-    }
-
-    protected void initialize(Element element) {
-        if (element.getLocalName().equals("options")) {
-            if (!standardBraceStyleIsSet && "standard".equals(element.getAttributeNS(null, "braceStyle"))) {
-                standardBraceStyle = true;
-            }
-
-            if (!indentIsSet && element.hasAttributeNS(null, "indent")) {
-                indent = element.getAttributeNS(null, "indent");
-            }
-
-            if (element.hasAttributeNS(null, "redirect")) {
-                redirect = element.getAttributeNS(null, "redirect");
-            }
-
-            if (element.hasAttributeNS(null, "block")) {
-                blockPattern = Pattern.compile(element.getAttributeNS(null, "block"), Pattern.MULTILINE
-                        | Pattern.DOTALL);
-            }
-
-            if (element.hasAttributeNS(null, "noImport")) {
-                noImportPattern = Pattern.compile(element.getAttributeNS(null, "noImport"), Pattern.MULTILINE
-                        | Pattern.DOTALL);
-            }
-
-            String classPrefix = getClassPrefix();
-            for (Node child = element.getFirstChild(); child != null; child = child.getNextSibling()) {
-                if (child.getNodeType() == Node.ELEMENT_NODE) {
-                    Element elementChild = (Element)child;
-                    if (elementChild.getLocalName().equals("dictionaryPattern")) {
-                        getDictionaryPatterns().add(createDictionaryPattern(classPrefix, elementChild));
-                    } else if (elementChild.getLocalName().equals("pull")) {
-                        getPullRules().add(createPullRule(classPrefix, elementChild));
-                    } else if (elementChild.getLocalName().equals("push")) {
-                        getPushRules().add(createPushRule(classPrefix, elementChild));
-                    } else if (elementChild.getLocalName().equals("sweep")) {
-                        getSweepRules().add(createSweepRule(classPrefix, elementChild));
-                    } else if (elementChild.getLocalName().equals("sort")) {
-                        getSortRules().add(createSortRule(classPrefix, elementChild));
-                    } else if (elementChild.getLocalName().equals("match")) {
-                        getMatchRules().add(createMatchRule(classPrefix, elementChild));
-                    }
-                }
-            }
-        }
-    }
-
-    protected DictionaryPattern createDictionaryPattern(String classPrefix, Element elementChild) {
-        return new DictionaryPattern(classPrefix, elementChild);
-    }
-
-    protected PullRule createPullRule(String classPrefix, Element elementChild) {
-        return new PullRule(classPrefix, elementChild);
-    }
-
-    protected PushRule createPushRule(String classPrefix, Element elementChild) {
-        return new PushRule(classPrefix, elementChild);
-    }
-
-    protected SweepRule createSweepRule(String classPrefix, Element elementChild) {
-        return new SweepRule(classPrefix, elementChild);
-    }
-
-    protected SortRule createSortRule(String classPrefix, Element elementChild) {
-        return new SortRule(classPrefix, elementChild);
-    }
-
-    protected MatchRule createMatchRule(String classPrefix, Element elementChild) {
-        return new MatchRule(classPrefix, elementChild);
+    public String getClassPrefix() {
+        return classPrefix;
     }
 }

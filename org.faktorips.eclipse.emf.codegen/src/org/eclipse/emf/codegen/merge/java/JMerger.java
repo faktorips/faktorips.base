@@ -47,14 +47,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JNode;
 import org.eclipse.emf.codegen.merge.java.facade.JPackage;
 import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
-import org.eclipse.emf.codegen.util.CodeGenUtil;
-import org.eclipse.emf.common.util.BasicMonitor;
-import org.eclipse.emf.common.util.Monitor;
 
-/**
- * This implements the method {@link #run}, which is called just like main during headless workbench
- * invocation.
- */
 public class JMerger {
     public static final boolean DEBUG = false;
 
@@ -541,8 +534,8 @@ public class JMerger {
                         && pullRule.getTargetPutFeature().getFeatureClass().isInstance(targetNode)
                         && sourcePatternDictionary.isMarkedUp(pullRule.getSourceMarkup(),
                                 pullRule.getSourceParentMarkup(), sourceNode)
-                                && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
-                                        pullRule.getTargetParentMarkup(), targetNode)) {
+                        && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
+                                pullRule.getTargetParentMarkup(), targetNode)) {
                     // Skip if there's an equality filter and the values aren't
                     // equal.
                     //
@@ -629,7 +622,7 @@ public class JMerger {
                                     && getControlModel().getBlockPattern() != null
                                     && ((JMethod)targetNode).getComment() != null
                                     && getControlModel().getBlockPattern().matcher(((JMethod)targetNode).getComment())
-                                    .find()) {
+                                            .find()) {
                                 continue;
                             }
 
@@ -970,59 +963,4 @@ public class JMerger {
         }
     }
 
-    // Command line execution methods
-
-    /**
-     * This is called with the command line arguments of a headless workbench invocation.
-     */
-    public Object run(Object object) {
-        try {
-            // Three arguments are expected: the .xml getControlModel() URI, the
-            // source java URI, and the target java URI.
-            //
-            String contents = execute(new BasicMonitor(), (String[])object);
-
-            System.out.println("**********************************************");
-            System.out.println(contents);
-
-            return 0;
-        } catch (Exception exception) {
-            return 1;
-        }
-    }
-
-    /**
-     * Utility for headless operations.
-     * 
-     * @return the merged content.
-     */
-    public String execute(Monitor monitor, String[] arguments) {
-        String mergeXML = arguments[0];
-        String sourceURI = arguments[1];
-        String targetURI = arguments[2];
-        String facadeHelperClass = arguments.length > 3 ? arguments[3] : DEFAULT_FACADE_HELPER_CLASS;
-
-        // Create the options model.
-        //
-        controlModel = new JControlModel();
-        controlModel.initialize(CodeGenUtil.instantiateFacadeHelper(facadeHelperClass), mergeXML);
-
-        // Create the source and target JCompilationUnit.
-        //
-        sourceCompilationUnit = createCompilationUnitForURI(sourceURI);
-        targetCompilationUnit = createCompilationUnitForURI(targetURI);
-
-        // Create a pattern dictionary for each.
-        //
-        sourcePatternDictionary = new JPatternDictionary(sourceCompilationUnit, getControlModel());
-        targetPatternDictionary = new JPatternDictionary(targetCompilationUnit, getControlModel());
-
-        merge();
-
-        String contents = getTargetCompilationUnitContents();
-        if (controlModel.getFacadeHelper() != null) {
-            controlModel.getFacadeHelper().reset();
-        }
-        return contents;
-    }
 }

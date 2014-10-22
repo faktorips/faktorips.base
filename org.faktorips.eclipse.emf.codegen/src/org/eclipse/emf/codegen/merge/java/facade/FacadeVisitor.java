@@ -36,14 +36,23 @@ public class FacadeVisitor {
         }
     }
 
+    /**
+     * @param node
+     */
     protected void beforeVisit(JNode node) {
         // Subclasses may override this method
     }
 
+    /**
+     * @param node
+     */
     protected void afterVisit(JNode node) {
         // Subclasses may override this method
     }
 
+    /**
+     * @param node
+     */
     protected void afterVisitChildren(JNode node) {
         // Subclasses may override this method
     }
@@ -80,6 +89,9 @@ public class FacadeVisitor {
         }
     }
 
+    /**
+     * @param node
+     */
     protected boolean basicVisit(JNode node) {
         return true;
     }
