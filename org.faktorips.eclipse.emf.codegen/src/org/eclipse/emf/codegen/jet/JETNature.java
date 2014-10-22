@@ -125,21 +125,13 @@ public class JETNature implements IJETNature {
     public void setTemplateContainers(List<Object> templateContainers, List<Object> templateSourceContainers) {
         jetTemplateContainers = templateContainers;
         jetTemplateSourceContainers = templateSourceContainers;
-        try {
-            setTemplateContainersToFile(templateContainers, templateSourceContainers);
-        } catch (CoreException e) {
-            CodeGenPlugin.write(e);
-        }
+        setTemplateContainersToFile(templateContainers, templateSourceContainers);
     }
 
     @Override
     public void setJavaSourceContainer(IContainer javaSourceContainer) {
         jetJavaSourceContainer = javaSourceContainer;
-        try {
-            setJavaSourceContainerToFile(javaSourceContainer);
-        } catch (CoreException e) {
-            CodeGenPlugin.write(e);
-        }
+        setJavaSourceContainerToFile(javaSourceContainer);
     }
 
     @Override
@@ -512,15 +504,14 @@ public class JETNature implements IJETNature {
         }
     }
 
-    public void setTemplateContainersToFile(List<Object> templateContainers) throws CoreException {
+    public void setTemplateContainersToFile(List<Object> templateContainers) {
         setTemplateContainersToFile(templateContainers, templateContainers);
     }
 
     /**
      * Writes the Template Container Location to a file
      */
-    public void setTemplateContainersToFile(List<Object> templateContainers, List<Object> templateSourceContainers)
-            throws CoreException {
+    public void setTemplateContainersToFile(List<Object> templateContainers, List<Object> templateSourceContainers) {
         Document document;
         try {
             try {
@@ -545,7 +536,7 @@ public class JETNature implements IJETNature {
     /**
      * Writes the Java Source Container Location to a file
      */
-    public void setJavaSourceContainerToFile(IContainer sourceContainer) throws CoreException {
+    public void setJavaSourceContainerToFile(IContainer sourceContainer) {
         Document document;
         try {
             try {
@@ -604,7 +595,7 @@ public class JETNature implements IJETNature {
         sourceStream.close();
     }
 
-    protected void commitXML(Document document) throws CoreException, ClassNotFoundException, IOException {
+    protected void commitXML(Document document) throws CoreException, IOException {
         IFile jetSettingsFile = getProject().getFile(JET_NATURE_PROPERTIES_FILE);
 
         StringWriter writer = new StringWriter();

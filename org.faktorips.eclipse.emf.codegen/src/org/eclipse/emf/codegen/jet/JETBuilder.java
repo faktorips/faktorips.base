@@ -32,7 +32,8 @@ public class JETBuilder extends IncrementalProjectBuilder {
     }
 
     @Override
-    protected IProject[] build(int kind, Map arguments, IProgressMonitor monitor) throws CoreException {
+    protected IProject[] build(int kind, @SuppressWarnings("rawtypes") Map arguments, IProgressMonitor monitor)
+            throws CoreException {
         if (!getProject().exists()) {
             return new IProject[0];
         } else {

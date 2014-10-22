@@ -76,7 +76,7 @@ public final class JETMark {
      * before we switch to parsing an included file. In other words, it's the parser's continuation
      * to be reinstalled after the included file parsing is done.
      */
-    class IncludeState {
+    static class IncludeState {
         int cursor;
         int line;
         int col;
@@ -225,6 +225,18 @@ public final class JETMark {
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + col;
+        result = prime * result + cursor;
+        result = prime * result + fileid;
+        result = prime * result + line;
+        result = prime * result + ((reader == null) ? 0 : reader.hashCode());
+        return result;
+    }
+
+    @Override
     public boolean equals(Object other) {
         if (other instanceof JETMark) {
             JETMark m = (JETMark)other;
@@ -233,4 +245,5 @@ public final class JETMark {
         }
         return false;
     }
+
 }

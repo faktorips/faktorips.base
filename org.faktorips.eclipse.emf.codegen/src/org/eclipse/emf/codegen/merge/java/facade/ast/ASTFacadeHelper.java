@@ -138,7 +138,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Map of options set by default from <code>JavaCore.getOptions()</code>
      */
-    protected Map javaCoreOptions = null;
+    protected Map<Object, String> javaCoreOptions = null;
 
     /**
      * Map of nodes to node contents. Used for caching only.
@@ -232,11 +232,11 @@ public class ASTFacadeHelper extends FacadeHelper {
                         new Object[] { problem.getSourceLineNumber(), problem.getMessage() }) : CodeGenPlugin.INSTANCE
                         .getString("_UI_LineNumber_message", new Object[] { problem.getSourceLineNumber() });
 
-                BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
-                        : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
-                        contents == null ? new Object[] { problem } : new Object[] { problem,
-                                new StringBuilder(contents) });
-                diagnostic.add(childDiagnostic);
+                        BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
+                                : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
+                                contents == null ? new Object[] { problem } : new Object[] { problem,
+                                        new StringBuilder(contents) });
+                        diagnostic.add(childDiagnostic);
             }
 
             return diagnostic;
@@ -252,7 +252,7 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @return map of options
      * @see #getDefaultJavaCoreOptions()
      */
-    public Map getJavaCoreOptions() {
+    public Map<Object, String> getJavaCoreOptions() {
         if (javaCoreOptions == null) {
             javaCoreOptions = getDefaultJavaCoreOptions();
         }
@@ -269,9 +269,9 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @see JavaCore#getOptions()
      * @see JControlModel#getLeadingTabReplacement()
      */
-    @SuppressWarnings("unchecked")
-    private Map getDefaultJavaCoreOptions() {
-        Map javaCoreOptions = JavaCore.getDefaultOptions();
+    private Map<Object, String> getDefaultJavaCoreOptions() {
+        @SuppressWarnings("unchecked")
+        Map<Object, String> javaCoreOptions = JavaCore.getDefaultOptions();
 
         // Set of options that we want to copy from the current definition
         useCurrentOption(javaCoreOptions, "org.eclipse.jdt.core.compiler.compliance");
@@ -385,7 +385,7 @@ public class ASTFacadeHelper extends FacadeHelper {
             if (node instanceof ASTJField) {
                 newASTJNode = cloneField((ASTJField)node, contextNode);
             } else
-            // create new node and replace it all by original contents
+                // create new node and replace it all by original contents
             {
                 String contents = applyFormatRules(node.getContents());
                 // note that string place holder adjusts indentation
@@ -462,7 +462,7 @@ public class ASTFacadeHelper extends FacadeHelper {
                 annotation.setContents(applyFormatRules(originalAnnotation.getContents()));
             }
         } else
-        // create new field and replace it all by original contents
+            // create new field and replace it all by original contents
         {
             String contents = applyFormatRules(originalField.getContents());
             FieldDeclaration fieldDeclaration = (FieldDeclaration)contextNode.getRewriter().createStringPlaceholder(

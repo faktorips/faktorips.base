@@ -98,7 +98,7 @@ public abstract class JDOMJNode extends AbstractJNode {
     public List<JNode> getChildren() {
         if (!isDisposed()) {
             List<JNode> children = new ArrayList<JNode>();
-            for (Enumeration e = getWrappedObject().getChildren(); e.hasMoreElements();) {
+            for (Enumeration<?> e = getWrappedObject().getChildren(); e.hasMoreElements();) {
                 IDOMNode node = (IDOMNode)e.nextElement();
                 JNode jNode = getFacadeHelper().convertToNode(node);
                 children.add(jNode);

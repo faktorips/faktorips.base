@@ -541,8 +541,8 @@ public class JMerger {
                         && pullRule.getTargetPutFeature().getFeatureClass().isInstance(targetNode)
                         && sourcePatternDictionary.isMarkedUp(pullRule.getSourceMarkup(),
                                 pullRule.getSourceParentMarkup(), sourceNode)
-                        && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
-                                pullRule.getTargetParentMarkup(), targetNode)) {
+                                && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
+                                        pullRule.getTargetParentMarkup(), targetNode)) {
                     // Skip if there's an equality filter and the values aren't
                     // equal.
                     //
@@ -597,9 +597,6 @@ public class JMerger {
                                     }
                                 }
                             }
-                            if (targetPutMethod.getName().equals("setBody") && sourceNode instanceof JMethod) {
-                                stringValue = stringValue + " // end-generated";
-                            }
 
                             value = stringValue;
                         }
@@ -632,7 +629,7 @@ public class JMerger {
                                     && getControlModel().getBlockPattern() != null
                                     && ((JMethod)targetNode).getComment() != null
                                     && getControlModel().getBlockPattern().matcher(((JMethod)targetNode).getComment())
-                                            .find()) {
+                                    .find()) {
                                 continue;
                             }
 
@@ -897,7 +894,7 @@ public class JMerger {
         JNode sourceParent = node.getParent();
         JNode targetParent = sourceToTargetMap.get(sourceParent);
         assert targetParent != null; // if the parent is not in target, there is
-                                     // no point on checking the child
+        // no point on checking the child
 
         // Don't push method annotations into redirected methods.
         //

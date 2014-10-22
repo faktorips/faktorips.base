@@ -323,7 +323,7 @@ public class JETCompiler implements JETParseEventListener {
         }
     }
 
-    public void addGenerator(JETGenerator gen) throws JETException {
+    public void addGenerator(JETGenerator gen) {
         // If a newline from the previous character data remains, add a generator for it.
         //
         if (fSavedLine != null) {
@@ -333,7 +333,7 @@ public class JETCompiler implements JETParseEventListener {
         generators.add(gen);
     }
 
-    public void addCharDataGenerator(char[] chars) throws JETException {
+    public void addCharDataGenerator(char[] chars) {
         // An expression with more that 931 "+" will break Sun and IBM javac compilers.
         //
         if (chars.length > 500) {
@@ -389,7 +389,7 @@ public class JETCompiler implements JETParseEventListener {
         doAddCharDataGenerator(chars);
     }
 
-    public void doAddCharDataGenerator(char[] chars) throws JETException {
+    public void doAddCharDataGenerator(char[] chars) {
         if (fUseStaticFinalConstants) {
             JETConstantDataGenerator gen = constantDictionary.get(chars);
             if (gen == null) {
