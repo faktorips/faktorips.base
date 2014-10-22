@@ -14,12 +14,6 @@
     </application>
   </extension>
 
-  <extension id="JMerger" point="org.eclipse.core.runtime.applications">
-    <application>
-      <run class="org.eclipse.emf.codegen.jmerge.JMerger$PlatformRunnable" />
-    </application>
-  </extension>
-
   <extension point="org.eclipse.core.resources.natures" id="org.eclipse.emf.codegen.jet.IJETNature">
     <runtime>
       <run class="org.eclipse.emf.codegen.jet.JETNature" />
