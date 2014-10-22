@@ -171,6 +171,12 @@
                name="generateConvenienceGetters"
                type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               description="The Comment that follows all generated methods"
+               label="Comment following methods"
+               name="commentFollowingMethod"
+               type="string">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

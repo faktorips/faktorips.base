@@ -34,6 +34,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class GeneratorModelContextTest {
 
+    private static final String TEST_STRING = "testString";
+
     @Mock
     private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
 
@@ -100,6 +102,20 @@ public class GeneratorModelContextTest {
         when(config.getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS))
                 .thenReturn(true);
         assertTrue(generatorModelContext.isGenerateConvenienceGetters());
+    }
+
+    @Test
+    public void testGetCommentFollowingMethods_Default() {
+        String comment = generatorModelContext.getCommentFollowingMethods();
+        assertTrue(comment.isEmpty());
+    }
+
+    @Test
+    public void testGetCommentFollowingMethods_NotEmpty() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_COMMENT_FOLLOWING_METHODS)).thenReturn(
+                TEST_STRING);
+        String comment = generatorModelContext.getCommentFollowingMethods();
+        assertEquals(TEST_STRING, comment);
     }
 
 }

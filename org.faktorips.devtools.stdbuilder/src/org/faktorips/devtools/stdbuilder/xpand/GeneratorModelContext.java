@@ -340,4 +340,10 @@ public class GeneratorModelContext {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
     }
+
+    public String getCommentFollowingMethods() {
+        String propertyValueAsBoolean = getConfig().getPropertyValueAsString(
+                StandardBuilderSet.CONFIG_PROPERTY_COMMENT_FOLLOWING_METHODS);
+        return propertyValueAsBoolean == null ? StringUtils.EMPTY : propertyValueAsBoolean;
+    }
 }

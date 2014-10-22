@@ -27,8 +27,12 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsobject.IVersionControlledElement;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
 import org.faktorips.devtools.core.model.ipsobject.IDescription;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -552,6 +556,14 @@ public abstract class AbstractGeneratorModelNode {
      */
     public boolean isGenerateToXmlSupport() {
         return getContext().isGenerateToXmlSupport();
+    }
+
+    /**
+     * Returns the comment that should be following all generated methods of {@link PolicyCmptType},
+     * {@link ProductCmptType},{@link EnumType} ,{@link TableStructure} and {@link TableContents}
+     */
+    public String getCommentFollowingMethods() {
+        return getContext().getCommentFollowingMethods();
     }
 
     /**
