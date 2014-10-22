@@ -352,8 +352,10 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
                 originalFieldDeclaration);
 
         // set original node of annotations (to allow get methods to work correctly)
+
         @SuppressWarnings("unchecked")
         Iterator<IExtendedModifier> newModifiersIterator = newDeclaration.modifiers().iterator();
+
         @SuppressWarnings("unchecked")
         Iterator<IExtendedModifier> originalModifiersIterator = originalFieldDeclaration.modifiers().iterator();
 
@@ -386,6 +388,7 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
 
         @SuppressWarnings("unchecked")
         Iterator<IExtendedModifier> newModifiersIterator = getASTNode().modifiers().iterator();
+
         @SuppressWarnings("unchecked")
         Iterator<IExtendedModifier> originalModifiersIterator = originalFieldDeclaration.modifiers().iterator();
 
@@ -454,8 +457,10 @@ public class ASTJField extends ASTJMember<FieldDeclaration> implements JField {
                 }
 
                 // set annotations contents
+
                 @SuppressWarnings("unchecked")
                 Iterator<IExtendedModifier> newModifiersIterator = newDeclaration.modifiers().iterator();
+
                 @SuppressWarnings("unchecked")
                 Iterator<IExtendedModifier> originalModifiersIterator = originalFieldDeclaration.modifiers().iterator();
 

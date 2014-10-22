@@ -78,6 +78,7 @@ public abstract class ASTJMember<T extends BodyDeclaration> extends ASTJNode<T> 
         ListRewrite listRewrite = rewriter.getListRewrite(bodyDeclaration, bodyDeclaration.getModifiersProperty());
 
         // remove all existing modifiers
+
         @SuppressWarnings("unchecked")
         List<IExtendedModifier> existingModifiers = listRewrite.getRewrittenList();
         for (IExtendedModifier modifier : existingModifiers) {
@@ -87,6 +88,7 @@ public abstract class ASTJMember<T extends BodyDeclaration> extends ASTJNode<T> 
         }
 
         // create new modifiers and add to rewrite
+
         @SuppressWarnings("unchecked")
         List<Modifier> newModifiers = bodyDeclaration.getAST().newModifiers(flags);
         for (Modifier modifier : newModifiers) {

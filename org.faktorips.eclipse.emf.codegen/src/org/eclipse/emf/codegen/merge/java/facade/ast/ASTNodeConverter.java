@@ -63,9 +63,9 @@ public class ASTNodeConverter implements NodeConverter {
         } catch (Exception e) {
             if (ASTFacadeHelper.DEBUG) {
                 getFacadeHelper()
-                        .logError(
-                                "Error converting " + abstractType.getClass().getSimpleName() + " to "
-                                        + cls.getSimpleName(), e);
+                .logError(
+                        "Error converting " + abstractType.getClass().getSimpleName() + " to "
+                                + cls.getSimpleName(), e);
             }
         }
         return null;
@@ -264,8 +264,10 @@ public class ASTNodeConverter implements NodeConverter {
             // replace arguments that match the name of the fields with the initializer value of the
             // field
             //
+
             @SuppressWarnings("unchecked")
-            String[] arguments = field.convertASTNodeListToStringArray(classInstanceCreation.arguments());
+            List<Expression> argumentsList = classInstanceCreation.arguments();
+            String[] arguments = field.convertASTNodeListToStringArray(argumentsList);
 
             for (int i = 0; i < arguments.length; i++) {
                 ASTJField existingField = fieldNamesMap.get(arguments[i]);

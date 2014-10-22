@@ -22,6 +22,7 @@ import org.eclipse.emf.codegen.merge.java.facade.JEnum;
 import org.eclipse.emf.codegen.merge.java.facade.JNode;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
 public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum {
@@ -66,10 +67,11 @@ public class ASTJEnum extends ASTJAbstractType<EnumDeclaration> implements JEnum
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String[] getSuperInterfaces() {
         if (superInterfaces == EMPTY_STRING_ARRAY) {
-            superInterfaces = convertASTNodeListToStringArray(getASTNode().superInterfaceTypes());
+            @SuppressWarnings("unchecked")
+            List<Type> superInterfaceTypes = getASTNode().superInterfaceTypes();
+            superInterfaces = convertASTNodeListToStringArray(superInterfaceTypes);
         }
 
         // add added super interfaces to the array

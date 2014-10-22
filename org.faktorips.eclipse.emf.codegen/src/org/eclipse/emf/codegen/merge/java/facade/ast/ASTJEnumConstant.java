@@ -14,9 +14,12 @@
  */
 package org.eclipse.emf.codegen.merge.java.facade.ast;
 
+import java.util.List;
+
 import org.eclipse.emf.codegen.merge.java.facade.JEnumConstant;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
+import org.eclipse.jdt.core.dom.Expression;
 
 public class ASTJEnumConstant extends ASTJMember<EnumConstantDeclaration> implements JEnumConstant {
     /**
@@ -50,10 +53,11 @@ public class ASTJEnumConstant extends ASTJMember<EnumConstantDeclaration> implem
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String[] getArguments() {
         if (arguments == EMPTY_STRING_ARRAY) {
-            arguments = convertASTNodeListToStringArray(getASTNode().arguments());
+            @SuppressWarnings("unchecked")
+            List<Expression> argumentsList = getASTNode().arguments();
+            arguments = convertASTNodeListToStringArray(argumentsList);
         }
         return arguments;
     }

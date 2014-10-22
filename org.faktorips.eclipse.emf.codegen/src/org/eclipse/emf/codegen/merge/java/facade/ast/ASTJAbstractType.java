@@ -32,7 +32,7 @@ import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
  * @param <T> wrapped AST AbstractType
  */
 public abstract class ASTJAbstractType<T extends AbstractTypeDeclaration> extends ASTJMember<T> implements
-        JAbstractType {
+JAbstractType {
     protected ASTJAbstractType(T abstractTypeDeclaration) {
         super(abstractTypeDeclaration);
     }

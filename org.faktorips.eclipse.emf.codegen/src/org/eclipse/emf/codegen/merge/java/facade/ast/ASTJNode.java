@@ -777,7 +777,7 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
         } else if (nodeValue != null) {
             trackAndReplace(nodeValue, stringValue);
         } else
-        // stringValue not null, nodeValue is null
+            // stringValue not null, nodeValue is null
         {
             nodeValue = rewriter.createStringPlaceholder(stringValue, nodeType);
             rewriter.set(node, property, nodeValue, null);

@@ -270,6 +270,7 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @see JControlModel#getLeadingTabReplacement()
      */
     private Map<Object, String> getDefaultJavaCoreOptions() {
+
         @SuppressWarnings("unchecked")
         Map<Object, String> javaCoreOptions = JavaCore.getDefaultOptions();
 

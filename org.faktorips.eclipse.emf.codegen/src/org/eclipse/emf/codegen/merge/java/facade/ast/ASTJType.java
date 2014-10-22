@@ -20,7 +20,9 @@ import java.util.List;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeFlags;
 import org.eclipse.emf.codegen.merge.java.facade.JType;
 import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
+import org.eclipse.jdt.core.dom.TypeParameter;
 
 /**
  * Wraps {@link TypeDeclaration} object.
@@ -91,10 +93,11 @@ public class ASTJType extends ASTJAbstractType<TypeDeclaration> implements JType
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String[] getSuperInterfaces() {
         if (superInterfaces == EMPTY_STRING_ARRAY) {
-            superInterfaces = convertASTNodeListToStringArray(getASTNode().superInterfaceTypes());
+            @SuppressWarnings("unchecked")
+            List<Type> superInterfaceTypes = getASTNode().superInterfaceTypes();
+            superInterfaces = convertASTNodeListToStringArray(superInterfaceTypes);
         }
 
         // add added super interfaces to the array
@@ -121,10 +124,11 @@ public class ASTJType extends ASTJAbstractType<TypeDeclaration> implements JType
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String[] getTypeParameters() {
         if (typeParameters == EMPTY_STRING_ARRAY) {
-            typeParameters = convertASTNodeListToStringArray(getASTNode().typeParameters());
+            @SuppressWarnings("unchecked")
+            List<TypeParameter> typeParametersList = getASTNode().typeParameters();
+            typeParameters = convertASTNodeListToStringArray(typeParametersList);
         }
         return typeParameters;
     }

@@ -22,6 +22,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Name;
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration;
+import org.eclipse.jdt.core.dom.TypeParameter;
 
 /**
  * Wraps {@link MethodDeclaration} object.
@@ -113,10 +114,11 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public String[] getTypeParameters() {
         if (typeParameters == EMPTY_STRING_ARRAY) {
-            typeParameters = convertASTNodeListToStringArray(getASTNode().typeParameters());
+            @SuppressWarnings("unchecked")
+            List<TypeParameter> typeParametersList = getASTNode().typeParameters();
+            typeParameters = convertASTNodeListToStringArray(typeParametersList);
         }
         return typeParameters;
     }
@@ -141,6 +143,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     @Override
     public String[] getParameterNames() {
         if (parameterNames == EMPTY_STRING_ARRAY) {
+
             @SuppressWarnings("unchecked")
             List<SingleVariableDeclaration> parameters = getASTNode().parameters();
 
@@ -167,6 +170,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
      */
     @Override
     public String[] getParameterTypes() {
+
         @SuppressWarnings("unchecked")
         List<SingleVariableDeclaration> parameters = getASTNode().parameters();
 
@@ -198,6 +202,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
      */
     @Override
     public String[] getFullParameterTypes() {
+
         @SuppressWarnings("unchecked")
         List<SingleVariableDeclaration> parameters = getASTNode().parameters();
 
@@ -230,6 +235,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
      */
     @Override
     public void setParameterNames(String[] names) {
+
         @SuppressWarnings("unchecked")
         List<SingleVariableDeclaration> parameters = getASTNode().parameters();
 
@@ -247,6 +253,7 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
     @Override
     public String[] getExceptions() {
         if (exceptions == EMPTY_STRING_ARRAY) {
+
             @SuppressWarnings("unchecked")
             List<Name> exceptionsList = getASTNode().thrownExceptions();
 
@@ -303,10 +310,11 @@ public class ASTJMethod extends ASTJMember<MethodDeclaration> implements JMethod
      * @see org.eclipse.emf.codegen.merge.java.facade.JMethod#getParameters()
      */
     @Override
-    @SuppressWarnings("unchecked")
     public String[] getParameters() {
         if (parameters == EMPTY_STRING_ARRAY) {
-            parameters = convertASTNodeListToStringArray(getASTNode().parameters());
+            @SuppressWarnings("unchecked")
+            List<SingleVariableDeclaration> parametersList = getASTNode().parameters();
+            parameters = convertASTNodeListToStringArray(parametersList);
         }
         return parameters;
     }
