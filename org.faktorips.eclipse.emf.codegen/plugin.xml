@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <extension-point id="facadeHelpers" name="%_UI_FacadeHelpers_extensionpoint" schema="schema/facadeHelpers.exsd" />
+
+  <extension point="org.eclipse.emf.codegen.facadeHelpers">
+    <facadeHelper class="org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper"/>
+    <facadeHelper class="org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper"/>
+  </extension>
+
+  <extension id="CodeGen" point="org.eclipse.core.runtime.applications">
+    <application>
+      <run class="org.eclipse.emf.codegen.CodeGen$PlatformRunnable" />
+    </application>
+  </extension>
+
+  <extension id="JMerger" point="org.eclipse.core.runtime.applications">
+    <application>
+      <run class="org.eclipse.emf.codegen.jmerge.JMerger$PlatformRunnable" />
+    </application>
+  </extension>
+
+  <extension point="org.eclipse.core.resources.natures" id="org.eclipse.emf.codegen.jet.IJETNature">
+    <runtime>
+      <run class="org.eclipse.emf.codegen.jet.JETNature" />
+    </runtime>
+  </extension>
+
+  <extension point="org.eclipse.core.resources.builders" id="JETBuilder" name="%jetBuilder">
+    <builder>
+      <run class="org.eclipse.emf.codegen.jet.JETBuilder" />
+    </builder>
+  </extension>
+
+  <extension point="org.eclipse.team.core.fileTypes">
+    <fileTypes extension="javajet" type="text" />
+    <fileTypes extension="jetinc" type="text" />
+    <fileTypes extension="propertiesjet" type="text" />
+    <fileTypes extension="xmljet" type="text" />
+  </extension>
+</plugin>

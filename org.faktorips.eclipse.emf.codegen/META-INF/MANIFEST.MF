@@ -1,0 +1,488 @@
+Manifest-Version: 1.0
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Eclipse-LazyStart: true
+Bundle-SymbolicName: org.eclipse.emf.codegen; singleton:=true
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)
+ ",org.eclipse.emf.common;visibility:=reexport;bundle-version="[2.5.0,
+ 3.0.0)",org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)",org
+ .eclipse.jdt.core;bundle-version="[3.5.0,4.0.0)",org.eclipse.jdt.laun
+ ching;bundle-version="[3.5.0,4.0.0)",org.eclipse.debug.core;bundle-ve
+ rsion="[3.5.0,4.0.0)",org.eclipse.text;bundle-version="[3.5.0,4.0.0)"
+Bundle-Activator: org.eclipse.emf.codegen.CodeGenPlugin$Implementation
+Export-Package: org.eclipse.emf.codegen,org.eclipse.emf.codegen.jet,or
+ g.eclipse.emf.codegen.jmerge,org.eclipse.emf.codegen.merge.java,org.e
+ clipse.emf.codegen.merge.java.facade,org.eclipse.emf.codegen.merge.ja
+ va.facade.ast,org.eclipse.emf.codegen.merge.java.facade.jdom,org.ecli
+ pse.emf.codegen.merge.properties,org.eclipse.emf.codegen.util
+Bundle-Version: 2.5.0.v200906151043
+Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: %providerName
+Bundle-Name: %pluginName
+Bundle-ManifestVersion: 2
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil$EclipseHelper.class
+SHA1-Digest: 46HwwIl44PxdfMpxPGqSCj0qoWE=
+
+Name: about.ini
+SHA1-Digest: t0FfqhXQ1DOntXUimIG6MWb0U1g=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JMethod.class
+SHA1-Digest: ZWED8aRoVK5YXBHVtuRZdTSz3CE=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJType.class
+SHA1-Digest: HAqChTTEqdxFr8+Gt7M4tr5oC7A=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/FacadeVisitor.class
+SHA1-Digest: 4SYLmlAr15utYrk7wakMDctbrfE=
+
+Name: org/eclipse/emf/codegen/CodeGenPlugin.class
+SHA1-Digest: 6kBZ3cbzV9pBL+utOsVRhYOMOFM=
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil$EclipseUtil.class
+SHA1-Digest: dTGSe2aV1Q12ia53X6n+n55YQng=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTFacadeHelper.cl
+ ass
+SHA1-Digest: z/0Xo3V3nTIRB/CLEW017A4PK/I=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$SweepRule.class
+SHA1-Digest: ZSvm0FQtxfC5HPPiLmWmEA6AnVs=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JAbstractType.class
+SHA1-Digest: SI/rL9CePz26l7gGz5JV6smMN5Q=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter$EclipseHelper$1.class
+SHA1-Digest: pBhk/LFa9ePn8tZAGn+ZgOtDt2w=
+
+Name: org/eclipse/emf/codegen/jet/JETException.class
+SHA1-Digest: AS2nRwLky8ilnhA/Yu5bBLzUPtI=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJCompilationU
+ nit.class
+SHA1-Digest: t4/swSyIwSZs3f7RQXxj/fkToXI=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JNode.class
+SHA1-Digest: oMIFt5gRqYyAscF2uQPUejBYyXU=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTNodeConverter$E
+ numToTypeConverter.class
+SHA1-Digest: 2Zy70lSm6/j04PTRJLzqp/SycbU=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$Scriptlet.class
+SHA1-Digest: D6dCxhkGtHFr6oz38EP35KWQAmM=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/FacadeFlags.class
+SHA1-Digest: 8P7cvT41hjK+pazl/LeopnhQnRw=
+
+Name: org/eclipse/emf/codegen/jmerge/PropertyMerger.class
+SHA1-Digest: Hyx52XCzOkamIVIoulQ6uH390wM=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJAbstractType.c
+ lass
+SHA1-Digest: n/S7ZtiOd0Rysu9TQE3LV7MBqiM=
+
+Name: org/eclipse/emf/codegen/CodeGen$PlatformRunnable.class
+SHA1-Digest: v8NS9ug/DfZRcZapjtS/P2EHBCE=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JAnnotationType.class
+SHA1-Digest: +LXP0tX9rmWsy4XlNxUK+PhCzAQ=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJNode.class
+SHA1-Digest: +ikJo47tQrce2cREvDkTnwpaJsc=
+
+Name: about.properties
+SHA1-Digest: 7qZ1ok9z+eXXjjOmizFxh5jFoRg=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$PushRule.class
+SHA1-Digest: rR3zAlLEFWcWF0eeOYnBFiS5z1I=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTFacadeHelper$AS
+ TRewriteWithRemove.class
+SHA1-Digest: 6g1SXTHruhj1E1FaKLENNKJd164=
+
+Name: org/eclipse/emf/codegen/util/ImportManager.class
+SHA1-Digest: j1eOsi5fg8qP1dN6j3ftoZHtVsM=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JCompilationUnit.class
+SHA1-Digest: xZDGgtwzK78g+HvEa8Gs+2a2jVk=
+
+Name: org/eclipse/emf/codegen/merge/properties/PropertyMerger$Platform
+ Runnable.class
+SHA1-Digest: D92jYu05HKDTMJlvlcbDJXU/AgQ=
+
+Name: org/eclipse/emf/codegen/CodeGen.class
+SHA1-Digest: fDC8+PQoppvlb6rcxBtY67H+Qc0=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/FacadeHelper.class
+SHA1-Digest: x7ym3Pfdl9nNYqXu7eRN55FXEig=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter.class
+SHA1-Digest: Xka5CPtGICuzWV7KKnPgtj5pRAY=
+
+Name: org/eclipse/emf/codegen/util/ImportManager$EclipseHelper.class
+SHA1-Digest: b5k+ZUY+M3cGoSW/CJXBsQpkIuY=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJPackage.clas
+ s
+SHA1-Digest: e4XyIo1nneOfkelO734c7qr6mVw=
+
+Name: org/eclipse/emf/codegen/CodeGen$StreamProgressMonitor.class
+SHA1-Digest: 0Z7JhoDcCGG+v3CBXIkIDUvszLQ=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJInitializer.cl
+ ass
+SHA1-Digest: pV+Kahvf0G/+IhNaqJ0FFzfVGZg=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$1.class
+SHA1-Digest: w/rvfybJNIgOYGvH31qcrcM3hok=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JField.class
+SHA1-Digest: k0pExfPS3oDKnIdoSNZ4HlcRZoE=
+
+Name: org/eclipse/emf/codegen/jmerge/JControlModel$PullRule.class
+SHA1-Digest: VQT1Oj/PAranJ5GrZLR0TU87vkg=
+
+Name: org/eclipse/emf/codegen/merge/java/JPatternDictionary.class
+SHA1-Digest: A/aW5YzNnE8lAhi+R+IbNIOL/JY=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter$MyJETCompiler.class
+SHA1-Digest: SE0jixsdYSfl7EXi4SdX0LIdvCw=
+
+Name: org/eclipse/emf/codegen/merge/properties/PropertyMerger.class
+SHA1-Digest: hC25WkRwDOuIaC4rkrP198i9Yz0=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JAnnotation.class
+SHA1-Digest: mVnyGx20OVmPiyZzer3/vsSD5iM=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JPackage.class
+SHA1-Digest: 1zwtv4MojR09bu4q9/BpMUHLO3g=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter$EclipseHelper.class
+SHA1-Digest: GfJgjUXlGAqEU39Ek9EO1TKtLfg=
+
+Name: org/eclipse/emf/codegen/merge/java/PrefixHandler.class
+SHA1-Digest: jezoaju5Bxbz+XuEzqI+BxDh2bg=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JType.class
+SHA1-Digest: 2zWhVoFXIdsOSFmDqFpzpaIqJDY=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJField.class
+SHA1-Digest: 4at1GQcYnCHND+WdXM7n8UYTZZ8=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJCompilationUni
+ t$NodeCommenter$LineBreakInserter.class
+SHA1-Digest: IBHwDQ78dvq/nd39st82ZQcOtLI=
+
+Name: org/eclipse/emf/codegen/jmerge/JControlModel$SortRule.class
+SHA1-Digest: O4YVy+eRKJ/szOnTWEYCTYeRQQc=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter$EclipseHelper$2.class
+SHA1-Digest: zqL2O6fohpMrlyzePiRXRqC4fMs=
+
+Name: org/eclipse/emf/codegen/jmerge/JControlModel$DictionaryPattern.c
+ lass
+SHA1-Digest: GaAIR65j0lN/S63ATfTBA0qW6Xs=
+
+Name: org/eclipse/emf/codegen/jet/IJETNature.class
+SHA1-Digest: JW1a9HJyt4ErmDJEpJbQsn54q/o=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJType.class
+SHA1-Digest: 9eCfQ/5LE7BkTZU9hx9SJGqXxuo=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JAnnotationTypeMember.
+ class
+SHA1-Digest: +D5U5iCb5vFZL20tgKs6+2JxGKU=
+
+Name: org/eclipse/emf/codegen/jet/JETCharDataGenerator.class
+SHA1-Digest: IDtzHOMwCMTbSsRtg5f0lrghDCE=
+
+Name: about.html
+SHA1-Digest: R2tKyNOnrYwuCUzQeKIS2y8Mrzg=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$SweepRule$Actio
+ n.class
+SHA1-Digest: vErZxSs19M+QuFLEuw/UgOqbKxc=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJAnnotationType
+ Member.class
+SHA1-Digest: SDXPI9U5cTABF38p1ZAQ48EjRU8=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JInitializer.class
+SHA1-Digest: iylCPvFoH7f2At2ntgV3BJmbf34=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$DelegatingListener.class
+SHA1-Digest: 1RxISPUcsxTDhV+ui6ONdN0wjIQ=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJCompilationUni
+ t$NodeCommenter.class
+SHA1-Digest: cO+Ig1OhFQt+O4Vku/2HKSaVY0w=
+
+Name: modeling32.png
+SHA1-Digest: ADlLWFV0eQ74YnLvHnPFkYLeLrs=
+
+Name: org/eclipse/emf/codegen/jet/JETCoreElement.class
+SHA1-Digest: ZtVLTJ2XXqr5nSu7nZUPJ/0ul9I=
+
+Name: org/eclipse/emf/codegen/jet/JETMark$IncludeState.class
+SHA1-Digest: qLMNMEJp3knCykBqvRI988vVh9w=
+
+Name: org/eclipse/emf/codegen/jmerge/JPatternDictionary.class
+SHA1-Digest: ePiLfEfo11llLtVJFDNdvReKLJI=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJField.class
+SHA1-Digest: xtZQh08FmnFJEAmvxYJ+HECuO4M=
+
+Name: org/eclipse/emf/codegen/jmerge/JMerger.class
+SHA1-Digest: x1Aw/5aXWttcARLIvogA6tIXvCg=
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil$1.class
+SHA1-Digest: uhx1Dpc5hrxhGr7WV136Essw13o=
+
+Name: org/eclipse/emf/codegen/jmerge/JControlModel$Feature.class
+SHA1-Digest: 1YTwha6NmOu9CiQUJ/8gphgglvc=
+
+Name: org/eclipse/emf/codegen/jet/JETNature.class
+SHA1-Digest: 8lYpGMD525XJY4WBi8PKy3csQec=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$Feature.class
+SHA1-Digest: gFMHiC4/J9Ed5rGFe//HQBUODuQ=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJCompilationUni
+ t.class
+SHA1-Digest: eFYESJqooZth+DcdxoCncqORt+s=
+
+Name: org/eclipse/emf/codegen/util/GIFEmitter.class
+SHA1-Digest: rKJeqbQ6kTi2/rqczZUz/ii0PHs=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJImport.class
+SHA1-Digest: ZKIhR3ZSG+nEC/8hN6M8NX/EZmM=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$QuoteEscape.class
+SHA1-Digest: +PYCASVpAAFAYjBTn3BxNSWrr3A=
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil$FindAndReplace.class
+SHA1-Digest: HboPieh2F1BkZpuoGAImaS4E77M=
+
+Name: org/eclipse/emf/codegen/merge/java/JMerger$PushSourceVisitor.cla
+ ss
+SHA1-Digest: 6Pn+lg5bYfGX0742HaMloOCi2Tg=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJAnnotation.cla
+ ss
+SHA1-Digest: Xx21xanV2SyLV31houQlivg3eLA=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$PullRule.class
+SHA1-Digest: 5pnIE+tlEWQbWxCtOlNZs5lWrHw=
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil$EclipseUtil$StreamProgr
+ essMonitor.class
+SHA1-Digest: qpuXvAQx/lLwI6B9kDqm00lhKrQ=
+
+Name: org/eclipse/emf/codegen/jet/JETScriptletGenerator.class
+SHA1-Digest: Y+okERLdJWLnsI/JFQ0Tyb3z+eM=
+
+Name: org/eclipse/emf/codegen/jet/JETReader.class
+SHA1-Digest: p6/ujsQqF4a2gEYZfJ2G+FQcl6M=
+
+Name: META-INF/eclipse.inf
+SHA1-Digest: KyT9FF7C7t86NoBoa2kZT3ZJBfw=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter$EclipseHelper$3.class
+SHA1-Digest: Da/dkQOGAz3Sy1Mr+k1M9r5WQfQ=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/AbstractJNode.class
+SHA1-Digest: vk++pZxRK//4mz5TZKjUqEp8CV4=
+
+Name: about.mappings
+SHA1-Digest: 0wcLGP5x8bvVD4QJVGxAUA4nRug=
+
+Name: org/eclipse/emf/codegen/jet/JETGenerator.class
+SHA1-Digest: LcHbtWb+0XM8cS/RftPEsU014wA=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JEnumConstant.class
+SHA1-Digest: NoylIJfW1ss7HjF4Aw0F75A42pA=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJPackage.class
+SHA1-Digest: aYJL9b1Zm1WvAATJqQImioXsM5I=
+
+Name: org/eclipse/emf/codegen/util/GIFEmitter$ColorInformation.class
+SHA1-Digest: aDNt3Ob5fbS8uI2oo7muK3q4inI=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$DictionaryPatte
+ rn.class
+SHA1-Digest: EyWmMumDN0imHYwRV8Mb9NaUHkg=
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil.class
+SHA1-Digest: ykihhV2PGwQldpt94sLNh8Y1q/s=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMFacadeHelper.
+ class
+SHA1-Digest: WYg8rJnC/qZTOiwVCiQT8f/IJ5Q=
+
+Name: org/eclipse/emf/codegen/jet/JETExpressionGenerator.class
+SHA1-Digest: 0Zd5w8F6UrXuAPxtFfCX/oD7kr8=
+
+Name: org/eclipse/emf/codegen/jet/JETBuilder.class
+SHA1-Digest: GLdWgb4ySM++EzwMVhTGQyl69K0=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJEnumConstant.c
+ lass
+SHA1-Digest: +6NtRSLcF8IK+KqEyiPIhRKysq8=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$Expression.class
+SHA1-Digest: dsJXuG31Ci0rWjf7X27PLPjWxCI=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$MatchRule.class
+SHA1-Digest: zoCLSj/yG7d0hnhtxB7Mf0TTd3o=
+
+Name: org/eclipse/emf/codegen/CodeGen$PlatformRunnable$1.class
+SHA1-Digest: mPiQTicBfCkXBjXZs5UjpJqkL5g=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel$SortRule.class
+SHA1-Digest: rSAqtCWH5cFO8LBw+f0qlVT1v4o=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJImport.class
+SHA1-Digest: cqlbs7QAKb5gOmhFNMNthXjhgiY=
+
+Name: org/eclipse/emf/codegen/CodeGenPlugin$Implementation.class
+SHA1-Digest: r225Ae+ROWPGJUyj9Pg3P29J6WE=
+
+Name: org/eclipse/emf/codegen/jet/JETCompiler.class
+SHA1-Digest: rkWqbArhf1HMInCGFPT/Va+Cx60=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTNodeConverter$C
+ onverter.class
+SHA1-Digest: sIQ1AbPKi8Pq8yXNygAId9OBhE4=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJCompilationUni
+ t$NodeContentsReplacer.class
+SHA1-Digest: /Wf5jAFACWdhjz24K8+Zj6d9sxg=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$Directive.class
+SHA1-Digest: 4rA/FEEC+kR61JX992ADoyh83a4=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJMember.class
+SHA1-Digest: JxwQkkVlD3sRKSfBJALt2bYkb6A=
+
+Name: org/eclipse/emf/codegen/merge/java/JMerger.class
+SHA1-Digest: A5kf7ZuXHIGqxI2Kk2G0zHtAUVs=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JImport.class
+SHA1-Digest: OcUcKa50UrX75vcL9SaOEZQxtDU=
+
+Name: plugin.properties
+SHA1-Digest: sOo68LJD4jbT2E5t6Nh8WqPHEBM=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJMethod.class
+SHA1-Digest: EUQwo2itRQm9cQpRLiVfQYDjdgs=
+
+Name: org/eclipse/emf/codegen/jmerge/JControlModel.class
+SHA1-Digest: ovwkzMYRoNiH8IzOVy6CNNI6g2g=
+
+Name: org/eclipse/emf/codegen/jet/JETParser$Action.class
+SHA1-Digest: V6285UKs+EvWkoowh+aIg3wWPXE=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJCompilationUni
+ t$AbstractRewriter.class
+SHA1-Digest: +lCI3YbFT2fTu33SVWb47SjHfjU=
+
+Name: org/eclipse/emf/codegen/jmerge/JControlModel$SweepRule.class
+SHA1-Digest: GllrI9NTmY8LvbF0WxI9ZncnlfU=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJNode.class
+SHA1-Digest: GemtUuiTWQ91DVjIRTbGGB+4q2k=
+
+Name: org/eclipse/emf/codegen/jet/JETParseEventListener.class
+SHA1-Digest: zqWLjWo1UIkxmEG/7fNVvOU4Uh8=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/NodeConverter.class
+SHA1-Digest: E7sRI4k7XKctdPHH5USAdS1BXRk=
+
+Name: org/eclipse/emf/codegen/merge/java/JControlModel.class
+SHA1-Digest: MMCo4vwKgkN0KAH0Jfdyx3nDCbw=
+
+Name: plugin.xml
+SHA1-Digest: WDRX3Mmf/QreINmgzGc90z8nfQU=
+
+Name: org/eclipse/emf/codegen/jet/JETConstantDataGenerator.class
+SHA1-Digest: rSCrn0M+pbXcZgSC/8Y05TR4tpw=
+
+Name: org/eclipse/emf/codegen/merge/java/JMerger$PullTargetVisitor.cla
+ ss
+SHA1-Digest: FOvhVDXTVCN4q+HUCFBkPWcagZ0=
+
+Name: org/eclipse/emf/codegen/jet/JETCompiler$SkipSection.class
+SHA1-Digest: MtQIr1dqc5blOJZYjyd88EzZjh0=
+
+Name: org/eclipse/emf/codegen/jmerge/PropertyMerger$PlatformRunnable.c
+ lass
+SHA1-Digest: HhFWjiB4kVOEV/WETivsNzuhf28=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJInitializer.
+ class
+SHA1-Digest: MgKljkVUHbRMIcC9N3xem41CQ4c=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTNodeConverter.c
+ lass
+SHA1-Digest: Qry3IoJV/eBxGmwoedY0zoi8/Ek=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JEnum.class
+SHA1-Digest: 05q+UJsFiIeSddzLJ+mIREbriJw=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTNodeConverter$T
+ ypeToEnumConverter.class
+SHA1-Digest: 9VKb1mALqHV+rFKThp5uWwE8yRI=
+
+Name: org/eclipse/emf/codegen/jet/JETSkeleton.class
+SHA1-Digest: jiNiqUvjar5p0g1ZozPr98BK13w=
+
+Name: org/eclipse/emf/codegen/jet/JETMark.class
+SHA1-Digest: D13Mq+VWycbLmMjpfW0fnwMugNI=
+
+Name: org/eclipse/emf/codegen/jmerge/JMerger$PlatformRunnable.class
+SHA1-Digest: InbAsIbJ9VIQHgiOWWSRtyS5KGA=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/CommentAwareSource
+ RangeComputer.class
+SHA1-Digest: e+7CvhqNgwoBtL9XBoXT4RhOGsQ=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJMember.class
+SHA1-Digest: LXlG7IM+FFmaeGZtEEXy1cpGB74=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJEnum.class
+SHA1-Digest: snfmeN2+TfnuUPYtBxF+mvabw00=
+
+Name: schema/facadeHelpers.exsd
+SHA1-Digest: TA0qDDIxlJ/VXqcy6qsYYH0zz2o=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/jdom/JDOMJMethod.class
+SHA1-Digest: jqYvO1LdV8xQBmQCvgVEK6l/fJU=
+
+Name: org/eclipse/emf/codegen/jet/JETCompileTemplateOperation.class
+SHA1-Digest: j0ARZcbp4sGvwPaGqnJRwtdU+mA=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/ast/ASTJAnnotationType
+ .class
+SHA1-Digest: BWqU6aZkF9+gzga+MK5yJ4Kj160=
+
+Name: org/eclipse/emf/codegen/util/CodeGenUtil$StreamProgressMonitor.c
+ lass
+SHA1-Digest: x4bz3Ho0yAe0pnYDGD0E1dWEDaA=
+
+Name: org/eclipse/emf/codegen/jet/JETParser.class
+SHA1-Digest: s9gHKH2Ahc9+kYiDafd9KBbcz5c=
+
+Name: org/eclipse/emf/codegen/jet/JETEmitter$MyBaseJETCompiler.class
+SHA1-Digest: yucj986pub1LANiJPAsUHS5XTQU=
+
+Name: org/eclipse/emf/codegen/jet/JETAddNatureOperation.class
+SHA1-Digest: tt23JC31STW4SuRt47NrDSbX3Ys=
+
+Name: org/eclipse/emf/codegen/DeprecatedPlatformRunnable.class
+SHA1-Digest: 6QTPvrez21XnLlWEX1yFqNdiBww=
+
+Name: org/eclipse/emf/codegen/merge/java/facade/JMember.class
+SHA1-Digest: gRwwg0fPFG0kb1Z8SVAWE1HZUNQ=
+
