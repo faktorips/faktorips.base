@@ -1,16 +1,10 @@
 /**
- * <copyright>
- *
  * Copyright (c) 2006-2007 IBM Corporation and others. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors: IBM - Initial API and implementation
- *
- * </copyright>
- *
- * $Id: ASTFacadeHelper.java,v 1.16 2009/04/18 11:16:26 emerks Exp $
  */
 package org.eclipse.emf.codegen.merge.java.facade.ast;
 
@@ -25,6 +19,7 @@ import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.JCompilationUnit;
 import org.eclipse.emf.codegen.merge.java.facade.JNode;
+import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.eclipse.emf.common.util.BasicDiagnostic;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.DiagnosticException;
@@ -38,6 +33,7 @@ import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.AnnotationTypeDeclaration;
 import org.eclipse.jdt.core.dom.AnnotationTypeMemberDeclaration;
 import org.eclipse.jdt.core.dom.ArrayType;
+import org.eclipse.jdt.core.dom.ChildListPropertyDescriptor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.EnumConstantDeclaration;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
@@ -55,6 +51,7 @@ import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
+import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 import org.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer;
 import org.eclipse.jdt.core.dom.rewrite.TargetSourceRangeComputer.SourceRange;
 import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
@@ -63,6 +60,62 @@ import org.eclipse.jdt.core.formatter.DefaultCodeFormatterConstants;
  * @since 2.2.0
  */
 public class ASTFacadeHelper extends FacadeHelper {
+    /**
+     * @deprecated Just use ASTRewrite directly.
+     */
+    @Deprecated
+    public static class ASTRewriteWithRemove extends ASTRewrite {
+        protected ASTRewriteWithRemove(AST ast) {
+            super(ast);
+        }
+
+        /**
+         * Disposes this ASTRewriteWithRemove
+         */
+        @SuppressWarnings("restriction")
+        public void dispose() {
+            getRewriteEventStore().clear();
+            getNodeStore().clear();
+            setTargetSourceRangeComputer(null);
+        }
+
+        /**
+         * Workaround method that removes nodes similar to
+         * {@link #remove(ASTNode, org.eclipse.text.edits.TextEditGroup)}, but it allows removal of
+         * newly created and inserted nodes that were not a part of original tree.
+         * <p>
+         * Note that {@link #remove(ASTNode, org.eclipse.text.edits.TextEditGroup)} does not remove
+         * newly created nodes that have been inserted with
+         * {@link ListRewrite#insertFirst(ASTNode, org.eclipse.text.edits.TextEditGroup)} or similar
+         * methods.
+         * <p>
+         * Workaround for <a
+         * href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=164862">https://bugs
+         * .eclipse.org/bugs/show_bug.cgi?id=164862</a>
+         * 
+         * @param parent
+         * @param childProperty
+         * @param node
+         */
+        @SuppressWarnings("restriction")
+        public void remove(ASTNode parent, ChildListPropertyDescriptor childProperty, ASTNode node) {
+            ListRewrite lrw = getListRewrite(parent, childProperty);
+
+            if (lrw.getRewrittenList().contains(node) && !lrw.getOriginalList().contains(node)) {
+                org.eclipse.jdt.internal.core.dom.rewrite.ListRewriteEvent listEvent = super.getRewriteEventStore()
+                        .getListEvent(parent, childProperty, true);
+                int index = listEvent.getIndex(node, org.eclipse.jdt.internal.core.dom.rewrite.ListRewriteEvent.NEW);
+                if (index >= 0) {
+                    listEvent.revertChange((org.eclipse.jdt.internal.core.dom.rewrite.NodeRewriteEvent)listEvent
+                            .getChildren()[index]);
+                } else {
+                    lrw.remove(node, null);
+                }
+            } else {
+                lrw.remove(node, null);
+            }
+        }
+    }
 
     /**
      * Debug output setting
@@ -138,7 +191,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /**
      * Map of options set by default from <code>JavaCore.getOptions()</code>
      */
-    protected Map<Object, String> javaCoreOptions = null;
+    protected Map<?, ?> javaCoreOptions = null;
 
     /**
      * Map of nodes to node contents. Used for caching only.
@@ -158,10 +211,9 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @return new ASTParser object
      */
     protected ASTParser createASTParser() {
-        // caching parser does not parse 2nd file in the same way (javadoc of
-        // package for example)
+        // caching parser does not parse 2nd file in the same way (javadoc of package for example)
         // hence, new parser is created every time this method is called
-        ASTParser astParser = ASTParser.newParser(AST.JLS3);
+        ASTParser astParser = CodeGenUtil.EclipseUtil.newASTParser();
         astParser.setCompilerOptions(getJavaCoreOptions());
         return astParser;
     }
@@ -169,8 +221,9 @@ public class ASTFacadeHelper extends FacadeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#createCompilationUnit
-     * (java.lang.String, java.lang.String)
+     * @see
+     * org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#createCompilationUnit(java.lang.String
+     * , java.lang.String)
      */
     @Override
     public ASTJCompilationUnit createCompilationUnit(String name, String contents) {
@@ -232,11 +285,11 @@ public class ASTFacadeHelper extends FacadeHelper {
                         new Object[] { problem.getSourceLineNumber(), problem.getMessage() }) : CodeGenPlugin.INSTANCE
                         .getString("_UI_LineNumber_message", new Object[] { problem.getSourceLineNumber() });
 
-                        BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
-                                : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
-                                contents == null ? new Object[] { problem } : new Object[] { problem,
-                                        new StringBuilder(contents) });
-                        diagnostic.add(childDiagnostic);
+                BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
+                        : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
+                        contents == null ? new Object[] { problem } : new Object[] { problem,
+                                new StringBuilder(contents) });
+                diagnostic.add(childDiagnostic);
             }
 
             return diagnostic;
@@ -252,7 +305,7 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @return map of options
      * @see #getDefaultJavaCoreOptions()
      */
-    public Map<Object, String> getJavaCoreOptions() {
+    public Map<?, ?> getJavaCoreOptions() {
         if (javaCoreOptions == null) {
             javaCoreOptions = getDefaultJavaCoreOptions();
         }
@@ -269,18 +322,26 @@ public class ASTFacadeHelper extends FacadeHelper {
      * @see JavaCore#getOptions()
      * @see JControlModel#getLeadingTabReplacement()
      */
-    private Map<Object, String> getDefaultJavaCoreOptions() {
+    @SuppressWarnings("unchecked")
+    private Map<?, ?> getDefaultJavaCoreOptions() {
+        Map<Object, String> javaCoreOptions = JavaCore.getOptions();
 
-        @SuppressWarnings("unchecked")
-        Map<Object, String> javaCoreOptions = JavaCore.getDefaultOptions();
+        // Set of options that we want to copy from the current definition or use defaults
+        //
+        if (compilerCompliance != null) {
+            javaCoreOptions.put(JavaCore.COMPILER_COMPLIANCE, compilerCompliance);
+            javaCoreOptions.put(JavaCore.COMPILER_SOURCE, compilerCompliance);
+            javaCoreOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, compilerCompliance);
+        } else {
+            useCurrentOption(javaCoreOptions, JavaCore.COMPILER_COMPLIANCE, "1.5");
+            useCurrentOption(javaCoreOptions, JavaCore.COMPILER_SOURCE, "1.5");
+            useCurrentOption(javaCoreOptions, JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.5");
+        }
+        useCurrentOption(javaCoreOptions, DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR, JavaCore.SPACE);
+        useCurrentOption(javaCoreOptions, DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE, "2");
+        useCurrentOption(javaCoreOptions, DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE, "2");
 
-        // Set of options that we want to copy from the current definition
-        useCurrentOption(javaCoreOptions, "org.eclipse.jdt.core.compiler.compliance");
-        useCurrentOption(javaCoreOptions, "org.eclipse.jdt.core.compiler.source");
-        useCurrentOption(javaCoreOptions, "org.eclipse.jdt.core.compiler.codegen.targetPlatform");
-        useCurrentOption(javaCoreOptions, DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
-        useCurrentOption(javaCoreOptions, DefaultCodeFormatterConstants.FORMATTER_TAB_SIZE);
-        useCurrentOption(javaCoreOptions, DefaultCodeFormatterConstants.FORMATTER_INDENTATION_SIZE);
+        javaCoreOptions.put(JavaCore.COMPILER_DOC_COMMENT_SUPPORT, "enabled");
 
         if (getControlModel() != null) {
             String indent = getControlModel().getLeadingTabReplacement();
@@ -333,7 +394,22 @@ public class ASTFacadeHelper extends FacadeHelper {
     }
 
     protected void useCurrentOption(Map<Object, String> options, String option) {
-        options.put(option, JavaCore.getOption(option));
+        useCurrentOption(options, option, null);
+    }
+
+    /**
+     * @since 2.8
+     * @param options
+     * @param option
+     * @param defaultValue
+     */
+    protected void useCurrentOption(Map<Object, String> options, String option, String defaultValue) {
+        String value = JavaCore.getOption(option);
+        if (value != null) {
+            options.put(option, value);
+        } else if (!options.containsKey(option) && defaultValue != null) {
+            options.put(option, defaultValue);
+        }
     }
 
     @Override
@@ -347,8 +423,9 @@ public class ASTFacadeHelper extends FacadeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#getContext(org
-     * .eclipse.emf.codegen.merge.java.facade.JNode)
+     * @see
+     * org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#getContext(org.eclipse.emf.codegen
+     * .merge.java.facade.JNode)
      */
     @Override
     public Object getContext(JNode node) {
@@ -386,7 +463,7 @@ public class ASTFacadeHelper extends FacadeHelper {
             if (node instanceof ASTJField) {
                 newASTJNode = cloneField((ASTJField)node, contextNode);
             } else
-                // create new node and replace it all by original contents
+            // create new node and replace it all by original contents
             {
                 String contents = applyFormatRules(node.getContents());
                 // note that string place holder adjusts indentation
@@ -425,18 +502,15 @@ public class ASTFacadeHelper extends FacadeHelper {
         ASTJField newField = null;
         FieldDeclaration originalFieldDeclaration = originalField.getOriginalFieldDeclaration();
 
-        // if there are multiple variables in the same field declaration, create
-        // declaration with only 1 variable
+        // if there are multiple variables in the same field declaration, create declaration with
+        // only 1 variable
         if (originalFieldDeclaration.fragments().size() > 1) {
             AST ast = contextNode.getWrappedObject().getAST();
 
-            // note that the copied tree should not be modified by wrapped
-            // ASTJField
+            // note that the copied tree should not be modified by wrapped ASTJField
             //
-            // the copied tree will have source ranges for all nodes in the
-            // source file,
-            // hence, the get methods in the new ASTJField will not return the
-            // right contents
+            // the copied tree will have source ranges for all nodes in the source file,
+            // hence, the get methods in the new ASTJField will not return the right contents
             FieldDeclaration newFieldDeclaration = (FieldDeclaration)ASTNode.copySubtree(ast, originalFieldDeclaration);
 
             @SuppressWarnings("unchecked")
@@ -463,7 +537,7 @@ public class ASTFacadeHelper extends FacadeHelper {
                 annotation.setContents(applyFormatRules(originalAnnotation.getContents()));
             }
         } else
-            // create new field and replace it all by original contents
+        // create new field and replace it all by original contents
         {
             String contents = applyFormatRules(originalField.getContents());
             FieldDeclaration fieldDeclaration = (FieldDeclaration)contextNode.getRewriter().createStringPlaceholder(
@@ -493,8 +567,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#doConvertToNode
-     * (java.lang.Object)
+     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#doConvertToNode(java.lang.Object)
      */
     @Override
     protected ASTJNode<?> doConvertToNode(Object object) {
@@ -577,8 +650,9 @@ public class ASTFacadeHelper extends FacadeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#addChild(org.eclipse
-     * .emf.codegen.merge.java.facade.JNode, org.eclipse.emf.codegen.merge.java.facade.JNode)
+     * @see
+     * org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#addChild(org.eclipse.emf.codegen.merge
+     * .java.facade.JNode, org.eclipse.emf.codegen.merge.java.facade.JNode)
      */
     @Override
     public boolean addChild(JNode node, JNode child) {
@@ -621,9 +695,9 @@ public class ASTFacadeHelper extends FacadeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#insertSibling(
-     * org.eclipse.emf.codegen.merge.java.facade.JNode,
-     * org.eclipse.emf.codegen.merge.java.facade.JNode, boolean)
+     * @see
+     * org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#insertSibling(org.eclipse.emf.codegen
+     * .merge.java.facade.JNode, org.eclipse.emf.codegen.merge.java.facade.JNode, boolean)
      */
     @Override
     public boolean insertSibling(JNode node, JNode newSibling, boolean before) {
@@ -640,7 +714,7 @@ public class ASTFacadeHelper extends FacadeHelper {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#toString(java. lang.Object)
+     * @see org.eclipse.emf.codegen.merge.java.facade.FacadeHelper#toString(java.lang.Object)
      */
     @Override
     public String toString(Object object) {

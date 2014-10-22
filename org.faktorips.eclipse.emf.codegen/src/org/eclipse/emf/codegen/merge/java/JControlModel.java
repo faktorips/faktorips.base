@@ -1,16 +1,10 @@
 /**
- * <copyright>
- *
  * Copyright (c) 2006-2008 IBM Corporation and others. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors: IBM - Initial API and implementation
- *
- * </copyright>
- *
- * $Id: JControlModel.java,v 1.13 2008/04/02 19:07:28 marcelop Exp $
  */
 package org.eclipse.emf.codegen.merge.java;
 
@@ -37,7 +31,6 @@ import org.xml.sax.InputSource;
  * A control model that provides dictionaries and rules to drive a merge process.
  */
 public class JControlModel extends PrefixHandler {
-
     protected final static Class<?>[] NO_PARAMETER_TYPES = new Class<?>[0];
 
     static Map<String, Class<?>> classNameToClassMap = new HashMap<String, Class<?>>();
@@ -895,7 +888,6 @@ public class JControlModel extends PrefixHandler {
 }
 
 class PrefixHandler {
-
     protected String classPrefix;
 
     protected PrefixHandler() {

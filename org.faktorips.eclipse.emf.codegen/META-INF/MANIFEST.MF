@@ -3,12 +3,11 @@ Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Eclipse-LazyStart: true
 Bundle-SymbolicName: org.faktorips.eclipse.emf.codegen;singleton:=true
-Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)
- ",org.eclipse.emf.common;visibility:=reexport;bundle-version="[2.5.0,
- 3.0.0)",org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)",org
- .eclipse.jdt.core;bundle-version="[3.5.0,4.0.0)",org.eclipse.jdt.laun
- ching;bundle-version="[3.5.0,4.0.0)",org.eclipse.debug.core;bundle-ve
- rsion="[3.5.0,4.0.0)",org.eclipse.text;bundle-version="[3.5.0,4.0.0)"
+Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)",
+ org.eclipse.emf.common;bundle-version="[2.5.0,3.0.0)";visibility:=reexport,
+ org.eclipse.core.resources;bundle-version="[3.5.0,4.0.0)",
+ org.eclipse.jdt.core;bundle-version="[3.5.0,4.0.0)",
+ org.eclipse.text;bundle-version="[3.5.0,4.0.0)"
 Bundle-Activator: org.eclipse.emf.codegen.CodeGenPlugin$Implementation
 Export-Package: org.eclipse.emf.codegen,
  org.eclipse.emf.codegen.merge.java,

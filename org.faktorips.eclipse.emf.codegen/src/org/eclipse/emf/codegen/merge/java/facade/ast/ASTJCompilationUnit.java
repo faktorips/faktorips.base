@@ -62,7 +62,7 @@ public class ASTJCompilationUnit extends ASTJNode<CompilationUnit> implements JC
      * Pattern to extract and replace header. Header is any number of block or line comments, spaces
      * or newline characters before any Java code (package, import or type declaration).
      */
-    protected final static Pattern HEADER_PATTERN = Pattern
+    protected static final Pattern HEADER_PATTERN = Pattern
             .compile("^(?:(?:/\\*(?:.|[\\n\\r])*?\\*/)|(?://.*(?:[\\n\\r])+)|(?:\\s+))+");
 
     /**

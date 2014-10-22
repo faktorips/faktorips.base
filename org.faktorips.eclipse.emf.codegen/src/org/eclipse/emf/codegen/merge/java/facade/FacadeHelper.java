@@ -21,12 +21,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.codegen.merge.java.JControlModel;
+import org.eclipse.emf.codegen.util.CodeGenUtil;
+import org.eclipse.jdt.core.JavaCore;
 
 public abstract class FacadeHelper {
     protected static final String CLASS_PREFIX = "org.eclipse.emf.codegen.merge.java.facade.J";
 
     protected JControlModel controlModel;
     protected Map<Object, JNode> objectToNodeMap;
+
+    /**
+     * @since 2.8
+     */
+    protected String compilerCompliance;
 
     public void reset() {
         if (objectToNodeMap != null) {
@@ -400,7 +407,9 @@ public abstract class FacadeHelper {
      */
     public String applyFormatRules(String value) {
         // do not crash when control model is not set
-        return value;
+        // do not crash when control model is not set
+        return getControlModel() == null ? value : CodeGenUtil.convertFormat(getControlModel()
+                .getLeadingTabReplacement(), getControlModel().convertToStandardBraceStyle(), value);
     }
 
     /**
@@ -433,4 +442,25 @@ public abstract class FacadeHelper {
     public boolean isSibilingTraversalExpensive() {
         return true;
     }
+
+    /**
+     * Returns the required Java {@link JavaCore#COMPILER_COMPLIANCE compiler compliance} level.
+     * 
+     * @return the required Java compiler compliance level.
+     * @since 2.8
+     */
+    public String getCompilerCompliance() {
+        return compilerCompliance;
+    }
+
+    /**
+     * Specify the required Java {@link JavaCore#COMPILER_COMPLIANCE compiler compliance} level.
+     * 
+     * @param compilerCompliance the required Java compiler compliance level.
+     * @since 2.8
+     */
+    public void setCompilerCompliance(String compilerCompliance) {
+        this.compilerCompliance = compilerCompliance;
+    }
+
 }
