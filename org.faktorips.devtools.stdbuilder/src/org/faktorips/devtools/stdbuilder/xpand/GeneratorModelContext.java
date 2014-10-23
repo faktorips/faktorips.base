@@ -343,8 +343,8 @@ public class GeneratorModelContext {
         if (this.ipsProject.equals(ipsProject)) {
             return isGeneratePublishedInterfaces(getConfig());
         } else {
-            IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
-            return isGeneratePublishedInterfaces(config);
+            IIpsArtefactBuilderSetConfig configuration = ipsProject.getIpsArtefactBuilderSet().getConfig();
+            return isGeneratePublishedInterfaces(configuration);
         }
     }
 
