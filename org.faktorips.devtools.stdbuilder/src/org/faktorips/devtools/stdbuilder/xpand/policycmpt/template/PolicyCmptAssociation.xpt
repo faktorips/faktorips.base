@@ -157,7 +157,7 @@
 			            return null;
 			        }
 			        «IF derived-»
-				        «List_("? extends "+ targetInterfaceName)» elements = «methodNameGetter»();
+				        «List_(targetInterfaceName)» elements = «methodNameGetter»();
 				        «List_(targetInterfaceName)» result = new  «ArrayList(targetInterfaceName)»();
 				        for («targetInterfaceName» element : elements) {
 				        	«LET targetPolicyCmptClass AS targetClass-»
@@ -192,7 +192,7 @@
 			            return null;
 			        }
 			        «IF derived-»
-				        «List_("? extends "+ targetInterfaceName)» elements = «methodNameGetter»();
+				        «List_(targetInterfaceName)» elements = «methodNameGetter»();
 				        for («targetInterfaceName» element : elements) {
 				        	«LET targetPolicyCmptClass AS targetClass-»
 				            if (element.«targetClass.methodNameGetProductCmpt»().equals(qualifier)) {

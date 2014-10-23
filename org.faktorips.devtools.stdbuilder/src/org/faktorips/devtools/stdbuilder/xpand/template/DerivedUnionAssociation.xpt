@@ -1,6 +1,7 @@
 «IMPORT java::util»
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
@@ -18,7 +19,7 @@
      * @generated
      */
      «overrideAnnotationForPublishedMethodOrIf(needOverride(currentContextType))-»
-     public «List_("? extends "+ targetInterfaceName)» «methodNameGetter»() {
+     public «List_(targetInterfaceName)» «methodNameGetter»() {
      	«List_(targetInterfaceName)» result = new «ArrayList(targetInterfaceName)»(«methodNameGetNumOfInternal»());
      	«IF isImplementedInSuperclass(currentContextType)-»
      		result.addAll(super.«methodNameGetter»());
