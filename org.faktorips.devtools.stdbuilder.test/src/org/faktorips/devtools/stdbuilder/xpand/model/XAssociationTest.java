@@ -146,7 +146,7 @@ public class XAssociationTest {
     @Test
     public void testGetTargetInterfaceName() throws Exception {
         XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
-        doReturn(true).when(xAssociation).isGeneratePublishedInterfaces();
+        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(true);
         doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
 
         doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType(false);

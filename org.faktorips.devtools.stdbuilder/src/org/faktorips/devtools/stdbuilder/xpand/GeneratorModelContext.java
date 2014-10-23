@@ -72,16 +72,20 @@ public class GeneratorModelContext {
 
     private final IJavaPackageStructure javaPackageStructure;
 
+    private final IIpsProject ipsProject;
+
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
             IIpsProject ipsProject) {
-        this(config, javaPackageStructure, new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>());
+        this(config, javaPackageStructure, new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>(),
+                ipsProject);
         annotationGeneratorMap.putAll(new AnnotationGeneratorBuilder(ipsProject).createAnnotationGenerators());
     }
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
-            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
+            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap, IIpsProject ipsProject) {
         this.config = config;
         this.javaPackageStructure = javaPackageStructure;
+        this.ipsProject = ipsProject;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
         this.annotationGeneratorMap = annotationGeneratorMap;
     }
@@ -323,9 +327,30 @@ public class GeneratorModelContext {
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
-    public boolean isGeneratePublishedInterfaces() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES);
+    /**
+     * Returns <code>true</code> if the given project is configured to generate published
+     * interfaces. If the given project equals to the project of this context this method does
+     * always use the {@link IIpsArtefactBuilderSetConfig} configured in this context. This is
+     * important because the project's {@link IIpsArtefactBuilderSetConfig config} may not be
+     * available during initialization of the builder set. If the project is another project, this
+     * method will always ask for the current {@link IIpsArtefactBuilderSetConfig}.
+     * 
+     * @param ipsProject The project where the property is configured
+     * @return <code>true</code> if the project is configured to generate published interfaces,
+     *         <code>false</code> if not.
+     */
+    public boolean isGeneratePublishedInterfaces(IIpsProject ipsProject) {
+        if (this.ipsProject.equals(ipsProject)) {
+            return isGeneratePublishedInterfaces(getConfig());
+        } else {
+            IIpsArtefactBuilderSetConfig config = ipsProject.getIpsArtefactBuilderSet().getConfig();
+            return isGeneratePublishedInterfaces(config);
+        }
+    }
+
+    private boolean isGeneratePublishedInterfaces(IIpsArtefactBuilderSetConfig config) {
+        Boolean propertyValueAsBoolean = config
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES);
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 

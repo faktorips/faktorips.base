@@ -35,7 +35,7 @@ public abstract class TypeBuilder<T extends XType> extends XpandBuilder<T> {
 
     @Override
     public boolean isBuildingPublishedSourceFile() {
-        return isInterfaceBuilder() || !getGeneratorModelContext().isGeneratePublishedInterfaces();
+        return isInterfaceBuilder() || !getGeneratorModelContext().isGeneratePublishedInterfaces(getIpsProject());
     }
 
     @Override

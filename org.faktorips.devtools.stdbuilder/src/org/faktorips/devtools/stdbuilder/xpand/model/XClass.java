@@ -31,7 +31,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public XClass(IIpsObject ipsObject, GeneratorModelContext context, ModelService modelService) {
         super(ipsObject, context, modelService);
-        javaClassNameProvider = createJavaClassNamingProvider(context.isGeneratePublishedInterfaces());
+        javaClassNameProvider = createJavaClassNamingProvider(isGeneratePublishedInterfaces());
     }
 
     public abstract boolean isValidForCodeGeneration();
