@@ -178,8 +178,8 @@
                type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               description="Comment that follows the tag @SupressWarning in all methods"
-               label="Comment for @SuppressWarning"
+               description="Annotation in @SupressWarning for all methods"
+               label="Annotation in @SuppressWarning"
                name="suppressWarningAnnotation"
                type="string">
          </builderSetPropertyDef>
