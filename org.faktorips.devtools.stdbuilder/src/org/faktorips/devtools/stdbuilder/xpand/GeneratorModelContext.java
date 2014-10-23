@@ -23,6 +23,7 @@ import org.eclipse.xtend.expression.ResourceManager;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -85,9 +86,9 @@ public class GeneratorModelContext {
             Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap, IIpsProject ipsProject) {
         this.config = config;
         this.javaPackageStructure = javaPackageStructure;
+        this.annotationGeneratorMap = annotationGeneratorMap;
         this.ipsProject = ipsProject;
         this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
-        this.annotationGeneratorMap = annotationGeneratorMap;
     }
 
     /**
@@ -283,7 +284,9 @@ public class GeneratorModelContext {
         String kind = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_FORMULA_COMPILING);
         try {
             return FormulaCompiling.valueOf(kind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // if value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
         }
@@ -329,13 +332,18 @@ public class GeneratorModelContext {
 
     /**
      * Returns <code>true</code> if the given project is configured to generate published
-     * interfaces. If the given project equals to the project of this context this method does
-     * always use the {@link IIpsArtefactBuilderSetConfig} configured in this context. This is
-     * important because the project's {@link IIpsArtefactBuilderSetConfig config} may not be
-     * available during initialization of the builder set. If the project is another project, this
-     * method will always ask for the current {@link IIpsArtefactBuilderSetConfig}.
+     * interfaces, <code>false</code> else.
+     * <p>
+     * If the given project differs from this context's project, this method always asks the current
+     * {@link IIpsArtefactBuilderSet} for its {@link IIpsArtefactBuilderSetConfig} and retrieves the
+     * value of the generate-published-interfaces setting.
+     * <p>
+     * If, however, the given project is equal to the project of this context, this method uses the
+     * context's own {@link IIpsArtefactBuilderSetConfig}. This is important as the project's
+     * {@link IIpsArtefactBuilderSetConfig config} may not be available during initialization of the
+     * builder set.
      * 
-     * @param ipsProject The project where the property is configured
+     * @param ipsProject The project in which the property is configured
      * @return <code>true</code> if the project is configured to generate published interfaces,
      *         <code>false</code> if not.
      */
