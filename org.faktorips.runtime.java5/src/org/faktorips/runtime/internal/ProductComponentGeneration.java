@@ -338,21 +338,10 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * @param element the element all table usages should be added to
      */
     protected void writeReferencesToXml(Element element) {
-
         /*
-         * Nothing to be done base class. Note that this method is deliberately not declaredtoXml
+         * Nothing to be done base class. Note that this method is deliberately not declared
          * abstract to allow calls to super.writeReferencesToXml() in subclasses.
          */
-    }
-
-    protected void writeReferenceToXml(Element element, IProductComponentLink<? extends IProductComponent> link) {
-        Element linkElement = element.getOwnerDocument().createElement("Link");
-        linkElement.setAttribute("association", link.getAssociationName());
-        linkElement.setAttribute("target", link.getTarget().getId());
-        linkElement.setAttribute("minCardinality", Integer.toString(link.getCardinality().getLowerBound()));
-        linkElement.setAttribute("maxCardinality", Integer.toString(link.getCardinality().getUpperBound()));
-        linkElement.setAttribute("defaultCardinality", Integer.toString(link.getCardinality().getDefaultCardinality()));
-        element.appendChild(linkElement);
     }
 
     /**
