@@ -173,6 +173,13 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public static final String CONFIG_PROPERTY_COMMENT_FOLLOWING_METHODS = "commentFollowingMethod"; //$NON-NLS-1$
 
     /**
+     * Configuration property that defines the annotation that should follow the tag @SupressWarning
+     * warning above all generated methods of {@link PolicyCmptType}, {@link ProductCmptType},
+     * {@link EnumType} ,{@link TableStructure} and {@link TableContents}
+     */
+    public static final String CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION = "suppressWarningAnnotation"; //$NON-NLS-1$
+
+    /**
      * Name of the configuration property that indicates whether to generate camel case constant
      * names with underscore separator or without. For example if this property is true, the
      * constant for the name checkAnythingRule would be generated as CHECK_ANYTHING_RULE, if the

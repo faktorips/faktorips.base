@@ -172,9 +172,15 @@
                type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               description="The Comment that follows all generated methods"
+               description="Comment that follows all generated methods"
                label="Comment following methods"
                name="commentFollowingMethod"
+               type="string">
+         </builderSetPropertyDef>
+         <builderSetPropertyDef
+               description="Comment that follows the tag @SupressWarning in all methods"
+               label="Comment for @SuppressWarning"
+               name="suppressWarningAnnotation"
                type="string">
          </builderSetPropertyDef>
       </builderSet>

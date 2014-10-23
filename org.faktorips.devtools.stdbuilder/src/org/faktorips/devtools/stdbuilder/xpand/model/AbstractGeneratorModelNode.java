@@ -567,6 +567,15 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
+     * Returns the comment that should be following the tag @SupressWarning warning above all
+     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,
+     * {@link TableStructure} and {@link TableContents}
+     */
+    public String getSuppressWarningAnnotation() {
+        return getContext().getSuppressWarningAnnotation();
+    }
+
+    /**
      * 
      * Creates a list containing one {@link AbstractGeneratorModelNode} (of the given class) for
      * every {@link IIpsObjectPart} in the given list.

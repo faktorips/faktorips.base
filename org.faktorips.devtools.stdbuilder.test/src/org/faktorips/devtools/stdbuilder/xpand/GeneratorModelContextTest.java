@@ -118,4 +118,18 @@ public class GeneratorModelContextTest {
         assertEquals(TEST_STRING, comment);
     }
 
+    @Test
+    public void testGetSuppressWarningAnnotation_Default() {
+        String comment = generatorModelContext.getSuppressWarningAnnotation();
+        assertTrue(comment.isEmpty());
+    }
+
+    @Test
+    public void testGetSuppressWarningAnnotation_NotEmpty() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION))
+                .thenReturn(TEST_STRING);
+        String comment = generatorModelContext.getSuppressWarningAnnotation();
+        assertEquals(TEST_STRING, comment);
+    }
+
 }
