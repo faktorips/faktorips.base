@@ -14,7 +14,7 @@
 		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
 	
 		/**
-		 * «localizedJDoc("INTERFACE", generationConceptNameSingular, name)»
+		 * «localizedJDoc("INTERFACE", generationConceptNameSingular, productCmptClassNode.name)»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
