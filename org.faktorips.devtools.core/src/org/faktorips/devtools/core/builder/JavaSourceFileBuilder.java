@@ -37,7 +37,6 @@ import org.eclipse.emf.codegen.merge.java.JControlModel;
 import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
-import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -949,13 +948,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private void initJControlModel(IIpsProject project) throws CoreException {
         // CSOFF: IllegalCatch
         model = new JControlModel();
-        if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
-            ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
-            configureDefaults(astFacadeHelper.getJavaCoreOptions(), project);
-            facadeHelper = astFacadeHelper;
-        } else {
-            facadeHelper = new JDOMFacadeHelper();
-        }
+        ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
+        configureDefaults(astFacadeHelper.getJavaCoreOptions(), project);
+        facadeHelper = astFacadeHelper;
         try {
             model.initialize(facadeHelper, getJMergeConfigLocation(project));
         } catch (Exception e) {
@@ -978,7 +973,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         StringBuffer mergeFileDefault = new StringBuffer();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
-                .append(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+                .append("/merge.java5.xml"); //$NON-NLS-1$
         Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
         return getFileNameFromBundle(bundle, mergeFileDefault.toString());
     }
