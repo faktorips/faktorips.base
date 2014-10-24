@@ -53,6 +53,14 @@ public class ContainsSearchOperator extends AbstractSearchOperator<ContainsSearc
     }
 
     private boolean isValueContained(SingleValueHolder value) {
-        return getArgument() != null && getArgument().equals(value.getValue().getContent());
+        return getArgument() != null && checkEquality(value);
+    }
+
+    private boolean checkEquality(SingleValueHolder value) {
+        try {
+            return getValueDatatype().areValuesEqual(value.getValue().getContentAsString(), getArgument());
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
