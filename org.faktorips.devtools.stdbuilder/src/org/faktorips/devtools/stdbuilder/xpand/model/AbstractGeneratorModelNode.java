@@ -559,11 +559,12 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns the comment that should be following all generated methods of {@link PolicyCmptType},
-     * {@link ProductCmptType},{@link EnumType} ,{@link TableStructure} and {@link TableContents}
+     * Returns the comment that will be generated after each generated method of
+     * {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,{@link TableStructure} and
+     * {@link TableContents}
      */
     public String getCommentFollowingMethods() {
-        return getContext().getCommentFollowingMethods();
+        return getContext().getCommentAfterMethodEnd();
     }
 
     /**

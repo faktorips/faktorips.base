@@ -105,16 +105,16 @@ public class GeneratorModelContextTest {
     }
 
     @Test
-    public void testGetCommentFollowingMethods_Default() {
-        String comment = generatorModelContext.getCommentFollowingMethods();
+    public void testGetCommentAfterMethodEnd_Default() {
+        String comment = generatorModelContext.getCommentAfterMethodEnd();
         assertTrue(comment.isEmpty());
     }
 
     @Test
-    public void testGetCommentFollowingMethods_NotEmpty() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_COMMENT_FOLLOWING_METHODS)).thenReturn(
+    public void testGetCommentAfterMethodEnd_NotEmpty() {
+        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END)).thenReturn(
                 TEST_STRING);
-        String comment = generatorModelContext.getCommentFollowingMethods();
+        String comment = generatorModelContext.getCommentAfterMethodEnd();
         assertEquals(TEST_STRING, comment);
     }
 

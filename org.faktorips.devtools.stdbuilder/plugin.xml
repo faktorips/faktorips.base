@@ -172,9 +172,9 @@
                type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               description="Comment that follows all generated methods"
-               label="Comment following methods"
-               name="commentFollowingMethod"
+               description="Defines a comment that is generated after each generated method to indicate the end of generated methods"
+               label="Generate comment after method end"
+               name="commentAfterMethodEnd"
                type="string">
          </builderSetPropertyDef>
          <builderSetPropertyDef

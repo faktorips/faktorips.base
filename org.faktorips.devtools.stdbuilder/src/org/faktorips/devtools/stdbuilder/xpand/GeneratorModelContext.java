@@ -341,10 +341,10 @@ public class GeneratorModelContext {
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
     }
 
-    public String getCommentFollowingMethods() {
-        String propertyValueAsBoolean = getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_COMMENT_FOLLOWING_METHODS);
-        return propertyValueAsBoolean == null ? StringUtils.EMPTY : propertyValueAsBoolean;
+    public String getCommentAfterMethodEnd() {
+        String propertyValueAsString = getConfig().getPropertyValueAsString(
+                StandardBuilderSet.CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END);
+        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 
     public String getSuppressWarningAnnotation() {

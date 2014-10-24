@@ -166,15 +166,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public static final String CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS = "generateConvenienceGetters"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines the comments that should follow all generated methods of
-     * {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,{@link TableStructure} and
-     * {@link TableContents}
+     * Configuration property that defines the comment that will be generated after each generated
+     * method of {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,
+     * {@link TableStructure} and {@link TableContents}
      */
-    public static final String CONFIG_PROPERTY_COMMENT_FOLLOWING_METHODS = "commentFollowingMethod"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END = "commentAfterMethodEnd"; //$NON-NLS-1$
 
     /**
      * Configuration property that defines the annotation that should follow the tag @SupressWarning
-     * warning above all generated methods of {@link PolicyCmptType}, {@link ProductCmptType},
+     * above all generated methods of {@link PolicyCmptType}, {@link ProductCmptType},
      * {@link EnumType} ,{@link TableStructure} and {@link TableContents}
      */
     public static final String CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION = "suppressWarningAnnotation"; //$NON-NLS-1$
