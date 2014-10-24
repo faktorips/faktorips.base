@@ -239,6 +239,55 @@ public abstract class AbstractGeneratorModelNode {
         }
     }
 
+    /**
+     * Returns the qualified class name for the given datatype.
+     * <p>
+     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered. If
+     * <code>true</code>, the name of the generated product component generation class is returned,
+     * if <code>false</code>, the name of the generated product component class is returned.
+     * <p>
+     * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
+     * returned.
+     * <p>
+     * Uses the common mechanism that resolves the published interfaces or implementation classes
+     * depending on the respective project settings.
+     * 
+     * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
+     *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
+     * @param useGeneration specifies whether to resolve the generation class name (
+     *            <code>true</code>) or product component class name (<code>false</code>).
+     *            Considered only in case of an {@link IPolicyCmptType}.
+     * @return the qualified class name for the datatype
+     */
+    protected String getJavaClassName(Datatype datatype, boolean useGeneration) {
+        return getJavaClassName(datatype, useGeneration, true);
+    }
+
+    /**
+     * Resolves the qualified class name for the given datatype.
+     * <p>
+     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered. If
+     * <code>true</code>, the name of the generated product component generation class is returned,
+     * if <code>false</code>, the name of the generated product component class is returned.
+     * <p>
+     * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
+     * returned.
+     * <p>
+     * Used for special cases where resolving the name of implementation classes may have to be
+     * forced by using resolveTypesToPublishedInterface=<code>false</code>. For standard cases use
+     * {@link #getJavaClassName(Datatype, boolean)}.
+     * 
+     * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
+     *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
+     * @param useGeneration specifies whether to resolve the generation class name (
+     *            <code>true</code>) or product component class name (<code>false</code>).
+     *            Considered only in case of an {@link IPolicyCmptType}.
+     * @param resolveTypesToPublishedInterface <code>true</code> to use the common mechanism that
+     *            resolves the published interface or implementation class depending on the
+     *            respective project settings. <code>false</code> to forcibly resolve implementation
+     *            classes.
+     * @return the qualified class name for the datatype
+     */
     protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean resolveTypesToPublishedInterface) {
         if (datatype instanceof IPolicyCmptType) {
             return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
@@ -510,7 +559,7 @@ public abstract class AbstractGeneratorModelNode {
     /**
      * Returns whether or not published interfaces should be generated.
      */
-    public final boolean isGeneratePublishedInterfaces() {
+    public boolean isGeneratePublishedInterfaces() {
         return getContext().isGeneratePublishedInterfaces(getIpsObjectPartContainer().getIpsProject());
     }
 
