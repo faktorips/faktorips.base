@@ -56,135 +56,6 @@ public class JMerger {
 
     protected static Pattern interfaceBracePattern = null;
 
-    public class PullTargetVisitor extends FacadeVisitor {
-        protected void doPull(JNode source, JNode target) {
-            map(source, target);
-            if (source != null) {
-                applyPullRules(source, target);
-            }
-        }
-
-        @Override
-        protected void visit(JNode target) {
-            // retrieve source node corresponding to target
-            //
-            if (target instanceof JAbstractType) {
-                JAbstractType targetAbstractType = (JAbstractType)target;
-                String comment = targetAbstractType.getComment();
-
-                isBlocked = targetAbstractType.getParent() instanceof JCompilationUnit
-                        && getControlModel().getBlockPattern() != null && comment != null
-                        && getControlModel().getBlockPattern().matcher(comment).find();
-
-                String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(targetAbstractType);
-                JAbstractType sourceAbstractType = sourcePatternDictionary.getAbstractTypeMap().get(nodeIdentifier);
-
-                // convert the target node to a compatible node
-                //
-                if (sourceAbstractType != null && !areCompatible(sourceAbstractType, targetAbstractType)) {
-                    JNode newTarget = convertTarget(targetAbstractType, sourceAbstractType.getClass());
-                    if (newTarget != null) {
-                        // use new node from now on
-                        target = newTarget;
-
-                        // redo the markup since nodes changed now
-                        targetPatternDictionary.start(target);
-                    } else if (!isBlocked) {
-                        map(sourceAbstractType, target);
-                    }
-                }
-            }
-
-            if (!isBlocked) {
-                // super is called on converted node
-                super.visit(target);
-            }
-        }
-
-        @Override
-        protected boolean basicVisit(JNode node) {
-            String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(node);
-            JNode sourceNode = sourcePatternDictionary.getNodeMap(node).get(nodeIdentifier);
-            if (noAbstractTypeConversion && sourceNode == null) {
-                sourceNode = sourcePatternDictionary.getNode(nodeIdentifier);
-            }
-
-            doPull(sourceNode, node);
-            return true;
-        }
-
-        @Override
-        protected boolean visit(JCompilationUnit compilationUnit) {
-            return true;
-        }
-
-        @Override
-        protected boolean visit(JMethod method) {
-            String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(method);
-            JNode sourceNode = sourcePatternDictionary.getMethodMap().get(nodeIdentifier);
-
-            if (sourceNode == null && getControlModel().getRedirect() != null && method.getName() != null
-                    && method.getName().endsWith(getControlModel().getRedirect())) {
-                String qualifiedTargetMethodName = method.getQualifiedName();
-                int index = qualifiedTargetMethodName.indexOf("("); // )
-                qualifiedTargetMethodName = qualifiedTargetMethodName.substring(0, index
-                        - getControlModel().getRedirect().length())
-                        + qualifiedTargetMethodName.substring(index);
-                sourceNode = sourcePatternDictionary.getMethodMap().get(qualifiedTargetMethodName);
-            }
-
-            if (noAbstractTypeConversion && sourceNode == null) {
-                sourceNode = sourcePatternDictionary.getNode(nodeIdentifier);
-            }
-            doPull(sourceNode, method);
-            return true;
-        }
-
-        @Override
-        protected boolean visit(JPackage jPackage) {
-            JPackage sourcePackage = sourcePatternDictionary.getJPackage();
-            doPull(sourcePackage, jPackage);
-            return false;
-        }
-    }
-
-    public class PushSourceVisitor extends FacadeVisitor {
-        /**
-         * Returns whether the children should be visited (i.e., when the source is not in the
-         * target).
-         */
-        protected boolean doPush(JNode sourceNode) {
-            applySortRules(sourceNode);
-            if (!sourceToTargetMap.containsKey(sourceNode)) {
-                if (isPushMarkedUp(sourceNode)) {
-                    insertClone(sourceNode);
-                }
-                return false;
-            }
-            return true;
-        }
-
-        @Override
-        protected boolean basicVisit(JNode node) {
-            return doPush(node);
-        }
-
-        @Override
-        protected boolean visit(JCompilationUnit compilationUnit) {
-            return true;
-        }
-
-        @Override
-        protected boolean visit(JAbstractType abstractType) {
-            return super.visit(abstractType) && areCompatible(abstractType, sourceToTargetMap.get(abstractType));
-        }
-
-        @Override
-        protected boolean visit(JImport jImport) {
-            return !targetPatternDictionary.isNoImport(jImport) && super.visit(jImport);
-        }
-    }
-
     protected JControlModel controlModel;
 
     protected JCompilationUnit sourceCompilationUnit;
@@ -960,6 +831,135 @@ public class JMerger {
                     .getNext(targetChild)) {
                 mapChildren(sourceChild, targetChild);
             }
+        }
+    }
+
+    public class PullTargetVisitor extends FacadeVisitor {
+        protected void doPull(JNode source, JNode target) {
+            map(source, target);
+            if (source != null) {
+                applyPullRules(source, target);
+            }
+        }
+    
+        @Override
+        protected void visit(JNode target) {
+            // retrieve source node corresponding to target
+            //
+            if (target instanceof JAbstractType) {
+                JAbstractType targetAbstractType = (JAbstractType)target;
+                String comment = targetAbstractType.getComment();
+    
+                isBlocked = targetAbstractType.getParent() instanceof JCompilationUnit
+                        && getControlModel().getBlockPattern() != null && comment != null
+                        && getControlModel().getBlockPattern().matcher(comment).find();
+    
+                String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(targetAbstractType);
+                JAbstractType sourceAbstractType = sourcePatternDictionary.getAbstractTypeMap().get(nodeIdentifier);
+    
+                // convert the target node to a compatible node
+                //
+                if (sourceAbstractType != null && !areCompatible(sourceAbstractType, targetAbstractType)) {
+                    JNode newTarget = convertTarget(targetAbstractType, sourceAbstractType.getClass());
+                    if (newTarget != null) {
+                        // use new node from now on
+                        target = newTarget;
+    
+                        // redo the markup since nodes changed now
+                        targetPatternDictionary.start(target);
+                    } else if (!isBlocked) {
+                        map(sourceAbstractType, target);
+                    }
+                }
+            }
+    
+            if (!isBlocked) {
+                // super is called on converted node
+                super.visit(target);
+            }
+        }
+    
+        @Override
+        protected boolean basicVisit(JNode node) {
+            String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(node);
+            JNode sourceNode = sourcePatternDictionary.getNodeMap(node).get(nodeIdentifier);
+            if (noAbstractTypeConversion && sourceNode == null) {
+                sourceNode = sourcePatternDictionary.getNode(nodeIdentifier);
+            }
+    
+            doPull(sourceNode, node);
+            return true;
+        }
+    
+        @Override
+        protected boolean visit(JCompilationUnit compilationUnit) {
+            return true;
+        }
+    
+        @Override
+        protected boolean visit(JMethod method) {
+            String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(method);
+            JNode sourceNode = sourcePatternDictionary.getMethodMap().get(nodeIdentifier);
+    
+            if (sourceNode == null && getControlModel().getRedirect() != null && method.getName() != null
+                    && method.getName().endsWith(getControlModel().getRedirect())) {
+                String qualifiedTargetMethodName = method.getQualifiedName();
+                int index = qualifiedTargetMethodName.indexOf("("); // )
+                qualifiedTargetMethodName = qualifiedTargetMethodName.substring(0, index
+                        - getControlModel().getRedirect().length())
+                        + qualifiedTargetMethodName.substring(index);
+                sourceNode = sourcePatternDictionary.getMethodMap().get(qualifiedTargetMethodName);
+            }
+    
+            if (noAbstractTypeConversion && sourceNode == null) {
+                sourceNode = sourcePatternDictionary.getNode(nodeIdentifier);
+            }
+            doPull(sourceNode, method);
+            return true;
+        }
+    
+        @Override
+        protected boolean visit(JPackage jPackage) {
+            JPackage sourcePackage = sourcePatternDictionary.getJPackage();
+            doPull(sourcePackage, jPackage);
+            return false;
+        }
+    }
+
+    public class PushSourceVisitor extends FacadeVisitor {
+        /**
+         * Returns whether the children should be visited (i.e., when the source is not in the
+         * target).
+         */
+        protected boolean doPush(JNode sourceNode) {
+            applySortRules(sourceNode);
+            if (!sourceToTargetMap.containsKey(sourceNode)) {
+                if (isPushMarkedUp(sourceNode)) {
+                    insertClone(sourceNode);
+                }
+                return false;
+            }
+            return true;
+        }
+    
+        @Override
+        protected boolean basicVisit(JNode node) {
+            return doPush(node);
+        }
+    
+        @Override
+        protected boolean visit(JCompilationUnit compilationUnit) {
+            return true;
+        }
+    
+        @Override
+        protected boolean visit(JAbstractType abstractType) {
+            return super.visit(abstractType) && areCompatible(abstractType, sourceToTargetMap.get(abstractType));
+        }
+    
+        @Override
+        protected boolean visit(JImport jImport) {
+            return !targetPatternDictionary.isNoImport(jImport) && super.visit(jImport);
         }
     }
 
