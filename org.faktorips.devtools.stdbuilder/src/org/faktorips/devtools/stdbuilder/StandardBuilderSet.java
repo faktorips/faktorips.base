@@ -173,9 +173,9 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     public static final String CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END = "commentAfterMethodEnd"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines the annotation that should follow the tag @SupressWarning
-     * above all generated methods of {@link PolicyCmptType}, {@link ProductCmptType},
-     * {@link EnumType} ,{@link TableStructure} and {@link TableContents}
+     * Configuration property that defines the @SupressWarning tag that is generated above all
+     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
+     * {@link TableStructure} and {@link TableContents}
      */
     public static final String CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION = "suppressWarningAnnotation"; //$NON-NLS-1$
 

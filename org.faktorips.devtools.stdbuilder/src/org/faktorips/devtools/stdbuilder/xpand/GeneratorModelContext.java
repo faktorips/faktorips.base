@@ -348,8 +348,8 @@ public class GeneratorModelContext {
     }
 
     public String getSuppressWarningAnnotation() {
-        String propertyValueAsBoolean = getConfig().getPropertyValueAsString(
+        String propertyValueAsString = getConfig().getPropertyValueAsString(
                 StandardBuilderSet.CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION);
-        return propertyValueAsBoolean == null ? StringUtils.EMPTY : propertyValueAsBoolean;
+        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 }

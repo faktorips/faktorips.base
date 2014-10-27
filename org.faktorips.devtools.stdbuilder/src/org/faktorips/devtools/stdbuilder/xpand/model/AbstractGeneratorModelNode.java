@@ -568,9 +568,9 @@ public abstract class AbstractGeneratorModelNode {
     }
 
     /**
-     * Returns the comment that should be following the tag @SupressWarning warning above all
-     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,
-     * {@link TableStructure} and {@link TableContents}
+     * Returns the @SupressWarning tag that is generated above all generated methods of
+     * {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} , {@link TableStructure} and
+     * {@link TableContents}
      */
     public String getSuppressWarningAnnotation() {
         return getContext().getSuppressWarningAnnotation();
