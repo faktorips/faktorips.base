@@ -42,8 +42,8 @@ public abstract class XType extends XClass {
     }
 
     /**
-     * Returns the implementation name and add the implementation name to the list of imports. Do
-     * only use this method if you really need the implementation class, use {@link #getName()} if
+     * Returns the implementation name and adds the implementation name to the list of imports. Only
+     * use this method if you require the implementation class explicitly. Use {@link #getName()} if
      * you just want to use the name for building other strings like method names.
      * 
      */

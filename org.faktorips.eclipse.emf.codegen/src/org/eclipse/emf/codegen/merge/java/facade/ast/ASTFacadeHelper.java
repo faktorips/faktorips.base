@@ -228,11 +228,11 @@ public class ASTFacadeHelper extends FacadeHelper {
                         new Object[] { problem.getSourceLineNumber(), problem.getMessage() }) : CodeGenPlugin.INSTANCE
                         .getString("_UI_LineNumber_message", new Object[] { problem.getSourceLineNumber() });
 
-                        BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
-                                : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
-                                contents == null ? new Object[] { problem } : new Object[] { problem,
-                                        new StringBuilder(contents) });
-                        diagnostic.add(childDiagnostic);
+                BasicDiagnostic childDiagnostic = new BasicDiagnostic(problem.isWarning() ? Diagnostic.WARNING
+                        : Diagnostic.ERROR, CodeGenPlugin.ID, 0, message.toString(),
+                        contents == null ? new Object[] { problem } : new Object[] { problem,
+                                new StringBuilder(contents) });
+                diagnostic.add(childDiagnostic);
             }
 
             return diagnostic;
@@ -406,7 +406,7 @@ public class ASTFacadeHelper extends FacadeHelper {
             if (node instanceof ASTJField) {
                 newASTJNode = cloneField((ASTJField)node, contextNode);
             } else
-                // create new node and replace it all by original contents
+            // create new node and replace it all by original contents
             {
                 String contents = applyFormatRules(node.getContents());
                 // note that string place holder adjusts indentation
@@ -480,7 +480,7 @@ public class ASTFacadeHelper extends FacadeHelper {
                 annotation.setContents(applyFormatRules(originalAnnotation.getContents()));
             }
         } else
-            // create new field and replace it all by original contents
+        // create new field and replace it all by original contents
         {
             String contents = applyFormatRules(originalField.getContents());
             FieldDeclaration fieldDeclaration = (FieldDeclaration)contextNode.getRewriter().createStringPlaceholder(
@@ -492,12 +492,11 @@ public class ASTFacadeHelper extends FacadeHelper {
     }
 
     /**
-     * Copy a list of {@link ASTNode} using {@link ASTNode#copySubtrees(AST, List)} and converts the
-     * nodes to ASTJNode.
+     * Copies a list of {@link ASTNode ASTNodes}. Uses {@link ASTNode#copySubtrees(AST, List)} and
+     * converts the returned nodes to {@link ASTJNode ASTJNodes}.
      * 
      * @param astNodes The list of AST nodes that should be copied
-     * @param contextNode Any existing ASTJNode with the correct AST that could be used as target
-     *            AST
+     * @param contextNode Any existing ASTJNode with the correct AST that can be used as target AST
      * 
      * @return A list of ASTJNode that was converted from the given ASTNodes
      */

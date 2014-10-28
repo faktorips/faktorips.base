@@ -88,9 +88,9 @@ merge:pull:
 	Overwrite node (method, field, ...) from generated code (source) in target (customized code) if it exists in both. 
 
 merge:push
-	Write generated code (source) into target source code if it does not already exists there. 
+	Write generated code (source) into target source code if it does not already exist there. 
 	When the element is in the generated source but not in the target, the element is pushed by default.
-	By setting a merge:push rule you could limit the pushing for example to only push the element if the pattern patches.
+	By setting a merge:push rule you could limit the pushing for example to only push the element if the pattern matches.
 	For example:
 	<merge:push targetParentMarkup="^d$" select="Annotation"/>
 	Push Annotations only if they are NOT marked as deleted. Because the pattern

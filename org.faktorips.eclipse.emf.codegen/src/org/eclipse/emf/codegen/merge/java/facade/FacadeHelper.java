@@ -1,15 +1,15 @@
 /**
  * <copyright>
- *
+ * 
  * Copyright (c) 2006-2008 IBM Corporation and others. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors: IBM - Initial API and implementation
- *
+ * 
  * </copyright>
- *
+ * 
  * $Id: FacadeHelper.java,v 1.11 2008/04/02 19:07:28 marcelop Exp $
  */
 package org.eclipse.emf.codegen.merge.java.facade;
@@ -406,7 +406,6 @@ public abstract class FacadeHelper {
      * @return the formatted String.
      */
     public String applyFormatRules(String value) {
-        // do not crash when control model is not set
         // do not crash when control model is not set
         return getControlModel() == null ? value : CodeGenUtil.convertFormat(getControlModel()
                 .getLeadingTabReplacement(), getControlModel().convertToStandardBraceStyle(), value);
