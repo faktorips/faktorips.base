@@ -221,21 +221,20 @@ public abstract class XAssociation extends AbstractGeneratorModelNode {
 
     public String getTargetInterfaceName() {
         XClass xClass = getTargetModelNode();
-        return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+        return xClass.getPublishedInterfaceName();
     }
 
     /**
-     * Returns the target interface name as {@link #getTargetInterfaceName()} but in case of an
-     * association constrains the interface name of the target of the constrained association (that
-     * one in the super class) is returned.
+     * Returns the target interface name as does {@link #getTargetInterfaceName()}. But in case of a
+     * constrained/overwritten association, the interface name of the target of the constrained
+     * association (that one in the super class) is returned.
      */
     public String getTargetInterfaceNameBase() {
         if (isConstrain()) {
             XClass xClass = getConstrainedAssociation().getTargetModelNode();
-            return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+            return xClass.getPublishedInterfaceName();
         } else {
-            XClass xClass = getTargetModelNode();
-            return xClass.getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
+            return getTargetInterfaceName();
         }
     }
 

@@ -29,7 +29,8 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
         super(interfaceBuilder, builderSet, modelContext, modelService, new LocalizedStringsSet(
                 ProductCmptGenerationClassBuilder.class));
         javaClassNameProvider = XProductCmptGenerationClass.createProductCmptGenJavaClassNaming(
-                modelContext.isGeneratePublishedInterfaces(), getLanguageUsedInGeneratedSourceCode());
+                modelContext.isGeneratePublishedInterfaces(builderSet.getIpsProject()),
+                getLanguageUsedInGeneratedSourceCode());
     }
 
     @Override

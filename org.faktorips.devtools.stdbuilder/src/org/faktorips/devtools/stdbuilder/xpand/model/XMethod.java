@@ -86,10 +86,9 @@ public class XMethod extends AbstractGeneratorModelNode {
     }
 
     protected String getJavaClassName(Datatype datatype) {
-        boolean resolveTypesToPublishedInterface = (getMethod().getModifier().isPublished() || getMethod() instanceof IPolicyCmptTypeMethod)
-                && isGeneratePublishedInterfaces();
+        boolean useInterface = (getMethod().getModifier().isPublished() || getMethod() instanceof IPolicyCmptTypeMethod);
         boolean useGeneration = getMethod() instanceof IProductCmptTypeMethod;
-        return getJavaClassName(datatype, useGeneration, resolveTypesToPublishedInterface);
+        return getJavaClassName(datatype, useGeneration, !useInterface);
     }
 
     public Set<XParameter> getParameters() {

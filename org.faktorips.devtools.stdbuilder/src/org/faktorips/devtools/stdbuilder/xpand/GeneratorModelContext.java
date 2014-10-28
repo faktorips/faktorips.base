@@ -23,6 +23,7 @@ import org.eclipse.xtend.expression.ResourceManager;
 import org.faktorips.devtools.core.builder.AbstractBuilderSet;
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -72,18 +73,22 @@ public class GeneratorModelContext {
 
     private final IJavaPackageStructure javaPackageStructure;
 
+    private final IIpsProject ipsProject;
+
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
             IIpsProject ipsProject) {
-        this(config, javaPackageStructure, new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>());
+        this(config, javaPackageStructure, new HashMap<AnnotatedJavaElementType, List<IAnnotationGenerator>>(),
+                ipsProject);
         annotationGeneratorMap.putAll(new AnnotationGeneratorBuilder(ipsProject).createAnnotationGenerators());
     }
 
     public GeneratorModelContext(IIpsArtefactBuilderSetConfig config, IJavaPackageStructure javaPackageStructure,
-            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap) {
+            Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap, IIpsProject ipsProject) {
         this.config = config;
         this.javaPackageStructure = javaPackageStructure;
-        this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
         this.annotationGeneratorMap = annotationGeneratorMap;
+        this.ipsProject = ipsProject;
+        this.javaClassNaming = new JavaClassNaming(javaPackageStructure, true);
     }
 
     /**
@@ -279,7 +284,9 @@ public class GeneratorModelContext {
         String kind = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_FORMULA_COMPILING);
         try {
             return FormulaCompiling.valueOf(kind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // if value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
         }
@@ -323,9 +330,35 @@ public class GeneratorModelContext {
         return propertyValueAsBoolean == null ? false : propertyValueAsBoolean;
     }
 
-    public boolean isGeneratePublishedInterfaces() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(
-                StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES);
+    /**
+     * Returns <code>true</code> if the given project is configured to generate published
+     * interfaces, <code>false</code> else.
+     * <p>
+     * If the given project differs from this context's project, this method always asks the current
+     * {@link IIpsArtefactBuilderSet} for its {@link IIpsArtefactBuilderSetConfig} and retrieves the
+     * value of the generate-published-interfaces setting.
+     * <p>
+     * If, however, the given project is equal to the project of this context, this method uses the
+     * context's own {@link IIpsArtefactBuilderSetConfig}. This is important as the project's
+     * {@link IIpsArtefactBuilderSetConfig config} may not be available during initialization of the
+     * builder set.
+     * 
+     * @param ipsProject The project in which the property is configured
+     * @return <code>true</code> if the project is configured to generate published interfaces,
+     *         <code>false</code> if not.
+     */
+    public boolean isGeneratePublishedInterfaces(IIpsProject ipsProject) {
+        if (this.ipsProject.equals(ipsProject)) {
+            return isGeneratePublishedInterfaces(getConfig());
+        } else {
+            IIpsArtefactBuilderSetConfig configuration = ipsProject.getIpsArtefactBuilderSet().getConfig();
+            return isGeneratePublishedInterfaces(configuration);
+        }
+    }
+
+    private boolean isGeneratePublishedInterfaces(IIpsArtefactBuilderSetConfig config) {
+        Boolean propertyValueAsBoolean = config
+                .getPropertyValueAsBoolean(StandardBuilderSet.CONFIG_PROPERTY_PUBLISHED_INTERFACES);
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
     }
 

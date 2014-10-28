@@ -92,7 +92,8 @@ public abstract class XpandBuilder<T extends XClass> extends JavaSourceFileBuild
     public XpandBuilder(StandardBuilderSet builderSet, GeneratorModelContext modelContext, ModelService modelService,
             LocalizedStringsSet localizedStringsSet) {
         super(builderSet, localizedStringsSet);
-        javaClassNameProvider = XClass.createJavaClassNamingProvider(modelContext.isGeneratePublishedInterfaces());
+        javaClassNameProvider = XClass.createJavaClassNamingProvider(modelContext
+                .isGeneratePublishedInterfaces(builderSet.getIpsProject()));
         setMergeEnabled(true);
         generatorModelContext = modelContext;
         this.modelService = modelService;
