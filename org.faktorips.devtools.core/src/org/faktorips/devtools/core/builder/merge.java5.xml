@@ -84,12 +84,21 @@
 Documentation:
 http://www.ibm.com/developerworks/library/os-ecemf3/
 
+merge:pull:
+	Overwrite node (method, field, ...) from generated code (source) in target (customized code) if it exists in both. 
+
 merge:push
-	when the element is not in the source but not in the target, the element is pushed by default. By setting a merge:push rule
-	you could limit the pushing for example to only push the element if the @generated tag exists. e.g. you want to push annotations
-	only for elements that are marked with @generated. 
+	Write generated code (source) into target source code if it does not already exists there. 
+	When the element is in the generated source but not in the target, the element is pushed by default.
+	By setting a merge:push rule you could limit the pushing for example to only push the element if the pattern patches.
+	For example:
+	<merge:push targetParentMarkup="^d$" select="Annotation"/>
+	Push Annotations only if they are NOT marked as deleted. Because the pattern
+	<merge:dictionaryPattern name="customizedAnnotationsREMOVED" select="Member/getComment" match="@\s*(generate(d)|restraine(d)modifiable)(?![\s\S]*@\s*customizedAnnotations(.*(REMOVED|ALL).*|\s*)(\n\r?|\r\n?))"/>
+	matches ^d$ if the element is marked as "@generated" but NOT with "@customizedAnnotations REMOVED"
+	
 
 merge:sweep
-	Removes members that are not generated
+	Removes members that are not generated.
 
 -->
