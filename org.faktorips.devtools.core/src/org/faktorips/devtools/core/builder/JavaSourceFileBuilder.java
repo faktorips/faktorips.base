@@ -735,9 +735,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (!newFileCreated) {
             String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
-            if (isMergeEnabled()) {
-                content = merge(javaFile, oldJavaFileContentsStr, content);
-            }
+        }
+        if (isMergeEnabled()) {
+            content = merge(javaFile, oldJavaFileContentsStr, content);
         }
 
         content = writeFeatureVersions(content);

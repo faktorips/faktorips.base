@@ -47,6 +47,17 @@ import org.eclipse.emf.codegen.merge.java.facade.JNode;
 import org.eclipse.emf.codegen.merge.java.facade.JPackage;
 import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJField;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJMember;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJMethod;
+import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJNode;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.ImportDeclaration;
 
 public class JMerger {
     public static final boolean DEBUG = false;
@@ -59,7 +70,7 @@ public class JMerger {
     protected JControlModel controlModel;
 
     protected JCompilationUnit sourceCompilationUnit;
-    protected JCompilationUnit targetCompilationUnit;
+    protected ASTJCompilationUnit targetCompilationUnit;
     protected JPatternDictionary sourcePatternDictionary;
     protected JPatternDictionary targetPatternDictionary;
 
@@ -67,12 +78,22 @@ public class JMerger {
     protected Map<JNode, JNode> targetToSourceMap = new LinkedHashMap<JNode, JNode>();
     protected Map<JNode, List<JNode>> orderedSourceChildrenMap = new HashMap<JNode, List<JNode>>();
 
+    private Set<JNode> generatedNodes = new HashSet<JNode>();
+
     protected boolean fixInterfaceBrace;
     protected boolean isBlocked = false;
     protected boolean targetCompilationUnitExists;
     protected boolean targetCompilationChanged = false;
 
     protected boolean noAbstractTypeConversion = true;
+
+    private List<String> additionalImports;
+
+    private List<String> additionalAnnotations;
+
+    private List<ASTNode> additionalAnnotationNodes;
+
+    private List<ImportDeclaration> additionalImportDeclarations;
 
     /**
      * This creates an empty instances, an when used as a runnable.
@@ -116,11 +137,101 @@ public class JMerger {
         targetCompilationUnitExists = targetCompilationUnit != null;
 
         pullTargetCompilationUnit();
+        addAdditionalAnnotationsAndImports();
+
         if (!isBlocked && targetCompilationUnitExists) {
             pushSourceCompilationUnit();
             sweepTargetCompilationUnit();
             sortTargetCompilationUnit();
         }
+    }
+
+    private void addAdditionalAnnotationsAndImports() {
+        Set<JNode> nodesToAnnotate = generatedNodes;
+        if (!targetCompilationUnitExists) {
+            nodesToAnnotate = targetToSourceMap.keySet();
+        }
+        List<ASTJNode<?>> importNodes = createAdditionalImports();
+        for (ASTJNode<?> astjNode : importNodes) {
+            if (!targetPatternDictionary.getImportMap().containsKey(astjNode.getName())) {
+                targetCompilationUnit.addChild(astjNode);
+            }
+        }
+        for (JNode target : nodesToAnnotate) {
+            if (target instanceof ASTJMethod || target instanceof ASTJField) {
+                ASTJMember<?> member = (ASTJMember<?>)target;
+                List<ASTJNode<?>> annotations = createAdditionalAnnotations();
+                for (ASTJNode<?> astjNode : annotations) {
+                    member.addChild(astjNode);
+                }
+            }
+        }
+    }
+
+    private List<ASTJNode<?>> createAdditionalAnnotations() {
+        if (additionalAnnotationNodes == null) {
+            // TODO remove hardcoded annotations
+            setAdditionalAnnotations(Arrays.asList("Generated(\"all\")", "SuppressWarnings(\"all\")"));
+            String source = "";
+            for (String annotation : getAdditionalAnnotations()) {
+                source += "@" + annotation + "\n";
+            }
+            source += "class A{}";
+
+            CompilationUnit astCompilationUnit = parseCodeSnippet(source);
+            AbstractTypeDeclaration typeA = (AbstractTypeDeclaration)astCompilationUnit.types().get(0);
+
+            @SuppressWarnings("unchecked")
+            List<ASTNode> modifiers = typeA.modifiers();
+            additionalAnnotationNodes = modifiers;
+        }
+        return getFacadeHelper().copyAndConvert(additionalAnnotationNodes, targetCompilationUnit);
+    }
+
+    private List<ASTJNode<?>> createAdditionalImports() {
+        if (additionalImportDeclarations == null) {
+            // TODO remove hardcoded imports
+            setAdditionalImports(Arrays.asList("javax.annotation.Generated"));
+            String source = "";
+            for (String importStatement : getAdditionalImports()) {
+                source += "import " + importStatement + ";";
+            }
+
+            CompilationUnit astCompilationUnit = parseCodeSnippet(source);
+            @SuppressWarnings("unchecked")
+            List<ImportDeclaration> imports = astCompilationUnit.imports();
+            additionalImportDeclarations = imports;
+        }
+        return getFacadeHelper().copyAndConvert(additionalImportDeclarations, targetCompilationUnit);
+    }
+
+    private ASTFacadeHelper getFacadeHelper() {
+        return (ASTFacadeHelper)controlModel.getFacadeHelper();
+    }
+
+    private CompilationUnit parseCodeSnippet(String source) {
+        ASTParser newParser = ASTParser.newParser(AST.JLS3);
+        newParser.setCompilerOptions(getFacadeHelper().getJavaCoreOptions());
+        newParser.setSource(source.toCharArray());
+        ASTNode createAST = newParser.createAST(null);
+        CompilationUnit astCompilationUnit = (CompilationUnit)createAST;
+        return astCompilationUnit;
+    }
+
+    public List<String> getAdditionalImports() {
+        return additionalImports;
+    }
+
+    public void setAdditionalImports(List<String> additionalImports) {
+        this.additionalImports = additionalImports;
+    }
+
+    public List<String> getAdditionalAnnotations() {
+        return additionalAnnotations;
+    }
+
+    public void setAdditionalAnnotations(List<String> additionalAnnotations) {
+        this.additionalAnnotations = additionalAnnotations;
     }
 
     public void remerge() {
@@ -183,7 +294,11 @@ public class JMerger {
     }
 
     public JCompilationUnit createCompilationUnitForContents(String contents) {
-        return getControlModel().getFacadeHelper().createCompilationUnit("NAME", contents);
+        if (contents != null) {
+            return getControlModel().getFacadeHelper().createCompilationUnit("NAME", contents);
+        } else {
+            return null;
+        }
     }
 
     public JControlModel getControlModel() {
@@ -208,18 +323,12 @@ public class JMerger {
     }
 
     public void setTargetCompilationUnit(JCompilationUnit targetCompilationUnit) {
-        this.targetCompilationUnit = targetCompilationUnit;
+        this.targetCompilationUnit = (ASTJCompilationUnit)targetCompilationUnit;
         targetPatternDictionary = new JPatternDictionary(targetCompilationUnit, getControlModel());
     }
 
     public String getTargetCompilationUnitContents() {
-        String result = null;
-        if (getControlModel().getFacadeHelper() != null && (!targetCompilationUnitExists || !targetCompilationChanged)) {
-            result = getControlModel().getFacadeHelper().getOriginalContents(targetCompilationUnit);
-        }
-        if (result == null) {
-            result = targetCompilationUnit.getContents();
-        }
+        String result = targetCompilationUnit.getContents();
 
         if (fixInterfaceBrace) {
             if (interfaceBracePattern == null) {
@@ -405,8 +514,8 @@ public class JMerger {
                         && pullRule.getTargetPutFeature().getFeatureClass().isInstance(targetNode)
                         && sourcePatternDictionary.isMarkedUp(pullRule.getSourceMarkup(),
                                 pullRule.getSourceParentMarkup(), sourceNode)
-                        && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
-                                pullRule.getTargetParentMarkup(), targetNode)) {
+                                && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
+                                        pullRule.getTargetParentMarkup(), targetNode)) {
                     // Skip if there's an equality filter and the values aren't
                     // equal.
                     //
@@ -418,6 +527,8 @@ public class JMerger {
                             continue;
                         }
                     }
+                    generatedNodes.add(targetNode);
+
                     Method sourceGetMethod = pullRule.getSourceGetFeature().getFeatureMethod();
                     Object value = sourceGetMethod.invoke(sourceNode, NO_ARGUMENTS);
                     Method targetPutMethod = pullRule.getTargetPutFeature().getFeatureMethod();
@@ -493,7 +604,7 @@ public class JMerger {
                                     && getControlModel().getBlockPattern() != null
                                     && ((JMethod)targetNode).getComment() != null
                                     && getControlModel().getBlockPattern().matcher(((JMethod)targetNode).getComment())
-                                            .find()) {
+                                    .find()) {
                                 continue;
                             }
 
@@ -672,12 +783,6 @@ public class JMerger {
 
     protected JNode insertClone(JNode sourceNode) {
         FacadeHelper facadeHelper = getControlModel().getFacadeHelper();
-        if (sourceNode == sourceCompilationUnit && !targetCompilationUnitExists) {
-            String originalContents = facadeHelper.getOriginalContents(sourceCompilationUnit);
-            if (originalContents != null) {
-                return createCompilationUnitForContents(facadeHelper.applyFormatRules(originalContents));
-            }
-        }
 
         Object context = targetCompilationUnit != null ? facadeHelper.getContext(targetCompilationUnit) : null;
         JNode targetNode = facadeHelper.cloneNode(context, sourceNode);
@@ -841,7 +946,7 @@ public class JMerger {
                 applyPullRules(source, target);
             }
         }
-    
+
         @Override
         protected void visit(JNode target) {
             // retrieve source node corresponding to target
@@ -849,14 +954,14 @@ public class JMerger {
             if (target instanceof JAbstractType) {
                 JAbstractType targetAbstractType = (JAbstractType)target;
                 String comment = targetAbstractType.getComment();
-    
+
                 isBlocked = targetAbstractType.getParent() instanceof JCompilationUnit
                         && getControlModel().getBlockPattern() != null && comment != null
                         && getControlModel().getBlockPattern().matcher(comment).find();
-    
+
                 String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(targetAbstractType);
                 JAbstractType sourceAbstractType = sourcePatternDictionary.getAbstractTypeMap().get(nodeIdentifier);
-    
+
                 // convert the target node to a compatible node
                 //
                 if (sourceAbstractType != null && !areCompatible(sourceAbstractType, targetAbstractType)) {
@@ -864,7 +969,7 @@ public class JMerger {
                     if (newTarget != null) {
                         // use new node from now on
                         target = newTarget;
-    
+
                         // redo the markup since nodes changed now
                         targetPatternDictionary.start(target);
                     } else if (!isBlocked) {
@@ -872,13 +977,13 @@ public class JMerger {
                     }
                 }
             }
-    
+
             if (!isBlocked) {
                 // super is called on converted node
                 super.visit(target);
             }
         }
-    
+
         @Override
         protected boolean basicVisit(JNode node) {
             String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(node);
@@ -886,21 +991,20 @@ public class JMerger {
             if (noAbstractTypeConversion && sourceNode == null) {
                 sourceNode = sourcePatternDictionary.getNode(nodeIdentifier);
             }
-    
+
             doPull(sourceNode, node);
             return true;
         }
-    
+
         @Override
         protected boolean visit(JCompilationUnit compilationUnit) {
             return true;
         }
-    
+
         @Override
         protected boolean visit(JMethod method) {
             String nodeIdentifier = targetPatternDictionary.getNodeIdentifier(method);
             JNode sourceNode = sourcePatternDictionary.getMethodMap().get(nodeIdentifier);
-    
             if (sourceNode == null && getControlModel().getRedirect() != null && method.getName() != null
                     && method.getName().endsWith(getControlModel().getRedirect())) {
                 String qualifiedTargetMethodName = method.getQualifiedName();
@@ -910,14 +1014,13 @@ public class JMerger {
                         + qualifiedTargetMethodName.substring(index);
                 sourceNode = sourcePatternDictionary.getMethodMap().get(qualifiedTargetMethodName);
             }
-    
             if (noAbstractTypeConversion && sourceNode == null) {
                 sourceNode = sourcePatternDictionary.getNode(nodeIdentifier);
             }
             doPull(sourceNode, method);
             return true;
         }
-    
+
         @Override
         protected boolean visit(JPackage jPackage) {
             JPackage sourcePackage = sourcePatternDictionary.getJPackage();
@@ -941,22 +1044,22 @@ public class JMerger {
             }
             return true;
         }
-    
+
         @Override
         protected boolean basicVisit(JNode node) {
             return doPush(node);
         }
-    
+
         @Override
         protected boolean visit(JCompilationUnit compilationUnit) {
             return true;
         }
-    
+
         @Override
         protected boolean visit(JAbstractType abstractType) {
             return super.visit(abstractType) && areCompatible(abstractType, sourceToTargetMap.get(abstractType));
         }
-    
+
         @Override
         protected boolean visit(JImport jImport) {
             return !targetPatternDictionary.isNoImport(jImport) && super.visit(jImport);
