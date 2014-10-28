@@ -84,7 +84,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.id = id;
         this.productKindId = productKindId;
         this.versionId = versionId;
-        this.formulaHandler = new FormulaHandler(this.repository);
+        this.formulaHandler = new FormulaHandler(this, this.repository);
     }
 
     public String getKindId() {

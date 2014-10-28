@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.pctype;
 
+import com.google.common.base.CharMatcher;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -32,7 +34,6 @@ import org.w3c.dom.Element;
  * <p>
  * The properties are Attibute Name, Table Column Name, Size amongst others.
  * 
- * @author Roman Grutza
  */
 public class PersistentAttributeInfo extends PersistentTypePartInfo implements IPersistentAttributeInfo {
 
@@ -228,6 +229,7 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
                     IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
         }
 
+        validateWhitespaceInTableColumnName(msgList);
         if (!isPersistentAttribute() || isTransient()
                 || !getPolicyComponentTypeAttribute().getPolicyCmptType().isPersistentEnabled()) {
             return;
@@ -255,6 +257,14 @@ public class PersistentAttributeInfo extends PersistentTypePartInfo implements I
         }
 
         super.validateThis(msgList, ipsProject);
+    }
+
+    private void validateWhitespaceInTableColumnName(MessageList msgList) {
+        if (CharMatcher.WHITESPACE.matchesAnyOf(getTableColumnName())) {
+            msgList.add(new Message(MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS,
+                    Messages.PersistentAttributeInfo_msgColumnNameMustNotContainWhitespaceCharacters, Message.ERROR, this,
+                    IPersistentAttributeInfo.PROPERTY_TABLE_COLUMN_NAME));
+        }
     }
 
     private void validateUsingPersistentOptions(MessageList msgList, IIpsProject ipsProject) {

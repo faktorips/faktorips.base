@@ -212,27 +212,41 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             return;
         }
 
-        // Create a section for each category
         for (IProductCmptCategory category : categories) {
-            createSectionForCategory(category, left, right);
+            createSectionForCategoryIfNecessary(category, left, right);
         }
     }
 
     private void createFallbackSection(Composite left) {
-        // Obtain all property values
-        List<IPropertyValue> propertyValues;
-        try {
-            propertyValues = getProductCmpt().findPropertyValues(null, getActiveGeneration().getValidFrom(),
-                    getIpsObject().getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-
+        List<IPropertyValue> propertyValues = getPropertyValues(null);
         leftSections.add(new FallbackSection(propertyValues, left, toolkit));
     }
 
-    private void createSectionForCategory(IProductCmptCategory category, Composite left, Composite right) {
-        // Find the property values that match to the category's properties
+    private void createSectionForCategoryIfNecessary(IProductCmptCategory category, Composite left, Composite right) {
+        List<IPropertyValue> propertyValues = getPropertyValues(category);
+        if (containsValues(propertyValues)) {
+            createSectionForCategory(category, left, right, propertyValues);
+        }
+    }
+
+    /**
+     * Create a new section for a category and attach it to the page
+     */
+    private void createSectionForCategory(IProductCmptCategory category,
+            Composite left,
+            Composite right,
+            List<IPropertyValue> propertyValues) {
+        List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
+        Composite parent = category.isAtLeftPosition() ? left : right;
+        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit);
+        sections.add(section);
+    }
+
+    private boolean containsValues(List<IPropertyValue> propertyValues) {
+        return propertyValues != null && !propertyValues.isEmpty();
+    }
+
+    private List<IPropertyValue> getPropertyValues(IProductCmptCategory category) {
         List<IPropertyValue> propertyValues;
         try {
             propertyValues = getProductCmpt().findPropertyValues(category, getActiveGeneration().getValidFrom(),
@@ -240,12 +254,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-
-        // Create a new section for this category and attach it to the page
-        List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
-        Composite parent = category.isAtLeftPosition() ? left : right;
-        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit);
-        sections.add(section);
+        return propertyValues;
     }
 
     private void createExtensionFactorySections(Composite left, Composite right) {
@@ -296,7 +305,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .showView(ModelDescriptionView.EXTENSION_ID);
+                            .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -344,7 +353,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                                                                                                    .getNumOfGenerations() - 1];
+                .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }

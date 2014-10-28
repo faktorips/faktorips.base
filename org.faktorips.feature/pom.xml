@@ -23,6 +23,7 @@
 					<excludes>
 						<plugin id="joda-time" />
 						<plugin id="joda-convert" />
+						<plugin id="com.google.guava" />
 						<plugin id="org.aopalliance" />
 					</excludes>
 				</configuration>

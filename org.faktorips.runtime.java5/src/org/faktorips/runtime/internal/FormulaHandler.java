@@ -25,13 +25,16 @@ import org.w3c.dom.NodeList;
  */
 class FormulaHandler {
 
+    private Object callerObject;
+
     private final IRuntimeRepository repository;
 
     private IFormulaEvaluator formulaEvaluator;
 
     private Map<String, String> availableFormulars = new LinkedHashMap<String, String>();
 
-    public FormulaHandler(IRuntimeRepository repository) {
+    public FormulaHandler(Object callerObject, IRuntimeRepository repository) {
+        this.callerObject = callerObject;
         this.repository = repository;
     }
 
@@ -67,7 +70,7 @@ class FormulaHandler {
             IFormulaEvaluatorFactory factory = getRepository().getFormulaEvaluatorFactory();
             if (factory != null) {
                 Map<String, String> expressions = getCompiledExpressionsFromFormulas(element);
-                formulaEvaluator = factory.createFormulaEvaluator(this, expressions);
+                formulaEvaluator = factory.createFormulaEvaluator(callerObject, expressions);
             }
         }
     }

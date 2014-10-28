@@ -186,6 +186,31 @@ public class PersistentAttributeInfoTest extends PersistenceIpsTest {
     }
 
     @Test
+    public void testValidateWhitespaceInTableColumnName() throws CoreException {
+        IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
+
+        pAttInfo.setTableColumnName("Invalid ColumnName");
+        assertMessagePresent(pAttInfo);
+
+        pAttInfo.setTableColumnName("Invalid\tColumnName");
+        assertMessagePresent(pAttInfo);
+
+        pAttInfo.setTableColumnName("Invalid\nColumnName");
+        assertMessagePresent(pAttInfo);
+
+        pAttInfo.setTableColumnName("ValidColumnName");
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
+    }
+
+    private void assertMessagePresent(IPersistentAttributeInfo pAttInfo) throws CoreException {
+        MessageList ml = pAttInfo.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(IPersistentAttributeInfo.MSGCODE_PERSISTENCEATTR_COLNAME_MUST_NOT_CONTAIN_WHITESPACE_CHARACTERS));
+    }
+
+    @Test
     public void testEmptyTableName() throws CoreException {
         IPersistentAttributeInfo pAttInfo = pcAttribute.getPersistenceAttributeInfo();
         pAttInfo.setTableColumnName("a");
