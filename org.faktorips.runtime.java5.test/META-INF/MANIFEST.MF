@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.faktorips.runtime Test
-Bundle-SymbolicName: org.faktorips.runtime.java5.test
+Bundle-SymbolicName: org.faktorips.runtime.test
 Bundle-Version: 3.14.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
-Fragment-Host: org.faktorips.runtime.java5;bundle-version="0.0.0"
+Fragment-Host: org.faktorips.runtime;bundle-version="0.0.0"
 Require-Bundle: org.hamcrest.core;bundle-version="1.1.0",
  org.mockito.mockito-all;bundle-version="1.8.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

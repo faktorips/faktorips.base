@@ -17,8 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Implementation of the <code>org.faktorips.valueset.java5.ValueSet</code> interface for ordered
- * values.
+ * Implementation of the <code>org.faktorips.valueset.ValueSet</code> interface for ordered values.
  * 
  * @author Daniel Hohenberger
  */

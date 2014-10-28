@@ -11,7 +11,7 @@
 		<relativePath>../org.faktorips.aggregator/plugins/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.faktorips.valuetypes.java5</artifactId>
+	<artifactId>org.faktorips.valuetypes</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
 

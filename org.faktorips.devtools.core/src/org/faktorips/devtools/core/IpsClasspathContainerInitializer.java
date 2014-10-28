@@ -37,9 +37,9 @@ public class IpsClasspathContainerInitializer extends ClasspathContainerInitiali
 
     public static final IPath ENTRY_PATH = new Path(CONTAINER_ID);
 
-    public static final String RUNTIME_BUNDLE = "org.faktorips.runtime.java5"; //$NON-NLS-1$
+    public static final String RUNTIME_BUNDLE = "org.faktorips.runtime"; //$NON-NLS-1$
 
-    public static final String VALUETYPES_BUNDLE = "org.faktorips.valuetypes.java5"; //$NON-NLS-1$
+    public static final String VALUETYPES_BUNDLE = "org.faktorips.valuetypes"; //$NON-NLS-1$
 
     public static final String JODA_BUNDLE = "org.faktorips.valuetypes.joda"; //$NON-NLS-1$
 

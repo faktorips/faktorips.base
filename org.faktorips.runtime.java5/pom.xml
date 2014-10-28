@@ -11,7 +11,7 @@
 		<relativePath>../org.faktorips.aggregator/plugins/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>org.faktorips.runtime.java5</artifactId>
+	<artifactId>org.faktorips.runtime</artifactId>
 
 	<packaging>eclipse-plugin</packaging>
 
