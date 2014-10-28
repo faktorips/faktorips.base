@@ -260,7 +260,7 @@ public abstract class AbstractGeneratorModelNode {
      * @return the qualified class name for the datatype
      */
     protected String getJavaClassName(Datatype datatype, boolean useGeneration) {
-        return getJavaClassName(datatype, useGeneration, true);
+        return getJavaClassName(datatype, useGeneration, false);
     }
 
     /**
@@ -282,23 +282,25 @@ public abstract class AbstractGeneratorModelNode {
      * @param useGeneration specifies whether to resolve the generation class name (
      *            <code>true</code>) or product component class name (<code>false</code>).
      *            Considered only in case of an {@link IPolicyCmptType}.
-     * @param resolveTypesToPublishedInterface <code>true</code> to use the common mechanism that
-     *            resolves the published interface or implementation class depending on the
-     *            respective project settings. <code>false</code> to forcibly resolve implementation
-     *            classes.
+     * @param forceImplementation Used to force the implementation class of
+     *            {@link org.faktorips.devtools.core.model.type.IType ITypes}. <code>true</code> to
+     *            force the the class name resolver to always return the implementation class name.
+     *            <code>false</code> to get the interface if it is generated or the implementation
+     *            if no interfaces are generated.
+     * 
      * @return the qualified class name for the datatype
      */
-    protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean resolveTypesToPublishedInterface) {
+    protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean forceImplementation) {
         if (datatype instanceof IPolicyCmptType) {
             return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
-                    BuilderAspect.getValue(resolveTypesToPublishedInterface));
+                    BuilderAspect.getValue(!forceImplementation));
         } else if (datatype instanceof IProductCmptType) {
             if (useGeneration) {
                 return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class).getSimpleName(
-                        BuilderAspect.getValue(resolveTypesToPublishedInterface));
+                        BuilderAspect.getValue(!forceImplementation));
             } else {
                 return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
-                        BuilderAspect.getValue(resolveTypesToPublishedInterface));
+                        BuilderAspect.getValue(!forceImplementation));
             }
         } else if (datatype.isVoid()) {
             return "void";
