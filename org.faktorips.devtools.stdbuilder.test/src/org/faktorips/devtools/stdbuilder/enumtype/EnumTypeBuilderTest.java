@@ -380,6 +380,7 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
 
         assertEquals(2, imports.size());
         assertFalse(imports.contains("SuppressWarning(all)"));
+        assertFalse(imports.contains("Generated(test)"));
 
     }
 

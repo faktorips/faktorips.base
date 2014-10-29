@@ -1188,9 +1188,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     public List<String> getAnnotations(String input) {
         List<String> annotations = new ArrayList<String>();
-        List<String> splitedInput = splitString(input);
-        for (String splitedString : splitedInput) {
-            String unqualifiedName = QNameUtil.getUnqualifiedName(splitedString);
+        List<String> splitInput = splitString(input);
+        for (String splitString : splitInput) {
+            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
             annotations.add(unqualifiedName);
         }
         return annotations;
@@ -1198,11 +1198,11 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     }
 
     private List<String> splitString(String input) {
-        List<String> splittedInput = new ArrayList<String>();
+        List<String> splitInput = new ArrayList<String>();
         String[] split = input.split(SEMI_COLON_CHARACTER);
         for (String string : split) {
-            splittedInput.add(string.trim());
+            splitInput.add(string.trim());
         }
-        return splittedInput;
+        return splitInput;
     }
 }
