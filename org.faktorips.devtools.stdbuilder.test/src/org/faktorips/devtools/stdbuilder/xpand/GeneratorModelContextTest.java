@@ -104,32 +104,4 @@ public class GeneratorModelContextTest {
         assertTrue(generatorModelContext.isGenerateConvenienceGetters());
     }
 
-    @Test
-    public void testGetCommentAfterMethodEnd_Default() {
-        String comment = generatorModelContext.getCommentAfterMethodEnd();
-        assertTrue(comment.isEmpty());
-    }
-
-    @Test
-    public void testGetCommentAfterMethodEnd_NotEmpty() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END)).thenReturn(
-                TEST_STRING);
-        String comment = generatorModelContext.getCommentAfterMethodEnd();
-        assertEquals(TEST_STRING, comment);
-    }
-
-    @Test
-    public void testGetSuppressWarningAnnotation_Default() {
-        String comment = generatorModelContext.getSuppressWarningAnnotation();
-        assertTrue(comment.isEmpty());
-    }
-
-    @Test
-    public void testGetSuppressWarningAnnotation_NotEmpty() {
-        when(config.getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION))
-                .thenReturn(TEST_STRING);
-        String comment = generatorModelContext.getSuppressWarningAnnotation();
-        assertEquals(TEST_STRING, comment);
-    }
-
 }

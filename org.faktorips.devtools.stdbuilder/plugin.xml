@@ -172,14 +172,6 @@
                type="boolean">
          </builderSetPropertyDef>
          <builderSetPropertyDef
-               defaultValue=""
-               description="Defines a comment that is generated after each generated method to indicate the end of generated methods."
-               disableValue=""
-               label="Generate comment after method end"
-               name="commentAfterMethodEnd"
-               type="string">
-         </builderSetPropertyDef>
-         <builderSetPropertyDef
          	   defaultValue=""
                description="Define Annotations for different code analysis tools. The different definitions have to be separated by semi colon."
                disableValue=""

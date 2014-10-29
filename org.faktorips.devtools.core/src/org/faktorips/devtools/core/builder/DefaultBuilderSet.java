@@ -62,13 +62,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines the comment that will be generated after each generated
-     * method of {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,
-     * {@link TableStructure} and {@link TableContents}
-     */
-    public static final String CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END = "commentAfterMethodEnd"; //$NON-NLS-1$
-
-    /**
      * Configuration property that defines the @SupressWarning tag that is generated above all
      * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
      * {@link TableStructure} and {@link TableContents}
@@ -242,10 +235,4 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public List<String> getAdditionalAnnotations() {
         return additionalAnnotations;
     }
-
-    public String getConfiguredCommentAfterMethodEnd() {
-        String propertyValueAsString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END);
-        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
-    }
-
 }

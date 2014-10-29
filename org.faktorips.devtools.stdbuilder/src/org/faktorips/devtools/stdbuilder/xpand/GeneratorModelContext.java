@@ -342,16 +342,4 @@ public class GeneratorModelContext {
                 StandardBuilderSet.CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS);
         return propertyValueAsBoolean == null ? true : propertyValueAsBoolean;
     }
-
-    public String getCommentAfterMethodEnd() {
-        String propertyValueAsString = getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END);
-        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
-    }
-
-    public String getSuppressWarningAnnotation() {
-        String propertyValueAsString = getConfig().getPropertyValueAsString(
-                StandardBuilderSet.CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION);
-        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
-    }
 }
