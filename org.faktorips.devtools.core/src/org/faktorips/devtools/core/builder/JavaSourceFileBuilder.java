@@ -1169,10 +1169,10 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
 
     public List<String> getImports(String input) {
         List<String> imports = new ArrayList<String>();
-        List<String> splitedInput = splitString(input);
-        for (String splitedString : splitedInput) {
-            if (splitedString != QNameUtil.getUnqualifiedName(splitedString)) {
-                imports.add(removeParenthesis(splitedString));
+        List<String> splitInput = splitString(input);
+        for (String splitString : splitInput) {
+            if (!splitString.equals(QNameUtil.getUnqualifiedName(splitString))) {
+                imports.add(removeParenthesis(splitString));
             }
         }
         return imports;
