@@ -279,7 +279,9 @@ public class GeneratorModelContext {
         String kind = getConfig().getPropertyValueAsString(StandardBuilderSet.CONFIG_PROPERTY_FORMULA_COMPILING);
         try {
             return FormulaCompiling.valueOf(kind);
+            // CSOFF: IllegalCatch
         } catch (Exception e) {
+            // CSON: IllegalCatch
             // if value is not set correctly we use Both as default value
             return FormulaCompiling.Both;
         }
