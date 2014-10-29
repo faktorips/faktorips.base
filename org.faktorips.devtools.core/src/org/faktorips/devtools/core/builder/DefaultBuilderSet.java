@@ -10,6 +10,10 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -17,6 +21,11 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -52,7 +61,29 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
      */
     public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
 
+    /**
+     * Configuration property that defines the comment that will be generated after each generated
+     * method of {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,
+     * {@link TableStructure} and {@link TableContents}
+     */
+    public static final String CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END = "commentAfterMethodEnd"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that defines the @SupressWarning tag that is generated above all
+     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
+     * {@link TableStructure} and {@link TableContents}
+     */
+    public static final String CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION = "suppressWarningAnnotation"; //$NON-NLS-1$
+
+    private static final String PARENTHESIS_CHARACTER = "("; //$NON-NLS-1$
+
+    private static final String SEMI_COLON_CHARACTER = ";"; //$NON-NLS-1$
+
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
+
+    private List<String> additionalAnnotations;
+
+    private List<String> additionalImports;
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
@@ -153,6 +184,68 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public IPersistenceProvider getPersistenceProvider() {
         return null;
+    }
+
+    @Override
+    public void beforeBuildProcess(int buildKind) throws CoreException {
+        super.beforeBuildProcess(buildKind);
+        initAdditionalImports();
+        initAdditionalAnnotations();
+    }
+
+    private void initAdditionalImports() {
+        additionalImports = new ArrayList<String>();
+        List<String> splitInput = splitString(getConfiguredSuppressWarningAnnotation());
+        for (String splitString : splitInput) {
+            if (!splitString.equals(QNameUtil.getUnqualifiedName(splitString))) {
+                additionalImports.add(removeParenthesis(splitString));
+            }
+        }
+    }
+
+    private void initAdditionalAnnotations() {
+        additionalAnnotations = new ArrayList<String>();
+        List<String> splitInput = splitString(getConfiguredSuppressWarningAnnotation());
+        for (String splitString : splitInput) {
+            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
+            additionalAnnotations.add(unqualifiedName);
+        }
+    }
+
+    /* private */String getConfiguredSuppressWarningAnnotation() {
+        String propertyValueAsString = getConfig()
+                .getPropertyValueAsString(CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION);
+        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
+    }
+
+    private String removeParenthesis(String importWithParenthesis) {
+        if (importWithParenthesis.contains(PARENTHESIS_CHARACTER)) {
+            int bracket = importWithParenthesis.indexOf(PARENTHESIS_CHARACTER);
+            return importWithParenthesis.substring(0, bracket);
+        }
+        return importWithParenthesis;
+    }
+
+    private List<String> splitString(String input) {
+        List<String> splitInput = new ArrayList<String>();
+        String[] split = input.split(SEMI_COLON_CHARACTER);
+        for (String string : split) {
+            splitInput.add(string.trim());
+        }
+        return splitInput;
+    }
+
+    public List<String> getAdditionalImports() {
+        return additionalImports;
+    }
+
+    public List<String> getAdditionalAnnotations() {
+        return additionalAnnotations;
+    }
+
+    public String getConfiguredCommentAfterMethodEnd() {
+        String propertyValueAsString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END);
+        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 
 }

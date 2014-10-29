@@ -1,15 +1,15 @@
 /**
  * <copyright>
- *
+ * 
  * Copyright (c) 2006-2008 IBM Corporation and others. All rights reserved. This program and the
  * accompanying materials are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors: IBM - Initial API and implementation
- *
+ * 
  * </copyright>
- *
+ * 
  * $Id: JMerger.java,v 1.27 2008/12/22 14:25:30 emerks Exp $
  */
 package org.eclipse.emf.codegen.merge.java;
@@ -170,8 +170,6 @@ public class JMerger {
 
     private List<ASTJNode<?>> createAdditionalAnnotations() {
         if (additionalAnnotationNodes == null) {
-            // TODO remove hardcoded annotations
-            setAdditionalAnnotations(Arrays.asList("Generated(\"all\")", "SuppressWarnings(\"all\")"));
             String source = "";
             for (String annotation : getAdditionalAnnotations()) {
                 source += "@" + annotation + "\n";
@@ -190,8 +188,6 @@ public class JMerger {
 
     private List<ASTJNode<?>> createAdditionalImports() {
         if (additionalImportDeclarations == null) {
-            // TODO remove hardcoded imports
-            setAdditionalImports(Arrays.asList("javax.annotation.Generated"));
             String source = "";
             for (String importStatement : getAdditionalImports()) {
                 source += "import " + importStatement + ";";
@@ -222,15 +218,12 @@ public class JMerger {
         return additionalImports;
     }
 
-    public void setAdditionalImports(List<String> additionalImports) {
-        this.additionalImports = additionalImports;
-    }
-
     public List<String> getAdditionalAnnotations() {
         return additionalAnnotations;
     }
 
-    public void setAdditionalAnnotations(List<String> additionalAnnotations) {
+    public void setAdditionalAnnotations(List<String> additionalImports, List<String> additionalAnnotations) {
+        this.additionalImports = additionalImports;
         this.additionalAnnotations = additionalAnnotations;
     }
 
@@ -514,8 +507,8 @@ public class JMerger {
                         && pullRule.getTargetPutFeature().getFeatureClass().isInstance(targetNode)
                         && sourcePatternDictionary.isMarkedUp(pullRule.getSourceMarkup(),
                                 pullRule.getSourceParentMarkup(), sourceNode)
-                                && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
-                                        pullRule.getTargetParentMarkup(), targetNode)) {
+                        && targetPatternDictionary.isMarkedUp(pullRule.getTargetMarkup(),
+                                pullRule.getTargetParentMarkup(), targetNode)) {
                     // Skip if there's an equality filter and the values aren't
                     // equal.
                     //
@@ -604,7 +597,7 @@ public class JMerger {
                                     && getControlModel().getBlockPattern() != null
                                     && ((JMethod)targetNode).getComment() != null
                                     && getControlModel().getBlockPattern().matcher(((JMethod)targetNode).getComment())
-                                    .find()) {
+                                            .find()) {
                                 continue;
                             }
 

@@ -181,7 +181,7 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
          	   defaultValue=""
-               description="Define @SuppressWarning Annotions for different code analysis tools. The different definitions have to be separated by comma."
+               description="Define Annotations for different code analysis tools. The different definitions have to be separated by semi colon."
                disableValue=""
                label="Generate SuppressWarning Annotations "
                name="suppressWarningAnnotation"

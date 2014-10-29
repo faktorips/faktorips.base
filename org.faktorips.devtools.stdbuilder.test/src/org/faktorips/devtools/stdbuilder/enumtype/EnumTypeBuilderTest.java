@@ -373,26 +373,4 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
     }
 
-    @Test
-    public void testGetImports() {
-        String input = "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation";
-        List<String> imports = builder.getImports(input);
-
-        assertEquals(2, imports.size());
-        assertFalse(imports.contains("SuppressWarning(all)"));
-        assertFalse(imports.contains("Generated(test)"));
-
-    }
-
-    @Test
-    public void testGetAnnotations() {
-        String input = "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation";
-        List<String> imports = builder.getAnnotations(input);
-
-        assertEquals(3, imports.size());
-        assertTrue(imports.contains("SuppressWarning(all)"));
-        assertTrue(imports.contains("Generated(test)"));
-        assertTrue(imports.contains("SomeAnnotation"));
-
-    }
 }

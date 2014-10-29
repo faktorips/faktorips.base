@@ -34,11 +34,8 @@ import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -164,20 +161,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * {@link ProductCmptType} attributes in the according {@link PolicyCmptType} class.
      */
     public static final String CONFIG_PROPERTY_GENERATE_CONVENIENCE_GETTERS = "generateConvenienceGetters"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines the comment that will be generated after each generated
-     * method of {@link PolicyCmptType}, {@link ProductCmptType},{@link EnumType} ,
-     * {@link TableStructure} and {@link TableContents}
-     */
-    public static final String CONFIG_PROPERTY_COMMENT_AFTER_METHOD_END = "commentAfterMethodEnd"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines the @SupressWarning tag that is generated above all
-     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
-     * {@link TableStructure} and {@link TableContents}
-     */
-    public static final String CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION = "suppressWarningAnnotation"; //$NON-NLS-1$
 
     /**
      * Name of the configuration property that indicates whether to generate camel case constant

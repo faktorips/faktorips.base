@@ -67,7 +67,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
-import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.LocalizedStringsSet;
 import org.faktorips.util.StringUtil;
@@ -125,10 +124,6 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private static final String END_FAKTORIPS_GENERATOR_INFORMATION_SECTION = "END FAKTORIPS GENERATOR INFORMATION SECTION"; //$NON-NLS-1$
 
     private static final Pattern FAKTORIPS_GENERATOR_INFORMATION_SECTION_PATTERN = createFeatureSectionPattern();
-
-    private static final String PARENTHESIS_CHARACTER = "("; //$NON-NLS-1$
-
-    private static final String SEMI_COLON_CHARACTER = ";"; //$NON-NLS-1$
 
     private String versionSection;
 
@@ -907,6 +902,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         JMerger merger;
         try {
             merger = new JMerger(getJControlModel());
+            List<String> additionalImports = getBuilderSet().getAdditionalImports();
+            List<String> additionalAnnotations = getBuilderSet().getAdditionalAnnotations();
+            merger.setAdditionalAnnotations(additionalImports, additionalAnnotations);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
         }
@@ -1155,42 +1153,4 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
      */
     protected abstract boolean generatesInterface();
 
-    public List<String> getImports(String input) {
-        List<String> imports = new ArrayList<String>();
-        List<String> splitInput = splitString(input);
-        for (String splitString : splitInput) {
-            if (!splitString.equals(QNameUtil.getUnqualifiedName(splitString))) {
-                imports.add(removeParenthesis(splitString));
-            }
-        }
-        return imports;
-    }
-
-    private String removeParenthesis(String importWithParenthesis) {
-        if (importWithParenthesis.contains(PARENTHESIS_CHARACTER)) {
-            int bracket = importWithParenthesis.indexOf(PARENTHESIS_CHARACTER);
-            return importWithParenthesis.substring(0, bracket);
-        }
-        return importWithParenthesis;
-    }
-
-    public List<String> getAnnotations(String input) {
-        List<String> annotations = new ArrayList<String>();
-        List<String> splitInput = splitString(input);
-        for (String splitString : splitInput) {
-            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
-            annotations.add(unqualifiedName);
-        }
-        return annotations;
-
-    }
-
-    private List<String> splitString(String input) {
-        List<String> splitInput = new ArrayList<String>();
-        String[] split = input.split(SEMI_COLON_CHARACTER);
-        for (String string : split) {
-            splitInput.add(string.trim());
-        }
-        return splitInput;
-    }
 }
