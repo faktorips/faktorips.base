@@ -9,7 +9,7 @@
 		<qualifiedVersion>${unqualifiedVersion}.${buildQualifier}</qualifiedVersion>
 		<deploy.repositoryZipName>${project.artifactId}-${qualifiedVersion}</deploy.repositoryZipName>
 		<deploy.repositoryZip>${project.build.directory}/${deploy.repositoryZipName}.zip</deploy.repositoryZip>
-		<deploy.zipRuntimeAndValuetypes>${project.build.directory}/faktorips-runtime-valuetypes-${qualifiedVersion}.zip</deploy.zipRuntimeAndValuetypes>
+		<deploy.zipRuntimeAndValuetypes>${project.build.directory}/faktorips-runtime-valuetypes.zip</deploy.zipRuntimeAndValuetypes>
 		<deploy.user>${user.name}</deploy.user>
 		<deploy.server>faktorzehn.org</deploy.server>
 		<deploy.dir>/var/www/update.faktorzehn.org/</deploy.dir>
@@ -122,9 +122,11 @@
 								</goals>
 								<configuration>
 									<target>
+										<mkdir dir="${project.build.directory}/runtime-temp" />
+									
 										<unzip dest="${project.build.directory}/runtime-temp">
 											<fileset dir="${project.build.directory}/repository/plugins/">
-												<include name="org.faktorips.runtime.*.jar" />
+												<include name="org.faktorips.runtime.jar" />
 											</fileset>
 										</unzip>
 
