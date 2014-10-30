@@ -91,7 +91,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     class TestBuilderSet extends DefaultBuilderSet {
 
         @Override
-        String getConfiguredSuppressWarningAnnotation() {
+        String getConfiguredAdditionalAnnotations() {
             return "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation";
         }
 

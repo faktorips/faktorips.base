@@ -62,11 +62,11 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
 
     /**
-     * Configuration property that defines the @SupressWarning tag that is generated above all
+     * Configuration property that defines additional annotations that are generated above all
      * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
      * {@link TableStructure} and {@link TableContents}
      */
-    public static final String CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION = "suppressWarningAnnotation"; //$NON-NLS-1$
+    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
     private static final String PARENTHESIS_CHARACTER = "("; //$NON-NLS-1$
 
@@ -188,7 +188,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     private void initAdditionalImports() {
         additionalImports = new ArrayList<String>();
-        List<String> splitInput = splitString(getConfiguredSuppressWarningAnnotation());
+        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
             if (!splitString.equals(QNameUtil.getUnqualifiedName(splitString))) {
                 additionalImports.add(removeParenthesis(splitString));
@@ -205,9 +205,8 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return splitInput;
     }
 
-    /* private */String getConfiguredSuppressWarningAnnotation() {
-        String propertyValueAsString = getConfig()
-                .getPropertyValueAsString(CONFIG_PROPERTY_SUPPRESS_WARNING_ANNOTATION);
+    /* private */String getConfiguredAdditionalAnnotations() {
+        String propertyValueAsString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS);
         return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 
@@ -221,7 +220,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     private void initAdditionalAnnotations() {
         additionalAnnotations = new ArrayList<String>();
-        List<String> splitInput = splitString(getConfiguredSuppressWarningAnnotation());
+        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
             String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
             additionalAnnotations.add(unqualifiedName);
