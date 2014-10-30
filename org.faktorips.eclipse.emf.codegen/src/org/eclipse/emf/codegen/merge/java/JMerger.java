@@ -78,7 +78,7 @@ public class JMerger {
     protected Map<JNode, JNode> targetToSourceMap = new LinkedHashMap<JNode, JNode>();
     protected Map<JNode, List<JNode>> orderedSourceChildrenMap = new HashMap<JNode, List<JNode>>();
 
-    private Set<JNode> generatedNodes = new HashSet<JNode>();
+    private Set<JNode> additionallyAnnotatedMembers = new HashSet<JNode>();
 
     protected boolean fixInterfaceBrace;
     protected boolean isBlocked = false;
@@ -137,20 +137,25 @@ public class JMerger {
         targetCompilationUnitExists = targetCompilationUnit != null;
 
         pullTargetCompilationUnit();
-        addAdditionalAnnotationsAndImports();
 
         if (!isBlocked && targetCompilationUnitExists) {
             pushSourceCompilationUnit();
             sweepTargetCompilationUnit();
             sortTargetCompilationUnit();
         }
+
+        addAdditionalAnnotationsAndImports();
     }
 
     private void addAdditionalAnnotationsAndImports() {
-        Set<JNode> nodesToAnnotate = generatedNodes;
         if (!targetCompilationUnitExists) {
-            nodesToAnnotate = targetToSourceMap.keySet();
+            addAdditionalAnnotationsAndImports(targetToSourceMap.keySet());
+        } else {
+            addAdditionalAnnotationsAndImports(additionallyAnnotatedMembers);
         }
+    }
+
+    private void addAdditionalAnnotationsAndImports(Set<JNode> nodesToAnnotate) {
         List<ASTJNode<?>> importNodes = createAdditionalImports();
         for (ASTJNode<?> astjNode : importNodes) {
             if (!targetPatternDictionary.getImportMap().containsKey(astjNode.getName())) {
@@ -479,14 +484,35 @@ public class JMerger {
                 if (applySweepRules(node)) {
                     targetCompilationChanged = true;
                     sweptNodes.add(node);
+                } else {
+                    checkNodeNotSwept(node, parent);
                 }
             }
         }
     }
 
-    // Method created to increase the performance of regular expressions
-    // by reducing the length of the string that is matched.
-    //
+    /**
+     * This method is called if a sweep rule was NOT performed. If the node which was not swept is
+     * an annotation we might get in conflict with additional annotations. This might be the case if
+     * the user used &#64;customizedAnnotation tags. In case it is really an additional annotation
+     * which was not swept we must not generate a new one but keep the old one.
+     * 
+     */
+    private void checkNodeNotSwept(JNode annotationNode, JNode targetParentNode) {
+        if (annotationNode instanceof JAnnotation && isAdditionalAnnotation((JAnnotation)annotationNode)) {
+            // Additional annotation should not be generated to avoid duplicated annotations
+            additionallyAnnotatedMembers.remove(targetParentNode);
+        }
+    }
+
+    private boolean isAdditionalAnnotation(JAnnotation node) {
+        return getAdditionalAnnotations().contains(node.getContents().substring(1));
+    }
+
+    /**
+     * Method created to increase the performance of regular expressions by reducing the length of
+     * the string that is matched.
+     */
     private int getStartIndex(String string) {
         int index = string.indexOf("<!--");
         if (index > 0) {
@@ -520,7 +546,7 @@ public class JMerger {
                             continue;
                         }
                     }
-                    generatedNodes.add(targetNode);
+                    additionallyAnnotatedMembers.add(targetNode);
 
                     Method sourceGetMethod = pullRule.getSourceGetFeature().getFeatureMethod();
                     Object value = sourceGetMethod.invoke(sourceNode, NO_ARGUMENTS);
