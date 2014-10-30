@@ -196,13 +196,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         }
     }
 
-    private void initAdditionalAnnotations() {
-        additionalAnnotations = new ArrayList<String>();
-        List<String> splitInput = splitString(getConfiguredSuppressWarningAnnotation());
-        for (String splitString : splitInput) {
-            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
-            additionalAnnotations.add(unqualifiedName);
+    private List<String> splitString(String input) {
+        List<String> splitInput = new ArrayList<String>();
+        String[] split = input.split(SEMI_COLON_CHARACTER);
+        for (String string : split) {
+            splitInput.add(string.trim());
         }
+        return splitInput;
     }
 
     /* private */String getConfiguredSuppressWarningAnnotation() {
@@ -219,13 +219,13 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return importWithParenthesis;
     }
 
-    private List<String> splitString(String input) {
-        List<String> splitInput = new ArrayList<String>();
-        String[] split = input.split(SEMI_COLON_CHARACTER);
-        for (String string : split) {
-            splitInput.add(string.trim());
+    private void initAdditionalAnnotations() {
+        additionalAnnotations = new ArrayList<String>();
+        List<String> splitInput = splitString(getConfiguredSuppressWarningAnnotation());
+        for (String splitString : splitInput) {
+            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
+            additionalAnnotations.add(unqualifiedName);
         }
-        return splitInput;
     }
 
     public List<String> getAdditionalImports() {
