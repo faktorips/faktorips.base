@@ -124,12 +124,12 @@
 									<target>
 										<unzip dest="${project.build.directory}/runtime-temp">
 											<fileset dir="${project.build.directory}/repository/plugins/">
-												<include name="org.faktorips.runtime.java5*.jar" />
+												<include name="org.faktorips.runtime.*.jar" />
 											</fileset>
 										</unzip>
 
 										<jar
-											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client.java5.jar">
+											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client.jar">
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="**/MessageList*.class,**/Message*.class,**/MsgReplacementParameter*.class,**/ObjectProperty*.class,**/IEnumValue*.class">
 											</fileset>
@@ -142,7 +142,7 @@
 										</jar>
 
 										<jar
-											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client-src.java5.jar">
+											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client-src.jar">
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="**/MessageList*.java,**/Message*.java,**/MsgReplacementParameter*.java,**/ObjectProperty*.java,**/IEnumValue*.java">
 											</fileset>
