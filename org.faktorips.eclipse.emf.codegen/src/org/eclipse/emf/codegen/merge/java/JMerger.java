@@ -48,9 +48,6 @@ import org.eclipse.emf.codegen.merge.java.facade.JPackage;
 import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
-import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJField;
-import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJMember;
-import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJMethod;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJNode;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -163,11 +160,10 @@ public class JMerger {
             }
         }
         for (JNode target : nodesToAnnotate) {
-            if (target instanceof ASTJMethod || target instanceof ASTJField) {
-                ASTJMember<?> member = (ASTJMember<?>)target;
+            if (target instanceof JMethod) {
                 List<ASTJNode<?>> annotations = createAdditionalAnnotations();
                 for (ASTJNode<?> astjNode : annotations) {
-                    member.addChild(astjNode);
+                    getFacadeHelper().addChild(target, astjNode);
                 }
             }
         }
