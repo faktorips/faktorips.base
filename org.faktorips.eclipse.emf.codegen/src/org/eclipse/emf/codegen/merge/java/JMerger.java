@@ -153,7 +153,7 @@ public class JMerger {
     }
 
     private void addAdditionalAnnotationsAndImports(Set<JNode> nodesToAnnotate) {
-        List<ASTJNode<?>> importNodes = createAdditionalImports();
+        List<ASTJNode<?>> importNodes = getAdditionalImportsNodes();
         for (ASTJNode<?> astjNode : importNodes) {
             if (!targetPatternDictionary.getImportMap().containsKey(astjNode.getName())) {
                 targetCompilationUnit.addChild(astjNode);
@@ -161,7 +161,7 @@ public class JMerger {
         }
         for (JNode target : nodesToAnnotate) {
             if (target instanceof JMethod) {
-                List<ASTJNode<?>> annotations = createAdditionalAnnotations();
+                List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
                 for (ASTJNode<?> astjNode : annotations) {
                     getFacadeHelper().addChild(target, astjNode);
                 }
@@ -169,7 +169,7 @@ public class JMerger {
         }
     }
 
-    private List<ASTJNode<?>> createAdditionalAnnotations() {
+    private List<ASTJNode<?>> getAdditionalAnnotationsNodes() {
         if (additionalAnnotationNodes == null) {
             String source = "";
             for (String annotation : getAdditionalAnnotations()) {
@@ -187,7 +187,7 @@ public class JMerger {
         return getFacadeHelper().copyAndConvert(additionalAnnotationNodes, targetCompilationUnit);
     }
 
-    private List<ASTJNode<?>> createAdditionalImports() {
+    private List<ASTJNode<?>> getAdditionalImportsNodes() {
         if (additionalImportDeclarations == null) {
             String source = "";
             for (String importStatement : getAdditionalImports()) {
@@ -502,7 +502,13 @@ public class JMerger {
     }
 
     private boolean isAdditionalAnnotation(JAnnotation node) {
-        return getAdditionalAnnotations().contains(node.getContents().substring(1));
+        List<ASTJNode<?>> annotationsNodes = getAdditionalAnnotationsNodes();
+        for (JNode annotationNode : annotationsNodes) {
+            if (node.getName().equals(annotationNode.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
