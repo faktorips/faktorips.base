@@ -222,8 +222,12 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         additionalAnnotations = new ArrayList<String>();
         List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
-            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString);
-            additionalAnnotations.add(unqualifiedName);
+            int i = splitString.indexOf("("); //$NON-NLS-1$
+            if (i < 0) {
+                i = splitString.length();
+            }
+            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString.substring(0, i));
+            additionalAnnotations.add(unqualifiedName + splitString.substring(i));
         }
     }
 
