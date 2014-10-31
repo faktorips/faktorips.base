@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
 	<artifactId>faktorips-runtime</artifactId>
-	<version>3.14.0-SNAPSHOT</version>
+	<version>@version@</version>
 	<packaging>jar</packaging>
 	
 	<name>Faktor-IPS Runtime</name>
@@ -37,7 +37,7 @@
         <dependency>
            <groupId>org.faktorips</groupId>
            <artifactId>faktorips-valuetypes</artifactId>
-           <version>3.14.0-SNAPSHOT</version>
+           <version>@version@</version>
         </dependency>
     </dependencies>
 
