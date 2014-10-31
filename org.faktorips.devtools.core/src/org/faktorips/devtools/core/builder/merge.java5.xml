@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <merge:options
   braceStyle="matching"  
-  redirect="Gen"
+  redirect="GeneratedRedirection"
   block="\s*@\s*generated\s*NOT\s*(?:\n\r?|\r\n?)"
   xmlns:merge="http://www.eclipse.org/org/eclipse/emf/codegen/jmerge/Options">
 
