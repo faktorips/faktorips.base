@@ -34,8 +34,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class GeneratorModelContextTest {
 
-    private static final String TEST_STRING = "testString";
-
     @Mock
     private Map<AnnotatedJavaElementType, List<IAnnotationGenerator>> annotationGeneratorMap;
 

@@ -222,7 +222,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         additionalAnnotations = new ArrayList<String>();
         List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
-            int i = splitString.indexOf("("); //$NON-NLS-1$
+            int i = splitString.indexOf(PARENTHESIS_CHARACTER);
             if (i < 0) {
                 i = splitString.length();
             }
