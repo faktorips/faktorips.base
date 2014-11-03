@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorF
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -67,6 +68,13 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
         properties.put(CONFIG_PROPERTY_GENERATOR_LOCALE, Locale.GERMAN.getLanguage());
         TestBuilderSetConfig config = new TestBuilderSetConfig(properties);
         initialize(config);
+    }
+
+    @Override
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+        if (getConfig() == null) {
+            super.initialize(config);
+        }
     }
 
     @Override
