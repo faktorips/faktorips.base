@@ -74,9 +74,9 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
 
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
 
-    private List<String> additionalAnnotations;
+    private List<String> additionalAnnotations = new ArrayList<String>();
 
-    private List<String> additionalImports;
+    private List<String> additionalImports = new ArrayList<String>();
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
