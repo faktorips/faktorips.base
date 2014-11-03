@@ -189,10 +189,7 @@ public class JMerger {
 
     private List<ASTJNode<?>> getAdditionalImportsNodes() {
         if (additionalImportDeclarations == null) {
-            String source = "";
-            for (String importStatement : getAdditionalImports()) {
-                source += "import " + importStatement + ";";
-            }
+            String source = getImportStatements();
 
             CompilationUnit astCompilationUnit = parseCodeSnippet(source);
             @SuppressWarnings("unchecked")
@@ -200,6 +197,17 @@ public class JMerger {
             additionalImportDeclarations = imports;
         }
         return getFacadeHelper().copyAndConvert(additionalImportDeclarations, targetCompilationUnit);
+    }
+
+    private String getImportStatements() {
+        String source = "";
+        List<String> additionalImports = getAdditionalImports();
+        if (additionalImports != null) {
+            for (String importStatement : additionalImports) {
+                source += "import " + importStatement + ";";
+            }
+        }
+        return source;
     }
 
     private ASTFacadeHelper getFacadeHelper() {
