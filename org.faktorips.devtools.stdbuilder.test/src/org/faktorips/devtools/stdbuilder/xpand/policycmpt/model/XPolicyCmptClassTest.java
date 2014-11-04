@@ -422,7 +422,8 @@ public class XPolicyCmptClassTest {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(true);
         when(type.hasSupertype()).thenReturn(true);
-        when(modelContext.isGeneratePublishedInterfaces()).thenReturn(true);
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(modelContext.isGeneratePublishedInterfaces(ipsProject)).thenReturn(true);
         doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();
@@ -434,7 +435,8 @@ public class XPolicyCmptClassTest {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         when(modelContext.isGenerateSerializablePolicyCmptSupport()).thenReturn(false);
         when(type.hasSupertype()).thenReturn(true);
-        when(modelContext.isGeneratePublishedInterfaces()).thenReturn(true);
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(modelContext.isGeneratePublishedInterfaces(ipsProject)).thenReturn(true);
         doReturn("TestInterface").when(policyCmptClass).getInterfaceName();
 
         LinkedHashSet<String> interfaces = policyCmptClass.getImplementedInterfaces();

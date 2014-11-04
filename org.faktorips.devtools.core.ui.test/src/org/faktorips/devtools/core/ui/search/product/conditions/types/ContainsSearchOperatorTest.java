@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.datatype.classtypes.DecimalDatatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
@@ -37,34 +38,26 @@ public class ContainsSearchOperatorTest extends AbstractIpsPluginTest {
     private IOperandProvider operandProvider;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
-    private IProductCmptTypeAttribute attribute;
+    private IProductCmptTypeAttribute multiValueAttribute;
     private IAttributeValue attributeValue;
 
     @Override
     @Before
     public void setUp() throws Exception {
-        valueDatatype = new StringDatatype();
         IIpsProject ipsProject = newIpsProject("Project");
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
-        attribute = productCmptType.newProductCmptTypeAttribute("attribute");
-        attribute.setDatatype(valueDatatype.getName());
-        attribute.setMultiValueAttribute(true);
-        operandProvider = new ProductAttributeConditionType().createOperandProvider(attribute);
+        multiValueAttribute = productCmptType.newProductCmptTypeAttribute("attribute");
+        multiValueAttribute.setMultiValueAttribute(true);
+        valueDatatype = new StringDatatype();
+        multiValueAttribute.setDatatype(valueDatatype.getName());
+        operandProvider = new ProductAttributeConditionType().createOperandProvider(multiValueAttribute);
 
         productCmpt = newProductCmpt(ipsProject, "Product");
         productCmpt.setProductCmptType(productCmptType.getName());
         generation = (IProductCmptGeneration)productCmpt.newGeneration(VALID_FROM);
 
-        attributeValue = generation.newAttributeValue(attribute);
-        String value1 = "testValue1";
-        String value2 = "testValue2";
-        SingleValueHolder singleValueHolder1 = new SingleValueHolder(attributeValue, value1);
-        SingleValueHolder singleValueHolder2 = new SingleValueHolder(attributeValue, value2);
-        List<SingleValueHolder> singleValueHolderList = new ArrayList<SingleValueHolder>();
-        singleValueHolderList.add(singleValueHolder1);
-        singleValueHolderList.add(singleValueHolder2);
-        MultiValueHolder multiValueHolder = new MultiValueHolder(attributeValue, singleValueHolderList);
-        attributeValue.setValueHolder(multiValueHolder);
+        attributeValue = generation.newAttributeValue(multiValueAttribute);
+        createValues("testValue1", "testValue2");
     }
 
     @Test
@@ -112,5 +105,31 @@ public class ContainsSearchOperatorTest extends AbstractIpsPluginTest {
                 ContainsSearchOperatorType.CONTAINS, operandProvider, null);
 
         assertTrue(operator.check(generation));
+    }
+
+    @Test
+    public void testCheck_ValueDatatype() {
+        valueDatatype = new DecimalDatatype();
+        multiValueAttribute.setDatatype(valueDatatype.getName());
+        operandProvider = new ProductAttributeConditionType().createOperandProvider(multiValueAttribute);
+        createValues("1.0");
+
+        ContainsSearchOperator operator = new ContainsSearchOperator(valueDatatype,
+                ContainsSearchOperatorType.CONTAINS, operandProvider, "1");
+
+        assertTrue(operator.check(generation));
+    }
+
+    /**
+     * Creates values which are contained in the multiValueAttribute.
+     */
+    private void createValues(String... values) {
+        List<SingleValueHolder> singleValueHolderList = new ArrayList<SingleValueHolder>();
+        for (String value : values) {
+            SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, value);
+            singleValueHolderList.add(singleValueHolder);
+        }
+        MultiValueHolder multiValueHolder = new MultiValueHolder(attributeValue, singleValueHolderList);
+        attributeValue.setValueHolder(multiValueHolder);
     }
 }

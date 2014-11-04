@@ -14,14 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
-import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -145,20 +144,60 @@ public class XAssociationTest {
 
     @Test
     public void testGetTargetInterfaceName() throws Exception {
-        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
-        doReturn(true).when(xAssociation).isGeneratePublishedInterfaces();
-        doReturn("ITargetType").when(xProductCmptClass).getSimpleName(BuilderAspect.INTERFACE);
+        initMocksForGetNameTests();
+        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(true);
 
-        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType(false);
         String targetClassName = xAssociation.getTargetInterfaceName();
         assertEquals("ITargetType", targetClassName);
     }
 
+    @Test
+    public void testGetTargetInterfaceName_differingPublishedInterfaceSettings() throws Exception {
+        initMocksForGetNameTests();
+        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(false);
+
+        String targetClassName = xAssociation.getTargetInterfaceName();
+        assertEquals("ITargetType", targetClassName);
+    }
+
+    @Test
+    public void testGetTargetInterfaceNameBase_constrainedAssociation_differingPublishedInterfaceSettings()
+            throws Exception {
+        XProductCmptClass xProductCmptClass = initMocksForGetNameTests();
+
+        XAssociation xConstrainedAssociation = mock(XAssociation.class, CALLS_REAL_METHODS);
+        XProductCmptClass xSuperProductCmptClass = mock(XProductCmptClass.class, CALLS_REAL_METHODS);
+        doReturn(xSuperProductCmptClass).when(xConstrainedAssociation).getTargetModelNode();
+        doReturn("ITargetSuperType").when(xSuperProductCmptClass).getPublishedInterfaceName();
+
+        when(xAssociation.isConstrain()).thenReturn(true);
+        when(xAssociation.getConstrainedAssociation()).thenReturn(xConstrainedAssociation);
+
+        doReturn(false).when(xSuperProductCmptClass).isGeneratePublishedInterfaces();
+        doReturn(false).when(xProductCmptClass).isGeneratePublishedInterfaces();
+        doReturn(false).when(xAssociation).isGeneratePublishedInterfaces();
+
+        String targetClassName = xAssociation.getTargetInterfaceNameBase();
+        assertEquals("ITargetSuperType", targetClassName);
+    }
+
+    @Test
+    public void testGetTargetInterfaceNameBase_differingPublishedInterfaceSettings() throws Exception {
+        initMocksForGetNameTests();
+        when(xAssociation.isConstrain()).thenReturn(false);
+        when(xAssociation.isGeneratePublishedInterfaces()).thenReturn(false);
+
+        String targetClassName = xAssociation.getTargetInterfaceNameBase();
+        assertEquals("ITargetType", targetClassName);
+    }
+
     private XProductCmptClass initMocksForGetNameTests() {
-        IProductCmptType productCmptType = mock(IProductCmptType.class);
-        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class);
-        doReturn(xProductCmptClass).when(xAssociation).getModelNode(productCmptType, XProductCmptClass.class);
-        doReturn(productCmptType).when(xAssociation).getTargetType();
+        XProductCmptClass xProductCmptClass = mock(XProductCmptClass.class, CALLS_REAL_METHODS);
+        doReturn(xProductCmptClass).when(xAssociation).getTargetModelNode();
+
+        doReturn(true).when(xProductCmptClass).isGeneratePublishedInterfaces();
+        doReturn("ITargetType").when(xProductCmptClass).getPublishedInterfaceName();
+        doReturn(XProductCmptClass.class).when(xAssociation).getModelNodeType(false);
         return xProductCmptClass;
     }
 

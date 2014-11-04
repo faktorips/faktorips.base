@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.faktorips.devtools.core.builder.IJavaPackageStructure;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
 import org.faktorips.devtools.stdbuilder.IAnnotationGenerator;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
@@ -45,9 +46,13 @@ public class GeneratorModelContextTest {
 
     private GeneratorModelContext generatorModelContext;
 
+    @Mock
+    private IIpsProject ipsProject;
+
     @Before
     public void createGeneratorModelContext() throws Exception {
-        generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap);
+        generatorModelContext = new GeneratorModelContext(config, javaPackageStructure, annotationGeneratorMap,
+                ipsProject);
         generatorModelContext.resetContext("any");
     }
 

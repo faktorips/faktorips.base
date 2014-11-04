@@ -31,7 +31,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
 
     public XClass(IIpsObject ipsObject, GeneratorModelContext context, ModelService modelService) {
         super(ipsObject, context, modelService);
-        javaClassNameProvider = createJavaClassNamingProvider(context.isGeneratePublishedInterfaces());
+        javaClassNameProvider = createJavaClassNamingProvider(isGeneratePublishedInterfaces());
     }
 
     public abstract boolean isValidForCodeGeneration();
@@ -73,6 +73,24 @@ public abstract class XClass extends AbstractGeneratorModelNode {
         return addImport(getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces())));
     }
 
+    /**
+     * Returns the qualified class or qualified published interface name for this class, depending
+     * on the specified {@link BuilderAspect} and this class' project settings. Use
+     * {@link BuilderAspect#IMPLEMENTATION} if the implementation class name is required explicitly.
+     * Use {@link BuilderAspect#INTERFACE} to let the project setting
+     * {@link #isGeneratePublishedInterfaces()} decide whether to return the published interface
+     * name or implementation class name.
+     * <p>
+     * Note that this method should <em>not</em> be called with the
+     * {@link #isGeneratePublishedInterfaces()} setting of another model node. This is due to the
+     * fact that {@link #isGeneratePublishedInterfaces()} may differ from one project to another.
+     * Use {@link #getPublishedInterfaceName()} instead in such cases. It lets a class decide which
+     * name to return depending on its own project settings in any case.
+     * 
+     * @param aspect {@link BuilderAspect#IMPLEMENTATION} to always return the qualified class name,
+     *            {@link BuilderAspect#INTERFACE} to return the qualified published interface name
+     *            or implementation class name depending on this class' project settings.
+     */
     public String getSimpleName(BuilderAspect aspect) {
         return addImport(getQualifiedName(aspect));
     }
