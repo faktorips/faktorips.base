@@ -34,8 +34,11 @@ import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
+import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -169,6 +172,23 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * property is false the constant name would be CHECKANYTHINGRUL.
      */
     public static final String CONFIG_PROPERTY_CAMELCASE_SEPARATED = "camelCaseSeparated"; //$NON-NLS-1$
+
+    /**
+     * Name of the configuration property that indicates whether to generate public interfaces or
+     * not.
+     * <p>
+     * Although this property is defined in this abstraction it needs to be configured in the
+     * extension point of every specific builder. If it is not specified as a configuration
+     * definition of any builder, the default value is <code>true</code>.
+     */
+    public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
+
+    /**
+     * Configuration property that defines additional annotations that are generated above all
+     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
+     * {@link TableStructure} and {@link TableContents}
+     */
+    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
@@ -550,6 +570,18 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public final ProductCmptClassBuilder getProductCmptImplClassBuilder() {
         return getBuilderById(BuilderKindIds.PRODUCT_CMPT_TYPE_IMPLEMEMENTATION, ProductCmptClassBuilder.class);
+    }
+
+    @Override
+    public boolean isGeneratePublishedInterfaces() {
+        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_PUBLISHED_INTERFACES);
+        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
+    }
+
+    @Override
+    protected String getConfiguredAdditionalAnnotations() {
+        String propertyValueAsString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS);
+        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 
     public TableImplBuilder getTableImplBuilder() {

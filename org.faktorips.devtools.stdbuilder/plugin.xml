@@ -173,7 +173,7 @@
          </builderSetPropertyDef>
          <builderSetPropertyDef
          	   defaultValue=""
-               description="Define additional annotations for different code analysis tools. The different definitions have to be separated by semi colon."
+               description="%additionalAnnotaionsDescription"
                disableValue=""
                label="Generate additional annotations "
                name="additionalAnnotations"

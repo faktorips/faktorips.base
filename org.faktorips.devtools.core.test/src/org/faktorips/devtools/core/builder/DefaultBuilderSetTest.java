@@ -91,7 +91,7 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     class TestBuilderSet extends DefaultBuilderSet {
 
         @Override
-        String getConfiguredAdditionalAnnotations() {
+        protected String getConfiguredAdditionalAnnotations() {
             return "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation";
         }
 
@@ -113,6 +113,11 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         @Override
         protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
             return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        }
+
+        @Override
+        public boolean isGeneratePublishedInterfaces() {
+            return true;
         }
 
     }

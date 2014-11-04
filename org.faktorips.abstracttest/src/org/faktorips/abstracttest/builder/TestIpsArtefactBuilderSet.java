@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -112,6 +113,16 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public void setRoleNamePluralRequiredForTo1Relations(boolean roleNamePluralRequiredForTo1Relations) {
         this.roleNamePluralRequiredForTo1Relations = roleNamePluralRequiredForTo1Relations;
+    }
+
+    @Override
+    public boolean isGeneratePublishedInterfaces() {
+        return true;
+    }
+
+    @Override
+    protected String getConfiguredAdditionalAnnotations() {
+        return StringUtils.EMPTY;
     }
 
     @Override

@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.builder;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -21,11 +20,6 @@ import org.eclipse.core.runtime.IPath;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
-import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
-import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -50,23 +44,6 @@ import org.faktorips.fl.IdentifierResolver;
  * @author Peter Erzberger
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
-
-    /**
-     * Name of the configuration property that indicates whether to generate public interfaces or
-     * not.
-     * <p>
-     * Although this property is defined in this abstraction it needs to be configured in the
-     * extension point of every specific builder. If it is not specified as a configuration
-     * definition of any builder, the default value is <code>true</code>.
-     */
-    public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
-
-    /**
-     * Configuration property that defines additional annotations that are generated above all
-     * generated methods of {@link PolicyCmptType}, {@link ProductCmptType}, {@link EnumType} ,
-     * {@link TableStructure} and {@link TableContents}
-     */
-    public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
     private static final String PARENTHESIS_CHARACTER = "("; //$NON-NLS-1$
 
@@ -122,10 +99,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return javaPackageStructure.getBasePackageName(entry, internalArtifacts, mergableArtifacts);
     }
 
-    public boolean isGeneratePublishedInterfaces() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_PUBLISHED_INTERFACES);
-        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
-    }
+    public abstract boolean isGeneratePublishedInterfaces();
 
     @Override
     public boolean isSupportTableAccess() {
@@ -186,12 +160,15 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         initAdditionalAnnotations();
     }
 
+    protected abstract String getConfiguredAdditionalAnnotations();
+
     private void initAdditionalImports() {
         additionalImports = new ArrayList<String>();
         List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
         for (String splitString : splitInput) {
-            if (!splitString.equals(QNameUtil.getUnqualifiedName(splitString))) {
-                additionalImports.add(removeParenthesis(splitString));
+            String importStatement = removeParenthesis(splitString);
+            if (!importStatement.equals(QNameUtil.getUnqualifiedName(importStatement))) {
+                additionalImports.add(importStatement);
             }
         }
     }
@@ -203,11 +180,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
             splitInput.add(string.trim());
         }
         return splitInput;
-    }
-
-    /* private */String getConfiguredAdditionalAnnotations() {
-        String propertyValueAsString = getConfig().getPropertyValueAsString(CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS);
-        return propertyValueAsString == null ? StringUtils.EMPTY : propertyValueAsString;
     }
 
     private String removeParenthesis(String importWithParenthesis) {
