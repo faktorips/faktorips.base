@@ -201,11 +201,8 @@ public class JMerger {
 
     private String getImportStatements() {
         String source = "";
-        List<String> additionalImports = getAdditionalImports();
-        if (additionalImports != null) {
-            for (String importStatement : additionalImports) {
-                source += "import " + importStatement + ";";
-            }
+        for (String importStatement : getAdditionalImports()) {
+            source += "import " + importStatement + ";";
         }
         return source;
     }
