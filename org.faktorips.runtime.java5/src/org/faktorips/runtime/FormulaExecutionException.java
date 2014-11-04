@@ -26,8 +26,14 @@ public class FormulaExecutionException extends RuntimeException {
                 + ", " + params, cause);
     }
 
-    public FormulaExecutionException(Object product, String formula, Object... parameters) {
-        super("Invalid formula: Product: " + product + ",  formula: " + formula + ", Parameters: "
+    public FormulaExecutionException(IProductComponentGeneration productComponentGeneration, String formula,
+            Object... parameters) {
+        super("Invalid formula: Product Component Generation: " + productComponentGeneration + ",  formula: " + formula
+                + ", Parameters: " + Arrays.toString(parameters));
+    }
+
+    public FormulaExecutionException(IProductComponent productComponent, String formula, Object... parameters) {
+        super("Invalid formula: Product Component: " + productComponent + ",  formula: " + formula + ", Parameters: "
                 + Arrays.toString(parameters));
     }
 
