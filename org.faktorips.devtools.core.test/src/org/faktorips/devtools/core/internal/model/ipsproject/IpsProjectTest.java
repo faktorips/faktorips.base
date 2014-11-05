@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -1783,6 +1784,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
             }
 
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return StringUtils.EMPTY;
+            }
+
+            @Override
+            public boolean isGeneratePublishedInterfaces() {
+                return true;
+            }
+
         };
         projectABuilderSet.setId("projectABuilderSet");
         projectABuilderSet.setIpsProject(ipsProject);
@@ -1823,6 +1834,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             @Override
             protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
                 return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+            }
+
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return StringUtils.EMPTY;
+            }
+
+            @Override
+            public boolean isGeneratePublishedInterfaces() {
+                return true;
             }
 
         };

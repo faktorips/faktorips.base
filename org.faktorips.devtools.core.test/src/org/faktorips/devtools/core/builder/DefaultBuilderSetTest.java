@@ -11,9 +11,12 @@
 package org.faktorips.devtools.core.builder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -34,6 +37,7 @@ import org.junit.Test;
 public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
 
     private IIpsProject project;
+    private DefaultBuilderSet builderSet = new TestBuilderSet();
 
     @Override
     @Before
@@ -51,7 +55,6 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     @Test
     public void testGetRuntimeRepositoryTocFile() {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        DefaultBuilderSet builderSet = new TestBuilderSet();
         IFile file = builderSet.getRuntimeRepositoryTocFile(root);
         assertNotNull(file);
         assertEquals("extension/org/faktorips/sample/internal/motor/toc.xml", file.getProjectRelativePath().toString());
@@ -60,12 +63,37 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
     @Test
     public void testGetRuntimeRepositoryTocResourceName() {
         IIpsPackageFragmentRoot root = project.getIpsPackageFragmentRoots()[0];
-        DefaultBuilderSet builderSet = new TestBuilderSet();
         String tocResource = builderSet.getRuntimeRepositoryTocResourceName(root);
         assertEquals("org/faktorips/sample/internal/motor/toc.xml", tocResource);
     }
 
+    @Test
+    public void testGetAdditionalAnnotations() throws CoreException {
+        builderSet.beforeBuildProcess(0);
+        List<String> annotations = builderSet.getAdditionalAnnotations();
+
+        assertEquals(3, annotations.size());
+        assertTrue(annotations.contains("SuppressWarning(all)"));
+        assertTrue(annotations.contains("Generated(test)"));
+        assertTrue(annotations.contains("SomeAnnotation"));
+    }
+
+    @Test
+    public void testGetAdditionalImports() throws CoreException {
+        builderSet.beforeBuildProcess(0);
+        List<String> imports = builderSet.getAdditionalImports();
+
+        assertEquals(2, imports.size());
+        assertFalse(imports.contains("SuppressWarning(all)"));
+        assertFalse(imports.contains("Generated(test)"));
+    }
+
     class TestBuilderSet extends DefaultBuilderSet {
+
+        @Override
+        protected String getConfiguredAdditionalAnnotations() {
+            return "javax.test.Generated(test);SuppressWarning(all); xyz.SomeAnnotation";
+        }
 
         @Override
         public IIpsArtefactBuilder[] getArtefactBuilders() {
@@ -85,6 +113,11 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         @Override
         protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
             return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+        }
+
+        @Override
+        public boolean isGeneratePublishedInterfaces() {
+            return true;
         }
 
     }

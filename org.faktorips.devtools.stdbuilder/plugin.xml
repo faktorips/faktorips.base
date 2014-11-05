@@ -171,6 +171,14 @@
                name="generateConvenienceGetters"
                type="boolean">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+         	   defaultValue=""
+               description="%additionalAnnotaionsDescription"
+               disableValue=""
+               label="Generate additional annotations "
+               name="additionalAnnotations"
+               type="string">
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

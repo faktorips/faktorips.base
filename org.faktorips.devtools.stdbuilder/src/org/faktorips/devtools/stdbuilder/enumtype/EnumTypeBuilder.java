@@ -322,11 +322,7 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
         body.append(getJavaNamingConvention().getMemberVarName(identifierAttribute.getName()));
         body.append(";"); //$NON-NLS-1$
         appendLocalizedJavaDoc("METHOD_GET_ENUM_VALUE_BY_ID", methodBuilder);
-        if (isJava5EnumsAvailable()) {
-            methodBuilder.annotationLn(ANNOTATION_SUPPRESS_WARNINGS_UNUSED);
-        }
-        methodBuilder.method(Modifier.PRIVATE, Object.class, getMethodNameGetEnumValueId(), new String[0],
-                new Class[0], body, null);
+        methodBuilder.method(0, Object.class, getMethodNameGetEnumValueId(), new String[0], new Class[0], body, null);
     }
 
     /**
@@ -1116,14 +1112,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
      *      if (id == null) {
      *          return null;
      *      }
-     *      
+     * 
      *      if (id.equals(&quot;male&quot;)) {
      *          return MALE;
      *      }
      *      if (id.equals(&quot;female&quot;)) {
      *          return FEMALE;
      *      }
-     *      
+     * 
      *      return null;
      *  }
      * </pre>

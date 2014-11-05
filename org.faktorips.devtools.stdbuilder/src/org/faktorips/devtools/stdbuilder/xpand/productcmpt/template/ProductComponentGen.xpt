@@ -17,7 +17,7 @@
 		«IF generatePublishedInterfaces-»
 		 * «localizedJDoc("CLASS", interfaceName)»
 		«ELSE-»
-		 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", generationConceptNameSingular, name, description)»
+		 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", generationConceptNameSingular, productCmptClassNode.name, description)»
 		«ENDIF-»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
