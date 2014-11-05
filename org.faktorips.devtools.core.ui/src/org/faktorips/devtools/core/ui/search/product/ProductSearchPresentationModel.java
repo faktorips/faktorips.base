@@ -16,7 +16,12 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
@@ -38,6 +43,8 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductCom
  */
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
+    public static final String IPS_PROJECT = "ipsProject"; //$NON-NLS-1$
+
     public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
@@ -55,11 +62,32 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     private IProductCmptType productCmptType;
 
+    private String ipsProject;
+
     /**
      * Returns the {@link IProductCmptType}, which is the base for the search
      */
     public IProductCmptType getProductCmptType() {
         return productCmptType;
+    }
+
+    public String getProductCmptTypeQName() {
+        return productCmptType.getQualifiedName();
+    }
+
+    public void setProductCmptTypeQName(String projectName, String productCmptTypeName) {
+        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        IIpsObject ipsObject = ipsProject.findIpsObject(new QualifiedNameType(productCmptTypeName,
+                IpsObjectType.PRODUCT_CMPT_TYPE));
+        setProductCmptType((IProductCmptType)ipsObject);
+    }
+
+    public String getIpsProject() {
+        return ipsProject;
+    }
+
+    public void setIpsProject(String ipsProject) {
+        this.ipsProject = ipsProject;
     }
 
     /**
@@ -173,14 +201,16 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     @Override
     public void store(IDialogSettings settings) {
-        // no idea yet
-
+        settings.put(PRODUCT_COMPONENT_TYPE, getProductCmptTypeQName());
+        settings.put(IPS_PROJECT, getIpsProject());
+        settings.put(SRC_FILE_PATTERN, getSrcFilePattern());
     }
 
     @Override
     public void read(IDialogSettings settings) {
-        // TODO which data should be stored in the dialog settings?
-
+        setIpsProject(settings.get(IPS_PROJECT));
+        setProductCmptTypeQName(getIpsProject(), settings.get(PRODUCT_COMPONENT_TYPE));
+        setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
     }
 
     @Override

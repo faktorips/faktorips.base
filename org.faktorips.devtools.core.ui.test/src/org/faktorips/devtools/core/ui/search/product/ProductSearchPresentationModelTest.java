@@ -17,6 +17,8 @@ import static org.mockito.Mockito.mock;
 
 import java.beans.PropertyChangeListener;
 
+import org.eclipse.jface.dialogs.DialogSettings;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -35,6 +37,7 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
     private IPolicyCmptType policyCmptType;
+    private String FILE_PATTERN = "srcFilePattern";
 
     @Override
     @Before
@@ -109,5 +112,22 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
         conditionPresentationModel.setOperatorType(EqualitySearchOperatorType.EQUALITY);
 
         assertTrue(model.isValid());
+    }
+
+    @Test
+    public void testDialogSettings() {
+        model.setSrcFilePattern(FILE_PATTERN);
+        model.setProductCmptType(productCmptType);
+        model.setIpsProject(ipsProject.getName());
+
+        IDialogSettings settings = new DialogSettings("section");
+        model.store(settings);
+        ProductSearchPresentationModel newModel = new ProductSearchPresentationModel();
+        newModel.initDefaultSearchValues();
+        newModel.read(settings);
+
+        assertEquals(FILE_PATTERN, newModel.getSrcFilePattern());
+        assertEquals(ipsProject.getName(), newModel.getIpsProject());
+        assertEquals(productCmptType, newModel.getProductCmptType());
     }
 }
