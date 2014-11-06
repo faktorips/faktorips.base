@@ -466,6 +466,46 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_overloaded_ChangingOverTime_ChangingOverTime() throws CoreException {
+        MessageList list = new MessageList();
+        method.setOverloadsFormula(true);
+        method.setFormulaName("testName");
+        method.setChangingOverTime(true);
+        method.setName("computeTestName");
+        method.newParameter("String", "a");
+        ProductCmptType superType = newProductCmptType(ipsProject, "SuperType");
+        productCmptType.setSupertype("SuperType");
+        IProductCmptTypeMethod superMethod = superType.newFormulaSignature("testName");
+        superMethod.setChangingOverTime(false);
+        superMethod.setName("computeTestName");
+
+        ((ProductCmptTypeMethod)method).validateChangingOverTime(list, ipsProject);
+
+        assertEquals(1, list.size());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_NOT_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+    }
+
+    @Test
+    public void testValidate_overloaded_ChangingOverTime_notChangingOverTime() throws CoreException {
+        MessageList list = new MessageList();
+        method.setOverloadsFormula(true);
+        method.setFormulaName("testName");
+        method.setChangingOverTime(false);
+        method.setName("computeTestName");
+        method.newParameter("String", "a");
+        ProductCmptType superType = newProductCmptType(ipsProject, "SuperType");
+        productCmptType.setSupertype("SuperType");
+        IProductCmptTypeMethod superMethod = superType.newFormulaSignature("testName");
+        superMethod.setChangingOverTime(true);
+        superMethod.setName("computeTestName");
+
+        ((ProductCmptTypeMethod)method).validateChangingOverTime(list, ipsProject);
+
+        assertEquals(1, list.size());
+        assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+    }
+
+    @Test
     public void testValidateThis_IsFormulaSignatureDefinition() throws CoreException {
         setUpOverriddenMethod();
         method.setFormulaSignatureDefinition(true);
