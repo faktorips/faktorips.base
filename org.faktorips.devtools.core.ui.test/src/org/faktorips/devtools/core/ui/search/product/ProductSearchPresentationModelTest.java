@@ -123,7 +123,6 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
         IDialogSettings settings = new DialogSettings("section");
         model.store(settings);
         ProductSearchPresentationModel newModel = new ProductSearchPresentationModel();
-        newModel.initDefaultSearchValues();
         newModel.read(settings);
 
         assertEquals(FILE_PATTERN, newModel.getSrcFilePattern());

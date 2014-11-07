@@ -50,6 +50,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         readDialogSettings();
+        getPresentationModel().read(getPreviousSearchData().get(0));
 
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.minimumHeight = 440;
@@ -175,11 +176,8 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
     @Override
     protected ProductSearchPresentationModel createPresentationModel() {
-        ProductSearchPresentationModel model = new ProductSearchPresentationModel();
-        model.initDefaultSearchValues();
-        model.addPropertyChangeListener(createPropertyChangeListenerForValidity());
-        model.addPropertyChangeListener(createPropertyChangeListenerForTable());
-        return model;
+        return new ProductSearchPresentationModel(createPropertyChangeListenerForValidity(),
+                createPropertyChangeListenerForTable());
     }
 
     private PropertyChangeListener createPropertyChangeListenerForValidity() {
@@ -199,7 +197,9 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ProductSearchPresentationModel.PRODUCT_COMPONENT_TYPE.equals(evt.getPropertyName())) {
-                    conditionTableViewer.refresh();
+                    if (conditionTableViewer != null) {
+                        conditionTableViewer.refresh();
+                    }
                 }
             }
         };

@@ -11,10 +11,12 @@
 package org.faktorips.devtools.core.ui.search.product;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -62,7 +64,13 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     private IProductCmptType productCmptType;
 
-    private String ipsProject;
+    private String ipsProject = StringUtils.EMPTY;
+
+    public ProductSearchPresentationModel(PropertyChangeListener... listener) {
+        for (PropertyChangeListener propertyChangeListener : listener) {
+            addPropertyChangeListener(propertyChangeListener);
+        }
+    }
 
     /**
      * Returns the {@link IProductCmptType}, which is the base for the search
@@ -83,7 +91,11 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     }
 
     public String getIpsProject() {
-        return ipsProject;
+        if (getProductCmptType() != null) {
+            return getProductCmptType().getIpsProject().getName();
+        } else {
+            return ipsProject;
+        }
     }
 
     public void setIpsProject(String ipsProject) {
@@ -208,9 +220,21 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     @Override
     public void read(IDialogSettings settings) {
-        setIpsProject(settings.get(IPS_PROJECT));
-        setProductCmptTypeQName(getIpsProject(), settings.get(PRODUCT_COMPONENT_TYPE));
-        setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
+        if (settingIsValid(IPS_PROJECT, settings)) {
+            String ipsProject = settings.get(IPS_PROJECT);
+            setIpsProject(ipsProject);
+
+            if (settingIsValid(PRODUCT_COMPONENT_TYPE, settings)) {
+                setProductCmptTypeQName(ipsProject, settings.get(PRODUCT_COMPONENT_TYPE));
+            }
+        }
+        if (settingIsValid(SRC_FILE_PATTERN, settings)) {
+            setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
+        }
+    }
+
+    private boolean settingIsValid(String storedKey, IDialogSettings settings) {
+        return !StringUtils.isEmpty(settings.get(storedKey));
     }
 
     @Override
@@ -218,8 +242,4 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         super.notifyListeners(event);
     }
 
-    @Override
-    protected void initDefaultSearchValues() {
-        // nothing to do
-    }
 }
