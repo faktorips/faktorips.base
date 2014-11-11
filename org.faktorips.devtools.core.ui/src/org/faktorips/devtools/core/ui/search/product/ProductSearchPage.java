@@ -71,7 +71,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
         setControl(baseComposite);
 
         getBindingContext().updateUI();
-
+        conditionTableViewer.refresh();
     }
 
     private void createProductComponentTypeChoser(UIToolkit toolkit) {

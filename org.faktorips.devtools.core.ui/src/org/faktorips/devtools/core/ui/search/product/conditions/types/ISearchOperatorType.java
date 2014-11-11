@@ -30,4 +30,6 @@ public interface ISearchOperatorType {
     public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument);
+
+    public String name();
 }

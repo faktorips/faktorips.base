@@ -124,6 +124,17 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
     }
 
+    public void setSearchedElementByName(String elementName) {
+        if (getConditionType() != null) {
+            List<? extends IIpsElement> elements = getSearchableElements();
+            for (IIpsElement ipsElement : elements) {
+                if (ipsElement.getName().equals(elementName)) {
+                    setSearchedElement(ipsElement);
+                }
+            }
+        }
+    }
+
     public IIpsElement getSearchedElement() {
         return searchedElement;
     }

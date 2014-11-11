@@ -60,7 +60,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     private static final IConditionType[] CONDITION_TYPES = { new ProductAttributeConditionType(),
             new PolicyAttributeConditionType(), new ProductComponentAssociationConditionType() };
 
-    private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
+    private List<ProductSearchConditionPresentationModel> conditionPMOs = new ArrayList<ProductSearchConditionPresentationModel>();
 
     private IProductCmptType productCmptType;
 
@@ -112,7 +112,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
         productCmptType = newValue;
 
-        productSearchConditionPresentationModels.clear();
+        conditionPMOs.clear();
 
         notifyListeners(new PropertyChangeEvent(this, PRODUCT_COMPONENT_TYPE, oldValue, newValue));
         notifyListeners(new PropertyChangeEvent(this, CONDITION_TYPE_AVAILABLE, oldConditionTypeAvailable,
@@ -137,18 +137,21 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * ProductSearchConditionPresentationModels}
      */
     public List<ProductSearchConditionPresentationModel> getProductSearchConditionPresentationModels() {
-        return Collections.unmodifiableList(productSearchConditionPresentationModels);
+        return Collections.unmodifiableList(conditionPMOs);
     }
 
     /**
      * Creates a new {@link ProductSearchConditionPresentationModel} and adds it to the List of
-     * ProductSearchConditionPresentationModel
+     * ProductSearchConditionPresentationModel and returns it.
      */
-    public void createProductSearchConditionPresentationModel() {
+    public ProductSearchConditionPresentationModel createProductSearchConditionPresentationModel() {
         boolean oldConditionDefined = isConditionDefined();
 
-        productSearchConditionPresentationModels.add(new ProductSearchConditionPresentationModel(this));
+        ProductSearchConditionPresentationModel conditionPresentationModel = new ProductSearchConditionPresentationModel(
+                this);
+        conditionPMOs.add(conditionPresentationModel);
         notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
+        return conditionPresentationModel;
     }
 
     /**
@@ -159,7 +162,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
         boolean oldConditionDefined = isConditionDefined();
 
-        boolean remove = productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
+        boolean remove = conditionPMOs.remove(productSearchConditionPresentationModel);
 
         notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
 
@@ -190,7 +193,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * 
      */
     public boolean isConditionDefined() {
-        return !productSearchConditionPresentationModels.isEmpty();
+        return !conditionPMOs.isEmpty();
     }
 
     /**
@@ -216,6 +219,8 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         settings.put(PRODUCT_COMPONENT_TYPE, getProductCmptTypeQName());
         settings.put(IPS_PROJECT_NAME, getIpsProjectName());
         settings.put(SRC_FILE_PATTERN, getSrcFilePattern());
+
+        new ConditionPMOPersistence(this, settings).saveConditions();
     }
 
     @Override
@@ -231,6 +236,8 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         if (settingIsValid(SRC_FILE_PATTERN, settings)) {
             setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
         }
+        conditionPMOs = new ArrayList<ProductSearchConditionPresentationModel>(new ConditionPMOPersistence(this,
+                settings).loadConditions());
     }
 
     private boolean settingIsValid(String storedKey, IDialogSettings settings) {
