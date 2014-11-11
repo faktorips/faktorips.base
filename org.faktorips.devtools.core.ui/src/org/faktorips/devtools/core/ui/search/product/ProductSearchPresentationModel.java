@@ -45,7 +45,7 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductCom
  */
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
-    public static final String IPS_PROJECT = "ipsProject"; //$NON-NLS-1$
+    public static final String IPS_PROJECT_NAME = "ipsProjectName"; //$NON-NLS-1$
 
     public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
 
@@ -64,7 +64,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     private IProductCmptType productCmptType;
 
-    private String ipsProject = StringUtils.EMPTY;
+    private String ipsProjectName = StringUtils.EMPTY;
 
     public ProductSearchPresentationModel(PropertyChangeListener... listener) {
         for (PropertyChangeListener propertyChangeListener : listener) {
@@ -90,16 +90,16 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         setProductCmptType((IProductCmptType)ipsObject);
     }
 
-    public String getIpsProject() {
+    public String getIpsProjectName() {
         if (getProductCmptType() != null) {
             return getProductCmptType().getIpsProject().getName();
         } else {
-            return ipsProject;
+            return ipsProjectName;
         }
     }
 
-    public void setIpsProject(String ipsProject) {
-        this.ipsProject = ipsProject;
+    public void setIpsProjectName(String ipsProjectName) {
+        this.ipsProjectName = ipsProjectName;
     }
 
     /**
@@ -214,15 +214,15 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     @Override
     public void store(IDialogSettings settings) {
         settings.put(PRODUCT_COMPONENT_TYPE, getProductCmptTypeQName());
-        settings.put(IPS_PROJECT, getIpsProject());
+        settings.put(IPS_PROJECT_NAME, getIpsProjectName());
         settings.put(SRC_FILE_PATTERN, getSrcFilePattern());
     }
 
     @Override
     public void read(IDialogSettings settings) {
-        if (settingIsValid(IPS_PROJECT, settings)) {
-            String ipsProject = settings.get(IPS_PROJECT);
-            setIpsProject(ipsProject);
+        if (settingIsValid(IPS_PROJECT_NAME, settings)) {
+            String ipsProject = settings.get(IPS_PROJECT_NAME);
+            setIpsProjectName(ipsProject);
 
             if (settingIsValid(PRODUCT_COMPONENT_TYPE, settings)) {
                 setProductCmptTypeQName(ipsProject, settings.get(PRODUCT_COMPONENT_TYPE));

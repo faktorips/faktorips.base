@@ -118,7 +118,7 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
     public void testDialogSettings() {
         model.setSrcFilePattern(FILE_PATTERN);
         model.setProductCmptType(productCmptType);
-        model.setIpsProject(ipsProject.getName());
+        model.setIpsProjectName(ipsProject.getName());
 
         IDialogSettings settings = new DialogSettings("section");
         model.store(settings);
@@ -126,7 +126,7 @@ public class ProductSearchPresentationModelTest extends AbstractIpsPluginTest {
         newModel.read(settings);
 
         assertEquals(FILE_PATTERN, newModel.getSrcFilePattern());
-        assertEquals(ipsProject.getName(), newModel.getIpsProject());
+        assertEquals(ipsProject.getName(), newModel.getIpsProjectName());
         assertEquals(productCmptType, newModel.getProductCmptType());
     }
 }
