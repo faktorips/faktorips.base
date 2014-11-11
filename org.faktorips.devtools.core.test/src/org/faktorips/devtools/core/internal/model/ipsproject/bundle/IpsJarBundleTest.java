@@ -17,7 +17,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -36,6 +38,7 @@ import java.util.zip.ZipEntry;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsBundleManifest;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
@@ -96,8 +99,17 @@ public class IpsJarBundleTest {
         when(jarFile.getManifest()).thenReturn(manifest);
         when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
         ipsJarBundle.initBundle();
+        mockObjectDirs();
 
         assertTrue(ipsJarBundle.isValid());
+    }
+
+    private void mockObjectDirs() {
+        IpsBundleManifest bundleManifest = spy(new IpsBundleManifest(mock(Manifest.class)));
+        ipsJarBundle.setBundleManifest(bundleManifest);
+        List<IPath> pathList = new ArrayList<IPath>();
+        pathList.add(new Path(ANY_PATH));
+        doReturn(pathList).when(bundleManifest).getObjectDirs();
     }
 
     @Test
@@ -108,7 +120,17 @@ public class IpsJarBundleTest {
     }
 
     @Test
-    public void testIsValid_invalid() throws Exception {
+    public void testIsValid_invalid_NoManifest() throws Exception {
+        assertFalse(ipsJarBundle.isValid());
+    }
+
+    @Test
+    public void testIsValid_invalid_EmptyObjectDirs() throws Exception {
+        Manifest manifest = mock(Manifest.class);
+        when(jarFile.getManifest()).thenReturn(manifest);
+        when(jarFile.entries()).thenReturn(Collections.enumeration(new ArrayList<JarEntry>()));
+        ipsJarBundle.initBundle();
+
         assertFalse(ipsJarBundle.isValid());
     }
 

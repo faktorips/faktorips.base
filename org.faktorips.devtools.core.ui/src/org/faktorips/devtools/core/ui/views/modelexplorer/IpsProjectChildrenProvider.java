@@ -48,7 +48,7 @@ public class IpsProjectChildrenProvider implements IChildrenProvider<IIpsProject
     }
 
     private List<IIpsPackageFragmentRoot> getExistingRoots(IIpsProject project) {
-        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots();
+        IIpsPackageFragmentRoot[] roots = project.getIpsPackageFragmentRoots(false);
         List<IIpsPackageFragmentRoot> existingRoots = new ArrayList<IIpsPackageFragmentRoot>();
         for (IIpsPackageFragmentRoot root : roots) {
             if (root.exists()) {
