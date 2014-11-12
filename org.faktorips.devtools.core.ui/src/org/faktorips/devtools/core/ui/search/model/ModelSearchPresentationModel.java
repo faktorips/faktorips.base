@@ -45,7 +45,7 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
         initDefaultSearchValues();
     }
 
-    protected void initDefaultSearchValues() {
+    private void initDefaultSearchValues() {
         setSearchAttributes(true);
         setSearchMethods(true);
         setSearchAssociations(true);

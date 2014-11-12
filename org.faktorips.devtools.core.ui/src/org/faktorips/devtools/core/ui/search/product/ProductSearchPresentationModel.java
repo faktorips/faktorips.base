@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.search.product;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -66,10 +65,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     private String ipsProjectName = StringUtils.EMPTY;
 
-    public ProductSearchPresentationModel(PropertyChangeListener... listener) {
-        for (PropertyChangeListener propertyChangeListener : listener) {
-            addPropertyChangeListener(propertyChangeListener);
-        }
+    public ProductSearchPresentationModel() {
     }
 
     /**

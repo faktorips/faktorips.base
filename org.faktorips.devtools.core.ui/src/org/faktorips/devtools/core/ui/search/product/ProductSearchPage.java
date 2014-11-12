@@ -176,8 +176,10 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
     @Override
     protected ProductSearchPresentationModel createPresentationModel() {
-        return new ProductSearchPresentationModel(createPropertyChangeListenerForValidity(),
-                createPropertyChangeListenerForTable());
+        ProductSearchPresentationModel searchPMO = new ProductSearchPresentationModel();
+        searchPMO.addPropertyChangeListener(createPropertyChangeListenerForValidity());
+        searchPMO.addPropertyChangeListener(createPropertyChangeListenerForTable());
+        return searchPMO;
     }
 
     private PropertyChangeListener createPropertyChangeListenerForValidity() {
