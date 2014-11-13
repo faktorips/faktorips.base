@@ -308,19 +308,19 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        GregorianCalendar validTo = getValidTo();
+        GregorianCalendar validToDate = getValidTo();
 
-        if (validTo == null) {
+        if (validToDate == null) {
             // empty validTo - valid forever.
             return;
         }
 
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
-            if (validFromIsNull(generation) && generation.getValidFrom().after(validTo)) {
+        IIpsObjectGeneration[] orderedGenerations = getGenerationsOrderedByValidDate();
+        for (IIpsObjectGeneration generation : orderedGenerations) {
+            if (validFromIsNull(generation) && generation.getValidFrom().after(validToDate)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-                String params[] = new String[4];
-                params[0] = prefs.getDateFormat().format(validTo.getTime());
+                String[] params = new String[4];
+                params[0] = prefs.getDateFormat().format(validToDate.getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
                 params[3] = prefs.getDateFormat().format(generation.getValidFrom().getTime());
