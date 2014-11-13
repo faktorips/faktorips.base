@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -116,7 +117,10 @@ public class ConditionPMOPersistenceTest extends AbstractIpsPluginTest {
     @Test
     public void testLoadConditions_noDialogSettings() {
         dialogSettings = new DialogSettings("rootSection");
-        new ConditionPMOPersistence(searchPMO, dialogSettings).loadConditions();
+        List<ProductSearchConditionPresentationModel> conditions = new ConditionPMOPersistence(searchPMO,
+                dialogSettings).loadConditions();
+
+        assertEquals(Collections.emptyList(), conditions);
     }
 
     @Test

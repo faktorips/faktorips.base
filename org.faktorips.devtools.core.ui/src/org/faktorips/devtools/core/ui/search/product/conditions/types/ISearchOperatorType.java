@@ -31,5 +31,10 @@ public interface ISearchOperatorType {
             ValueDatatype valueDatatype,
             String argument);
 
+    /**
+     * Returns the name of the enum constant.
+     * 
+     * @see Enum#name()
+     */
     public String name();
 }
