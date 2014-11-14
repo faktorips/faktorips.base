@@ -124,6 +124,12 @@ public class ProductSearchConditionPresentationModel extends PresentationModelOb
         parentSearchPresentationModel.notifyListeners(new PropertyChangeEvent(this, StringUtils.EMPTY, null, null));
     }
 
+    /**
+     * Searches this conditionPMO's searchable elements for an ips element with the given name. If
+     * an element is found, it is set as searched element. Otherwise this method does nothing. This
+     * also means a valid searchable element is left untouched if this method is called with an
+     * illegal name.
+     */
     public void setSearchedElementByName(String elementName) {
         if (getConditionType() != null) {
             List<? extends IIpsElement> elements = getSearchableElements();

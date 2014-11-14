@@ -32,7 +32,8 @@ public interface ISearchOperatorType {
             String argument);
 
     /**
-     * Returns the name of the enum constant.
+     * Returns the name of the enum constant. These names must be unique to ensure that
+     * search-settings can be persisted between sessions.
      * 
      * @see Enum#name()
      */
