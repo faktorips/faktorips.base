@@ -112,7 +112,7 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
     }
 
     private void bindModel() {
-        getBindingContext().bindContent(dateField, getIpsPart(), IProductCmptGeneration.PROPERTY_VALID_FROM);
+        getBindingContext().bindContent(dateField, pmo, IProductCmptGeneration.PROPERTY_VALID_FROM);
         getBindingContext().bindEnabled(getButton(IDialogConstants.OK_ID), pmo,
                 GenerationEditDialogPMO.PROPERTY_OK_BUTTON_ENABLED);
     }
@@ -149,12 +149,32 @@ public class GenerationEditDialog extends IpsPartEditDialog2 {
 
         private final IProductCmptGeneration generation;
 
+        private GregorianCalendar cachedDate = null;
+
         public GenerationEditDialogPMO(IProductCmptGeneration currentGeneration) {
             this.generation = currentGeneration;
+            cachedDate = generation.getValidFrom();
         }
 
         public boolean isOkButtonEnabled() {
-            return generation.getValidFrom() != null;
+            return cachedDate != null;
+        }
+
+        public void setValidFrom(GregorianCalendar calendar) {
+            cachedDate = calendar;
+            updateGenerationValidFrom();
+            notifyListeners();
+        }
+
+        private void updateGenerationValidFrom() {
+            if (cachedDate != null) {
+                generation.setValidFrom(cachedDate);
+            }
+        }
+
+        public GregorianCalendar getValidFrom() {
+            return cachedDate;
         }
     }
+
 }
