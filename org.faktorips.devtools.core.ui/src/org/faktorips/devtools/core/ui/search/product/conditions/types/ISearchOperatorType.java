@@ -30,4 +30,12 @@ public interface ISearchOperatorType {
     public ISearchOperator createSearchOperator(IOperandProvider operandProvider,
             ValueDatatype valueDatatype,
             String argument);
+
+    /**
+     * Returns the name of the enum constant. These names must be unique to ensure that
+     * search-settings can be persisted between sessions.
+     * 
+     * @see Enum#name()
+     */
+    public String name();
 }

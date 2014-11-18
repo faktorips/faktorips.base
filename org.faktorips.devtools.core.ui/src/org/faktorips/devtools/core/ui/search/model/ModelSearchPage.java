@@ -128,9 +128,7 @@ public class ModelSearchPage extends AbstractIpsSearchPage<ModelSearchPresentati
 
     @Override
     protected ModelSearchPresentationModel createPresentationModel() {
-        ModelSearchPresentationModel model = new ModelSearchPresentationModel();
-        model.initDefaultSearchValues();
-        return model;
+        return new ModelSearchPresentationModel();
     }
 
     @Override
