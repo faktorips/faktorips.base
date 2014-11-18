@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
 import org.faktorips.util.message.MessageList;
 
 /**
- * Refactoring processor for the "Rename Association" refactoring for validationRules.
+ * Refactoring processor for the "Rename ValidationRule" refactoring.
  * 
  */
 public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
