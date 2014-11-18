@@ -402,22 +402,27 @@ public class ASTFacadeHelper extends FacadeHelper {
             ASTJNode<?> contextNode = (ASTJNode<?>)context;
             ASTRewrite rewriter = contextNode.getRewriter();
 
-            // handle field declarations separately
             if (node instanceof ASTJField) {
                 newASTJNode = cloneField((ASTJField)node, contextNode);
-            } else
-            // create new node and replace it all by original contents
-            {
+                newASTJNode.setRewriter(contextNode.getRewriter());
+            } else if (node instanceof ASTJMethod) {
+                ASTJMethod method = (ASTJMethod)node;
+                ASTNode astNode = method.getASTNode();
+                AST ast = contextNode.getWrappedObject().getAST();
+                ASTNode copySubtree = ASTNode.copySubtree(ast, astNode);
+                newASTJNode = (ASTJNode<?>)convertToNode(copySubtree);
+                String body = applyFormatRules(method.getBody());
+                newASTJNode.setRewriter(contextNode.getRewriter());
+                ((ASTJMethod)newASTJNode).setBody(body);
+            } else {
                 String contents = applyFormatRules(node.getContents());
                 // note that string place holder adjusts indentation
                 // to correct this trackAndReplace method is used below
                 ASTNode newASTNode = rewriter.createStringPlaceholder(contents, originalASTNode.getNodeType());
                 newASTJNode = (ASTJNode<?>)convertToNode(newASTNode);
+                newASTJNode.setRewriter(contextNode.getRewriter());
                 newASTJNode.trackAndReplace(newASTNode, contents);
             }
-
-            // set rewriter on the new node
-            newASTJNode.setRewriter(contextNode.getRewriter());
 
             return newASTJNode;
         }

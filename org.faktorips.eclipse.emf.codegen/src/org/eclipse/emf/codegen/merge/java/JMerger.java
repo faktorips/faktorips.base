@@ -49,7 +49,7 @@ import org.eclipse.emf.codegen.merge.java.facade.NodeConverter;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJCompilationUnit;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTJNode;
-import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.emf.codegen.util.CodeGenUtil;
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
@@ -160,11 +160,15 @@ public class JMerger {
             }
         }
         for (JNode target : nodesToAnnotate) {
-            if (target instanceof JMethod) {
-                List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
-                for (ASTJNode<?> astjNode : annotations) {
-                    getFacadeHelper().addChild(target, astjNode);
-                }
+            addAdditionalAnnotations(target);
+        }
+    }
+
+    private void addAdditionalAnnotations(JNode target) {
+        if (target instanceof JMethod) {
+            List<ASTJNode<?>> annotations = getAdditionalAnnotationsNodes();
+            for (ASTJNode<?> astjNode : annotations) {
+                getFacadeHelper().addChild(target, astjNode);
             }
         }
     }
@@ -212,7 +216,7 @@ public class JMerger {
     }
 
     private CompilationUnit parseCodeSnippet(String source) {
-        ASTParser newParser = ASTParser.newParser(AST.JLS3);
+        ASTParser newParser = CodeGenUtil.EclipseUtil.newASTParser();
         newParser.setCompilerOptions(getFacadeHelper().getJavaCoreOptions());
         newParser.setSource(source.toCharArray());
         ASTNode createAST = newParser.createAST(null);
@@ -502,7 +506,7 @@ public class JMerger {
     private void checkNodeNotSwept(JNode annotationNode, JNode targetParentNode) {
         if (annotationNode instanceof JAnnotation && isAdditionalAnnotation((JAnnotation)annotationNode)) {
             // Additional annotation should not be generated to avoid duplicated annotations
-            additionallyAnnotatedMembers.remove(targetParentNode);
+            removeAnnotatedNode(targetParentNode);
         }
     }
 
@@ -553,7 +557,7 @@ public class JMerger {
                             continue;
                         }
                     }
-                    additionallyAnnotatedMembers.add(targetNode);
+                    addAnnotatedNode(targetNode);
 
                     Method sourceGetMethod = pullRule.getSourceGetFeature().getFeatureMethod();
                     Object value = sourceGetMethod.invoke(sourceNode, NO_ARGUMENTS);
@@ -724,6 +728,14 @@ public class JMerger {
                 e.printStackTrace();
             }
         }
+    }
+
+    private boolean addAnnotatedNode(JNode targetNode) {
+        return additionallyAnnotatedMembers.add(targetNode);
+    }
+
+    private boolean removeAnnotatedNode(JNode targetNode) {
+        return additionallyAnnotatedMembers.remove(targetNode);
     }
 
     protected void applySortRules(JNode sourceNode) {
@@ -1064,7 +1076,8 @@ public class JMerger {
             applySortRules(sourceNode);
             if (!sourceToTargetMap.containsKey(sourceNode)) {
                 if (isPushMarkedUp(sourceNode)) {
-                    insertClone(sourceNode);
+                    JNode targetNode = insertClone(sourceNode);
+                    addAdditionalAnnotations(targetNode);
                 }
                 return false;
             }

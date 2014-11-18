@@ -248,6 +248,24 @@ public class IpsBundleManifestTest {
     }
 
     @Test
+    public void testHasObjectDirs() {
+        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+
+        assertEquals(1, objectDir.size());
+        assertEquals(new Path(MY_OBJECT_DIR), objectDir.get(0));
+        assertEquals(true, ipsBundleManifest.hasObjectDirs());
+    }
+
+    @Test
+    public void testHasObjectDirs_NoObjectDirs() {
+        ipsBundleManifest = new IpsBundleManifest(mock(Manifest.class));
+        List<IPath> objectDir = ipsBundleManifest.getObjectDirs();
+
+        assertEquals(0, objectDir.size());
+        assertEquals(false, ipsBundleManifest.hasObjectDirs());
+    }
+
+    @Test
     public void testGetTocPath() throws Exception {
         ManifestElement objectDirElement = ipsBundleManifest.getObjectDirElements()[0];
 

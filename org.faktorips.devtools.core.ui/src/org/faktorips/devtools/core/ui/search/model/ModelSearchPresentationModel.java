@@ -14,6 +14,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -37,11 +38,14 @@ public class ModelSearchPresentationModel extends AbstractSearchPresentationMode
     public static final String SEARCH_TABLE_STRUCTURE_USAGES = "searchTableStructureUsages"; //$NON-NLS-1$
     public static final String SEARCH_VALIDATION_RULES = "searchValidationRules"; //$NON-NLS-1$
 
-    private String searchTerm = ""; //$NON-NLS-1$
+    private String searchTerm = StringUtils.EMPTY;
     private final Set<Class<? extends IIpsObjectPart>> searchedClazzes = new HashSet<Class<? extends IIpsObjectPart>>();
 
-    @Override
-    protected void initDefaultSearchValues() {
+    public ModelSearchPresentationModel() {
+        initDefaultSearchValues();
+    }
+
+    private void initDefaultSearchValues() {
         setSearchAttributes(true);
         setSearchMethods(true);
         setSearchAssociations(true);

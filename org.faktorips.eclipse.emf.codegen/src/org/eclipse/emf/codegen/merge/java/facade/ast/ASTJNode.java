@@ -827,4 +827,9 @@ public abstract class ASTJNode<T extends ASTNode> extends AbstractJNode {
             compilationUnit.getCommentedOutNodes().add(this.getASTNode());
         }
     }
+
+    @Override
+    public String toString() {
+        return astNode.toString();
+    }
 }
