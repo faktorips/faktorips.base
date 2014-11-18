@@ -15,12 +15,15 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +33,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
@@ -716,6 +720,20 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         newPolicyCmptTypeWithoutProductCmptType(ipsProject, "x.X");
 
         assertTrue(path.findDuplicateIpsSrcFile(new QualifiedNameType("x.X", IpsObjectType.POLICY_CMPT_TYPE)));
+    }
+
+    @Test
+    public void testCollectAllIpsSrcFilesOfSrcFolderEntries() throws Exception {
+        refProject = newIpsProject();
+        path.newIpsProjectRefEntry(refProject);
+        ProductCmptType cmptType1 = newProductCmptType(ipsProject, "test1");
+        newProductCmptType(refProject, "test2");
+
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        path.collectAllIpsSrcFilesOfSrcFolderEntries(result);
+
+        assertEquals(1, result.size());
+        assertThat(result, hasItem(cmptType1.getIpsSrcFile()));
     }
 
 }

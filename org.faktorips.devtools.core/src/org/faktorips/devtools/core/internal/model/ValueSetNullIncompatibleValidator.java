@@ -45,9 +45,7 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
     @Override
     public MessageList validateIfPossible() {
         MessageList messageList = new MessageList();
-        if (canValidate()) {
-            validateAndAppendMessages(messageList);
-        }
+        validateAndAppendMessages(messageList);
         return messageList;
     }
 
@@ -58,12 +56,17 @@ public class ValueSetNullIncompatibleValidator implements IMetaModelValidator {
 
     @Override
     public void validateAndAppendMessages(MessageList messageList) {
+        if (canValidate()) {
+            validateInternal(messageList);
+        }
+    }
+
+    private void validateInternal(MessageList messageList) {
         if (isNullIncompatible()) {
             messageList.newError(MSGCODE_INCOMPATIBLE_VALUESET,
                     Messages.ValueSetNullIncompatibleValidator_Msg_NullNotAllowed, currentValueset,
                     IValueSet.PROPERTY_CONTAINS_NULL);
         }
-
     }
 
     private boolean isNullIncompatible() {
