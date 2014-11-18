@@ -156,17 +156,6 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetGenerationEffectiveOn_ValidFromIsNull() {
-        IIpsObjectGeneration gen1 = timedObject.newGeneration();
-        gen1.setValidFrom(new GregorianCalendar(2004, 0, 1));
-        IIpsObjectGeneration gen2 = timedObject.newGeneration();
-        gen2.setValidFrom(null);
-
-        IIpsObjectGeneration genFound = timedObject.getGenerationEffectiveOn(new GregorianCalendar(2004, 0, 1));
-        assertEquals(gen1, genFound);
-    }
-
-    @Test
     public void testGetGenerationEffectiveOn_validTo() {
         IIpsObjectGeneration gen1 = timedObject.newGeneration();
         gen1.setValidFrom(new GregorianCalendar(2004, 0, 1));

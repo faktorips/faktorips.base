@@ -110,7 +110,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         }
         IIpsObjectGeneration generation = null;
         for (IIpsObjectGeneration each : generations) {
-            if (!validFromIsNull(each) && !each.getValidFrom().after(date)) {
+            if (!each.getValidFrom().after(date)) {
                 if (generation == null) {
                     generation = each;
                 } else {
@@ -128,18 +128,6 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         }
 
         return generation;
-    }
-
-    /**
-     * Checks if the validFrom date of the given generation is <code>null</code>. It returns
-     * <code>true</code> if the validFrom date is <code>null</code>, otherwise <code>false</code> is
-     * returned.
-     * <p>
-     * This check is necessary, because the validFrom date could be <code>null</code> in case of an
-     * invalid date. An invalid date can occur while entering the date manually in the edit field.
-     */
-    private boolean validFromIsNull(IIpsObjectGeneration generation) {
-        return generation.getValidFrom() == null;
     }
 
     @Override
@@ -317,7 +305,7 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
 
         IIpsObjectGeneration[] orderedGenerations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : orderedGenerations) {
-            if (validFromIsNull(generation) && generation.getValidFrom().after(validToDate)) {
+            if (generation.getValidFrom() != null && generation.getValidFrom().after(validToDate)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String[] params = new String[4];
                 params[0] = prefs.getDateFormat().format(validToDate.getTime());

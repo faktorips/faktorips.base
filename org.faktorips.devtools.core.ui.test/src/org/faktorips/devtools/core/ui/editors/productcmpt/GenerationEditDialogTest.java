@@ -39,8 +39,8 @@ public class GenerationEditDialogTest {
 
     @Before
     public void setUp() {
-        pmo = new GenerationEditDialogPMO(generation);
         when(generation.getValidFrom()).thenReturn(calendar);
+        pmo = new GenerationEditDialogPMO(generation);
     }
 
     @Test
