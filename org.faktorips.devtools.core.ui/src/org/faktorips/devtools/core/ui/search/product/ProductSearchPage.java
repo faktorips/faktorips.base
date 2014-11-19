@@ -50,7 +50,7 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
     public void createControl(Composite parent) {
         UIToolkit toolkit = new UIToolkit(null);
         readDialogSettings();
-        getPresentationModel().read(getPreviousSearchData().get(0));
+        loadLastSearchIfAvailable();
 
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
         layoutData.minimumHeight = 440;
@@ -72,6 +72,12 @@ public class ProductSearchPage extends AbstractIpsSearchPage<ProductSearchPresen
 
         getBindingContext().updateUI();
         conditionTableViewer.refresh();
+    }
+
+    private void loadLastSearchIfAvailable() {
+        if (!getPreviousSearchData().isEmpty()) {
+            getPresentationModel().read(getPreviousSearchData().get(0));
+        }
     }
 
     private void createProductComponentTypeChoser(UIToolkit toolkit) {
