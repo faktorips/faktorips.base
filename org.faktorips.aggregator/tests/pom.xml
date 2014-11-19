@@ -26,9 +26,9 @@
 		<module>../../org.faktorips.devtools.tableconversion.test</module>
 		<module>../../org.faktorips.dtflcommon.test</module>
 		<module>../../org.faktorips.fl.test</module>
-		<module>../../org.faktorips.runtime.java5.test</module>
+		<module>../../org.faktorips.runtime.test</module>
 		<module>../../org.faktorips.util.test</module>
-		<module>../../org.faktorips.valuetypes.java5.test</module>
+		<module>../../org.faktorips.valuetypes.test</module>
 		<module>../../org.faktorips.valuetypes.joda.test</module>
 	</modules>
 

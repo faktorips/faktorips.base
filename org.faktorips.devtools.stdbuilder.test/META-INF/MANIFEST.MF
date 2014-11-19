@@ -7,8 +7,8 @@ Bundle-Localization: plugin
 Fragment-Host: org.faktorips.devtools.stdbuilder
 Require-Bundle: org.faktorips.dtflcommon,
  org.faktorips.fl,
- org.faktorips.runtime.java5,
- org.faktorips.valuetypes.java5,
+ org.faktorips.runtime,
+ org.faktorips.valuetypes,
  org.eclipse.core.runtime,
  org.eclipse.text,
  org.eclipse.jdt.core;bundle-version="3.4.0",

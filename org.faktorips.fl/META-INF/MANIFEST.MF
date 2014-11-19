@@ -6,7 +6,7 @@ Bundle-Version: 3.14.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.util,
  org.faktorips.dtflcommon,
- org.faktorips.valuetypes.java5
+ org.faktorips.valuetypes
 Export-Package: org.faktorips.fl,org.faktorips.fl.functions,org.faktor
  ips.fl.operations,org.faktorips.fl.parser
 Bundle-ClassPath: .,
