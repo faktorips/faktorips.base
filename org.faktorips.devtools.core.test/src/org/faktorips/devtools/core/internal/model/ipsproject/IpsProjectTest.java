@@ -36,6 +36,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -159,6 +160,21 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(2, ipsPackageFragmentRoots.length);
         assertEquals(root2, ipsPackageFragmentRoots[0]);
         assertEquals(root3, ipsPackageFragmentRoots[1]);
+
+        ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots(true);
+
+        assertEquals(2, ipsPackageFragmentRoots.length);
+        assertEquals(root2, ipsPackageFragmentRoots[0]);
+        assertEquals(root3, ipsPackageFragmentRoots[1]);
+    }
+
+    @Test
+    public void testgetIpsPackageFragmentRoots_DoNotResolveContainerEntry() throws Exception {
+        mockPathAndContainerEntry();
+
+        IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots(false);
+
+        assertEquals(0, ipsPackageFragmentRoots.length);
     }
 
     @Test
@@ -1783,6 +1799,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
             }
 
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return StringUtils.EMPTY;
+            }
+
+            @Override
+            public boolean isGeneratePublishedInterfaces() {
+                return true;
+            }
+
         };
         projectABuilderSet.setId("projectABuilderSet");
         projectABuilderSet.setIpsProject(ipsProject);
@@ -1823,6 +1849,16 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             @Override
             protected LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder> createBuilders() throws CoreException {
                 return new LinkedHashMap<IBuilderKindId, IIpsArtefactBuilder>();
+            }
+
+            @Override
+            protected String getConfiguredAdditionalAnnotations() {
+                return StringUtils.EMPTY;
+            }
+
+            @Override
+            public boolean isGeneratePublishedInterfaces() {
+                return true;
             }
 
         };

@@ -11,6 +11,8 @@
 package org.faktorips.devtools.core.ui.search.product.conditions.table;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -50,6 +52,7 @@ public class ProductSearchConditionPresentationModelTest {
         model = new ProductSearchConditionPresentationModel(parentSearchPresentationModel);
 
         ipsElement = mock(IIpsElement.class);
+        when(ipsElement.getName()).thenReturn("productAttribute");
         operatorType = mock(ISearchOperatorType.class);
 
         listener = mock(PropertyChangeListener.class);
@@ -147,5 +150,19 @@ public class ProductSearchConditionPresentationModelTest {
 
         when(condition.getSearchableElements(any(IProductCmptType.class))).thenReturn(list);
         return condition;
+    }
+
+    @Test
+    public void testSetSearchableElementByName() {
+        PolicyAttributeConditionType condition = createConditionwithSearchableElements();
+        model.setCondition(condition);
+        model.setSearchedElement(null);
+
+        model.setSearchedElementByName("doesNotExist");
+        assertNull(model.getSearchedElement());
+        model.setSearchedElementByName("productAttribute");
+        assertNotNull(model.getSearchedElement());
+        model.setSearchedElementByName("doesNotExist");
+        assertNotNull(model.getSearchedElement());
     }
 }

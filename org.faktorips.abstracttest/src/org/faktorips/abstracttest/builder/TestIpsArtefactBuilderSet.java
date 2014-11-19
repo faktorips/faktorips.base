@@ -15,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorF
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
@@ -70,6 +72,13 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
+    public void initialize(IIpsArtefactBuilderSetConfig config) throws CoreException {
+        if (getConfig() == null) {
+            super.initialize(config);
+        }
+    }
+
+    @Override
     public TestBuilderSetConfig getConfig() {
         return (TestBuilderSetConfig)super.getConfig();
     }
@@ -104,6 +113,16 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
 
     public void setRoleNamePluralRequiredForTo1Relations(boolean roleNamePluralRequiredForTo1Relations) {
         this.roleNamePluralRequiredForTo1Relations = roleNamePluralRequiredForTo1Relations;
+    }
+
+    @Override
+    public boolean isGeneratePublishedInterfaces() {
+        return true;
+    }
+
+    @Override
+    protected String getConfiguredAdditionalAnnotations() {
+        return StringUtils.EMPTY;
     }
 
     @Override

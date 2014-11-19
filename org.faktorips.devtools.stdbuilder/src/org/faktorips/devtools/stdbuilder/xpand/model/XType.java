@@ -41,12 +41,18 @@ public abstract class XType extends XClass {
         return getIpsObjectPartContainer();
     }
 
+    /**
+     * Returns the implementation name and adds the implementation name to the list of imports. Only
+     * use this method if you require the implementation class explicitly. Use {@link #getName()} if
+     * you just want to use the name for building other strings like method names.
+     * 
+     */
     public String getImplClassName() {
-        return addImport(getSimpleName(BuilderAspect.IMPLEMENTATION));
+        return getSimpleName(BuilderAspect.IMPLEMENTATION);
     }
 
     public String getInterfaceName() {
-        return addImport(getSimpleName(BuilderAspect.INTERFACE));
+        return getSimpleName(BuilderAspect.INTERFACE);
     }
 
     public String getNameForVariable() {

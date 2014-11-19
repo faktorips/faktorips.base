@@ -161,7 +161,7 @@ public class IpsBundleManifest {
     }
 
     /**
-     * Returns a list of all objectDirs (folders containing {@link IIpsElement IPS elements}. The
+     * Returns a list of all objectDirs (folders containing {@link IIpsElement IPS elements}). The
      * path is relative to the root folder (project or archive).
      * 
      * @return A list of all configured objectDirs
@@ -182,6 +182,16 @@ public class IpsBundleManifest {
         }
         String value = getValue(attributes, HEADER_OBJECT_DIR);
         return getManifestElements(value);
+    }
+
+    /**
+     * Checks if this {@link IpsBundleManifest} has objectDirs. If it has objectDirs it returns
+     * <code>true</code> and if not <code>false</code> is returned.
+     * 
+     * @see #getObjectDirs()
+     */
+    public boolean hasObjectDirs() {
+        return !getObjectDirs().isEmpty();
     }
 
     private ManifestElement[] getManifestElements(String value) {

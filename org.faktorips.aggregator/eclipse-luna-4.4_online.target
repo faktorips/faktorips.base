@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?><target includeMode="feature" name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="153">
+<locations>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.faktorips.deploydependencies.feature.group" version="1.0.0"/>
+<repository location="https://update.faktorzehn.org/p2repositories/faktorips/deploy"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="com.faktorzehn.bundles.feature.feature.group" version="1.0.0.201408140927"/>
+<repository location="http://update.faktorzehn.org/p2repositories/thirdparty"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jdt.feature.group" version="3.10.0.v20140925-0400"/>
+<unit id="org.eclipse.cvs.feature.group" version="1.4.100.v20140925-0400"/>
+<unit id="org.eclipse.xpand.sdk.feature.group" version="2.0.0.v201406030414"/>
+<unit id="org.eclipse.gef.feature.group" version="3.9.101.201408150207"/>
+<unit id="org.eclipse.pde.feature.group" version="3.10.0.v20140925-0400"/>
+<unit id="org.eclipse.m2e.feature.feature.group" version="1.5.0.20140606-0033"/>
+<unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.rcp.feature.group" version="0.0.0"/>
+<repository location="http://download.eclipse.org/releases/luna/"/>
+</location>
+</locations>
+<launcherArgs>
+<vmArgs>-Dorg.eclipse.swt.browser.XULRunnerPath=/usr/lib/xulrunner/ -XX:MaxPermSize=256m</vmArgs>
+</launcherArgs>
+</target>

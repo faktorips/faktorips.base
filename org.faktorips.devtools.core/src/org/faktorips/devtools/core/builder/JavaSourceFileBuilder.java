@@ -37,7 +37,6 @@ import org.eclipse.emf.codegen.merge.java.JControlModel;
 import org.eclipse.emf.codegen.merge.java.JMerger;
 import org.eclipse.emf.codegen.merge.java.facade.FacadeHelper;
 import org.eclipse.emf.codegen.merge.java.facade.ast.ASTFacadeHelper;
-import org.eclipse.emf.codegen.merge.java.facade.jdom.JDOMFacadeHelper;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
@@ -103,21 +102,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     public static final String[] ANNOTATION_RESTRAINED_MODIFIABLE = new String[] { "restrainedmodifiable" }; //$NON-NLS-1$
 
     /**
-     * This constant is supposed to be used as a Java 5 annotation. It suppresses warnings for
-     * unchecked casts when interacting with legacy code.
-     */
-    public static final String ANNOTATION_SUPPRESS_WARNINGS_UNCHECKED = "SuppressWarnings(\"unchecked\")"; //$NON-NLS-1$
-
-    /**
      * This constant is supposed to be used as a Java 5 <code>Override</code> annotation.
      */
     public static final String ANNOTATION_OVERRIDE = "Override"; //$NON-NLS-1$
-
-    /**
-     * This constant is supposed to be used as a Java 5 annotations. It contains the java annotation
-     * for suppressed warnings of unused code.
-     */
-    public static final String ANNOTATION_SUPPRESS_WARNINGS_UNUSED = "SuppressWarnings(\"unused\")"; //$NON-NLS-1$
 
     /**
      * This constant is supposed to be used to indicate the beginning of a section within generated
@@ -731,9 +718,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         if (!newFileCreated) {
             String charset = ipsSrcFile.getIpsProject().getProject().getDefaultCharset();
             oldJavaFileContentsStr = getJavaFileContents(javaFile, charset);
-            if (isMergeEnabled()) {
-                content = merge(javaFile, oldJavaFileContentsStr, content);
-            }
+        }
+        if (isMergeEnabled()) {
+            content = merge(javaFile, oldJavaFileContentsStr, content);
         }
 
         content = writeFeatureVersions(content);
@@ -915,6 +902,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         JMerger merger;
         try {
             merger = new JMerger(getJControlModel());
+            List<String> additionalImports = getBuilderSet().getAdditionalImports();
+            List<String> additionalAnnotations = getBuilderSet().getAdditionalAnnotations();
+            merger.setAdditionalAnnotations(additionalImports, additionalAnnotations);
         } catch (Exception e) {
             throw new CoreException(new IpsStatus("An error occurred while initializing JMerger.", e)); //$NON-NLS-1$
         }
@@ -944,13 +934,9 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
     private void initJControlModel(IIpsProject project) throws CoreException {
         // CSOFF: IllegalCatch
         model = new JControlModel();
-        if (ComplianceCheck.isComplianceLevelAtLeast5(project)) {
-            ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
-            configureDefaults(astFacadeHelper.getJavaCoreOptions(), project);
-            facadeHelper = astFacadeHelper;
-        } else {
-            facadeHelper = new JDOMFacadeHelper();
-        }
+        ASTFacadeHelper astFacadeHelper = new ASTFacadeHelper();
+        configureDefaults(astFacadeHelper.getJavaCoreOptions(), project);
+        facadeHelper = astFacadeHelper;
         try {
             model.initialize(facadeHelper, getJMergeConfigLocation(project));
         } catch (Exception e) {
@@ -973,7 +959,7 @@ public abstract class JavaSourceFileBuilder extends AbstractArtefactBuilder {
         }
         StringBuffer mergeFileDefault = new StringBuffer();
         mergeFileDefault.append('/').append(JavaSourceFileBuilder.class.getPackage().getName().replace('.', '/'))
-                .append(ComplianceCheck.isComplianceLevelAtLeast5(ipsProject) ? "/merge.java5.xml" : "/merge.xml"); //$NON-NLS-1$ //$NON-NLS-2$
+                .append("/merge.java5.xml"); //$NON-NLS-1$
         Bundle bundle = Platform.getBundle(IpsPlugin.PLUGIN_ID);
         return getFileNameFromBundle(bundle, mergeFileDefault.toString());
     }

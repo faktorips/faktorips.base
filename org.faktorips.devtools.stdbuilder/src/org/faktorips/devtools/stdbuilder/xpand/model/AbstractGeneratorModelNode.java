@@ -784,6 +784,7 @@ public abstract class AbstractGeneratorModelNode {
      *         <em>bar</em> of type <em>String</em> the method definition is
      *         <em>SetFoo(String bar)<em>
      */
+    // CSOFF: ParameterNumberCheck
     public String method(String methodName,
             String parameterType1,
             String parameterName1,
@@ -797,6 +798,8 @@ public abstract class AbstractGeneratorModelNode {
                 parameterType2, parameterName2), new MethodParameter(parameterType3, parameterName3),
                 new MethodParameter(parameterType4, parameterName4));
     }
+
+    // CSON: ParameterNumberCheck
 
     public String method(String methodName, List<MethodParameter> parameters) {
         return methodInternal(methodName, parameters.toArray(new MethodParameter[parameters.size()]));

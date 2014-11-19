@@ -15,8 +15,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.search.AbstractSearchPresentationModel;
@@ -38,6 +44,8 @@ import org.faktorips.devtools.core.ui.search.product.conditions.types.ProductCom
  */
 public class ProductSearchPresentationModel extends AbstractSearchPresentationModel {
 
+    public static final String IPS_PROJECT_NAME = "ipsProjectName"; //$NON-NLS-1$
+
     public static final String PRODUCT_COMPONENT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     public static final String PRODUCT_COMPONENT_TYPE_CHOSEN = "productCmptTypeChosen"; //$NON-NLS-1$
@@ -51,15 +59,43 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     private static final IConditionType[] CONDITION_TYPES = { new ProductAttributeConditionType(),
             new PolicyAttributeConditionType(), new ProductComponentAssociationConditionType() };
 
-    private final List<ProductSearchConditionPresentationModel> productSearchConditionPresentationModels = new ArrayList<ProductSearchConditionPresentationModel>();
+    private List<ProductSearchConditionPresentationModel> conditionPMOs = new ArrayList<ProductSearchConditionPresentationModel>();
 
     private IProductCmptType productCmptType;
+
+    private String ipsProjectName = StringUtils.EMPTY;
+
+    public ProductSearchPresentationModel() {
+    }
 
     /**
      * Returns the {@link IProductCmptType}, which is the base for the search
      */
     public IProductCmptType getProductCmptType() {
         return productCmptType;
+    }
+
+    public String getProductCmptTypeQName() {
+        return productCmptType.getQualifiedName();
+    }
+
+    public void setProductCmptTypeQName(String projectName, String productCmptTypeName) {
+        IIpsProject ipsProject = IpsPlugin.getDefault().getIpsModel().getIpsProject(projectName);
+        IIpsObject ipsObject = ipsProject.findIpsObject(new QualifiedNameType(productCmptTypeName,
+                IpsObjectType.PRODUCT_CMPT_TYPE));
+        setProductCmptType((IProductCmptType)ipsObject);
+    }
+
+    public String getIpsProjectName() {
+        if (getProductCmptType() != null) {
+            return getProductCmptType().getIpsProject().getName();
+        } else {
+            return ipsProjectName;
+        }
+    }
+
+    public void setIpsProjectName(String ipsProjectName) {
+        this.ipsProjectName = ipsProjectName;
     }
 
     /**
@@ -72,7 +108,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
         productCmptType = newValue;
 
-        productSearchConditionPresentationModels.clear();
+        conditionPMOs.clear();
 
         notifyListeners(new PropertyChangeEvent(this, PRODUCT_COMPONENT_TYPE, oldValue, newValue));
         notifyListeners(new PropertyChangeEvent(this, CONDITION_TYPE_AVAILABLE, oldConditionTypeAvailable,
@@ -97,18 +133,21 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * ProductSearchConditionPresentationModels}
      */
     public List<ProductSearchConditionPresentationModel> getProductSearchConditionPresentationModels() {
-        return Collections.unmodifiableList(productSearchConditionPresentationModels);
+        return Collections.unmodifiableList(conditionPMOs);
     }
 
     /**
      * Creates a new {@link ProductSearchConditionPresentationModel} and adds it to the List of
-     * ProductSearchConditionPresentationModel
+     * ProductSearchConditionPresentationModel and returns it.
      */
-    public void createProductSearchConditionPresentationModel() {
+    public ProductSearchConditionPresentationModel createProductSearchConditionPresentationModel() {
         boolean oldConditionDefined = isConditionDefined();
 
-        productSearchConditionPresentationModels.add(new ProductSearchConditionPresentationModel(this));
+        ProductSearchConditionPresentationModel conditionPresentationModel = new ProductSearchConditionPresentationModel(
+                this);
+        conditionPMOs.add(conditionPresentationModel);
         notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
+        return conditionPresentationModel;
     }
 
     /**
@@ -119,7 +158,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
     public boolean removeProductSearchConditionPresentationModels(ProductSearchConditionPresentationModel productSearchConditionPresentationModel) {
         boolean oldConditionDefined = isConditionDefined();
 
-        boolean remove = productSearchConditionPresentationModels.remove(productSearchConditionPresentationModel);
+        boolean remove = conditionPMOs.remove(productSearchConditionPresentationModel);
 
         notifyListeners(new PropertyChangeEvent(this, CONDITION_DEFINED, oldConditionDefined, isConditionDefined()));
 
@@ -150,7 +189,7 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
      * 
      */
     public boolean isConditionDefined() {
-        return !productSearchConditionPresentationModels.isEmpty();
+        return !conditionPMOs.isEmpty();
     }
 
     /**
@@ -173,14 +212,32 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
 
     @Override
     public void store(IDialogSettings settings) {
-        // no idea yet
+        settings.put(PRODUCT_COMPONENT_TYPE, getProductCmptTypeQName());
+        settings.put(IPS_PROJECT_NAME, getIpsProjectName());
+        settings.put(SRC_FILE_PATTERN, getSrcFilePattern());
 
+        new ConditionPMOPersistence(this, settings).saveConditions();
     }
 
     @Override
     public void read(IDialogSettings settings) {
-        // TODO which data should be stored in the dialog settings?
+        if (settingIsValid(IPS_PROJECT_NAME, settings)) {
+            String ipsProject = settings.get(IPS_PROJECT_NAME);
+            setIpsProjectName(ipsProject);
 
+            if (settingIsValid(PRODUCT_COMPONENT_TYPE, settings)) {
+                setProductCmptTypeQName(ipsProject, settings.get(PRODUCT_COMPONENT_TYPE));
+            }
+        }
+        if (settingIsValid(SRC_FILE_PATTERN, settings)) {
+            setSrcFilePattern(settings.get(SRC_FILE_PATTERN));
+        }
+        conditionPMOs = new ArrayList<ProductSearchConditionPresentationModel>(new ConditionPMOPersistence(this,
+                settings).loadConditions());
+    }
+
+    private boolean settingIsValid(String storedKey, IDialogSettings settings) {
+        return !StringUtils.isEmpty(settings.get(storedKey));
     }
 
     @Override
@@ -188,8 +245,4 @@ public class ProductSearchPresentationModel extends AbstractSearchPresentationMo
         super.notifyListeners(event);
     }
 
-    @Override
-    protected void initDefaultSearchValues() {
-        // nothing to do
-    }
 }

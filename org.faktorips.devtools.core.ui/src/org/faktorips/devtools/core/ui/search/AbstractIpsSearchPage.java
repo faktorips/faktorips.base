@@ -101,14 +101,13 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         IDialogSettings[] sections = settings.getSections();
 
         previousSearchData = new ArrayList<IDialogSettings>();
-        for (IDialogSettings dialogSettings : sections) {
-            if (dialogSettings.getName().startsWith(getDialogSettingPrefix())) {
-                previousSearchData.add(dialogSettings);
+        for (IDialogSettings childSection : sections) {
+            if (childSection.getName().startsWith(getDialogSettingPrefix())) {
+                previousSearchData.add(childSection);
             }
         }
 
         Comparator<IDialogSettings> comparator = new Comparator<IDialogSettings>() {
-
             @Override
             public int compare(IDialogSettings arg0, IDialogSettings arg1) {
                 return arg1.getName().compareTo(arg0.getName());

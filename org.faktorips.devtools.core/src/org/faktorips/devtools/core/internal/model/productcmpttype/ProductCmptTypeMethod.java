@@ -197,11 +197,14 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (!StringUtils.isEmpty(getName())) {
-            IMethod overridden = findOverriddenMethod(ipsProject);
-            if (overridden == null) {
+            IMethod superMethod = findOverriddenMethod(ipsProject);
+            if (superMethod == null) {
+                superMethod = findOverloadedFormulaMethod(ipsProject);
+            }
+            if (superMethod == null) {
                 return;
             }
-            IProductCmptTypeMethod method = (IProductCmptTypeMethod)overridden;
+            IProductCmptTypeMethod method = (IProductCmptTypeMethod)superMethod;
             if (method.isChangingOverTime() && !isChangingOverTime()) {
                 result.add(new Message(
                         IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME,

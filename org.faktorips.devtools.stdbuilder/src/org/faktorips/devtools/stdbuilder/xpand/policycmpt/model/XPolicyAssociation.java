@@ -88,9 +88,9 @@ public class XPolicyAssociation extends XAssociation {
                                 if (superAssociationWithSameName != null
                                         || derivedUnionAssociation.isSubsetOfADerivedUnion()) {
                                     resultingAssociations
-                                            .addAll(detailToMasterDerivedUnion
-                                                    .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
-                                                            currentType));
+                                    .addAll(detailToMasterDerivedUnion
+                                            .getSubsettedDetailToMasterAssociationsInternal(resultingNames,
+                                                    currentType));
                                 }
                             }
                         }
@@ -471,7 +471,7 @@ public class XPolicyAssociation extends XAssociation {
 
     public String getMethodNameCreatePolicyCmptForTargetProductCmpt() {
         XPolicyCmptClass xPolicyCmptClass = getTargetPolicyCmptClass();
-        return "create" + xPolicyCmptClass.getImplClassName();
+        return "create" + xPolicyCmptClass.getName();
     }
 
     /**

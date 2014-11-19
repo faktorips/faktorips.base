@@ -20,6 +20,7 @@ public class IpsSrcFilesSearchInSrcFolder extends IpsSrcFilesSearch {
 
     public IpsSrcFilesSearchInSrcFolder(IpsObjectType... ipsObjectTypesVarArg) {
         super(ipsObjectTypesVarArg);
+        setIncludeIndirect(false);
     }
 
     @Override

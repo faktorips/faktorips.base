@@ -23,15 +23,27 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsContainerEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathEntry;
+import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
+
+    @Mock
+    private IIpsPackageFragmentRoot root2;
+
+    @Mock
+    private IIpsPackageFragmentRoot root3;
 
     private IpsProjectChildrenProvider hierarchyProvider;
     private IIpsProject project;
@@ -61,6 +73,15 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
         when(containerEntry.getIpsObjectPathContainer()).thenReturn(container);
         when(containerEntry.isContainer()).thenReturn(true);
 
+        IIpsObjectPathEntry entry = mock(IIpsObjectPathEntry.class);
+        when(entry.getIpsPackageFragmentRoot()).thenReturn(root2);
+        when(root2.exists()).thenReturn(true);
+        IIpsObjectPathEntry entry2 = mock(IIpsObjectPathEntry.class);
+        when(entry2.getIpsPackageFragmentRoot()).thenReturn(root3);
+        when(root3.exists()).thenReturn(true);
+        List<IIpsObjectPathEntry> ipsObjectPathEntries = Arrays.asList(entry, entry2);
+        when(containerEntry.resolveEntries()).thenReturn(ipsObjectPathEntries);
+
         emptyContainer = mock(IIpsObjectPathContainer.class);
         when(emptyContainer.resolveEntries()).thenReturn(new ArrayList<IIpsObjectPathEntry>());
 
@@ -76,6 +97,8 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
         doReturn(entries).when(spiedIpsObjectPath).getEntries();
         doReturn(spiedIpsObjectPath).when(project).getIpsObjectPath();
 
+        doReturn(spiedIpsObjectPath).when(((IpsProject)project)).getIpsObjectPathInternal();
+
     }
 
     @Test
@@ -86,6 +109,14 @@ public class IpsProjectChildrenProviderTest extends AbstractIpsPluginTest {
 
         assertTrue(entries.contains(container));
         assertFalse(entries.contains(emptyContainer));
+
+    }
+
+    @Test
+    public void testGetChildren() throws Exception {
+        Object[] children = hierarchyProvider.getChildren(project);
+
+        assertEquals(6, children.length);
 
     }
 

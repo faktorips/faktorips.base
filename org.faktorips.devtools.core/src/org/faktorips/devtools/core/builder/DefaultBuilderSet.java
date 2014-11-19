@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -42,17 +45,15 @@ import org.faktorips.fl.IdentifierResolver;
  */
 public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJavaPackageStructure {
 
-    /**
-     * Name of the configuration property that indicates whether to generate public interfaces or
-     * not.
-     * <p>
-     * Although this property is defined in this abstraction it needs to be configured in the
-     * extension point of every specific builder. If it is not specified as a configuration
-     * definition of any builder, the default value is <code>true</code>.
-     */
-    public static final String CONFIG_PROPERTY_PUBLISHED_INTERFACES = "generatePublishedInterfaces"; //$NON-NLS-1$
+    private static final String PARENTHESIS_CHARACTER = "("; //$NON-NLS-1$
+
+    private static final String SEMI_COLON_CHARACTER = ";"; //$NON-NLS-1$
 
     private JavaPackageStructure javaPackageStructure = new JavaPackageStructure();
+
+    private List<String> additionalAnnotations = new ArrayList<String>();
+
+    private List<String> additionalImports = new ArrayList<String>();
 
     @Override
     public IFile getRuntimeRepositoryTocFile(IIpsPackageFragmentRoot root) {
@@ -98,10 +99,7 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return javaPackageStructure.getBasePackageName(entry, internalArtifacts, mergableArtifacts);
     }
 
-    public boolean isGeneratePublishedInterfaces() {
-        Boolean propertyValueAsBoolean = getConfig().getPropertyValueAsBoolean(CONFIG_PROPERTY_PUBLISHED_INTERFACES);
-        return propertyValueAsBoolean == null ? true : propertyValueAsBoolean.booleanValue();
-    }
+    public abstract boolean isGeneratePublishedInterfaces();
 
     @Override
     public boolean isSupportTableAccess() {
@@ -155,4 +153,61 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
         return null;
     }
 
+    @Override
+    public void beforeBuildProcess(int buildKind) throws CoreException {
+        super.beforeBuildProcess(buildKind);
+        initAdditionalImports();
+        initAdditionalAnnotations();
+    }
+
+    protected abstract String getConfiguredAdditionalAnnotations();
+
+    private void initAdditionalImports() {
+        additionalImports = new ArrayList<String>();
+        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
+        for (String splitString : splitInput) {
+            String importStatement = removeParenthesis(splitString);
+            if (!importStatement.equals(QNameUtil.getUnqualifiedName(importStatement))) {
+                additionalImports.add(importStatement);
+            }
+        }
+    }
+
+    private List<String> splitString(String input) {
+        List<String> splitInput = new ArrayList<String>();
+        String[] split = input.split(SEMI_COLON_CHARACTER);
+        for (String string : split) {
+            splitInput.add(string.trim());
+        }
+        return splitInput;
+    }
+
+    private String removeParenthesis(String importWithParenthesis) {
+        if (importWithParenthesis.contains(PARENTHESIS_CHARACTER)) {
+            int bracket = importWithParenthesis.indexOf(PARENTHESIS_CHARACTER);
+            return importWithParenthesis.substring(0, bracket);
+        }
+        return importWithParenthesis;
+    }
+
+    private void initAdditionalAnnotations() {
+        additionalAnnotations = new ArrayList<String>();
+        List<String> splitInput = splitString(getConfiguredAdditionalAnnotations());
+        for (String splitString : splitInput) {
+            int i = splitString.indexOf(PARENTHESIS_CHARACTER);
+            if (i < 0) {
+                i = splitString.length();
+            }
+            String unqualifiedName = QNameUtil.getUnqualifiedName(splitString.substring(0, i));
+            additionalAnnotations.add(unqualifiedName + splitString.substring(i));
+        }
+    }
+
+    public List<String> getAdditionalImports() {
+        return additionalImports;
+    }
+
+    public List<String> getAdditionalAnnotations() {
+        return additionalAnnotations;
+    }
 }

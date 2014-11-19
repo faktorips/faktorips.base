@@ -55,6 +55,25 @@ public class ValueSetNullIncompatibleValidatorTest {
         messages = validator.validateIfPossible();
         assertFalse(messages.isEmpty());
         assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
+    }
 
+    @Test
+    public void testValidateAndAppendMessages_illegalValues() throws Exception {
+        MessageList messages = new MessageList();
+        ValueSetNullIncompatibleValidator validator = new ValueSetNullIncompatibleValidator(null, null);
+        validator.validateAndAppendMessages(messages);
+        assertTrue(messages.isEmpty());
+    }
+
+    @Test
+    public void testValidateAndAppendMessages() throws Exception {
+        MessageList messages = new MessageList();
+        ValueSetNullIncompatibleValidator validator = new ValueSetNullIncompatibleValidator(valueSetWithoutNull,
+                valueSetWithNull);
+
+        validator.validateAndAppendMessages(messages);
+
+        assertFalse(messages.isEmpty());
+        assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
     }
 }

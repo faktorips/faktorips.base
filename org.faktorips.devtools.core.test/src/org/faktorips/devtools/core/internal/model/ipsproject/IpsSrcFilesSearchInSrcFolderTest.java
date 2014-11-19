@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
@@ -77,5 +78,12 @@ public class IpsSrcFilesSearchInSrcFolderTest extends AbstractIpsPluginTest {
 
         assertEquals(0, ipsSrcFiles.size());
         verify(entry, never()).findIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+    }
+
+    @Test
+    public void testProcessEntry_noIndirectRefs() throws Exception {
+        search = new IpsSrcFilesSearchInSrcFolder();
+
+        assertFalse(search.isIncludeIndirect());
     }
 }

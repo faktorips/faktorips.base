@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XMethod;
@@ -44,6 +45,13 @@ public class XProductCmptGenerationClass extends XProductClass {
             extendedInterfaces.add(addImport(IProductComponentGeneration.class));
         }
         return extendedInterfaces;
+    }
+
+    @Override
+    public String getName() {
+        String implClassName = prodGenJavaClassNameProvider.getImplClassName(getIpsObjectPartContainer()
+                .getIpsSrcFile());
+        return QNameUtil.getUnqualifiedName(implClassName);
     }
 
     @Override
@@ -85,11 +93,11 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     public String getMethodNameGetProductComponentGeneration() {
-        return getJavaNamingConvention().getGetterMethodName(getImplClassName());
+        return getJavaNamingConvention().getGetterMethodName(getName());
     }
 
     public String getMethodNameSetProductComponentGeneration() {
-        return getJavaNamingConvention().getSetterMethodName(getImplClassName());
+        return getJavaNamingConvention().getSetterMethodName(getName());
     }
 
     public Set<XMethod> getOptionalFormulas() {
