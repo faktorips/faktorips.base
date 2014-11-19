@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -42,6 +43,20 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
         validationRule.setName(OLD_NAME);
         validationRule.setConfigurableByProductComponent(true);
         productCmptGeneration.newPropertyValue(validationRule);
+    }
+
+    @Test
+    public void testCheckInitialConditionsValid() throws CoreException {
+        RefactoringStatus status = ipsRenameProcessor.checkInitialConditions(new NullProgressMonitor());
+        assertFalse(status.hasError());
+    }
+
+    @Test
+    public void testCheckFinalConditionsValid() throws CoreException {
+        ipsRenameProcessor.setNewName(NEW_NAME);
+        RefactoringStatus status = ipsRenameProcessor.checkFinalConditions(new NullProgressMonitor(),
+                new CheckConditionsContext());
+        assertFalse(status.hasError());
     }
 
     @Test

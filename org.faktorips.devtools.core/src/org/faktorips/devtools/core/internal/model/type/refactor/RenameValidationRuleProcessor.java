@@ -10,8 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.type.refactor;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -36,6 +36,8 @@ import org.faktorips.util.message.MessageList;
  */
 public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
+    private List<IProductCmptGeneration> productCmptsGenerations;
+
     public RenameValidationRuleProcessor(IValidationRule rule) {
         super(rule, rule.getName());
     }
@@ -50,16 +52,19 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     private void updateValidationRuleInProductCmpts() {
-        Collection<IIpsSrcFile> productCmpts = getProductCmpts();
-        for (IIpsSrcFile ipsSrcFile : productCmpts) {
-            IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-            List<IProductCmptGeneration> productCmptGenerations = productCmpt.getProductCmptGenerations();
-            for (IProductCmptGeneration productCmptGeneration : productCmptGenerations) {
-                IPropertyValue propertyValue = productCmptGeneration.getPropertyValue(getValidationRule());
-                if (propertyValue != null) {
-                    IValidationRuleConfig validationRuleConfig = (IValidationRuleConfig)propertyValue;
-                    validationRuleConfig.setValidationName(getNewName());
-                }
+        if (getValidationRule().isConfigurableByProductComponent()) {
+            updateValidationRuleInGenerations();
+        }
+
+    }
+
+    private void updateValidationRuleInGenerations() {
+        List<IProductCmptGeneration> productCmptGenerations = getProductCmptGenerations();
+        for (IProductCmptGeneration productCmptGeneration : productCmptGenerations) {
+            IPropertyValue propertyValue = productCmptGeneration.getPropertyValue(getValidationRule());
+            if (propertyValue != null) {
+                IValidationRuleConfig validationRuleConfig = (IValidationRuleConfig)propertyValue;
+                validationRuleConfig.setValidationName(getNewName());
             }
         }
     }
@@ -72,18 +77,39 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
         HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
         result.add(getValidationRule().getIpsSrcFile());
-        result.addAll(getProductCmpts());
+        if (getValidationRule().isConfigurableByProductComponent()) {
+            addProductCmptGenerations(result);
+        }
         return result;
     }
 
-    private Collection<IIpsSrcFile> getProductCmpts() {
-        try {
-            IProductCmptType productCmptType = getValidationRule().findProductCmptType(getIpsProject());
-            return productCmptType.searchProductComponents(true);
+    private void addProductCmptGenerations(HashSet<IIpsSrcFile> result) {
+        Collection<IProductCmptGeneration> productCmptGenerations = getProductCmptGenerations();
+        for (IProductCmptGeneration productCmptGeneration : productCmptGenerations) {
+            result.add(productCmptGeneration.getIpsSrcFile());
+        }
+    }
 
+    private List<IProductCmptGeneration> getProductCmptGenerations() {
+        if (productCmptsGenerations == null) {
+            return productCmptsGenerations = searchProductCmptGenerations();
+        } else {
+            return productCmptsGenerations;
+        }
+    }
+
+    private List<IProductCmptGeneration> searchProductCmptGenerations() {
+        try {
+            List<IProductCmptGeneration> generationList = new ArrayList<IProductCmptGeneration>();
+            IProductCmptType productCmptType = getValidationRule().findProductCmptType(getIpsProject());
+            Collection<IIpsSrcFile> productComponents = productCmptType.searchProductComponents(true);
+            for (IIpsSrcFile ipsSrcFile : productComponents) {
+                IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                generationList.addAll(productCmpt.getProductCmptGenerations());
+            }
+            return generationList;
         } catch (CoreException e) {
-            e.printStackTrace();
-            return Collections.emptyList();
+            return null;
         }
     }
 
