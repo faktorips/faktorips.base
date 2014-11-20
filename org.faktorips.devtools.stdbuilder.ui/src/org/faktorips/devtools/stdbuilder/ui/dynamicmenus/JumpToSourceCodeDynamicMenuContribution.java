@@ -100,6 +100,51 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return getContributionItemsForIpsObjectPartContainer();
     }
 
+    private IIpsElement getSelectedIpsElement() {
+        if (getParent() != null && !getParent().getItems()[0].getId().equals(EDITOR_JUMP_TO_SOURCE_CODE_COMMAND)) {
+            IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
+            if (selectedIpsElement != null) {
+                return selectedIpsElement;
+            }
+        }
+        return getSelectedIpsElementFromEditor();
+    }
+
+    private IIpsElement getSelectedIpsElementFromEvaluationService() {
+        ISelectionService service = (ISelectionService)serviceLocator.getService(ISelectionService.class);
+        ISelection selectedObject = service.getSelection();
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selectedObject);
+        if (typedSelection.isValid()) {
+            return (IIpsElement)typedSelection.getElement().getAdapter(IIpsElement.class);
+        }
+        return null;
+    }
+
+    private IIpsElement getSelectedIpsElementFromEditor() {
+        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
+        if (!(part instanceof IEditorPart)) {
+            return null;
+        }
+    
+        TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
+        if (typedSelection == null || !typedSelection.isValid()) {
+            return null;
+        }
+    
+        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        return ipsSrcFile.getIpsObject();
+    }
+
+    private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
+        IEditorInput input = ((IEditorPart)part).getEditorInput();
+        if (input instanceof IFileEditorInput) {
+            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
+                    ((IFileEditorInput)input).getFile()));
+        }
+        return null;
+    }
+
     private IContributionItem[] getContributionItemsForNoSourceCodeFound() {
         List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
         IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
@@ -141,35 +186,6 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
 
         return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
-    }
-
-    private boolean isInterface(IType type) {
-        try {
-            return type.isInterface();
-        } catch (JavaModelException e) {
-            IpsPlugin.log(e);
-            return false;
-        }
-    }
-
-    /**
-     * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
-     * menu) to the list of contributionItems. So each member is represented by a command that
-     * allows the user to open that member in a Java editor.
-     * 
-     * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
-     *            the jump to sourcecode context menu.
-     * @param members A set of {@link IMember}s that contains java elements like fields,
-     *            constructors and methods.
-     */
-    private void createItemsWithoutTypeMenu(List<IContributionItem> contributionItems, Set<IMember> members) {
-        for (IMember member : members) {
-            if (member.exists()) {
-                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
-                contributionItems.add(openInJavaEditorCommand);
-            }
-        }
-        contributionItems.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
     }
 
     private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap() {
@@ -255,83 +271,16 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return selectedIpsObjectPartContainer.getIpsProject().getJavaNamingConvention();
     }
 
-    private IIpsElement getSelectedIpsElement() {
-        if (getParent() != null && !getParent().getItems()[0].getId().equals(EDITOR_JUMP_TO_SOURCE_CODE_COMMAND)) {
-            IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
-            if (selectedIpsElement != null) {
-                return selectedIpsElement;
-            }
-        }
-        return getSelectedIpsElementFromEditor();
-    }
-
-    private IIpsElement getSelectedIpsElementFromEvaluationService() {
-        ISelectionService service = (ISelectionService)serviceLocator.getService(ISelectionService.class);
-        ISelection selectedObject = service.getSelection();
-        TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selectedObject);
-        if (typedSelection.isValid()) {
-            return (IIpsElement)typedSelection.getElement().getAdapter(IIpsElement.class);
-        }
-        return null;
-    }
-
-    private IIpsElement getSelectedIpsElementFromEditor() {
-        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
-        if (!(part instanceof IEditorPart)) {
-            return null;
-        }
-
-        TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
-        if (typedSelection == null || !typedSelection.isValid()) {
-            return null;
-        }
-
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
-        return ipsSrcFile.getIpsObject();
-    }
-
-    private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
-        IEditorInput input = ((IEditorPart)part).getEditorInput();
-        if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
-                    ((IFileEditorInput)input).getFile()));
-        }
-        return null;
-    }
-
-    /**
-     * Creates a menu which represents the given {@link IType} and lists the set of it's
-     * {@link IMember}.
-     * <p>
-     * Each member is represented by a command that allows the user to open that member in a Java
-     * editor.
-     */
-    private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
-        IMenuManager typeMenu = new MenuManager(getJavaElementLabel(type), getJavaElementIcon(type), null);
-        for (IMember member : members) {
-            if (member.exists()) {
-                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
-                typeMenu.add(openInJavaEditorCommand);
-            }
-        }
-        if (typeMenu.isEmpty()) {
-            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
-            typeMenu.add(noSourceCodeFoundCommand);
-        }
-        return typeMenu;
-    }
-
     private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
-
+    
         IType type = getType(javaElement);
         String javaElementLabel = getJavaElementLabel(javaElement);
         if (type != null && !isInterface(type) && !isConstructor(javaElement)) {
             javaElementLabel = getJavaElementLabelWithTypeLabel(type, javaElement);
         }
-
+    
         return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
                 javaElementLabel);
     }
@@ -370,7 +319,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             Map<String, Object> arguments,
             ImageDescriptor icon,
             String label) {
-
+    
         // CSOFF: TrailingComment
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
@@ -389,8 +338,59 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 );
         // @formatter:on
         // CSON: TrailingComment
-
+    
         return new CommandContributionItem(itemParameter);
+    }
+
+    private boolean isInterface(IType type) {
+        try {
+            return type.isInterface();
+        } catch (JavaModelException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+
+    /**
+     * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
+     * menu) to the list of contributionItems. So each member is represented by a command that
+     * allows the user to open that member in a Java editor.
+     * 
+     * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
+     *            the jump to sourcecode context menu.
+     * @param members A set of {@link IMember}s that contains java elements like fields,
+     *            constructors and methods.
+     */
+    private void createItemsWithoutTypeMenu(List<IContributionItem> contributionItems, Set<IMember> members) {
+        for (IMember member : members) {
+            if (member.exists()) {
+                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
+                contributionItems.add(openInJavaEditorCommand);
+            }
+        }
+        contributionItems.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+    }
+
+    /**
+     * Creates a menu which represents the given {@link IType} and lists the set of it's
+     * {@link IMember}.
+     * <p>
+     * Each member is represented by a command that allows the user to open that member in a Java
+     * editor.
+     */
+    private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
+        IMenuManager typeMenu = new MenuManager(getJavaElementLabel(type), getJavaElementIcon(type), null);
+        for (IMember member : members) {
+            if (member.exists()) {
+                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
+                typeMenu.add(openInJavaEditorCommand);
+            }
+        }
+        if (typeMenu.isEmpty()) {
+            IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
+            typeMenu.add(noSourceCodeFoundCommand);
+        }
+        return typeMenu;
     }
 
     private String getJavaElementLabelWithTypeLabel(IType type, IJavaElement javaElement) {
