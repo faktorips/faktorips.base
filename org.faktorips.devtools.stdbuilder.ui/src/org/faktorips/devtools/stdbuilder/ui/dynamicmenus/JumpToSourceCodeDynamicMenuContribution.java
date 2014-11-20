@@ -26,6 +26,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -47,6 +48,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
@@ -126,8 +128,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 contributionItems.add(openTypeCommand);
                 continue;
             }
-            IMenuManager typeMenu = createTypeMenu(type, members);
-            contributionItems.add(typeMenu);
+            if (!isInterface(type)) {
+                createItemsWithoutTypeMenu(contributionItems, members);
+            } else {
+                IMenuManager typeMenu = createTypeMenu(type, members);
+                contributionItems.add(typeMenu);
+            }
         }
 
         if (contributionItems.isEmpty()) {
@@ -135,6 +141,35 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         }
 
         return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
+    }
+
+    private boolean isInterface(IType type) {
+        try {
+            return type.isInterface();
+        } catch (JavaModelException e) {
+            IpsPlugin.log(e);
+            return false;
+        }
+    }
+
+    /**
+     * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
+     * menu) to the list of contributionItems. So each member is represented by a command that
+     * allows the user to open that member in a Java editor.
+     * 
+     * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
+     *            the jump to sourcecode context menu.
+     * @param members A set of {@link IMember}s that contains java elements like fields,
+     *            constructors and methods.
+     */
+    private void createItemsWithoutTypeMenu(List<IContributionItem> contributionItems, Set<IMember> members) {
+        for (IMember member : members) {
+            if (member.exists()) {
+                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
+                contributionItems.add(openInJavaEditorCommand);
+            }
+        }
+        contributionItems.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
     }
 
     private Map<IType, Set<IMember>> getJavaTypesToJavaElementsMap() {
@@ -165,14 +200,14 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     /**
      * Takes a set of {@link IType}s as input and creates / returns a sorted version of it.
      * <p>
-     * The sorting algorithm ensures that first stands an interface and immediately thereafter the
-     * associated implementation (if there is one). Thereby it takes the used
-     * {@link JavaNamingConvention} into account. Here is an example:
+     * The sorting algorithm ensures that first stand all implementations and thereafter the
+     * interfaces. Thereby it takes the used {@link JavaNamingConvention} into account. Here is an
+     * example:
      * <ol>
-     * <li>IPolicy
      * <li>Policy
-     * <li>IProduct
      * <li>Product
+     * <li>IPolicy
+     * <li>IProduct
      * </ol>
      */
     private List<IType> sortTypes(Set<IType> javaTypes) {
@@ -291,8 +326,40 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
 
+        IType type = getType(javaElement);
+        String javaElementLabel = getJavaElementLabel(javaElement);
+        if (type != null && !isInterface(type) && !isConstructor(javaElement)) {
+            javaElementLabel = getJavaElementLabelWithTypeLabel(type, javaElement);
+        }
+
         return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
-                getJavaElementLabel(javaElement));
+                javaElementLabel);
+    }
+
+    /**
+     * Returns the {@link IType} of the given {@link IJavaElement}. If no {@link IType type} can be
+     * found, <code>null</code> is returned.
+     * 
+     * @param javaElement The {@link IJavaElement} that is declared in the {@link IType}.
+     */
+    private IType getType(IJavaElement javaElement) {
+        IType type = null;
+        if (javaElement instanceof IMember) {
+            type = ((IMember)javaElement).getDeclaringType();
+        }
+        return type;
+    }
+
+    private boolean isConstructor(IJavaElement javaElement) {
+        IType type = getType(javaElement);
+        String typeName = ""; //$NON-NLS-1$
+        if (type != null) {
+            typeName = type.getElementName();
+        }
+        if (javaElement instanceof IMember) {
+            return ((IMember)javaElement).getElementName().equalsIgnoreCase(typeName);
+        }
+        return false;
     }
 
     private IContributionItem createNoSourceCodeFoundCommand() {
@@ -324,6 +391,10 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         // CSON: TrailingComment
 
         return new CommandContributionItem(itemParameter);
+    }
+
+    private String getJavaElementLabelWithTypeLabel(IType type, IJavaElement javaElement) {
+        return getJavaElementLabel(javaElement) + " \t " + type.getElementName() + ""; //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     private String getJavaElementLabel(IJavaElement javaElement) {
