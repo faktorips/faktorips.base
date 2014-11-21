@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -126,12 +127,12 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         if (!(part instanceof IEditorPart)) {
             return null;
         }
-    
+
         TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
         if (typedSelection == null || !typedSelection.isValid()) {
             return null;
         }
-    
+
         IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
         return ipsSrcFile.getIpsObject();
     }
@@ -173,12 +174,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 contributionItems.add(openTypeCommand);
                 continue;
             }
-            if (!isInterface(type)) {
-                createItemsWithoutTypeMenu(contributionItems, members);
-            } else {
-                IMenuManager typeMenu = createTypeMenu(type, members);
-                contributionItems.add(typeMenu);
-            }
+            createContributionItemsForMembers(contributionItems, type, members);
         }
 
         if (contributionItems.isEmpty()) {
@@ -274,13 +270,13 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
-    
+
         IType type = getType(javaElement);
         String javaElementLabel = getJavaElementLabel(javaElement);
         if (type != null && !isInterface(type) && !isConstructor(javaElement)) {
             javaElementLabel = getJavaElementLabelWithTypeLabel(type, javaElement);
         }
-    
+
         return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
                 javaElementLabel);
     }
@@ -301,7 +297,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     private boolean isConstructor(IJavaElement javaElement) {
         IType type = getType(javaElement);
-        String typeName = ""; //$NON-NLS-1$
+        String typeName = StringUtils.EMPTY;
         if (type != null) {
             typeName = type.getElementName();
         }
@@ -319,7 +315,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             Map<String, Object> arguments,
             ImageDescriptor icon,
             String label) {
-    
+
         // CSOFF: TrailingComment
         // @formatter:off
         CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
@@ -338,7 +334,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 );
         // @formatter:on
         // CSON: TrailingComment
-    
+
         return new CommandContributionItem(itemParameter);
     }
 
@@ -352,9 +348,33 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     /**
+     * Creates {@link IContributionItem}s for each {@link IMember} and adds them to the list of
+     * contributionItems.
+     * <p>
+     * Each member is represented by a command that allows the user to open that member in a Java
+     * editor.
+     * 
+     * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
+     *            the jump to sourcecode context menu.
+     * @param type The {@link IMember}s are part of this {@link IType}. The type represents an
+     *            interface or implementation class
+     * @param members A set of {@link IMember}s that contains java elements like fields,
+     *            constructors and methods.
+     */
+    private void createContributionItemsForMembers(List<IContributionItem> contributionItems,
+            IType type,
+            Set<IMember> members) {
+        if (!isInterface(type)) {
+            createItemsWithoutTypeMenu(contributionItems, members);
+        } else {
+            IMenuManager typeMenu = createTypeMenu(type, members);
+            contributionItems.add(typeMenu);
+        }
+    }
+
+    /**
      * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
-     * menu) to the list of contributionItems. So each member is represented by a command that
-     * allows the user to open that member in a Java editor.
+     * menu) to the list of contributionItems.
      * 
      * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
      *            the jump to sourcecode context menu.
@@ -374,9 +394,6 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     /**
      * Creates a menu which represents the given {@link IType} and lists the set of it's
      * {@link IMember}.
-     * <p>
-     * Each member is represented by a command that allows the user to open that member in a Java
-     * editor.
      */
     private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
         IMenuManager typeMenu = new MenuManager(getJavaElementLabel(type), getJavaElementIcon(type), null);
@@ -394,7 +411,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     private String getJavaElementLabelWithTypeLabel(IType type, IJavaElement javaElement) {
-        return getJavaElementLabel(javaElement) + " \t " + type.getElementName() + ""; //$NON-NLS-1$ //$NON-NLS-2$
+        return getJavaElementLabel(javaElement) + " \t " + type.getElementName(); //$NON-NLS-1$
     }
 
     private String getJavaElementLabel(IJavaElement javaElement) {
