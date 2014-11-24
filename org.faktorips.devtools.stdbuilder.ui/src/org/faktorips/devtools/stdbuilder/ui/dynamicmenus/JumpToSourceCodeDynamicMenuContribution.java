@@ -374,7 +374,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
 
     /**
      * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
-     * menu) to the list of contributionItems.
+     * sub-menu) to the list of contributionItems.
      * 
      * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
      *            the jump to sourcecode context menu.
@@ -392,7 +392,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     }
 
     /**
-     * Creates a menu which represents the given {@link IType} and lists the set of it's
+     * Creates a menu which represents the given {@link IType} and adds a menu item for each
      * {@link IMember}.
      */
     private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
