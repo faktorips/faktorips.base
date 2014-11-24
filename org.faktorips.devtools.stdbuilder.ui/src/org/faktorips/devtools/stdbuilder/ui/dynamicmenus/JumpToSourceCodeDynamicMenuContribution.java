@@ -153,6 +153,37 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return contributionItems.toArray(new IContributionItem[1]);
     }
 
+    private IContributionItem createNoSourceCodeFoundCommand() {
+        return createCommand(StdBuilderUICommandId.COMMAND_NO_SOURCE_CODE_FOUND.getId(), null, null, null);
+    }
+
+    private IContributionItem createCommand(String commandId,
+            Map<String, Object> arguments,
+            ImageDescriptor icon,
+            String label) {
+    
+        // CSOFF: TrailingComment
+        // @formatter:off
+        CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
+                null, // id
+                commandId, // commandId
+                arguments, // arguments
+                icon, // icon
+                null, // disabledIcon
+                null, // hoverIcon
+                label, // label
+                null, // mnemoic
+                null, // tooltip
+                CommandContributionItem.STYLE_PUSH, // style
+                null, // helpContextId
+                false // visibleEnabled
+                );
+        // @formatter:on
+        // CSON: TrailingComment
+    
+        return new CommandContributionItem(itemParameter);
+    }
+
     private IContributionItem[] getContributionItemsForIpsObjectPartContainer() {
         // Obtain the Java types and their members which are generated for the IPS Object Part
         Map<IType, Set<IMember>> javaTypesToJavaElements = getJavaTypesToJavaElementsMap();
@@ -271,79 +302,15 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         Map<String, Object> arguments = new HashMap<String, Object>(1);
         arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
 
-        IType type = getType(javaElement);
-        String javaElementLabel = getJavaElementLabel(javaElement);
-        if (type != null && !isInterface(type) && !isConstructor(javaElement)) {
-            javaElementLabel = getJavaElementLabelWithTypeLabel(type, javaElement);
-        }
-
         return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
-                javaElementLabel);
-    }
-
-    /**
-     * Returns the {@link IType} of the given {@link IJavaElement}. If no {@link IType type} can be
-     * found, <code>null</code> is returned.
-     * 
-     * @param javaElement The {@link IJavaElement} that is declared in the {@link IType}.
-     */
-    private IType getType(IJavaElement javaElement) {
-        IType type = null;
-        if (javaElement instanceof IMember) {
-            type = ((IMember)javaElement).getDeclaringType();
-        }
-        return type;
-    }
-
-    private boolean isConstructor(IJavaElement javaElement) {
-        IType type = getType(javaElement);
-        String typeName = StringUtils.EMPTY;
-        if (type != null) {
-            typeName = type.getElementName();
-        }
-        if (javaElement instanceof IMember) {
-            return ((IMember)javaElement).getElementName().equalsIgnoreCase(typeName);
-        }
-        return false;
-    }
-
-    private IContributionItem createNoSourceCodeFoundCommand() {
-        return createCommand(StdBuilderUICommandId.COMMAND_NO_SOURCE_CODE_FOUND.getId(), null, null, null);
-    }
-
-    private IContributionItem createCommand(String commandId,
-            Map<String, Object> arguments,
-            ImageDescriptor icon,
-            String label) {
-
-        // CSOFF: TrailingComment
-        // @formatter:off
-        CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
-                null, // id
-                commandId, // commandId
-                arguments, // arguments
-                icon, // icon
-                null, // disabledIcon
-                null, // hoverIcon
-                label, // label
-                null, // mnemoic
-                null, // tooltip
-                CommandContributionItem.STYLE_PUSH, // style
-                null, // helpContextId
-                false // visibleEnabled
-                );
-        // @formatter:on
-        // CSON: TrailingComment
-
-        return new CommandContributionItem(itemParameter);
+                getJavaElementLabel(javaElement));
     }
 
     private boolean isInterface(IType type) {
         try {
             return type.isInterface();
         } catch (JavaModelException e) {
-            IpsPlugin.log(e);
-            return false;
+            throw new RuntimeException(e);
         }
     }
 
@@ -410,11 +377,50 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return typeMenu;
     }
 
-    private String getJavaElementLabelWithTypeLabel(IType type, IJavaElement javaElement) {
-        return getJavaElementLabel(javaElement) + " \t " + type.getElementName(); //$NON-NLS-1$
+    private String getJavaElementLabel(IJavaElement javaElement) {
+        if (isTypeLabelRequired(javaElement)) {
+            return getJavaElementLabelWithTypeLabel(getType(javaElement), javaElement);
+        } else {
+            return getJavaElementLabelWithoutTypeLabel(javaElement);
+        }
     }
 
-    private String getJavaElementLabel(IJavaElement javaElement) {
+    private boolean isTypeLabelRequired(IJavaElement javaElement) {
+        IType type = getType(javaElement);
+        return type != null && !isInterface(type) && !isConstructor(javaElement);
+    }
+
+    /**
+     * Returns the {@link IType} of the given {@link IJavaElement}. If no {@link IType type} can be
+     * found, <code>null</code> is returned.
+     * 
+     * @param javaElement The {@link IJavaElement} that is declared in the {@link IType}.
+     */
+    private IType getType(IJavaElement javaElement) {
+        IType type = null;
+        if (javaElement instanceof IMember) {
+            type = ((IMember)javaElement).getDeclaringType();
+        }
+        return type;
+    }
+
+    private boolean isConstructor(IJavaElement javaElement) {
+        IType type = getType(javaElement);
+        String typeName = StringUtils.EMPTY;
+        if (type != null) {
+            typeName = type.getElementName();
+        }
+        if (javaElement instanceof IMember) {
+            return ((IMember)javaElement).getElementName().equalsIgnoreCase(typeName);
+        }
+        return false;
+    }
+
+    private String getJavaElementLabelWithTypeLabel(IType type, IJavaElement javaElement) {
+        return getJavaElementLabelWithoutTypeLabel(javaElement) + " \t " + type.getElementName(); //$NON-NLS-1$
+    }
+
+    private String getJavaElementLabelWithoutTypeLabel(IJavaElement javaElement) {
         IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
         return workbenchAdapter != null ? workbenchAdapter.getLabel(javaElement) : null;
     }
