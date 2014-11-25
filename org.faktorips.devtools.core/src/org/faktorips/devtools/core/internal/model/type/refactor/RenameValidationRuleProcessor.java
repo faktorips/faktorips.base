@@ -66,7 +66,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
             IPropertyValue propertyValue = productCmptGeneration.getPropertyValue(getOriginalName());
             if (propertyValue != null) {
                 IValidationRuleConfig validationRuleConfig = (IValidationRuleConfig)propertyValue;
-                validationRuleConfig.setValidationName(getNewName());
+                validationRuleConfig.setValidationRuleName(getNewName());
             }
         }
     }

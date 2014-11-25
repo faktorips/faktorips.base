@@ -45,10 +45,10 @@ public interface IValidationRuleConfig extends IPropertyValue {
     /**
      * Sets the new name of the referenced {@link ValidationRule}
      */
-    public void setValidationName(String validationRuleName);
+    public void setValidationRuleName(String validationRuleName);
 
     /**
      * Returns the name of the referenced {@link ValidationRule}
      */
-    public String getValidationName(String validationRuleName);
+    public String getValidationRuleName();
 }

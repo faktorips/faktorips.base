@@ -94,12 +94,14 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public void setValidationName(String validationRuleName) {
+    public void setValidationRuleName(String validationRuleName) {
+        String oldValue = this.validationRuleName;
         this.validationRuleName = validationRuleName;
+        valueChanged(oldValue, validationRuleName);
     }
 
     @Override
-    public String getValidationName(String validationRuleName) {
+    public String getValidationRuleName() {
         return validationRuleName;
     }
 
