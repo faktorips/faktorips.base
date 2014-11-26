@@ -20,13 +20,18 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.testcase.ITestCase;
+import org.faktorips.devtools.core.model.testcase.ITestObject;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
 import org.faktorips.devtools.core.refactor.IpsRenameProcessor;
@@ -39,6 +44,7 @@ import org.faktorips.util.message.MessageList;
 public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
     private List<IProductCmptGeneration> productCmptsGenerations = new ArrayList<IProductCmptGeneration>();
+    private List<ITestCase> affectedTestCases = new ArrayList<ITestCase>();
 
     public RenameValidationRuleProcessor(IValidationRule rule) {
         super(rule, rule.getName());
@@ -49,6 +55,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
         IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(getValidationRule());
         addAffectedSrcFiles(modificationSet);
         updateValidationRuleInProductCmpts();
+        updateValidationRuleInTestCases();
         updateValidationRuleName();
         return modificationSet;
     }
@@ -71,6 +78,34 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
         }
     }
 
+    private List<IProductCmptGeneration> getProductCmptGenerations() {
+        return productCmptsGenerations;
+    }
+
+    private void updateValidationRuleInTestCases() {
+        List<ITestCase> testCases = getAffectedTestCases();
+        for (ITestCase testCase : testCases) {
+            try {
+                ITestObject[] allTestObjects = testCase.getAllTestObjects();
+                for (ITestObject testObject : allTestObjects) {
+                    if (testObject instanceof ITestRule) {
+                        ITestRule testRule = (ITestRule)testObject;
+                        String testCaseValidationRule = testRule.getValidationRule();
+                        if (getValidationRule().getName().equals(testCaseValidationRule)) {
+                            testRule.setValidationRule(getNewName());
+                        }
+                    }
+                }
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+    }
+
+    private List<ITestCase> getAffectedTestCases() {
+        return affectedTestCases;
+    }
+
     private void updateValidationRuleName() {
         getValidationRule().setName(getNewName());
     }
@@ -79,16 +114,17 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     protected Set<IIpsSrcFile> getAffectedIpsSrcFiles() {
         HashSet<IIpsSrcFile> result = new HashSet<IIpsSrcFile>();
         result.add(getValidationRule().getIpsSrcFile());
+        searchAffectedProductCmptGenerations(result);
+        searchAffectedTestCases(result);
+        return result;
+    }
+
+    private void searchAffectedProductCmptGenerations(HashSet<IIpsSrcFile> result) {
         if (getValidationRule().isConfigurableByProductComponent()) {
             for (IProductCmptGeneration productCmptGeneration : searchProductCmptGenerations()) {
                 result.add(productCmptGeneration.getIpsSrcFile());
             }
         }
-        return result;
-    }
-
-    private List<IProductCmptGeneration> getProductCmptGenerations() {
-        return productCmptsGenerations;
     }
 
     private List<IProductCmptGeneration> searchProductCmptGenerations() {
@@ -109,6 +145,50 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
             IpsPlugin.log(e);
             return Collections.emptyList();
         }
+    }
+
+    private void searchAffectedTestCases(HashSet<IIpsSrcFile> result) {
+        for (ITestCase testCase : searchTestCases()) {
+            result.add(testCase.getIpsSrcFile());
+        }
+    }
+
+    private List<ITestCase> searchTestCases() {
+        affectedTestCases = new ArrayList<ITestCase>();
+        List<ITestCase> allTestCases = getAllTestCases();
+        for (ITestCase testCase : allTestCases) {
+            if (isTestCaseContainingValidationRule(testCase)) {
+                affectedTestCases.add(testCase);
+            }
+        }
+        return affectedTestCases;
+    }
+
+    /**
+     * Returns all existing {@link ITestCase}s that are contained in the {@link IIpsProject} of the
+     * renamed validation rule. It also takes all referencing {@link IIpsProject}s into account.
+     */
+    private List<ITestCase> getAllTestCases() {
+        List<ITestCase> allTestCases = getValidationRule().getIpsProject().getAllTestCases();
+        addTestCasesFromReferencingIpsProjects(allTestCases);
+        return allTestCases;
+    }
+
+    private void addTestCasesFromReferencingIpsProjects(List<ITestCase> allTestCases) {
+        IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject().findReferencingProjects(true);
+        for (IIpsProject ipsProject : allReferencingIpsProjects) {
+            allTestCases.addAll((ipsProject.getAllTestCases()));
+        }
+    }
+
+    private boolean isTestCaseContainingValidationRule(ITestCase testCase) {
+        IValidationRule foundValidationRule;
+        try {
+            foundValidationRule = testCase.findValidationRule(getValidationRule().getName(), testCase.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+        return foundValidationRule != null && foundValidationRule.equals(getValidationRule());
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.faktorips.abstracttest.AbstractIpsRefactoringTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.junit.Test;
 
 public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTest {
@@ -33,6 +34,7 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     private IValidationRule validationRule;
     private static final String NEW_NAME = "newName";
     private static final String OLD_NAME = "oldName";
+    private ITestRule testRule;
 
     @Override
     public void setUp() throws Exception {
@@ -43,6 +45,8 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
         validationRule.setName(OLD_NAME);
         validationRule.setConfigurableByProductComponent(true);
         productCmptGeneration.newPropertyValue(validationRule);
+        testRule = testCase.newTestRule();
+        testRule.setValidationRule(OLD_NAME);
     }
 
     @Test
@@ -63,9 +67,10 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
     public void testAffectedIpsSrcFiles() {
         Set<IIpsSrcFile> affectedIpsSrcFiles = ipsRenameProcessor.getAffectedIpsSrcFiles();
 
-        assertEquals(2, affectedIpsSrcFiles.size());
+        assertEquals(3, affectedIpsSrcFiles.size());
         assertTrue(affectedIpsSrcFiles.contains(policyCmptType.getIpsSrcFile()));
         assertTrue(affectedIpsSrcFiles.contains(productCmpt.getIpsSrcFile()));
+        assertTrue(affectedIpsSrcFiles.contains(testCase.getIpsSrcFile()));
     }
 
     @Test
@@ -76,6 +81,8 @@ public class RenameValidationRuleProcessorTest extends AbstractIpsRefactoringTes
         assertNull(policyCmptType.getValidationRule(OLD_NAME));
         assertEquals(validationRule, policyCmptType.getValidationRule(NEW_NAME));
         assertEquals(NEW_NAME, productCmptGeneration.getPropertyValue(validationRule).getName());
+        assertEquals(NEW_NAME, testCaseType.findValidationRule(NEW_NAME, ipsProject).getName());
+        assertEquals(NEW_NAME, testRule.getValidationRule());
     }
 
     @Test
