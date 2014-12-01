@@ -30,7 +30,6 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
-import org.faktorips.devtools.core.model.testcase.ITestObject;
 import org.faktorips.devtools.core.model.testcase.ITestRule;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
@@ -85,21 +84,17 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     private void updateValidationRuleInTestCases() {
         List<ITestCase> testCases = getAffectedTestCases();
         for (ITestCase testCase : testCases) {
-            try {
-                ITestObject[] allTestObjects = testCase.getAllTestObjects();
-                for (ITestObject testObject : allTestObjects) {
-                    if (testObject instanceof ITestRule) {
-                        ITestRule testRule = (ITestRule)testObject;
-                        String testCaseValidationRule = testRule.getValidationRule();
-                        if (getValidationRule().getName().equals(testCaseValidationRule)) {
-                            testRule.setValidationRule(getNewName());
-                        }
-                    }
+            ITestRule[] allTestRules = testCase.getTestRuleObjects();
+            for (ITestRule testRule : allTestRules) {
+                if (isAffectedTestRule(testRule)) {
+                    testRule.setValidationRule(getNewName());
                 }
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
             }
         }
+    }
+
+    private boolean isAffectedTestRule(ITestRule testRule) {
+        return getValidationRule().getName().equals(testRule.getValidationRule());
     }
 
     private List<ITestCase> getAffectedTestCases() {
@@ -148,7 +143,8 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     private void searchAffectedTestCases(HashSet<IIpsSrcFile> result) {
-        for (ITestCase testCase : searchTestCases()) {
+        List<ITestCase> testCases = searchTestCases();
+        for (ITestCase testCase : testCases) {
             result.add(testCase.getIpsSrcFile());
         }
     }
@@ -157,7 +153,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
         affectedTestCases = new ArrayList<ITestCase>();
         List<ITestCase> allTestCases = getAllTestCases();
         for (ITestCase testCase : allTestCases) {
-            if (isTestCaseContainingValidationRule(testCase)) {
+            if (isTestCaseUsingValidationRule(testCase)) {
                 affectedTestCases.add(testCase);
             }
         }
@@ -175,13 +171,14 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     private void addTestCasesFromReferencingIpsProjects(List<ITestCase> allTestCases) {
-        IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject().findReferencingProjects(true);
+        IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject()
+                .findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : allReferencingIpsProjects) {
             allTestCases.addAll((ipsProject.getAllTestCases()));
         }
     }
 
-    private boolean isTestCaseContainingValidationRule(ITestCase testCase) {
+    private boolean isTestCaseUsingValidationRule(ITestCase testCase) {
         IValidationRule foundValidationRule;
         try {
             foundValidationRule = testCase.findValidationRule(getValidationRule().getName(), testCase.getIpsProject());
