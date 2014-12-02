@@ -101,9 +101,9 @@ public abstract class AbstractIpsSearchPage<T extends IIpsSearchPresentationMode
         IDialogSettings[] sections = settings.getSections();
 
         previousSearchData = new ArrayList<IDialogSettings>();
-        for (IDialogSettings dialogSettings : sections) {
-            if (dialogSettings.getName().startsWith(getDialogSettingPrefix())) {
-                previousSearchData.add(dialogSettings);
+        for (IDialogSettings dialogSettingsInSection : sections) {
+            if (dialogSettingsInSection.getName().startsWith(getDialogSettingPrefix())) {
+                previousSearchData.add(dialogSettingsInSection);
             }
         }
 

@@ -303,11 +303,11 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             return;
         }
 
-        IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : generations) {
+        IIpsObjectGeneration[] sortedGenerations = getGenerationsOrderedByValidDate();
+        for (IIpsObjectGeneration generation : sortedGenerations) {
             if (generation.getValidFrom() != null && generation.getValidFrom().after(validTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
-                String params[] = new String[4];
+                String[] params = new String[4];
                 params[0] = prefs.getDateFormat().format(validTo.getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
@@ -351,6 +351,10 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             generationIndex++;
             newGenerationCount++;
         }
+        reassignGenerationEffectiveOn(newDate);
+    }
+
+    private void reassignGenerationEffectiveOn(GregorianCalendar newDate) {
         IIpsObjectGeneration generationEffectiveOn = getGenerationEffectiveOn(newDate);
         if (generationEffectiveOn == null) {
             generationEffectiveOn = getFirstGeneration();
