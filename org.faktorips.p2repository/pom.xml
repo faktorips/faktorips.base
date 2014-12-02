@@ -36,7 +36,7 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.aggregator.sites</artifactId>
-		<version>3.14.0-SNAPSHOT</version>
+		<version>3.15.0-SNAPSHOT</version>
 		<relativePath>../org.faktorips.aggregator/sites/pom.xml</relativePath>
 	</parent>
 
@@ -122,14 +122,16 @@
 								</goals>
 								<configuration>
 									<target>
+										<mkdir dir="${project.build.directory}/runtime-temp" />
+									
 										<unzip dest="${project.build.directory}/runtime-temp">
 											<fileset dir="${project.build.directory}/repository/plugins/">
-												<include name="org.faktorips.runtime.java5*.jar" />
+												<include name="org.faktorips.runtime.jar" />
 											</fileset>
 										</unzip>
 
 										<jar
-											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client.java5.jar">
+											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client.jar">
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="**/MessageList*.class,**/Message*.class,**/MsgReplacementParameter*.class,**/ObjectProperty*.class,**/IEnumValue*.class">
 											</fileset>
@@ -142,7 +144,7 @@
 										</jar>
 
 										<jar
-											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client-src.java5.jar">
+											destfile="${project.build.directory}/runtime-temp/faktorips-runtime-client-src.jar">
 											<fileset dir="${project.build.directory}/runtime-temp"
 												includes="**/MessageList*.java,**/Message*.java,**/MsgReplacementParameter*.java,**/ObjectProperty*.java,**/IEnumValue*.java">
 											</fileset>

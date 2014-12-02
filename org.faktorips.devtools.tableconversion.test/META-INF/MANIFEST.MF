@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Tests for devtools.tableconversion
 Bundle-SymbolicName: org.faktorips.devtools.tableconversion.test
-Bundle-Version: 3.14.0.qualifier
+Bundle-Version: 3.15.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
@@ -10,7 +10,7 @@ Fragment-Host: org.faktorips.devtools.tableconversion
 Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.devtools.core,
  org.faktorips.abstracttest,
- org.faktorips.valuetypes.java5
+ org.faktorips.valuetypes
 Import-Package: org.junit;version="4.5.0",
  org.junit.matchers;version="4.5.0",
  org.junit.runner;version="4.5.0"

@@ -9,11 +9,10 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.jdt.core;bundle-version="[3.5.0,4.0.0)",
  org.eclipse.text;bundle-version="[3.5.0,4.0.0)"
 Bundle-Activator: org.eclipse.emf.codegen.CodeGenPlugin$Implementation
-Export-Package: org.eclipse.emf.codegen,
- org.eclipse.emf.codegen.merge.java,
- org.eclipse.emf.codegen.merge.java.facade,
- org.eclipse.emf.codegen.merge.java.facade.ast
-Bundle-Version: 3.14.0.qualifier
+Export-Package: org.eclipse.emf.codegen,org.eclipse.emf.codegen.merge.
+ java,org.eclipse.emf.codegen.merge.java.facade,org.eclipse.emf.codege
+ n.merge.java.facade.ast
+Bundle-Version: 3.15.0.qualifier
 Bundle-ClassPath: .
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %providerName
