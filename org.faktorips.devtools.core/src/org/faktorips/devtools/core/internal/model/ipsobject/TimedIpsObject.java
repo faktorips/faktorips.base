@@ -296,19 +296,19 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        GregorianCalendar validTo = getValidTo();
+        GregorianCalendar currentValidTo = getValidTo();
 
-        if (validTo == null) {
+        if (currentValidTo == null) {
             // empty validTo - valid forever.
             return;
         }
 
         IIpsObjectGeneration[] sortedGenerations = getGenerationsOrderedByValidDate();
         for (IIpsObjectGeneration generation : sortedGenerations) {
-            if (generation.getValidFrom() != null && generation.getValidFrom().after(validTo)) {
+            if (generation.getValidFrom() != null && generation.getValidFrom().after(currentValidTo)) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String[] params = new String[4];
-                params[0] = prefs.getDateFormat().format(validTo.getTime());
+                params[0] = prefs.getDateFormat().format(currentValidTo.getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
                 params[3] = prefs.getDateFormat().format(generation.getValidFrom().getTime());

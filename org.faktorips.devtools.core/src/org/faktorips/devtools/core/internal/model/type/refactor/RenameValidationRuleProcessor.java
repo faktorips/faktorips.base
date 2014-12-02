@@ -172,8 +172,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
     private List<ITestCase> getTestCasesFromRefProjects() {
         List<ITestCase> refTestCases = new ArrayList<ITestCase>();
-        IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject()
-                .findReferencingProjectLeavesOrSelf();
+        IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject().findReferencingProjects(true);
         for (IIpsProject ipsProject : allReferencingIpsProjects) {
             refTestCases.addAll((ipsProject.getAllTestCases()));
         }
