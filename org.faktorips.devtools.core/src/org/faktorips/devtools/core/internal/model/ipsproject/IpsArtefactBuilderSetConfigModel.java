@@ -137,7 +137,7 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
 
     @Override
     public IIpsArtefactBuilderSetConfig create(IIpsProject ipsProject, IIpsArtefactBuilderSetInfo builderSetInfo) {
-        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        Map<String, Object> parsedValueMap = new LinkedHashMap<String, Object>();
         for (String name : this.properties.keySet()) {
             IIpsBuilderSetPropertyDef propertyDef = builderSetInfo.getPropertyDefinition(name);
             if (propertyDef == null) {
@@ -147,20 +147,20 @@ public class IpsArtefactBuilderSetConfigModel implements IIpsArtefactBuilderSetC
             }
             String valueAsString = this.properties.get(name);
             if (!propertyDef.isAvailable(ipsProject)) {
-                properties.put(name, propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
+                parsedValueMap.put(name, propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
                 continue;
             }
             Object value = propertyDef.parseValue(valueAsString);
-            properties.put(name, value);
+            parsedValueMap.put(name, value);
         }
         IIpsBuilderSetPropertyDef[] propertyDefs = builderSetInfo.getPropertyDefinitions();
         for (IIpsBuilderSetPropertyDef propertyDef : propertyDefs) {
-            Object value = properties.get(propertyDef.getName());
+            Object value = parsedValueMap.get(propertyDef.getName());
             if (value == null) {
-                properties.put(propertyDef.getName(), propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
+                parsedValueMap.put(propertyDef.getName(), propertyDef.parseValue(propertyDef.getDisableValue(ipsProject)));
             }
         }
-        return new IpsArtefactBuilderSetConfig(properties);
+        return new IpsArtefactBuilderSetConfig(parsedValueMap);
     }
 
     @Override
