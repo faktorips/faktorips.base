@@ -42,7 +42,7 @@ import org.faktorips.util.message.MessageList;
  */
 public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
-    private List<IProductCmptGeneration> productCmptsGenerations = new ArrayList<IProductCmptGeneration>();
+    private List<IProductCmptGeneration> affectedProductCmptsGenerations = new ArrayList<IProductCmptGeneration>();
     private List<ITestCase> affectedTestCases = new ArrayList<ITestCase>();
 
     public RenameValidationRuleProcessor(IValidationRule rule) {
@@ -78,7 +78,7 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     }
 
     private List<IProductCmptGeneration> getProductCmptGenerations() {
-        return productCmptsGenerations;
+        return affectedProductCmptsGenerations;
     }
 
     private void updateValidationRuleInTestCases() {
@@ -124,18 +124,18 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
 
     private List<IProductCmptGeneration> searchProductCmptGenerations() {
         try {
-            productCmptsGenerations = new ArrayList<IProductCmptGeneration>();
+            affectedProductCmptsGenerations = new ArrayList<IProductCmptGeneration>();
             IProductCmptType productCmptType = getValidationRule().findProductCmptType(getIpsProject());
             if (productCmptType != null) {
                 Collection<IIpsSrcFile> productComponents = productCmptType.searchProductComponents(true);
                 for (IIpsSrcFile ipsSrcFile : productComponents) {
                     if (ipsSrcFile != null) {
                         IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                        productCmptsGenerations.addAll(productCmpt.getProductCmptGenerations());
+                        affectedProductCmptsGenerations.addAll(productCmpt.getProductCmptGenerations());
                     }
                 }
             }
-            return productCmptsGenerations;
+            return affectedProductCmptsGenerations;
         } catch (CoreException e) {
             IpsPlugin.log(e);
             return Collections.emptyList();
@@ -166,26 +166,28 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
      */
     private List<ITestCase> getAllTestCases() {
         List<ITestCase> allTestCases = getValidationRule().getIpsProject().getAllTestCases();
-        addTestCasesFromReferencingIpsProjects(allTestCases);
+        allTestCases.addAll(getTestCasesFromRefProjects());
         return allTestCases;
     }
 
-    private void addTestCasesFromReferencingIpsProjects(List<ITestCase> allTestCases) {
+    private List<ITestCase> getTestCasesFromRefProjects() {
+        List<ITestCase> refTestCases = new ArrayList<ITestCase>();
         IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject()
                 .findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : allReferencingIpsProjects) {
-            allTestCases.addAll((ipsProject.getAllTestCases()));
+            refTestCases.addAll((ipsProject.getAllTestCases()));
         }
+        return refTestCases;
     }
 
     private boolean isTestCaseUsingValidationRule(ITestCase testCase) {
-        IValidationRule foundValidationRule;
         try {
-            foundValidationRule = testCase.findValidationRule(getValidationRule().getName(), testCase.getIpsProject());
+            IValidationRule foundValidationRule = testCase.findValidationRule(getValidationRule().getName(),
+                    testCase.getIpsProject());
+            return foundValidationRule != null && foundValidationRule.equals(getValidationRule());
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
-        return foundValidationRule != null && foundValidationRule.equals(getValidationRule());
     }
 
     @Override
