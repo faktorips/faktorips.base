@@ -350,21 +350,21 @@ public class ValidationRule extends TypePart implements IValidationRule {
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
-                if (subElement.getNodeName().equals(BUSINESS_FUNCTION)) {
-                    functions.add(subElement.getAttribute("name")); //$NON-NLS-1$
-                }
-                if (subElement.getNodeName().equals(VALIDATED_ATTRIBUTE)) {
-                    validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
-                }
-                if (subElement.getNodeName().equals(MARKER)) {
-                    markers.add(subElement.getAttribute("name")); //$NON-NLS-1$
-                }
+                initChildsFor(BUSINESS_FUNCTION, functions, subElement);
+                initChildsFor(VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
+                initChildsFor(MARKER, markers, subElement);
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
                     InternationalStringXmlHelper.initFromXml(msgText, subElement);
                 }
             }
         }
         functions.trimToSize();
+    }
+
+    private void initChildsFor(String elementType, List<String> childElements, Element subElement) {
+        if (subElement.getNodeName().equals(elementType)) {
+            childElements.add(subElement.getAttribute("name")); //$NON-NLS-1$
+        }
     }
 
     @Override
@@ -380,25 +380,20 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
                 String.valueOf(configurableByProductComponent));
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
-        Document doc = newElement.getOwnerDocument();
-        for (int i = 0; i < functions.size(); i++) {
-            Element fctElement = doc.createElement(BUSINESS_FUNCTION);
-            fctElement.setAttribute("name", functions.get(i)); //$NON-NLS-1$
-            newElement.appendChild(fctElement);
-        }
-        for (int i = 0; i < validatedAttributes.size(); i++) {
-            Element attrElement = doc.createElement(VALIDATED_ATTRIBUTE);
-            attrElement.setAttribute("name", validatedAttributes //$NON-NLS-1$
-                    .get(i));
-            newElement.appendChild(attrElement);
-        }
-        for (int i = 0; i < markers.size(); i++) {
-            Element markerElement = doc.createElement(MARKER);
-            markerElement.setAttribute("name", markers.get(i)); //$NON-NLS-1$
-            newElement.appendChild(markerElement);
-        }
+        appendChildsFor(BUSINESS_FUNCTION, functions, newElement);
+        appendChildsFor(VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
+        appendChildsFor(MARKER, markers, newElement);
 
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
+    }
+
+    private void appendChildsFor(String elementType, List<String> childElements, Element newElement) {
+        Document doc = newElement.getOwnerDocument();
+        for (int i = 0; i < childElements.size(); i++) {
+            Element element = doc.createElement(elementType);
+            element.setAttribute("name", childElements.get(i)); //$NON-NLS-1$
+            newElement.appendChild(element);
+        }
     }
 
     @Override
