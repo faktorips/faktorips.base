@@ -36,11 +36,11 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     private boolean isActive = false;
 
-    private String ruleName;
+    private String validationRuleName;
 
     public ValidationRuleConfig(IPropertyValueContainer parent, String id, String ruleName) {
         super(parent, id);
-        this.ruleName = ruleName;
+        this.validationRuleName = ruleName;
     }
 
     @Override
@@ -61,14 +61,14 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        ruleName = element.getAttribute(TAG_NAME_RULE_NAME);
+        validationRuleName = element.getAttribute(TAG_NAME_RULE_NAME);
         isActive = Boolean.valueOf(element.getAttribute(TAG_NAME_ACTIVE));
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(TAG_NAME_RULE_NAME, ruleName);
+        element.setAttribute(TAG_NAME_RULE_NAME, validationRuleName);
         element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive));
     }
 
@@ -78,7 +78,7 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
         IProductCmpt component = (IProductCmpt)generation.getParent();
         IPolicyCmptType pcType = component.findPolicyCmptType(ipsProject);
         if (pcType != null) {
-            IValidationRule rule = pcType.findValidationRule(ruleName, ipsProject);
+            IValidationRule rule = pcType.findValidationRule(validationRuleName, ipsProject);
             return rule;
         }
         return null;
@@ -90,7 +90,19 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
      */
     @Override
     public String getName() {
-        return ruleName;
+        return validationRuleName;
+    }
+
+    @Override
+    public void setValidationRuleName(String validationRuleName) {
+        String oldValue = this.validationRuleName;
+        this.validationRuleName = validationRuleName;
+        valueChanged(oldValue, validationRuleName);
+    }
+
+    @Override
+    public String getValidationRuleName() {
+        return validationRuleName;
     }
 
     @Override
@@ -114,7 +126,7 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     @Override
     public String getLastResortCaption() {
-        return StringUtils.capitalize(ruleName);
+        return StringUtils.capitalize(validationRuleName);
     }
 
     @Override

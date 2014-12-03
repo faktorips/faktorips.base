@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.pctype.ValidationRule;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 
@@ -41,4 +42,13 @@ public interface IValidationRuleConfig extends IPropertyValue {
      */
     public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Sets the new name of the referenced {@link ValidationRule}
+     */
+    public void setValidationRuleName(String validationRuleName);
+
+    /**
+     * Returns the name of the referenced {@link ValidationRule}
+     */
+    public String getValidationRuleName();
 }

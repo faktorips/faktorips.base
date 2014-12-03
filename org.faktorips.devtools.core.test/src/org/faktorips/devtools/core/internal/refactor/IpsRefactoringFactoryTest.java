@@ -26,12 +26,14 @@ import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsOb
 import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAssociationProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
+import org.faktorips.devtools.core.internal.model.type.refactor.RenameValidationRuleProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
@@ -92,6 +94,13 @@ public class IpsRefactoringFactoryTest {
         IIpsProcessorBasedRefactoring ipsRenameRefactoring = ipsRefactoringFactory
                 .createRenameRefactoring(mock(IIpsPackageFragment.class));
         assertTrue(ipsRenameRefactoring.getIpsRefactoringProcessor() instanceof RenameIpsPackageFragmentProcessor);
+    }
+
+    @Test
+    public void testCreateRenameRefactoringValidationRule() {
+        IIpsProcessorBasedRefactoring ipsRenameRefactoring = ipsRefactoringFactory
+                .createRenameRefactoring(mock(IValidationRule.class));
+        assertTrue(ipsRenameRefactoring.getIpsRefactoringProcessor() instanceof RenameValidationRuleProcessor);
     }
 
     @Test

@@ -1541,7 +1541,12 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
     }
 
+    /**
+     * @deprecated since 3.15: this method is not supported anymore. Use
+     *             {@link #findAllIpsSrcFiles(IpsObjectType...)} instead.
+     */
     @Override
+    @Deprecated
     public List<ITestCase> getAllTestCases() {
         List<IIpsSrcFile> resultSrcFiles = new ArrayList<IIpsSrcFile>();
 
