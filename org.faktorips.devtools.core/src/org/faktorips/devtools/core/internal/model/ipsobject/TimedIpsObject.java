@@ -296,19 +296,17 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        GregorianCalendar currentValidTo = getValidTo();
-
-        if (currentValidTo == null) {
+        if (getValidTo() == null) {
             // empty validTo - valid forever.
             return;
         }
 
-        IIpsObjectGeneration[] sortedGenerations = getGenerationsOrderedByValidDate();
-        for (IIpsObjectGeneration generation : sortedGenerations) {
-            if (generation.getValidFrom() != null && generation.getValidFrom().after(currentValidTo)) {
+        IIpsObjectGeneration[] generationsByValidDate = getGenerationsOrderedByValidDate();
+        for (IIpsObjectGeneration generation : generationsByValidDate) {
+            if (generation.getValidFrom() != null && generation.getValidFrom().after(getValidTo())) {
                 IpsPreferences prefs = IpsPlugin.getDefault().getIpsPreferences();
                 String[] params = new String[4];
-                params[0] = prefs.getDateFormat().format(currentValidTo.getTime());
+                params[0] = prefs.getDateFormat().format(getValidTo().getTime());
                 params[1] = prefs.getChangesOverTimeNamingConvention().getGenerationConceptNameSingular();
                 params[2] = "" + generation.getGenerationNo(); //$NON-NLS-1$
                 params[3] = prefs.getDateFormat().format(generation.getValidFrom().getTime());
@@ -351,16 +349,16 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             generationIndex++;
             newGenerationCount++;
         }
-        reassignGenerationEffectiveOn(newDate);
+        ensureGenerationExists(newDate);
     }
 
-    private void reassignGenerationEffectiveOn(GregorianCalendar newDate) {
+    private void ensureGenerationExists(GregorianCalendar newDate) {
         IIpsObjectGeneration generationEffectiveOn = getGenerationEffectiveOn(newDate);
         if (generationEffectiveOn == null) {
             generationEffectiveOn = getFirstGeneration();
         }
         if (generationEffectiveOn == null) {
-            generationEffectiveOn = newGeneration(newDate);
+            newGeneration(newDate);
         }
     }
 

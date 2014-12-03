@@ -55,8 +55,4 @@ public abstract class AbstractSearchPresentationModel extends PresentationModelO
         notifyListeners(new PropertyChangeEvent(this, SRC_FILE_PATTERN, oldValue, newValue));
     }
 
-    /**
-     * Inits the default values for the search
-     */
-    protected abstract void initDefaultSearchValues();
 }

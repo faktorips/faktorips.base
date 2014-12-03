@@ -46,7 +46,7 @@ public abstract class AbstractIpsBundle extends AbstractIpsStorage {
 
     @Override
     public boolean isValid() {
-        return bundleManifest != null;
+        return bundleManifest != null && bundleManifest.hasObjectDirs();
     }
 
     @Override

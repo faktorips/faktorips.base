@@ -439,6 +439,21 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots();
 
     /**
+     * Returns the project's package fragment roots or an empty array if none is found.
+     * <p>
+     * If the project references {@link IIpsContainerEntry container entries} in its IPS object path
+     * and the parameter <em>resolveContainerEntries</em> is set to <code>true</code> the result
+     * also contains resolved {@link IIpsPackageFragmentRoot roots} that are included in the
+     * container. If <em>resolveContainerEntries</em> is set to <code>false</code> the
+     * {@link IIpsPackageFragmentRoot roots} of the {@link IIpsContainerEntry container entries} are
+     * not resolved.
+     * <p>
+     * The {@link IIpsPackageFragmentRoot package fragment roots} of referenced projects are not
+     * resolved.
+     */
+    public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots(boolean resolveContainerEntries);
+
+    /**
      * Searches and returns the root folder by the indicated name.<br>
      * Returns <code>null</code> if the root doesn't exists or an error occurs during search.
      */

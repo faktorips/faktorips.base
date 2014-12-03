@@ -584,17 +584,24 @@ public class IpsProject extends IpsElement implements IIpsProject {
      */
     @Override
     public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots() {
+        return getIpsPackageFragmentRoots(true);
+    }
+
+    @Override
+    public IIpsPackageFragmentRoot[] getIpsPackageFragmentRoots(boolean resolveContainerEntries) {
         List<IIpsPackageFragmentRoot> roots = new ArrayList<IIpsPackageFragmentRoot>();
         IIpsObjectPathEntry[] entries = getIpsObjectPathInternal().getEntries();
-        addPackageFragmentRoots(Arrays.asList(entries), roots);
+        addPackageFragmentRoots(Arrays.asList(entries), roots, resolveContainerEntries);
         return roots.toArray(new IIpsPackageFragmentRoot[roots.size()]);
     }
 
-    private void addPackageFragmentRoots(List<IIpsObjectPathEntry> entries, List<IIpsPackageFragmentRoot> roots) {
+    private void addPackageFragmentRoots(List<IIpsObjectPathEntry> entries,
+            List<IIpsPackageFragmentRoot> roots,
+            boolean resolveContainerEntries) {
         for (IIpsObjectPathEntry entry : entries) {
-            if (entry instanceof IIpsContainerEntry) {
+            if (resolveContainerEntries && entry.isContainer()) {
                 IIpsContainerEntry containerEntry = (IIpsContainerEntry)entry;
-                addPackageFragmentRoots(containerEntry.resolveEntries(), roots);
+                addPackageFragmentRoots(containerEntry.resolveEntries(), roots, resolveContainerEntries);
             }
             IIpsPackageFragmentRoot root = entry.getIpsPackageFragmentRoot();
             if (root != null) {

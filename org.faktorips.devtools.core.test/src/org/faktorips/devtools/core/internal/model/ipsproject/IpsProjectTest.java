@@ -160,6 +160,21 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(2, ipsPackageFragmentRoots.length);
         assertEquals(root2, ipsPackageFragmentRoots[0]);
         assertEquals(root3, ipsPackageFragmentRoots[1]);
+
+        ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots(true);
+
+        assertEquals(2, ipsPackageFragmentRoots.length);
+        assertEquals(root2, ipsPackageFragmentRoots[0]);
+        assertEquals(root3, ipsPackageFragmentRoots[1]);
+    }
+
+    @Test
+    public void testgetIpsPackageFragmentRoots_DoNotResolveContainerEntry() throws Exception {
+        mockPathAndContainerEntry();
+
+        IIpsPackageFragmentRoot[] ipsPackageFragmentRoots = ipsProject.getIpsPackageFragmentRoots(false);
+
+        assertEquals(0, ipsPackageFragmentRoots.length);
     }
 
     @Test

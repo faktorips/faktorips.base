@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Faktor-IPS Html Export Plug-in
 Bundle-SymbolicName: org.faktorips.devtools.htmlexport;singleton:=true
-Bundle-Version: 3.14.0.qualifier
+Bundle-Version: 3.15.0.qualifier
 Bundle-Activator: org.faktorips.devtools.htmlexport.HtmlExportPlugin
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.faktorips.devtools.core,
  org.faktorips.devtools.core.ui,
- org.faktorips.runtime.java5,
+ org.faktorips.runtime,
  org.eclipse.jdt.core,
- org.faktorips.valuetypes.java5
+ org.faktorips.valuetypes
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.faktorips.devtools.htmlexport,org.faktorips.devtoo

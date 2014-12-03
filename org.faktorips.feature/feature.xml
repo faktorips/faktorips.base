@@ -2,7 +2,7 @@
 <feature
       id="org.faktorips.feature"
       label="%label"
-      version="3.14.0.qualifier"
+      version="3.15.0.qualifier"
       provider-name="Faktor Zehn AG"
       plugin="org.faktorips.devtools.core">
    <install-handler/>
@@ -133,14 +133,14 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
          unpack="false"/>
 
    <plugin
-         id="org.faktorips.runtime.java5"
+         id="org.faktorips.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.faktorips.valuetypes.java5"
+         id="org.faktorips.valuetypes"
          download-size="0"
          install-size="0"
          version="0.0.0"

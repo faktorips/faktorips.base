@@ -24,7 +24,6 @@ public class ModelSearchPresentationModelTest {
     @Test
     public void testSearchClazzes() {
         ModelSearchPresentationModel presentationModel = new ModelSearchPresentationModel();
-        presentationModel.initDefaultSearchValues();
 
         assertTrue(presentationModel.getSearchedClazzes().contains(IAssociation.class));
 
@@ -38,7 +37,6 @@ public class ModelSearchPresentationModelTest {
     @Test
     public void testDialogSettings() {
         ModelSearchPresentationModel presentationModelBasis = new ModelSearchPresentationModel();
-        presentationModelBasis.initDefaultSearchValues();
 
         String searchTerm = "search";
         String typeName = "type";
@@ -54,7 +52,6 @@ public class ModelSearchPresentationModelTest {
         presentationModelBasis.store(settings);
 
         ModelSearchPresentationModel presentationModelTest = new ModelSearchPresentationModel();
-        presentationModelTest.initDefaultSearchValues();
 
         presentationModelTest.read(settings);
 

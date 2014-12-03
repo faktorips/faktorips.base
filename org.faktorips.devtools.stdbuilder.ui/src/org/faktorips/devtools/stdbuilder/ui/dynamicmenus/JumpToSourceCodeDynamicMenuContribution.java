@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IMember;
@@ -26,6 +27,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -47,6 +49,7 @@ import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IJavaNamingConvention;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.ui.StdBuilderUICommandId;
@@ -98,11 +101,87 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return getContributionItemsForIpsObjectPartContainer();
     }
 
+    private IIpsElement getSelectedIpsElement() {
+        if (getParent() != null && !getParent().getItems()[0].getId().equals(EDITOR_JUMP_TO_SOURCE_CODE_COMMAND)) {
+            IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
+            if (selectedIpsElement != null) {
+                return selectedIpsElement;
+            }
+        }
+        return getSelectedIpsElementFromEditor();
+    }
+
+    private IIpsElement getSelectedIpsElementFromEvaluationService() {
+        ISelectionService service = (ISelectionService)serviceLocator.getService(ISelectionService.class);
+        ISelection selectedObject = service.getSelection();
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selectedObject);
+        if (typedSelection.isValid()) {
+            return (IIpsElement)typedSelection.getElement().getAdapter(IIpsElement.class);
+        }
+        return null;
+    }
+
+    private IIpsElement getSelectedIpsElementFromEditor() {
+        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
+        if (!(part instanceof IEditorPart)) {
+            return null;
+        }
+
+        TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
+        if (typedSelection == null || !typedSelection.isValid()) {
+            return null;
+        }
+
+        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
+        return ipsSrcFile.getIpsObject();
+    }
+
+    private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
+        IEditorInput input = ((IEditorPart)part).getEditorInput();
+        if (input instanceof IFileEditorInput) {
+            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
+                    ((IFileEditorInput)input).getFile()));
+        }
+        return null;
+    }
+
     private IContributionItem[] getContributionItemsForNoSourceCodeFound() {
         List<IContributionItem> contributionItems = new ArrayList<IContributionItem>(1);
         IContributionItem noSourceCodeFoundCommand = createNoSourceCodeFoundCommand();
         contributionItems.add(noSourceCodeFoundCommand);
         return contributionItems.toArray(new IContributionItem[1]);
+    }
+
+    private IContributionItem createNoSourceCodeFoundCommand() {
+        return createCommand(StdBuilderUICommandId.COMMAND_NO_SOURCE_CODE_FOUND.getId(), null, null, null);
+    }
+
+    private IContributionItem createCommand(String commandId,
+            Map<String, Object> arguments,
+            ImageDescriptor icon,
+            String label) {
+
+        // CSOFF: TrailingComment
+        // @formatter:off
+        CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
+                null, // id
+                commandId, // commandId
+                arguments, // arguments
+                icon, // icon
+                null, // disabledIcon
+                null, // hoverIcon
+                label, // label
+                null, // mnemoic
+                null, // tooltip
+                CommandContributionItem.STYLE_PUSH, // style
+                null, // helpContextId
+                false // visibleEnabled
+                );
+        // @formatter:on
+        // CSON: TrailingComment
+
+        return new CommandContributionItem(itemParameter);
     }
 
     private IContributionItem[] getContributionItemsForIpsObjectPartContainer() {
@@ -126,8 +205,7 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
                 contributionItems.add(openTypeCommand);
                 continue;
             }
-            IMenuManager typeMenu = createTypeMenu(type, members);
-            contributionItems.add(typeMenu);
+            createContributionItemsForMembers(contributionItems, type, members);
         }
 
         if (contributionItems.isEmpty()) {
@@ -165,14 +243,14 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
     /**
      * Takes a set of {@link IType}s as input and creates / returns a sorted version of it.
      * <p>
-     * The sorting algorithm ensures that first stands an interface and immediately thereafter the
-     * associated implementation (if there is one). Thereby it takes the used
-     * {@link JavaNamingConvention} into account. Here is an example:
+     * The sorting algorithm ensures that first stand all implementations and thereafter the
+     * interfaces. Thereby it takes the used {@link JavaNamingConvention} into account. Here is an
+     * example:
      * <ol>
-     * <li>IPolicy
      * <li>Policy
-     * <li>IProduct
      * <li>Product
+     * <li>IPolicy
+     * <li>IProduct
      * </ol>
      */
     private List<IType> sortTypes(Set<IType> javaTypes) {
@@ -220,57 +298,127 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
         return selectedIpsObjectPartContainer.getIpsProject().getJavaNamingConvention();
     }
 
-    private IIpsElement getSelectedIpsElement() {
-        if (getParent() != null && !getParent().getItems()[0].getId().equals(EDITOR_JUMP_TO_SOURCE_CODE_COMMAND)) {
-            IIpsElement selectedIpsElement = getSelectedIpsElementFromEvaluationService();
-            if (selectedIpsElement != null) {
-                return selectedIpsElement;
-            }
-        }
-        return getSelectedIpsElementFromEditor();
+    private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
+        Map<String, Object> arguments = new HashMap<String, Object>(1);
+        arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
+
+        return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
+                getJavaElementLabel(javaElement));
     }
 
-    private IIpsElement getSelectedIpsElementFromEvaluationService() {
-        ISelectionService service = (ISelectionService)serviceLocator.getService(ISelectionService.class);
-        ISelection selectedObject = service.getSelection();
-        TypedSelection<IAdaptable> typedSelection = TypedSelection.create(IAdaptable.class, selectedObject);
-        if (typedSelection.isValid()) {
-            return (IIpsElement)typedSelection.getElement().getAdapter(IIpsElement.class);
+    private String getJavaElementLabel(IJavaElement javaElement) {
+        if (isTypeLabelRequired(javaElement)) {
+            return getLabelWithTypeLabel(javaElement);
+        } else {
+            return getLabelOnly(javaElement);
         }
-        return null;
     }
 
-    private IIpsElement getSelectedIpsElementFromEditor() {
-        IWorkbenchWindow activeWindow = IpsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-        IWorkbenchPart part = activeWindow.getPartService().getActivePart();
-        if (!(part instanceof IEditorPart)) {
-            return null;
-        }
-
-        TypedSelection<IAdaptable> typedSelection = getSelectionFromEditor(part);
-        if (typedSelection == null || !typedSelection.isValid()) {
-            return null;
-        }
-
-        IIpsSrcFile ipsSrcFile = (IIpsSrcFile)typedSelection.getFirstElement().getAdapter(IIpsSrcFile.class);
-        return ipsSrcFile.getIpsObject();
-    }
-
-    private TypedSelection<IAdaptable> getSelectionFromEditor(IWorkbenchPart part) {
-        IEditorInput input = ((IEditorPart)part).getEditorInput();
-        if (input instanceof IFileEditorInput) {
-            return new TypedSelection<IAdaptable>(IAdaptable.class, new StructuredSelection(
-                    ((IFileEditorInput)input).getFile()));
-        }
-        return null;
+    private boolean isTypeLabelRequired(IJavaElement javaElement) {
+        IType type = getType(javaElement);
+        return type != null && !isInterface(type) && !isConstructor(javaElement);
     }
 
     /**
-     * Creates a menu which represents the given {@link IType} and lists the set of it's
-     * {@link IMember}.
+     * Returns the {@link IType} of the given {@link IJavaElement}. If no {@link IType type} can be
+     * found, <code>null</code> is returned.
+     * 
+     * @param javaElement The {@link IJavaElement} that is declared in the {@link IType}.
+     */
+    private IType getType(IJavaElement javaElement) {
+        IType type = null;
+        if (javaElement instanceof IMember) {
+            type = ((IMember)javaElement).getDeclaringType();
+        }
+        return type;
+    }
+
+    private boolean isInterface(IType type) {
+        try {
+            return type.isInterface();
+        } catch (JavaModelException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isConstructor(IJavaElement javaElement) {
+        String typeName = getTypeName(javaElement);
+        if (javaElement instanceof IMember) {
+            return ((IMember)javaElement).getElementName().equalsIgnoreCase(typeName);
+        }
+        return false;
+    }
+
+    private String getTypeName(IJavaElement javaElement) {
+        IType type = getType(javaElement);
+        String typeName = StringUtils.EMPTY;
+        if (type != null) {
+            typeName = type.getElementName();
+        }
+        return typeName;
+    }
+
+    private String getLabelWithTypeLabel(IJavaElement javaElement) {
+        return getLabelOnly(javaElement) + " \t " + getTypeName(javaElement); //$NON-NLS-1$
+    }
+
+    private String getLabelOnly(IJavaElement javaElement) {
+        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
+        return workbenchAdapter != null ? workbenchAdapter.getLabel(javaElement) : null;
+    }
+
+    private ImageDescriptor getJavaElementIcon(IJavaElement javaElement) {
+        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
+        return workbenchAdapter != null ? workbenchAdapter.getImageDescriptor(javaElement) : null;
+    }
+
+    /**
+     * Creates {@link IContributionItem}s for each {@link IMember} and adds them to the list of
+     * contributionItems.
      * <p>
      * Each member is represented by a command that allows the user to open that member in a Java
      * editor.
+     * 
+     * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
+     *            the jump to sourcecode context menu.
+     * @param type The {@link IMember}s are part of this {@link IType}. The type represents an
+     *            interface or implementation class
+     * @param members A set of {@link IMember}s that contains java elements like fields,
+     *            constructors and methods.
+     */
+    private void createContributionItemsForMembers(List<IContributionItem> contributionItems,
+            IType type,
+            Set<IMember> members) {
+        if (!isInterface(type)) {
+            createItemsWithoutTypeMenu(contributionItems, members);
+        } else {
+            IMenuManager typeMenu = createTypeMenu(type, members);
+            contributionItems.add(typeMenu);
+        }
+    }
+
+    /**
+     * Creates {@link IContributionItem}s for each {@link IMember} and adds them directly (without a
+     * sub-menu) to the list of contributionItems.
+     * 
+     * @param contributionItems This list holds all {@link IContributionItem}s that are displayed in
+     *            the jump to sourcecode context menu.
+     * @param members A set of {@link IMember}s that contains java elements like fields,
+     *            constructors and methods.
+     */
+    private void createItemsWithoutTypeMenu(List<IContributionItem> contributionItems, Set<IMember> members) {
+        for (IMember member : members) {
+            if (member.exists()) {
+                IContributionItem openInJavaEditorCommand = createOpenInJavaEditorCommand(member);
+                contributionItems.add(openInJavaEditorCommand);
+            }
+        }
+        contributionItems.add(new Separator(IpsMenuId.GROUP_JUMP_TO_SOURCE_CODE.getId()));
+    }
+
+    /**
+     * Creates a menu which represents the given {@link IType} and adds a menu item for each
+     * {@link IMember}.
      */
     private IMenuManager createTypeMenu(IType type, Set<IMember> members) {
         IMenuManager typeMenu = new MenuManager(getJavaElementLabel(type), getJavaElementIcon(type), null);
@@ -285,55 +433,6 @@ public class JumpToSourceCodeDynamicMenuContribution extends CompoundContributio
             typeMenu.add(noSourceCodeFoundCommand);
         }
         return typeMenu;
-    }
-
-    private IContributionItem createOpenInJavaEditorCommand(IJavaElement javaElement) {
-        Map<String, Object> arguments = new HashMap<String, Object>(1);
-        arguments.put(JDT_PARAMETER_ID_ELEMENT_REF, javaElement);
-
-        return createCommand(JDT_COMMAND_ID_OPEN_ELEMENT_IN_JAVA_EDITOR, arguments, getJavaElementIcon(javaElement),
-                getJavaElementLabel(javaElement));
-    }
-
-    private IContributionItem createNoSourceCodeFoundCommand() {
-        return createCommand(StdBuilderUICommandId.COMMAND_NO_SOURCE_CODE_FOUND.getId(), null, null, null);
-    }
-
-    private IContributionItem createCommand(String commandId,
-            Map<String, Object> arguments,
-            ImageDescriptor icon,
-            String label) {
-
-        // CSOFF: TrailingComment
-        // @formatter:off
-        CommandContributionItemParameter itemParameter = new CommandContributionItemParameter(serviceLocator, // serviceLocator
-                null, // id
-                commandId, // commandId
-                arguments, // arguments
-                icon, // icon
-                null, // disabledIcon
-                null, // hoverIcon
-                label, // label
-                null, // mnemoic
-                null, // tooltip
-                CommandContributionItem.STYLE_PUSH, // style
-                null, // helpContextId
-                false // visibleEnabled
-                );
-        // @formatter:on
-        // CSON: TrailingComment
-
-        return new CommandContributionItem(itemParameter);
-    }
-
-    private String getJavaElementLabel(IJavaElement javaElement) {
-        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
-        return workbenchAdapter != null ? workbenchAdapter.getLabel(javaElement) : null;
-    }
-
-    private ImageDescriptor getJavaElementIcon(IJavaElement javaElement) {
-        IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter)javaElement.getAdapter(IWorkbenchAdapter.class);
-        return workbenchAdapter != null ? workbenchAdapter.getImageDescriptor(javaElement) : null;
     }
 
 }
