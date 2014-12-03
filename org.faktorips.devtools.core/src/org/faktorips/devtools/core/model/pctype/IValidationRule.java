@@ -256,4 +256,38 @@ public interface IValidationRule extends IProductCmptProperty {
      */
     public void setActivatedByDefault(boolean activated);
 
+    /**
+     * Returns the names of the markers that are applied to this rule.
+     */
+    public String[] getMarkers();
+
+    /**
+     * Returns the number of markers that are applied to this rule.
+     */
+    public int getNumOfMarkers();
+
+    /**
+     * Adds a new marker with the given marker name.
+     */
+    public void addMarker(String markerName);
+
+    /**
+     * Removes the marker at the specified index.
+     */
+    public void removeMarker(int index);
+
+    /**
+     * Returns the name of the marker at the given index.
+     * 
+     * @throws IndexOutOfBoundsException if the index is invalid.
+     */
+    public String getMarker(int index);
+
+    /**
+     * Sets the marker at the specified index.
+     * 
+     * @throws IndexOutOfBoundsException if the index is invalid.
+     */
+    public void setMarker(int index, String markerName);
+
 }

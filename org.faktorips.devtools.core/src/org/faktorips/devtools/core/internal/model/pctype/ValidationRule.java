@@ -53,6 +53,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private static final String BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
 
+    private static final String MARKER = "Marker"; //$NON-NLS-1$
+
     public final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
     public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
@@ -75,6 +77,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private boolean configurableByProductComponent = false;
 
     private boolean activatedByDefault = true;
+
+    /** The names of the markers that are applied to this rule. */
+    private List<String> markers = new ArrayList<String>();
 
     /**
      * Flag which is <code>true</code> if this rule is a default rule for validating the value of an
@@ -351,6 +356,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 if (subElement.getNodeName().equals(VALIDATED_ATTRIBUTE)) {
                     validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
                 }
+                if (subElement.getNodeName().equals(MARKER)) {
+                    markers.add(subElement.getAttribute("name")); //$NON-NLS-1$
+                }
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
                     InternationalStringXmlHelper.initFromXml(msgText, subElement);
                 }
@@ -384,6 +392,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
                     .get(i));
             newElement.appendChild(attrElement);
         }
+        for (int i = 0; i < markers.size(); i++) {
+            Element markerElement = doc.createElement(MARKER);
+            markerElement.setAttribute("name", markers.get(i)); //$NON-NLS-1$
+            newElement.appendChild(markerElement);
+        }
+
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
     }
 
@@ -506,4 +520,39 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
+    @Override
+    public String[] getMarkers() {
+        return markers.toArray(new String[functions.size()]);
+    }
+
+    @Override
+    public int getNumOfMarkers() {
+        return markers.size();
+    }
+
+    @Override
+    public void addMarker(String markerName) {
+        ArgumentCheck.notNull(markerName);
+        markers.add(markerName);
+        objectHasChanged();
+    }
+
+    @Override
+    public void removeMarker(int index) {
+        markers.remove(index);
+        objectHasChanged();
+    }
+
+    @Override
+    public String getMarker(int index) {
+        return markers.get(index);
+    }
+
+    @Override
+    public void setMarker(int index, String markerName) {
+        ArgumentCheck.notNull(markerName);
+        String oldName = getMarker(index);
+        markers.set(index, markerName);
+        valueChanged(oldName, markerName);
+    }
 }
