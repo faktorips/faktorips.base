@@ -1642,7 +1642,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * @deprecated Since 3.15 this method is not supported even more.
+     * @deprecated since 3.15: this method is not supported anymore.
      */
     @Override
     @Deprecated
@@ -1662,7 +1662,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     /**
-     * @deprecated Since 3.15 this method is not supported even more.
+     * @deprecated since 3.15: this method is not supported anymore.
      */
     @Deprecated
     private List<ITestCase> getReferencingTestCases(IIpsProject project, String objectName) throws CoreException {

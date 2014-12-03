@@ -1535,7 +1535,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     /**
-     * @deprecated Since 3.15 this method is not supported even more. Use
+     * @deprecated since 3.15: this method is not supported anymore. Use
      *             {@link #findAllIpsSrcFiles(IpsObjectType...)} instead.
      */
     @Override

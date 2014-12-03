@@ -710,7 +710,7 @@ public class IpsModelTest extends AbstractIpsPluginTest {
     }
 
     /**
-     * @deprecated Since 3.15 this method is not supported even more.
+     * @deprecated Since 3.15 this method is not supported anymore.
      */
     @Deprecated
     @Test

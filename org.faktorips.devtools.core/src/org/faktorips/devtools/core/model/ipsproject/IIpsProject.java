@@ -912,7 +912,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public InputStream getResourceAsStream(String path);
 
     /**
-     * @deprecated Since 3.15 this method is not supported even more. Use
+     * @deprecated since 3.15: this method is not supported anymore. Use
      *             {@link #findAllIpsSrcFiles(IpsObjectType...)} instead.
      * 
      * @return All test cases contained in this project.
