@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -165,18 +166,15 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
      * renamed validation rule. It also takes all referencing {@link IIpsProject}s into account.
      */
     private List<ITestCase> getAllTestCases() {
-        List<ITestCase> allTestCases = getValidationRule().getIpsProject().getAllTestCases();
-        allTestCases.addAll(getTestCasesFromRefProjects());
-        return allTestCases;
-    }
-
-    private List<ITestCase> getTestCasesFromRefProjects() {
-        List<ITestCase> refTestCases = new ArrayList<ITestCase>();
-        IIpsProject[] allReferencingIpsProjects = getValidationRule().getIpsProject().findReferencingProjects(true);
-        for (IIpsProject ipsProject : allReferencingIpsProjects) {
-            refTestCases.addAll((ipsProject.getAllTestCases()));
+        List<ITestCase> allTestCases = new ArrayList<ITestCase>();
+        IIpsProject[] ipsProjects = getValidationRule().getIpsProject().findReferencingProjectLeavesOrSelf();
+        for (IIpsProject ipsProject : ipsProjects) {
+            List<IIpsSrcFile> testCaseSrcFiles = ipsProject.findAllIpsSrcFiles(IpsObjectType.TEST_CASE);
+            for (IIpsSrcFile srcFile : testCaseSrcFiles) {
+                allTestCases.add((ITestCase)srcFile.getIpsObject());
+            }
         }
-        return refTestCases;
+        return allTestCases;
     }
 
     private boolean isTestCaseUsingValidationRule(ITestCase testCase) {

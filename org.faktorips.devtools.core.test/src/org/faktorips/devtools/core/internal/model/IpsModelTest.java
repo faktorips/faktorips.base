@@ -709,6 +709,10 @@ public class IpsModelTest extends AbstractIpsPluginTest {
                 + "should be triggered by know and have the cache cleared.", status);
     }
 
+    /**
+     * @deprecated Since 3.15 this method is not supported even more.
+     */
+    @Deprecated
     @Test
     public void testSearchReferencingTestCases() throws CoreException {
         IIpsProject baseProject = newIpsProject("base");
