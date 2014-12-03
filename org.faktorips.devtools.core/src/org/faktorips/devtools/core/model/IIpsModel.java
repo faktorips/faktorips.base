@@ -377,7 +377,7 @@ public interface IIpsModel extends IIpsElement {
      *         of none is found.
      * @throws CoreException if any exceptions occurs during search.
      * 
-     * @deprecated Since 3.15 this method is not supported even more.
+     * @deprecated since 3.15: this method is not supported anymore.
      */
     @Deprecated
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException;
