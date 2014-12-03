@@ -49,15 +49,15 @@ import org.w3c.dom.NodeList;
 
 public class ValidationRule extends TypePart implements IValidationRule {
 
+    public static final String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
+
+    public static final String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
+
     private static final String VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
 
     private static final String BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
 
     private static final String MARKER = "Marker"; //$NON-NLS-1$
-
-    public final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
-
-    public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
     private final ValidationRuleMessageText msgText;
 
@@ -347,6 +347,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         NodeList nl = element.getChildNodes();
         functions.clear();
         validatedAttributes.clear();
+        markers.clear();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
@@ -517,7 +518,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     @Override
     public String[] getMarkers() {
-        return markers.toArray(new String[functions.size()]);
+        return markers.toArray(new String[markers.size()]);
     }
 
     @Override
