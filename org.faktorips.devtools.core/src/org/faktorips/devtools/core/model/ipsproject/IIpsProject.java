@@ -14,9 +14,11 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
@@ -34,6 +36,8 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -961,5 +965,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     @Override
     public void delete() throws CoreException;
+
+    /**
+     * Returns a Set of {@link IpsSrcFile} representing all {@link EnumType}s declared as
+     * {@link IMarker}.
+     */
+    Set<IIpsSrcFile> getMarkerEnums();
 
 }

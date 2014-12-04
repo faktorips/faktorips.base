@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -64,6 +65,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -2366,6 +2368,36 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider = ipsProject.getVersionProvider();
 
         assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
+    }
+
+    @Test
+    public void testValidateMarkerEnums_False() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum; falseEnum");
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(2, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertFalse(msgList.isEmpty());
+    }
+
+    @Test
+    public void testValidateMarkerEnums_True() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum");
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertTrue(msgList.isEmpty());
+    }
+
+    private EnumType initProjectProperty(String markerString) throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "Enum");
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.addMarkerEnum(markerString);
+        ipsProject.setProperties(ipsProjectProperties);
+        return enumType;
     }
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {

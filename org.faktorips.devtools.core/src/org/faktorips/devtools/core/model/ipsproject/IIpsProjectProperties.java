@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IFunctionResolverFactory;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -82,6 +84,8 @@ public interface IIpsProjectProperties {
     public static final String MSGCODE_INVALID_OPTIONAL_CONSTRAINT = MSGCODE_PREFIX + "invalidOptionalConstraint"; //$NON-NLS-1$
 
     public static final String MSGCODE_INVALID_VERSION_SETTING = MSGCODE_PREFIX + "invalidVersionSetting"; //$NON-NLS-1$
+
+    public static final String MSGCODE_INVALID_MARKER_ENUMS = MSGCODE_PREFIX + "invalidMarkerEnums"; //$NON-NLS-1$
 
     public static final String PROPERTY_VERSION = "version"; //$NON-NLS-1$
 
@@ -620,5 +624,22 @@ public interface IIpsProjectProperties {
      * Sets the language in which the expression language's functions are used.
      */
     void setFormulaLanguageLocale(Locale locale);
+
+    /**
+     * Returns a Set<Strings> representing the qualified names of all {@link EnumType}s declared as
+     * {@link IMarker}.
+     */
+    Set<String> getMarkerEnums();
+
+    /**
+     * Adds an {@link EnumType} represented by its qualifiedName to the set of existing markers.
+     */
+    void addMarkerEnum(String qualifiedName);
+
+    /**
+     * Removes an {@link EnumType} represented by its qualifiedName from the set of existing
+     * markers.
+     */
+    void removeMarkerEnum(String qualifiedName);
 
 }

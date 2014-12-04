@@ -100,6 +100,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
 
+    private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -114,6 +116,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
 
     private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
+
+    private static final String MARKERS_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
 
     private boolean createdFromParsableFileContents = true;
 
@@ -157,6 +161,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean sharedDetailToMasterAssociations = false;
     private boolean associationsInFormulas = false;
 
+    private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
 
     // hidden resource names in the model and product explorer
@@ -521,7 +526,36 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(xmlIpsObjectPathPersistor.getXmlFormatDescription(), projectEl);
         projectEl.appendChild(xmlIpsObjectPathPersistor.store(doc, ((IpsObjectPath)path)));
 
-        // datatypes
+        toXmlDatatypes(doc, projectEl);
+        toXmlResourcesExcludeFromProdDef(doc, projectEl);
+        toXmlProductRelease(doc, projectEl);
+        toXmlVersion(doc, projectEl);
+
+        // optional constraints
+        toXmlForAdditionalSettings(doc, projectEl);
+
+        // persistence options
+        toXmlPersistenceOptions(doc, projectEl);
+
+        // supported languages
+        createSupportedLanguagesDescriptionComment(projectEl);
+        Element supportedLanguagesEl = doc.createElement("SupportedLanguages"); //$NON-NLS-1$
+        projectEl.appendChild(supportedLanguagesEl);
+        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
+            supportedLanguagesEl.appendChild(supportedLanguage.toXml(doc));
+        }
+
+        // default currency
+        String s = "Setting the default currency for this project using the ISO 4217 code of the currency (e.g. EUR for euro or USD for US Dollar)"; //$NON-NLS-1$
+        createDescriptionComment(s, projectEl);
+        Element defaultCurrencyElement = doc.createElement(DEFAULT_CURRENCY_ELEMENT);
+        defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
+        projectEl.appendChild(defaultCurrencyElement);
+
+        return projectEl;
+    }
+
+    private void toXmlDatatypes(Document doc, Element projectEl) {
         createDatatypeDescriptionComment(projectEl);
         Element datatypesEl = doc.createElement("Datatypes"); //$NON-NLS-1$
         projectEl.appendChild(datatypesEl);
@@ -535,8 +569,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         Element definedDatatypesEl = doc.createElement("DatatypeDefinitions"); //$NON-NLS-1$
         datatypesEl.appendChild(definedDatatypesEl);
         writeDefinedDataTypesToXML(doc, definedDatatypesEl);
+    }
 
-        // excludes resources from product definition
+    private void toXmlResourcesExcludeFromProdDef(Document doc, Element projectEl) {
         createResourcesExcludedFromProductDefinitionComment(projectEl);
         Element resourcesExcludedFromProdDefEl = doc.createElement("ResourcesExcludedFromProductDefinition"); //$NON-NLS-1$
         projectEl.appendChild(resourcesExcludedFromProdDefEl);
@@ -545,11 +580,32 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             resourceExcludedEl.setAttribute("path", exclResource); //$NON-NLS-1$
             resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
         }
+    }
 
-        toXmlProductRelease(doc, projectEl);
-        toXmlVersion(doc, projectEl);
+    private void toXmlProductRelease(Document doc, Element projectEl) {
+        createProductReleaseComment(projectEl);
+        if (StringUtils.isNotEmpty(releaseExtensionId)) {
+            Element release = doc.createElement(PRODUCT_RELEASE);
+            release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
+            projectEl.appendChild(release);
+        }
+    }
 
-        // optional constraints
+    private void toXmlVersion(Document doc, Element projectEl) {
+        createVersionComment(projectEl);
+        if (StringUtils.isNotEmpty(versionProviderId) || StringUtils.isNotEmpty(version)) {
+            Element release = doc.createElement(VERSION_TAG_NAME);
+            if (StringUtils.isNotEmpty(versionProviderId)) {
+                release.setAttribute(VERSION_PROVIDER_ATTRIBUTE, versionProviderId);
+            }
+            if (StringUtils.isNotEmpty(version)) {
+                release.setAttribute(VERSION_ATTRIBUTE, version);
+            }
+            projectEl.appendChild(release);
+        }
+    }
+
+    private void toXmlForAdditionalSettings(Document doc, Element projectEl) {
         createAdditionalSettingsDescriptionComment(projectEl);
         Element additionalSettingsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
         projectEl.appendChild(additionalSettingsEl);
@@ -575,7 +631,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
                 formulaLanguageLocale.getLanguage()));
 
-        // persistence options
+        createDescriptionComment("Represents the qualified name of all MarkerEnums", projectEl); //$NON-NLS-1$
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, getMarkerEnumsAsString()));
+    }
+
+    private void toXmlPersistenceOptions(Document doc, Element projectEl) {
         createPersistenceOptionsDescriptionComment(projectEl);
         Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
         persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME,
@@ -597,46 +657,27 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
-
-        // supported languages
-        createSupportedLanguagesDescriptionComment(projectEl);
-        Element supportedLanguagesEl = doc.createElement("SupportedLanguages"); //$NON-NLS-1$
-        projectEl.appendChild(supportedLanguagesEl);
-        for (ISupportedLanguage supportedLanguage : supportedLanguages) {
-            supportedLanguagesEl.appendChild(supportedLanguage.toXml(doc));
-        }
-
-        // default currency
-        String s = "Setting the default currency for this project using the ISO 4217 code of the currency (e.g. EUR for euro or USD for US Dollar)"; //$NON-NLS-1$
-        createDescriptionComment(s, projectEl);
-        Element defaultCurrencyElement = doc.createElement(DEFAULT_CURRENCY_ELEMENT);
-        defaultCurrencyElement.setAttribute(DEFAULT_CURRENCY_VALUE_ATTR, defaultCurrency.getCurrencyCode());
-        projectEl.appendChild(defaultCurrencyElement);
-
-        return projectEl;
     }
 
-    private void toXmlProductRelease(Document doc, Element projectEl) {
-        createProductReleaseComment(projectEl);
-        if (StringUtils.isNotEmpty(releaseExtensionId)) {
-            Element release = doc.createElement(PRODUCT_RELEASE);
-            release.setAttribute(RELEASE_EXTENSION_ID_ATTRIBUTE, releaseExtensionId);
-            projectEl.appendChild(release);
-        }
+    private String getMarkerEnumsAsString() {
+        return StringUtils.join(getMarkerEnums(), MARKERS_ENUMS_DELIMITER);
     }
 
-    private void toXmlVersion(Document doc, Element projectEl) {
-        createVersionComment(projectEl);
-        if (StringUtils.isNotEmpty(versionProviderId) || StringUtils.isNotEmpty(version)) {
-            Element release = doc.createElement(VERSION_TAG_NAME);
-            if (StringUtils.isNotEmpty(versionProviderId)) {
-                release.setAttribute(VERSION_PROVIDER_ATTRIBUTE, versionProviderId);
-            }
-            if (StringUtils.isNotEmpty(version)) {
-                release.setAttribute(VERSION_ATTRIBUTE, version);
-            }
-            projectEl.appendChild(release);
-        }
+    @Override
+    public Set<String> getMarkerEnums() {
+        return markerEnums;
+    }
+
+    @Override
+    public void addMarkerEnum(String qualifiedName) {
+        ArgumentCheck.notNull(qualifiedName);
+        getMarkerEnums().add(qualifiedName.trim());
+    }
+
+    @Override
+    public void removeMarkerEnum(String qualifiedName) {
+        ArgumentCheck.notNull(qualifiedName);
+        getMarkerEnums().remove(qualifiedName);
     }
 
     private Element createSettingElement(Document doc, String name, boolean enable) {
@@ -889,14 +930,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
             String name = child.getAttribute(SETTING_ATTRIBUTE_NAME);
             String value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
-            boolean enable = Boolean.valueOf(value).booleanValue();
 
-            applySetting(name, enable);
+            applySetting(name, value);
             initFunctionsLanguageLocale(name, value);
         }
     }
 
-    private void applySetting(String name, boolean enable) {
+    private void applySetting(String name, String value) {
+        boolean enable = Boolean.valueOf(value).booleanValue();
         if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
             derivedUnionIsImplementedRuleEnabled = enable;
         } else if (name.equals(SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE)) {
@@ -907,6 +948,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setSharedDetailToMasterAssociations(enable);
         } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
             setAssociationsInFormulas(enable);
+        } else if (name.equals(SETTING_MARKER_ENUMS)) {
+            setMarkerEnums(value);
+        }
+    }
+
+    private void setMarkerEnums(String value) {
+        getMarkerEnums().clear();
+        if (!value.isEmpty()) {
+            String[] splitString = value.split(MARKERS_ENUMS_DELIMITER);
+            for (String qualifiedName : splitString) {
+                getMarkerEnums().add(qualifiedName.trim());
+            }
         }
     }
 

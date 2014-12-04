@@ -321,6 +321,21 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testToXMLForMarkerEnums() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        props.addMarkerEnum("newMarker");
+
+        assertEquals(1, props.getMarkerEnums().size());
+        assertTrue(props.getMarkerEnums().contains("newMarker"));
+
+        props.addMarkerEnum("newMarker2");
+        props.removeMarkerEnum("newMarker");
+
+        assertEquals(1, props.getMarkerEnums().size());
+        assertTrue(props.getMarkerEnums().contains("newMarker2"));
+    }
+
+    @Test
     public void testAddDefinedDatatype() {
         IIpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
@@ -424,6 +439,15 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(2, supportedLanguages.size());
         assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.ENGLISH)));
         assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.GERMAN)));
+    }
+
+    @Test
+    public void testInitFromXmlForMarkerEnums() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+
+        assertEquals(2, props.getMarkerEnums().size());
+        assertTrue(props.getMarkerEnums().contains("marker"));
+        assertTrue(props.getMarkerEnums().contains("marker2"));
     }
 
     @Test

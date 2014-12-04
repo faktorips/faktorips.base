@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -1635,8 +1636,19 @@ public class IpsProject extends IpsElement implements IIpsProject {
         validateDuplicateTocFilePath(result);
         validateIpsObjectPathCycle(result);
         validateVersionProvider(result);
+        validateMarkerEnums(result);
 
         return result;
+    }
+
+    private void validateMarkerEnums(MessageList result) {
+        Set<IIpsSrcFile> markerEnums = getMarkerEnums();
+        for (IIpsSrcFile ipsSrcFile : markerEnums) {
+            if (ipsSrcFile == null || !ipsSrcFile.exists()) {
+                result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
+                        Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR, getIpsProjectPropertiesFile()));
+            }
+        }
     }
 
     private void validateJavaProjectBuildPath(MessageList result) throws JavaModelException {
@@ -1949,4 +1961,15 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getCorrespondingResource().delete(true, null);
     }
 
+    @Override
+    public Set<IIpsSrcFile> getMarkerEnums() {
+        Set<IIpsSrcFile> markerEnumsIpsSrcFile = new HashSet<IIpsSrcFile>();
+        IIpsProjectProperties properties = getReadOnlyProperties();
+        Set<String> markerEnums = properties.getMarkerEnums();
+        for (String qualifiedName : markerEnums) {
+            IIpsSrcFile ipsSrcFile = findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
+            markerEnumsIpsSrcFile.add(ipsSrcFile);
+        }
+        return markerEnumsIpsSrcFile;
+    }
 }
