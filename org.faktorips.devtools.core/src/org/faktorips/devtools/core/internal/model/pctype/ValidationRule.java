@@ -53,6 +53,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     public static final String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
+    private static final String XML_TAG_MARKERS = "Markers"; //$NON-NLS-1$
+
     private static final String VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
 
     private static final String BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
@@ -353,13 +355,25 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 Element subElement = (Element)nl.item(i);
                 initChildsFor(BUSINESS_FUNCTION, functions, subElement);
                 initChildsFor(VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
-                initChildsFor(MARKER, markers, subElement);
+                initChildsForMarkers(subElement);
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
                     InternationalStringXmlHelper.initFromXml(msgText, subElement);
                 }
             }
         }
         functions.trimToSize();
+    }
+
+    private void initChildsForMarkers(Element subElement) {
+        if (subElement.getNodeName().equals(XML_TAG_MARKERS)) {
+            NodeList childNodes = subElement.getElementsByTagName(MARKER);
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                if (childNodes.item(i) instanceof Element) {
+                    Element markerElement = (Element)childNodes.item(i);
+                    markers.add(markerElement.getAttribute("name")); //$NON-NLS-1$
+                }
+            }
+        }
     }
 
     private void initChildsFor(String elementType, List<String> childElements, Element subElement) {
@@ -383,9 +397,20 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
         appendChildsFor(BUSINESS_FUNCTION, functions, newElement);
         appendChildsFor(VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
-        appendChildsFor(MARKER, markers, newElement);
+        appendChildsForMarkers(newElement);
 
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
+    }
+
+    private void appendChildsForMarkers(Element newElement) {
+        Document doc = newElement.getOwnerDocument();
+        Element markersRootElement = doc.createElement(XML_TAG_MARKERS);
+        newElement.appendChild(markersRootElement);
+        for (String marker : markers) {
+            Element markerElement = doc.createElement(MARKER);
+            markerElement.setAttribute("name", marker); //$NON-NLS-1$
+            markersRootElement.appendChild(markerElement);
+        }
     }
 
     private void appendChildsFor(String elementType, List<String> childElements, Element newElement) {
