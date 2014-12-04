@@ -78,7 +78,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     private boolean activatedByDefault = true;
 
-    /** The names of the markers that are applied to this rule. */
+    /** The markers that are applied to this rule. */
     private List<String> markers = new ArrayList<String>();
 
     /**
@@ -517,38 +517,14 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     @Override
-    public String[] getMarkers() {
-        return markers.toArray(new String[markers.size()]);
+    public List<String> getMarkers() {
+        return markers;
     }
 
     @Override
-    public int getNumOfMarkers() {
-        return markers.size();
-    }
-
-    @Override
-    public void addMarker(String markerName) {
-        ArgumentCheck.notNull(markerName);
-        markers.add(markerName);
-        objectHasChanged();
-    }
-
-    @Override
-    public void removeMarker(int index) {
-        markers.remove(index);
-        objectHasChanged();
-    }
-
-    @Override
-    public String getMarker(int index) {
-        return markers.get(index);
-    }
-
-    @Override
-    public void setMarker(int index, String markerName) {
-        ArgumentCheck.notNull(markerName);
-        String oldName = getMarker(index);
-        markers.set(index, markerName);
-        valueChanged(oldName, markerName);
+    public void setMarkers(List<String> newMarkers) {
+        List<String> oldMarkers = this.markers;
+        this.markers = newMarkers;
+        valueChanged(oldMarkers, newMarkers, PROPERTY_MARKERS);
     }
 }

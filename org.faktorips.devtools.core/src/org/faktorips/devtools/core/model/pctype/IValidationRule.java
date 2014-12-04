@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -39,6 +41,8 @@ public interface IValidationRule extends IProductCmptProperty {
     public final static String PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
 
     public final static String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
+
+    public final static String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -257,37 +261,13 @@ public interface IValidationRule extends IProductCmptProperty {
     public void setActivatedByDefault(boolean activated);
 
     /**
-     * Returns the names of the markers that are applied to this rule.
+     * Returns markers that are applied to this rule.
      */
-    public String[] getMarkers();
+    public List<String> getMarkers();
 
     /**
-     * Returns the number of markers that are applied to this rule.
+     * Sets the list of markers.
      */
-    public int getNumOfMarkers();
-
-    /**
-     * Adds a new marker with the given marker name.
-     */
-    public void addMarker(String markerName);
-
-    /**
-     * Removes the marker at the specified index.
-     */
-    public void removeMarker(int index);
-
-    /**
-     * Returns the name of the marker at the given index.
-     * 
-     * @throws IndexOutOfBoundsException if the index is invalid.
-     */
-    public String getMarker(int index);
-
-    /**
-     * Sets the marker at the specified index.
-     * 
-     * @throws IndexOutOfBoundsException if the index is invalid.
-     */
-    public void setMarker(int index, String markerName);
+    public void setMarkers(List<String> markers);
 
 }

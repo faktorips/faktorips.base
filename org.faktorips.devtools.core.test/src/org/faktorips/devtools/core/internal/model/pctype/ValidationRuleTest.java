@@ -17,6 +17,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
@@ -133,10 +135,10 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         String[] validatedAttributes = validationRule.getValidatedAttributes();
         assertEquals("a", validatedAttributes[0]);
         assertEquals("b", validatedAttributes[1]);
-        String[] markers = validationRule.getMarkers();
-        assertEquals(2, markers.length);
-        assertEquals("marker1", markers[0]);
-        assertEquals("marker2", markers[1]);
+        List<String> markers = validationRule.getMarkers();
+        assertEquals(2, markers.size());
+        assertTrue(markers.contains("marker1"));
+        assertTrue(markers.contains("marker2"));
     }
 
     @Test
@@ -151,8 +153,7 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.addValidatedAttribute("a");
         validationRule.setCheckValueAgainstValueSetRule(true);
         validationRule.setCategory("foo");
-        validationRule.addMarker("marker1");
-        validationRule.addMarker("marker2");
+        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
 
         Element element = validationRule.toXml(newDocument());
 
@@ -172,10 +173,10 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertEquals("a", validationAttributes[0]);
         assertTrue(copy.isCheckValueAgainstValueSetRule());
         assertEquals("foo", copy.getCategory());
-        String[] markers = copy.getMarkers();
-        assertEquals(2, markers.length);
-        assertEquals("marker1", markers[0]);
-        assertEquals("marker2", markers[1]);
+        List<String> markers = copy.getMarkers();
+        assertEquals(2, markers.size());
+        assertTrue(markers.contains("marker1"));
+        assertTrue(markers.contains("marker2"));
     }
 
     @Test
@@ -327,50 +328,30 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddMarker() {
-        validationRule.addMarker("marker1");
-        assertEquals(1, validationRule.getNumOfMarkers());
-        assertEquals("marker1", validationRule.getMarker(0));
+    public void testSetMarkers() {
+        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
 
-        validationRule.addMarker("marker2");
-        assertEquals(2, validationRule.getNumOfMarkers());
-        assertEquals("marker2", validationRule.getMarker(1));
-    }
+        List<String> markers = validationRule.getMarkers();
+        assertEquals(2, markers.size());
+        assertTrue(markers.contains("marker1"));
+        assertTrue(markers.contains("marker2"));
 
-    @Test
-    public void testSetMarker() {
-        validationRule.addMarker("marker1");
-        validationRule.addMarker("marker2");
-
-        assertEquals(2, validationRule.getNumOfMarkers());
-        validationRule.setMarker(1, "changed");
-        assertEquals("changed", validationRule.getMarker(1));
-    }
-
-    @Test
-    public void testRemoveMarker() {
-        validationRule.addMarker("marker1");
-        validationRule.addMarker("marker2");
-        validationRule.addMarker("marker3");
-        validationRule.addMarker("marker4");
-
-        validationRule.removeMarker(3);
-        validationRule.removeMarker(1);
-        assertEquals(2, validationRule.getNumOfMarkers());
-        assertEquals("marker1", validationRule.getMarker(0));
-        assertEquals("marker3", validationRule.getMarker(1));
+        validationRule.setMarkers(Arrays.asList(new String[] { "otherMarker", "marker2", "anotherMarker" }));
+        markers = validationRule.getMarkers();
+        assertEquals(3, markers.size());
+        assertTrue(markers.contains("otherMarker"));
+        assertTrue(markers.contains("marker2"));
+        assertTrue(markers.contains("anotherMarker"));
     }
 
     @Test
     public void testGetMarkes() {
-        validationRule.addMarker("marker1");
-        validationRule.addMarker("marker2");
-        validationRule.addMarker("marker3");
+        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2", "marker3" }));
 
-        String[] markers = validationRule.getMarkers();
-        assertEquals(3, markers.length);
-        assertEquals("marker1", markers[0]);
-        assertEquals("marker2", markers[1]);
-        assertEquals("marker3", markers[2]);
+        List<String> markers = validationRule.getMarkers();
+        assertEquals(3, markers.size());
+        assertTrue(markers.contains("marker1"));
+        assertTrue(markers.contains("marker2"));
+        assertTrue(markers.contains("marker3"));
     }
 }
