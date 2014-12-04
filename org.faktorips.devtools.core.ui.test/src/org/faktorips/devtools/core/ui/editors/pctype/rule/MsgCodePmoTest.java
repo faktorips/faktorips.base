@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.MessageSeverity;
-import org.faktorips.devtools.core.ui.editors.pctype.ValidationRuleEditingUI.MsgCodePMO;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleEditingUI.MsgCodePMO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

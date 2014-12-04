@@ -82,6 +82,9 @@ import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetControlEditMode
 import org.faktorips.devtools.core.ui.controls.valuesets.ValueSetSpecificationControl;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleEditingUI;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerUI;
 import org.faktorips.devtools.core.ui.editors.productcmpttype.ProductCmptTypeMethodEditDialog;
 import org.faktorips.devtools.core.ui.refactor.IpsRefactoringOperation;
 import org.faktorips.devtools.core.util.PersistenceUtil;
@@ -125,11 +128,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
      * Holds controls for defining a validation rule.
      */
     private ValidationRuleEditingUI ruleDefinitionUI = new ValidationRuleEditingUI(getToolkit());
+    private ValidationRuleMarkerUI ruleMarkerUI = new ValidationRuleMarkerUI(getToolkit());
 
     /**
      * Manages a rule. Model is bound to above UI by the {@link BindingContext}.
      */
     private RuleUIModel ruleModel;
+    private ValidationRuleMarkerPMO ruleMarkerPMO;
 
     /**
      * Folder which contains the pages shown by this editor. Used to modify which page is shown.
@@ -145,8 +150,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private ValueDatatype currentDatatype;
 
     private AttributeType currentAttributeType;
-
-    private Group ruleGroup;
 
     private IntegerField sizeField;
 
@@ -166,13 +169,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
     private MessageDecoration validationRuleAddedDecoration;
 
+    private Composite ruleComposite;
+
     public AttributeEditDialog(IPolicyCmptTypeAttribute attribute, Shell parentShell) {
         super(attribute, parentShell, Messages.AttributeEditDialog_title, true);
         this.attribute = attribute;
         initialName = attribute.getName();
         ipsProject = attribute.getIpsProject();
         ruleModel = new RuleUIModel(this.attribute);
-        ruleModel.setValidationRule(attribute.findValueSetRule(ipsProject));
+        IValidationRule validationRule = attribute.findValueSetRule(ipsProject);
+        ruleModel.setValidationRule(validationRule);
+        ruleMarkerPMO = ValidationRuleMarkerPMO.createFor(ipsProject, validationRule);
         try {
             currentDatatype = attribute.findDatatype(ipsProject);
         } catch (CoreException e) {
@@ -301,9 +308,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Control createGeneralPage(TabFolder folder) {
         Composite c = createTabItemComposite(folder, 1, false);
         Group generalGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_generalGroup);
+        generalGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
         createGeneralGroupContent(generalGroup);
         if (attribute.isProductRelevant() || attribute.getPolicyCmptType().isConfigurableByProductCmptType()) {
             configGroup = getToolkit().createGroup(c, Messages.AttributeEditDialog_ConfigurationGroup);
+            configGroup.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
             createConfigGroupContent();
         }
         return c;
@@ -635,22 +644,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
                     IpsPlugin
-                    .getDefault()
-                    .getIpsModel()
-                    .executeModificationsWithSingleEvent(
-                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                            .getDefault()
+                            .getIpsModel()
+                            .executeModificationsWithSingleEvent(
+                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
-                                @Override
-                                protected boolean execute() throws CoreException {
-                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                    attribute.setModifier(overwrittenAttribute.getModifier());
-                                    attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
-                                    attribute.setAttributeType(overwrittenAttribute.getAttributeType());
-                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                    attribute.setCategory(overwrittenAttribute.getCategory());
-                                    return true;
-                                }
-                            });
+                                        @Override
+                                        protected boolean execute() throws CoreException {
+                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                            attribute.setModifier(overwrittenAttribute.getModifier());
+                                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                            attribute.setCategory(overwrittenAttribute.getCategory());
+                                            return true;
+                                        }
+                                    });
                 }
             }
 
@@ -688,8 +697,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         if (valueSetSpecificationControl != null) {
             valueSetSpecificationControl
-            .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                    : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }
@@ -718,15 +727,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private Control createValidationRulePage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
 
-        Composite checkComposite = getToolkit().createGridComposite(workArea, 1, true, false);
-        validationRuleAdded = getToolkit().createCheckbox(checkComposite,
+        validationRuleAdded = getToolkit().createCheckbox(workArea,
                 Messages.AttributeEditDialog_labelActivateValidationRule);
         validationRuleAddedDecoration = getToolkit().createMessageDecoration(validationRuleAdded);
         validationRuleAdded.setToolTipText(Messages.AttributeEditDialog_tooltipActivateValidationRule);
 
-        ruleGroup = getToolkit().createGroup(checkComposite, Messages.AttributeEditDialog_ruleTitle);
+        ruleComposite = getToolkit().createGridComposite(workArea, 1, false, false);
+
         bindEnablement();
-        ruleDefinitionUI.initUI(ruleGroup);
+        ruleDefinitionUI.initUI(ruleComposite);
         ruleModel.addPropertyChangeListener(new PropertyChangeListener() {
             /**
              * {@inheritDoc} Binds the ruleDefinitionUIs controls to the new rule given by the
@@ -740,12 +749,19 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     ruleDefinitionUI.removeBindingsFromContext(getBindingContext());
                     if (evt.getNewValue() != null) {
                         IValidationRule rule = (IValidationRule)evt.getNewValue();
+                        ruleMarkerPMO.setRule(rule);
+                        ruleMarkerUI.getMarkerTable().setInput(ruleMarkerPMO.getItems());
                         ruleDefinitionUI.bindFields(rule, getBindingContext());
                     }
                     getBindingContext().updateUI();
                 }
             }
         });
+
+        ruleMarkerUI.setTableVisibleLines(5);
+        ruleMarkerUI.createUI(workArea, ruleMarkerPMO);
+        getBindingContext().bindEnabled(ruleMarkerUI.getMarkerTableControl(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
+
         // initialize ruleDefintionUI state.
         ruleModel.fireRuleChange();
 
@@ -756,14 +772,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (validationRuleAdded != null) {
             getBindingContext().bindContent(validationRuleAdded.getButton(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
         }
-        getBindingContext().add(new ControlPropertyBinding(ruleGroup, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
-            @Override
-            public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
-                    getToolkit().setDataChangeable(getControl(), ruleModel.isEnabled());
-                }
-            }
-        });
+        getBindingContext().add(
+                new ControlPropertyBinding(ruleComposite, ruleModel, RuleUIModel.PROPERTY_ENABLED, null) {
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (nameOfChangedProperty == null || nameOfChangedProperty.equals(getPropertyName())) {
+                            getToolkit().setDataChangeable(getControl(), ruleModel.isEnabled());
+                        }
+                    }
+                });
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {

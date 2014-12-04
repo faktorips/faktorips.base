@@ -29,6 +29,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.EditDialog;
 import org.faktorips.devtools.core.ui.editors.IpsPartsComposite;
 import org.faktorips.devtools.core.ui.editors.SimpleIpsPartsSection;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.RuleEditDialog;
 
 /**
  * Section to display the validation rules.

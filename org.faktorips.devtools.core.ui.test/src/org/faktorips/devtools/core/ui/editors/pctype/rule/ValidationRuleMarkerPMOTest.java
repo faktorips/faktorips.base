@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -22,7 +22,8 @@ import java.util.List;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.ui.editors.pctype.ValidationRuleMarkerPMO.MarkerViewItem;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO;
+import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO.MarkerViewItem;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,18 +93,18 @@ public class ValidationRuleMarkerPMOTest {
     }
 
     @Test
-    public void testUpdateCheckedState() {
-        when(rule.getMarkers()).thenReturn(Arrays.asList(new String[] { "id1" }));
-        doNothing().when(rule).setMarkers(stringListCaptor.capture());
-
-        markerPMO = new ValidationRuleMarkerPMO(rule, markerDefinition);
-
-        List<MarkerViewItem> items = markerPMO.getItems();
-        items.get(1).updateCheckedState();
-
-        List<String> markers = stringListCaptor.getValue();
-        assertEquals(2, markers.size());
-        assertEquals("id1", markers.get(0));
-        assertEquals("id2", markers.get(1));
-    }
+            public void testUpdateActiveMarkers() {
+                when(rule.getMarkers()).thenReturn(Arrays.asList(new String[] { "id1" }));
+                doNothing().when(rule).setMarkers(stringListCaptor.capture());
+        
+                markerPMO = new ValidationRuleMarkerPMO(rule, markerDefinition);
+        
+                List<MarkerViewItem> items = markerPMO.getItems();
+                items.get(1).updateCheckedState();
+        
+                List<String> markers = stringListCaptor.getValue();
+                assertEquals(2, markers.size());
+                assertEquals("id1", markers.get(0));
+                assertEquals("id2", markers.get(1));
+            }
 }

@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -22,6 +22,10 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
+import org.faktorips.devtools.core.ui.editors.pctype.RuleFunctionsControl;
+import org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesControl;
 
 public class RuleEditDialog extends IpsPartEditDialog2 {
 
@@ -34,9 +38,13 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());
 
+    private ValidationRuleMarkerPMO ruleMarkerPMO;
+
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
         this.rule = rule;
+
+        ruleMarkerPMO = ValidationRuleMarkerPMO.createFor(rule.getIpsProject(), rule);
     }
 
     @Override
@@ -56,6 +64,11 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         TabItem attributesPage = new TabItem(folder, SWT.NONE);
         attributesPage.setText(Messages.RuleEditDialog_attrTitle);
         attributesPage.setControl(createAttributesPage(folder));
+
+        TabItem markerPage = new TabItem(folder, SWT.NONE);
+        markerPage.setText("Markers");
+        markerPage.setControl(createMarkersPage(folder));
+
         /*
          * the update cycle for changes to model objects is extended so that the gui will be updated
          * due to model changes. The update cycle gui -> model -> gui is currently not implemented
@@ -69,13 +82,13 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
                 if (!event.getIpsSrcFile().exists()) {
                     return;
                 }
-                if (event.getIpsSrcFile().equals(rule.getIpsObject().getIpsSrcFile())) {
+                if (event.isAffected(rule)) {
                     getBindingContext().updateUI();
                 }
             }
         };
         listener.setWidget(parent);
-        rule.getIpsModel().addChangeListener(listener);
+        // rule.getIpsModel().addChangeListener(listener);
 
         bindFields();
         return folder;
@@ -102,6 +115,15 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         rfControl = new RuleFunctionsControl(workArea);
         rfControl.initialize(super.getIpsPart(), null);
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
+
+        return workArea;
+    }
+
+    private Control createMarkersPage(TabFolder folder) {
+        Composite workArea = createTabItemComposite(folder, 1, false);
+
+        ValidationRuleMarkerUI validationRuleMarkerUI = new ValidationRuleMarkerUI(getToolkit());
+        validationRuleMarkerUI.createUI(workArea, ruleMarkerPMO);
 
         return workArea;
     }
