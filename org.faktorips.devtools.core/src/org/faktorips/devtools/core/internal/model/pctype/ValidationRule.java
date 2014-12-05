@@ -411,10 +411,12 @@ public class ValidationRule extends TypePart implements IValidationRule {
     }
 
     private void appendChildrenForMarkers(Element newElement) {
-        Document doc = newElement.getOwnerDocument();
-        Element markersRootElement = doc.createElement(XML_TAG_MARKERS);
-        newElement.appendChild(markersRootElement);
-        appendChildrenFor(MARKER, markers, markersRootElement);
+        if (!markers.isEmpty()) {
+            Document doc = newElement.getOwnerDocument();
+            Element markersRootElement = doc.createElement(XML_TAG_MARKERS);
+            newElement.appendChild(markersRootElement);
+            appendChildrenFor(MARKER, markers, markersRootElement);
+        }
     }
 
     @Override
