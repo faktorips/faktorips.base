@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -25,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IVersionProvider;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.message.MessageList;
 
@@ -626,19 +626,20 @@ public interface IIpsProjectProperties {
     void setFormulaLanguageLocale(Locale locale);
 
     /**
-     * Returns a Set<Strings> representing the qualified names of all {@link EnumType}s declared as
-     * {@link IMarker}.
+     * Returns a set of strings representing the qualified names of all {@link EnumType}s that are
+     * used to define markers for {@link IValidationRule}s.
      */
     Set<String> getMarkerEnums();
 
     /**
-     * Adds an {@link EnumType} represented by its qualifiedName to the set of existing markers.
+     * Adds an {@link EnumType} represented by its qualifiedName to the set of existing marker
+     * enums.
      */
     void addMarkerEnum(String qualifiedName);
 
     /**
-     * Removes an {@link EnumType} represented by its qualifiedName from the set of existing
-     * markers.
+     * Removes an {@link EnumType} represented by its qualifiedName from the set of existing marker
+     * enums.
      */
     void removeMarkerEnum(String qualifiedName);
 

@@ -18,7 +18,6 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
@@ -49,6 +48,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
@@ -967,8 +967,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public void delete() throws CoreException;
 
     /**
-     * Returns a Set of {@link IpsSrcFile} representing all {@link EnumType}s declared as
-     * {@link IMarker}.
+     * Returns a Set of {@link IpsSrcFile} representing all {@link EnumType}s that are used to
+     * define markers for {@link IValidationRule}s.
      */
     Set<IIpsSrcFile> getMarkerEnums();
 
