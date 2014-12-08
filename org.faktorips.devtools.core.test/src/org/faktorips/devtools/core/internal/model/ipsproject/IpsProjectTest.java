@@ -49,6 +49,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsFeatureVersionManager;
@@ -2379,6 +2380,13 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(2, markerEnums.size());
         assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
         assertFalse(msgList.isEmpty());
+        assertEquals(getExpectedMsgForUnknownMarkerEnums(), msgList.getMessage(0));
+    }
+
+    private Object getExpectedMsgForUnknownMarkerEnums() {
+        return new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
+                Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR,
+                ipsProject.getIpsProjectPropertiesFile());
     }
 
     @Test
@@ -2398,6 +2406,27 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ipsProjectProperties.addMarkerEnum(markerString);
         ipsProject.setProperties(ipsProjectProperties);
         return enumType;
+    }
+
+    @Test
+    public void testValidateMarkerEnums_isExtensible() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum");
+        enumType.setExtensible(true);
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertFalse(msgList.isEmpty());
+        assertEquals(getExpectedMsgForExtensibleMarkerEnums(enumType), msgList.getMessage(0));
+    }
+
+    private Message getExpectedMsgForExtensibleMarkerEnums(EnumType enumType) {
+        String msg = NLS.bind(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
+                enumType.getQualifiedName());
+        Message expectedMsg = new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                ipsProject.getIpsProjectPropertiesFile());
+        return expectedMsg;
     }
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {

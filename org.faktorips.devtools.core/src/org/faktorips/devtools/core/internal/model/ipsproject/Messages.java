@@ -76,6 +76,7 @@ public class Messages extends NLS {
     public static String IpsProjectProperties_msgMoreThanOneDefaultLanguage;
     public static String IpsProjectProperties_unknownNamingStrategy;
     public static String IpsProjectProperties_unknownMarkerEnums;
+    public static String IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed;
     public static String VersionProviderExtensionPoint_error_invalidVersionProvider;
 
 }
