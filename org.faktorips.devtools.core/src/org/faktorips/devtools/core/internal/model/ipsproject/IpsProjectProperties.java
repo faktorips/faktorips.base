@@ -119,7 +119,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
 
-    private static final String MARKERS_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
+    private static final String MARKER_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
 
     private boolean createdFromParsableFileContents = true;
 
@@ -634,11 +634,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
                 formulaLanguageLocale.getLanguage()));
 
-        createDescriptionComment("Represents the qualified name of all MarkerEnums", projectEl); //$NON-NLS-1$
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, getMarkerEnumsAsString()));
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS,
                 isRulesUsedInBusinessFunctionsEnabled()));
+    }
+
+    private String getMarkerEnumsAsString() {
+        return StringUtils.join(getMarkerEnums(), MARKER_ENUMS_DELIMITER);
     }
 
     private void toXmlPersistenceOptions(Document doc, Element projectEl) {
@@ -663,10 +666,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
         persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
-    }
-
-    private String getMarkerEnumsAsString() {
-        return StringUtils.join(getMarkerEnums(), MARKERS_ENUMS_DELIMITER);
     }
 
     @Override
@@ -964,7 +963,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private void setMarkerEnums(String value) {
         getMarkerEnums().clear();
         if (!value.isEmpty()) {
-            String[] splitString = value.split(MARKERS_ENUMS_DELIMITER);
+            String[] splitString = value.split(MARKER_ENUMS_DELIMITER);
             for (String qualifiedName : splitString) {
                 getMarkerEnums().add(qualifiedName.trim());
             }
@@ -1321,6 +1320,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Represents the qualified name of the MarkerEnums. For further processing only the first entered qualifiedName will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow usage of validation rules in business functions. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$

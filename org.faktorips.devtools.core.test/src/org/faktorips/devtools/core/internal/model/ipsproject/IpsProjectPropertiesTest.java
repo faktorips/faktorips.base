@@ -52,6 +52,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     private IIpsProjectProperties properties;
 
+    private static final String MARKER = "MY_MARKER";
+    private static final String ANOTHER_MARKER = "ANOTHER_MARKER";
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -237,16 +240,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setVersion("1.2.3");
         props.setVersionProviderId("myVersionProvider");
 
-        Document doc = newDocument();
-        Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
-        Element propEl = doc.createElement("Property");
-        propEl.setAttribute("name", "xxx");
-        propEl.setAttribute("value", "yyy");
-        configEl.appendChild(propEl);
-
-        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
-        config.initFromXml(configEl);
-        props.setBuilderSetConfig(config);
+        createDocumentSetUp(props);
         DynamicEnumDatatype datatype = new DynamicEnumDatatype(ipsProject);
         datatype.setIsSupportingNames(true);
         datatype.setGetNameMethodName("getMe");
@@ -325,16 +319,35 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     @Test
     public void testToXMLForMarkerEnums() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.addMarkerEnum("newMarker");
+        props.addMarkerEnum(MARKER);
 
         assertEquals(1, props.getMarkerEnums().size());
-        assertTrue(props.getMarkerEnums().contains("newMarker"));
+        assertTrue(props.getMarkerEnums().contains(MARKER));
 
-        props.addMarkerEnum("newMarker2");
-        props.removeMarkerEnum("newMarker");
+        props.addMarkerEnum(ANOTHER_MARKER);
+        props.removeMarkerEnum(MARKER);
+
+        createDocumentSetUp(props);
+        Element projectEl = props.toXml(newDocument());
+        props = new IpsProjectProperties(ipsProject);
+        props.initFromXml(ipsProject, projectEl);
 
         assertEquals(1, props.getMarkerEnums().size());
-        assertTrue(props.getMarkerEnums().contains("newMarker2"));
+        assertTrue(props.getMarkerEnums().contains(ANOTHER_MARKER));
+
+    }
+
+    private void createDocumentSetUp(IpsProjectProperties props) {
+        Document doc = newDocument();
+        Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
+        Element propEl = doc.createElement("Property");
+        propEl.setAttribute("name", "xxx");
+        propEl.setAttribute("value", "yyy");
+        configEl.appendChild(propEl);
+
+        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
+        config.initFromXml(configEl);
+        props.setBuilderSetConfig(config);
     }
 
     @Test

@@ -70,7 +70,7 @@ public class Migration_3_6_2Test extends AbstractIpsPluginTest {
         assertNotNull(additionalSettingsEl);
         NodeList settings = additionalSettingsEl.getElementsByTagName("Setting"); //$NON-NLS-1$
         assertNotNull(settings);
-        assertEquals(6, settings.getLength());
+        assertEquals(8, settings.getLength());
         for (int i = 0; i < originalSettingElements.getLength(); ++i) {
             Element originalSetting = (Element)originalSettingElements.item(i);
             Element migratedSetting = (Element)settings.item(i);

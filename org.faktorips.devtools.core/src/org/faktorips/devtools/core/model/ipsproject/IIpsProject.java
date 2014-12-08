@@ -970,6 +970,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a Set of {@link IpsSrcFile} representing all {@link EnumType}s that are used to
      * define markers for {@link IValidationRule}s.
      */
-    Set<IIpsSrcFile> getMarkerEnums();
+    public Set<IIpsSrcFile> getMarkerEnums();
 
 }

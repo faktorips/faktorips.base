@@ -67,7 +67,7 @@ public class Migration_3_6_0_rfinalTest extends XmlAbstractTestCase {
         assertEquals(0, length);
         NodeList settings = additionalSettingsEl.getElementsByTagName("Setting"); //$NON-NLS-1$
         assertNotNull(settings);
-        assertEquals(6, settings.getLength());
+        assertEquals(8, settings.getLength());
         for (int i = 0; i < constraints.getLength(); ++i) {
             Element constraint = (Element)constraints.item(i);
             Element setting = (Element)settings.item(i);
