@@ -102,6 +102,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
 
+    private static final String SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS = "rulesUsedInBusinessFunctions"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -160,6 +162,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
     private boolean associationsInFormulas = false;
+    private boolean rulesUsedInBusinessFunctions = false;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -633,6 +636,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         createDescriptionComment("Represents the qualified name of all MarkerEnums", projectEl); //$NON-NLS-1$
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, getMarkerEnumsAsString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS,
+                isRulesUsedInBusinessFunctionsEnabled()));
     }
 
     private void toXmlPersistenceOptions(Document doc, Element projectEl) {
@@ -950,6 +956,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setAssociationsInFormulas(enable);
         } else if (name.equals(SETTING_MARKER_ENUMS)) {
             setMarkerEnums(value);
+        } else if (name.equals(SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS)) {
+            rulesUsedInBusinessFunctions = enable;
         }
     }
 
@@ -1314,6 +1322,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- True to allow usage of validation rules in business functions. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1632,6 +1643,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setFormulaLanguageLocale(Locale locale) {
         formulaLanguageLocale = locale;
+    }
+
+    @Override
+    public boolean isRulesUsedInBusinessFunctionsEnabled() {
+        return rulesUsedInBusinessFunctions;
+    }
+
+    @Override
+    public void setRulesUsedInBusinessFunctionsEnabled(boolean enabled) {
+        rulesUsedInBusinessFunctions = enabled;
     }
 
 }

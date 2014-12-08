@@ -555,4 +555,13 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
+    @Override
+    public boolean isRulesUsedInBusinessFunctionsEnabled() {
+        return propertiesInternal.isRulesUsedInBusinessFunctionsEnabled();
+    }
+
+    @Override
+    public void setRulesUsedInBusinessFunctionsEnabled(boolean enabled) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$        
+    }
 }

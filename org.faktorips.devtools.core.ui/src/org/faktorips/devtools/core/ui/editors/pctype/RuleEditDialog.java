@@ -47,9 +47,11 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         msgPage.setText(Messages.RuleEditDialog_generalTitle);
         msgPage.setControl(createGeneralPage(folder));
 
-        TabItem functionsPage = new TabItem(folder, SWT.NONE);
-        functionsPage.setText(Messages.RuleEditDialog_functionTitle);
-        functionsPage.setControl(createFunctionsPage(folder));
+        if (isCreateFunctionsPage()) {
+            TabItem functionsPage = new TabItem(folder, SWT.NONE);
+            functionsPage.setText(Messages.RuleEditDialog_functionTitle);
+            functionsPage.setControl(createFunctionsPage(folder));
+        }
 
         TabItem attributesPage = new TabItem(folder, SWT.NONE);
         attributesPage.setText(Messages.RuleEditDialog_attrTitle);
@@ -88,6 +90,10 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         return workArea;
     }
 
+    private boolean isCreateFunctionsPage() {
+        return getIpsPart().getIpsProject().getReadOnlyProperties().isRulesUsedInBusinessFunctionsEnabled();
+    }
+
     private Control createFunctionsPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
@@ -113,8 +119,10 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     private void bindFields() {
         ruleUI.bindFields(rule, getBindingContext());
-        getBindingContext().bindContent(appliedToAllField, rule,
-                IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        if (isCreateFunctionsPage()) {
+            getBindingContext().bindContent(appliedToAllField, rule,
+                    IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        }
         getBindingContext().bindContent(specifiedInSrcField, rule,
                 IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
     }
