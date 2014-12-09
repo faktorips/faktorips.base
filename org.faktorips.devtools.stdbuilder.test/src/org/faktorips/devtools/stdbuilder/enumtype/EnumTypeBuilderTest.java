@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.stdbuilder.AbstractStdBuilderTest;
 import org.faktorips.devtools.stdbuilder.ProjectConfigurationUtil;
@@ -371,6 +372,23 @@ public class EnumTypeBuilderTest extends AbstractStdBuilderTest {
         JavaCodeFragment codeFragement = builder.getNewInstanceCodeFragement(enumTypeAdapter, "1");
 
         assertEquals(ENUM_TYPE_NAME + ".ABC", codeFragement.getSourcecode());
+    }
+
+    @Test
+    public void testIsMarkerEnum_isMarker() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addMarkerEnum(enumType.getQualifiedName());
+        ipsProject.setProperties(properties);
+        builder.beforeBuild(enumType.getIpsSrcFile(), null);
+
+        assertTrue(builder.isMarkerEnum());
+    }
+
+    @Test
+    public void testIsMarkerEnum_noMarker() throws Exception {
+        builder.beforeBuild(enumType.getIpsSrcFile(), null);
+
+        assertFalse(builder.isMarkerEnum());
     }
 
 }

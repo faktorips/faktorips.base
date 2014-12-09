@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
@@ -226,7 +227,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
             implementedInterfaces.add(Comparable.class.getName() + "<" + typeName + ">");
         }
+        if (isMarkerEnum()) {
+            implementedInterfaces.add(IMarker.class.getName());
+        }
         mainSection.setExtendedInterfaces(implementedInterfaces.toArray(new String[implementedInterfaces.size()]));
+    }
+
+    /* private */boolean isMarkerEnum() {
+        return getIpsProject().getMarkerEnums().contains(getIpsSrcFile());
     }
 
     private void generateAttributesAndConstructor(TypeSection mainSection) throws CoreException {
