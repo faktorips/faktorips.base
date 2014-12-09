@@ -629,8 +629,6 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
                 isAssociationsInFormulas()));
 
-        createDescriptionComment(
-                "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
                 formulaLanguageLocale.getLanguage()));
 
@@ -1314,14 +1312,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" //$NON-NLS-1$
-                + "         by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
-                + "    <!-- Represents the qualified name of the MarkerEnums. For further processing only the first entered qualifiedName will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        Only English (en) and German (de) are supported at the moment. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_FORMULA_LANGUAGE_LOCALE + "\" value=\"en\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow usage of validation rules in business functions. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
