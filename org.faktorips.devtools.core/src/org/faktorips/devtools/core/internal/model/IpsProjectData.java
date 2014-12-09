@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.internal.model;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.faktorips.codegen.DatatypeHelper;
@@ -23,7 +22,6 @@ import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IVersionProvider;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -52,8 +50,6 @@ public class IpsProjectData {
     private ExtensionFunctionResolversCache functionResolver;
 
     private IpsProjectProperties projectProperties;
-
-    private Set<IIpsSrcFile> markerEnums;
 
     /**
      * a map containing a set of datatypes.
@@ -155,14 +151,6 @@ public class IpsProjectData {
 
     public void setVersionProvider(IVersionProvider<?> versionProvider) {
         this.versionFormat = versionProvider;
-    }
-
-    public Set<IIpsSrcFile> getMarkerEnums() {
-        return markerEnums;
-    }
-
-    public void setMarkerEnums() {
-        markerEnums = ipsProject.getMarkerEnums();
     }
 
     static class ContainerTypeAndPath {
