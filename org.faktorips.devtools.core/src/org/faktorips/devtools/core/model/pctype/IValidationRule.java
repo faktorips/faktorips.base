@@ -261,7 +261,8 @@ public interface IValidationRule extends IProductCmptProperty {
     public void setActivatedByDefault(boolean activated);
 
     /**
-     * Returns markers that are applied to this rule.
+     * Returns a list of markers that are applied to this rule. The markers are represented by the
+     * id of an enum value.
      */
     public List<String> getMarkers();
 

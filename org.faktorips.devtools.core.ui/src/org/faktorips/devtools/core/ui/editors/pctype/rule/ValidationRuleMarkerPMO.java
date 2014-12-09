@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
 /**
- * Presentation model object for ValidationRuleMarkerEditDialog to activate or deactivate markers
+ * Presentation model object for {@link ValidationRuleMarkerUI} to activate or deactivate markers
  * for a {@link IValidationRule}.
  */
 public class ValidationRuleMarkerPMO extends PresentationModelObject {
