@@ -557,8 +557,8 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isRulesUsedInBusinessFunctionsEnabled() {
-        return propertiesInternal.isRulesUsedInBusinessFunctionsEnabled();
+    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
+        return propertiesInternal.isBusinessFunctionsForValdiationRulesEnabled();
     }
 
     @Override
@@ -572,7 +572,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public void setRulesUsedInBusinessFunctionsEnabled(boolean enabled) {
+    public void setBusinessFunctionsForValidationRules(boolean enabled) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
 }

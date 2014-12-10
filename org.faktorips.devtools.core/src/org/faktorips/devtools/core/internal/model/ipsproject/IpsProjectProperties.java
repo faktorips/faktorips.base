@@ -104,7 +104,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
 
-    private static final String SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS = "rulesUsedInBusinessFunctions"; //$NON-NLS-1$
+    private static final String SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES = "businessFunctionsForValidationRules"; //$NON-NLS-1$
 
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
@@ -165,7 +165,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean sharedDetailToMasterAssociations = false;
     private boolean associationsInFormulas = false;
     private boolean enableMarkerEnums = true;
-    private boolean rulesUsedInBusinessFunctions = false;
+    private boolean businessFunctionsForValidationRules = false;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -638,8 +638,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, isMarkerEnumsEnabled(),
                 getMarkerEnumsAsString()));
 
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS,
-                isRulesUsedInBusinessFunctionsEnabled()));
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
+                isBusinessFunctionsForValdiationRulesEnabled()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -995,8 +995,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else if (name.equals(SETTING_MARKER_ENUMS)) {
             setMarkerEnumsEnabled(enabled);
             initMarkerEnums(value);
-        } else if (name.equals(SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS)) {
-            rulesUsedInBusinessFunctions = enabled;
+        } else if (name.equals(SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)) {
+            setBusinessFunctionsForValidationRules(enabled);
         }
     }
 
@@ -1369,8 +1369,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "        Use \"enabled=\" to enable or disable usage of marker enums. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
-                + "    <!-- True to allow usage of validation rules in business functions. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "    <!-- True to allow business functions for validation rules. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
@@ -1693,13 +1693,13 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public boolean isRulesUsedInBusinessFunctionsEnabled() {
-        return rulesUsedInBusinessFunctions;
+    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
+        return businessFunctionsForValidationRules;
     }
 
     @Override
-    public void setRulesUsedInBusinessFunctionsEnabled(boolean enabled) {
-        rulesUsedInBusinessFunctions = enabled;
+    public void setBusinessFunctionsForValidationRules(boolean enabled) {
+        businessFunctionsForValidationRules = enabled;
     }
 
 }

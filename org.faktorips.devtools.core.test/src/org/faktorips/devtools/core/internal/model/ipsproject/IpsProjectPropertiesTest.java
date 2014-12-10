@@ -196,7 +196,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             props.setMarkerEnumsEnabled((i & 1) == 1);
             props.setRulesWithoutReferencesAllowedEnabled((i & 1) == 1);
             props.setPersistenceSupport((i & 1) == 1);
-            props.setRulesUsedInBusinessFunctionsEnabled((i & 1) == 1);
+            props.setBusinessFunctionsForValidationRules((i & 1) == 1);
 
             Element projectEl = props.toXml(newDocument());
             props = new IpsProjectProperties(ipsProject);
@@ -208,7 +208,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
             assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
             assertEquals(props.isMarkerEnumsEnabled(), (i & 1) == 1);
-            assertEquals(props.isRulesUsedInBusinessFunctionsEnabled(), (i & 1) == 1);
+            assertEquals(props.isBusinessFunctionsForValdiationRulesEnabled(), (i & 1) == 1);
         }
     }
 
@@ -478,22 +478,22 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testInitFromXmlForRulesUsedInBusinessFunctions() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
 
-        assertTrue(props.isRulesUsedInBusinessFunctionsEnabled());
+        assertTrue(props.isBusinessFunctionsForValdiationRulesEnabled());
     }
 
     @Test
-    public void testIsRulesUsedInBusinessFunctionsEnabled_default() {
+    public void testIsBusinessFunctionsForValdiationRulesEnabled_default() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
-        assertFalse(props.isRulesUsedInBusinessFunctionsEnabled());
+        assertFalse(props.isBusinessFunctionsForValdiationRulesEnabled());
     }
 
     @Test
-    public void testIsRulesUsedInBusinessFunctionsEnabled() {
+    public void testIsBusinessFunctionsForValdiationRulesEnabled() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
-        props.setRulesUsedInBusinessFunctionsEnabled(true);
+        props.setBusinessFunctionsForValidationRules(true);
 
-        assertTrue(props.isRulesUsedInBusinessFunctionsEnabled());
+        assertTrue(props.isBusinessFunctionsForValdiationRulesEnabled());
     }
 
     @Test
