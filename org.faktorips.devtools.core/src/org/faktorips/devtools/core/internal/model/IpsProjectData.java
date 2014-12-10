@@ -53,7 +53,7 @@ public class IpsProjectData {
 
     private ExtensionFunctionResolversCache functionResolver;
 
-    private LinkedHashSet<IIpsSrcFile> markerEnums;
+    private volatile LinkedHashSet<IIpsSrcFile> markerEnums;
 
     private IpsProjectProperties projectProperties;
 
@@ -160,28 +160,32 @@ public class IpsProjectData {
     }
 
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
-        if (markerEnums == null) {
+        LinkedHashSet<IIpsSrcFile> result = markerEnums;
+        if (result == null) {
             synchronized (this) {
-                if (markerEnums == null) {
-                    initMarkerEnums();
+                result = markerEnums;
+                if (result == null) {
+                    result = initMarkerEnums();
+                    markerEnums = result;
                 }
             }
         }
-        return markerEnums;
+        return result;
     }
 
-    private synchronized void initMarkerEnums() {
-        markerEnums = new LinkedHashSet<IIpsSrcFile>();
+    private LinkedHashSet<IIpsSrcFile> initMarkerEnums() {
+        LinkedHashSet<IIpsSrcFile> result = new LinkedHashSet<IIpsSrcFile>();
         IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         if (properties.isMarkerEnumsEnabled()) {
             LinkedHashSet<String> markerEnumsQNames = properties.getMarkerEnums();
             for (String qualifiedName : markerEnumsQNames) {
                 IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
                 if (ipsSrcFile != null && ipsSrcFile.exists()) {
-                    markerEnums.add(ipsSrcFile);
+                    result.add(ipsSrcFile);
                 }
             }
         }
+        return result;
     }
 
     static class ContainerTypeAndPath {
