@@ -193,7 +193,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         for (int i = 0; i < 4; ++i) {
             props.setDerivedUnionIsImplementedRuleEnabled((i & 1) == 1);
             props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled((i & 2) == 2);
-            props.setMarkerEnumsDisabled((i & 1) == 1);
+            props.setMarkerEnumsEnabled((i & 1) == 1);
             props.setRulesWithoutReferencesAllowedEnabled((i & 1) == 1);
             props.setPersistenceSupport((i & 1) == 1);
             props.setRulesUsedInBusinessFunctionsEnabled((i & 1) == 1);
@@ -207,7 +207,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
                     (i & 2) == 2);
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
             assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
-            assertEquals(props.isMarkerEnumsDisabled(), (i & 1) == 1);
+            assertEquals(props.isMarkerEnumsEnabled(), (i & 1) == 1);
             assertEquals(props.isRulesUsedInBusinessFunctionsEnabled(), (i & 1) == 1);
         }
     }
@@ -471,7 +471,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     public void testInitFromXmlForDisableEnumMarkers() {
         IpsProjectProperties props = initPropertiesWithDocumentElement();
 
-        assertTrue(props.isMarkerEnumsDisabled());
+        assertFalse(props.isMarkerEnumsEnabled());
     }
 
     @Test

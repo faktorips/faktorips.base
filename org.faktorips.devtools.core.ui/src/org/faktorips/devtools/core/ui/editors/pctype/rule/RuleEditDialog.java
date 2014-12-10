@@ -67,7 +67,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         attributesPage.setControl(createAttributesPage(folder));
 
         IIpsProject ipsProject = getIpsPart().getIpsProject();
-        if (!ipsProject.getReadOnlyProperties().isMarkerEnumsDisabled()) {
+        if (ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled()) {
             TabItem markerPage = new TabItem(folder, SWT.NONE);
             markerPage.setText(Messages.ValidationRuleMarkerUI_TabName_Markers);
             markerPage.setControl(createMarkersPage(folder));

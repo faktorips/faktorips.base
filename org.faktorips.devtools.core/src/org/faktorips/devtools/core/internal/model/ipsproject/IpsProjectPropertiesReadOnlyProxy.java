@@ -562,12 +562,12 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isMarkerEnumsDisabled() {
-        return propertiesInternal.isMarkerEnumsDisabled();
+    public boolean isMarkerEnumsEnabled() {
+        return propertiesInternal.isMarkerEnumsEnabled();
     }
 
     @Override
-    public void setMarkerEnumsDisabled(boolean disabled) {
+    public void setMarkerEnumsEnabled(boolean enabled) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$        
     }
 

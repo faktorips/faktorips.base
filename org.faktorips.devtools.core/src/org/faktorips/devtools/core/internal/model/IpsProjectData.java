@@ -173,7 +173,7 @@ public class IpsProjectData {
     private void initMarkerEnums() {
         markerEnums = new LinkedHashSet<IIpsSrcFile>();
         IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
-        if (!properties.isMarkerEnumsDisabled()) {
+        if (properties.isMarkerEnumsEnabled()) {
             LinkedHashSet<String> markerEnumsQNames = properties.getMarkerEnums();
             for (String qualifiedName : markerEnumsQNames) {
                 IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
