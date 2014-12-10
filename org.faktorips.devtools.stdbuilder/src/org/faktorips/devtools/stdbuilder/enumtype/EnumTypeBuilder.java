@@ -20,7 +20,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaElement;
@@ -54,6 +53,7 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.util.JavaDocTagGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
+import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.PropertiesReadingInternationalString;
 import org.faktorips.runtime.util.MessagesHelper;
