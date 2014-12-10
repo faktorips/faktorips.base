@@ -667,7 +667,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public Set<String> getMarkerEnums() {
+    public LinkedHashSet<String> getMarkerEnums() {
         return markerEnums;
     }
 
@@ -1289,7 +1289,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "it is possible to configure a version provider." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "Examples:" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-                + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+                + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "or" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<" + VERSION_TAG_NAME + " " + VERSION_PROVIDER_ATTRIBUTE + "=\"org.faktorips.devtools.core.bundleVersionProvider\"/>" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$

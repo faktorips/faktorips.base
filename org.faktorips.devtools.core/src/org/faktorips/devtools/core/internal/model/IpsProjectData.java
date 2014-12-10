@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,6 +23,8 @@ import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IVersionProvider;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -48,6 +51,8 @@ public class IpsProjectData {
     private ClassLoaderProvider classLoaderProvider;
 
     private ExtensionFunctionResolversCache functionResolver;
+
+    private LinkedHashSet<IIpsSrcFile> markerEnums;
 
     private IpsProjectProperties projectProperties;
 
@@ -151,6 +156,28 @@ public class IpsProjectData {
 
     public void setVersionProvider(IVersionProvider<?> versionProvider) {
         this.versionFormat = versionProvider;
+    }
+
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
+        if (markerEnums == null) {
+            synchronized (this) {
+                if (markerEnums == null) {
+                    initMarkerEnums();
+                }
+            }
+        }
+        return markerEnums;
+    }
+
+    private void initMarkerEnums() {
+        markerEnums = new LinkedHashSet<IIpsSrcFile>();
+        LinkedHashSet<String> markerEnumsQNames = ipsProject.getReadOnlyProperties().getMarkerEnums();
+        for (String qualifiedName : markerEnumsQNames) {
+            IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
+            if (ipsSrcFile != null && ipsSrcFile.exists()) {
+                markerEnums.add(ipsSrcFile);
+            }
+        }
     }
 
     static class ContainerTypeAndPath {

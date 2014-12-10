@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.ipsproject;
 
 import java.util.Currency;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -629,7 +630,7 @@ public interface IIpsProjectProperties {
      * Returns a set of strings representing the qualified names of all {@link EnumType}s that are
      * used to define markers for {@link IValidationRule}s.
      */
-    Set<String> getMarkerEnums();
+    LinkedHashSet<String> getMarkerEnums();
 
     /**
      * Adds an {@link EnumType} represented by its qualifiedName to the set of existing marker

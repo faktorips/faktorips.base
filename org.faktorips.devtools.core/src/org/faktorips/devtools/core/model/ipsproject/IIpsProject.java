@@ -12,9 +12,9 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -970,6 +970,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns a Set of {@link IpsSrcFile} representing all {@link EnumType}s that are used to
      * define markers for {@link IValidationRule}s.
      */
-    public Set<IIpsSrcFile> getMarkerEnums();
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums();
 
 }

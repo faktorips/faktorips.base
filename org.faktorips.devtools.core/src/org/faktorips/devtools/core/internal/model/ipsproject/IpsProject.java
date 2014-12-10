@@ -16,7 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -1975,14 +1974,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public Set<IIpsSrcFile> getMarkerEnums() {
-        Set<IIpsSrcFile> markerEnumsIpsSrcFile = new HashSet<IIpsSrcFile>();
-        IIpsProjectProperties properties = getReadOnlyProperties();
-        Set<String> markerEnums = properties.getMarkerEnums();
-        for (String qualifiedName : markerEnums) {
-            IIpsSrcFile ipsSrcFile = findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
-            markerEnumsIpsSrcFile.add(ipsSrcFile);
-        }
-        return markerEnumsIpsSrcFile;
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
+        return getIpsModel().getMarkerEnums(this);
     }
 }
