@@ -16,11 +16,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
@@ -99,7 +97,7 @@ public class XValidationRuleTest {
         EnumType enumType = mock(EnumType.class);
         IIpsSrcFile enumTypeSrcFile = mock(IIpsSrcFile.class);
         List<String> values = new ArrayList<String>();
-        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
+        LinkedHashSet<IIpsSrcFile> srcFiles = new LinkedHashSet<IIpsSrcFile>();
         values.add("id");
         srcFiles.add(enumTypeSrcFile);
 

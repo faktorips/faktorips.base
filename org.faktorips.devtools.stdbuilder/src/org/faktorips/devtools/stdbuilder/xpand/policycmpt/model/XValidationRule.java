@@ -13,7 +13,6 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -193,7 +192,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     public List<String> getMarkers() {
         List<String> result = new ArrayList<String>();
         List<String> markerIds = getValidationRule().getMarkers();
-        Set<IIpsSrcFile> markerEnums = getIpsProject().getMarkerEnums();
+        LinkedHashSet<IIpsSrcFile> markerEnums = getIpsProject().getMarkerEnums();
         if (markerEnums.size() > 0) {
             IIpsSrcFile markerEnumSrcFile = markerEnums.iterator().next();
             IEnumType enumType = (IEnumType)markerEnumSrcFile.getIpsObject();
