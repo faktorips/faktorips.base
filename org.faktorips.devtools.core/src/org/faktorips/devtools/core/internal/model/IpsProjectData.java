@@ -170,7 +170,7 @@ public class IpsProjectData {
         return markerEnums;
     }
 
-    private void initMarkerEnums() {
+    private synchronized void initMarkerEnums() {
         markerEnums = new LinkedHashSet<IIpsSrcFile>();
         IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
         if (properties.isMarkerEnumsEnabled()) {
