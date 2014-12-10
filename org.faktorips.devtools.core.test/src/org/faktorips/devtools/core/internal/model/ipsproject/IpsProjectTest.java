@@ -2377,7 +2377,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
         MessageList msgList = ipsProject.validate();
 
-        assertEquals(2, markerEnums.size());
+        assertEquals(1, markerEnums.size());
         assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
         assertFalse(msgList.isEmpty());
         assertEquals(getExpectedMsgForUnknownMarkerEnums(), msgList.getMessage(0));

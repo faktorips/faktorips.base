@@ -23,7 +23,6 @@ import java.util.List;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -104,7 +103,7 @@ public class XValidationRuleTest {
         when(validationRule.getMarkers()).thenReturn(values);
         when(enumTypeSrcFile.getIpsObject()).thenReturn(enumType);
         when(ipsProject.getMarkerEnums()).thenReturn(srcFiles);
-        when(ipsProject.getDatatypeHelper(new EnumTypeDatatypeAdapter(enumType, null))).thenReturn(datahelper);
+        when(ipsProject.findDatatypeHelper(enumType.getQualifiedName())).thenReturn(datahelper);
         when(datahelper.newInstance("id")).thenReturn(new JavaCodeFragment("EnumType.VALUE"));
 
         List<String> markers = xValidationRule.getMarkers();

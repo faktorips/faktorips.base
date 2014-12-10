@@ -130,7 +130,6 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
 
     private static IEnumType getMarkerEnumFromProject(IIpsProject ipsProject) {
         List<IIpsSrcFile> enumSrcFiles = new ArrayList<IIpsSrcFile>(ipsProject.getMarkerEnums());
-        enumSrcFiles.removeAll(Collections.singleton(null));
         if (!enumSrcFiles.isEmpty()) {
             IEnumType enumType = (IEnumType)enumSrcFiles.get(0).getIpsObject();
             return enumType;
