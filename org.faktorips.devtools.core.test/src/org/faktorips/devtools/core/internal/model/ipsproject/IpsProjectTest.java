@@ -2429,6 +2429,19 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         return expectedMsg;
     }
 
+    @Test
+    public void testGetMarkerEnums_DisableMarkerEnums() throws CoreException {
+        newEnumType(ipsProject, "Enum");
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.addMarkerEnum("Enum");
+        ipsProjectProperties.setMarkerEnumsDisabled(true);
+        ipsProject.setProperties(ipsProjectProperties);
+
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+
+        assertTrue(markerEnums.isEmpty());
+    }
+
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {
 
         @Override

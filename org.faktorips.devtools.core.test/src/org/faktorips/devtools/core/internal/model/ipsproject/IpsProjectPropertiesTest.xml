@@ -69,7 +69,8 @@
   	<Setting name="derivedUnionIsImplemented"/>
   	<Setting name="derivedUnionIsImplemented" value="false"/>
   	<Setting name="formulaLanguageLocale" value="ko"/>
-	<Setting name="markerEnums" value="marker; marker2"/>  	
+	<Setting name="markerEnums" value="marker; marker2"/>
+	<Setting name="disableMarkerEnums" value="true"/>
 	<Setting name="rulesUsedInBusinessFunctions" value="true"/>
   </AdditionalSettings>
 </IpsProject>

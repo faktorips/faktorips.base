@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -171,11 +172,14 @@ public class IpsProjectData {
 
     private void initMarkerEnums() {
         markerEnums = new LinkedHashSet<IIpsSrcFile>();
-        LinkedHashSet<String> markerEnumsQNames = ipsProject.getReadOnlyProperties().getMarkerEnums();
-        for (String qualifiedName : markerEnumsQNames) {
-            IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
-            if (ipsSrcFile != null && ipsSrcFile.exists()) {
-                markerEnums.add(ipsSrcFile);
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
+        if (!properties.isMarkerEnumsDisabled()) {
+            LinkedHashSet<String> markerEnumsQNames = properties.getMarkerEnums();
+            for (String qualifiedName : markerEnumsQNames) {
+                IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
+                if (ipsSrcFile != null && ipsSrcFile.exists()) {
+                    markerEnums.add(ipsSrcFile);
+                }
             }
         }
     }

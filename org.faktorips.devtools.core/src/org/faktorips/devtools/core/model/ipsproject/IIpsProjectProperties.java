@@ -645,6 +645,19 @@ public interface IIpsProjectProperties {
     void removeMarkerEnum(String qualifiedName);
 
     /**
+     * Check if the option to disable usage of marker enums is enabled or not
+     * 
+     * @return <code>true</code> if the option is enabled, <code>false</code> if the option is
+     *         disabled or not configured in the .ipsproject file
+     */
+    boolean isMarkerEnumsDisabled();
+
+    /**
+     * @see #isMarkerEnumsDisabled()
+     */
+    void setMarkerEnumsDisabled(boolean disabled);
+
+    /**
      * Check if the option to allow rules to be used in business functions is enabled or not
      * 
      * @return <code>true</code> if the option is enabled, <code>false</code> if the option is

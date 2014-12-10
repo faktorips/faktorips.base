@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
@@ -65,9 +66,12 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         attributesPage.setText(Messages.RuleEditDialog_attrTitle);
         attributesPage.setControl(createAttributesPage(folder));
 
-        TabItem markerPage = new TabItem(folder, SWT.NONE);
-        markerPage.setText(Messages.ValidationRuleMarkerUI_TabName_Markers);
-        markerPage.setControl(createMarkersPage(folder));
+        IIpsProject ipsProject = getIpsPart().getIpsProject();
+        if (!ipsProject.getReadOnlyProperties().isMarkerEnumsDisabled()) {
+            TabItem markerPage = new TabItem(folder, SWT.NONE);
+            markerPage.setText(Messages.ValidationRuleMarkerUI_TabName_Markers);
+            markerPage.setControl(createMarkersPage(folder));
+        }
 
         /*
          * the update cycle for changes to model objects is extended so that the gui will be updated

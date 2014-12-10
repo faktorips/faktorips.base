@@ -1641,9 +1641,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     private void validateMarkerEnums(MessageList result) {
-        Set<IIpsSrcFile> markerEnums = getMarkerEnums();
-        for (IIpsSrcFile ipsSrcFile : markerEnums) {
-            if (ipsSrcFile == null || !ipsSrcFile.exists() || !isEnumType(ipsSrcFile)) {
+        IIpsProjectProperties properties = getReadOnlyProperties();
+        Set<String> markerEnumQNames = properties.getMarkerEnums();
+        for (String enumQName : markerEnumQNames) {
+            IIpsSrcFile ipsSrcFile = findIpsSrcFile(new QualifiedNameType(enumQName, IpsObjectType.ENUM_TYPE));
+            if (ipsSrcFile == null || !ipsSrcFile.exists()) {
                 result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
                         Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR, getIpsProjectPropertiesFile()));
             } else if (isExtensibleEnumType(ipsSrcFile)) {
@@ -1653,10 +1655,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
                         getIpsProjectPropertiesFile()));
             }
         }
-    }
-
-    private boolean isEnumType(IIpsSrcFile ipsSrcFile) {
-        return IpsObjectType.ENUM_TYPE.equals(ipsSrcFile.getIpsObjectType());
     }
 
     private boolean isExtensibleEnumType(IIpsSrcFile ipsSrcFile) {

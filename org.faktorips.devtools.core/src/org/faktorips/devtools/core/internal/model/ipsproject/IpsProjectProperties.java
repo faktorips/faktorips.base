@@ -102,6 +102,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
 
+    private static final String SETTING_DISABLE_MARKER_ENUMS = "disableMarkerEnums"; //$NON-NLS-1$
+
     private static final String SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS = "rulesUsedInBusinessFunctions"; //$NON-NLS-1$
 
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
@@ -162,6 +164,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
     private boolean associationsInFormulas = false;
+    private boolean disableMarkerEnums = false;
     private boolean rulesUsedInBusinessFunctions = false;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
@@ -634,6 +637,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, getMarkerEnumsAsString()));
 
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DISABLE_MARKER_ENUMS,
+                isMarkerEnumsDisabled()));
+
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS,
                 isRulesUsedInBusinessFunctionsEnabled()));
     }
@@ -681,6 +687,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     public void removeMarkerEnum(String qualifiedName) {
         ArgumentCheck.notNull(qualifiedName);
         getMarkerEnums().remove(qualifiedName);
+    }
+
+    @Override
+    public boolean isMarkerEnumsDisabled() {
+        return disableMarkerEnums;
+    }
+
+    @Override
+    public void setMarkerEnumsDisabled(boolean disabled) {
+        disableMarkerEnums = disabled;
     }
 
     private Element createSettingElement(Document doc, String name, boolean enable) {
@@ -952,18 +968,20 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
             setAssociationsInFormulas(enable);
         } else if (name.equals(SETTING_MARKER_ENUMS)) {
-            setMarkerEnums(value);
+            initMarkerEnums(value);
+        } else if (name.equals(SETTING_DISABLE_MARKER_ENUMS)) {
+            setMarkerEnumsDisabled(enable);
         } else if (name.equals(SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS)) {
             rulesUsedInBusinessFunctions = enable;
         }
     }
 
-    private void setMarkerEnums(String value) {
+    private void initMarkerEnums(String value) {
         getMarkerEnums().clear();
         if (!value.isEmpty()) {
             String[] splitString = value.split(MARKER_ENUMS_DELIMITER);
             for (String qualifiedName : splitString) {
-                getMarkerEnums().add(qualifiedName.trim());
+                addMarkerEnum(qualifiedName.trim());
             }
         }
     }
@@ -1306,18 +1324,18 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" value=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        Only English (en) and German (de) are supported at the moment. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
@@ -1326,8 +1344,11 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- True to disable usage of marker enums. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DISABLE_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow usage of validation rules in business functions. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_USED_IN_BUSINESS_FUNCTIONS + "\" value=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
