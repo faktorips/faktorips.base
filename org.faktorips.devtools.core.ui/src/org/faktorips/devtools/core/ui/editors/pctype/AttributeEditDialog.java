@@ -796,8 +796,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 });
 
         if (ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled()) {
-            Table markerTable = ruleMarkerUI.getMarkerTableControl();
-            if (markerTable != null) {
+            if (ruleMarkerUI.hasMarkerTable()) {
+                Table markerTable = ruleMarkerUI.getMarkerTableControl();
                 getBindingContext().bindEnabled(markerTable, ruleModel, RuleUIModel.PROPERTY_ENABLED);
             }
         }

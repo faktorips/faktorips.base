@@ -101,6 +101,10 @@ public class ValidationRuleMarkerUI {
         return markerTable;
     }
 
+    public boolean hasMarkerTable() {
+        return getMarkerTable() != null;
+    }
+
     public Table getMarkerTableControl() {
         return getMarkerTable().getTable();
     }
