@@ -119,7 +119,17 @@
                 getClass().getClassLoader(), «defaultLocale»);
         String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale() «FOREACH replacementParameters AS param», «param»«ENDFOREACH»);
        	
-       	Message.Builder builder = new Message.Builder(msgText, «severityConstant»).code(«constantNameMessageCode»).invalidObject(invalidObjectProperties)«IF containsReplacementParameters-».replacements(replacementParameters)«ENDIF-»«IF containingMarkers-».markers(«FOREACH markers AS param SEPARATOR ","-» «param»«ENDFOREACH»)«ENDIF-»;
+       	«Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
+       		.code(«constantNameMessageCode»)
+       		.invalidObjects(invalidObjectProperties)
+       		«IF containsReplacementParameters-»
+       			.replacements(replacementParameters)
+   			«ENDIF-»
+   			«IF containingMarkers-»
+   				.markers
+   				(«FOREACH markers AS param SEPARATOR ","-» «param»«ENDFOREACH»)
+   			«ENDIF-»
+   			;
 		return builder.create(); 
     }
 «ENDDEFINE»
