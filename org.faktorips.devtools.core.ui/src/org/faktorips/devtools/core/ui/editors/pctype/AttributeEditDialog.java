@@ -772,13 +772,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     private void rebindTo(IValidationRule newRule) {
         ruleDefinitionUI.removeBindingsFromContext(getBindingContext());
         if (newRule != null) {
-            if (ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled()) {
+            if (allowMarkerEditing()) {
                 ruleMarkerPMO.setRule(newRule);
                 ruleMarkerUI.getMarkerTable().setInput(ruleMarkerPMO.getItems());
             }
             ruleDefinitionUI.bindFields(newRule, getBindingContext());
         }
         getBindingContext().updateUI();
+    }
+
+    private boolean allowMarkerEditing() {
+        return ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled() && ruleMarkerUI.hasMarkerTable();
     }
 
     private void bindEnablement() {
@@ -795,11 +799,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     }
                 });
 
-        if (ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled()) {
-            if (ruleMarkerUI.hasMarkerTable()) {
-                Table markerTable = ruleMarkerUI.getMarkerTableControl();
-                getBindingContext().bindEnabled(markerTable, ruleModel, RuleUIModel.PROPERTY_ENABLED);
-            }
+        if (allowMarkerEditing()) {
+            Table markerTable = ruleMarkerUI.getMarkerTableControl();
+            getBindingContext().bindEnabled(markerTable, ruleModel, RuleUIModel.PROPERTY_ENABLED);
         }
     }
 
