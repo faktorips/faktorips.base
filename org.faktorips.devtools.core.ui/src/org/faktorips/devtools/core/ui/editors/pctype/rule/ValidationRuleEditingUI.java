@@ -200,7 +200,7 @@ public class ValidationRuleEditingUI {
     }
 
     private void updateCharCount() {
-        String msg = NLS.bind(Messages.RuleEditDialog_contains, new Integer(msgTextField.getText().length()));
+        String msg = NLS.bind(Messages.RuleEditDialog_contains, Integer.valueOf(msgTextField.getText().length()));
         charCountPainter.setText(msg);
         msgTextField.getTextControl().redraw();
     }

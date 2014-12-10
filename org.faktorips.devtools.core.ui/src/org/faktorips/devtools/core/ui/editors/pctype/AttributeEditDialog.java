@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -737,35 +738,43 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         bindEnablement();
         ruleDefinitionUI.initUI(ruleComposite);
         ruleModel.addPropertyChangeListener(new PropertyChangeListener() {
-            /**
-             * {@inheritDoc} Binds the ruleDefinitionUIs controls to the new rule given by the
-             * {@link PropertyChangeEvent} and updates them accordingly. If no rule is given (
-             * <code>null</code>) all bindings are removed.
-             */
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ruleDefinitionUI.isUiInitialized()
                         && RuleUIModel.PROPERTY_VALIDATION_RULE.equals(evt.getPropertyName())) {
-                    ruleDefinitionUI.removeBindingsFromContext(getBindingContext());
-                    if (evt.getNewValue() != null) {
-                        IValidationRule rule = (IValidationRule)evt.getNewValue();
-                        ruleMarkerPMO.setRule(rule);
-                        ruleMarkerUI.getMarkerTable().setInput(ruleMarkerPMO.getItems());
-                        ruleDefinitionUI.bindFields(rule, getBindingContext());
-                    }
-                    getBindingContext().updateUI();
+                    IValidationRule newRule = (IValidationRule)evt.getNewValue();
+                    rebindTo(newRule);
                 }
             }
+
         });
 
         ruleMarkerUI.setTableVisibleLines(5);
         ruleMarkerUI.createUI(workArea, ruleMarkerPMO);
-        getBindingContext().bindEnabled(ruleMarkerUI.getMarkerTableControl(), ruleModel, RuleUIModel.PROPERTY_ENABLED);
 
         // initialize ruleDefintionUI state.
         ruleModel.fireRuleChange();
 
         return workArea;
+    }
+
+    /**
+     * By activating/deactivating a validation rule for an attribute, not only can the rule be
+     * <code>null</code>, but also new new rule instances can be created repeatedly. To keep all UI
+     * elements bound to the correct rule instance, it has to be re-bound in that case.
+     * 
+     * SW 10.12.2014: Note that this is a workaround. A cleaner solution would be to introduce a
+     * rule-PMO that is bound to the UI and hides the fact that the rule may be replaced or deleted.
+     * See private/sw/3572_2 for a work-in-progress of this idea.
+     */
+    private void rebindTo(IValidationRule newRule) {
+        ruleDefinitionUI.removeBindingsFromContext(getBindingContext());
+        if (newRule != null) {
+            ruleMarkerPMO.setRule(newRule);
+            ruleMarkerUI.getMarkerTable().setInput(ruleMarkerPMO.getItems());
+            ruleDefinitionUI.bindFields(newRule, getBindingContext());
+        }
+        getBindingContext().updateUI();
     }
 
     private void bindEnablement() {
@@ -781,6 +790,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         }
                     }
                 });
+
+        Table markerTable = ruleMarkerUI.getMarkerTableControl();
+        if (markerTable != null) {
+            getBindingContext().bindEnabled(markerTable, ruleModel, RuleUIModel.PROPERTY_ENABLED);
+        }
     }
 
     private void createPersistenceTabItemIfNecessary(TabFolder tabFolder) {

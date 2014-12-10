@@ -38,7 +38,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
 
     public ValidationRuleMarkerPMO(IValidationRule validationRule, IEnumType markerDefinition) {
         this.markerDefinition = markerDefinition;
-        setRule(validationRule);
+        this.rule = validationRule;
     }
 
     /**
@@ -52,7 +52,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         initItems();
     }
 
-    private void initItems() {
+    protected void initItems() {
         Set<String> idSet = new HashSet<String>(getActiveMarkers());
         List<IEnumValue> allMarkers = getAllMarkers();
         items = new ArrayList<MarkerViewItem>();
@@ -89,7 +89,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         return markerDefinition != null;
     }
 
-    private ValueDatatype getEnumType() {
+    protected ValueDatatype getEnumDatatype() {
         return markerDefinition.getIpsProject().findValueDatatype(markerDefinition.getQualifiedName());
     }
 
@@ -123,7 +123,9 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
     }
 
     public static ValidationRuleMarkerPMO createFor(IIpsProject ipsProject, IValidationRule vRule) {
-        return new ValidationRuleMarkerPMO(vRule, getMarkerEnumFromProject(ipsProject));
+        ValidationRuleMarkerPMO pmo = new ValidationRuleMarkerPMO(vRule, getMarkerEnumFromProject(ipsProject));
+        pmo.initItems();
+        return pmo;
     }
 
     private static IEnumType getMarkerEnumFromProject(IIpsProject ipsProject) {
@@ -138,18 +140,29 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
     }
 
     /**
-     * Represents an item with a checkbox at the UI.
+     * Represents an item with a checkbox in the UI.
      */
     public static class MarkerViewItem {
-        private ValidationRuleMarkerPMO pmo;
-        private boolean checked;
-        private String id;
+        private final ValidationRuleMarkerPMO pmo;
+        private final String id;
+        private final String label;
 
-        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean checked) {
+        private boolean checked;
+
+        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState) {
             super();
             this.pmo = pmo;
             this.id = id;
-            this.checked = checked;
+            this.label = initLabel();
+            this.checked = initialCheckedState;
+        }
+
+        private String initLabel() {
+            if (pmo.hasAvailableMarkers()) {
+                return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(pmo.getEnumDatatype(), getId());
+            } else {
+                return StringUtils.EMPTY;
+            }
         }
 
         public boolean isChecked() {
@@ -162,11 +175,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         }
 
         public String getLabel() {
-            if (pmo.hasAvailableMarkers()) {
-                return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(pmo.getEnumType(), getId());
-            } else {
-                return StringUtils.EMPTY;
-            }
+            return label;
         }
 
         public String getId() {

@@ -66,7 +66,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         attributesPage.setControl(createAttributesPage(folder));
 
         TabItem markerPage = new TabItem(folder, SWT.NONE);
-        markerPage.setText("Markers");
+        markerPage.setText(Messages.ValidationRuleMarkerUI_TabName_Markers);
         markerPage.setControl(createMarkersPage(folder));
 
         /*
