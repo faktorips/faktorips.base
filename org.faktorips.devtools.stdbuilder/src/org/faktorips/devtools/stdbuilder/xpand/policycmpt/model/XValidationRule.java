@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -199,14 +198,14 @@ public class XValidationRule extends AbstractGeneratorModelNode {
             IIpsSrcFile markerEnumSrcFile = markerEnums.iterator().next();
             IEnumType enumType = (IEnumType)markerEnumSrcFile.getIpsObject();
             for (String id : markerIds) {
-                result.add(getCode(enumType, id));
+                result.add(getMarkerSourceCode(enumType, id));
             }
         }
         return result;
     }
 
-    public String getCode(IEnumType enumType, String id) {
-        DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(new EnumTypeDatatypeAdapter(enumType, null));
+    public String getMarkerSourceCode(IEnumType enumType, String id) {
+        DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
         JavaCodeFragment newInstance = datatypeHelper.newInstance(id);
         addImport(newInstance.getImportDeclaration());
         return newInstance.getSourcecode();

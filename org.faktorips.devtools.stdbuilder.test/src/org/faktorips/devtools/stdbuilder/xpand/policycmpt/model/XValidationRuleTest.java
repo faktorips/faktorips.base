@@ -12,6 +12,8 @@ package org.faktorips.devtools.stdbuilder.xpand.policycmpt.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +36,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,27 +54,13 @@ public class XValidationRuleTest {
     private IMarker marker;
 
     @Mock
-    private EnumType enumType;
-
-    @Mock
-    private IIpsSrcFile enumTypeSrcFile;
-
-    @Mock
     private IIpsProject ipsProject;
-
-    @Mock
-    private DatatypeHelper datahelper;
 
     private XValidationRule xValidationRule;
 
-    private Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
-
-    private List<String> values = new ArrayList<String>();
-
     @Before
     public void createXValidationRule() throws Exception {
-        Mockito.when(validationRule.getIpsProject()).thenReturn(ipsProject);
-        Mockito.when(validationRule.getMarkers()).thenReturn(values);
+        when(validationRule.getIpsProject()).thenReturn(ipsProject);
 
         xValidationRule = new XValidationRule(validationRule, context, modelService);
     }
@@ -107,13 +94,20 @@ public class XValidationRuleTest {
     }
 
     @Test
-    public void testGetMarkers() {
+    public void testGetMarkerSourceCodes() {
+        DatatypeHelper datahelper = mock(DatatypeHelper.class);
+        EnumType enumType = mock(EnumType.class);
+        IIpsSrcFile enumTypeSrcFile = mock(IIpsSrcFile.class);
+        List<String> values = new ArrayList<String>();
+        Set<IIpsSrcFile> srcFiles = new HashSet<IIpsSrcFile>();
         values.add("id");
-        Mockito.when(enumTypeSrcFile.getIpsObject()).thenReturn(enumType);
         srcFiles.add(enumTypeSrcFile);
-        Mockito.when(ipsProject.getMarkerEnums()).thenReturn(srcFiles);
-        Mockito.when(ipsProject.getDatatypeHelper(new EnumTypeDatatypeAdapter(enumType, null))).thenReturn(datahelper);
-        Mockito.when(datahelper.newInstance("id")).thenReturn(new JavaCodeFragment("EnumType.VALUE"));
+
+        when(validationRule.getMarkers()).thenReturn(values);
+        when(enumTypeSrcFile.getIpsObject()).thenReturn(enumType);
+        when(ipsProject.getMarkerEnums()).thenReturn(srcFiles);
+        when(ipsProject.getDatatypeHelper(new EnumTypeDatatypeAdapter(enumType, null))).thenReturn(datahelper);
+        when(datahelper.newInstance("id")).thenReturn(new JavaCodeFragment("EnumType.VALUE"));
 
         List<String> markers = xValidationRule.getMarkers();
 
