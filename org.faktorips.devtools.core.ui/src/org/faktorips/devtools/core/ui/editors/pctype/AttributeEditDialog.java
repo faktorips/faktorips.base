@@ -735,7 +735,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         ruleComposite = getToolkit().createGridComposite(workArea, 1, false, false);
 
-        bindEnablement();
         ruleDefinitionUI.initUI(ruleComposite);
         ruleModel.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
@@ -746,13 +745,13 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                     rebindTo(newRule);
                 }
             }
-
         });
 
         if (ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled()) {
             ruleMarkerUI.setTableVisibleLines(5);
-            ruleMarkerUI.createUI(workArea, ruleMarkerPMO);
+            ruleMarkerUI.createUI(ruleComposite, ruleMarkerPMO);
         }
+        bindEnablement();
 
         // initialize ruleDefintionUI state.
         ruleModel.fireRuleChange();
