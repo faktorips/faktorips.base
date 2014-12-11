@@ -1366,7 +1366,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_FORMULA_LANGUAGE_LOCALE + "\" value=\"en\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "        Use \"enabled=\" to enable or disable usage of marker enums. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        True to allow usage of marker enums. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow business functions for validation rules. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$

@@ -2434,7 +2434,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         newEnumType(ipsProject, "Enum");
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
         ipsProjectProperties.addMarkerEnum("Enum");
-        ipsProjectProperties.setMarkerEnumsEnabled(true);
+        ipsProjectProperties.setMarkerEnumsEnabled(false);
         ipsProject.setProperties(ipsProjectProperties);
 
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
