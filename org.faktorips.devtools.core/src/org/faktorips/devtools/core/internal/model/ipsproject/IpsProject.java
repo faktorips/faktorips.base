@@ -1648,6 +1648,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             if (ipsSrcFile == null || !ipsSrcFile.exists()) {
                 result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
                         Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR, getIpsProjectPropertiesFile()));
+            } else if (isAbstractEnumType(ipsSrcFile)) {
+                String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
+                        ((IEnumType)ipsSrcFile.getIpsObject()).getQualifiedName());
+                result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                        getIpsProjectPropertiesFile()));
             } else if (isExtensibleEnumType(ipsSrcFile)) {
                 String msg = NLS.bind(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
                         ((IEnumType)ipsSrcFile.getIpsObject()).getQualifiedName());
@@ -1659,6 +1664,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private boolean isExtensibleEnumType(IIpsSrcFile ipsSrcFile) {
         return ((IEnumType)ipsSrcFile.getIpsObject()).isExtensible();
+    }
+
+    private boolean isAbstractEnumType(IIpsSrcFile ipsSrcFile) {
+        return ((IEnumType)ipsSrcFile.getIpsObject()).isAbstract();
     }
 
     private void validateJavaProjectBuildPath(MessageList result) throws JavaModelException {

@@ -2430,6 +2430,27 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateMarkerEnums_isAbstract() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum");
+        enumType.setAbstract(true);
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertFalse(msgList.isEmpty());
+        assertEquals(getExpectedMsgForAbstractMarkerEnums(enumType), msgList.getMessage(0));
+    }
+
+    private Message getExpectedMsgForAbstractMarkerEnums(EnumType enumType) {
+        String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
+                enumType.getQualifiedName());
+        Message expectedMsg = new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                ipsProject.getIpsProjectPropertiesFile());
+        return expectedMsg;
+    }
+
+    @Test
     public void testGetMarkerEnums_DisableMarkerEnums() throws CoreException {
         newEnumType(ipsProject, "Enum");
         IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
