@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO.MarkerViewItem;
@@ -107,6 +108,14 @@ public class ValidationRuleMarkerUI {
 
     public Table getMarkerTableControl() {
         return getMarkerTable().getTable();
+    }
+
+    /**
+     * Returns <code>true</code> if marker enums are enabled for the given {@link IIpsProject}. If
+     * marker enums is disabled <code>false</code> is returned.
+     */
+    public boolean isMarkerEnumsEnabled(IIpsProject ipsProject) {
+        return ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled();
     }
 
 }

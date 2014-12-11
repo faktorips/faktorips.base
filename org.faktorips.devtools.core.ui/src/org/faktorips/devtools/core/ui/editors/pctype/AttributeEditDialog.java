@@ -747,7 +747,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
             }
         });
 
-        if (ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled()) {
+        if (ruleMarkerUI.isMarkerEnumsEnabled(ipsProject)) {
             ruleMarkerUI.setTableVisibleLines(5);
             ruleMarkerUI.createUI(ruleComposite, ruleMarkerPMO);
         }
@@ -781,7 +781,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private boolean allowMarkerEditing() {
-        return ipsProject.getReadOnlyProperties().isMarkerEnumsEnabled() && ruleMarkerUI.hasMarkerTable();
+        return ruleMarkerUI.isMarkerEnumsEnabled(ipsProject) && ruleMarkerUI.hasMarkerTable();
     }
 
     private void bindEnablement() {

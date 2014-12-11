@@ -38,6 +38,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private CheckboxField specifiedInSrcField;
 
     private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());
+    private ValidationRuleMarkerUI validationRuleMarkerUI = new ValidationRuleMarkerUI(getToolkit());
 
     private ValidationRuleMarkerPMO ruleMarkerPMO;
 
@@ -126,7 +127,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private Control createMarkersPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
 
-        ValidationRuleMarkerUI validationRuleMarkerUI = new ValidationRuleMarkerUI(getToolkit());
         validationRuleMarkerUI.createUI(workArea, ruleMarkerPMO);
 
         return workArea;
