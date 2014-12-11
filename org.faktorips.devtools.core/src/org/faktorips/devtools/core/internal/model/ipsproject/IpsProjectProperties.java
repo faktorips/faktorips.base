@@ -188,6 +188,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private String versionProviderId;
 
+    /** Used to check if the additional setting "markerEnums" is configured in the .ipsproject file. */
+    private boolean markerEnumsConfiguredInIpsProjectFile = false;
+
     public IpsProjectProperties(IIpsProject ipsProject) {
         super();
         path = new IpsObjectPath(ipsProject);
@@ -962,6 +965,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             applySetting(name, enabled, value);
             initFunctionsLanguageLocale(name, value);
         }
+        if (!markerEnumsConfiguredInIpsProjectFile) {
+            setMarkerEnumsEnabled(false);
+        }
     }
 
     private boolean isValidSettingElement(Element child) {
@@ -995,6 +1001,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         } else if (name.equals(SETTING_MARKER_ENUMS)) {
             setMarkerEnumsEnabled(enabled);
             initMarkerEnums(value);
+            markerEnumsConfiguredInIpsProjectFile = true;
         } else if (name.equals(SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)) {
             setBusinessFunctionsForValidationRules(enabled);
         }
