@@ -86,7 +86,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTranslations);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
-        fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.properties" }); //$NON-NLS-1$
+        fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
         bindingContext.bindContent(new TextButtonField(fileSelectionControl), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FILE_NAME);
         createLocaleControl(rootComposite);
