@@ -1640,29 +1640,26 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return result;
     }
 
-    private void validateMarkerEnums(MessageList result) {
+    private void validateMarkerEnums(MessageList messageList) {
         IIpsProjectProperties properties = getReadOnlyProperties();
         Set<String> markerEnumQNames = properties.getMarkerEnums();
         for (String enumQName : markerEnumQNames) {
-            IEnumType markerEnum = findMarkerEnum(result, enumQName);
-            if (markerEnum != null) {
-                checkEnumTypeProperties(result, markerEnum);
-            }
+            validateEnumQName(messageList, enumQName);
         }
     }
 
-    private IEnumType findMarkerEnum(MessageList result, String enumQName) {
+    private void validateEnumQName(MessageList messageList, String enumQName) {
         IIpsSrcFile ipsSrcFile = findIpsSrcFile(new QualifiedNameType(enumQName, IpsObjectType.ENUM_TYPE));
         if (ipsSrcFile == null || !ipsSrcFile.exists()) {
-            result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
+            messageList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
                     Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR, getIpsProjectPropertiesFile()));
-            return null;
         } else {
-            return (IEnumType)ipsSrcFile.getIpsObject();
+            IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
+            validateMarkerEnumProperties(enumType, messageList);
         }
     }
 
-    private void checkEnumTypeProperties(MessageList result, IEnumType markerEnum) {
+    private void validateMarkerEnumProperties(IEnumType markerEnum, MessageList result) {
         if (markerEnum.isAbstract()) {
             String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
                     markerEnum.getQualifiedName());
