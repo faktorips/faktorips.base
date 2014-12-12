@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.MarkerEnumUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -53,7 +52,11 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         Set<String> idSet = new HashSet<String>(getActiveMarkers());
         items = new ArrayList<MarkerViewItem>();
         for (String id : markerUtil.getDefinedMarkerIds()) {
-            items.add(new MarkerViewItem(this, id, idSet.contains(id)));
+            items.add(new MarkerViewItem(this, id, idSet.remove(id), false));
+        }
+        // illegal marker IDs
+        for (String id : idSet) {
+            items.add(MarkerViewItem.errorItem(this, id));
         }
     }
 
@@ -112,20 +115,26 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         private final String label;
 
         private boolean checked;
+        private boolean error;
 
-        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState) {
+        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState, boolean error) {
             super();
             this.pmo = pmo;
             this.id = id;
-            this.label = initLabel();
             this.checked = initialCheckedState;
+            this.error = error;
+            this.label = initLabel();
+        }
+
+        public static MarkerViewItem errorItem(ValidationRuleMarkerPMO pmo, String markerID) {
+            return new MarkerViewItem(pmo, markerID, true, true);
         }
 
         private String initLabel() {
             if (pmo.hasAvailableMarkers()) {
                 return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(pmo.getEnumDatatype(), getId());
             } else {
-                return StringUtils.EMPTY;
+                return id;
             }
         }
 
@@ -144,6 +153,10 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
 
         public String getId() {
             return id;
+        }
+
+        public boolean hasError() {
+            return error;
         }
 
     }

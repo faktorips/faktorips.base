@@ -122,4 +122,27 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
         assertEquals("id1", markers.get(0));
         assertEquals("id2", markers.get(1));
     }
+
+    @Test
+    public void testIllegalID() throws CoreException {
+        initMarkerEnumInProjectSettings();
+        rule.setMarkers(Collections.singletonList("illegalID"));
+        initMarkerPMO();
+
+        List<MarkerViewItem> items = markerPMO.getItems();
+
+        assertEquals(3, items.size());
+        MarkerViewItem item1 = items.get(0);
+        assertEquals("id1", item1.getId());
+        assertFalse(item1.hasError());
+
+        MarkerViewItem item2 = items.get(1);
+        assertEquals("id2", item2.getId());
+        assertFalse(item2.hasError());
+
+        MarkerViewItem illegalItem = items.get(2);
+        assertEquals("illegalID", illegalItem.getId());
+        assertEquals("illegalID", illegalItem.getLabel());
+        assertTrue(illegalItem.hasError());
+    }
 }
