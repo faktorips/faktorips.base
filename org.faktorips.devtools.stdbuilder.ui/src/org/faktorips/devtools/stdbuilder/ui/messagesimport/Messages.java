@@ -25,6 +25,16 @@ public class Messages extends NLS {
     public static String MessagesImportWizard_pageName;
     public static String MessagesImportWizard_windowTitle;
     public static String MessagesImportPMO_EmptyLocale;
+    public static String MessagesImportWizard_labelFormat;
+    public static String MessagesImportWizard_labelFormatProperties;
+    public static String MessagesImportWizard_labelFormatCSV;
+    public static String MessagesImportWizard_labelFormatSettings;
+    public static String MessagesImportWizard_labelFormatSettingsDelimiter;
+    public static String MessagesImportWizard_labelFormatSettingsIdentifier;
+    public static String MessagesImportWizard_labelFormatSettingsColumn;
+    public static String MessagesImportWizard_labelIdentification;
+    public static String MessagesImportWizard_labelIdentificationName;
+    public static String MessagesImportWizard_labelIdentificationCode;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

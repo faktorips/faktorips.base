@@ -14,13 +14,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -74,22 +77,14 @@ public class MessagesImportPage extends WizardDataTransferPage {
         uiToolkit = new UIToolkit(null);
         bindingContext = new BindingContext();
 
-        Composite rootComposite = uiToolkit.createGridComposite(parent, 1, false, false);
+        Composite rootComposite = uiToolkit.createGridComposite(parent, 2, false, false);
 
-        Composite labelEditComposite = uiToolkit.createLabelEditColumnComposite(rootComposite);
+        Composite labelEditComposite = createImportControl(rootComposite);
+        createLanguagesComposite(labelEditComposite);
 
-        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTarget);
-        target = new IpsPckFragmentRootRefControl(labelEditComposite, true, uiToolkit);
-
-        bindingContext.bindContent(new IpsPckFragmentRootRefField(target), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
-
-        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTranslations);
-        fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
-        fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
-        bindingContext.bindContent(new TextButtonField(fileSelectionControl), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FILE_NAME);
-        createLocaleControl(rootComposite);
+        createFormatControl(labelEditComposite);
+        createLocaleControl(labelEditComposite);
+        createIdentificationControl(labelEditComposite);
 
         setControl(rootComposite);
         initDefaults();
@@ -97,12 +92,56 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     }
 
-    protected void createLocaleControl(Composite rootComposite) {
+    private Composite createImportControl(Composite rootComposite) {
+        Composite labelEditComposite = uiToolkit.createLabelEditColumnComposite(rootComposite);
 
-        Composite optionComposite = uiToolkit.createLabelEditColumnComposite(rootComposite);
+        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTarget);
+        target = new IpsPckFragmentRootRefControl(labelEditComposite, true, uiToolkit);
 
-        uiToolkit.createLabel(optionComposite, Messages.MessagesImportPage_labelLocale);
-        localeCombo = uiToolkit.createCombo(optionComposite);
+        bindingContext.bindContent(new IpsPckFragmentRootRefField(target), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
+        return labelEditComposite;
+    }
+
+    private void createLanguagesComposite(Composite labelEditComposite) {
+        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTranslations);
+        fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
+        fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
+        bindingContext.bindContent(new TextButtonField(fileSelectionControl), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FILE_NAME);
+    }
+
+    private void createFormatControl(Composite labelEditComposite) {
+        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelFormat);
+
+        Composite composite = uiToolkit.createGridComposite(labelEditComposite, 2, true, false);
+
+        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelFormatProperties);
+        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelFormatCSV);
+        createFormatSettingsControl(labelEditComposite);
+
+    }
+
+    private void createFormatSettingsControl(Composite labelEditComposite) {
+        uiToolkit.createFormLabel(labelEditComposite, StringUtils.EMPTY);
+        Group formatgroup = uiToolkit
+                .createGroup(labelEditComposite, Messages.MessagesImportWizard_labelFormatSettings);
+        formatgroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+        Composite formatSettingsComposite = uiToolkit.createLabelEditColumnComposite(formatgroup);
+        uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
+        uiToolkit.createText(formatSettingsComposite);
+
+        uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
+        uiToolkit.createText(formatSettingsComposite);
+
+        uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsColumn);
+        uiToolkit.createText(formatSettingsComposite);
+
+    }
+
+    protected void createLocaleControl(Composite labelEditComposite) {
+        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelLocale);
+        localeCombo = uiToolkit.createCombo(labelEditComposite);
         localeComboField = new ComboViewerField<ISupportedLanguage>(localeCombo, ISupportedLanguage.class);
         localeComboField.setLabelProvider(new LabelProvider() {
             @Override
@@ -116,6 +155,13 @@ public class MessagesImportPage extends WizardDataTransferPage {
         });
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
 
+    }
+
+    private void createIdentificationControl(Composite labelEditComposite) {
+        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelIdentification);
+        Composite composite = uiToolkit.createGridComposite(labelEditComposite, 2, true, false);
+        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelIdentificationName);
+        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelIdentificationCode);
     }
 
     private void initDefaults() {
