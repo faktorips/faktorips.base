@@ -84,7 +84,7 @@ public class Message implements Serializable {
     private final List<MsgReplacementParameter> replacementParameters;
 
     /**
-     * A list of {@link IMarker} containing additional information.
+     * A set of {@link IMarker} containing additional information.
      */
     private final Set<IMarker> markers;
 
@@ -465,7 +465,7 @@ public class Message implements Serializable {
     }
 
     /**
-     * Returns a list of {@link IMarker}s associated with this class. Returns an empty list if no
+     * Returns a set of {@link IMarker}s associated with this class. Returns an empty set if no
      * markers are set.
      */
     public Set<IMarker> getMarkers() {
@@ -691,7 +691,7 @@ public class Message implements Serializable {
         }
 
         /**
-         * Set a list of markers that should be provided to the new message.
+         * Set a set of markers that should be provided to the new message.
          * 
          * @param markers a list of markers
          * @return This builder instance to directly add further properties
