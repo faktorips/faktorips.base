@@ -88,6 +88,11 @@ public interface IValidationRule extends IProductCmptProperty {
             + "ValidationRuleMethodNameConflict"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the marker id does not exist in the marker enum.
+     */
+    public static final String MSGCODE_INVALID_MARKER_ID = MSGCODE_PREFIX + "MsgInvalidMarkerID"; //$NON-NLS-1$
+
+    /**
      * Sets the rules name.
      */
     public void setName(String newName);

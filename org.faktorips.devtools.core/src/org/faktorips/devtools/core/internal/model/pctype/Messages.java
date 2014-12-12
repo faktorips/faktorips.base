@@ -105,6 +105,7 @@ public class Messages extends NLS {
     public static String Association_msg_DetailToMasterAssociationMustHaveMaxCardinality1;
 
     public static String ValidationRule_ConstantAttributesCantBeValidated;
+    public static String ValidationRule_msg_InvalidMarkerId;
     public static String ValidationRule_msgFunctionNotExists;
     public static String ValidationRule_msgIgnored;
     public static String ValidationRule_msgUndefinedAttribute;

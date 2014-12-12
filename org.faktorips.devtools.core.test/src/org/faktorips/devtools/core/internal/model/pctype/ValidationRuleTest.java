@@ -23,9 +23,14 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.model.enums.IEnumAttribute;
+import org.faktorips.devtools.core.model.enums.IEnumValue;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -270,6 +275,25 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         validationRule.setMessageCode("code");
         list = validationRule.validate(ipsSrcFile.getIpsProject());
         assertNull(list.getMessageByCode(IValidationRule.MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY));
+    }
+
+    @Test
+    public void testValidateMarker() throws CoreException {
+        validationRule.setMarkers(Arrays.asList(new String[] { "marker1", "marker2" }));
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.setMarkerEnumsEnabled(true);
+        properties.addMarkerEnum("markerEnum");
+        EnumType markerEnum = newEnumType(ipsProject, "markerEnum");
+        IEnumAttribute enumAttribute = markerEnum.newEnumAttribute();
+        enumAttribute.setIdentifier(true);
+        IEnumValue enumValue = markerEnum.newEnumValue();
+        enumValue.setEnumAttributeValue(enumAttribute, new StringValue("marker1"));
+        ipsProject.setProperties(properties);
+
+        MessageList msgList = validationRule.validate(ipsProject);
+
+        assertFalse(msgList.isEmpty());
+        assertNotNull(msgList.getMessageByCode(IValidationRule.MSGCODE_INVALID_MARKER_ID));
     }
 
     @Test

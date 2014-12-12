@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -191,6 +192,30 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
         validateNoLineSeperators(list);
         validateReplacementParameters(ipsProject, list);
+
+        validateMarker(list, ipsProject);
+    }
+
+    private void validateMarker(MessageList list, IIpsProject ipsProject) {
+        MarkerEnumUtil markerEnumUtil = new MarkerEnumUtil(ipsProject);
+        Set<String> definedMarkerIds = markerEnumUtil.getDefinedMarkerIds();
+        Set<String> usedMarkerIds = getUsedMarkerIds();
+        usedMarkerIds.removeAll(definedMarkerIds);
+        if (!usedMarkerIds.isEmpty()) {
+            String text = NLS.bind(Messages.ValidationRule_msg_InvalidMarkerId, usedMarkerIds, markerEnumUtil
+                    .getMarkerEnumType().getQualifiedName());
+            Message msg = new Message(IValidationRule.MSGCODE_INVALID_MARKER_ID, text, Message.ERROR, this,
+                    PROPERTY_MESSAGE_CODE);
+            list.add(msg);
+        }
+    }
+
+    private Set<String> getUsedMarkerIds() {
+        Set<String> usedMarkerIds = new LinkedHashSet<String>();
+        for (String usedMarker : markers) {
+            usedMarkerIds.add(usedMarker);
+        }
+        return usedMarkerIds;
     }
 
     private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) throws CoreException {

@@ -17,10 +17,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.model.enums.IEnumAttribute;
-import org.faktorips.devtools.core.model.enums.IEnumType;
-import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.internal.model.pctype.MarkerEnumUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -32,13 +29,13 @@ import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
  */
 public class ValidationRuleMarkerPMO extends PresentationModelObject {
 
-    private final IEnumType markerDefinition;
     private IValidationRule rule;
     private List<MarkerViewItem> items;
+    private MarkerEnumUtil markerUtil;
 
-    public ValidationRuleMarkerPMO(IValidationRule validationRule, IEnumType markerDefinition) {
-        this.markerDefinition = markerDefinition;
+    public ValidationRuleMarkerPMO(IValidationRule validationRule, MarkerEnumUtil markerUtil) {
         this.rule = validationRule;
+        this.markerUtil = markerUtil;
     }
 
     /**
@@ -54,10 +51,8 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
 
     protected void initItems() {
         Set<String> idSet = new HashSet<String>(getActiveMarkers());
-        List<IEnumValue> allMarkers = getAllMarkers();
         items = new ArrayList<MarkerViewItem>();
-        for (IEnumValue marker : allMarkers) {
-            String id = getIdFor(marker);
+        for (String id : markerUtil.getDefinedMarkerIds()) {
             items.add(new MarkerViewItem(this, id, idSet.contains(id)));
         }
     }
@@ -73,32 +68,12 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         }
     }
 
-    /**
-     * Returns a list of all defined markers in the {@link IEnumType} that is used to define
-     * markers.
-     */
-    private List<IEnumValue> getAllMarkers() {
-        if (hasAvailableMarkers()) {
-            return markerDefinition.getEnumValues();
-        } else {
-            return Collections.emptyList();
-        }
+    public ValueDatatype getEnumDatatype() {
+        return markerUtil.getEnumDatatype();
     }
 
     public boolean hasAvailableMarkers() {
-        return markerDefinition != null;
-    }
-
-    protected ValueDatatype getEnumDatatype() {
-        return markerDefinition.getIpsProject().findValueDatatype(markerDefinition.getQualifiedName());
-    }
-
-    private String getIdFor(IEnumValue enumValue) {
-        return enumValue.getEnumAttributeValue(findIdAttribute()).getStringValue();
-    }
-
-    private IEnumAttribute findIdAttribute() {
-        return markerDefinition.findIdentiferAttribute(markerDefinition.getIpsProject());
+        return markerUtil.hasAvailableMarkers();
     }
 
     private boolean hasValidationRule() {
@@ -123,19 +98,9 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
     }
 
     public static ValidationRuleMarkerPMO createFor(IIpsProject ipsProject, IValidationRule vRule) {
-        ValidationRuleMarkerPMO pmo = new ValidationRuleMarkerPMO(vRule, getMarkerEnumFromProject(ipsProject));
+        ValidationRuleMarkerPMO pmo = new ValidationRuleMarkerPMO(vRule, new MarkerEnumUtil(ipsProject));
         pmo.initItems();
         return pmo;
-    }
-
-    private static IEnumType getMarkerEnumFromProject(IIpsProject ipsProject) {
-        List<IIpsSrcFile> enumSrcFiles = new ArrayList<IIpsSrcFile>(ipsProject.getMarkerEnums());
-        if (!enumSrcFiles.isEmpty()) {
-            IEnumType enumType = (IEnumType)enumSrcFiles.get(0).getIpsObject();
-            return enumType;
-        } else {
-            return null;
-        }
     }
 
     /**
