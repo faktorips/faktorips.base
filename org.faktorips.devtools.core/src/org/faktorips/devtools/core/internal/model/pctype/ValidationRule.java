@@ -54,13 +54,10 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     public static final String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
+    private static final String XML_TAG_VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
+    private static final String XML_TAG_BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
     private static final String XML_TAG_MARKERS = "Markers"; //$NON-NLS-1$
-
-    private static final String VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
-
-    private static final String BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
-
-    private static final String MARKER = "Marker"; //$NON-NLS-1$
+    private static final String XML_TAG_MARKER = "Marker"; //$NON-NLS-1$
 
     private final ValidationRuleMessageText msgText;
 
@@ -378,8 +375,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
-                initChildrenFor(BUSINESS_FUNCTION, functions, subElement);
-                initChildrenFor(VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
+                initChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, subElement);
+                initChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
                 initChildrenForMarkers(subElement);
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
                     InternationalStringXmlHelper.initFromXml(msgText, subElement);
@@ -400,7 +397,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
             NodeList childNodes = subElement.getChildNodes();
             for (int i = 0; i < childNodes.getLength(); i++) {
                 if (childNodes.item(i) instanceof Element) {
-                    initChildrenFor(MARKER, markers, (Element)childNodes.item(i));
+                    initChildrenFor(XML_TAG_MARKER, markers, (Element)childNodes.item(i));
                 }
             }
         }
@@ -419,8 +416,8 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
                 String.valueOf(configurableByProductComponent));
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
-        appendChildrenFor(BUSINESS_FUNCTION, functions, newElement);
-        appendChildrenFor(VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
+        appendChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, newElement);
+        appendChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
         appendChildrenForMarkers(newElement);
 
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
@@ -440,7 +437,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
             Document doc = newElement.getOwnerDocument();
             Element markersRootElement = doc.createElement(XML_TAG_MARKERS);
             newElement.appendChild(markersRootElement);
-            appendChildrenFor(MARKER, markers, markersRootElement);
+            appendChildrenFor(XML_TAG_MARKER, markers, markersRootElement);
         }
     }
 
