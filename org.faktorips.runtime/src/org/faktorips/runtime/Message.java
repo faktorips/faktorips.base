@@ -693,7 +693,7 @@ public class Message implements Serializable {
         /**
          * Set a set of markers that should be provided to the new message.
          * 
-         * @param markers a list of markers
+         * @param markers a set of markers
          * @return This builder instance to directly add further properties
          */
         public Builder markers(Set<IMarker> markers) {
