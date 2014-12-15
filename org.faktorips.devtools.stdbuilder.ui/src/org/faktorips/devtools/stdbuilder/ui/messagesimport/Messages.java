@@ -20,7 +20,7 @@ public class Messages extends NLS {
     public static String MessagesImportPMO_FileDoesNotExist;
     public static String MessagesImportPage_labelLocale;
     public static String MessagesImportPage_labelTarget;
-    public static String MessagesImportPage_labelTranslations;
+    public static String MessagesImportPage_labelImportFile;
     public static String MessagesImportPage_pageTitle;
     public static String MessagesImportWizard_pageName;
     public static String MessagesImportWizard_windowTitle;
