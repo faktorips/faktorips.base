@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.ui.messagesimport;
+package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,20 +22,17 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleMessagesPropertiesImporter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
-import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesPropertiesImporter;
 
 /**
  * Wizard for importing translated validation rule messages.
  * 
- * TODO This implementation is not completed yet. Have a look at FIPS-626
- * 
- * @author dirmeier
  */
 public class MessagesImportWizard extends Wizard implements IImportWizard {
 
-    protected final static String DIALOG_SETTINGS_KEY = "MessagesImportWizard"; //$NON-NLS-1$
+    protected static final String DIALOG_SETTINGS_KEY = "MessagesImportWizard"; //$NON-NLS-1$
     private IStructuredSelection selection;
     private MessagesImportPage page;
 
@@ -81,8 +78,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
         } catch (InterruptedException e) {
             IpsPlugin.logAndShowErrorDialog(e);
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
     }

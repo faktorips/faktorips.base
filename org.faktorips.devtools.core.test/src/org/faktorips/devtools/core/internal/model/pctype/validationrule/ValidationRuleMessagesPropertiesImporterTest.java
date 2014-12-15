@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
+package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -37,7 +37,7 @@ import org.junit.Test;
 
 public class ValidationRuleMessagesPropertiesImporterTest {
 
-    private final static String TEST_FILE = "org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.properties";
+    private final static String TEST_FILE = "org/faktorips/devtools/core/internal/model/pctype/validationrule/validation-test-messages.properties";
 
     @Test
     public void testImport() throws Exception {
@@ -48,7 +48,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
                 root, Locale.GERMAN);
-        IStatus status = importer.importPropertyFile();
+        IStatus status = importer.importContent();
 
         assertEquals(IStatus.WARNING, status.getSeverity());
 
@@ -62,7 +62,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
                 root, Locale.GERMAN);
-        IStatus status = importer.importPropertyFile();
+        IStatus status = importer.importContent();
         assertEquals(IStatus.OK, status.getSeverity());
         verify(inputStream).close();
 
@@ -195,7 +195,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         importer.setProperties(properties);
         IStatus result = importer.importProperties();
-        
+
         assertTrue(result.toString(), result.isMultiStatus());
         assertEquals(1, ((MultiStatus)result).getChildren().length);
         IStatus missingMessageStatus = ((MultiStatus)result).getChildren()[0];

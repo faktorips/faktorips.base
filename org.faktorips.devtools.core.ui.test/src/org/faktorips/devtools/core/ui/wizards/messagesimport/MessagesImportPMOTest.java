@@ -8,13 +8,13 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stbuilder.ui.messagesimport;
+package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import static org.junit.Assert.assertEquals;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.stdbuilder.ui.messagesimport.Messages;
-import org.faktorips.devtools.stdbuilder.ui.messagesimport.MessagesImportPMO;
+import org.faktorips.devtools.core.ui.wizards.messagesimport.Messages;
+import org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportPMO;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
 import org.junit.Test;

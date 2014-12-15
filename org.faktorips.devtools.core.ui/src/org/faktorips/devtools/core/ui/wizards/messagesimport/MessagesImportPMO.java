@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.ui.messagesimport;
+package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import java.beans.PropertyChangeEvent;
 import java.io.File;

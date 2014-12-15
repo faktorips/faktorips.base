@@ -8,12 +8,12 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.ui.messagesimport;
+package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.faktorips.devtools.stdbuilder.ui.messagesimport.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.wizards.messagesimport.messages"; //$NON-NLS-1$
     public static String MessagesImportPMO_EmptyTargetname;
     public static String MessagesImportPMO_EmptyFilename;
     public static String MessagesImportPMO_FilenameIsDirectory;

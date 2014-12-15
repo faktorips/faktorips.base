@@ -13,12 +13,16 @@ import java.io.InputStream;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
-public class ValidationRuleMessagesImportOperation {
+public abstract class ValidationRuleMessagesImportOperation implements IWorkspaceRunnable {
 
     private final InputStream contents;
 
@@ -26,19 +30,14 @@ public class ValidationRuleMessagesImportOperation {
 
     private final Locale locale;
 
+    private IProgressMonitor monitor = new NullProgressMonitor();
+
     private IStatus resultStatus = new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, StringUtils.EMPTY);
 
     public ValidationRuleMessagesImportOperation(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
         this.contents = contents;
         this.root = root;
         this.locale = locale;
-    }
-
-    /**
-     * @param resultStatus The resultStatus to set.
-     */
-    public void setResultStatus(IStatus resultStatus) {
-        this.resultStatus = resultStatus;
     }
 
     /**
@@ -58,6 +57,24 @@ public class ValidationRuleMessagesImportOperation {
 
     public Locale getLocale() {
         return locale;
+    }
+
+    @Override
+    public void run(IProgressMonitor progressMonitor) throws CoreException {
+        if (progressMonitor != null) {
+            this.setMonitor(progressMonitor);
+        }
+        resultStatus = importContent();
+    }
+
+    protected abstract IStatus importContent();
+
+    public IProgressMonitor getMonitor() {
+        return monitor;
+    }
+
+    public void setMonitor(IProgressMonitor monitor) {
+        this.monitor = monitor;
     }
 
 }

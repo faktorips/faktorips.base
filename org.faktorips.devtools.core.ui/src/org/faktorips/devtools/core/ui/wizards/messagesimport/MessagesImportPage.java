@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.ui.messagesimport;
+package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -59,7 +59,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private static final String FORMAT_PROPERTIES = "propertyFile"; //$NON-NLS-1$
     private static final String CSV = "csv"; //$NON-NLS-1$
 
-    IpsPckFragmentRootRefControl target;
+    private IpsPckFragmentRootRefControl target;
     private final IStructuredSelection selection;
     private UIToolkit uiToolkit;
     private BindingContext bindingContext;
@@ -185,7 +185,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
         bindingContext
-                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
+        .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
         bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
         bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);

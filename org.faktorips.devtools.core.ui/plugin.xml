@@ -1043,6 +1043,13 @@
            class="org.eclipse.core.resources.IResource">
      </selection>
   </wizard>
+      <wizard
+            category="org.faktorips.devtools"
+            class="org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportWizard"
+            icon="icons/importpref_obj.gif"
+            id="org.faktorips.devtools.stdbuilder.ui.messagesImportWizard"
+            name="MessagesImportWizard">
+      </wizard>
     </extension>
 
 <!-- 
