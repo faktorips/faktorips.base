@@ -22,7 +22,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessagesGenerator;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
@@ -137,7 +136,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public String getValidationMessageKey() {
-        return ValidationRuleMessagesGenerator.getMessageKey(getIpsObjectPartContainer());
+        return getIpsObjectPartContainer().getQualifiedRuleName();
     }
 
     public String getConstantNameMessageCode() {

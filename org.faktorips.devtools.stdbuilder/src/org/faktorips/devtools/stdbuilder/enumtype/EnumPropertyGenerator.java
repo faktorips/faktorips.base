@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.MessagesProperties;
+import org.faktorips.devtools.stdbuilder.MessagesProperties;
 
 /**
  * This property generator helps the {@link EnumPropertyBuilder} to generate a concrete property

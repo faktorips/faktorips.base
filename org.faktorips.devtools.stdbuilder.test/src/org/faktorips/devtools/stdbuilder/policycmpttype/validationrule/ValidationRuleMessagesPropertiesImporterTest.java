@@ -25,7 +25,6 @@ import java.util.Properties;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.devtools.core.internal.model.pctype.ValidationRuleMessageText;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -49,7 +48,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
                 root, Locale.GERMAN);
-        IStatus status = importer.importPropertyFile(new NullProgressMonitor());
+        IStatus status = importer.importPropertyFile();
 
         assertEquals(IStatus.WARNING, status.getSeverity());
 
@@ -63,7 +62,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(inputStream,
                 root, Locale.GERMAN);
-        IStatus status = importer.importPropertyFile(new NullProgressMonitor());
+        IStatus status = importer.importPropertyFile();
         assertEquals(IStatus.OK, status.getSeverity());
         verify(inputStream).close();
 
@@ -71,14 +70,13 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
     @Test
     public void shouldImportNothing() throws Exception {
-
         IIpsPackageFragmentRoot root = mock(IIpsPackageFragmentRoot.class);
-
         Properties properties = new Properties();
-
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
                 mock(InputStream.class), root, Locale.GERMAN);
-        IStatus result = importer.importProperties(properties, new NullProgressMonitor());
+
+        importer.setProperties(properties);
+        IStatus result = importer.importProperties();
 
         assertTrue(result.isOK());
 
@@ -105,6 +103,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         when(rule.getIpsObject()).thenReturn(policyCmptType);
         when(rule.getName()).thenReturn("testRule");
+        when(rule.getQualifiedRuleName()).thenReturn("testPolicy-testRule");
         when(rule.getMessageText()).thenReturn(new ValidationRuleMessageText());
 
         ArrayList<IValidationRule> rules = new ArrayList<IValidationRule>();
@@ -116,7 +115,10 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
                 mock(InputStream.class), root, Locale.GERMAN);
-        IStatus result = importer.importProperties(properties, new NullProgressMonitor());
+
+        importer.setProperties(properties);
+        IStatus result = importer.importProperties();
+
         assertTrue(result.toString(), result.isOK());
         assertEquals(new LocalizedString(Locale.GERMAN, "TestMessage"), rule.getMessageText().get(Locale.GERMAN));
 
@@ -146,7 +148,10 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
                 mock(InputStream.class), root, Locale.GERMAN);
-        IStatus result = importer.importProperties(properties, new NullProgressMonitor());
+
+        importer.setProperties(properties);
+        IStatus result = importer.importProperties();
+
         assertTrue(result.toString(), result.isMultiStatus());
         assertEquals(1, ((MultiStatus)result).getChildren().length);
         IStatus illegalMessageStatus = ((MultiStatus)result).getChildren()[0];
@@ -175,6 +180,7 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         when(rule.getIpsObject()).thenReturn(policyCmptType);
         when(rule.getName()).thenReturn("testRule");
+        when(rule.getQualifiedRuleName()).thenReturn("testPolicy-testRule");
         IValidationRuleMessageText messageText = mock(IValidationRuleMessageText.class);
         when(rule.getMessageText()).thenReturn(messageText);
 
@@ -186,7 +192,10 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
         ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
                 mock(InputStream.class), root, Locale.GERMAN);
-        IStatus result = importer.importProperties(properties, new NullProgressMonitor());
+
+        importer.setProperties(properties);
+        IStatus result = importer.importProperties();
+        
         assertTrue(result.toString(), result.isMultiStatus());
         assertEquals(1, ((MultiStatus)result).getChildren().length);
         IStatus missingMessageStatus = ((MultiStatus)result).getChildren()[0];

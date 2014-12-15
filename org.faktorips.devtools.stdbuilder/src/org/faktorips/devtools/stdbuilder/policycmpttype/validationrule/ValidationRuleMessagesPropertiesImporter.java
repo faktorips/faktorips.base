@@ -22,8 +22,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleMessagesImportOperation;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -40,101 +42,137 @@ import org.faktorips.values.LocalizedString;
  * 
  * @author dirmeier
  */
-public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunnable {
+public class ValidationRuleMessagesPropertiesImporter extends ValidationRuleMessagesImportOperation implements
+IWorkspaceRunnable {
 
     public static final int MSG_CODE_MISSING_MESSAGE = 1;
 
     public static final int MSG_CODE_ILLEGAL_MESSAGE = 2;
 
-    private InputStream contents;
+    private Properties properties;
 
-    private IIpsPackageFragmentRoot root;
+    private IProgressMonitor monitor = new NullProgressMonitor();
 
-    private Locale locale;
+    private List<String> importedMessageKeys;
 
-    private IStatus resultStatus = new Status(IStatus.OK, StdBuilderPlugin.PLUGIN_ID, "");
+    private MultiStatus missingMessages;
+
+    private MultiStatus illegalMessages;
 
     public ValidationRuleMessagesPropertiesImporter(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
-        this.contents = contents;
-        this.root = root;
-        this.locale = locale;
+        super(contents, root, locale);
+    }
+
+    void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     @Override
-    public void run(IProgressMonitor monitor) throws CoreException {
-
-        setResultStatus(importPropertyFile(monitor));
-
+    public void run(IProgressMonitor progressMonitor) throws CoreException {
+        if (progressMonitor != null) {
+            this.monitor = progressMonitor;
+        }
+        setResultStatus(importPropertyFile());
     }
 
     /**
      * This method imports the messages in the give file into the objects found in the specified
      * {@link IIpsPackageFragmentRoot}. The messages are set for the specified locale.
      */
-    IStatus importPropertyFile(IProgressMonitor monitor) {
+    IStatus importPropertyFile() {
         try {
-            Properties properties = new Properties();
-            properties.load(contents);
-
-            return importProperties(properties, monitor);
+            loadProperties();
+            return importProperties();
         } catch (CoreException e) {
             return e.getStatus();
         } catch (IOException e) {
             return new Status(IStatus.ERROR, StdBuilderPlugin.PLUGIN_ID, "Error while loading property file", e);
         } finally {
-            IoUtil.close(contents);
-            monitor.done();
+            IoUtil.close(getContents());
         }
 
     }
 
-    IStatus importProperties(Properties properties, IProgressMonitor monitor) throws CoreException {
-        MultiStatus illegalMessages = new MultiStatus(StdBuilderPlugin.PLUGIN_ID, MSG_CODE_ILLEGAL_MESSAGE,
-                "Found illegal messages", null);
-        MultiStatus missingMessages = new MultiStatus(StdBuilderPlugin.PLUGIN_ID, MSG_CODE_MISSING_MESSAGE,
-                "Missing messages for validation rules", null);
+    void loadProperties() throws IOException {
+        setProperties(new Properties());
+        properties.load(getContents());
+    }
 
-        List<IIpsSrcFile> findAllIpsSrcFiled;
-        findAllIpsSrcFiled = root.findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
-        List<String> readMessageKeys = new ArrayList<String>();
-        monitor.beginTask("Updating Policy Component Types", findAllIpsSrcFiled.size() * 2 + 1);
-        for (IIpsSrcFile ipsSrcFile : findAllIpsSrcFiled) {
-            IPolicyCmptType pcType;
-            pcType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
+    IStatus importProperties() throws CoreException {
+        List<IIpsSrcFile> allPolicyCmptFiled = getPackageFragmentRoot().findAllIpsSrcFiles(
+                IpsObjectType.POLICY_CMPT_TYPE);
+        try {
+            monitor.beginTask("Updating Policy Component Types", allPolicyCmptFiled.size() * 2 + 1);
+            initResultFields();
+            importValidationMessages(allPolicyCmptFiled);
+            checkForIllegalMessages();
+            return makeResultStatus();
+        } finally {
+            monitor.done();
+        }
+    }
+
+    private void initResultFields() {
+        importedMessageKeys = new ArrayList<String>();
+        missingMessages = new MultiStatus(StdBuilderPlugin.PLUGIN_ID, MSG_CODE_MISSING_MESSAGE,
+                "Missing messages for validation rules", null);
+        illegalMessages = new MultiStatus(StdBuilderPlugin.PLUGIN_ID, MSG_CODE_ILLEGAL_MESSAGE,
+                "Found illegal messages", null);
+    }
+
+    private List<String> importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
+        for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
                 continue;
             }
             boolean dirtyState = ipsSrcFile.isDirty();
-            List<IValidationRule> validationRules = pcType.getValidationRules();
-            for (IValidationRule validationRule : validationRules) {
-                String messageKey = ValidationRuleMessagesGenerator.getMessageKey(validationRule);
-                String message = properties.getProperty(messageKey);
-                if (message == null) {
-                    missingMessages.add(new Status(IStatus.WARNING, StdBuilderPlugin.PLUGIN_ID,
-                            "Did not found a message for Rule " + validationRule.getName()
-                                    + " in Policy Component Type" + pcType.getQualifiedName() + ". Message key is: "
-                                    + messageKey));
-                    continue;
-                }
-                validationRule.getMessageText().add(new LocalizedString(locale, message));
-                readMessageKeys.add(messageKey);
-            }
+            IPolicyCmptType pcType = (IPolicyCmptType)ipsSrcFile.getIpsObject();
+            importValidationMessages(pcType);
             monitor.worked(1);
             if (!dirtyState && ipsSrcFile.isDirty()) {
                 ipsSrcFile.save(false, new SubProgressMonitor(monitor, 1));
             }
         }
+        return importedMessageKeys;
+    }
 
-        if (readMessageKeys.size() < properties.size()) {
+    private void importValidationMessages(IPolicyCmptType pcType) {
+        List<IValidationRule> validationRules = pcType.getValidationRules();
+        for (IValidationRule validationRule : validationRules) {
+            String messageKey = validationRule.getQualifiedRuleName();
+            String message = properties.getProperty(messageKey);
+            if (updateValidationMessage(validationRule, message)) {
+                importedMessageKeys.add(messageKey);
+            } else {
+                missingMessages.add(new Status(IStatus.WARNING, StdBuilderPlugin.PLUGIN_ID,
+                        "Did not found a message for Rule " + validationRule.getName() + " in Policy Component Type"
+                                + pcType.getQualifiedName() + ". Message key is: " + messageKey));
+            }
+        }
+    }
+
+    private boolean updateValidationMessage(IValidationRule validationRule, String message) {
+        if (message == null) {
+            return false;
+        } else {
+            validationRule.getMessageText().add(new LocalizedString(getLocale(), message));
+            return true;
+        }
+    }
+
+    private void checkForIllegalMessages() {
+        if (importedMessageKeys.size() < properties.size()) {
             for (Object key : properties.keySet()) {
-                if (!readMessageKeys.contains(key)) {
+                if (!importedMessageKeys.contains(key)) {
                     illegalMessages.add(new Status(IStatus.WARNING, StdBuilderPlugin.PLUGIN_ID, "Messagekey " + key
                             + " is not valid. No rule was found for the specified name."));
                 }
             }
         }
         monitor.worked(1);
+    }
 
+    private IStatus makeResultStatus() {
         MultiStatus result = new MultiStatus(StdBuilderPlugin.PLUGIN_ID, 0, "Problems during importing messages", null);
         if (!illegalMessages.isOK()) {
             result.add(illegalMessages);
@@ -147,19 +185,5 @@ public class ValidationRuleMessagesPropertiesImporter implements IWorkspaceRunna
         } else {
             return result;
         }
-    }
-
-    /**
-     * @param resultStatus The resultStatus to set.
-     */
-    public void setResultStatus(IStatus resultStatus) {
-        this.resultStatus = resultStatus;
-    }
-
-    /**
-     * @return Returns the resultStatus.
-     */
-    public IStatus getResultStatus() {
-        return resultStatus;
     }
 }

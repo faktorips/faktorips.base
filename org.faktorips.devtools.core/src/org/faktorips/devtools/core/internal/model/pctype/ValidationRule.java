@@ -25,6 +25,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.type.TypePart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
@@ -478,6 +479,14 @@ public class ValidationRule extends TypePart implements IValidationRule {
     @Override
     public String getPropertyName() {
         return getName();
+    }
+
+    @Override
+    public String getQualifiedRuleName() {
+        IIpsObject ipsObject = getIpsObject();
+        String qualifiedName = ipsObject.getQualifiedName();
+        String ruleName = getName();
+        return qualifiedName + QNAME_SEPARATOR + ruleName;
     }
 
     @Override
