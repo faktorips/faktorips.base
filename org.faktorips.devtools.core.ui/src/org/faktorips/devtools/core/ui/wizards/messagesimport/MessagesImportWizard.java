@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleMessagesImportOperation;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleMessagesPropertiesImporter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.WorkbenchRunnableAdapter;
@@ -66,7 +67,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
         File file = new File(pmo.getFileName());
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            ValidationRuleMessagesPropertiesImporter importer = new ValidationRuleMessagesPropertiesImporter(
+            ValidationRuleMessagesImportOperation importer = new ValidationRuleMessagesPropertiesImporter(
                     fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
             getContainer().run(true, false, new WorkbenchRunnableAdapter(importer));
             IStatus importStatus = importer.getResultStatus();
