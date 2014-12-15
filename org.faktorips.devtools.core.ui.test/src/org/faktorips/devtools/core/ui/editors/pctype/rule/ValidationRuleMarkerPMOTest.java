@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.value.ValueFactory;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO.MarkerViewItem;
 import org.junit.Before;
 import org.junit.Test;
@@ -142,7 +144,7 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
 
         MarkerViewItem illegalItem = items.get(2);
         assertEquals("illegalID", illegalItem.getId());
-        assertEquals("illegalID", illegalItem.getLabel());
+        assertEquals(NLS.bind(Messages.ValidationRuleMarkerPMO_Label_illegalEntry, "illegalID"), illegalItem.getLabel());
         assertTrue(illegalItem.isIllegal());
     }
 }
