@@ -59,7 +59,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private ISupportedLanguage locale;
 
-    private String format = "csv"; //$NON-NLS-1$
+    private String format = "csvFile"; //$NON-NLS-1$
 
     private String formatDelimiter = StringUtils.EMPTY;
 
@@ -67,7 +67,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private String formatColumn = StringUtils.EMPTY;
 
-    private String identification = "name"; //$NON-NLS-1$
+    private String identification = "identificationName"; //$NON-NLS-1$
 
     /**
      * @param fileName The fileName to set.
@@ -111,7 +111,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     public void setFormatColumn(String formatColumn) {
         String oldValue = this.formatColumn;
         this.formatColumn = formatColumn;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_IDENTIFIER, oldValue, formatColumn));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_COLUMN, oldValue, formatColumn));
     }
 
     /**
@@ -120,7 +120,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     public void setIdentification(String identification) {
         String oldValue = this.identification;
         this.identification = identification;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_IDENTIFIER, oldValue, identification));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFICATION, oldValue, identification));
     }
 
     /**

@@ -54,10 +54,10 @@ import org.faktorips.util.message.MessageList;
  */
 public class MessagesImportPage extends WizardDataTransferPage {
 
-    private static final String CODE = "code"; //$NON-NLS-1$
-    private static final String NAME = "name"; //$NON-NLS-1$
-    private static final String FORMAT_PROPERTIES = "propertyFile"; //$NON-NLS-1$
-    private static final String CSV = "csv"; //$NON-NLS-1$
+    private static final String IDENTIFICATION_CODE = "identificationCode"; //$NON-NLS-1$
+    private static final String IDENTIFICATION_NAME = "identificationName"; //$NON-NLS-1$
+    private static final String PROPERTY_FILE = "propertyFile"; //$NON-NLS-1$
+    private static final String CSV_FILE = "csvFile"; //$NON-NLS-1$
 
     private IpsPckFragmentRootRefControl target;
     private final IStructuredSelection selection;
@@ -94,16 +94,17 @@ public class MessagesImportPage extends WizardDataTransferPage {
         Composite rootComposite = uiToolkit.createGridComposite(parent, 2, false, false);
 
         Composite labelEditComposite = createImportControl(rootComposite);
-        createLanguagesComposite(labelEditComposite);
+        createImportFileComposite(labelEditComposite);
 
         createFormatControl(labelEditComposite);
         createLocaleControl(labelEditComposite);
         createIdentificationControl(labelEditComposite);
 
+        bindContent();
+
         setControl(rootComposite);
         initDefaults();
         validatePage();
-        bindContent();
 
     }
 
@@ -115,7 +116,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         return labelEditComposite;
     }
 
-    private void createLanguagesComposite(Composite labelEditComposite) {
+    private void createImportFileComposite(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelImportFile);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
         fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
@@ -125,10 +126,10 @@ public class MessagesImportPage extends WizardDataTransferPage {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelFormat);
 
         LinkedHashMap<String, String> radioButtons = new LinkedHashMap<String, String>();
-        radioButtons.put(FORMAT_PROPERTIES, Messages.MessagesImportWizard_labelFormatProperties);
-        radioButtons.put(CSV, Messages.MessagesImportWizard_labelFormatCSV);
+        radioButtons.put(PROPERTY_FILE, Messages.MessagesImportWizard_labelFormatProperties);
+        radioButtons.put(CSV_FILE, Messages.MessagesImportWizard_labelFormatCSV);
         RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
-        radioGroup.setSelection(CSV);
+        radioGroup.setSelection(CSV_FILE);
         formatRadioButtons = new RadioButtonGroupField<String>(radioGroup);
 
         createFormatSettingsControl(labelEditComposite);
@@ -170,10 +171,10 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private void createIdentificationControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelIdentification);
         LinkedHashMap<String, String> radioButtons = new LinkedHashMap<String, String>();
-        radioButtons.put(NAME, Messages.MessagesImportWizard_labelIdentificationName);
-        radioButtons.put(CODE, Messages.MessagesImportWizard_labelIdentificationCode);
+        radioButtons.put(IDENTIFICATION_NAME, Messages.MessagesImportWizard_labelIdentificationName);
+        radioButtons.put(IDENTIFICATION_CODE, Messages.MessagesImportWizard_labelIdentificationCode);
         RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
-        radioGroup.setSelection(NAME);
+        radioGroup.setSelection(IDENTIFICATION_NAME);
         identificationRadioButtons = new RadioButtonGroupField<String>(radioGroup);
     }
 
