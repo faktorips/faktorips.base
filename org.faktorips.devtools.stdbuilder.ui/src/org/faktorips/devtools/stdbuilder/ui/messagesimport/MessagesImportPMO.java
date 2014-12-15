@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
@@ -24,11 +25,21 @@ import org.faktorips.util.message.MessageList;
 
 public class MessagesImportPMO extends PresentationModelObject {
 
-    public final static String PROPERTY_FILE_NAME = "fileName"; //$NON-NLS-1$
+    public static final String PROPERTY_FILE_NAME = "fileName"; //$NON-NLS-1$
 
-    public final static String PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT = "ipsPackageFragmentRoot"; //$NON-NLS-1$
+    public static final String PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT = "ipsPackageFragmentRoot"; //$NON-NLS-1$
 
-    public final static String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
+    public static final String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
+
+    public static final String PROPERTY_FORMAT = "format"; //$NON-NLS-1$
+
+    public static final String PROPERTY_FORMAT_DELIMITER = "formatDelimiter"; //$NON-NLS-1$
+
+    public static final String PROPERTY_FORMAT_IDENTIFIER = "formatIdentifier"; //$NON-NLS-1$
+
+    public static final String PROPERTY_FORMAT_COLUMN = "formatColumn"; //$NON-NLS-1$
+
+    public static final String PROPERTY_IDENTIFICATION = "identification"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "MESSAGES_IMPORT_WIZARD-"; //$NON-NLS-1$
 
@@ -42,11 +53,21 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_NO_LOCALE = MSGCODE_PREFIX + "noLocale"; //$NON-NLS-1$
 
-    private String fileName = ""; //$NON-NLS-1$
+    private String fileName = StringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
     private ISupportedLanguage locale;
+
+    private String format = "csv"; //$NON-NLS-1$
+
+    private String formatDelimiter = StringUtils.EMPTY;
+
+    private String formatIdentifier = StringUtils.EMPTY;
+
+    private String formatColumn = StringUtils.EMPTY;
+
+    private String identification = "name"; //$NON-NLS-1$
 
     /**
      * @param fileName The fileName to set.
@@ -58,10 +79,62 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
+     * @param format The format of the imported file to set.
+     */
+    public void setFormat(String format) {
+        String oldValue = this.format;
+        this.format = format;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT, oldValue, format));
+    }
+
+    /**
+     * @param formatDelimiter The formatDelimiter to set.
+     */
+    public void setFormatDelimiter(String formatDelimiter) {
+        String oldValue = this.formatDelimiter;
+        this.formatDelimiter = formatDelimiter;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_DELIMITER, oldValue, formatDelimiter));
+    }
+
+    /**
+     * @param formatIdentifier The formatIdentifier to set.
+     */
+    public void setFormatIdentifier(String formatIdentifier) {
+        String oldValue = this.formatIdentifier;
+        this.formatIdentifier = formatIdentifier;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_IDENTIFIER, oldValue, formatIdentifier));
+    }
+
+    /**
+     * @param formatColumn The formatColumn to set.
+     */
+    public void setFormatColumn(String formatColumn) {
+        String oldValue = this.formatColumn;
+        this.formatColumn = formatColumn;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_IDENTIFIER, oldValue, formatColumn));
+    }
+
+    /**
+     * @param identification The identification to set.
+     */
+    public void setIdentification(String identification) {
+        String oldValue = this.identification;
+        this.identification = identification;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_IDENTIFIER, oldValue, identification));
+    }
+
+    /**
      * @return Returns the fileName.
      */
     public String getFileName() {
         return fileName;
+    }
+
+    /**
+     * @return Returns the format of the imported file.
+     */
+    public String getFormat() {
+        return format;
     }
 
     /**
@@ -95,6 +168,34 @@ public class MessagesImportPMO extends PresentationModelObject {
      */
     public ISupportedLanguage getLocale() {
         return locale;
+    }
+
+    /**
+     * @return Returns the formatDelimiter.
+     */
+    public String getFormatDelimiter() {
+        return formatDelimiter;
+    }
+
+    /**
+     * @return Returns the formatIdentifier.
+     */
+    public String getFormatIdentifier() {
+        return formatIdentifier;
+    }
+
+    /**
+     * @return Returns the formatColumn.
+     */
+    public String getFormatColumn() {
+        return formatColumn;
+    }
+
+    /**
+     * @return Returns the identification.
+     */
+    public String getIdentification() {
+        return identification;
     }
 
     /**

@@ -12,6 +12,7 @@ package org.faktorips.devtools.stdbuilder.ui.messagesimport;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,9 +37,12 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
+import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
+import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
+import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -50,6 +54,11 @@ import org.faktorips.util.message.MessageList;
  */
 public class MessagesImportPage extends WizardDataTransferPage {
 
+    private static final String CODE = "code"; //$NON-NLS-1$
+    private static final String NAME = "name"; //$NON-NLS-1$
+    private static final String FORMAT_PROPERTIES = "propertyFile"; //$NON-NLS-1$
+    private static final String CSV = "csv"; //$NON-NLS-1$
+
     IpsPckFragmentRootRefControl target;
     private final IStructuredSelection selection;
     private UIToolkit uiToolkit;
@@ -58,6 +67,11 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private FileSelectionControl fileSelectionControl;
     private final MessagesImportPMO messagesImportPMO;
     private ComboViewerField<ISupportedLanguage> localeComboField;
+    private TextField formatDelimiter;
+    private TextField formatIdentifier;
+    private TextField formatColumn;
+    private RadioButtonGroupField<String> identificationRadioButtons;
+    private RadioButtonGroupField<String> formatRadioButtons;
 
     protected MessagesImportPage(String name, IStructuredSelection selection) {
         super(name);
@@ -89,6 +103,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         setControl(rootComposite);
         initDefaults();
         validatePage();
+        bindContent();
 
     }
 
@@ -97,9 +112,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTarget);
         target = new IpsPckFragmentRootRefControl(labelEditComposite, true, uiToolkit);
-
-        bindingContext.bindContent(new IpsPckFragmentRootRefField(target), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
         return labelEditComposite;
     }
 
@@ -107,19 +119,19 @@ public class MessagesImportPage extends WizardDataTransferPage {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelImportFile);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
         fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
-        bindingContext.bindContent(new TextButtonField(fileSelectionControl), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FILE_NAME);
     }
 
     private void createFormatControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelFormat);
 
-        Composite composite = uiToolkit.createGridComposite(labelEditComposite, 2, true, false);
+        LinkedHashMap<String, String> radioButtons = new LinkedHashMap<String, String>();
+        radioButtons.put(FORMAT_PROPERTIES, Messages.MessagesImportWizard_labelFormatProperties);
+        radioButtons.put(CSV, Messages.MessagesImportWizard_labelFormatCSV);
+        RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
+        radioGroup.setSelection(CSV);
+        formatRadioButtons = new RadioButtonGroupField<String>(radioGroup);
 
-        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelFormatProperties);
-        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelFormatCSV);
         createFormatSettingsControl(labelEditComposite);
-
     }
 
     private void createFormatSettingsControl(Composite labelEditComposite) {
@@ -129,13 +141,13 @@ public class MessagesImportPage extends WizardDataTransferPage {
         formatgroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         Composite formatSettingsComposite = uiToolkit.createLabelEditColumnComposite(formatgroup);
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
-        uiToolkit.createText(formatSettingsComposite);
+        formatDelimiter = new TextField(uiToolkit.createText(formatSettingsComposite));
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
-        uiToolkit.createText(formatSettingsComposite);
+        formatIdentifier = new TextField(uiToolkit.createText(formatSettingsComposite));
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsColumn);
-        uiToolkit.createText(formatSettingsComposite);
+        formatColumn = new TextField(uiToolkit.createText(formatSettingsComposite));
 
     }
 
@@ -153,15 +165,34 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 return super.getText(element);
             }
         });
-        bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
-
     }
 
     private void createIdentificationControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelIdentification);
-        Composite composite = uiToolkit.createGridComposite(labelEditComposite, 2, true, false);
-        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelIdentificationName);
-        uiToolkit.createRadiobutton(composite, Messages.MessagesImportWizard_labelIdentificationCode);
+        LinkedHashMap<String, String> radioButtons = new LinkedHashMap<String, String>();
+        radioButtons.put(NAME, Messages.MessagesImportWizard_labelIdentificationName);
+        radioButtons.put(CODE, Messages.MessagesImportWizard_labelIdentificationCode);
+        RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
+        radioGroup.setSelection(NAME);
+        identificationRadioButtons = new RadioButtonGroupField<String>(radioGroup);
+    }
+
+    private void bindContent() {
+        bindingContext.bindContent(new IpsPckFragmentRootRefField(target), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
+        bindingContext.bindContent(new TextButtonField(fileSelectionControl), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FILE_NAME);
+
+        bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
+        bindingContext
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
+        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
+        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
+
+        bindingContext.bindContent(identificationRadioButtons, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_IDENTIFICATION);
+        bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
     }
 
     private void initDefaults() {
