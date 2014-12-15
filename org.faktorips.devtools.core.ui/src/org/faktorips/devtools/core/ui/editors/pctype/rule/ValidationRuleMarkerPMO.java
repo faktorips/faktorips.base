@@ -119,12 +119,12 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         private boolean checked;
         private boolean illegalEntry;
 
-        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState, boolean error) {
+        public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState, boolean illegalEntry) {
             super();
             this.pmo = pmo;
             this.id = id;
             this.checked = initialCheckedState;
-            this.illegalEntry = error;
+            this.illegalEntry = illegalEntry;
             this.label = initLabel();
         }
 
@@ -163,7 +163,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
             return id;
         }
 
-        public boolean hasError() {
+        public boolean isIllegal() {
             return illegalEntry;
         }
 

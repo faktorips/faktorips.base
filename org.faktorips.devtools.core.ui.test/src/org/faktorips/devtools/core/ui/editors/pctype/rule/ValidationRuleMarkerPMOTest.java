@@ -134,15 +134,15 @@ public class ValidationRuleMarkerPMOTest extends AbstractIpsPluginTest {
         assertEquals(3, items.size());
         MarkerViewItem item1 = items.get(0);
         assertEquals("id1", item1.getId());
-        assertFalse(item1.hasError());
+        assertFalse(item1.isIllegal());
 
         MarkerViewItem item2 = items.get(1);
         assertEquals("id2", item2.getId());
-        assertFalse(item2.hasError());
+        assertFalse(item2.isIllegal());
 
         MarkerViewItem illegalItem = items.get(2);
         assertEquals("illegalID", illegalItem.getId());
         assertEquals("illegalID", illegalItem.getLabel());
-        assertTrue(illegalItem.hasError());
+        assertTrue(illegalItem.isIllegal());
     }
 }
