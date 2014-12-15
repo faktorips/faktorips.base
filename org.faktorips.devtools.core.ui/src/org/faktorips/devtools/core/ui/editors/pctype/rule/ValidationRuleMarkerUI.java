@@ -16,19 +16,15 @@ import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.devtools.core.ui.editors.pctype.rule.ValidationRuleMarkerPMO.MarkerViewItem;
-import org.faktorips.devtools.core.ui.views.IpsProblemOverlayIcon;
-import org.faktorips.util.message.Message;
 
 public class ValidationRuleMarkerUI {
     private static final int TABLE_LINE_HEIGHT = 22;
@@ -76,18 +72,6 @@ public class ValidationRuleMarkerUI {
             public String getText(Object element) {
                 return ((MarkerViewItem)element).getLabel();
             }
-
-            @Override
-            public Image getImage(Object element) {
-                MarkerViewItem item = (MarkerViewItem)element;
-                if (item.hasError()) {
-                    return IpsUIPlugin.getImageHandling().getImage(IpsProblemOverlayIcon.getOverlay(Message.ERROR),
-                            true);
-                } else {
-                    return null;
-                }
-            }
-
         });
         getMarkerTable().setCheckStateProvider(new ICheckStateProvider() {
 

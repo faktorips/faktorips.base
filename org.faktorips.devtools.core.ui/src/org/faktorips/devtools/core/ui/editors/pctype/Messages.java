@@ -344,6 +344,8 @@ public class Messages extends NLS {
 
     public static String ValidationRuleMarkerUI_TabName_Markers;
 
+    public static String ValidationRuleMarkerPMO_Label_illegalEntry;
+
     public static String RuleEditDialog_groupText;
 
 }

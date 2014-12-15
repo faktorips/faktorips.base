@@ -15,12 +15,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.MarkerEnumUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 
 /**
  * Presentation model object for {@link ValidationRuleMarkerUI} to activate or deactivate markers
@@ -52,9 +54,9 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         Set<String> idSet = new HashSet<String>(getActiveMarkers());
         items = new ArrayList<MarkerViewItem>();
         for (String id : markerUtil.getDefinedMarkerIds()) {
-            items.add(new MarkerViewItem(this, id, idSet.remove(id), false));
+            boolean checked = idSet.remove(id);
+            items.add(MarkerViewItem.validItem(this, id, checked));
         }
-        // illegal marker IDs
         for (String id : idSet) {
             items.add(MarkerViewItem.errorItem(this, id));
         }
@@ -115,15 +117,19 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         private final String label;
 
         private boolean checked;
-        private boolean error;
+        private boolean illegalEntry;
 
         public MarkerViewItem(ValidationRuleMarkerPMO pmo, String id, boolean initialCheckedState, boolean error) {
             super();
             this.pmo = pmo;
             this.id = id;
             this.checked = initialCheckedState;
-            this.error = error;
+            this.illegalEntry = error;
             this.label = initLabel();
+        }
+
+        public static MarkerViewItem validItem(ValidationRuleMarkerPMO pmo, String id, boolean checked) {
+            return new MarkerViewItem(pmo, id, checked, false);
         }
 
         public static MarkerViewItem errorItem(ValidationRuleMarkerPMO pmo, String markerID) {
@@ -131,7 +137,9 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         }
 
         private String initLabel() {
-            if (pmo.hasAvailableMarkers()) {
+            if (illegalEntry) {
+                return NLS.bind(Messages.ValidationRuleMarkerPMO_Label_illegalEntry, id);
+            } else if (pmo.hasAvailableMarkers()) {
                 return IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(pmo.getEnumDatatype(), getId());
             } else {
                 return id;
@@ -156,7 +164,7 @@ public class ValidationRuleMarkerPMO extends PresentationModelObject {
         }
 
         public boolean hasError() {
-            return error;
+            return illegalEntry;
         }
 
     }
