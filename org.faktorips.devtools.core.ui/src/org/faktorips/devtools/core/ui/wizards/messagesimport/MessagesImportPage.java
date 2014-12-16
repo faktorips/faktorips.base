@@ -149,7 +149,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsColumn);
         formatColumn = new TextField(uiToolkit.createText(formatSettingsComposite));
-
     }
 
     protected void createLocaleControl(Composite labelEditComposite) {
@@ -185,15 +184,25 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 MessagesImportPMO.PROPERTY_FILE_NAME);
 
         bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
-        bindingContext
-        .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
-        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
-        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
+        bindFormatSettings();
 
         bindingContext.bindContent(identificationRadioButtons, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFICATION);
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
+    }
+
+    private void bindFormatSettings() {
+        bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT, CSV_FILE);
+        bindingContext
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
+        bindingContext.bindEnabled(formatIdentifier.getControl(), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT, CSV_FILE);
+        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
+        bindingContext.bindEnabled(formatColumn.getControl(), getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT, CSV_FILE);
+        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
     }
 
     private void initDefaults() {
