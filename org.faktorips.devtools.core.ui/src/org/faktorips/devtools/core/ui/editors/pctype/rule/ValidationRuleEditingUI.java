@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
 import java.util.Locale;
 import java.util.Set;
@@ -48,6 +48,8 @@ import org.faktorips.devtools.core.ui.controller.fields.EnumValueField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.CategoryPmo;
+import org.faktorips.devtools.core.ui.editors.pctype.AttributeEditDialog;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 
 /**
  * Helper class to create the UI controls needed to define/edit an {@link IValidationRule}. An
@@ -198,7 +200,7 @@ public class ValidationRuleEditingUI {
     }
 
     private void updateCharCount() {
-        String msg = NLS.bind(Messages.RuleEditDialog_contains, new Integer(msgTextField.getText().length()));
+        String msg = NLS.bind(Messages.RuleEditDialog_contains, Integer.valueOf(msgTextField.getText().length()));
         charCountPainter.setText(msg);
         msgTextField.getTextControl().redraw();
     }
@@ -211,7 +213,7 @@ public class ValidationRuleEditingUI {
      *            edited by the controls created by this class.
      * @param bindingContext the {@link BindingContext} to remove bindings from
      */
-    protected void bindFields(IValidationRule rule, BindingContext bindingContext) {
+    public void bindFields(IValidationRule rule, BindingContext bindingContext) {
         bindingContext.bindContent(nameField, rule, IValidationRule.PROPERTY_NAME);
         bindingContext.bindContent(msgSeverityField, rule, IValidationRule.PROPERTY_MESSAGE_SEVERITY);
         final InternationalStringPresentationObject msgTextPMO = new InternationalStringPresentationObject(
@@ -275,7 +277,7 @@ public class ValidationRuleEditingUI {
      * 
      * @param bindingContext the {@link BindingContext} to remove bindings from
      */
-    protected void removeBindingsFromContext(BindingContext bindingContext) {
+    public void removeBindingsFromContext(BindingContext bindingContext) {
         bindingContext.removeBindings(nameField.getControl());
         bindingContext.removeBindings(categoryField.getControl());
         bindingContext.removeBindings(msgCodeField.getControl());

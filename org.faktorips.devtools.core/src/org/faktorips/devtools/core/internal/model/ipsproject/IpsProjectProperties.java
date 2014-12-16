@@ -86,6 +86,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_ATTRIBUTE_NAME = "name"; //$NON-NLS-1$
 
+    private static final String SETTING_ATTRIBUTE_ENABLED = "enabled"; //$NON-NLS-1$
+
     private static final String SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE = "referencedProductComponentsAreValidOnThisGenerationsValidFromDate"; //$NON-NLS-1$
 
     private static final String SETTING_DERIVED_UNION_IS_IMPLEMENTED = "derivedUnionIsImplemented"; //$NON-NLS-1$
@@ -99,6 +101,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String SETTING_ASSOCIATIONS_IN_FORMULAS = "associationsInFormulas"; //$NON-NLS-1$
 
     private static final String SETTING_FORMULA_LANGUAGE_LOCALE = "formulaLanguageLocale"; //$NON-NLS-1$
+
+    private static final String SETTING_MARKER_ENUMS = "markerEnums"; //$NON-NLS-1$
+
+    private static final String SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES = "businessFunctionsForValidationRules"; //$NON-NLS-1$
 
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
@@ -114,6 +120,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String DEFAULT_CURRENCY_ELEMENT = "DefaultCurrency"; //$NON-NLS-1$
 
     private static final String DEFAULT_CURRENCY_VALUE_ATTR = "value"; //$NON-NLS-1$
+
+    private static final String MARKER_ENUMS_DELIMITER = ";"; //$NON-NLS-1$
 
     private boolean createdFromParsableFileContents = true;
 
@@ -156,7 +164,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean rulesWithoutReferencesAllowed = false;
     private boolean sharedDetailToMasterAssociations = false;
     private boolean associationsInFormulas = false;
+    private boolean enableMarkerEnums = true;
+    private boolean businessFunctionsForValidationRules = false;
 
+    private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
 
     // hidden resource names in the model and product explorer
@@ -176,6 +187,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private Locale formulaLanguageLocale = Locale.GERMAN;
 
     private String versionProviderId;
+
+    /** Used to check if the additional setting "markerEnums" is configured in the .ipsproject file. */
+    private boolean markerEnumsConfiguredInIpsProjectFile = false;
 
     public IpsProjectProperties(IIpsProject ipsProject) {
         super();
@@ -521,82 +535,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         createDescriptionComment(xmlIpsObjectPathPersistor.getXmlFormatDescription(), projectEl);
         projectEl.appendChild(xmlIpsObjectPathPersistor.store(doc, ((IpsObjectPath)path)));
 
-        // datatypes
-        createDatatypeDescriptionComment(projectEl);
-        Element datatypesEl = doc.createElement("Datatypes"); //$NON-NLS-1$
-        projectEl.appendChild(datatypesEl);
-        Element predefinedTypesEl = doc.createElement("UsedPredefinedDatatypes"); //$NON-NLS-1$
-        datatypesEl.appendChild(predefinedTypesEl);
-        for (String element : predefinedDatatypesUsed) {
-            Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
-            datatypeEl.setAttribute("id", element); //$NON-NLS-1$
-            predefinedTypesEl.appendChild(datatypeEl);
-        }
-        Element definedDatatypesEl = doc.createElement("DatatypeDefinitions"); //$NON-NLS-1$
-        datatypesEl.appendChild(definedDatatypesEl);
-        writeDefinedDataTypesToXML(doc, definedDatatypesEl);
-
-        // excludes resources from product definition
-        createResourcesExcludedFromProductDefinitionComment(projectEl);
-        Element resourcesExcludedFromProdDefEl = doc.createElement("ResourcesExcludedFromProductDefinition"); //$NON-NLS-1$
-        projectEl.appendChild(resourcesExcludedFromProdDefEl);
-        for (String exclResource : resourcesPathExcludedFromTheProductDefiniton) {
-            Element resourceExcludedEl = doc.createElement("Resource"); //$NON-NLS-1$
-            resourceExcludedEl.setAttribute("path", exclResource); //$NON-NLS-1$
-            resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
-        }
-
+        toXmlDatatypes(doc, projectEl);
+        toXmlResourcesExcludeFromProdDef(doc, projectEl);
         toXmlProductRelease(doc, projectEl);
         toXmlVersion(doc, projectEl);
 
         // optional constraints
-        createAdditionalSettingsDescriptionComment(projectEl);
-        Element additionalSettingsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
-        projectEl.appendChild(additionalSettingsEl);
-
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED,
-                derivedUnionIsImplementedRuleEnabled));
-
-        additionalSettingsEl.appendChild(createSettingElement(doc,
-                SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE,
-                referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
-
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE,
-                rulesWithoutReferencesAllowed));
-
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS,
-                isSharedDetailToMasterAssociations()));
-
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
-                isAssociationsInFormulas()));
-
-        createDescriptionComment(
-                "Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German. Only English (en) and German (de) are supported at the moment.", projectEl); //$NON-NLS-1$
-        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
-                formulaLanguageLocale.getLanguage()));
+        toXmlForAdditionalSettings(doc, projectEl);
 
         // persistence options
-        createPersistenceOptionsDescriptionComment(projectEl);
-        Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME,
-                String.valueOf(getPersistenceOptions().getMaxTableNameLength()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME,
-                String.valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
-        projectEl.appendChild(persistenceOptionsEl);
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
-                + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE,
-                String.valueOf(getPersistenceOptions().getMaxTableColumnSize()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE,
-                String.valueOf(getPersistenceOptions().getMaxTableColumnScale()));
-        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION,
-                String.valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
-
-        ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
-        ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
-
-        persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
-        persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
+        toXmlPersistenceOptions(doc, projectEl);
 
         // supported languages
         createSupportedLanguagesDescriptionComment(projectEl);
@@ -614,6 +562,33 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         projectEl.appendChild(defaultCurrencyElement);
 
         return projectEl;
+    }
+
+    private void toXmlDatatypes(Document doc, Element projectEl) {
+        createDatatypeDescriptionComment(projectEl);
+        Element datatypesEl = doc.createElement("Datatypes"); //$NON-NLS-1$
+        projectEl.appendChild(datatypesEl);
+        Element predefinedTypesEl = doc.createElement("UsedPredefinedDatatypes"); //$NON-NLS-1$
+        datatypesEl.appendChild(predefinedTypesEl);
+        for (String element : predefinedDatatypesUsed) {
+            Element datatypeEl = doc.createElement("Datatype"); //$NON-NLS-1$
+            datatypeEl.setAttribute("id", element); //$NON-NLS-1$
+            predefinedTypesEl.appendChild(datatypeEl);
+        }
+        Element definedDatatypesEl = doc.createElement("DatatypeDefinitions"); //$NON-NLS-1$
+        datatypesEl.appendChild(definedDatatypesEl);
+        writeDefinedDataTypesToXML(doc, definedDatatypesEl);
+    }
+
+    private void toXmlResourcesExcludeFromProdDef(Document doc, Element projectEl) {
+        createResourcesExcludedFromProductDefinitionComment(projectEl);
+        Element resourcesExcludedFromProdDefEl = doc.createElement("ResourcesExcludedFromProductDefinition"); //$NON-NLS-1$
+        projectEl.appendChild(resourcesExcludedFromProdDefEl);
+        for (String exclResource : resourcesPathExcludedFromTheProductDefiniton) {
+            Element resourceExcludedEl = doc.createElement("Resource"); //$NON-NLS-1$
+            resourceExcludedEl.setAttribute("path", exclResource); //$NON-NLS-1$
+            resourcesExcludedFromProdDefEl.appendChild(resourceExcludedEl);
+        }
     }
 
     private void toXmlProductRelease(Document doc, Element projectEl) {
@@ -639,13 +614,110 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private Element createSettingElement(Document doc, String name, boolean enable) {
-        return createSettingElement(doc, name, Boolean.toString(enable));
+    private void toXmlForAdditionalSettings(Document doc, Element projectEl) {
+        createAdditionalSettingsDescriptionComment(projectEl);
+        Element additionalSettingsEl = doc.createElement(ADDITIONAL_SETTINGS_TAG_NAME);
+        projectEl.appendChild(additionalSettingsEl);
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_DERIVED_UNION_IS_IMPLEMENTED,
+                derivedUnionIsImplementedRuleEnabled));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc,
+                SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE,
+                referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_RULES_WITHOUT_REFERENCE,
+                rulesWithoutReferencesAllowed));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_SHARED_ASSOCIATIONS,
+                isSharedDetailToMasterAssociations()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_ASSOCIATIONS_IN_FORMULAS,
+                isAssociationsInFormulas()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_FORMULA_LANGUAGE_LOCALE,
+                formulaLanguageLocale.getLanguage()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_MARKER_ENUMS, isMarkerEnumsEnabled(),
+                getMarkerEnumsAsString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
+                isBusinessFunctionsForValdiationRulesEnabled()));
+    }
+
+    private String getMarkerEnumsAsString() {
+        return StringUtils.join(getMarkerEnums(), MARKER_ENUMS_DELIMITER);
+    }
+
+    private void toXmlPersistenceOptions(Document doc, Element projectEl) {
+        createPersistenceOptionsDescriptionComment(projectEl);
+        Element persistenceOptionsEl = doc.createElement("PersistenceOptions"); //$NON-NLS-1$
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_NAME_LENGTH_ATTRIBUTENAME,
+                String.valueOf(getPersistenceOptions().getMaxTableNameLength()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_COLUMN_NAME_LENGTH_ATTRIBUTENAME,
+                String.valueOf(getPersistenceOptions().getMaxColumnNameLenght()));
+        projectEl.appendChild(persistenceOptionsEl);
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.ALLOW_LAZY_FETCH_FOR_SINGLE_VALUED_ASSOCIATIONS, "" //$NON-NLS-1$
+                + Boolean.valueOf(getPersistenceOptions().isAllowLazyFetchForSingleValuedAssociations()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SIZE,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnSize()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_SCALE,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnScale()));
+        persistenceOptionsEl.setAttribute(IPersistenceOptions.MAX_TABLE_COLUMN_PRECISION,
+                String.valueOf(getPersistenceOptions().getMaxTableColumnPrecision()));
+
+        ITableNamingStrategy tableNamingStrategy = getPersistenceOptions().getTableNamingStrategy();
+        ITableColumnNamingStrategy tableColumnNamingStrategy = getPersistenceOptions().getTableColumnNamingStrategy();
+
+        persistenceOptionsEl.appendChild(tableNamingStrategy.toXml(doc));
+        persistenceOptionsEl.appendChild(tableColumnNamingStrategy.toXml(doc));
+    }
+
+    @Override
+    public LinkedHashSet<String> getMarkerEnums() {
+        return markerEnums;
+    }
+
+    @Override
+    public void addMarkerEnum(String qualifiedName) {
+        ArgumentCheck.notNull(qualifiedName);
+        getMarkerEnums().add(qualifiedName.trim());
+    }
+
+    @Override
+    public void removeMarkerEnum(String qualifiedName) {
+        ArgumentCheck.notNull(qualifiedName);
+        getMarkerEnums().remove(qualifiedName);
+    }
+
+    @Override
+    public boolean isMarkerEnumsEnabled() {
+        return enableMarkerEnums;
+    }
+
+    @Override
+    public void setMarkerEnumsEnabled(boolean enabled) {
+        enableMarkerEnums = enabled;
+    }
+
+    private Element createSettingElement(Document doc, String name, boolean enabled) {
+        Element constraintElement = doc.createElement(SETTING_TAG_NAME);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_NAME, name);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_ENABLED, Boolean.toString(enabled));
+        return constraintElement;
     }
 
     protected Element createSettingElement(Document doc, String name, String value) {
         Element constraintElement = doc.createElement(SETTING_TAG_NAME);
         constraintElement.setAttribute(SETTING_ATTRIBUTE_NAME, name);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_VALUE, value);
+        return constraintElement;
+    }
+
+    private Element createSettingElement(Document doc, String name, boolean enable, String value) {
+        Element constraintElement = doc.createElement(SETTING_TAG_NAME);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_NAME, name);
+        constraintElement.setAttribute(SETTING_ATTRIBUTE_ENABLED, Boolean.toString(enable));
         constraintElement.setAttribute(SETTING_ATTRIBUTE_VALUE, value);
         return constraintElement;
     }
@@ -882,31 +954,66 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         int length = nl.getLength();
         for (int i = 0; i < length; ++i) {
             Element child = (Element)nl.item(i);
-            if (!child.hasAttribute(SETTING_ATTRIBUTE_NAME) || !child.hasAttribute(SETTING_ATTRIBUTE_VALUE)) {
-                // ignore incomplete entries (no value and no enable flag)
+            if (isValidSettingElement(child)) {
                 continue;
             }
 
             String name = child.getAttribute(SETTING_ATTRIBUTE_NAME);
+            boolean enabled = isEnabledSetting(child);
             String value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
-            boolean enable = Boolean.valueOf(value).booleanValue();
 
-            applySetting(name, enable);
+            applySetting(name, enabled, value);
             initFunctionsLanguageLocale(name, value);
+        }
+        if (!markerEnumsConfiguredInIpsProjectFile) {
+            setMarkerEnumsEnabled(false);
         }
     }
 
-    private void applySetting(String name, boolean enable) {
+    private boolean isValidSettingElement(Element child) {
+        return !child.hasAttribute(SETTING_ATTRIBUTE_NAME)
+                || !(child.hasAttribute(SETTING_ATTRIBUTE_VALUE) || child.hasAttribute(SETTING_ATTRIBUTE_ENABLED));
+    }
+
+    private boolean isEnabledSetting(Element child) {
+        String enabledAttributeValue = child.getAttribute(SETTING_ATTRIBUTE_ENABLED);
+        if (StringUtils.isEmpty(enabledAttributeValue)) {
+            String value = child.getAttribute(SETTING_ATTRIBUTE_VALUE);
+            // only if the value is 'false' we assume it is disabled. This is useful
+            // for example for marker enums where you could skip the enabled attribute
+            return !Boolean.FALSE.toString().equals(value);
+        } else {
+            return Boolean.valueOf(enabledAttributeValue).booleanValue();
+        }
+    }
+
+    private void applySetting(String name, boolean enabled, String value) {
         if (name.equals(SETTING_DERIVED_UNION_IS_IMPLEMENTED)) {
-            derivedUnionIsImplementedRuleEnabled = enable;
+            derivedUnionIsImplementedRuleEnabled = enabled;
         } else if (name.equals(SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE)) {
-            referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enable;
+            referencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled = enabled;
         } else if (name.equals(SETTING_RULES_WITHOUT_REFERENCE)) {
-            rulesWithoutReferencesAllowed = enable;
+            rulesWithoutReferencesAllowed = enabled;
         } else if (name.equals(SETTING_SHARED_ASSOCIATIONS)) {
-            setSharedDetailToMasterAssociations(enable);
+            setSharedDetailToMasterAssociations(enabled);
         } else if (name.equals(SETTING_ASSOCIATIONS_IN_FORMULAS)) {
-            setAssociationsInFormulas(enable);
+            setAssociationsInFormulas(enabled);
+        } else if (name.equals(SETTING_MARKER_ENUMS)) {
+            setMarkerEnumsEnabled(enabled);
+            initMarkerEnums(value);
+            markerEnumsConfiguredInIpsProjectFile = true;
+        } else if (name.equals(SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)) {
+            setBusinessFunctionsForValidationRules(enabled);
+        }
+    }
+
+    private void initMarkerEnums(String value) {
+        getMarkerEnums().clear();
+        if (!value.isEmpty()) {
+            String[] splitString = value.split(MARKER_ENUMS_DELIMITER);
+            for (String qualifiedName : splitString) {
+                addMarkerEnum(qualifiedName.trim());
+            }
         }
     }
 
@@ -1231,7 +1338,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "it is possible to configure a version provider." //$NON-NLS-1$
                 + SystemUtils.LINE_SEPARATOR
                 + "Examples:" + SystemUtils.LINE_SEPARATOR//$NON-NLS-1$
-                + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
+                + "<" + VERSION_TAG_NAME + " " + VERSION_ATTRIBUTE + "=\"1.2.3\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
                 + SystemUtils.LINE_SEPARATOR
                 + "or" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<" + VERSION_TAG_NAME + " " + VERSION_PROVIDER_ATTRIBUTE + "=\"org.faktorips.devtools.core.bundleVersionProvider\"/>" //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$
@@ -1248,18 +1355,29 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + " " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "<" + ADDITIONAL_SETTINGS_TAG_NAME + ">" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$
                 + "    <!-- True if Faktor-IPS checks if all derived unions are implemented in none abstract classes. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_DERIVED_UNION_IS_IMPLEMENTED + "\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "    <!-- True if Faktor-IPS checks if referenced product components are valid on the effective date " + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "        of the referencing product component generation. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_REFERENCED_PRODUCT_COMPONENTS_ARE_VALID_ON_THIS_GENERATIONS_VALID_FROM_DATE + "\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + "    <!-- True to allow rules without references -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\" enable=\"true\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" //$NON-NLS-1$
-                + "         by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_RULES_WITHOUT_REFERENCE + "\"/>" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + "    <!-- True to allow shared associations. Shared associations are detail-to-master associationis that can be used" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        by multiple master-to-detail associations-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_SHARED_ASSOCIATIONS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
                 + "    <!-- True to allow navigation via associations in formulas. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
-                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\" enable=\"true\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_ASSOCIATIONS_IN_FORMULAS + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Set the language in which the expression language's functions are used. E.g. the 'if' function is called IF in English, but WENN in German." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        Only English (en) and German (de) are supported at the moment. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_FORMULA_LANGUAGE_LOCALE + "\" value=\"en\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
+                + "    <!-- Represents the qualified name of the marker enums seperated by \";\". For further processing only the first entered qualified name will be considered -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        True to allow usage of marker enums. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_MARKER_ENUMS + "\" value=\"markerEnumName\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + SystemUtils.LINE_SEPARATOR
+                + "    <!-- True to allow business functions for validation rules. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
@@ -1579,6 +1697,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setFormulaLanguageLocale(Locale locale) {
         formulaLanguageLocale = locale;
+    }
+
+    @Override
+    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
+        return businessFunctionsForValidationRules;
+    }
+
+    @Override
+    public void setBusinessFunctionsForValidationRules(boolean enabled) {
+        businessFunctionsForValidationRules = enabled;
     }
 
 }

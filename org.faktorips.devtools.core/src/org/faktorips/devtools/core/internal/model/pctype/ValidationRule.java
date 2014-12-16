@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -49,13 +50,14 @@ import org.w3c.dom.NodeList;
 
 public class ValidationRule extends TypePart implements IValidationRule {
 
-    private static final String VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
+    public static final String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
 
-    private static final String BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
+    public static final String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
 
-    public final static String TAG_NAME = "ValidationRuleDef"; //$NON-NLS-1$
-
-    public final static String XML_TAG_MSG_TXT = "MessageText"; //$NON-NLS-1$
+    private static final String XML_TAG_VALIDATED_ATTRIBUTE = "ValidatedAttribute"; //$NON-NLS-1$
+    private static final String XML_TAG_BUSINESS_FUNCTION = "BusinessFunction"; //$NON-NLS-1$
+    private static final String XML_TAG_MARKERS = "Markers"; //$NON-NLS-1$
+    private static final String XML_TAG_MARKER = "Marker"; //$NON-NLS-1$
 
     private final ValidationRuleMessageText msgText;
 
@@ -75,6 +77,9 @@ public class ValidationRule extends TypePart implements IValidationRule {
     private boolean configurableByProductComponent = false;
 
     private boolean activatedByDefault = true;
+
+    /** The markers that are applied to this rule. */
+    private List<String> markers = new ArrayList<String>();
 
     /**
      * Flag which is <code>true</code> if this rule is a default rule for validating the value of an
@@ -184,6 +189,30 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
         validateNoLineSeperators(list);
         validateReplacementParameters(ipsProject, list);
+
+        validateMarker(list, ipsProject);
+    }
+
+    private void validateMarker(MessageList list, IIpsProject ipsProject) {
+        MarkerEnumUtil markerEnumUtil = new MarkerEnumUtil(ipsProject);
+        Set<String> definedMarkerIds = markerEnumUtil.getDefinedMarkerIds();
+        Set<String> usedMarkerIds = getUsedMarkerIds();
+        usedMarkerIds.removeAll(definedMarkerIds);
+        if (!usedMarkerIds.isEmpty()) {
+            String text = NLS.bind(Messages.ValidationRule_msg_InvalidMarkerId, usedMarkerIds, markerEnumUtil
+                    .getMarkerEnumType().getQualifiedName());
+            Message msg = new Message(IValidationRule.MSGCODE_INVALID_MARKER_ID, text, Message.ERROR, this,
+                    PROPERTY_MESSAGE_CODE);
+            list.add(msg);
+        }
+    }
+
+    private Set<String> getUsedMarkerIds() {
+        Set<String> usedMarkerIds = new LinkedHashSet<String>();
+        for (String usedMarker : markers) {
+            usedMarkerIds.add(usedMarker);
+        }
+        return usedMarkerIds;
     }
 
     private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) throws CoreException {
@@ -342,21 +371,36 @@ public class ValidationRule extends TypePart implements IValidationRule {
         NodeList nl = element.getChildNodes();
         functions.clear();
         validatedAttributes.clear();
+        markers.clear();
         for (int i = 0; i < nl.getLength(); i++) {
             if (nl.item(i) instanceof Element) {
                 Element subElement = (Element)nl.item(i);
-                if (subElement.getNodeName().equals(BUSINESS_FUNCTION)) {
-                    functions.add(subElement.getAttribute("name")); //$NON-NLS-1$
-                }
-                if (subElement.getNodeName().equals(VALIDATED_ATTRIBUTE)) {
-                    validatedAttributes.add(subElement.getAttribute("name")); //$NON-NLS-1$
-                }
+                initChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, subElement);
+                initChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, subElement);
+                initChildrenForMarkers(subElement);
                 if (subElement.getNodeName().equals(XML_TAG_MSG_TXT)) {
                     InternationalStringXmlHelper.initFromXml(msgText, subElement);
                 }
             }
         }
         functions.trimToSize();
+    }
+
+    private void initChildrenFor(String elementType, List<String> childElements, Element subElement) {
+        if (subElement.getNodeName().equals(elementType)) {
+            childElements.add(subElement.getAttribute("name")); //$NON-NLS-1$
+        }
+    }
+
+    private void initChildrenForMarkers(Element subElement) {
+        if (subElement.getNodeName().equals(XML_TAG_MARKERS)) {
+            NodeList childNodes = subElement.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                if (childNodes.item(i) instanceof Element) {
+                    initChildrenFor(XML_TAG_MARKER, markers, (Element)childNodes.item(i));
+                }
+            }
+        }
     }
 
     @Override
@@ -372,19 +416,29 @@ public class ValidationRule extends TypePart implements IValidationRule {
         newElement.setAttribute(PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT,
                 String.valueOf(configurableByProductComponent));
         newElement.setAttribute(PROPERTY_ACTIVATED_BY_DEFAULT, String.valueOf(activatedByDefault));
-        Document doc = newElement.getOwnerDocument();
-        for (int i = 0; i < functions.size(); i++) {
-            Element fctElement = doc.createElement(BUSINESS_FUNCTION);
-            fctElement.setAttribute("name", functions.get(i)); //$NON-NLS-1$
-            newElement.appendChild(fctElement);
-        }
-        for (int i = 0; i < validatedAttributes.size(); i++) {
-            Element attrElement = doc.createElement(VALIDATED_ATTRIBUTE);
-            attrElement.setAttribute("name", validatedAttributes //$NON-NLS-1$
-                    .get(i));
-            newElement.appendChild(attrElement);
-        }
+        appendChildrenFor(XML_TAG_BUSINESS_FUNCTION, functions, newElement);
+        appendChildrenFor(XML_TAG_VALIDATED_ATTRIBUTE, validatedAttributes, newElement);
+        appendChildrenForMarkers(newElement);
+
         InternationalStringXmlHelper.toXml(msgText, newElement, XML_TAG_MSG_TXT);
+    }
+
+    private void appendChildrenFor(String elementType, List<String> childElements, Element newElement) {
+        Document doc = newElement.getOwnerDocument();
+        for (int i = 0; i < childElements.size(); i++) {
+            Element element = doc.createElement(elementType);
+            element.setAttribute("name", childElements.get(i)); //$NON-NLS-1$
+            newElement.appendChild(element);
+        }
+    }
+
+    private void appendChildrenForMarkers(Element newElement) {
+        if (!markers.isEmpty()) {
+            Document doc = newElement.getOwnerDocument();
+            Element markersRootElement = doc.createElement(XML_TAG_MARKERS);
+            newElement.appendChild(markersRootElement);
+            appendChildrenFor(XML_TAG_MARKER, markers, markersRootElement);
+        }
     }
 
     @Override
@@ -506,4 +560,15 @@ public class ValidationRule extends TypePart implements IValidationRule {
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
 
+    @Override
+    public List<String> getMarkers() {
+        return markers;
+    }
+
+    @Override
+    public void setMarkers(List<String> newMarkers) {
+        List<String> oldMarkers = this.markers;
+        this.markers = newMarkers;
+        valueChanged(oldMarkers, newMarkers, PROPERTY_MARKERS);
+    }
 }

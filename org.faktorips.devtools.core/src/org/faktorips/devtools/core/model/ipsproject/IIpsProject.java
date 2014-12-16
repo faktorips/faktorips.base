@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model.ipsproject;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,6 +35,8 @@ import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
 import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -45,6 +48,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
@@ -965,5 +969,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     @Override
     public void delete() throws CoreException;
+
+    /**
+     * Returns a Set of {@link IpsSrcFile} representing all {@link EnumType}s that are used to
+     * define markers for {@link IValidationRule}s.
+     */
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums();
 
 }

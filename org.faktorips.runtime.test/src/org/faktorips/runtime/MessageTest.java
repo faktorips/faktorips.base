@@ -18,9 +18,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.values.Money;
 import org.junit.Test;
@@ -337,7 +338,7 @@ public class MessageTest extends XmlAbstractTestCase {
         IMarker marker1 = mock(IMarker.class);
         IMarker marker2 = mock(IMarker.class);
         IMarker marker3 = mock(IMarker.class);
-        List<IMarker> markers = new ArrayList<IMarker>();
+        Set<IMarker> markers = new HashSet<IMarker>();
         markers.add(marker1);
         markers.add(marker2);
 
@@ -360,7 +361,7 @@ public class MessageTest extends XmlAbstractTestCase {
         message = Message.warning("text").code("1").markers(mock(IMarker.class)).create();
         assertTrue(message.hasMarkers());
         // 2 markers
-        List<IMarker> markers = new ArrayList<IMarker>();
+        Set<IMarker> markers = new HashSet<IMarker>();
         markers.add(mock(IMarker.class));
         markers.add(mock(IMarker.class));
         message = Message.warning("text").code("1").markers(markers).create();
@@ -378,7 +379,7 @@ public class MessageTest extends XmlAbstractTestCase {
         message = Message.warning("text").code("1").markers(mock(IMarker.class)).create();
         assertEquals(1, message.getMarkers().size());
 
-        List<IMarker> markers = new ArrayList<IMarker>();
+        Set<IMarker> markers = new HashSet<IMarker>();
         markers.add(mock(IMarker.class));
         markers.add(mock(IMarker.class));
         message = Message.warning("text").code("1").markers(markers).create();

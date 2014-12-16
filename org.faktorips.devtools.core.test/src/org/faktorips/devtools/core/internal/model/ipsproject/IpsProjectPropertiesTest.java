@@ -52,6 +52,9 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
 
     private IIpsProjectProperties properties;
 
+    private static final String MARKER = "MY_MARKER";
+    private static final String ANOTHER_MARKER = "ANOTHER_MARKER";
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -190,8 +193,10 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         for (int i = 0; i < 4; ++i) {
             props.setDerivedUnionIsImplementedRuleEnabled((i & 1) == 1);
             props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled((i & 2) == 2);
+            props.setMarkerEnumsEnabled((i & 1) == 1);
             props.setRulesWithoutReferencesAllowedEnabled((i & 1) == 1);
             props.setPersistenceSupport((i & 1) == 1);
+            props.setBusinessFunctionsForValidationRules((i & 1) == 1);
 
             Element projectEl = props.toXml(newDocument());
             props = new IpsProjectProperties(ipsProject);
@@ -202,6 +207,8 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
                     (i & 2) == 2);
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
             assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
+            assertEquals(props.isMarkerEnumsEnabled(), (i & 1) == 1);
+            assertEquals(props.isBusinessFunctionsForValdiationRulesEnabled(), (i & 1) == 1);
         }
     }
 
@@ -235,16 +242,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setVersion("1.2.3");
         props.setVersionProviderId("myVersionProvider");
 
-        Document doc = newDocument();
-        Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
-        Element propEl = doc.createElement("Property");
-        propEl.setAttribute("name", "xxx");
-        propEl.setAttribute("value", "yyy");
-        configEl.appendChild(propEl);
-
-        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
-        config.initFromXml(configEl);
-        props.setBuilderSetConfig(config);
+        createDocumentSetUp(props);
         DynamicEnumDatatype datatype = new DynamicEnumDatatype(ipsProject);
         datatype.setIsSupportingNames(true);
         datatype.setGetNameMethodName("getMe");
@@ -318,6 +316,40 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(100, props.getPersistenceOptions().getMaxTableColumnSize());
         assertEquals(101, props.getPersistenceOptions().getMaxTableColumnScale());
         assertEquals(102, props.getPersistenceOptions().getMaxTableColumnPrecision());
+    }
+
+    @Test
+    public void testToXMLForMarkerEnums() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        props.addMarkerEnum(MARKER);
+
+        assertEquals(1, props.getMarkerEnums().size());
+        assertTrue(props.getMarkerEnums().contains(MARKER));
+
+        props.addMarkerEnum(ANOTHER_MARKER);
+        props.removeMarkerEnum(MARKER);
+
+        createDocumentSetUp(props);
+        Element projectEl = props.toXml(newDocument());
+        props = new IpsProjectProperties(ipsProject);
+        props.initFromXml(ipsProject, projectEl);
+
+        assertEquals(1, props.getMarkerEnums().size());
+        assertTrue(props.getMarkerEnums().contains(ANOTHER_MARKER));
+
+    }
+
+    private void createDocumentSetUp(IpsProjectProperties props) {
+        Document doc = newDocument();
+        Element configEl = doc.createElement("IpsArtefactBuilderSetConfig");
+        Element propEl = doc.createElement("Property");
+        propEl.setAttribute("name", "xxx");
+        propEl.setAttribute("value", "yyy");
+        configEl.appendChild(propEl);
+
+        IpsArtefactBuilderSetConfigModel config = new IpsArtefactBuilderSetConfigModel();
+        config.initFromXml(configEl);
+        props.setBuilderSetConfig(config);
     }
 
     @Test
@@ -424,6 +456,44 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertEquals(2, supportedLanguages.size());
         assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.ENGLISH)));
         assertTrue(supportedLanguages.contains(new SupportedLanguage(Locale.GERMAN)));
+    }
+
+    @Test
+    public void testInitFromXmlForMarkerEnums() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+
+        assertEquals(2, props.getMarkerEnums().size());
+        assertTrue(props.getMarkerEnums().contains("marker"));
+        assertTrue(props.getMarkerEnums().contains("marker2"));
+    }
+
+    @Test
+    public void testInitFromXmlForDisableEnumMarkers() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+
+        assertFalse(props.isMarkerEnumsEnabled());
+    }
+
+    @Test
+    public void testInitFromXmlForRulesUsedInBusinessFunctions() {
+        IpsProjectProperties props = initPropertiesWithDocumentElement();
+
+        assertTrue(props.isBusinessFunctionsForValdiationRulesEnabled());
+    }
+
+    @Test
+    public void testIsBusinessFunctionsForValdiationRulesEnabled_default() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+
+        assertFalse(props.isBusinessFunctionsForValdiationRulesEnabled());
+    }
+
+    @Test
+    public void testIsBusinessFunctionsForValdiationRulesEnabled() {
+        IpsProjectProperties props = new IpsProjectProperties(ipsProject);
+        props.setBusinessFunctionsForValidationRules(true);
+
+        assertTrue(props.isBusinessFunctionsForValdiationRulesEnabled());
     }
 
     @Test

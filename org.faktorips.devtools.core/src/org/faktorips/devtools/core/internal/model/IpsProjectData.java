@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,9 +23,12 @@ import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsproject.ClassLoaderProvider;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.model.IVersionProvider;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -48,6 +52,8 @@ public class IpsProjectData {
     private ClassLoaderProvider classLoaderProvider;
 
     private ExtensionFunctionResolversCache functionResolver;
+
+    private volatile LinkedHashSet<IIpsSrcFile> markerEnums;
 
     private IpsProjectProperties projectProperties;
 
@@ -151,6 +157,35 @@ public class IpsProjectData {
 
     public void setVersionProvider(IVersionProvider<?> versionProvider) {
         this.versionFormat = versionProvider;
+    }
+
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
+        LinkedHashSet<IIpsSrcFile> result = markerEnums;
+        if (result == null) {
+            synchronized (this) {
+                result = markerEnums;
+                if (result == null) {
+                    result = initMarkerEnums();
+                    markerEnums = result;
+                }
+            }
+        }
+        return result;
+    }
+
+    private LinkedHashSet<IIpsSrcFile> initMarkerEnums() {
+        LinkedHashSet<IIpsSrcFile> result = new LinkedHashSet<IIpsSrcFile>();
+        IIpsProjectProperties properties = ipsProject.getReadOnlyProperties();
+        if (properties.isMarkerEnumsEnabled()) {
+            LinkedHashSet<String> markerEnumsQNames = properties.getMarkerEnums();
+            for (String qualifiedName : markerEnumsQNames) {
+                IIpsSrcFile ipsSrcFile = ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, qualifiedName);
+                if (ipsSrcFile != null && ipsSrcFile.exists()) {
+                    result.add(ipsSrcFile);
+                }
+            }
+        }
+        return result;
     }
 
     static class ContainerTypeAndPath {

@@ -11,21 +11,33 @@
 package org.faktorips.devtools.core.internal.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
+
+import java.util.LinkedHashSet;
 
 import org.faktorips.devtools.core.internal.model.ipsproject.AbstractIpsObjectPathContainer;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPathContainerType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.junit.Test;
 
 public class IpsProjectDataTest {
 
+    private static final String MY_IPS_SRC_FILE = "my.qualified.IpsSrcFile";
+
     private IpsObjectPathContainerFactory factory = new IpsObjectPathContainerFactory();
-    private IIpsProject ipsProject = new IpsProject(mock(IpsModel.class), "TestProject");
+    private IIpsProject ipsProject = spy(new IpsProject(mock(IpsModel.class), "TestProject"));
     private IpsProjectData ipsProjectData = new IpsProjectData(ipsProject, factory);
 
     @Test
@@ -60,6 +72,55 @@ public class IpsProjectDataTest {
         when(containerType.getId()).thenReturn(id);
         factory.registerContainerType(containerType);
         return containerType;
+    }
+
+    @Test
+    public void testGetMarkerEnums_empty() throws Exception {
+        LinkedHashSet<IIpsSrcFile> markerEnums = ipsProjectData.getMarkerEnums();
+
+        assertTrue(markerEnums.isEmpty());
+    }
+
+    @Test
+    public void testGetMarkerEnums_invalid() throws Exception {
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addMarkerEnum("invalid");
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+
+        LinkedHashSet<IIpsSrcFile> markerEnums = ipsProjectData.getMarkerEnums();
+
+        assertTrue(markerEnums.isEmpty());
+    }
+
+    @Test
+    public void testGetMarkerEnums_notExisting() throws Exception {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        when(ipsSrcFile.exists()).thenReturn(false);
+        when(ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, MY_IPS_SRC_FILE)).thenReturn(ipsSrcFile);
+
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addMarkerEnum(MY_IPS_SRC_FILE);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+
+        LinkedHashSet<IIpsSrcFile> markerEnums = ipsProjectData.getMarkerEnums();
+
+        assertTrue(markerEnums.isEmpty());
+    }
+
+    @Test
+    public void testGetMarkerEnums_existing() throws Exception {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        when(ipsSrcFile.exists()).thenReturn(true);
+        when(ipsProject.findIpsSrcFile(IpsObjectType.ENUM_TYPE, MY_IPS_SRC_FILE)).thenReturn(ipsSrcFile);
+
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addMarkerEnum(MY_IPS_SRC_FILE);
+        when(ipsProject.getReadOnlyProperties()).thenReturn(properties);
+
+        LinkedHashSet<IIpsSrcFile> markerEnums = ipsProjectData.getMarkerEnums();
+
+        assertFalse(markerEnums.isEmpty());
+        assertThat(markerEnums, hasItems(ipsSrcFile));
     }
 
 }

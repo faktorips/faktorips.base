@@ -53,6 +53,7 @@ import org.faktorips.devtools.stdbuilder.EnumTypeDatatypeHelper;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.util.JavaDocTagGeneratorUtil;
 import org.faktorips.devtools.stdbuilder.util.LocaleGeneratorUtil;
+import org.faktorips.runtime.IMarker;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.internal.PropertiesReadingInternationalString;
 import org.faktorips.runtime.util.MessagesHelper;
@@ -226,7 +227,14 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
             generateConstantForSerialVersionNumber(mainSection.getConstantBuilder());
             implementedInterfaces.add(Comparable.class.getName() + "<" + typeName + ">");
         }
+        if (isMarkerEnum()) {
+            implementedInterfaces.add(IMarker.class.getName());
+        }
         mainSection.setExtendedInterfaces(implementedInterfaces.toArray(new String[implementedInterfaces.size()]));
+    }
+
+    /* private */boolean isMarkerEnum() {
+        return getIpsProject().getMarkerEnums().contains(getIpsSrcFile());
     }
 
     private void generateAttributesAndConstructor(TypeSection mainSection) throws CoreException {
