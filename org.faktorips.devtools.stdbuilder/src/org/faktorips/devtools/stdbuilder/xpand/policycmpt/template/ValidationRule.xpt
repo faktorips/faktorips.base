@@ -98,15 +98,11 @@
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {
     	«IF validateAttributes-»
-                «ObjectProperty()»[] invalidObjectProperties = new «ObjectProperty()»[] {
+                «List_(ObjectProperty())» invalidObjectProperties = «Arrays()».asList(
                 «FOREACH validatedAttributeConstants AS constant SEPARATOR ","-»
                 new «ObjectProperty()»(this, «constant»)
                 «ENDFOREACH-»
-				 };
-        «ELSE-»
-        «IF !validatedAttrSpecifiedInSrc-»
-        «ObjectProperty()» invalidObjectProperties = new «ObjectProperty()»(this);
-        «ENDIF-»
+				 );
 		«ENDIF-»        
         «IF containsReplacementParameters-»
 	        «MsgReplacementParameter()»[] replacementParameters = new «MsgReplacementParameter()»[] {
@@ -121,14 +117,17 @@
        	
        	«Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
        		.code(«constantNameMessageCode»)
+	      «IF validateAttributes-»
        		.invalidObjects(invalidObjectProperties)
-       		«IF containsReplacementParameters-»
-       			.replacements(replacementParameters)
-   			«ENDIF-»
-   			«IF containingMarkers-»
-   				.markers
-   				(«FOREACH markers AS param SEPARATOR ","-» «param»«ENDFOREACH»)
-   			«ENDIF-»
+	      «ELSEIF !validatedAttrSpecifiedInSrc-»
+    	    .invalidObject(new «ObjectProperty()»(this))
+	      «ENDIF-»
+       	  «IF containsReplacementParameters-»
+       		.replacements(replacementParameters)
+   		  «ENDIF-»
+   		  «IF containingMarkers-»
+   			.markers(«FOREACH markers AS param SEPARATOR ","-» «param»«ENDFOREACH»)
+   		  «ENDIF-»
    			;
 		return builder.create(); 
     }

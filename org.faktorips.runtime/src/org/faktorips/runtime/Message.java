@@ -628,11 +628,11 @@ public class Message implements Serializable {
         /**
          * Set an object property that message refers to.
          * 
-         * @param invalidObjectProperties An object property that message refers to
+         * @param invalidObjectProperty An object property that message refers to
          * @return This builder instance to directly add further properties
          */
-        public Builder invalidObject(ObjectProperty invalidObjectProperties) {
-            this.invalidObjectProperties = Arrays.asList(invalidObjectProperties);
+        public Builder invalidObject(ObjectProperty invalidObjectProperty) {
+            this.invalidObjectProperties = Arrays.asList(invalidObjectProperty);
             return this;
         }
 
