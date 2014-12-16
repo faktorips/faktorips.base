@@ -44,6 +44,8 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String PROPERTY_ENABLE_WARNINGS = "enableWarnings"; //$NON-NLS-1$
 
+    public static final String PROPERTY_FORMAT_SETTINGS_VISIBLE = "formatSettingsVisible"; //$NON-NLS-1$
+
     public static final String MSGCODE_PREFIX = "MESSAGES_IMPORT_WIZARD-"; //$NON-NLS-1$
 
     public static final String MSG_EMPTY_FILE = MSGCODE_PREFIX + "noFile"; //$NON-NLS-1$
@@ -311,6 +313,10 @@ public class MessagesImportPMO extends PresentationModelObject {
      */
     public boolean isCsvFileFormat() {
         return FORMAT_CSV_FILE.equals(format);
+    }
+
+    public boolean isFormatSettingsVisible() {
+        return getFormat().equals(FORMAT_CSV_FILE);
     }
 
 }

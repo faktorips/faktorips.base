@@ -21,11 +21,15 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleIdentification;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -37,6 +41,7 @@ import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.fields.ComboViewerField;
+import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -45,6 +50,7 @@ import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
+import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -56,6 +62,9 @@ import org.faktorips.util.message.MessageList;
  */
 public class MessagesImportPage extends WizardDataTransferPage {
 
+    private static final String IDENTIFICATION_CODE = "identificationCode"; //$NON-NLS-1$
+    private static final String IDENTIFICATION_NAME = "identificationName"; //$NON-NLS-1$
+
     private IpsPckFragmentRootRefControl target;
     private final IStructuredSelection selection;
     private UIToolkit uiToolkit;
@@ -65,11 +74,12 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private final MessagesImportPMO messagesImportPMO;
     private ComboViewerField<ISupportedLanguage> localeComboField;
     private TextField formatDelimiter;
-    private TextField formatIdentifier;
-    private TextField formatColumn;
+    private FormattingTextField<String> formatIdentifier;
+    private FormattingTextField<String> formatColumn;
     private RadioButtonGroupField<ValidationRuleIdentification> identificationRadioButtons;
     private RadioButtonGroupField<String> formatRadioButtons;
     private Checkbox warningCheckbox;
+    private Group formatSettingsGroup;
 
     protected MessagesImportPage(String name, IStructuredSelection selection) {
         super(name);
@@ -81,7 +91,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     @Override
     public void handleEvent(Event event) {
-        // TODO Auto-generated method stub
     }
 
     @Override
@@ -109,8 +118,11 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     private Composite createImportControl(Composite rootComposite) {
         Composite labelEditComposite = uiToolkit.createLabelEditColumnComposite(rootComposite);
+        GridLayout layout = (GridLayout)labelEditComposite.getLayout();
+        layout.marginLeft = 5;
 
-        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTarget);
+        Label targetLabel = uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTarget);
+        setWidthHint(targetLabel, 182);
         target = new IpsPckFragmentRootRefControl(labelEditComposite, true, uiToolkit);
         return labelEditComposite;
     }
@@ -128,26 +140,44 @@ public class MessagesImportPage extends WizardDataTransferPage {
         radioButtons.put(MessagesImportPMO.FORMAT_PROPERTY_FILE, Messages.MessagesImportWizard_labelFormatProperties);
         radioButtons.put(MessagesImportPMO.FORMAT_CSV_FILE, Messages.MessagesImportWizard_labelFormatCSV);
         RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
-        radioGroup.setSelection(messagesImportPMO.getFormat());
+        radioGroup.setSelection(MessagesImportPMO.FORMAT_CSV_FILE);
         formatRadioButtons = new RadioButtonGroupField<String>(radioGroup);
 
         createFormatSettingsControl(labelEditComposite);
     }
 
+    private void setWidthHint(Control c, int widthHint) {
+        GridData textGD;
+        if (c.getLayoutData() instanceof GridData) {
+            textGD = (GridData)c.getLayoutData();
+        } else {
+            textGD = new GridData();
+        }
+        textGD.widthHint = widthHint;
+        c.setLayoutData(textGD);
+    }
+
     private void createFormatSettingsControl(Composite labelEditComposite) {
-        uiToolkit.createFormLabel(labelEditComposite, StringUtils.EMPTY);
-        Group formatgroup = uiToolkit
-                .createGroup(labelEditComposite, Messages.MessagesImportWizard_labelFormatSettings);
-        formatgroup.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
-        Composite formatSettingsComposite = uiToolkit.createLabelEditColumnComposite(formatgroup);
-        uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
+        formatSettingsGroup = uiToolkit.createGroup(labelEditComposite,
+                Messages.MessagesImportWizard_labelFormatSettings);
+        GridData groupGD = new GridData(GridData.FILL, GridData.FILL, true, true);
+        groupGD.horizontalSpan = 2;
+        formatSettingsGroup.setLayoutData(groupGD);
+
+        Composite formatSettingsComposite = uiToolkit.createLabelEditColumnComposite(formatSettingsGroup);
+
+        Label formatLabel = uiToolkit.createFormLabel(formatSettingsComposite,
+                Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
         formatDelimiter = new TextField(uiToolkit.createText(formatSettingsComposite));
+        setWidthHint(formatLabel, 175);
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
-        formatIdentifier = new TextField(uiToolkit.createText(formatSettingsComposite));
+        formatIdentifier = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
+                IntegerNumberFormat.newInstance(ValueDatatype.INTEGER));
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsColumn);
-        formatColumn = new TextField(uiToolkit.createText(formatSettingsComposite));
+        formatColumn = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
+                IntegerNumberFormat.newInstance(ValueDatatype.INTEGER));
     }
 
     protected void createLocaleControl(Composite labelEditComposite) {
@@ -204,17 +234,24 @@ public class MessagesImportPage extends WizardDataTransferPage {
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
         bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
 
-        bindEnabledStates();
+        bindFormatSettings();
     }
 
-    private void bindEnabledStates() {
+    private void bindFormatSettings() {
+        bindingContext.bindVisible(formatSettingsGroup, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_VISIBLE, true);
+
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
+        bindingContext
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
         bindingContext.bindEnabled(formatIdentifier.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
+        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
         bindingContext.bindEnabled(formatColumn.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
-
+        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
     }
 
     private void initDefaults() {
