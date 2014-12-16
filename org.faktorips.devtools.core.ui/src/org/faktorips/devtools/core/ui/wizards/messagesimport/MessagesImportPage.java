@@ -215,9 +215,11 @@ public class MessagesImportPage extends WizardDataTransferPage {
             IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
             if (ipsElement == null) {
                 IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
-                ipsElement = (IIpsElement)resource.getAdapter(IIpsElement.class);
-                if (ipsElement == null) {
-                    ipsElement = (IIpsElement)resource.getProject().getAdapter(IIpsElement.class);
+                if (resource != null) {
+                    ipsElement = (IIpsElement)resource.getAdapter(IIpsElement.class);
+                    if (ipsElement == null) {
+                        ipsElement = (IIpsElement)resource.getProject().getAdapter(IIpsElement.class);
+                    }
                 }
             }
             if (ipsElement instanceof IIpsProject) {
