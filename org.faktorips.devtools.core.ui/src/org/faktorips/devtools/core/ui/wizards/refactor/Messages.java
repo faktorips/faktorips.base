@@ -29,6 +29,7 @@ public class Messages extends NLS {
     public static String ElementNames_Association;
     public static String ElementNames_Type;
     public static String ElementNames_EnumLiteralNameAttributeValue;
+    public static String ElementNames_ValidationRule;
 
     public static String IpsRenameRefactoringWizard_title;
     public static String IpsMoveRefactoringWizard_title;

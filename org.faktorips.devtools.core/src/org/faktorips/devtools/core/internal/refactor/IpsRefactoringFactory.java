@@ -19,6 +19,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.refactor.RenameIpsOb
 import org.faktorips.devtools.core.internal.model.type.refactor.PullUpAttributeProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAssociationProcessor;
 import org.faktorips.devtools.core.internal.model.type.refactor.RenameAttributeProcessor;
+import org.faktorips.devtools.core.internal.model.type.refactor.RenameValidationRuleProcessor;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumLiteralNameAttributeValue;
@@ -26,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
+import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.refactor.IIpsCompositeMoveRefactoring;
@@ -72,6 +74,8 @@ public final class IpsRefactoringFactory implements IIpsRefactoringFactory {
             ipsRenameProcessor = new RenameIpsObjectProcessor((IIpsObject)ipsElement);
         } else if (ipsElement instanceof IIpsPackageFragment) {
             ipsRenameProcessor = new RenameIpsPackageFragmentProcessor((IIpsPackageFragment)ipsElement);
+        } else if (ipsElement instanceof IValidationRule) {
+            ipsRenameProcessor = new RenameValidationRuleProcessor((IValidationRule)ipsElement);
         } else {
             return null;
         }

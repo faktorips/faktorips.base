@@ -1641,7 +1641,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return false;
     }
 
+    /**
+     * @deprecated since 3.15: this method is not supported anymore.
+     */
     @Override
+    @Deprecated
     public List<ITestCase> searchReferencingTestCases(IProductCmpt cmpt) throws CoreException {
         IIpsProject baseProject = cmpt.getIpsProject();
         IIpsProject[] projects = getIpsModel().getIpsProjects();
@@ -1657,6 +1661,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         return result;
     }
 
+    /**
+     * @deprecated since 3.15: this method is not supported anymore.
+     */
+    @Deprecated
     private List<ITestCase> getReferencingTestCases(IIpsProject project, String objectName) throws CoreException {
         List<ITestCase> result = new ArrayList<ITestCase>();
         List<ITestCase> testCases = project.getAllTestCases();

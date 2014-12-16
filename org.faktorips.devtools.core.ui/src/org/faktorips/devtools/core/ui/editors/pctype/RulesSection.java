@@ -56,9 +56,9 @@ public class RulesSection extends SimpleIpsPartsSection {
     private class RulesComposite extends IpsPartsComposite {
 
         RulesComposite(IIpsObject pdObject, Composite parent, UIToolkit toolkit) {
-            super(pdObject, parent, getSite(), EnumSet.of(Option.CAN_CREATE,
-                    Option.CAN_EDIT, Option.CAN_DELETE, Option.CAN_MOVE,
-                    Option.SHOW_EDIT_BUTTON, Option.JUMP_TO_SOURCE_CODE_SUPPORTED), toolkit);
+            super(pdObject, parent, getSite(), EnumSet.of(Option.CAN_CREATE, Option.CAN_EDIT, Option.CAN_DELETE,
+                    Option.CAN_MOVE, Option.SHOW_EDIT_BUTTON, Option.JUMP_TO_SOURCE_CODE_SUPPORTED,
+                    Option.RENAME_REFACTORING_SUPPORTED), toolkit);
 
         }
 

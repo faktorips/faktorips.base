@@ -30,6 +30,7 @@ public class Messages extends NLS {
     public static String RenameAssociationProcessor_msgNewNameMustNotBeEmpty;
     public static String RenameAssociationProcessor_msgEitherNameOrPluralNameMustBeChanged;
     public static String RenameAssociationProcessor_msgNewPluralNameMustNotBeEmptyForToManyAssociations;
+    public static String RenameValidationRuleProcessor_processorName;
 
     public static String PullUpAttributeProcessor_processorName;
     public static String PullUpAttributeProcessor_msgTypeHasNoSupertype;
