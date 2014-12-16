@@ -212,16 +212,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         Object firstElement = selection.getFirstElement();
         if (firstElement instanceof IAdaptable) {
             IAdaptable adaptableObject = (IAdaptable)firstElement;
-            IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
-            if (ipsElement == null) {
-                IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
-                if (resource != null) {
-                    ipsElement = (IIpsElement)resource.getAdapter(IIpsElement.class);
-                    if (ipsElement == null) {
-                        ipsElement = (IIpsElement)resource.getProject().getAdapter(IIpsElement.class);
-                    }
-                }
-            }
+            IIpsElement ipsElement = getIpsElement(adaptableObject);
             if (ipsElement instanceof IIpsProject) {
                 IIpsProject ipsProject = (IIpsProject)ipsElement;
                 getMessagesImportPMO().setIpsPackageFragmentRoot(ipsProject.getIpsPackageFragmentRoots()[0]);
@@ -240,6 +231,20 @@ public class MessagesImportPage extends WizardDataTransferPage {
                         partContainer.getIpsSrcFile().getIpsPackageFragment().getRoot());
             }
         }
+    }
+
+    private IIpsElement getIpsElement(IAdaptable adaptableObject) {
+        IIpsElement ipsElement = (IIpsElement)adaptableObject.getAdapter(IIpsElement.class);
+        if (ipsElement == null) {
+            IResource resource = (IResource)adaptableObject.getAdapter(IResource.class);
+            if (resource != null) {
+                ipsElement = (IIpsElement)resource.getAdapter(IIpsElement.class);
+                if (ipsElement == null) {
+                    ipsElement = (IIpsElement)resource.getProject().getAdapter(IIpsElement.class);
+                }
+            }
+        }
+        return ipsElement;
     }
 
     void validatePage() {
