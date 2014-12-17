@@ -25,6 +25,9 @@ public class Messages extends NLS {
     public static String MessagesImportWizard_pageName;
     public static String MessagesImportWizard_windowTitle;
     public static String MessagesImportPMO_EmptyLocale;
+    public static String MessagesImportPMO_Msg_noIdColumnIndex;
+    public static String MessagesImportPMO_Msg_NoTextColumnIndex;
+    public static String MessagesImportPMO_noColumnDelimiter;
     public static String MessagesImportWizard_labelFormat;
     public static String MessagesImportWizard_labelFormatProperties;
     public static String MessagesImportWizard_labelFormatCSV;

@@ -56,14 +56,8 @@ import org.faktorips.util.message.MessageList;
 /**
  * Wizard page for translated messages for validation rules.
  * 
- * TODO This implementation is not completed yet. Have a look at FIPS-626
- * 
- * @author dirmeier
  */
 public class MessagesImportPage extends WizardDataTransferPage {
-
-    private static final String IDENTIFICATION_CODE = "identificationCode"; //$NON-NLS-1$
-    private static final String IDENTIFICATION_NAME = "identificationName"; //$NON-NLS-1$
 
     private IpsPckFragmentRootRefControl target;
     private final IStructuredSelection selection;
@@ -74,9 +68,9 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private final MessagesImportPMO messagesImportPMO;
     private ComboViewerField<ISupportedLanguage> localeComboField;
     private TextField formatDelimiter;
-    private FormattingTextField<String> formatIdentifier;
-    private FormattingTextField<String> formatColumn;
-    private RadioButtonGroupField<ValidationRuleIdentification> identificationRadioButtons;
+    private FormattingTextField<String> identifierColumnIndex;
+    private FormattingTextField<String> textColumnIndex;
+    private RadioButtonGroupField<ValidationRuleIdentification> ruleIndetifierRadioButtons;
     private RadioButtonGroupField<String> formatRadioButtons;
     private Checkbox warningCheckbox;
     private Group formatSettingsGroup;
@@ -91,6 +85,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     @Override
     public void handleEvent(Event event) {
+        // Nothing to do
     }
 
     @Override
@@ -137,7 +132,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelFormat);
 
         LinkedHashMap<String, String> radioButtons = new LinkedHashMap<String, String>();
-        radioButtons.put(MessagesImportPMO.FORMAT_PROPERTY_FILE, Messages.MessagesImportWizard_labelFormatProperties);
+        radioButtons.put(MessagesImportPMO.FORMAT_PROPERTIES_FILE, Messages.MessagesImportWizard_labelFormatProperties);
         radioButtons.put(MessagesImportPMO.FORMAT_CSV_FILE, Messages.MessagesImportWizard_labelFormatCSV);
         RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
         radioGroup.setSelection(MessagesImportPMO.FORMAT_CSV_FILE);
@@ -172,11 +167,11 @@ public class MessagesImportPage extends WizardDataTransferPage {
         setWidthHint(formatLabel, 175);
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
-        formatIdentifier = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
+        identifierColumnIndex = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
                 IntegerNumberFormat.newInstance(ValueDatatype.INTEGER));
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsColumn);
-        formatColumn = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
+        textColumnIndex = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
                 IntegerNumberFormat.newInstance(ValueDatatype.INTEGER));
     }
 
@@ -206,7 +201,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         RadioButtonGroup<ValidationRuleIdentification> radioGroup = uiToolkit.createRadioButtonGroup(
                 labelEditComposite, radioButtons);
         radioGroup.setSelection(ValidationRuleIdentification.QUALIFIED_RULE_NAME);
-        identificationRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
+        ruleIndetifierRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
     }
 
     private void createWarningCheckbox(Composite labelEditComposite) {
@@ -224,13 +219,14 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
         bindingContext
-                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
-        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
-        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
+        bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_IDENTIFIER_COLUMN_INDEX);
+        bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_TEXT_COLUMN_INDEX);
 
-        bindingContext.bindContent(identificationRadioButtons, getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_IDENTIFICATION);
+        bindingContext.bindContent(ruleIndetifierRadioButtons, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_RULE_IDENTIFIER);
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
         bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
 
@@ -244,14 +240,15 @@ public class MessagesImportPage extends WizardDataTransferPage {
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
         bindingContext
-                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
-        bindingContext.bindEnabled(formatIdentifier.getControl(), getMessagesImportPMO(),
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
+        bindingContext.bindEnabled(identifierColumnIndex.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
-        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
-        bindingContext.bindEnabled(formatColumn.getControl(), getMessagesImportPMO(),
+        bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_IDENTIFIER_COLUMN_INDEX);
+        bindingContext.bindEnabled(textColumnIndex.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
-        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
+        bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_TEXT_COLUMN_INDEX);
     }
 
     private void initDefaults() {

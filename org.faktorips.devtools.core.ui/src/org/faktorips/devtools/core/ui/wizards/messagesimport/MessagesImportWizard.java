@@ -97,10 +97,10 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
     private ValidationRuleCsvImporter getCsvImporter(MessagesImportPMO pmo, FileInputStream fileInputStream) {
         ValidationRuleCsvImporter csvImporter = new ValidationRuleCsvImporter(fileInputStream,
                 pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
-        csvImporter.setDelimiter(pmo.getFormatDelimiter());
-        csvImporter.setKeyAndValueColumn(Integer.parseInt(pmo.getFormatIdentifier()),
-                Integer.parseInt(pmo.getFormatColumn()));
-        csvImporter.setMethodOfIdentification(pmo.getIdentification());
+        csvImporter.setDelimiter(pmo.getColumnDelimiter());
+        csvImporter.setKeyAndValueColumn(Integer.parseInt(pmo.getIdentifierColumnIndex()),
+                Integer.parseInt(pmo.getTextColumnIndex()));
+        csvImporter.setMethodOfIdentification(pmo.getRuleIdentifier());
         return csvImporter;
     }
 

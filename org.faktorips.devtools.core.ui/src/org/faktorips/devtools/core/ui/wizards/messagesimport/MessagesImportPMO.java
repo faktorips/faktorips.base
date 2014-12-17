@@ -21,7 +21,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 public class MessagesImportPMO extends PresentationModelObject {
@@ -34,13 +33,13 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String PROPERTY_FORMAT = "format"; //$NON-NLS-1$
 
-    public static final String PROPERTY_FORMAT_DELIMITER = "formatDelimiter"; //$NON-NLS-1$
+    public static final String PROPERTY_COLUMN_DELIMITER = "columnDelimiter"; //$NON-NLS-1$
 
-    public static final String PROPERTY_FORMAT_IDENTIFIER = "formatIdentifier"; //$NON-NLS-1$
+    public static final String PROPERTY_IDENTIFIER_COLUMN_INDEX = "identifierColumnIndex"; //$NON-NLS-1$
 
-    public static final String PROPERTY_FORMAT_COLUMN = "formatColumn"; //$NON-NLS-1$
+    public static final String PROPERTY_TEXT_COLUMN_INDEX = "textColumnIndex"; //$NON-NLS-1$
 
-    public static final String PROPERTY_IDENTIFICATION = "identification"; //$NON-NLS-1$
+    public static final String PROPERTY_RULE_IDENTIFIER = "ruleIdentifier"; //$NON-NLS-1$
 
     public static final String PROPERTY_ENABLE_WARNINGS = "enableWarnings"; //$NON-NLS-1$
 
@@ -50,7 +49,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_EMPTY_FILE = MSGCODE_PREFIX + "noFile"; //$NON-NLS-1$
 
-    public static final String MSG_DIRECTORY_FILE = MSGCODE_PREFIX + "directory"; //$NON-NLS-1$
+    public static final String MSG_DIRECTORY_FILE = MSGCODE_PREFIX + "noDirectory"; //$NON-NLS-1$
 
     public static final String MSG_NO_EXIST_FILE = MSGCODE_PREFIX + "noExistFile"; //$NON-NLS-1$
 
@@ -58,9 +57,15 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_NO_LOCALE = MSGCODE_PREFIX + "noLocale"; //$NON-NLS-1$
 
-    public static final String FORMAT_PROPERTY_FILE = "formatPropertyFile"; //$NON-NLS-1$
+    public static final String FORMAT_PROPERTIES_FILE = "formatPropertyFile"; //$NON-NLS-1$
 
     public static final String FORMAT_CSV_FILE = "formatCsvFile"; //$NON-NLS-1$
+
+    public static final String MSG_NO_COLUMN_DELIMITER = MSGCODE_PREFIX + "noColumnDelimiter"; //$NON-NLS-1$
+
+    public static final String MSG_NO_ID_COLUMN_INDEX = MSGCODE_PREFIX + "noIDColumnIndex"; //$NON-NLS-1$
+
+    public static final String MSG_NO_TEXT_COLUMN_INDEX = MSGCODE_PREFIX + "noTextColumnIndex"; //$NON-NLS-1$
 
     private String fileName = StringUtils.EMPTY;
 
@@ -70,15 +75,14 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private String format = FORMAT_CSV_FILE;
 
-    private String formatDelimiter = StringUtils.EMPTY;
+    private String columnDelimiter = StringUtils.EMPTY;
 
-    private String formatIdentifier = StringUtils.EMPTY;
+    private String idColumnIndex = StringUtils.EMPTY;
 
-    private String formatColumn = StringUtils.EMPTY;
-
-    private ValidationRuleIdentification identification = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
+    private String textColumnIndex = StringUtils.EMPTY;
 
     private boolean enableWarnings = true;
+    private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
     /**
      * @param fileName The fileName to set.
@@ -98,40 +102,37 @@ public class MessagesImportPMO extends PresentationModelObject {
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT, oldValue, format));
     }
 
-    /**
-     * @param formatDelimiter The formatDelimiter to set.
-     */
-    public void setFormatDelimiter(String formatDelimiter) {
-        String oldValue = this.formatDelimiter;
-        this.formatDelimiter = formatDelimiter;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_DELIMITER, oldValue, formatDelimiter));
+    public void setColumnDelimiter(String columnDelimiter) {
+        String oldValue = this.columnDelimiter;
+        this.columnDelimiter = columnDelimiter;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_COLUMN_DELIMITER, oldValue, columnDelimiter));
     }
 
     /**
-     * @param formatIdentifier The formatIdentifier to set.
+     * @param idColumnIndex The (one based) index of the column to be used as id.
      */
-    public void setFormatIdentifier(String formatIdentifier) {
-        String oldValue = this.formatIdentifier;
-        this.formatIdentifier = formatIdentifier;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_IDENTIFIER, oldValue, formatIdentifier));
+    public void setIdentifierColumnIndex(String idColumnIndex) {
+        String oldValue = this.idColumnIndex;
+        this.idColumnIndex = idColumnIndex;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFIER_COLUMN_INDEX, oldValue, idColumnIndex));
     }
 
     /**
-     * @param formatColumn The formatColumn to set.
+     * @param textColumnIndex The (one based) index of the column to be used as text.
      */
-    public void setFormatColumn(String formatColumn) {
-        String oldValue = this.formatColumn;
-        this.formatColumn = formatColumn;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT_COLUMN, oldValue, formatColumn));
+    public void setTextColumnIndex(String textColumnIndex) {
+        String oldValue = this.textColumnIndex;
+        this.textColumnIndex = textColumnIndex;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_TEXT_COLUMN_INDEX, oldValue, textColumnIndex));
     }
 
     /**
-     * @param identification The identification to set.
+     * @param ruleIdentifier The kind of identifier to be used.
      */
-    public void setIdentification(ValidationRuleIdentification identification) {
-        ValidationRuleIdentification oldValue = this.identification;
-        this.identification = identification;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFICATION, oldValue, identification));
+    public void setRuleIdentifier(ValidationRuleIdentification ruleIdentifier) {
+        ValidationRuleIdentification oldValue = this.ruleIdentifier;
+        this.ruleIdentifier = ruleIdentifier;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RULE_IDENTIFIER, oldValue, ruleIdentifier));
     }
 
     /**
@@ -193,29 +194,29 @@ public class MessagesImportPMO extends PresentationModelObject {
     /**
      * @return Returns the formatDelimiter.
      */
-    public String getFormatDelimiter() {
-        return formatDelimiter;
+    public String getColumnDelimiter() {
+        return columnDelimiter;
     }
 
     /**
      * @return Returns the formatIdentifier.
      */
-    public String getFormatIdentifier() {
-        return formatIdentifier;
+    public String getIdentifierColumnIndex() {
+        return idColumnIndex;
     }
 
     /**
      * @return Returns the formatColumn.
      */
-    public String getFormatColumn() {
-        return formatColumn;
+    public String getTextColumnIndex() {
+        return textColumnIndex;
     }
 
     /**
      * @return Returns the identification.
      */
-    public ValidationRuleIdentification getIdentification() {
-        return identification;
+    public ValidationRuleIdentification getRuleIdentifier() {
+        return ruleIdentifier;
     }
 
     /**
@@ -238,73 +239,42 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     public MessageList validate() {
-        MessageList result = new MessageList();
-        Message messageTarget = validateTargetname();
+        MessageList messageList = new MessageList();
 
-        if (messageTarget != null) {
-            result.add(messageTarget);
+        validateTargetname(messageList);
+        validateFilename(messageList);
+        validateColumnDelimiter(messageList);
+        validateIdColumIndex(messageList);
+        validateTextColumnIndex(messageList);
+        validateLocale(messageList);
 
-        } else {
-
-            Message messageFile = validateFilename();
-
-            if (messageFile != null) {
-                result.add(messageFile);
-
-            } else {
-                Message messageLocale = validateLocale();
-
-                if (messageLocale != null) {
-                    result.add(messageLocale);
-                }
-
-            }
-        }
-        return result;
+        return messageList;
     }
 
-    private Message validateLocale() {
-        Message localeMessage = null;
-
-        if (locale == null) {
-
-            localeMessage = new Message(MSG_NO_LOCALE, Messages.MessagesImportPMO_EmptyLocale, Message.ERROR);
-            return localeMessage;
-
+    private void validateTargetname(MessageList messageList) {
+        if (ipsPackageFragmentRoot == null) {
+            messageList.newError(MSG_INVALID_TARGET, Messages.MessagesImportPMO_EmptyTargetname);
         }
-
-        return localeMessage;
     }
 
-    public Message validateFilename() {
-        Message fileMessage = null;
-
+    public void validateFilename(MessageList messageList) {
         String filename = getFileName();
         if (filename.length() == 0) {
-            fileMessage = new Message(MSG_EMPTY_FILE, Messages.MessagesImportPMO_EmptyFilename, Message.ERROR);
-            return fileMessage;
+            messageList.newError(MSG_EMPTY_FILE, Messages.MessagesImportPMO_EmptyFilename);
         }
         File file = new File(filename);
         if (file.isDirectory()) {
-            fileMessage = new Message(MSG_DIRECTORY_FILE, Messages.MessagesImportPMO_FilenameIsDirectory, Message.ERROR);
-            return fileMessage;
+            messageList.newError(MSG_DIRECTORY_FILE, Messages.MessagesImportPMO_FilenameIsDirectory);
         }
         if (!(new File(filename).exists())) {
-            fileMessage = new Message(MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist, Message.ERROR);
-            return fileMessage;
-
+            messageList.newError(MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist);
         }
-        return fileMessage;
     }
 
-    private Message validateTargetname() {
-        Message targetMessage = null;
-        if (ipsPackageFragmentRoot == null) {
-            targetMessage = new Message(MSG_INVALID_TARGET, Messages.MessagesImportPMO_EmptyTargetname, Message.ERROR);
-            return targetMessage;
+    private void validateColumnDelimiter(MessageList messageList) {
+        if (isCsvFileFormat() && isDelimiterInvalid()) {
+            messageList.newError(MSG_NO_COLUMN_DELIMITER, Messages.MessagesImportPMO_noColumnDelimiter);
         }
-
-        return targetMessage;
     }
 
     /**
@@ -315,8 +285,38 @@ public class MessagesImportPMO extends PresentationModelObject {
         return FORMAT_CSV_FILE.equals(format);
     }
 
+    private boolean isDelimiterInvalid() {
+        return columnDelimiter == null || columnDelimiter.length() == 0;
+    }
+
+    private void validateIdColumIndex(MessageList messageList) {
+        if (isCsvFileFormat() && isInvalidIndex(idColumnIndex)) {
+            messageList.newError(MSG_NO_ID_COLUMN_INDEX, Messages.MessagesImportPMO_Msg_noIdColumnIndex);
+        }
+    }
+
+    /**
+     * An index is invalid if it is <code>null</code>, whitespace or any other non-numeric string.
+     * An numeric index is invalid if it is less or equal to 0.
+     */
+    private boolean isInvalidIndex(String index) {
+        return StringUtils.isEmpty(index) || !StringUtils.isNumeric(index) || Integer.parseInt(index) <= 0;
+    }
+
+    private void validateTextColumnIndex(MessageList messageList) {
+        if (isCsvFileFormat() && isInvalidIndex(textColumnIndex)) {
+            messageList.newError(MSG_NO_TEXT_COLUMN_INDEX, Messages.MessagesImportPMO_Msg_NoTextColumnIndex);
+        }
+    }
+
+    private void validateLocale(MessageList messageList) {
+        if (locale == null) {
+            messageList.newError(MSG_NO_LOCALE, Messages.MessagesImportPMO_EmptyLocale);
+        }
+    }
+
     public boolean isFormatSettingsVisible() {
-        return getFormat().equals(FORMAT_CSV_FILE);
+        return isCsvFileFormat();
     }
 
 }

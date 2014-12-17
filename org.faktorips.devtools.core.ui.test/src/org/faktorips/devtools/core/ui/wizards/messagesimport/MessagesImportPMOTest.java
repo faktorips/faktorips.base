@@ -12,35 +12,26 @@ package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.util.message.Message;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class MessagesImportPMOTest {
-
-    private MessagesImportPMO messageImportPMOEmpty;
-
-    private MessagesImportPMO messageImportPMONoExist;
-
-    private MessagesImportPMO messageImportPMOTarget;
 
     @Mock
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-
-    }
-
     @Test
     public void testTarget() {
-        messageImportPMOTarget = new MessagesImportPMO();
+        MessagesImportPMO messageImportPMOTarget = new MessagesImportPMO();
         messageImportPMOTarget.setIpsPackageFragmentRoot(null);
         assertEquals(new Message(MessagesImportPMO.MSG_INVALID_TARGET, Messages.MessagesImportPMO_EmptyTargetname,
                 Message.ERROR), messageImportPMOTarget.validate()
@@ -50,7 +41,7 @@ public class MessagesImportPMOTest {
 
     @Test
     public void testEmptyFilename() {
-        messageImportPMOEmpty = new MessagesImportPMO();
+        MessagesImportPMO messageImportPMOEmpty = new MessagesImportPMO();
         messageImportPMOEmpty.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
         messageImportPMOEmpty.setFileName("");
         assertEquals(new Message(MessagesImportPMO.MSG_EMPTY_FILE, Messages.MessagesImportPMO_EmptyFilename,
@@ -59,7 +50,7 @@ public class MessagesImportPMOTest {
 
     @Test
     public void testNoExistFilename() {
-        messageImportPMONoExist = new MessagesImportPMO();
+        MessagesImportPMO messageImportPMONoExist = new MessagesImportPMO();
         messageImportPMONoExist.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
         messageImportPMONoExist
                 .setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
@@ -73,11 +64,94 @@ public class MessagesImportPMOTest {
         MessagesImportPMO pmo = new MessagesImportPMO();
         assertTrue(pmo.isCsvFileFormat());
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTY_FILE);
+        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
         assertFalse(pmo.isCsvFileFormat());
 
         pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
         assertTrue(pmo.isCsvFileFormat());
+    }
+
+    @Test
+    public void testNoColumnDelimiter() {
+        MessagesImportPMO pmo = new MessagesImportPMO();
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setColumnDelimiter(null);
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
+
+        pmo.setColumnDelimiter("");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
+
+        pmo.setColumnDelimiter("\t");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setColumnDelimiter(null);
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
+
+        pmo.setColumnDelimiter("");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
+
+        pmo.setColumnDelimiter("\t");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
+    }
+
+    @Test
+    public void testNoIdColumnIndex() {
+        MessagesImportPMO pmo = new MessagesImportPMO();
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setIdentifierColumnIndex(null);
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+        pmo.setIdentifierColumnIndex("x");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+        pmo.setTextColumnIndex("0");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+        pmo.setTextColumnIndex("-1");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+
+        pmo.setIdentifierColumnIndex("1");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setIdentifierColumnIndex("y");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+
+        pmo.setIdentifierColumnIndex("1");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
+    }
+
+    @Test
+    public void testNoTextColumnIndex() {
+        MessagesImportPMO pmo = new MessagesImportPMO();
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setTextColumnIndex(null);
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+        pmo.setTextColumnIndex("x");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+        pmo.setTextColumnIndex("0");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+        pmo.setTextColumnIndex("-1");
+        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+
+        pmo.setTextColumnIndex("1");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setTextColumnIndex("y");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+
+        pmo.setTextColumnIndex("1");
+        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
+    }
+
+    private void assertNoMessageExists(MessagesImportPMO pmo, String msgCode) {
+        assertNull(pmo.validate().getMessageByCode(msgCode));
+    }
+
+    private void assertMessageExists(MessagesImportPMO pmo, String msgCode) {
+        assertNotNull(pmo.validate().getMessageByCode(msgCode));
     }
 
 }
