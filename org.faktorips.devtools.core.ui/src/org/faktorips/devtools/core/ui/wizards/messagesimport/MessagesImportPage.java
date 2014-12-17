@@ -193,26 +193,28 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 MessagesImportPMO.PROPERTY_FILE_NAME);
 
         bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
-        bindFormatSettings();
+        bindingContext
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
+        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
+        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
 
         bindingContext.bindContent(identificationRadioButtons, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFICATION);
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
         bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
+
+        bindEnabledStates();
     }
 
-    private void bindFormatSettings() {
+    private void bindEnabledStates() {
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
-        bindingContext
-                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_DELIMITER);
         bindingContext.bindEnabled(formatIdentifier.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
-        bindingContext.bindContent(formatIdentifier, getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT_IDENTIFIER);
         bindingContext.bindEnabled(formatColumn.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
-        bindingContext.bindContent(formatColumn, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT_COLUMN);
+
     }
 
     private void initDefaults() {
