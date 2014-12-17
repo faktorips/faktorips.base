@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleIdentification;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
@@ -55,13 +56,17 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_NO_LOCALE = MSGCODE_PREFIX + "noLocale"; //$NON-NLS-1$
 
+    public static final String FORMAT_PROPERTY_FILE = "formatPropertyFile"; //$NON-NLS-1$
+
+    public static final String FORMAT_CSV_FILE = "formatCsvFile"; //$NON-NLS-1$
+
     private String fileName = StringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
     private ISupportedLanguage locale;
 
-    private String format = "csvFile"; //$NON-NLS-1$
+    private String format = FORMAT_CSV_FILE;
 
     private String formatDelimiter = StringUtils.EMPTY;
 
@@ -69,7 +74,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private String formatColumn = StringUtils.EMPTY;
 
-    private String identification = "identificationName"; //$NON-NLS-1$
+    private ValidationRuleIdentification identification = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
     private boolean enableWarnings = true;
 
@@ -121,8 +126,8 @@ public class MessagesImportPMO extends PresentationModelObject {
     /**
      * @param identification The identification to set.
      */
-    public void setIdentification(String identification) {
-        String oldValue = this.identification;
+    public void setIdentification(ValidationRuleIdentification identification) {
+        ValidationRuleIdentification oldValue = this.identification;
         this.identification = identification;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFICATION, oldValue, identification));
     }
@@ -207,7 +212,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     /**
      * @return Returns the identification.
      */
-    public String getIdentification() {
+    public ValidationRuleIdentification getIdentification() {
         return identification;
     }
 
@@ -298,6 +303,14 @@ public class MessagesImportPMO extends PresentationModelObject {
         }
 
         return targetMessage;
+    }
+
+    /**
+     * Returns <code>true</code> if the file format is set to {@link #FORMAT_CSV_FILE}, otherwise
+     * <code>false</code>.
+     */
+    public boolean isCsvFileFormat() {
+        return FORMAT_CSV_FILE.equals(format);
     }
 
 }

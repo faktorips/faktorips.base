@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.bean.ColumnPositionMappingStrategy;
 import au.com.bytecode.opencsv.bean.CsvToBean;
 
@@ -32,6 +33,8 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
 
     private int valueColumnIndex;
 
+    private String delimiter;
+
     public ValidationRuleCsvImporter(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
         super(contents, root, locale);
     }
@@ -41,18 +44,23 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
         this.valueColumnIndex = valueColumnIndex;
     }
 
+    public void setDelimiter(String delimiter) {
+        this.delimiter = delimiter;
+    }
+
     @Override
     protected IStatus loadContent() {
         ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<CsvTableBean>();
         strat.setType(CsvTableBean.class);
         String[] columns = new String[Math.max(keyColumnInex, valueColumnIndex)];
-        columns[keyColumnInex] = CsvTableBean.PROPERTY_KEY;
-        columns[valueColumnIndex] = CsvTableBean.PROPERTY_VALUE;
+        columns[keyColumnInex - 1] = CsvTableBean.PROPERTY_KEY;
+        columns[valueColumnIndex - 1] = CsvTableBean.PROPERTY_VALUE;
         strat.setColumnMapping(columns);
 
         CsvToBean<CsvTableBean> csvToBean = new CsvToBean<CsvTableBean>();
         try {
-            List<CsvTableBean> list = csvToBean.parse(strat, new InputStreamReader(getContents()));
+            InputStreamReader reader = new InputStreamReader(getContents());
+            List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter.charAt(0)));
             MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, null, null);
             Map<String, String> indexMap = indexTableEntries(list, multipleMessages);
             setKeyValueMap(indexMap);

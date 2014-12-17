@@ -22,6 +22,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleCsvImporter;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleMessagesImportOperation;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleMessagesPropertiesImporter;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -67,8 +68,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
         File file = new File(pmo.getFileName());
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            ValidationRuleMessagesImportOperation importer = new ValidationRuleMessagesPropertiesImporter(
-                    fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
+            ValidationRuleMessagesImportOperation importer = getImporter(pmo, fileInputStream);
             getContainer().run(true, false, new WorkbenchRunnableAdapter(importer));
             IStatus importStatus = importer.getResultStatus();
             if (!importStatus.isOK()) {
@@ -82,6 +82,32 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
+    }
+
+    private ValidationRuleMessagesImportOperation getImporter(MessagesImportPMO pmo, FileInputStream fileInputStream) {
+        ValidationRuleMessagesImportOperation importer;
+        if (pmo.isCsvFileFormat()) {
+            importer = getCsvImporter(pmo, fileInputStream);
+        } else {
+            importer = getPropertiesImporter(pmo, fileInputStream);
+        }
+        return importer;
+    }
+
+    private ValidationRuleCsvImporter getCsvImporter(MessagesImportPMO pmo, FileInputStream fileInputStream) {
+        ValidationRuleCsvImporter csvImporter = new ValidationRuleCsvImporter(fileInputStream,
+                pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
+        csvImporter.setDelimiter(pmo.getFormatDelimiter());
+        csvImporter.setKeyAndValueColumn(Integer.parseInt(pmo.getFormatIdentifier()),
+                Integer.parseInt(pmo.getFormatColumn()));
+        csvImporter.setMethodOfIdentification(pmo.getIdentification());
+        return csvImporter;
+    }
+
+    private ValidationRuleMessagesPropertiesImporter getPropertiesImporter(MessagesImportPMO pmo,
+            FileInputStream fileInputStream) {
+        return new ValidationRuleMessagesPropertiesImporter(fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo
+                .getLocale().getLocale());
     }
 
 }

@@ -11,10 +11,10 @@
 package org.faktorips.devtools.core.ui.wizards.messagesimport;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
-import org.faktorips.devtools.core.ui.wizards.messagesimport.Messages;
-import org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportPMO;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +66,18 @@ public class MessagesImportPMOTest {
         assertEquals((new Message(MessagesImportPMO.MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist,
                 Message.ERROR)),
                 messageImportPMONoExist.validate().getMessageByCode(MessagesImportPMO.MSG_NO_EXIST_FILE));
+    }
+
+    @Test
+    public void testIsCsvFileFormat() {
+        MessagesImportPMO pmo = new MessagesImportPMO();
+        assertTrue(pmo.isCsvFileFormat());
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTY_FILE);
+        assertFalse(pmo.isCsvFileFormat());
+
+        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        assertTrue(pmo.isCsvFileFormat());
     }
 
 }
