@@ -41,6 +41,8 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String PROPERTY_IDENTIFICATION = "identification"; //$NON-NLS-1$
 
+    public static final String PROPERTY_ENABLE_WARNINGS = "enableWarnings"; //$NON-NLS-1$
+
     public static final String MSGCODE_PREFIX = "MESSAGES_IMPORT_WIZARD-"; //$NON-NLS-1$
 
     public static final String MSG_EMPTY_FILE = MSGCODE_PREFIX + "noFile"; //$NON-NLS-1$
@@ -68,6 +70,8 @@ public class MessagesImportPMO extends PresentationModelObject {
     private String formatColumn = StringUtils.EMPTY;
 
     private String identification = "identificationName"; //$NON-NLS-1$
+
+    private boolean enableWarnings = true;
 
     /**
      * @param fileName The fileName to set.
@@ -121,6 +125,15 @@ public class MessagesImportPMO extends PresentationModelObject {
         String oldValue = this.identification;
         this.identification = identification;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFICATION, oldValue, identification));
+    }
+
+    /**
+     * @param enableWarnings Sets if warnings should be displayed after the import.
+     */
+    public void setEnableWarnings(boolean enableWarnings) {
+        boolean oldValue = this.enableWarnings;
+        this.enableWarnings = enableWarnings;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLE_WARNINGS, oldValue, enableWarnings));
     }
 
     /**
@@ -196,6 +209,13 @@ public class MessagesImportPMO extends PresentationModelObject {
      */
     public String getIdentification() {
         return identification;
+    }
+
+    /**
+     * @return Returns if the warnings should be displayed after the import.
+     */
+    public boolean isEnableWarnings() {
+        return enableWarnings;
     }
 
     /**

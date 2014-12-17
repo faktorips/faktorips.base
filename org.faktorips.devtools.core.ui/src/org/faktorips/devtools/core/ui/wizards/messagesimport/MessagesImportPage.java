@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefFie
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controller.fields.TextField;
+import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
@@ -72,6 +73,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private TextField formatColumn;
     private RadioButtonGroupField<String> identificationRadioButtons;
     private RadioButtonGroupField<String> formatRadioButtons;
+    private Checkbox warningCheckbox;
 
     protected MessagesImportPage(String name, IStructuredSelection selection) {
         super(name);
@@ -99,6 +101,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         createFormatControl(labelEditComposite);
         createLocaleControl(labelEditComposite);
         createIdentificationControl(labelEditComposite);
+        createWarningCheckbox(labelEditComposite);
 
         bindContent();
 
@@ -177,6 +180,13 @@ public class MessagesImportPage extends WizardDataTransferPage {
         identificationRadioButtons = new RadioButtonGroupField<String>(radioGroup);
     }
 
+    private void createWarningCheckbox(Composite labelEditComposite) {
+        uiToolkit.createFormLabel(labelEditComposite, StringUtils.EMPTY);
+        warningCheckbox = uiToolkit.createCheckbox(labelEditComposite,
+                Messages.MessagesImportWizard_checkboxEnableWarnings);
+        warningCheckbox.setChecked(true);
+    }
+
     private void bindContent() {
         bindingContext.bindContent(new IpsPckFragmentRootRefField(target), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
@@ -189,6 +199,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         bindingContext.bindContent(identificationRadioButtons, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFICATION);
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
+        bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
     }
 
     private void bindFormatSettings() {

@@ -35,6 +35,7 @@ public class Messages extends NLS {
     public static String MessagesImportWizard_labelIdentification;
     public static String MessagesImportWizard_labelIdentificationName;
     public static String MessagesImportWizard_labelIdentificationCode;
+    public static String MessagesImportWizard_checkboxEnableWarnings;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
