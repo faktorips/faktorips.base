@@ -81,7 +81,8 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private String textColumnIndex = StringUtils.EMPTY;
 
-    private boolean enableWarnings = true;
+    private boolean enableWarnings = false;
+
     private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
     /**

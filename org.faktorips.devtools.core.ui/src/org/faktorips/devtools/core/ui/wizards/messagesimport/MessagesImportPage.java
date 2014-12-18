@@ -208,7 +208,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
         uiToolkit.createFormLabel(labelEditComposite, StringUtils.EMPTY);
         warningCheckbox = uiToolkit.createCheckbox(labelEditComposite,
                 Messages.MessagesImportWizard_checkboxEnableWarnings);
-        warningCheckbox.setChecked(true);
     }
 
     private void bindContent() {
