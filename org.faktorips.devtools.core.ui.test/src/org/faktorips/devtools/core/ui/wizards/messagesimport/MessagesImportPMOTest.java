@@ -16,18 +16,57 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
+import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.util.message.Message;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MessagesImportPMOTest {
+public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
-    @Mock
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
+
+    private IIpsProject ipsProject;
+
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+
+        ipsProject = newIpsProject();
+        IIpsProjectProperties properties = ipsProject.getProperties();
+        properties.addSupportedLanguage(Locale.ENGLISH);
+        properties.addSupportedLanguage(Locale.GERMAN);
+        properties.addSupportedLanguage(Locale.FRENCH);
+        properties.setDefaultLanguage(Locale.FRENCH);
+        ipsProject.setProperties(properties);
+
+        ipsPackageFragmentRoot = newIpsPackageFragmentRoot(ipsProject, null, "root");
+    }
+
+    @Test
+    public void testDefaultValues() {
+        MessagesImportPMO pmo = new MessagesImportPMO();
+
+        assertEquals(";", pmo.getColumnDelimiter());
+        assertEquals("1", pmo.getIdentifierColumnIndex());
+        assertEquals("2", pmo.getTextColumnIndex());
+    }
+
+    @Test
+    public void testUpdateSupportedLanguage() {
+        MessagesImportPMO pmo = new MessagesImportPMO();
+
+        assertNull(pmo.getSupportedLanguage());
+
+        pmo.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
+
+        assertEquals(ipsProject.getReadOnlyProperties().getDefaultLanguage(), pmo.getSupportedLanguage());
+    }
 
     @Test
     public void testTarget() {

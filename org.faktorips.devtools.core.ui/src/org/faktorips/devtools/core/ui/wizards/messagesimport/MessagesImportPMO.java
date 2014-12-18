@@ -85,10 +85,6 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
-    public MessagesImportPMO() {
-
-    }
-
     /**
      * @param fileName The fileName to set.
      */
@@ -196,7 +192,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * @param supportedLanguage The locale to set.
+     * @param supportedLanguage The {@link ISupportedLanguage} to set.
      */
     public void setSupportedLanguage(ISupportedLanguage supportedLanguage) {
         ISupportedLanguage oldValue = this.supportedLanguage;
@@ -205,7 +201,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * @return Returns the locale.
+     * @return Returns the {@link ISupportedLanguage}.
      */
     public ISupportedLanguage getSupportedLanguage() {
         return supportedLanguage;
