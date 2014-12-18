@@ -18,6 +18,8 @@ public class Messages extends NLS {
     public static String MessagesImportPMO_EmptyFilename;
     public static String MessagesImportPMO_FilenameIsDirectory;
     public static String MessagesImportPMO_FileDoesNotExist;
+    public static String MessagesImportPage_Label_SourceGroup;
+    public static String MessagesImportPage_Label_TargetGroup;
     public static String MessagesImportPage_labelLocale;
     public static String MessagesImportPage_labelTarget;
     public static String MessagesImportPage_labelImportFile;

@@ -93,15 +93,12 @@ public class MessagesImportPage extends WizardDataTransferPage {
         uiToolkit = new UIToolkit(null);
         bindingContext = new BindingContext();
 
-        Composite rootComposite = uiToolkit.createGridComposite(parent, 2, false, false);
+        Composite rootComposite = uiToolkit.createGridComposite(parent, 1, false, false);
+        GridLayout layout = (GridLayout)rootComposite.getLayout();
+        layout.marginLeft = 5;
 
-        Composite labelEditComposite = createImportControl(rootComposite);
-        createImportFileComposite(labelEditComposite);
-
-        createFormatControl(labelEditComposite);
-        createLocaleControl(labelEditComposite);
-        createIdentificationControl(labelEditComposite);
-        createWarningCheckbox(labelEditComposite);
+        createSourceGroup(rootComposite);
+        createTargetGroup(rootComposite);
 
         bindContent();
 
@@ -111,19 +108,31 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     }
 
-    private Composite createImportControl(Composite rootComposite) {
-        Composite labelEditComposite = uiToolkit.createLabelEditColumnComposite(rootComposite);
-        GridLayout layout = (GridLayout)labelEditComposite.getLayout();
-        layout.marginLeft = 5;
+    private void createSourceGroup(Composite rootComposite) {
+        Group sourceGroup = uiToolkit.createGridGroup(rootComposite, Messages.MessagesImportPage_Label_SourceGroup, 2,
+                false);
 
-        Label targetLabel = uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelTarget);
+        createImportFileComposite(sourceGroup);
+        createFormatControl(sourceGroup);
+        createLocaleControl(sourceGroup);
+        createIdentificationControl(sourceGroup);
+    }
+
+    private Composite createTargetGroup(Composite rootComposite) {
+        Group targetGroup = uiToolkit.createGridGroup(rootComposite, Messages.MessagesImportPage_Label_TargetGroup, 2,
+                false);
+        Label targetLabel = uiToolkit.createLabel(targetGroup, Messages.MessagesImportPage_labelTarget);
         setWidthHint(targetLabel, 182);
-        target = new IpsPckFragmentRootRefControl(labelEditComposite, true, uiToolkit);
-        return labelEditComposite;
+        target = new IpsPckFragmentRootRefControl(targetGroup, true, uiToolkit);
+
+        uiToolkit.createFormLabel(targetGroup, StringUtils.EMPTY);
+        warningCheckbox = uiToolkit.createCheckbox(targetGroup, Messages.MessagesImportWizard_checkboxEnableWarnings);
+        return targetGroup;
     }
 
     private void createImportFileComposite(Composite labelEditComposite) {
-        uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelImportFile);
+        Label fileLabel = uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelImportFile);
+        setWidthHint(fileLabel, 182);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
         fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
     }
@@ -163,7 +172,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         Label formatLabel = uiToolkit.createFormLabel(formatSettingsComposite,
                 Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
         formatDelimiter = new TextField(uiToolkit.createText(formatSettingsComposite));
-        setWidthHint(formatLabel, 175);
+        setWidthHint(formatLabel, 170);
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
         identifierColumnIndex = new FormattingTextField<String>(uiToolkit.createText(formatSettingsComposite),
@@ -202,12 +211,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
         ruleIndetifierRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
     }
 
-    private void createWarningCheckbox(Composite labelEditComposite) {
-        uiToolkit.createFormLabel(labelEditComposite, StringUtils.EMPTY);
-        warningCheckbox = uiToolkit.createCheckbox(labelEditComposite,
-                Messages.MessagesImportWizard_checkboxEnableWarnings);
-    }
-
     private void bindContent() {
         bindingContext.bindContent(new IpsPckFragmentRootRefField(target), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
@@ -224,7 +227,8 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         bindingContext.bindContent(ruleIndetifierRadioButtons, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_RULE_IDENTIFIER);
-        bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_SUPPORTED_LANGUAGE);
+        bindingContext.bindContent(localeComboField, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_SUPPORTED_LANGUAGE);
         bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
 
         bindFormatSettings();
