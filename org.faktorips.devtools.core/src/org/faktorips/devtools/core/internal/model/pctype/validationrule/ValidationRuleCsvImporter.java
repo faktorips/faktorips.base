@@ -53,12 +53,12 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
         ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<CsvTableBean>();
         strat.setType(CsvTableBean.class);
         String[] columns = new String[Math.max(keyColumnInex, valueColumnIndex)];
-        columns[keyColumnInex - 1] = CsvTableBean.PROPERTY_KEY;
-        columns[valueColumnIndex - 1] = CsvTableBean.PROPERTY_VALUE;
-        strat.setColumnMapping(columns);
-
-        CsvToBean<CsvTableBean> csvToBean = new CsvToBean<CsvTableBean>();
         try {
+            columns[keyColumnInex - 1] = CsvTableBean.PROPERTY_KEY;
+            columns[valueColumnIndex - 1] = CsvTableBean.PROPERTY_VALUE;
+            strat.setColumnMapping(columns);
+
+            CsvToBean<CsvTableBean> csvToBean = new CsvToBean<CsvTableBean>();
             InputStreamReader reader = new InputStreamReader(getContents());
             List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter.charAt(0)));
             MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, null, null);

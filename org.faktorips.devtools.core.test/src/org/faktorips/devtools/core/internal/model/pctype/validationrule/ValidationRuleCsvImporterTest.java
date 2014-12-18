@@ -18,8 +18,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleCsvImporter.CsvTableBean;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.junit.Before;
@@ -81,6 +83,26 @@ public class ValidationRuleCsvImporterTest {
 
         assertEquals("b", indexTableEntries.get("1"));
         assertEquals(1, multipleMessages.getChildren().length);
+    }
+
+    @Test
+    public void testIllegalDelimiter() {
+        validationRuleCsvImporter.setDelimiter("");
+
+        IStatus status = validationRuleCsvImporter.loadContent();
+        assertTrue(status instanceof IpsStatus);
+        IpsStatus ipsStatus = (IpsStatus)status;
+        assertTrue(ipsStatus.getException() instanceof IndexOutOfBoundsException);
+    }
+
+    @Test
+    public void testIllegalColumnIndex() {
+        validationRuleCsvImporter.setKeyAndValueColumn(0, -1);
+
+        IStatus status = validationRuleCsvImporter.loadContent();
+        assertTrue(status instanceof IpsStatus);
+        IpsStatus ipsStatus = (IpsStatus)status;
+        assertTrue(ipsStatus.getException() instanceof ArrayIndexOutOfBoundsException);
     }
 
 }
