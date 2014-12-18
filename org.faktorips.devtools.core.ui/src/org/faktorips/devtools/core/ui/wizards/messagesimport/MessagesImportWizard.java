@@ -16,9 +16,11 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -71,8 +73,8 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             ValidationRuleMessagesImportOperation importer = getImporter(pmo, fileInputStream);
             getContainer().run(true, false, new WorkbenchRunnableAdapter(importer));
             IStatus importStatus = importer.getResultStatus();
-            if (!importStatus.isOK()) {
-                IpsPlugin.logAndShowErrorDialog(importStatus);
+            if (!importStatus.isOK() && pmo.isEnableWarnings()) {
+                createImportResultDialog(importStatus);
             }
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);
@@ -82,6 +84,18 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             IpsPlugin.logAndShowErrorDialog(e);
         }
         return true;
+    }
+
+    private void createImportResultDialog(final IStatus importStatus) {
+        IpsPlugin.getDefault().getLog().log(importStatus);
+        Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        display.asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                ErrorDialog.openError(Display.getDefault().getActiveShell(), Messages.MessagesImportWizard_windowTitle,
+                        null, importStatus);
+            }
+        });
     }
 
     private ValidationRuleMessagesImportOperation getImporter(MessagesImportPMO pmo, FileInputStream fileInputStream) {

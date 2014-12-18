@@ -61,7 +61,8 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
             CsvToBean<CsvTableBean> csvToBean = new CsvToBean<CsvTableBean>();
             InputStreamReader reader = new InputStreamReader(getContents());
             List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter.charAt(0)));
-            MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0, null, null);
+            MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
+                    Messages.ValidationRuleMessagesPropertiesImporter_status_problemsDuringImport, null);
             Map<String, String> indexMap = indexTableEntries(list, multipleMessages);
             setKeyValueMap(indexMap);
             return multipleMessages;
@@ -78,8 +79,8 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
         for (CsvTableBean csvTableBean : tableBeans) {
             String previousValue = indexMap.put(csvTableBean.getKey(), csvTableBean.getValue());
             if (previousValue != null) {
-                multipleMessages.add(new IpsStatus(IStatus.WARNING, NLS.bind(
-                        Messages.ValidationRuleCsvImporter_warning_duplicatedKey, csvTableBean.getKey())));
+                multipleMessages.add(new IpsStatus(IStatus.ERROR, NLS.bind(
+                        Messages.ValidationRuleCsvImporter_error_duplicatedKey, csvTableBean.getKey())));
             }
         }
         return indexMap;

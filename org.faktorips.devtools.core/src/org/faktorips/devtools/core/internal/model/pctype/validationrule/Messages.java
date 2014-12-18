@@ -13,7 +13,9 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.internal.model.pctype.validationrule.messages"; //$NON-NLS-1$
-    public static String ValidationRuleCsvImporter_warning_duplicatedKey;
+    public static String ValidationRuleCsvImporter_error_duplicatedKey;
+    public static String ValidationRuleCsvImporter_status_multipleUsedMessageCodes;
+    public static String ValidationRuleCsvImporter_warning_multipleUsedMessageCodes;
     public static String ValidationRuleMessagesPropertiesImporter_error_loadingPropertyFile;
     public static String ValidationRuleMessagesPropertiesImporter_status_illegalMessage;
     public static String ValidationRuleMessagesPropertiesImporter_status_importingMessages;

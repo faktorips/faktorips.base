@@ -39,6 +39,8 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
 
     public static final int MSG_CODE_ILLEGAL_MESSAGE = 2;
 
+    public static final int MSG_CODE_MULTIPLE_USED_MESSAGECODES = 3;
+
     private final InputStream contents;
 
     private final IIpsPackageFragmentRoot root;
@@ -58,6 +60,8 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     private MultiStatus missingMessages;
 
     private MultiStatus illegalMessages;
+
+    private MultiStatus multipleUsedMessageCodes;
 
     public ValidationRuleMessagesImportOperation(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
         this.contents = contents;
@@ -90,7 +94,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
             this.setMonitor(progressMonitor);
         }
         resultStatus = loadContent();
-        if (resultStatus.isOK()) {
+        if (resultStatus.getSeverity() != IStatus.ERROR) {
             resultStatus = importContentMap();
         }
 
@@ -139,6 +143,8 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
                 Messages.ValidationRuleMessagesPropertiesImporter_status_missingMessage, null);
         illegalMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, MSG_CODE_ILLEGAL_MESSAGE,
                 Messages.ValidationRuleMessagesPropertiesImporter_status_illegalMessage, null);
+        multipleUsedMessageCodes = new MultiStatus(IpsPlugin.PLUGIN_ID, MSG_CODE_MULTIPLE_USED_MESSAGECODES,
+                Messages.ValidationRuleCsvImporter_status_multipleUsedMessageCodes, null);
     }
 
     private List<String> importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
@@ -168,6 +174,18 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
                 missingMessages.add(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID, NLS.bind(
                         Messages.ValidationRuleMessagesPropertiesImporter_warning_ruleNotFound, new String[] {
                                 validationRule.getName(), pcType.getQualifiedName(), messageKey })));
+            }
+        }
+        checkForMultipleUsedMessageCodes(validationRules);
+    }
+
+    private void checkForMultipleUsedMessageCodes(List<IValidationRule> validationRules) {
+        for (IValidationRule rule : validationRules) {
+            String messageKey = getMethodOfIdentification().getIdentifier(rule);
+            if (importedMessageKeys.contains(messageKey)) {
+                multipleUsedMessageCodes.add(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID,
+                        NLS.bind(Messages.ValidationRuleCsvImporter_warning_multipleUsedMessageCodes, messageKey,
+                                rule.getName())));
             }
         }
     }
@@ -201,6 +219,9 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
         }
         if (!missingMessages.isOK()) {
             result.add(missingMessages);
+        }
+        if (!multipleUsedMessageCodes.isOK()) {
+            result.add(multipleUsedMessageCodes);
         }
         if (result.isOK()) {
             return new Status(IStatus.OK, IpsPlugin.PLUGIN_ID, StringUtils.EMPTY);
