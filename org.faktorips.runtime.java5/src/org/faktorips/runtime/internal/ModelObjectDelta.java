@@ -10,6 +10,8 @@
 
 package org.faktorips.runtime.internal;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,15 +28,46 @@ import org.faktorips.values.ObjectUtil;
 
 /**
  * IModelObjectDelta implementation.
- * 
+ *
  * @author Jan ortmann
  */
 public class ModelObjectDelta implements IModelObjectDelta {
 
-    private final static int STRUCTURAL_CHANGES = IModelObjectDelta.ADDED | IModelObjectDelta.REMOVED
+    private static final int STRUCTURAL_CHANGES = IModelObjectDelta.ADDED | IModelObjectDelta.REMOVED
             | IModelObjectDelta.MOVED | IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION;
 
-    public final static ModelObjectDelta newDelta(IModelObject object,
+    private final IModelObject original;
+    private final IModelObject referenceObject;
+    private Class<?> modelClass;
+    private int kind;
+    private int kindOfChange;
+    private String association;
+    private SortedSet<String> changedProperties = null;
+
+    private final List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
+
+    /**
+     * @throws NullPointerException if modelObject and referenceModelObject are both
+     *             <code>null</code>.
+     */
+    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int kind, String association) {
+        this(original, referenceModelObject, kind, 0);
+        this.association = association;
+    }
+
+    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int deltaKind, int kindOfChange) {
+        this.original = original;
+        referenceObject = referenceModelObject;
+        if (original != null) {
+            modelClass = original.getClass();
+        } else {
+            modelClass = referenceModelObject.getClass();
+        }
+        kind = deltaKind;
+        this.kindOfChange = kindOfChange;
+    }
+
+    public static final ModelObjectDelta newDelta(IModelObject object,
             IModelObject refObject,
             IDeltaComputationOptions options) {
         if (object != null && refObject != null) {
@@ -54,11 +87,11 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return delta;
     }
 
-    public final static ModelObjectDelta newEmptyDelta(IModelObject object, IModelObject refObject) {
+    public static final ModelObjectDelta newEmptyDelta(IModelObject object, IModelObject refObject) {
         return new ModelObjectDelta(object, refObject, IModelObjectDelta.EMPTY, 0);
     }
 
-    public final static void createChildDeltas(ModelObjectDelta delta,
+    public static final void createChildDeltas(ModelObjectDelta delta,
             IModelObject original,
             IModelObject refObject,
             String association,
@@ -69,12 +102,12 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
         if (original == null) {
             if (refObject != null) {
-                delta.addChildDelta(newAddDelta(refObject, association));
+                delta.addChildDelta(newAddDelta(refObject, association, options));
             }
             return;
         }
         if (refObject == null) {
-            delta.addChildDelta(newRemoveDelta(original, association));
+            delta.addChildDelta(newRemoveDelta(original, association, options));
             return;
         }
         if (options.isSame(original, refObject)) {
@@ -85,14 +118,14 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.getMethod(association) == IDeltaComputationOptions.ComputationMethod.BY_POSITION) {
             delta.addChildDelta(newDifferentObjectAtPositionChangedDelta(original, refObject, association));
         } else if (options.getMethod(association) == IDeltaComputationOptions.ComputationMethod.BY_OBJECT) {
-            delta.addChildDelta(newRemoveDelta(original, association));
-            delta.addChildDelta(newAddDelta(refObject, association));
+            delta.addChildDelta(newRemoveDelta(original, association, options));
+            delta.addChildDelta(newAddDelta(refObject, association, options));
         } else {
             throw new RuntimeException("Unknown delta computation method " + options.getMethod(association));
         }
     }
 
-    public final static void createChildDeltas(ModelObjectDelta delta,
+    public static final void createChildDeltas(ModelObjectDelta delta,
             List<? extends IModelObject> originals,
             List<? extends IModelObject> refObjects,
             String association,
@@ -121,7 +154,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
             IModelObject refObject = getModelObject(refObjects, i);
             if (original != null) {
                 if (refObject == null) {
-                    delta.addChildDelta(newRemoveDelta(original, association));
+                    delta.addChildDelta(newRemoveDelta(original, association, options));
                 } else {
                     if (options.isSame(original, refObject)) {
                         IModelObjectDelta childDelta = ((IDeltaSupport)original).computeDelta(refObject, options);
@@ -132,7 +165,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
                 }
             } else {
                 if (refObject != null) {
-                    delta.addChildDelta(newAddDelta(refObject, association));
+                    delta.addChildDelta(newAddDelta(refObject, association, options));
                 } else {
                     throw new RuntimeException("Error in delta computation. Both objects null in assocation "
                             + association);
@@ -165,7 +198,8 @@ public class ModelObjectDelta implements IModelObjectDelta {
         }
         int refSize = refObjects.size();
         if (size - removeCounter == refSize) {
-            return; // nothing has been added
+            // nothing has been added
+            return;
         }
         for (int i = 0; i < refSize; i++) {
             boolean exists = false;
@@ -176,12 +210,12 @@ public class ModelObjectDelta implements IModelObjectDelta {
                 }
             }
             if (!exists) {
-                delta.addChildDelta(newAddDelta(refObjects.get(i), association));
+                delta.addChildDelta(newAddDelta(refObjects.get(i), association, options));
             }
         }
     }
 
-    private final static IModelObjectDelta createRemoveMoveOrChangeDelta(IModelObject original,
+    private static final IModelObjectDelta createRemoveMoveOrChangeDelta(IModelObject original,
             int position,
             List<? extends IModelObject> refObjects,
             String association,
@@ -203,56 +237,74 @@ public class ModelObjectDelta implements IModelObjectDelta {
                 }
             }
         }
-        return newRemoveDelta(original, association);
+        return newRemoveDelta(original, association, options);
     }
 
-    public final static ModelObjectDelta newAddDelta(IModelObject addedObject, String association) {
-        return new ModelObjectDelta(null, addedObject, IModelObjectDelta.ADDED, association);
+    public static final ModelObjectDelta newAddDelta(IModelObject addedObject,
+            String association,
+            IDeltaComputationOptions options) {
+        ModelObjectDelta addDelta = new ModelObjectDelta(null, addedObject, IModelObjectDelta.ADDED, association);
+        createSubtreeDeltaIfNeeded(addedObject, addDelta, options);
+        return addDelta;
     }
 
-    public final static ModelObjectDelta newRemoveDelta(IModelObject removedObject, String association) {
-        return new ModelObjectDelta(removedObject, null, IModelObjectDelta.REMOVED, association);
+    public static final ModelObjectDelta newRemoveDelta(IModelObject removedObject,
+            String association,
+            IDeltaComputationOptions options) {
+        ModelObjectDelta delta = new ModelObjectDelta(removedObject, null, IModelObjectDelta.REMOVED, association);
+        createSubtreeDeltaIfNeeded(removedObject, delta, options);
+        return delta;
     }
 
-    public final static ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original,
+    private static void createSubtreeDeltaIfNeeded(IModelObject existingObject,
+            ModelObjectDelta delta,
+            IDeltaComputationOptions options) {
+        if (options.isCreateSubtreeDelta()) {
+            createSubtreeDelta(existingObject, delta, options);
+        }
+    }
+
+    private static void createSubtreeDelta(IModelObject existingObject,
+            ModelObjectDelta delta,
+            IDeltaComputationOptions options) {
+        Class<? extends IModelObject> addedObjectClass = existingObject.getClass();
+        try {
+            Constructor<? extends IModelObject> constructor = addedObjectClass.getConstructor();
+            IModelObject newInstance = constructor.newInstance();
+            IModelObjectDelta childDelta;
+            if (delta.isAdded()) {
+                childDelta = ((IDeltaSupport)newInstance).computeDelta(existingObject, options);
+            } else if (delta.isRemoved()) {
+                childDelta = ((IDeltaSupport)existingObject).computeDelta(newInstance, options);
+            } else {
+                throw new IllegalArgumentException("Illegal delta type " + delta);
+            }
+            for (IModelObjectDelta childAddedDelta : childDelta.getChildDeltas()) {
+                delta.addChildDelta(childAddedDelta);
+            }
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Error in delta computation. Cannot find default construcor for "
+                    + addedObjectClass.getName(), e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException("Error in delta computation. Cannot create instance of "
+                    + addedObjectClass.getName(), e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error in delta computation. Cannot access constructor of "
+                    + addedObjectClass.getName(), e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException("Error in delta computation. Exception while calling constructor of"
+                    + addedObjectClass.getName(), e);
+        }
+    }
+
+    public static final ModelObjectDelta newDifferentObjectAtPositionChangedDelta(IModelObject original,
             IModelObject refObject,
             String association) {
         return new ModelObjectDelta(original, refObject, IModelObjectDelta.DIFFERENT_OBJECT_AT_POSITION, association);
     }
 
-    public final static ModelObjectDelta newChangeDelta(IModelObject original, IModelObject refObject, int kindOfChange) {
+    public static final ModelObjectDelta newChangeDelta(IModelObject original, IModelObject refObject, int kindOfChange) {
         return new ModelObjectDelta(original, refObject, IModelObjectDelta.CHANGED, kindOfChange);
-    }
-
-    private final IModelObject original;
-    private final IModelObject referenceObject;
-    private Class<?> modelClass;
-    private int kind;
-    private int kindOfChange;
-    private String association;
-    private SortedSet<String> changedProperties = null;
-
-    private final List<IModelObjectDelta> children = new ArrayList<IModelObjectDelta>(0);
-
-    /**
-     * @throws NullPointerException if modelObject and referenceModelObject are both
-     *             <code>null</code>.
-     */
-    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int kind, String association) {
-        this(original, referenceModelObject, kind, 0);
-        this.association = association;
-    }
-
-    private ModelObjectDelta(IModelObject original, IModelObject referenceModelObject, int deltaKind, int kindOfChange) {
-        this.original = original;
-        referenceObject = referenceModelObject;
-        if (original != null) {
-            modelClass = original.getClass();
-        } else {
-            modelClass = referenceModelObject.getClass();
-        }
-        kind = deltaKind;
-        this.kindOfChange = kindOfChange;
     }
 
     /**
@@ -452,6 +504,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return buffer.toString();
     }
 
+    // CSOFF: CyclomaticComplexity
     public void toString(StringBuffer buffer, String indentation) {
         buffer.append(indentation);
         if (isAdded()) {
@@ -489,4 +542,6 @@ public class ModelObjectDelta implements IModelObjectDelta {
             ((ModelObjectDelta)delta).toString(buffer, indentation + "    ");
         }
     }
+    // CSON: CyclomaticComplexity
+
 }
