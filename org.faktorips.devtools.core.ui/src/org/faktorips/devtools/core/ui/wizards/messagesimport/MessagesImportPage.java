@@ -141,7 +141,8 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 .getDialog()
                 .setFilterExtensions(
                         new String[] {
-                                ImportFormat.CSV.getFilePattern() + ";" + ImportFormat.PROPERTIES.getFilePattern(), ImportFormat.CSV.getFilePattern(), ImportFormat.PROPERTIES.getFilePattern() }); //$NON-NLS-1$
+                                ImportFormat.CSV.getFilenamePattern()
+                                        + ";" + ImportFormat.PROPERTIES.getFilenamePattern(), ImportFormat.CSV.getFilenamePattern(), ImportFormat.PROPERTIES.getFilenamePattern() }); //$NON-NLS-1$
     }
 
     private void createFormatControl(Composite labelEditComposite) {
@@ -244,18 +245,18 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
     private void bindFormatSettings() {
         bindingContext.bindVisible(formatSettingsGroup, getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_VISIBLE, true);
+                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_ENABLED, true);
 
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
+                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_ENABLED);
         bindingContext
                 .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
         bindingContext.bindEnabled(identifierColumnIndex.getControl(), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
+                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_ENABLED);
         bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFIER_COLUMN_INDEX);
         bindingContext.bindEnabled(textColumnIndex.getControl(), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
+                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_ENABLED);
         bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_TEXT_COLUMN_INDEX);
     }

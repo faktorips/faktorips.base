@@ -44,7 +44,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String PROPERTY_ENABLE_WARNINGS_FOR_MISSING_MESSAGES = "enableWarningsForMissingMessages"; //$NON-NLS-1$
 
-    public static final String PROPERTY_FORMAT_SETTINGS_VISIBLE = "formatSettingsVisible"; //$NON-NLS-1$
+    public static final String PROPERTY_FORMAT_SETTINGS_ENABLED = "formatSettingsEnabled"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "MESSAGES_IMPORT_WIZARD-"; //$NON-NLS-1$
 
@@ -343,7 +343,7 @@ public class MessagesImportPMO extends PresentationModelObject {
         }
     }
 
-    public boolean isFormatSettingsVisible() {
+    public boolean isFormatSettingsEnabled() {
         return isCsvFileFormat();
     }
 
@@ -365,7 +365,7 @@ public class MessagesImportPMO extends PresentationModelObject {
             return extension;
         }
 
-        public String getFilePattern() {
+        public String getFilenamePattern() {
             return FILE_WILDCARD + extension;
         }
 
