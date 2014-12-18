@@ -22,6 +22,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportPMO.ImportFormat;
 import org.faktorips.util.message.Message;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,7 +93,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         MessagesImportPMO messageImportPMONoExist = new MessagesImportPMO();
         messageImportPMONoExist.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
         messageImportPMONoExist
-        .setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
+                .setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
         assertEquals((new Message(MessagesImportPMO.MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist,
                 Message.ERROR)),
                 messageImportPMONoExist.validate().getMessageByCode(MessagesImportPMO.MSG_NO_EXIST_FILE));
@@ -103,10 +104,10 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         MessagesImportPMO pmo = new MessagesImportPMO();
         assertTrue(pmo.isCsvFileFormat());
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setFormat(ImportFormat.PROPERTIES);
         assertFalse(pmo.isCsvFileFormat());
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setFormat(ImportFormat.CSV);
         assertTrue(pmo.isCsvFileFormat());
     }
 
@@ -114,11 +115,11 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
     public void testNoColumnDelimiter() {
         MessagesImportPMO pmo = new MessagesImportPMO();
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setFormat(ImportFormat.CSV);
         pmo.setColumnDelimiter(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setFormat(ImportFormat.PROPERTIES);
         pmo.setColumnDelimiter(null);
         assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
     }
@@ -127,7 +128,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
     public void testNoIdColumnIndex() {
         MessagesImportPMO pmo = new MessagesImportPMO();
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setFormat(ImportFormat.CSV);
         pmo.setIdentifierColumnIndex(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
         pmo.setIdentifierColumnIndex("x");
@@ -140,7 +141,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         pmo.setIdentifierColumnIndex("1");
         assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setFormat(ImportFormat.PROPERTIES);
         pmo.setIdentifierColumnIndex("y");
         assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
 
@@ -152,7 +153,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
     public void testNoTextColumnIndex() {
         MessagesImportPMO pmo = new MessagesImportPMO();
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_CSV_FILE);
+        pmo.setFormat(ImportFormat.CSV);
         pmo.setTextColumnIndex(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
         pmo.setTextColumnIndex("x");
@@ -165,7 +166,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         pmo.setTextColumnIndex("1");
         assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
 
-        pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
+        pmo.setFormat(ImportFormat.PROPERTIES);
         pmo.setTextColumnIndex("y");
         assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
 

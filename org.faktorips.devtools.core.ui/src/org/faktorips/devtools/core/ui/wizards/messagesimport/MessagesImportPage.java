@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
 import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
+import org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportPMO.ImportFormat;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -73,7 +74,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private FormattingTextField<String> identifierColumnIndex;
     private FormattingTextField<String> textColumnIndex;
     private RadioButtonGroupField<ValidationRuleIdentification> ruleIndetifierRadioButtons;
-    private RadioButtonGroupField<String> formatRadioButtons;
+    private RadioButtonGroupField<ImportFormat> formatRadioButtons;
     private Checkbox warningCheckbox;
     private Group formatSettingsGroup;
 
@@ -136,18 +137,21 @@ public class MessagesImportPage extends WizardDataTransferPage {
         Label fileLabel = uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelImportFile);
         setWidthHint(fileLabel, 182);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
-        fileSelectionControl.getDialog().setFilterExtensions(
-                new String[] { "*.csv;*.properties", "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        fileSelectionControl
+        .getDialog()
+        .setFilterExtensions(
+                new String[] {
+                        ImportFormat.CSV.getFilePattern() + ";" + ImportFormat.PROPERTIES.getFilePattern(), ImportFormat.CSV.getFilePattern(), ImportFormat.PROPERTIES.getFilePattern() }); //$NON-NLS-1$
     }
 
     private void createFormatControl(Composite labelEditComposite) {
         uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportWizard_labelFormat);
 
-        LinkedHashMap<String, String> radioButtons = new LinkedHashMap<String, String>();
-        radioButtons.put(MessagesImportPMO.FORMAT_PROPERTIES_FILE, Messages.MessagesImportWizard_labelFormatProperties);
-        radioButtons.put(MessagesImportPMO.FORMAT_CSV_FILE, Messages.MessagesImportWizard_labelFormatCSV);
-        RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
-        formatRadioButtons = new RadioButtonGroupField<String>(radioGroup);
+        LinkedHashMap<ImportFormat, String> radioButtons = new LinkedHashMap<ImportFormat, String>();
+        radioButtons.put(ImportFormat.PROPERTIES, Messages.MessagesImportWizard_labelFormatProperties);
+        radioButtons.put(ImportFormat.CSV, Messages.MessagesImportWizard_labelFormatCSV);
+        RadioButtonGroup<ImportFormat> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
+        formatRadioButtons = new RadioButtonGroupField<ImportFormat>(radioGroup);
 
         createFormatSettingsControl(labelEditComposite);
     }
@@ -242,15 +246,15 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_VISIBLE, true);
 
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
+                MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
         bindingContext
         .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
         bindingContext.bindEnabled(identifierColumnIndex.getControl(), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
+                MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
         bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFIER_COLUMN_INDEX);
         bindingContext.bindEnabled(textColumnIndex.getControl(), getMessagesImportPMO(),
-                MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
+                MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
         bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_TEXT_COLUMN_INDEX);
     }

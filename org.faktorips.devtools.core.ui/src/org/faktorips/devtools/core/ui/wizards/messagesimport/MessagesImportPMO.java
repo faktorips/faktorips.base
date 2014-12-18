@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.Path;
 import org.faktorips.devtools.core.internal.model.pctype.validationrule.ValidationRuleIdentification;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -57,10 +58,6 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_NO_LOCALE = MSGCODE_PREFIX + "noLocale"; //$NON-NLS-1$
 
-    public static final String FORMAT_PROPERTIES_FILE = "formatPropertyFile"; //$NON-NLS-1$
-
-    public static final String FORMAT_CSV_FILE = "formatCsvFile"; //$NON-NLS-1$
-
     public static final String MSG_NO_COLUMN_DELIMITER = MSGCODE_PREFIX + "noColumnDelimiter"; //$NON-NLS-1$
 
     public static final String MSG_NO_ID_COLUMN_INDEX = MSGCODE_PREFIX + "noIDColumnIndex"; //$NON-NLS-1$
@@ -73,7 +70,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private ISupportedLanguage supportedLanguage;
 
-    private String format = FORMAT_CSV_FILE;
+    private ImportFormat format = ImportFormat.CSV;
 
     private Character columnDelimiter = ';';
 
@@ -91,14 +88,21 @@ public class MessagesImportPMO extends PresentationModelObject {
     public void setFileName(String fileName) {
         String oldValue = this.fileName;
         this.fileName = fileName;
+        updateFormat();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FILE_NAME, oldValue, fileName));
+    }
+
+    private void updateFormat() {
+        Path path = new Path(fileName);
+        String fileExtension = path.getFileExtension();
+        setFormat(ImportFormat.getFormat(fileExtension));
     }
 
     /**
      * @param format The format of the imported file to set.
      */
-    public void setFormat(String format) {
-        String oldValue = this.format;
+    public void setFormat(ImportFormat format) {
+        ImportFormat oldValue = this.format;
         this.format = format;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT, oldValue, format));
     }
@@ -155,7 +159,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     /**
      * @return Returns the format of the imported file.
      */
-    public String getFormat() {
+    public ImportFormat getFormat() {
         return format;
     }
 
@@ -299,11 +303,11 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * Returns <code>true</code> if the file format is set to {@link #FORMAT_CSV_FILE}, otherwise
+     * Returns <code>true</code> if the file format is set to {@link ImportFormat#CSV}, otherwise
      * <code>false</code>.
      */
     public boolean isCsvFileFormat() {
-        return FORMAT_CSV_FILE.equals(format);
+        return ImportFormat.CSV == format;
     }
 
     private boolean isDelimiterInvalid() {
@@ -338,6 +342,46 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public boolean isFormatSettingsVisible() {
         return isCsvFileFormat();
+    }
+
+    static enum ImportFormat {
+
+        CSV("csv"), //$NON-NLS-1$
+
+        PROPERTIES("properties"); //$NON-NLS-1$
+
+        private static final String FILE_WILDCARD = "*."; //$NON-NLS-1$
+
+        private final String extension;
+
+        private ImportFormat(String extension) {
+            this.extension = extension;
+        }
+
+        public String getExtension() {
+            return extension;
+        }
+
+        public String getFilePattern() {
+            return FILE_WILDCARD + extension;
+        }
+
+        /**
+         * Reads the given file extension string and returns the matching format. If the given file
+         * extension does not match a valid format this method returns {@link #CSV} as default. This
+         * method never returns <code>null</code>.
+         * 
+         * @param fileExtension The file extension text without leading '.'
+         * @return The matching format or {@link #CSV} as default.
+         */
+        public static ImportFormat getFormat(String fileExtension) {
+            if (PROPERTIES.extension.equals(fileExtension)) {
+                return PROPERTIES;
+            } else {
+                return CSV;
+            }
+        }
+
     }
 
 }
