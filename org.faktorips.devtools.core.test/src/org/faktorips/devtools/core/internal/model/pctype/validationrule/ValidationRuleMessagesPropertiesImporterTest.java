@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -178,6 +179,23 @@ public class ValidationRuleMessagesPropertiesImporterTest {
 
     @Test
     public void shouldImportMessagesWithStatusMissingMessage() throws Exception {
+        setUpImportMissingMessage();
+        importer.setEnableWarningsForMissingMessages(true);
+
+        IStatus result = importer.importContentMap();
+
+        assertTrue(result.toString(), result.isMultiStatus());
+        assertEquals(1, ((MultiStatus)result).getChildren().length);
+        IStatus missingMessageStatus = ((MultiStatus)result).getChildren()[0];
+        assertEquals(ValidationRuleMessagesImportOperation.MSG_CODE_MISSING_MESSAGE, missingMessageStatus.getCode());
+        assertTrue(missingMessageStatus.isMultiStatus());
+        assertEquals(1, ((MultiStatus)missingMessageStatus).getChildren().length);
+
+        verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
+        verifyNoMoreInteractions(root);
+    }
+
+    private void setUpImportMissingMessage() {
         when(rule.getIpsObject()).thenReturn(policyCmptType);
         when(rule.getName()).thenReturn("testRule");
         when(rule.getQualifiedRuleName()).thenReturn(TEST_POLICY_TEST_RULE);
@@ -188,15 +206,17 @@ public class ValidationRuleMessagesPropertiesImporterTest {
         when(policyCmptType.getValidationRules()).thenReturn(rules);
         Properties properties = new Properties();
         importer.setProperties(properties);
+    }
+
+    @Test
+    public void shouldImportMessagesWithStatusMissingMessage_DisabledMissingWarning() throws Exception {
+        setUpImportMissingMessage();
+        importer.setEnableWarningsForMissingMessages(false);
 
         IStatus result = importer.importContentMap();
 
-        assertTrue(result.toString(), result.isMultiStatus());
-        assertEquals(1, ((MultiStatus)result).getChildren().length);
-        IStatus missingMessageStatus = ((MultiStatus)result).getChildren()[0];
-        assertEquals(ValidationRuleMessagesImportOperation.MSG_CODE_MISSING_MESSAGE, missingMessageStatus.getCode());
-        assertTrue(missingMessageStatus.isMultiStatus());
-        assertEquals(1, ((MultiStatus)missingMessageStatus).getChildren().length);
+        assertFalse(result.isMultiStatus());
+        assertEquals(0, result.getChildren().length);
 
         verify(root).findAllIpsSrcFiles(IpsObjectType.POLICY_CMPT_TYPE);
         verifyNoMoreInteractions(root);

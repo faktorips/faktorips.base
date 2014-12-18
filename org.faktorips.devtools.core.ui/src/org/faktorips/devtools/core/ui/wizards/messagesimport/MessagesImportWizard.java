@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.messagesimport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IStatus;
@@ -65,8 +66,9 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
     public boolean performFinish() {
         MessagesImportPMO pmo = page.getMessagesImportPMO();
         File file = new File(pmo.getFileName());
+        FileInputStream fileInputStream = null;
         try {
-            FileInputStream fileInputStream = new FileInputStream(file);
+            fileInputStream = new FileInputStream(file);
             ValidationRuleMessagesImportOperation importer = getImporter(pmo, fileInputStream);
             getContainer().run(true, false, new WorkbenchRunnableAdapter(importer));
             IStatus importStatus = importer.getResultStatus();
@@ -79,6 +81,14 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             IpsPlugin.logAndShowErrorDialog(e);
         } catch (FileNotFoundException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    IpsPlugin.logAndShowErrorDialog(e);
+                }
+            }
         }
         return true;
     }
