@@ -42,7 +42,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String PROPERTY_RULE_IDENTIFIER = "ruleIdentifier"; //$NON-NLS-1$
 
-    public static final String PROPERTY_ENABLE_WARNINGS = "enableWarnings"; //$NON-NLS-1$
+    public static final String PROPERTY_ENABLE_WARNINGS_FOR_MISSING_MESSAGES = "enableWarningsForMissingMessages"; //$NON-NLS-1$
 
     public static final String PROPERTY_FORMAT_SETTINGS_VISIBLE = "formatSettingsVisible"; //$NON-NLS-1$
 
@@ -78,7 +78,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private String textColumnIndex = "2"; //$NON-NLS-1$
 
-    private boolean enableWarnings = false;
+    private boolean enableWarningsForMissingMessages = false;
 
     private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
@@ -141,12 +141,14 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * @param enableWarnings Sets if warnings should be displayed after the import.
+     * @param enableWarningsForMissingMessages Sets if warnings concerning missing messages should
+     *            be displayed after the import.
      */
-    public void setEnableWarnings(boolean enableWarnings) {
-        boolean oldValue = this.enableWarnings;
-        this.enableWarnings = enableWarnings;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLE_WARNINGS, oldValue, enableWarnings));
+    public void setEnableWarningsForMissingMessages(boolean enableWarningsForMissingMessages) {
+        boolean oldValue = this.enableWarningsForMissingMessages;
+        this.enableWarningsForMissingMessages = enableWarningsForMissingMessages;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLE_WARNINGS_FOR_MISSING_MESSAGES, oldValue,
+                enableWarningsForMissingMessages));
     }
 
     /**
@@ -245,10 +247,11 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * @return Returns if the warnings should be displayed after the import.
+     * @return Returns if the warnings concerning missing messages should be displayed after the
+     *         import.
      */
-    public boolean isEnableWarnings() {
-        return enableWarnings;
+    public boolean isEnableWarningsForMissingMessages() {
+        return enableWarningsForMissingMessages;
     }
 
     /**

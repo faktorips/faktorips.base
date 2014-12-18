@@ -138,10 +138,10 @@ public class MessagesImportPage extends WizardDataTransferPage {
         setWidthHint(fileLabel, 182);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
         fileSelectionControl
-        .getDialog()
-        .setFilterExtensions(
-                new String[] {
-                        ImportFormat.CSV.getFilePattern() + ";" + ImportFormat.PROPERTIES.getFilePattern(), ImportFormat.CSV.getFilePattern(), ImportFormat.PROPERTIES.getFilePattern() }); //$NON-NLS-1$
+                .getDialog()
+                .setFilterExtensions(
+                        new String[] {
+                                ImportFormat.CSV.getFilePattern() + ";" + ImportFormat.PROPERTIES.getFilePattern(), ImportFormat.CSV.getFilePattern(), ImportFormat.PROPERTIES.getFilePattern() }); //$NON-NLS-1$
     }
 
     private void createFormatControl(Composite labelEditComposite) {
@@ -226,7 +226,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 MessagesImportPMO.PROPERTY_FILE_NAME);
         bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
         bindingContext
-        .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
         bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFIER_COLUMN_INDEX);
         bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
@@ -236,7 +236,8 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 MessagesImportPMO.PROPERTY_RULE_IDENTIFIER);
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_SUPPORTED_LANGUAGE);
-        bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
+        bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_ENABLE_WARNINGS_FOR_MISSING_MESSAGES);
 
         bindFormatSettings();
     }
@@ -248,7 +249,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
         bindingContext
-        .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
+                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
         bindingContext.bindEnabled(identifierColumnIndex.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, ImportFormat.CSV.getExtension());
         bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
@@ -345,7 +346,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         void updateAvailableLocales() {
             Set<ISupportedLanguage> supportedLanguages = page.getMessagesImportPMO().getAvailableLocales();
             page.localeComboField
-            .setInput(supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages.size()]));
+                    .setInput(supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages.size()]));
 
         }
 

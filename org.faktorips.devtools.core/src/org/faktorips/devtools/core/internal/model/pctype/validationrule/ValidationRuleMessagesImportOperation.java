@@ -10,7 +10,7 @@
 package org.faktorips.devtools.core.internal.model.pctype.validationrule;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -55,13 +55,20 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
 
     private Map<String, String> contentMap;
 
-    private List<String> importedMessageKeys;
+    /**
+     * Is used to create more detailed import warnings. It maps the messageKey to its corresponding
+     * {@link IValidationRule} to identify which rules are using the same message code. The map
+     * contains always the last processed {@link IValidationRule}.
+     */
+    private Map<String, IValidationRule> importedMessageKeys;
 
     private MultiStatus missingMessages;
 
     private MultiStatus illegalMessages;
 
     private MultiStatus multipleUsedMessageCodes;
+
+    private boolean enableWarningsForMissingMessages;
 
     public ValidationRuleMessagesImportOperation(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
         this.contents = contents;
@@ -138,7 +145,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     }
 
     private void initResultFields() {
-        importedMessageKeys = new ArrayList<String>();
+        importedMessageKeys = new HashMap<String, IValidationRule>();
         missingMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, MSG_CODE_MISSING_MESSAGE,
                 Messages.ValidationRuleMessagesPropertiesImporter_status_missingMessage, null);
         illegalMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, MSG_CODE_ILLEGAL_MESSAGE,
@@ -147,7 +154,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
                 Messages.ValidationRuleCsvImporter_status_multipleUsedMessageCodes, null);
     }
 
-    private List<String> importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
+    private void importValidationMessages(List<IIpsSrcFile> allIpsSrcFiled) throws CoreException {
         for (IIpsSrcFile ipsSrcFile : allIpsSrcFiled) {
             if (!ipsSrcFile.isMutable()) {
                 continue;
@@ -160,33 +167,30 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
                 ipsSrcFile.save(false, new SubProgressMonitor(getMonitor(), 1));
             }
         }
-        return importedMessageKeys;
     }
 
     private void importValidationMessages(IPolicyCmptType pcType) {
         List<IValidationRule> validationRules = pcType.getValidationRules();
         for (IValidationRule validationRule : validationRules) {
             String messageKey = getMethodOfIdentification().getIdentifier(validationRule);
+            checkForMultipleUsedMessageCodes(messageKey, validationRule);
             String message = contentMap.get(messageKey);
             if (updateValidationMessage(validationRule, message)) {
-                importedMessageKeys.add(messageKey);
+                importedMessageKeys.put(messageKey, validationRule);
             } else {
                 missingMessages.add(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID, NLS.bind(
                         Messages.ValidationRuleMessagesPropertiesImporter_warning_ruleNotFound, new String[] {
                                 validationRule.getName(), pcType.getQualifiedName(), messageKey })));
             }
         }
-        checkForMultipleUsedMessageCodes(validationRules);
     }
 
-    private void checkForMultipleUsedMessageCodes(List<IValidationRule> validationRules) {
-        for (IValidationRule rule : validationRules) {
-            String messageKey = getMethodOfIdentification().getIdentifier(rule);
-            if (importedMessageKeys.contains(messageKey)) {
-                multipleUsedMessageCodes.add(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID,
-                        NLS.bind(Messages.ValidationRuleCsvImporter_warning_multipleUsedMessageCodes, messageKey,
-                                rule.getName())));
-            }
+    private void checkForMultipleUsedMessageCodes(String messageKey, IValidationRule validationRule) {
+        if (importedMessageKeys.containsKey(messageKey)) {
+            multipleUsedMessageCodes.add(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID, NLS.bind(
+                    Messages.ValidationRuleCsvImporter_warning_multipleUsedMessageCodes, new String[] { messageKey,
+                            validationRule.getQualifiedRuleName(),
+                            importedMessageKeys.get(messageKey).getQualifiedRuleName() })));
         }
     }
 
@@ -202,7 +206,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
     private void checkForIllegalMessages() {
         if (importedMessageKeys.size() < contentMap.size()) {
             for (Object key : contentMap.keySet()) {
-                if (!importedMessageKeys.contains(key)) {
+                if (!importedMessageKeys.containsKey(key)) {
                     illegalMessages.add(new Status(IStatus.WARNING, IpsPlugin.PLUGIN_ID, NLS.bind(
                             Messages.ValidationRuleMessagesPropertiesImporter_warning_invalidMessageKey, key)));
                 }
@@ -217,7 +221,7 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
         if (!illegalMessages.isOK()) {
             result.add(illegalMessages);
         }
-        if (!missingMessages.isOK()) {
+        if (!missingMessages.isOK() && isEnableWarningsForMissingMessages()) {
             result.add(missingMessages);
         }
         if (!multipleUsedMessageCodes.isOK()) {
@@ -228,6 +232,18 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
         } else {
             return result;
         }
+    }
+
+    private boolean isEnableWarningsForMissingMessages() {
+        return enableWarningsForMissingMessages;
+    }
+
+    /**
+     * @param enableWarningsForMissingMessages Sets if warnings concerning missing messages should
+     *            be displayed after the import.
+     */
+    public void setEnableWarningsForMissingMessages(boolean enableWarningsForMissingMessages) {
+        this.enableWarningsForMissingMessages = enableWarningsForMissingMessages;
     }
 
 }

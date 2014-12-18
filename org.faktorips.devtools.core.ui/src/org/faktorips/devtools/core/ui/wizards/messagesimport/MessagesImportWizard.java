@@ -70,7 +70,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             ValidationRuleMessagesImportOperation importer = getImporter(pmo, fileInputStream);
             getContainer().run(true, false, new WorkbenchRunnableAdapter(importer));
             IStatus importStatus = importer.getResultStatus();
-            if (!importStatus.isOK() && pmo.isEnableWarnings()) {
+            if (!importStatus.isOK()) {
                 createImportResultDialog(importStatus);
             }
         } catch (InvocationTargetException e) {
@@ -102,6 +102,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
         } else {
             importer = getPropertiesImporter(pmo, fileInputStream);
         }
+        importer.setEnableWarningsForMissingMessages(pmo.isEnableWarningsForMissingMessages());
         return importer;
     }
 
