@@ -135,7 +135,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
         radioButtons.put(MessagesImportPMO.FORMAT_PROPERTIES_FILE, Messages.MessagesImportWizard_labelFormatProperties);
         radioButtons.put(MessagesImportPMO.FORMAT_CSV_FILE, Messages.MessagesImportWizard_labelFormatCSV);
         RadioButtonGroup<String> radioGroup = uiToolkit.createRadioButtonGroup(labelEditComposite, radioButtons);
-        radioGroup.setSelection(MessagesImportPMO.FORMAT_CSV_FILE);
         formatRadioButtons = new RadioButtonGroupField<String>(radioGroup);
 
         createFormatSettingsControl(labelEditComposite);
@@ -200,7 +199,6 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 Messages.MessagesImportWizard_labelIdentificationCode);
         RadioButtonGroup<ValidationRuleIdentification> radioGroup = uiToolkit.createRadioButtonGroup(
                 labelEditComposite, radioButtons);
-        radioGroup.setSelection(ValidationRuleIdentification.QUALIFIED_RULE_NAME);
         ruleIndetifierRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
     }
 
