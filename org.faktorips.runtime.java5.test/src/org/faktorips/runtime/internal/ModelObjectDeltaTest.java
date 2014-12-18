@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
- * 
+ *
  * Alle Rechte vorbehalten.
- * 
+ *
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- * 
+ *
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
  *******************************************************************************/
 
@@ -36,12 +36,15 @@ import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 /**
- * 
+ *
  * @author Jan Ortmann
  */
 public class ModelObjectDeltaTest {
 
+    private static final DeltaComputationOptionsByPosition OPTIONS = new DeltaComputationOptionsByPosition();
+
     private final MyModelObject objectA = new MyModelObject("A");
+
     private final MyModelObject objectB = new MyModelObject("B");
 
     @Test
@@ -60,7 +63,7 @@ public class ModelObjectDeltaTest {
 
     @Test
     public void testNewDelta_SameClasses() {
-        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectB, new DeltaComputationOptionsByPosition());
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectB, OPTIONS);
         assertTrue(delta.isEmpty());
         assertFalse(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -75,7 +78,7 @@ public class ModelObjectDeltaTest {
     @Test
     public void testNewDelta_DifferentClasses() {
         MyModelObject2 objectC = new MyModelObject2("C");
-        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectC, new DeltaComputationOptionsByPosition());
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(objectA, objectC, OPTIONS);
         assertTrue(delta.isClassChanged());
         assertFalse(delta.isEmpty());
         assertTrue(delta.isChanged());
@@ -88,7 +91,7 @@ public class ModelObjectDeltaTest {
         assertSame(objectC, delta.getReferenceObject());
 
         // vice versa
-        delta = ModelObjectDelta.newDelta(objectC, objectA, new DeltaComputationOptionsByPosition());
+        delta = ModelObjectDelta.newDelta(objectC, objectA, OPTIONS);
         assertTrue(delta.isClassChanged());
         assertFalse(delta.isEmpty());
         assertTrue(delta.isChanged());
@@ -96,7 +99,7 @@ public class ModelObjectDeltaTest {
 
     @Test
     public void testNewAddDelta() {
-        ModelObjectDelta delta = ModelObjectDelta.newAddDelta(objectB, "childs");
+        ModelObjectDelta delta = ModelObjectDelta.newAddDelta(objectB, "childs", OPTIONS);
         assertFalse(delta.isEmpty());
         assertFalse(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -110,7 +113,7 @@ public class ModelObjectDeltaTest {
 
     @Test
     public void testNewRemoveDelta() {
-        ModelObjectDelta delta = ModelObjectDelta.newRemoveDelta(objectA, "childs");
+        ModelObjectDelta delta = ModelObjectDelta.newRemoveDelta(objectA, "childs", OPTIONS);
         assertFalse(delta.isEmpty());
         assertFalse(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -180,7 +183,7 @@ public class ModelObjectDeltaTest {
     @Test
     public void testAddChildDelta_AddDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-        ModelObjectDelta childDelta = ModelObjectDelta.newAddDelta(objectB, "childs");
+        ModelObjectDelta childDelta = ModelObjectDelta.newAddDelta(objectB, "childs", OPTIONS);
         delta.addChildDelta(childDelta);
         assertTrue(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -193,7 +196,7 @@ public class ModelObjectDeltaTest {
     @Test
     public void testAddChildDelta_RemoveDelta() {
         ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
-        ModelObjectDelta childDelta = ModelObjectDelta.newRemoveDelta(objectA, "childs");
+        ModelObjectDelta childDelta = ModelObjectDelta.newRemoveDelta(objectA, "childs", OPTIONS);
         delta.addChildDelta(childDelta);
         assertTrue(delta.isChanged());
         assertFalse(delta.isPropertyChanged());
@@ -409,10 +412,14 @@ public class ModelObjectDeltaTest {
         assertTrue(visitor.visitedDeltas.contains(grandchildDelta));
     }
 
-    class MyModelObject implements IModelObject, IDeltaSupport {
+    static class MyModelObject implements IModelObject, IDeltaSupport {
 
         private final String id;
         private int property;
+
+        public MyModelObject() {
+            id = null;
+        }
 
         public MyModelObject(String id) {
             this.id = id;
@@ -443,7 +450,11 @@ public class ModelObjectDeltaTest {
         }
     }
 
-    class MyModelObject2 extends MyModelObject {
+    static class MyModelObject2 extends MyModelObject {
+
+        public MyModelObject2() {
+            super();
+        }
 
         public MyModelObject2(String id) {
             super(id);
@@ -461,7 +472,7 @@ public class ModelObjectDeltaTest {
 
     }
 
-    class Visitor implements IModelObjectDeltaVisitor {
+    static class Visitor implements IModelObjectDeltaVisitor {
 
         private final boolean rc;
         private final Set<IModelObjectDelta> visitedDeltas = new HashSet<IModelObjectDelta>();
@@ -478,7 +489,7 @@ public class ModelObjectDeltaTest {
 
     }
 
-    class Options implements IDeltaComputationOptions {
+    static class Options implements IDeltaComputationOptions {
 
         private final ComputationMethod computationMethod;
 
@@ -499,6 +510,10 @@ public class ModelObjectDeltaTest {
             MyModelObject mo1 = (MyModelObject)object1;
             MyModelObject mo2 = (MyModelObject)object2;
             return mo1.id.equals(mo2.id);
+        }
+
+        public boolean isCreateSubtreeDelta() {
+            return true;
         }
 
     }
