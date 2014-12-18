@@ -47,9 +47,6 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
             setDialogSettings(settingSection);
         }
         setWindowTitle(Messages.MessagesImportWizard_windowTitle);
-        // TODO
-        // setDefaultPageImageDescriptor(StdBuilderUIPlugin.getImageHandling().createImageDescriptor(
-        //                "")); //$NON-NLS-1$
     }
 
     @Override
@@ -112,8 +109,8 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
         ValidationRuleCsvImporter csvImporter = new ValidationRuleCsvImporter(fileInputStream,
                 pmo.getIpsPackageFragmentRoot(), pmo.getSupportedLanguage().getLocale());
         csvImporter.setDelimiter(pmo.getColumnDelimiter());
-        csvImporter.setKeyAndValueColumn(Integer.parseInt(pmo.getIdentifierColumnIndex()),
-                Integer.parseInt(pmo.getTextColumnIndex()));
+        csvImporter.setKeyAndValueColumn(Integer.parseInt(pmo.getIdentifierColumnIndex()) - 1,
+                Integer.parseInt(pmo.getTextColumnIndex()) - 1);
         csvImporter.setMethodOfIdentification(pmo.getRuleIdentifier());
         return csvImporter;
     }

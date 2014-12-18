@@ -75,7 +75,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private String format = FORMAT_CSV_FILE;
 
-    private String columnDelimiter = ";"; //$NON-NLS-1$
+    private Character columnDelimiter = ';';
 
     private String idColumnIndex = "1"; //$NON-NLS-1$
 
@@ -103,8 +103,8 @@ public class MessagesImportPMO extends PresentationModelObject {
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT, oldValue, format));
     }
 
-    public void setColumnDelimiter(String columnDelimiter) {
-        String oldValue = this.columnDelimiter;
+    public void setColumnDelimiter(Character columnDelimiter) {
+        Character oldValue = this.columnDelimiter;
         this.columnDelimiter = columnDelimiter;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_COLUMN_DELIMITER, oldValue, columnDelimiter));
     }
@@ -210,9 +210,14 @@ public class MessagesImportPMO extends PresentationModelObject {
     /**
      * @return Returns the formatDelimiter.
      */
-    public String getColumnDelimiter() {
+    public Character getColumnDelimiter() {
         return columnDelimiter;
     }
+
+    //
+    // public char getColumnDelimiterChar() {
+    // return columnDelimiter.charAt(0);
+    // }
 
     /**
      * @return Returns the formatIdentifier.
@@ -302,7 +307,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     private boolean isDelimiterInvalid() {
-        return columnDelimiter == null || columnDelimiter.length() == 0;
+        return columnDelimiter == null;
     }
 
     private void validateIdColumIndex(MessageList messageList) {

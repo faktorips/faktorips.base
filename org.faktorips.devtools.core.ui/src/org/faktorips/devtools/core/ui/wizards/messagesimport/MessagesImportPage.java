@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.wizards.messagesimport;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +21,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -45,11 +47,11 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsPckFragmentRootRefField;
 import org.faktorips.devtools.core.ui.controller.fields.RadioButtonGroupField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
-import org.faktorips.devtools.core.ui.controller.fields.TextField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.controls.FileSelectionControl;
 import org.faktorips.devtools.core.ui.controls.IpsPckFragmentRootRefControl;
 import org.faktorips.devtools.core.ui.controls.RadioButtonGroup;
+import org.faktorips.devtools.core.ui.inputformat.AbstractInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.IntegerNumberFormat;
 import org.faktorips.util.message.MessageList;
 
@@ -67,7 +69,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private FileSelectionControl fileSelectionControl;
     private final MessagesImportPMO messagesImportPMO;
     private ComboViewerField<ISupportedLanguage> localeComboField;
-    private TextField formatDelimiter;
+    private FormattingTextField<Character> formatDelimiter;
     private FormattingTextField<String> identifierColumnIndex;
     private FormattingTextField<String> textColumnIndex;
     private RadioButtonGroupField<ValidationRuleIdentification> ruleIndetifierRadioButtons;
@@ -134,7 +136,8 @@ public class MessagesImportPage extends WizardDataTransferPage {
         Label fileLabel = uiToolkit.createLabel(labelEditComposite, Messages.MessagesImportPage_labelImportFile);
         setWidthHint(fileLabel, 182);
         fileSelectionControl = new FileSelectionControl(labelEditComposite, uiToolkit, NONE);
-        fileSelectionControl.getDialog().setFilterExtensions(new String[] { "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$
+        fileSelectionControl.getDialog().setFilterExtensions(
+                new String[] { "*.csv;*.properties", "*.csv", "*.properties" }); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private void createFormatControl(Composite labelEditComposite) {
@@ -171,7 +174,8 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         Label formatLabel = uiToolkit.createFormLabel(formatSettingsComposite,
                 Messages.MessagesImportWizard_labelFormatSettingsDelimiter);
-        formatDelimiter = new TextField(uiToolkit.createText(formatSettingsComposite));
+        formatDelimiter = new FormattingTextField<Character>(uiToolkit.createText(formatSettingsComposite),
+                new DelimiterInputFormat());
         setWidthHint(formatLabel, 170);
 
         uiToolkit.createFormLabel(formatSettingsComposite, Messages.MessagesImportWizard_labelFormatSettingsIdentifier);
@@ -216,10 +220,9 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 MessagesImportPMO.PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT);
         bindingContext.bindContent(new TextButtonField(fileSelectionControl), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FILE_NAME);
-
         bindingContext.bindContent(formatRadioButtons, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_FORMAT);
         bindingContext
-                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
+        .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
         bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_IDENTIFIER_COLUMN_INDEX);
         bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
@@ -241,7 +244,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         bindingContext.bindEnabled(formatDelimiter.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
         bindingContext
-                .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
+        .bindContent(formatDelimiter, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_COLUMN_DELIMITER);
         bindingContext.bindEnabled(identifierColumnIndex.getControl(), getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT, MessagesImportPMO.FORMAT_CSV_FILE);
         bindingContext.bindContent(identifierColumnIndex, getMessagesImportPMO(),
@@ -338,8 +341,40 @@ public class MessagesImportPage extends WizardDataTransferPage {
         void updateAvailableLocales() {
             Set<ISupportedLanguage> supportedLanguages = page.getMessagesImportPMO().getAvailableLocales();
             page.localeComboField
-                    .setInput(supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages.size()]));
+            .setInput(supportedLanguages.toArray(new ISupportedLanguage[supportedLanguages.size()]));
 
+        }
+
+    }
+
+    private static class DelimiterInputFormat extends AbstractInputFormat<Character> {
+
+        public DelimiterInputFormat() {
+            super(StringUtils.EMPTY, Locale.getDefault());
+        }
+
+        @Override
+        protected Character parseInternal(String stringToBeparsed) {
+            if (stringToBeparsed.length() == 1) {
+                return stringToBeparsed.charAt(0);
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        protected String formatInternal(Character value) {
+            return value.toString();
+        }
+
+        @Override
+        protected void verifyInternal(VerifyEvent e, String resultingText) {
+            e.doit = (resultingText.length() <= 1);
+        }
+
+        @Override
+        protected void initFormat(Locale locale) {
+            // do nothing
         }
 
     }

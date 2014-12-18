@@ -27,24 +27,44 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 
+/**
+ * This import operation imports a CSV files containing messages for validation rules.
+ * <p>
+ * As the provided by the super class {@link ValidationRuleMessagesImportOperation} it is able to
+ * handle messages codes or qualified rule names as key value to identify a validation rule.
+ * <p>
+ * Before execute the import operation you have to set the column indices and the column delimiter.
+ */
 public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOperation {
 
-    private int keyColumnInex;
+    private int keyColumnIndex;
 
     private int valueColumnIndex;
 
-    private String delimiter;
+    private char delimiter;
 
     public ValidationRuleCsvImporter(InputStream contents, IIpsPackageFragmentRoot root, Locale locale) {
         super(contents, root, locale);
     }
 
+    /**
+     * This method set the column indices for the key and value column. The indices are 0 based,
+     * that means 0 is the first column.
+     * 
+     * @param keyColumnInex The index of the key column
+     * @param valueColumnIndex the index of the value column, containing the message
+     */
     public void setKeyAndValueColumn(int keyColumnInex, int valueColumnIndex) {
-        this.keyColumnInex = keyColumnInex;
+        this.keyColumnIndex = keyColumnInex;
         this.valueColumnIndex = valueColumnIndex;
     }
 
-    public void setDelimiter(String delimiter) {
+    /**
+     * This method set the column delimiter used in the given CSV file.
+     * 
+     * @param delimiter The column delimiter of the CSV file
+     */
+    public void setDelimiter(char delimiter) {
         this.delimiter = delimiter;
     }
 
@@ -52,15 +72,15 @@ public class ValidationRuleCsvImporter extends ValidationRuleMessagesImportOpera
     protected IStatus loadContent() {
         ColumnPositionMappingStrategy<CsvTableBean> strat = new ColumnPositionMappingStrategy<CsvTableBean>();
         strat.setType(CsvTableBean.class);
-        String[] columns = new String[Math.max(keyColumnInex, valueColumnIndex)];
+        String[] columns = new String[Math.max(keyColumnIndex, valueColumnIndex) + 1];
         try {
-            columns[keyColumnInex - 1] = CsvTableBean.PROPERTY_KEY;
-            columns[valueColumnIndex - 1] = CsvTableBean.PROPERTY_VALUE;
+            columns[keyColumnIndex] = CsvTableBean.PROPERTY_KEY;
+            columns[valueColumnIndex] = CsvTableBean.PROPERTY_VALUE;
             strat.setColumnMapping(columns);
 
             CsvToBean<CsvTableBean> csvToBean = new CsvToBean<CsvTableBean>();
             InputStreamReader reader = new InputStreamReader(getContents());
-            List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter.charAt(0)));
+            List<CsvTableBean> list = csvToBean.parse(strat, new CSVReader(reader, delimiter));
             MultiStatus multipleMessages = new MultiStatus(IpsPlugin.PLUGIN_ID, 0,
                     Messages.ValidationRuleMessagesPropertiesImporter_status_problemsDuringImport, null);
             Map<String, String> indexMap = indexTableEntries(list, multipleMessages);

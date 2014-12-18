@@ -52,7 +52,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
     public void testDefaultValues() {
         MessagesImportPMO pmo = new MessagesImportPMO();
 
-        assertEquals(";", pmo.getColumnDelimiter());
+        assertEquals(';', pmo.getColumnDelimiter().charValue());
         assertEquals("1", pmo.getIdentifierColumnIndex());
         assertEquals("2", pmo.getTextColumnIndex());
     }
@@ -92,7 +92,7 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         MessagesImportPMO messageImportPMONoExist = new MessagesImportPMO();
         messageImportPMONoExist.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
         messageImportPMONoExist
-                .setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
+        .setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
         assertEquals((new Message(MessagesImportPMO.MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist,
                 Message.ERROR)),
                 messageImportPMONoExist.validate().getMessageByCode(MessagesImportPMO.MSG_NO_EXIST_FILE));
@@ -118,20 +118,8 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         pmo.setColumnDelimiter(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
 
-        pmo.setColumnDelimiter("");
-        assertMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
-
-        pmo.setColumnDelimiter("\t");
-        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
-
         pmo.setFormat(MessagesImportPMO.FORMAT_PROPERTIES_FILE);
         pmo.setColumnDelimiter(null);
-        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
-
-        pmo.setColumnDelimiter("");
-        assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
-
-        pmo.setColumnDelimiter("\t");
         assertNoMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
     }
 

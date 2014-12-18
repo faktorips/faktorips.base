@@ -86,16 +86,6 @@ public class ValidationRuleCsvImporterTest {
     }
 
     @Test
-    public void testIllegalDelimiter() {
-        validationRuleCsvImporter.setDelimiter("");
-
-        IStatus status = validationRuleCsvImporter.loadContent();
-        assertTrue(status instanceof IpsStatus);
-        IpsStatus ipsStatus = (IpsStatus)status;
-        assertTrue(ipsStatus.getException() instanceof IndexOutOfBoundsException);
-    }
-
-    @Test
     public void testIllegalColumnIndex() {
         validationRuleCsvImporter.setKeyAndValueColumn(0, -1);
 
