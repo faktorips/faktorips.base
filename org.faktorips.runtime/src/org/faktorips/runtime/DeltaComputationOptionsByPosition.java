@@ -12,12 +12,12 @@ package org.faktorips.runtime;
 
 /**
  * Delta computation options that create child deltas per position and don't ignore any property.
- * 
+ *
  * TODO the following reference does not exist
- * 
- * 
+ *
+ *
  * @see IDeltaComputationOptions.ComputationMethod#BY_POSITION
- * 
+ *
  * @author Jan Ortmann
  */
 public class DeltaComputationOptionsByPosition implements IDeltaComputationOptions {
@@ -37,6 +37,10 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
      * Returns <code>false</code>.
      */
     public boolean ignore(Class<?> clazz, String property) {
+        return false;
+    }
+
+    public boolean isCreateSubtreeDelta() {
         return false;
     }
 

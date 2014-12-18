@@ -12,7 +12,7 @@ package org.faktorips.runtime;
 
 /**
  * Callback interface for the delta computation.
- * 
+ *
  * @author Jan Ortmann
  */
 public interface IDeltaComputationOptions {
@@ -91,10 +91,27 @@ public interface IDeltaComputationOptions {
      * Returns <code>true</code> if the given property should be ignored in the delta computation.
      * If you compare for example two versions of the same contract, you might want to ignore the
      * different in the creation time, as otherwise two versions would always be different.
-     * 
+     *
      * @param clazz The class the property belongs to.
      * @param property The name of the property.
      */
     public boolean ignore(Class<?> clazz, String property);
+
+    /**
+     * Controls whether delta objects for added or removed subtree elements should be created
+     * explicitly.
+     * <p>
+     * This method returns <code>true</code> if a delta should be created for added or removed
+     * subtrees. If this method returns <code>false</code> a delta is only created for the root of
+     * an added or removed subtree.
+     * <p>
+     * The creation of delta elements for subtree nodes is based on reflection and may cause a
+     * performance issue if used in massive delta computation with many added or removed subtrees.
+     *
+     * @return <code>true</code> if a delta should be created for every element of an added or
+     *         removed subtree.
+     * @since 3.15
+     */
+    public boolean isCreateSubtreeDelta();
 
 }
