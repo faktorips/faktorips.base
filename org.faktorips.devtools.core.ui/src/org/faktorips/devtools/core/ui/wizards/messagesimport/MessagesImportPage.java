@@ -226,7 +226,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
 
         bindingContext.bindContent(ruleIndetifierRadioButtons, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_RULE_IDENTIFIER);
-        bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_LOCALE);
+        bindingContext.bindContent(localeComboField, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_SUPPORTED_LANGUAGE);
         bindingContext.bindContent(warningCheckbox, getMessagesImportPMO(), MessagesImportPMO.PROPERTY_ENABLE_WARNINGS);
 
         bindFormatSettings();

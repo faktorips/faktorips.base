@@ -153,5 +153,4 @@ public class MessagesImportPMOTest {
     private void assertMessageExists(MessagesImportPMO pmo, String msgCode) {
         assertNotNull(pmo.validate().getMessageByCode(msgCode));
     }
-
 }

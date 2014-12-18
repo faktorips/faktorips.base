@@ -96,7 +96,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
 
     private ValidationRuleCsvImporter getCsvImporter(MessagesImportPMO pmo, FileInputStream fileInputStream) {
         ValidationRuleCsvImporter csvImporter = new ValidationRuleCsvImporter(fileInputStream,
-                pmo.getIpsPackageFragmentRoot(), pmo.getLocale().getLocale());
+                pmo.getIpsPackageFragmentRoot(), pmo.getSupportedLanguage().getLocale());
         csvImporter.setDelimiter(pmo.getColumnDelimiter());
         csvImporter.setKeyAndValueColumn(Integer.parseInt(pmo.getIdentifierColumnIndex()),
                 Integer.parseInt(pmo.getTextColumnIndex()));
@@ -107,7 +107,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
     private ValidationRuleMessagesPropertiesImporter getPropertiesImporter(MessagesImportPMO pmo,
             FileInputStream fileInputStream) {
         return new ValidationRuleMessagesPropertiesImporter(fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo
-                .getLocale().getLocale());
+                .getSupportedLanguage().getLocale());
     }
 
 }

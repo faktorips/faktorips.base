@@ -29,7 +29,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT = "ipsPackageFragmentRoot"; //$NON-NLS-1$
 
-    public static final String PROPERTY_LOCALE = "locale"; //$NON-NLS-1$
+    public static final String PROPERTY_SUPPORTED_LANGUAGE = "supportedLanguage"; //$NON-NLS-1$
 
     public static final String PROPERTY_FORMAT = "format"; //$NON-NLS-1$
 
@@ -71,19 +71,23 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
-    private ISupportedLanguage locale;
+    private ISupportedLanguage supportedLanguage;
 
     private String format = FORMAT_CSV_FILE;
 
-    private String columnDelimiter = StringUtils.EMPTY;
+    private String columnDelimiter = ";"; //$NON-NLS-1$
 
-    private String idColumnIndex = StringUtils.EMPTY;
+    private String idColumnIndex = "1"; //$NON-NLS-1$
 
-    private String textColumnIndex = StringUtils.EMPTY;
+    private String textColumnIndex = "2"; //$NON-NLS-1$
 
     private boolean enableWarnings = false;
 
     private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
+
+    public MessagesImportPMO() {
+
+    }
 
     /**
      * @param fileName The fileName to set.
@@ -167,6 +171,21 @@ public class MessagesImportPMO extends PresentationModelObject {
         this.ipsPackageFragmentRoot = ipsPackageFragmentRoot;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT, oldValue,
                 ipsPackageFragmentRoot));
+
+        updateSupportedLanguage();
+    }
+
+    private void updateSupportedLanguage() {
+        ISupportedLanguage language = getCalculateSupportedLanguage();
+        setSupportedLanguage(language);
+    }
+
+    private ISupportedLanguage getCalculateSupportedLanguage() {
+        if (ipsPackageFragmentRoot != null) {
+            return ipsPackageFragmentRoot.getIpsProject().getReadOnlyProperties().getDefaultLanguage();
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -177,19 +196,19 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * @param locale The locale to set.
+     * @param supportedLanguage The locale to set.
      */
-    public void setLocale(ISupportedLanguage locale) {
-        ISupportedLanguage oldValue = this.locale;
-        this.locale = locale;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_LOCALE, oldValue, locale));
+    public void setSupportedLanguage(ISupportedLanguage supportedLanguage) {
+        ISupportedLanguage oldValue = this.supportedLanguage;
+        this.supportedLanguage = supportedLanguage;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SUPPORTED_LANGUAGE, oldValue, supportedLanguage));
     }
 
     /**
      * @return Returns the locale.
      */
-    public ISupportedLanguage getLocale() {
-        return locale;
+    public ISupportedLanguage getSupportedLanguage() {
+        return supportedLanguage;
     }
 
     /**
@@ -311,7 +330,7 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     private void validateLocale(MessageList messageList) {
-        if (locale == null) {
+        if (supportedLanguage == null) {
             messageList.newError(MSG_NO_LOCALE, Messages.MessagesImportPMO_EmptyLocale);
         }
     }
