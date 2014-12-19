@@ -73,7 +73,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private FormattingTextField<Character> formatDelimiter;
     private FormattingTextField<String> identifierColumnIndex;
     private FormattingTextField<String> textColumnIndex;
-    private RadioButtonGroupField<ValidationRuleIdentification> ruleIndetifierRadioButtons;
+    private RadioButtonGroupField<ValidationRuleIdentification> ruleIdentifierRadioButtons;
     private RadioButtonGroupField<ImportFormat> formatRadioButtons;
     private Checkbox warningCheckbox;
     private Group formatSettingsGroup;
@@ -217,7 +217,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
                 Messages.MessagesImportWizard_labelIdentificationCode);
         RadioButtonGroup<ValidationRuleIdentification> radioGroup = uiToolkit.createRadioButtonGroup(
                 labelEditComposite, radioButtons);
-        ruleIndetifierRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
+        ruleIdentifierRadioButtons = new RadioButtonGroupField<ValidationRuleIdentification>(radioGroup);
     }
 
     private void bindContent() {
@@ -233,7 +233,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         bindingContext.bindContent(textColumnIndex, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_TEXT_COLUMN_INDEX);
 
-        bindingContext.bindContent(ruleIndetifierRadioButtons, getMessagesImportPMO(),
+        bindingContext.bindContent(ruleIdentifierRadioButtons, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_RULE_IDENTIFIER);
         bindingContext.bindContent(localeComboField, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_SUPPORTED_LANGUAGE);

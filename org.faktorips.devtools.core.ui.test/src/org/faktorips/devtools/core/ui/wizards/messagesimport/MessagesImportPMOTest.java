@@ -33,6 +33,8 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
 
+    private MessagesImportPMO pmo;
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -47,11 +49,12 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
         ipsProject.setProperties(properties);
 
         ipsPackageFragmentRoot = newIpsPackageFragmentRoot(ipsProject, null, "root");
+
+        pmo = new MessagesImportPMO();
     }
 
     @Test
     public void testDefaultValues() {
-        MessagesImportPMO pmo = new MessagesImportPMO();
 
         assertEquals(';', pmo.getColumnDelimiter().charValue());
         assertEquals("1", pmo.getIdentifierColumnIndex());
@@ -60,8 +63,6 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
     @Test
     public void testUpdateSupportedLanguage() {
-        MessagesImportPMO pmo = new MessagesImportPMO();
-
         assertNull(pmo.getSupportedLanguage());
 
         pmo.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
@@ -71,37 +72,30 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
     @Test
     public void testTarget() {
-        MessagesImportPMO messageImportPMOTarget = new MessagesImportPMO();
-        messageImportPMOTarget.setIpsPackageFragmentRoot(null);
+        pmo.setIpsPackageFragmentRoot(null);
         assertEquals(new Message(MessagesImportPMO.MSG_INVALID_TARGET, Messages.MessagesImportPMO_EmptyTargetname,
-                Message.ERROR), messageImportPMOTarget.validate()
-                .getMessageByCode(MessagesImportPMO.MSG_INVALID_TARGET));
+                Message.ERROR), pmo.validate().getMessageByCode(MessagesImportPMO.MSG_INVALID_TARGET));
 
     }
 
     @Test
     public void testEmptyFilename() {
-        MessagesImportPMO messageImportPMOEmpty = new MessagesImportPMO();
-        messageImportPMOEmpty.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
-        messageImportPMOEmpty.setFileName("");
+        pmo.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
+        pmo.setFileName("");
         assertEquals(new Message(MessagesImportPMO.MSG_EMPTY_FILE, Messages.MessagesImportPMO_EmptyFilename,
-                Message.ERROR), messageImportPMOEmpty.validate().getMessageByCode(MessagesImportPMO.MSG_EMPTY_FILE));
+                Message.ERROR), pmo.validate().getMessageByCode(MessagesImportPMO.MSG_EMPTY_FILE));
     }
 
     @Test
     public void testNoExistFilename() {
-        MessagesImportPMO messageImportPMONoExist = new MessagesImportPMO();
-        messageImportPMONoExist.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
-        messageImportPMONoExist
-                .setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
+        pmo.setIpsPackageFragmentRoot(ipsPackageFragmentRoot);
+        pmo.setFileName("src/org/faktorips/devtools/stdbuilder/policycmpttype/validationrule/validation-test-messages.prope");
         assertEquals((new Message(MessagesImportPMO.MSG_NO_EXIST_FILE, Messages.MessagesImportPMO_FileDoesNotExist,
-                Message.ERROR)),
-                messageImportPMONoExist.validate().getMessageByCode(MessagesImportPMO.MSG_NO_EXIST_FILE));
+                Message.ERROR)), pmo.validate().getMessageByCode(MessagesImportPMO.MSG_NO_EXIST_FILE));
     }
 
     @Test
     public void testIsCsvFileFormat() {
-        MessagesImportPMO pmo = new MessagesImportPMO();
         assertTrue(pmo.isCsvFileFormat());
 
         pmo.setFormat(ImportFormat.PROPERTIES);
@@ -113,8 +107,6 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNoColumnDelimiter() {
-        MessagesImportPMO pmo = new MessagesImportPMO();
-
         pmo.setFormat(ImportFormat.CSV);
         pmo.setColumnDelimiter(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_COLUMN_DELIMITER);
@@ -126,8 +118,6 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNoIdColumnIndex() {
-        MessagesImportPMO pmo = new MessagesImportPMO();
-
         pmo.setFormat(ImportFormat.CSV);
         pmo.setIdentifierColumnIndex(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_ID_COLUMN_INDEX);
@@ -151,8 +141,6 @@ public class MessagesImportPMOTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNoTextColumnIndex() {
-        MessagesImportPMO pmo = new MessagesImportPMO();
-
         pmo.setFormat(ImportFormat.CSV);
         pmo.setTextColumnIndex(null);
         assertMessageExists(pmo, MessagesImportPMO.MSG_NO_TEXT_COLUMN_INDEX);
