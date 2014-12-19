@@ -108,7 +108,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
         setControl(rootComposite);
         initDefaults();
         validatePage();
-
+        bindingContext.updateUI();
     }
 
     private void createSourceGroup(Composite rootComposite) {
