@@ -128,8 +128,10 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
 
     private ValidationRuleMessagesPropertiesImporter getPropertiesImporter(MessagesImportPMO pmo,
             FileInputStream fileInputStream) {
-        return new ValidationRuleMessagesPropertiesImporter(fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo
-                .getSupportedLanguage().getLocale());
+        ValidationRuleMessagesPropertiesImporter propertiesImporter = new ValidationRuleMessagesPropertiesImporter(
+                fileInputStream, pmo.getIpsPackageFragmentRoot(), pmo.getSupportedLanguage().getLocale());
+        propertiesImporter.setMethodOfIdentification(pmo.getRuleIdentifier());
+        return propertiesImporter;
     }
 
 }
