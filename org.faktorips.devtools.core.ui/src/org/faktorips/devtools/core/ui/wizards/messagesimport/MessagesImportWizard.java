@@ -65,7 +65,7 @@ public class MessagesImportWizard extends Wizard implements IImportWizard {
     @Override
     public boolean performFinish() {
         MessagesImportPMO pmo = page.getMessagesImportPMO();
-        File file = new File(pmo.getFileName());
+        File file = new File(pmo.getFilename());
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(file);

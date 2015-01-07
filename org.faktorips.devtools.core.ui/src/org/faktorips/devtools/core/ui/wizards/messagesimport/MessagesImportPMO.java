@@ -26,7 +26,7 @@ import org.faktorips.util.message.MessageList;
 
 public class MessagesImportPMO extends PresentationModelObject {
 
-    public static final String PROPERTY_FILE_NAME = "fileName"; //$NON-NLS-1$
+    public static final String PROPERTY_FILE_NAME = "filename"; //$NON-NLS-1$
 
     public static final String PROPERTY_IPS_PACKAGE_FRAGMENT_ROOT = "ipsPackageFragmentRoot"; //$NON-NLS-1$
 
@@ -64,7 +64,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     public static final String MSG_NO_TEXT_COLUMN_INDEX = MSGCODE_PREFIX + "noTextColumnIndex"; //$NON-NLS-1$
 
-    private String fileName = StringUtils.EMPTY;
+    private String filename = StringUtils.EMPTY;
 
     private IIpsPackageFragmentRoot ipsPackageFragmentRoot;
 
@@ -82,20 +82,34 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.MESSAGE_CODE;
 
+    private void updateFormat() {
+        Path path = new Path(filename);
+        String fileExtension = path.getFileExtension();
+        setFormat(ImportFormat.getFormat(fileExtension));
+    }
+
+    /**
+     * @return Returns the fileName.
+     */
+    public String getFilename() {
+        return filename;
+    }
+
     /**
      * @param fileName The fileName to set.
      */
-    public void setFileName(String fileName) {
-        String oldValue = this.fileName;
-        this.fileName = fileName;
+    public void setFilename(String fileName) {
+        String oldValue = this.filename;
+        this.filename = fileName;
         updateFormat();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FILE_NAME, oldValue, fileName));
     }
 
-    private void updateFormat() {
-        Path path = new Path(fileName);
-        String fileExtension = path.getFileExtension();
-        setFormat(ImportFormat.getFormat(fileExtension));
+    /**
+     * @return Returns the format of the imported file.
+     */
+    public ImportFormat getFormat() {
+        return format;
     }
 
     /**
@@ -107,62 +121,23 @@ public class MessagesImportPMO extends PresentationModelObject {
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_FORMAT, oldValue, format));
     }
 
-    public void setColumnDelimiter(Character columnDelimiter) {
-        Character oldValue = this.columnDelimiter;
-        this.columnDelimiter = columnDelimiter;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_COLUMN_DELIMITER, oldValue, columnDelimiter));
+    public boolean isFormatSettingsEnabled() {
+        return isCsvFileFormat();
     }
 
     /**
-     * @param idColumnIndex The (one based) index of the column to be used as id.
+     * Returns <code>true</code> if the file format is set to {@link ImportFormat#CSV}, otherwise
+     * <code>false</code>.
      */
-    public void setIdentifierColumnIndex(String idColumnIndex) {
-        String oldValue = this.idColumnIndex;
-        this.idColumnIndex = idColumnIndex;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFIER_COLUMN_INDEX, oldValue, idColumnIndex));
+    public boolean isCsvFileFormat() {
+        return ImportFormat.CSV == format;
     }
 
     /**
-     * @param textColumnIndex The (one based) index of the column to be used as text.
+     * @return Returns the ipsPackageFragmentRoot.
      */
-    public void setTextColumnIndex(String textColumnIndex) {
-        String oldValue = this.textColumnIndex;
-        this.textColumnIndex = textColumnIndex;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_TEXT_COLUMN_INDEX, oldValue, textColumnIndex));
-    }
-
-    /**
-     * @param ruleIdentifier The kind of identifier to be used.
-     */
-    public void setRuleIdentifier(ValidationRuleIdentification ruleIdentifier) {
-        ValidationRuleIdentification oldValue = this.ruleIdentifier;
-        this.ruleIdentifier = ruleIdentifier;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RULE_IDENTIFIER, oldValue, ruleIdentifier));
-    }
-
-    /**
-     * @param enableWarningsForMissingMessages Sets if warnings concerning missing messages should
-     *            be displayed after the import.
-     */
-    public void setEnableWarningsForMissingMessages(boolean enableWarningsForMissingMessages) {
-        boolean oldValue = this.enableWarningsForMissingMessages;
-        this.enableWarningsForMissingMessages = enableWarningsForMissingMessages;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLE_WARNINGS_FOR_MISSING_MESSAGES, oldValue,
-                enableWarningsForMissingMessages));
-    }
-
-    /**
-     * @return Returns the fileName.
-     */
-    public String getFileName() {
-        return fileName;
-    }
-
-    /**
-     * @return Returns the format of the imported file.
-     */
-    public ImportFormat getFormat() {
-        return format;
+    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
+        return ipsPackageFragmentRoot;
     }
 
     /**
@@ -191,10 +166,10 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
-     * @return Returns the ipsPackageFragmentRoot.
+     * @return Returns the {@link ISupportedLanguage}.
      */
-    public IIpsPackageFragmentRoot getIpsPackageFragmentRoot() {
-        return ipsPackageFragmentRoot;
+    public ISupportedLanguage getSupportedLanguage() {
+        return supportedLanguage;
     }
 
     /**
@@ -204,13 +179,6 @@ public class MessagesImportPMO extends PresentationModelObject {
         ISupportedLanguage oldValue = this.supportedLanguage;
         this.supportedLanguage = supportedLanguage;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_SUPPORTED_LANGUAGE, oldValue, supportedLanguage));
-    }
-
-    /**
-     * @return Returns the {@link ISupportedLanguage}.
-     */
-    public ISupportedLanguage getSupportedLanguage() {
-        return supportedLanguage;
     }
 
     /**
@@ -225,11 +193,26 @@ public class MessagesImportPMO extends PresentationModelObject {
     // return columnDelimiter.charAt(0);
     // }
 
+    public void setColumnDelimiter(Character columnDelimiter) {
+        Character oldValue = this.columnDelimiter;
+        this.columnDelimiter = columnDelimiter;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_COLUMN_DELIMITER, oldValue, columnDelimiter));
+    }
+
     /**
      * @return Returns the formatIdentifier.
      */
     public String getIdentifierColumnIndex() {
         return idColumnIndex;
+    }
+
+    /**
+     * @param idColumnIndex The (one based) index of the column to be used as id.
+     */
+    public void setIdentifierColumnIndex(String idColumnIndex) {
+        String oldValue = this.idColumnIndex;
+        this.idColumnIndex = idColumnIndex;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTIFIER_COLUMN_INDEX, oldValue, idColumnIndex));
     }
 
     /**
@@ -240,10 +223,28 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     /**
+     * @param textColumnIndex The (one based) index of the column to be used as text.
+     */
+    public void setTextColumnIndex(String textColumnIndex) {
+        String oldValue = this.textColumnIndex;
+        this.textColumnIndex = textColumnIndex;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_TEXT_COLUMN_INDEX, oldValue, textColumnIndex));
+    }
+
+    /**
      * @return Returns the identification.
      */
     public ValidationRuleIdentification getRuleIdentifier() {
         return ruleIdentifier;
+    }
+
+    /**
+     * @param ruleIdentifier The kind of identifier to be used.
+     */
+    public void setRuleIdentifier(ValidationRuleIdentification ruleIdentifier) {
+        ValidationRuleIdentification oldValue = this.ruleIdentifier;
+        this.ruleIdentifier = ruleIdentifier;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_RULE_IDENTIFIER, oldValue, ruleIdentifier));
     }
 
     /**
@@ -252,6 +253,17 @@ public class MessagesImportPMO extends PresentationModelObject {
      */
     public boolean isEnableWarningsForMissingMessages() {
         return enableWarningsForMissingMessages;
+    }
+
+    /**
+     * @param enableWarningsForMissingMessages Sets if warnings concerning missing messages should
+     *            be displayed after the import.
+     */
+    public void setEnableWarningsForMissingMessages(boolean enableWarningsForMissingMessages) {
+        boolean oldValue = this.enableWarningsForMissingMessages;
+        this.enableWarningsForMissingMessages = enableWarningsForMissingMessages;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_ENABLE_WARNINGS_FOR_MISSING_MESSAGES, oldValue,
+                enableWarningsForMissingMessages));
     }
 
     /**
@@ -286,7 +298,6 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     public void validateFilename(MessageList messageList) {
-        String filename = getFileName();
         if (filename.length() == 0) {
             messageList.newError(MSG_EMPTY_FILE, Messages.MessagesImportPMO_EmptyFilename);
         }
@@ -300,20 +311,12 @@ public class MessagesImportPMO extends PresentationModelObject {
     }
 
     private void validateColumnDelimiter(MessageList messageList) {
-        if (isCsvFileFormat() && isDelimiterInvalid()) {
+        if (isCsvFileFormat() && isInvalidDelimiter()) {
             messageList.newError(MSG_NO_COLUMN_DELIMITER, Messages.MessagesImportPMO_noColumnDelimiter);
         }
     }
 
-    /**
-     * Returns <code>true</code> if the file format is set to {@link ImportFormat#CSV}, otherwise
-     * <code>false</code>.
-     */
-    public boolean isCsvFileFormat() {
-        return ImportFormat.CSV == format;
-    }
-
-    private boolean isDelimiterInvalid() {
+    private boolean isInvalidDelimiter() {
         return columnDelimiter == null;
     }
 
@@ -341,10 +344,6 @@ public class MessagesImportPMO extends PresentationModelObject {
         if (supportedLanguage == null) {
             messageList.newError(MSG_NO_LOCALE, Messages.MessagesImportPMO_EmptyLocale);
         }
-    }
-
-    public boolean isFormatSettingsEnabled() {
-        return isCsvFileFormat();
     }
 
     static enum ImportFormat {
