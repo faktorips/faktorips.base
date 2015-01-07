@@ -53,12 +53,21 @@ public abstract class ValidationRuleMessagesImportOperation implements IWorkspac
 
     private ValidationRuleIdentification identification = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
 
+    /**
+     * The messageKey-messageText (key-value) pairs to import. Raw data e.g. from csv or properties
+     * files.
+     */
     private Map<String, String> contentMap;
 
     /**
-     * Is used to create more detailed import warnings. It maps the messageKey to its corresponding
-     * {@link IValidationRule} to identify which rules are using the same message code. The map
-     * contains always the last processed {@link IValidationRule}.
+     * Is used to create more detailed import warnings.
+     * <p>
+     * Maps a messageKey to the corresponding {@link IValidationRule} that has its message text
+     * updated. If a message key is imported multiple times, the most recently processed
+     * {@link IValidationRule} is stored.
+     * <p>
+     * Contains only entries for changed validation rules. Thus there are no entries for messageKeys
+     * no corresponding validation rule was found for.
      */
     private Map<String, IValidationRule> importedMessageKeys;
 
