@@ -1640,8 +1640,43 @@ public class IpsProject extends IpsElement implements IIpsProject {
         validateDuplicateTocFilePath(result);
         validateIpsObjectPathCycle(result);
         validateVersionProvider(result);
+        validateMarkerEnums(result);
 
         return result;
+    }
+
+    private void validateMarkerEnums(MessageList messageList) {
+        IIpsProjectProperties properties = getReadOnlyProperties();
+        Set<String> markerEnumQNames = properties.getMarkerEnums();
+        for (String enumQName : markerEnumQNames) {
+            validateEnumQName(messageList, enumQName);
+        }
+    }
+
+    private void validateEnumQName(MessageList messageList, String enumQName) {
+        IIpsSrcFile ipsSrcFile = findIpsSrcFile(new QualifiedNameType(enumQName, IpsObjectType.ENUM_TYPE));
+        if (ipsSrcFile == null || !ipsSrcFile.exists()) {
+            messageList.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
+                    Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR, getIpsProjectPropertiesFile()));
+        } else {
+            IEnumType enumType = (IEnumType)ipsSrcFile.getIpsObject();
+            validateMarkerEnumProperties(enumType, messageList);
+        }
+    }
+
+    private void validateMarkerEnumProperties(IEnumType markerEnum, MessageList result) {
+        if (markerEnum.isAbstract()) {
+            String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
+                    markerEnum.getQualifiedName());
+            result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                    getIpsProjectPropertiesFile()));
+        }
+        if (markerEnum.isExtensible()) {
+            String msg = NLS.bind(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
+                    markerEnum.getQualifiedName());
+            result.add(new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                    getIpsProjectPropertiesFile()));
+        }
     }
 
     private void validateJavaProjectBuildPath(MessageList result) throws JavaModelException {
@@ -1954,4 +1989,8 @@ public class IpsProject extends IpsElement implements IIpsProject {
         getCorrespondingResource().delete(true, null);
     }
 
+    @Override
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
+        return getIpsModel().getMarkerEnums(this);
+    }
 }

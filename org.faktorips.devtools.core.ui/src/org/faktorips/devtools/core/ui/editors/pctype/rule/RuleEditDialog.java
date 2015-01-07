@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.core.ui.editors.pctype;
+package org.faktorips.devtools.core.ui.editors.pctype.rule;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,10 +18,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
+import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
+import org.faktorips.devtools.core.ui.editors.pctype.Messages;
+import org.faktorips.devtools.core.ui.editors.pctype.RuleFunctionsControl;
+import org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesControl;
 
 public class RuleEditDialog extends IpsPartEditDialog2 {
 
@@ -33,10 +38,15 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     private CheckboxField specifiedInSrcField;
 
     private ValidationRuleEditingUI ruleUI = new ValidationRuleEditingUI(getToolkit());
+    private ValidationRuleMarkerUI validationRuleMarkerUI = new ValidationRuleMarkerUI(getToolkit());
+
+    private ValidationRuleMarkerPMO ruleMarkerPMO;
 
     public RuleEditDialog(IValidationRule rule, Shell parentShell) {
         super(rule, parentShell, Messages.RuleEditDialog_title, true);
         this.rule = rule;
+
+        ruleMarkerPMO = ValidationRuleMarkerPMO.createFor(rule.getIpsProject(), rule);
     }
 
     @Override
@@ -47,13 +57,23 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         msgPage.setText(Messages.RuleEditDialog_generalTitle);
         msgPage.setControl(createGeneralPage(folder));
 
-        TabItem functionsPage = new TabItem(folder, SWT.NONE);
-        functionsPage.setText(Messages.RuleEditDialog_functionTitle);
-        functionsPage.setControl(createFunctionsPage(folder));
+        if (isCreateFunctionsPage()) {
+            TabItem functionsPage = new TabItem(folder, SWT.NONE);
+            functionsPage.setText(Messages.RuleEditDialog_functionTitle);
+            functionsPage.setControl(createFunctionsPage(folder));
+        }
 
         TabItem attributesPage = new TabItem(folder, SWT.NONE);
         attributesPage.setText(Messages.RuleEditDialog_attrTitle);
         attributesPage.setControl(createAttributesPage(folder));
+
+        IIpsProject ipsProject = getIpsPart().getIpsProject();
+        if (validationRuleMarkerUI.isMarkerEnumsEnabled(ipsProject)) {
+            TabItem markerPage = new TabItem(folder, SWT.NONE);
+            markerPage.setText(Messages.ValidationRuleMarkerUI_TabName_Markers);
+            markerPage.setControl(createMarkersPage(folder));
+        }
+
         /*
          * the update cycle for changes to model objects is extended so that the gui will be updated
          * due to model changes. The update cycle gui -> model -> gui is currently not implemented
@@ -67,13 +87,13 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
                 if (!event.getIpsSrcFile().exists()) {
                     return;
                 }
-                if (event.getIpsSrcFile().equals(rule.getIpsObject().getIpsSrcFile())) {
+                if (event.isAffected(rule)) {
                     getBindingContext().updateUI();
                 }
             }
         };
         listener.setWidget(parent);
-        rule.getIpsModel().addChangeListener(listener);
+        // rule.getIpsModel().addChangeListener(listener);
 
         bindFields();
         return folder;
@@ -88,6 +108,10 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         return workArea;
     }
 
+    private boolean isCreateFunctionsPage() {
+        return getIpsPart().getIpsProject().getReadOnlyProperties().isBusinessFunctionsForValdiationRulesEnabled();
+    }
+
     private Control createFunctionsPage(TabFolder folder) {
         Composite workArea = createTabItemComposite(folder, 1, false);
         ((GridLayout)workArea.getLayout()).verticalSpacing = 20;
@@ -96,6 +120,14 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
         rfControl = new RuleFunctionsControl(workArea);
         rfControl.initialize(super.getIpsPart(), null);
         appliedToAllField = new CheckboxField(appliedToAllCheckbox);
+
+        return workArea;
+    }
+
+    private Control createMarkersPage(TabFolder folder) {
+        Composite workArea = createTabItemComposite(folder, 1, false);
+
+        validationRuleMarkerUI.createUI(workArea, ruleMarkerPMO);
 
         return workArea;
     }
@@ -113,8 +145,10 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
 
     private void bindFields() {
         ruleUI.bindFields(rule, getBindingContext());
-        getBindingContext().bindContent(appliedToAllField, rule,
-                IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        if (isCreateFunctionsPage()) {
+            getBindingContext().bindContent(appliedToAllField, rule,
+                    IValidationRule.PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS);
+        }
         getBindingContext().bindContent(specifiedInSrcField, rule,
                 IValidationRule.PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC);
     }

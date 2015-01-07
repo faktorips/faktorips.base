@@ -16,8 +16,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -183,6 +186,31 @@ public class XValidationRule extends AbstractGeneratorModelNode {
             }
         }
         return result;
+    }
+
+    public List<String> getMarkers() {
+        List<String> result = new ArrayList<String>();
+        List<String> markerIds = getValidationRule().getMarkers();
+        LinkedHashSet<IIpsSrcFile> markerEnums = getIpsProject().getMarkerEnums();
+        if (markerEnums.size() > 0) {
+            IIpsSrcFile markerEnumSrcFile = markerEnums.iterator().next();
+            IEnumType enumType = (IEnumType)markerEnumSrcFile.getIpsObject();
+            for (String id : markerIds) {
+                result.add(getMarkerSourceCode(enumType, id));
+            }
+        }
+        return result;
+    }
+
+    public String getMarkerSourceCode(IEnumType enumType, String id) {
+        DatatypeHelper datatypeHelper = getIpsProject().findDatatypeHelper(enumType.getQualifiedName());
+        JavaCodeFragment newInstance = datatypeHelper.newInstance(id);
+        addImport(newInstance.getImportDeclaration());
+        return newInstance.getSourcecode();
+    }
+
+    public boolean isContainingMarkers() {
+        return !getMarkers().isEmpty();
     }
 
 }

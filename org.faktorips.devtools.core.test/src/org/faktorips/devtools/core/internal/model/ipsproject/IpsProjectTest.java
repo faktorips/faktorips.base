@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
@@ -48,6 +49,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsFeatureVersionManager;
@@ -64,6 +66,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -2366,6 +2369,98 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         IVersionProvider<?> versionProvider = ipsProject.getVersionProvider();
 
         assertThat(versionProvider, instanceOf(DefaultVersionProvider.class));
+    }
+
+    @Test
+    public void testValidateMarkerEnums_False() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum; falseEnum");
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertFalse(msgList.isEmpty());
+        assertEquals(getExpectedMsgForUnknownMarkerEnums(), msgList.getMessage(0));
+    }
+
+    private Object getExpectedMsgForUnknownMarkerEnums() {
+        return new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS,
+                Messages.IpsProjectProperties_unknownMarkerEnums, Message.ERROR,
+                ipsProject.getIpsProjectPropertiesFile());
+    }
+
+    @Test
+    public void testValidateMarkerEnums_True() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum");
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertTrue(msgList.isEmpty());
+    }
+
+    private EnumType initProjectProperty(String markerString) throws CoreException {
+        EnumType enumType = newEnumType(ipsProject, "Enum");
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.addMarkerEnum(markerString);
+        ipsProject.setProperties(ipsProjectProperties);
+        return enumType;
+    }
+
+    @Test
+    public void testValidateMarkerEnums_isExtensible() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum");
+        enumType.setExtensible(true);
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertFalse(msgList.isEmpty());
+        assertEquals(getExpectedMsgForExtensibleMarkerEnums(enumType), msgList.getMessage(0));
+    }
+
+    private Message getExpectedMsgForExtensibleMarkerEnums(EnumType enumType) {
+        String msg = NLS.bind(Messages.IpsProjectProperties_msgExtensibleMarkerEnumsNotAllowed,
+                enumType.getQualifiedName());
+        Message expectedMsg = new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                ipsProject.getIpsProjectPropertiesFile());
+        return expectedMsg;
+    }
+
+    @Test
+    public void testValidateMarkerEnums_isAbstract() throws CoreException {
+        EnumType enumType = initProjectProperty("Enum");
+        enumType.setAbstract(true);
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+        MessageList msgList = ipsProject.validate();
+
+        assertEquals(1, markerEnums.size());
+        assertTrue(markerEnums.contains(enumType.getIpsSrcFile()));
+        assertFalse(msgList.isEmpty());
+        assertEquals(getExpectedMsgForAbstractMarkerEnums(enumType), msgList.getMessage(0));
+    }
+
+    private Message getExpectedMsgForAbstractMarkerEnums(EnumType enumType) {
+        String msg = NLS.bind(Messages.IpsProjectProperties_msgAbstractMarkerEnumsNotAllowed,
+                enumType.getQualifiedName());
+        Message expectedMsg = new Message(IIpsProjectProperties.MSGCODE_INVALID_MARKER_ENUMS, msg, Message.ERROR,
+                ipsProject.getIpsProjectPropertiesFile());
+        return expectedMsg;
+    }
+
+    @Test
+    public void testGetMarkerEnums_DisableMarkerEnums() throws CoreException {
+        newEnumType(ipsProject, "Enum");
+        IIpsProjectProperties ipsProjectProperties = ipsProject.getProperties();
+        ipsProjectProperties.addMarkerEnum("Enum");
+        ipsProjectProperties.setMarkerEnumsEnabled(false);
+        ipsProject.setProperties(ipsProjectProperties);
+
+        Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
+
+        assertTrue(markerEnums.isEmpty());
     }
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {

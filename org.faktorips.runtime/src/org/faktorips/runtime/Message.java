@@ -14,7 +14,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.faktorips.values.ObjectUtil;
 
@@ -82,9 +84,9 @@ public class Message implements Serializable {
     private final List<MsgReplacementParameter> replacementParameters;
 
     /**
-     * A list of {@link IMarker} containing additional information.
+     * A set of {@link IMarker} containing additional information.
      */
-    private final List<IMarker> markers;
+    private final Set<IMarker> markers;
 
     /**
      * Creates a new message by using the fields of a {@link Builder}.
@@ -199,7 +201,7 @@ public class Message implements Serializable {
     public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties,
             List<MsgReplacementParameter> replacementParameters) {
         this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperties)
-                .replacements(replacementParameters).markers(Collections.<IMarker> emptyList()));
+                .replacements(replacementParameters).markers(Collections.<IMarker> emptySet()));
     }
 
     /**
@@ -214,7 +216,7 @@ public class Message implements Serializable {
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
             MsgReplacementParameter... parameters) {
         this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
-                .markers(Collections.<IMarker> emptyList()));
+                .markers(Collections.<IMarker> emptySet()));
     }
 
     /**
@@ -229,7 +231,7 @@ public class Message implements Serializable {
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
             List<MsgReplacementParameter> parameters) {
         this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
-                .markers(Collections.<IMarker> emptyList()));
+                .markers(Collections.<IMarker> emptySet()));
     }
 
     /**
@@ -244,7 +246,7 @@ public class Message implements Serializable {
     public Message(String code, String text, Severity severity, ObjectProperty[] invalidObjectProperties,
             MsgReplacementParameter[] parameters) {
         this(new Builder(text, severity).code(code).invalidObjects(Arrays.asList(invalidObjectProperties))
-                .replacements(parameters).markers(Collections.<IMarker> emptyList()));
+                .replacements(parameters).markers(Collections.<IMarker> emptySet()));
     }
 
     /**
@@ -259,14 +261,14 @@ public class Message implements Serializable {
      *            The List of markers is
      */
     public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties,
-            List<MsgReplacementParameter> parameters, List<IMarker> markers) {
+            List<MsgReplacementParameter> parameters, Set<IMarker> markers) {
         this.code = code;
         this.text = text;
         this.severity = severity;
         if (markers != null) {
-            this.markers = Collections.unmodifiableList(new ArrayList<IMarker>(markers));
+            this.markers = Collections.unmodifiableSet(new HashSet<IMarker>(markers));
         } else {
-            this.markers = Collections.emptyList();
+            this.markers = Collections.emptySet();
         }
         if (invalidObjectProperties != null) {
             invalidOp = Collections.unmodifiableList(new ArrayList<ObjectProperty>(invalidObjectProperties));
@@ -463,10 +465,10 @@ public class Message implements Serializable {
     }
 
     /**
-     * Returns a list of {@link IMarker}s associated with this class. Returns an empty list if no
+     * Returns a set of {@link IMarker}s associated with this class. Returns an empty set if no
      * markers are set.
      */
-    public List<IMarker> getMarkers() {
+    public Set<IMarker> getMarkers() {
         return markers;
     }
 
@@ -587,7 +589,7 @@ public class Message implements Serializable {
 
         private List<MsgReplacementParameter> replacementParams;
 
-        private List<IMarker> markers;
+        private Set<IMarker> markers;
 
         /**
          * Creates a new builder that is able to create a proper {@link Message} with all needed
@@ -626,11 +628,11 @@ public class Message implements Serializable {
         /**
          * Set an object property that message refers to.
          * 
-         * @param invalidObjectProperties An object property that message refers to
+         * @param invalidObjectProperty An object property that message refers to
          * @return This builder instance to directly add further properties
          */
-        public Builder invalidObject(ObjectProperty invalidObjectProperties) {
-            this.invalidObjectProperties = Arrays.asList(invalidObjectProperties);
+        public Builder invalidObject(ObjectProperty invalidObjectProperty) {
+            this.invalidObjectProperties = Arrays.asList(invalidObjectProperty);
             return this;
         }
 
@@ -689,12 +691,12 @@ public class Message implements Serializable {
         }
 
         /**
-         * Set a list of markers that should be provided to the new message.
+         * Set a set of markers that should be provided to the new message.
          * 
-         * @param markers a list of markers
+         * @param markers a set of markers
          * @return This builder instance to directly add further properties
          */
-        public Builder markers(List<IMarker> markers) {
+        public Builder markers(Set<IMarker> markers) {
             this.markers = markers;
             return this;
         }
@@ -706,7 +708,7 @@ public class Message implements Serializable {
          * @return This builder instance to directly add further properties
          */
         public Builder markers(IMarker... markers) {
-            this.markers = Arrays.asList(markers);
+            this.markers = new HashSet<IMarker>(Arrays.asList(markers));
             return this;
         }
 

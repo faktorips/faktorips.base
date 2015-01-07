@@ -98,15 +98,11 @@
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {
     	«IF validateAttributes-»
-                «ObjectProperty()»[] invalidObjectProperties = new «ObjectProperty()»[] {
+                «List_(ObjectProperty())» invalidObjectProperties = «Arrays()».asList(
                 «FOREACH validatedAttributeConstants AS constant SEPARATOR ","-»
                 new «ObjectProperty()»(this, «constant»)
                 «ENDFOREACH-»
-				 };
-        «ELSE-»
-        «IF !validatedAttrSpecifiedInSrc-»
-        «ObjectProperty()» invalidObjectProperties = new «ObjectProperty()»(this);
-        «ENDIF-»
+				 );
 		«ENDIF-»        
         «IF containsReplacementParameters-»
 	        «MsgReplacementParameter()»[] replacementParameters = new «MsgReplacementParameter()»[] {
@@ -118,6 +114,21 @@
         «MessagesHelper()» messageHelper = new «MessagesHelper()»("«validateMessageBundleName»",
                 getClass().getClassLoader(), «defaultLocale»);
         String msgText = messageHelper.getMessage("«validationMessageKey»", context.getLocale() «FOREACH replacementParameters AS param», «param»«ENDFOREACH»);
-        return new «Message()»(«constantNameMessageCode», msgText, «severityConstant», invalidObjectProperties «IF containsReplacementParameters», replacementParameters«ENDIF»);
+       	
+       	«Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
+       		.code(«constantNameMessageCode»)
+	      «IF validateAttributes-»
+       		.invalidObjects(invalidObjectProperties)
+	      «ELSEIF !validatedAttrSpecifiedInSrc-»
+    	    .invalidObject(new «ObjectProperty()»(this))
+	      «ENDIF-»
+       	  «IF containsReplacementParameters-»
+       		.replacements(replacementParameters)
+   		  «ENDIF-»
+   		  «IF containingMarkers-»
+   			.markers(«FOREACH markers AS param SEPARATOR ","-» «param»«ENDFOREACH»)
+   		  «ENDIF-»
+   			;
+		return builder.create(); 
     }
 «ENDDEFINE»

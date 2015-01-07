@@ -8,6 +8,11 @@
 	<BusinessFunction name="Renewal" />
 	<ValidatedAttribute name="a" />
 	<ValidatedAttribute name="b" />
+	<Markers>
+		<Marker name="marker1" />
+		<invalidMarker name="invalidMarker" />
+		<Marker name="marker2" />
+	</Markers>
 	<MessageText>
 		<InternationalString id="1">
 			<LocalizedString locale="de" text="messageText" />

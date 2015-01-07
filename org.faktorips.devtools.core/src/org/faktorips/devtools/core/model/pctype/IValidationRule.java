@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.model.pctype;
 
+import java.util.List;
+
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -20,25 +22,27 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  */
 public interface IValidationRule extends IProductCmptProperty {
 
-    public final static String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
+    public static final String PROPERTY_BUSINESS_FUNCTIONS = "businessFunctions"; //$NON-NLS-1$
 
-    public final static String PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS = "appliedForAllBusinessFunctions"; //$NON-NLS-1$
+    public static final String PROPERTY_APPLIED_FOR_ALL_BUSINESS_FUNCTIONS = "appliedForAllBusinessFunctions"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
+    public static final String PROPERTY_MESSAGE_TEXT = "messageText"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MESSAGE_CODE = "messageCode"; //$NON-NLS-1$
+    public static final String PROPERTY_MESSAGE_CODE = "messageCode"; //$NON-NLS-1$
 
-    public final static String PROPERTY_MESSAGE_SEVERITY = "messageSeverity"; //$NON-NLS-1$
+    public static final String PROPERTY_MESSAGE_SEVERITY = "messageSeverity"; //$NON-NLS-1$
 
-    public final static String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes"; //$NON-NLS-1$
+    public static final String PROPERTY_VALIDATED_ATTRIBUTES = "validatedAttributes"; //$NON-NLS-1$
 
-    public final static String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
+    public static final String PROPERTY_VALIDATIED_ATTR_SPECIFIED_IN_SRC = "validatedAttrSpecifiedInSrc"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
+    public static final String PROPERTY_CHECK_AGAINST_VALUE_SET_RULE = "checkValueAgainstValueSetRule"; //$NON-NLS-1$
 
-    public final static String PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
+    public static final String PROPERTY_CONFIGURABLE_BY_PRODUCT_COMPONENT = "configurableByProductComponent"; //$NON-NLS-1$
 
-    public final static String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
+    public static final String PROPERTY_ACTIVATED_BY_DEFAULT = "activatedByDefault"; //$NON-NLS-1$
+
+    public static final String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
 
     /**
      * The separator to concatenate the key. We use the minus character because this character is
@@ -49,45 +53,50 @@ public interface IValidationRule extends IProductCmptProperty {
     /**
      * Prefix for all message codes of this class.
      */
-    public final static String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message text contains a newline.
      */
-    public final static String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
+    public static final String MSGCODE_NO_NEWLINE = MSGCODE_PREFIX + "NoNewlineAllowed"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message text contains a newline.
      */
-    public final static String MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID = MSGCODE_PREFIX + "InvalidTextParameter"; //$NON-NLS-1$
+    public static final String MSGCODE_MESSAGE_TEXT_PARAMETER_INVALID = MSGCODE_PREFIX + "InvalidTextParameter"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the message code shouldn't be empty.
      */
-    public final static String MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY = MSGCODE_PREFIX + "MsgCodeShouldntBeEmpty"; //$NON-NLS-1$
+    public static final String MSGCODE_MSGCODE_SHOULDNT_BE_EMPTY = MSGCODE_PREFIX + "MsgCodeShouldntBeEmpty"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute referenced by the rule does not exist.
      */
-    public final static String MSGCODE_UNDEFINED_ATTRIBUTE = MSGCODE_PREFIX + "UndefinedAttribute"; //$NON-NLS-1$
+    public static final String MSGCODE_UNDEFINED_ATTRIBUTE = MSGCODE_PREFIX + "UndefinedAttribute"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that constant attributes can't be validated.
      */
-    public final static String MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED = MSGCODE_PREFIX
+    public static final String MSGCODE_CONSTANT_ATTRIBUTES_CANT_BE_VALIDATED = MSGCODE_PREFIX
             + "ConstantAttributesCantBeValidated"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of the rule already exists.
      */
-    public final static String MSGCODE_DUPLICATE_RULE_NAME = MSGCODE_PREFIX + "DuplicateRuleName"; //$NON-NLS-1$
+    public static final String MSGCODE_DUPLICATE_RULE_NAME = MSGCODE_PREFIX + "DuplicateRuleName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the name of the rule is already used as method name
      * within the type.
      */
-    public final static String MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT = MSGCODE_PREFIX
+    public static final String MSGCODE_VALIDATION_RULE_METHOD_NAME_CONFLICT = MSGCODE_PREFIX
             + "ValidationRuleMethodNameConflict"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the marker id does not exist in the marker enum.
+     */
+    public static final String MSGCODE_INVALID_MARKER_ID = MSGCODE_PREFIX + "MsgInvalidMarkerID"; //$NON-NLS-1$
 
     /**
      * Sets the rules name.
@@ -270,5 +279,16 @@ public interface IValidationRule extends IProductCmptProperty {
      * @return The qualified name of the rule.
      */
     public String getQualifiedRuleName();
+
+    /**
+     * Returns a list of markers that are applied to this rule. The markers are represented by the
+     * id of an enum value.
+     */
+    public List<String> getMarkers();
+
+    /**
+     * Sets the list of markers.
+     */
+    public void setMarkers(List<String> markers);
 
 }

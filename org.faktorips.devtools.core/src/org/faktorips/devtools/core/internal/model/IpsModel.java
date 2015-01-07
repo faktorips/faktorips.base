@@ -1724,6 +1724,17 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         throw new UnsupportedOperationException("The IPS Model cannot be deleted."); //$NON-NLS-1$
     }
 
+    /**
+     * Returns the {@link IIpsSrcFile ips source files} of the markers that are configured in the
+     * given {@link IIpsProject}. This method only handles the caching in the project data. Always
+     * call {@link IIpsProject#getMarkerEnums()} directly.
+     * 
+     * @see IIpsProject#getMarkerEnums()
+     */
+    public LinkedHashSet<IIpsSrcFile> getMarkerEnums(IpsProject ipsProject) {
+        return getIpsProjectData(ipsProject).getMarkerEnums();
+    }
+
     private final class RunnableChangeListenerImplementation implements Runnable {
         private final ContentChangeEvent event;
 
