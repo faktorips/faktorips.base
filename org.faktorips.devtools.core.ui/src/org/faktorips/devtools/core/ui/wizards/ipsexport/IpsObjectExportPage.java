@@ -104,11 +104,11 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
         super(pageName);
     }
 
-    public void setFilename(String newName) {
+    public void setFileName(String newName) {
         filenameField.setText(newName);
     }
 
-    public String getFilename() {
+    public String getFileName() {
         return filenameField.getText();
     }
 
@@ -181,15 +181,15 @@ public abstract class IpsObjectExportPage extends WizardDataTransferPage impleme
 
         @Override
         protected void buttonClicked() {
-            String previousFilename = getFilename();
+            String previousFilename = getFileName();
 
             // if there is no previous filename use the default filename
-            setFilename(StringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
+            setFileName(StringUtils.isEmpty(previousFilename) ? getDefaultFilename() : previousFilename);
 
             // if no file was selected (e.g. cancel clicked)
             // set the previous filename
             if (askForFilename() == null) {
-                setFilename(previousFilename);
+                setFileName(previousFilename);
             }
         }
 
