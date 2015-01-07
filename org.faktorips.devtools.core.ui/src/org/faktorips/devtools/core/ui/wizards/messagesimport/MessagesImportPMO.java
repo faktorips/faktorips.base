@@ -80,7 +80,7 @@ public class MessagesImportPMO extends PresentationModelObject {
 
     private boolean enableWarningsForMissingMessages = false;
 
-    private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.QUALIFIED_RULE_NAME;
+    private ValidationRuleIdentification ruleIdentifier = ValidationRuleIdentification.MESSAGE_CODE;
 
     /**
      * @param fileName The fileName to set.

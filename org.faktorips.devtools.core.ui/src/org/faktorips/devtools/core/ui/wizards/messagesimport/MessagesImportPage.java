@@ -77,6 +77,7 @@ public class MessagesImportPage extends WizardDataTransferPage {
     private RadioButtonGroupField<ImportFormat> formatRadioButtons;
     private Checkbox warningCheckbox;
     private Group formatSettingsGroup;
+    private Control formatSettingsSpacer;
 
     protected MessagesImportPage(String name, IStructuredSelection selection) {
         super(name);
@@ -169,10 +170,11 @@ public class MessagesImportPage extends WizardDataTransferPage {
     }
 
     private void createFormatSettingsControl(Composite labelEditComposite) {
+        formatSettingsSpacer = uiToolkit.createHorizontalSpacer(labelEditComposite, 0);
         formatSettingsGroup = uiToolkit.createGroup(labelEditComposite,
                 Messages.MessagesImportWizard_labelFormatSettings);
         GridData groupGD = new GridData(GridData.FILL, GridData.FILL, true, true);
-        groupGD.horizontalSpan = 2;
+        // groupGD.horizontalSpan = 2;
         formatSettingsGroup.setLayoutData(groupGD);
 
         Composite formatSettingsComposite = uiToolkit.createLabelEditColumnComposite(formatSettingsGroup);
@@ -244,6 +246,8 @@ public class MessagesImportPage extends WizardDataTransferPage {
     }
 
     private void bindFormatSettings() {
+        bindingContext.bindVisible(formatSettingsSpacer, getMessagesImportPMO(),
+                MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_ENABLED, true);
         bindingContext.bindVisible(formatSettingsGroup, getMessagesImportPMO(),
                 MessagesImportPMO.PROPERTY_FORMAT_SETTINGS_ENABLED, true);
 
