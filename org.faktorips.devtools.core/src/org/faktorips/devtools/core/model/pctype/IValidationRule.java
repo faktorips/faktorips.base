@@ -45,6 +45,12 @@ public interface IValidationRule extends IProductCmptProperty {
     public static final String PROPERTY_MARKERS = "markers"; //$NON-NLS-1$
 
     /**
+     * The separator to concatenate the key. We use the minus character because this character is
+     * not allowed in names.
+     */
+    public static final String QNAME_SEPARATOR = "-"; //$NON-NLS-1$
+
+    /**
      * Prefix for all message codes of this class.
      */
     public static final String MSGCODE_PREFIX = "VALIDATIONRULE-"; //$NON-NLS-1$
@@ -264,6 +270,15 @@ public interface IValidationRule extends IProductCmptProperty {
      * 
      */
     public void setActivatedByDefault(boolean activated);
+
+    /**
+     * Returns the qualified name of the rule. The qualified name of the rule contains the qualified
+     * name of the parent object ({@link IPolicyCmptType}) and the name of the rule. The qualified
+     * name of a rule is unique within a project and all dependent projects.
+     * 
+     * @return The qualified name of the rule.
+     */
+    public String getQualifiedRuleName();
 
     /**
      * Returns a list of markers that are applied to this rule. The markers are represented by the

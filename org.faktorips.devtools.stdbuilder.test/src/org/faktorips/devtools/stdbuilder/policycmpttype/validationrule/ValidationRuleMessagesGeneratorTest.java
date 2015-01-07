@@ -25,10 +25,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,9 +38,27 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.policycmpttype.AbstractValidationMessagesBuilderTest;
 import org.faktorips.values.LocalizedString;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessagesBuilderTest {
+
+    private static final String RULE_NAME_1 = "rule1";
+    private static final String RULE_NAME_2 = "rule2";
+    private static final String MY_QNAME = "myQName";
+    private static final String QNAME_RULE1 = MY_QNAME + IValidationRule.QNAME_SEPARATOR + RULE_NAME_1;
+    private static final String QNAME_RULE2 = MY_QNAME + IValidationRule.QNAME_SEPARATOR + RULE_NAME_2;
+    @Mock
+    private IPolicyCmptType pcType;
+
+    @Before
+    public void setUpPcType() {
+        when(pcType.getQualifiedName()).thenReturn(MY_QNAME);
+    }
 
     @Test
     public void testLoadMessagesFromFile() throws Exception {
@@ -72,14 +88,12 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         InputStream inputStream = mock(InputStream.class);
         ValidationRuleMessagesGenerator messagesGenerator = new ValidationRuleMessagesGenerator(propertyFile,
                 new SupportedLanguage(Locale.GERMAN), builder);
-        MessagesProperties validationMessages = messagesGenerator.getValidationMessages();
+        ValidationRuleMessageProperties validationMessages = messagesGenerator.getValidationMessages();
 
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
         verifyZeroInteractions(inputStream);
         assertFalse(validationMessages.isModified());
-
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
 
         List<IValidationRule> vRulesList = new ArrayList<IValidationRule>();
         when(pcType.getValidationRules()).thenReturn(vRulesList);
@@ -89,18 +103,22 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         assertFalse(validationMessages.isModified());
 
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText().get(any(Locale.class))).thenReturn(
                 new LocalizedString(Locale.GERMAN, "anyMessage"));
 
         IValidationRule validationRule2 = mockValidationRule(pcType);
-        when(validationRule2.getName()).thenReturn("rule2");
+        when(validationRule2.getName()).thenReturn(RULE_NAME_2);
+        when(validationRule2.getQualifiedRuleName()).thenReturn(QNAME_RULE2);
         when(validationRule2.getMessageText().get(any(Locale.class))).thenReturn(
                 new LocalizedString(Locale.GERMAN, "anyMessage"));
 
         vRulesList.add(validationRule1);
         vRulesList.add(validationRule2);
         when(pcType.getValidationRules()).thenReturn(vRulesList);
+        when(pcType.getValidationRule(RULE_NAME_1)).thenReturn(validationRule1);
+        when(pcType.getValidationRule(RULE_NAME_2)).thenReturn(validationRule2);
 
         messagesGenerator.generate(pcType);
         assertTrue(validationMessages.isModified());
@@ -132,11 +150,10 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
 
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-
         List<IValidationRule> vRulesList = new ArrayList<IValidationRule>();
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText().get(any(Locale.class))).thenReturn(
                 new LocalizedString(Locale.GERMAN, "anyMessage"));
 
@@ -164,11 +181,10 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         verify(propertyFile).exists();
         verifyNoMoreInteractions(propertyFile);
 
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-
         List<IValidationRule> vRulesList = new ArrayList<IValidationRule>();
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText().get(any(Locale.class))).thenReturn(
                 new LocalizedString(Locale.GERMAN, "anyMessage"));
 
@@ -204,42 +220,38 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         IValidationRuleMessageText msgTxt3 = mock(IValidationRuleMessageText.class);
         when(msgTxt3.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text3"));
 
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-        when(pcType.getQualifiedName()).thenReturn("abc");
-
         IPolicyCmptType pcType2 = mock(IPolicyCmptType.class);
         when(pcType2.getQualifiedName()).thenReturn("pcType2");
 
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText()).thenReturn(msgTxt1);
         IValidationRule validationRule2 = mockValidationRule(pcType);
-        when(validationRule2.getName()).thenReturn("rule2");
+        when(validationRule2.getName()).thenReturn(RULE_NAME_2);
+        when(validationRule2.getQualifiedRuleName()).thenReturn(QNAME_RULE2);
         when(validationRule2.getMessageText()).thenReturn(msgTxt2);
 
-        IValidationRule otherRule = mockValidationRule(pcType);
+        IValidationRule otherRule = mockValidationRule(pcType2);
         when(otherRule.getName()).thenReturn("otherRule");
+        when(otherRule.getQualifiedRuleName()).thenReturn("myQName2-otherRule");
         when(otherRule.getMessageText()).thenReturn(msgTxt3);
 
-        Set<String> ruleNames = new HashSet<String>();
-        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1, ruleNames);
-        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule2, ruleNames);
-        validationRuleMessagesGenerator.addValidationRuleMessage(otherRule, new HashSet<String>());
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1);
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule2);
+        validationRuleMessagesGenerator.addValidationRuleMessage(otherRule);
 
-        List<IValidationRule> validationRules = new ArrayList<IValidationRule>();
-        validationRules.add(validationRule1);
+        when(pcType.getValidationRule(RULE_NAME_1)).thenReturn(validationRule1);
 
-        validationRuleMessagesGenerator.deleteMessagesForDeletedRules("abc", validationRules, ruleNames);
+        validationRuleMessagesGenerator.deleteMessagesForDeletedRules(pcType);
 
         assertEquals(2, validationRuleMessagesGenerator.getValidationMessages().size());
         assertEquals(
                 "text1",
                 validationRuleMessagesGenerator.getValidationMessages().getMessage(
-                        ValidationRuleMessagesGenerator.getMessageKey(validationRule1)));
-        assertEquals(
-                "text3",
-                validationRuleMessagesGenerator.getValidationMessages().getMessage(
-                        ValidationRuleMessagesGenerator.getMessageKey(otherRule)));
+                        validationRule1.getQualifiedRuleName()));
+        assertEquals("text3",
+                validationRuleMessagesGenerator.getValidationMessages().getMessage(otherRule.getQualifiedRuleName()));
     }
 
     @Test
@@ -247,9 +259,6 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
                 mock(IFile.class), new SupportedLanguage(Locale.GERMAN), builder);
-
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-        when(pcType.getQualifiedName()).thenReturn("abc");
 
         IPolicyCmptType pcType2 = mock(IPolicyCmptType.class);
         when(pcType2.getQualifiedName()).thenReturn("pcType2");
@@ -262,33 +271,26 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         when(msgTxt3.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, "text3"));
 
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText()).thenReturn(msgTxt1);
         IValidationRule validationRule2 = mockValidationRule(pcType);
-        when(validationRule2.getName()).thenReturn("rule2");
+        when(validationRule2.getName()).thenReturn(RULE_NAME_2);
+        when(validationRule2.getQualifiedRuleName()).thenReturn(QNAME_RULE2);
         when(validationRule2.getMessageText()).thenReturn(msgTxt2);
 
-        IValidationRule otherRule = mockValidationRule(pcType);
+        IValidationRule otherRule = mockValidationRule(pcType2);
         when(otherRule.getName()).thenReturn("otherRule");
+        when(otherRule.getQualifiedRuleName()).thenReturn("pcType2-otherRule");
         when(otherRule.getMessageText()).thenReturn(msgTxt3);
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1);
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule2);
+        validationRuleMessagesGenerator.addValidationRuleMessage(otherRule);
 
-        Set<String> ruleNames = validationRuleMessagesGenerator.getRuleNames("abc");
-        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1, ruleNames);
-        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule2, ruleNames);
-
-        Set<String> ruleNames2 = validationRuleMessagesGenerator.getRuleNames("pcType2");
-        validationRuleMessagesGenerator.addValidationRuleMessage(otherRule, ruleNames2);
-
-        List<IValidationRule> validationRules = new ArrayList<IValidationRule>();
-        validationRules.add(validationRule1);
-
-        validationRuleMessagesGenerator.deleteAllMessagesFor("abc");
+        validationRuleMessagesGenerator.deleteAllMessagesFor(MY_QNAME);
 
         assertEquals(1, validationRuleMessagesGenerator.getValidationMessages().size());
-        assertEquals(
-                "text3",
-                validationRuleMessagesGenerator.getValidationMessages().getMessage(
-                        ValidationRuleMessagesGenerator.getMessageKey(otherRule)));
+        assertEquals("text3", validationRuleMessagesGenerator.getValidationMessages().getMessage("pcType2-otherRule"));
     }
 
     @Test
@@ -296,16 +298,14 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
                 mock(IFile.class), new SupportedLanguage(Locale.GERMAN), builder);
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-        when(pcType.getQualifiedName()).thenReturn("abc");
         IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
         when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, ""));
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText()).thenReturn(msgTxt1);
-        Set<String> ruleNames = validationRuleMessagesGenerator.getRuleNames("abc");
 
-        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1, ruleNames);
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1);
 
         assertFalse(validationRuleMessagesGenerator.getValidationMessages().isModified());
         assertEquals(0, validationRuleMessagesGenerator.getValidationMessages().size());
@@ -316,20 +316,18 @@ public class ValidationRuleMessagesGeneratorTest extends AbstractValidationMessa
         ValidationRuleMessagesPropertiesBuilder builder = mock(ValidationRuleMessagesPropertiesBuilder.class);
         ValidationRuleMessagesGenerator validationRuleMessagesGenerator = new ValidationRuleMessagesGenerator(
                 mock(IFile.class), new SupportedLanguage(Locale.GERMAN, true), builder);
-        IPolicyCmptType pcType = mock(IPolicyCmptType.class);
-        when(pcType.getQualifiedName()).thenReturn("abc");
         IValidationRuleMessageText msgTxt1 = mock(IValidationRuleMessageText.class);
         when(msgTxt1.get(any(Locale.class))).thenReturn(new LocalizedString(Locale.GERMAN, ""));
         IValidationRule validationRule1 = mockValidationRule(pcType);
-        when(validationRule1.getName()).thenReturn("rule1");
+        when(validationRule1.getName()).thenReturn(RULE_NAME_1);
+        when(validationRule1.getQualifiedRuleName()).thenReturn(QNAME_RULE1);
         when(validationRule1.getMessageText()).thenReturn(msgTxt1);
-        Set<String> ruleNames = validationRuleMessagesGenerator.getRuleNames("abc");
 
-        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1, ruleNames);
+        validationRuleMessagesGenerator.addValidationRuleMessage(validationRule1);
 
         assertTrue(validationRuleMessagesGenerator.getValidationMessages().isModified());
         assertEquals(1, validationRuleMessagesGenerator.getValidationMessages().size());
-        assertEquals("", validationRuleMessagesGenerator.getValidationMessages().getMessage("abc-rule1"));
+        assertEquals("", validationRuleMessagesGenerator.getValidationMessages().getMessage(QNAME_RULE1));
     }
 
     @Test

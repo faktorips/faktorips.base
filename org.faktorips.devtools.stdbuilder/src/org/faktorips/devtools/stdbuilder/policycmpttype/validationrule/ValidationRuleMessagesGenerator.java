@@ -13,35 +13,24 @@ package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.pctype.IValidationRuleMessageText;
 import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
+import org.faktorips.devtools.stdbuilder.policycmpttype.validationrule.ValidationRuleMessageProperties.RuleKeyParts;
 import org.faktorips.values.LocalizedString;
 
 public class ValidationRuleMessagesGenerator {
 
-    /**
-     * The separator to concatenate the key. We use the minus character because this character is
-     * not allowed in names.
-     */
-    public static final String KEY_SEPARATOR = "-";
-
-    private final Map<String, Set<String>> pcTypeNamesToValidationRuleNamesMap = new HashMap<String, Set<String>>();
-
-    private final MessagesProperties validationMessages = new MessagesProperties();
+    private final ValidationRuleMessageProperties validationMessages = new ValidationRuleMessageProperties();
 
     private final IFile messagesPropertiesFile;
 
@@ -61,17 +50,6 @@ public class ValidationRuleMessagesGenerator {
         } catch (CoreException e) {
             StdBuilderPlugin.log(e);
         }
-    }
-
-    public static String getMessageKey(IValidationRule validationRule) {
-        IIpsObject ipsObject = validationRule.getIpsObject();
-        String qualifiedName = ipsObject.getQualifiedName();
-        String ruleName = validationRule.getName();
-        return getMessageKey(qualifiedName, ruleName);
-    }
-
-    public static String getMessageKey(String policyCmptTypeQName, String ruleName) {
-        return policyCmptTypeQName + KEY_SEPARATOR + ruleName;
     }
 
     /**
@@ -98,10 +76,9 @@ public class ValidationRuleMessagesGenerator {
 
     public void clearMessages() {
         getValidationMessages().clear();
-        pcTypeNamesToValidationRuleNamesMap.clear();
     }
 
-    private void storeMessagesToFile(IFile propertyFile, MessagesProperties messages, String comments)
+    private void storeMessagesToFile(IFile propertyFile, ValidationRuleMessageProperties messages, String comments)
             throws CoreException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         messages.store(outputStream, comments);
@@ -126,11 +103,10 @@ public class ValidationRuleMessagesGenerator {
 
     public void generate(IPolicyCmptType ipsObject) {
         IPolicyCmptType policyCmptType = ipsObject;
+        deleteMessagesForDeletedRules(policyCmptType);
         List<IValidationRule> validationRules = policyCmptType.getValidationRules();
-        Set<String> ruleNames = getRuleNames(policyCmptType.getQualifiedName());
-        deleteMessagesForDeletedRules(policyCmptType.getQualifiedName(), validationRules, ruleNames);
         for (IValidationRule validationRule : validationRules) {
-            addValidationRuleMessage(validationRule, ruleNames);
+            addValidationRuleMessage(validationRule);
         }
     }
 
@@ -140,44 +116,28 @@ public class ValidationRuleMessagesGenerator {
      * method deletes the message for every rule that is located in the ruleNameSet but not in the
      * list of validation rules.
      * 
-     * @param pcTypeName The name of the policy component type used to get the message key
-     * @param validationRules the rules that are actually stored in the policy component type
-     * @param ruleNameSet the set of rule name that were in the policy component type during last
-     *            build
+     * @param policyCmptType The name of the policy component type used to get the message key
      */
-    void deleteMessagesForDeletedRules(String pcTypeName, List<IValidationRule> validationRules, Set<String> ruleNameSet) {
-        for (String ruleName : new HashSet<String>(ruleNameSet)) {
-            boolean foundRule = false;
-            for (IValidationRule rule : validationRules) {
-                if (rule.getName().equals(ruleName)) {
-                    foundRule = true;
-                    break;
-                }
-            }
-            if (!foundRule) {
-                String key = getMessageKey(pcTypeName, ruleName);
-                validationMessages.remove(key);
-                ruleNameSet.remove(ruleName);
+    void deleteMessagesForDeletedRules(IPolicyCmptType policyCmptType) {
+        HashSet<RuleKeyParts> existingKeys = new HashSet<RuleKeyParts>(
+                validationMessages.getKeysForPolicyCmptType(policyCmptType.getQualifiedName()));
+        for (RuleKeyParts ruleNameAndKey : existingKeys) {
+            if (policyCmptType.getValidationRule(ruleNameAndKey.getRuleName()) == null) {
+                validationMessages.remove(ruleNameAndKey);
             }
         }
     }
 
     public void deleteAllMessagesFor(String pcTypeName) {
-        Set<String> ruleNames = getRuleNames(pcTypeName);
-        for (String ruleName : new HashSet<String>(ruleNames)) {
-            String key = getMessageKey(pcTypeName, ruleName);
-            validationMessages.remove(key);
-            ruleNames.remove(ruleName);
-        }
+        validationMessages.deleteAllMessagesFor(pcTypeName);
     }
 
-    void addValidationRuleMessage(IValidationRule validationRule, Set<String> ruleNames) {
+    void addValidationRuleMessage(IValidationRule validationRule) {
         String messageText = getMessageText(validationRule);
         if (messageText.isEmpty() && !supportedLanguage.isDefaultLanguage()) {
             return;
         }
-        getValidationMessages().put(getMessageKey(validationRule), messageText);
-        ruleNames.add(validationRule.getName());
+        getValidationMessages().put(validationRule, messageText);
     }
 
     /**
@@ -218,19 +178,10 @@ public class ValidationRuleMessagesGenerator {
         return -1;
     }
 
-    Set<String> getRuleNames(String pcTypeName) {
-        Set<String> ruleNames = pcTypeNamesToValidationRuleNamesMap.get(pcTypeName);
-        if (ruleNames == null) {
-            ruleNames = new HashSet<String>();
-            pcTypeNamesToValidationRuleNamesMap.put(pcTypeName, ruleNames);
-        }
-        return ruleNames;
-    }
-
     /**
      * @return Returns the validationMessages.
      */
-    public MessagesProperties getValidationMessages() {
+    public ValidationRuleMessageProperties getValidationMessages() {
         return validationMessages;
     }
 

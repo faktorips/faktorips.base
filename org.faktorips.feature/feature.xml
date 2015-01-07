@@ -253,13 +253,20 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
 
    <plugin
          id="org.faktorips.eclipse.emf.codegen"
-		 download-size="0"
+         download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="opencsv"
          download-size="0"
          install-size="0"
          version="0.0.0"

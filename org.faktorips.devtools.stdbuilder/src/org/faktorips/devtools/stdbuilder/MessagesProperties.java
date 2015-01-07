@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.devtools.stdbuilder.policycmpttype.validationrule;
+package org.faktorips.devtools.stdbuilder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,12 +16,13 @@ import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.faktorips.devtools.stdbuilder.StdBuilderPlugin;
 import org.faktorips.util.IoUtil;
 
 public class MessagesProperties {
@@ -121,6 +122,15 @@ public class MessagesProperties {
 
     public void clear() {
         properties.clear();
+    }
+
+    public Set<String> keySet() {
+        HashSet<String> result = new HashSet<String>();
+        Set<Object> keySet = properties.keySet();
+        for (Object object : keySet) {
+            result.add(object.toString());
+        }
+        return result;
     }
 
     private static class SortedProperties extends Properties {
