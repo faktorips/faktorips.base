@@ -1166,6 +1166,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
+        assertTrue(productCmptType.isChangingOverTime());
     }
 
     @Test
@@ -1176,6 +1177,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
         productCmptType.newTableStructureUsage().setRoleName("roleTsu");
         productCmptType.newMethod().setName("method1");
+        productCmptType.setChangingOverTime(false);
 
         Element el = productCmptType.toXml(newDocument());
         productCmptType = newProductCmptType(ipsProject, "Copy");
@@ -1188,6 +1190,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
+        assertFalse(productCmptType.isChangingOverTime());
     }
 
     @Test

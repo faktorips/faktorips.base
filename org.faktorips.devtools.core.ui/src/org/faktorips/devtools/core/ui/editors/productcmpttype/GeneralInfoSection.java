@@ -78,13 +78,19 @@ public class GeneralInfoSection extends IpsSection {
                 productCmptType.getIpsProject(), composite, toolkit, false);
         getBindingContext().bindContent(supertypeRefControl, productCmptType, IType.PROPERTY_SUPERTYPE);
 
-        Composite modifyerComposite = toolkit.createGridComposite(client, 2, false, false);
+        Composite modifyerComposite = toolkit.createGridComposite(client, 3, false, false);
 
         // Abstract flag
         Checkbox abstractCheckbox = toolkit
                 .createCheckbox(modifyerComposite, Messages.GeneralInfoSection_abstractLabel);
         ((GridData)abstractCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
         getBindingContext().bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
+
+        // ChangingOverTime flag
+        Checkbox changingOverTimeCheckbox = toolkit.createCheckbox(modifyerComposite, Messages.GeneralInfoSection_changingOverTimeLabel);
+        ((GridData)changingOverTimeCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
+        getBindingContext().bindContent(changingOverTimeCheckbox, productCmptType,
+                IProductCmptType.PROPERTY_CHANGING_OVER_TIME);
 
         // Layer Supertype flag
         Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifyerComposite,

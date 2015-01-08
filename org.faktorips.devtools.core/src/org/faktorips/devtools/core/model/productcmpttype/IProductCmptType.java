@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -44,6 +45,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public static final String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
 
     public static final String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
+
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     public static final List<String> SUPPORTED_ICON_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(
             "gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
@@ -210,6 +213,25 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @see #setLayerSupertype(boolean)
      */
     boolean isLayerSupertype();
+
+    /**
+     * Returns <code>true</code> if this product component type is changing over time. Have a look at
+     * {@link #setChangingOverTime(boolean)} for more information about the changing over time flag.
+     * 
+     * @return <code>true</code> if this product component type is configured to change over time or false if not.
+     * @see #setChangingOverTime(boolean)
+     */
+    public boolean isChangingOverTime();
+
+    /**
+     * Configures this type to change or be constant over time.
+     * <p>
+     * If it is set to <code>false</code>, no {@link IProductCmptGeneration}s will be exist. All
+     * properties, e.g. {@link IProductCmptTypeAttribute}s, will not be changing over time.
+     * 
+     * @param changesOverTime <code>false</code> to specify this type to be not changing over time
+     */
+    public void setChangingOverTime(boolean changesOverTime);
 
     /**
      * Sets the policy component type this type refers to.
