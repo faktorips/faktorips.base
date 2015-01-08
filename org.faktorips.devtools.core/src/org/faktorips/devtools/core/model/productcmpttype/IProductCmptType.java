@@ -215,18 +215,19 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     boolean isLayerSupertype();
 
     /**
-     * Returns <code>true</code> if this product component type is changing over time. Have a look at
-     * {@link #setChangingOverTime(boolean)} for more information about the changing over time flag.
+     * Returns <code>true</code> if this product component type is changing over time. Have a look
+     * at {@link #setChangingOverTime(boolean)} for more information about the changing over time
+     * flag.
      * 
-     * @return <code>true</code> if this product component type is configured to change over time or false if not.
+     * @return <code>true</code> if this type is configured to change over time or false if not.
      * @see #setChangingOverTime(boolean)
      */
     public boolean isChangingOverTime();
 
     /**
-     * Configures this type to change or be constant over time.
+     * Configures this product component type to change or be constant over time.
      * <p>
-     * If it is set to <code>false</code>, no {@link IProductCmptGeneration}s will be exist. All
+     * If it is set to <code>false</code>, no {@link IProductCmptGeneration}s will exist. All
      * properties, e.g. {@link IProductCmptTypeAttribute}s, will not be changing over time.
      * 
      * @param changesOverTime <code>false</code> to specify this type to be not changing over time
