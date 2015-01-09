@@ -645,7 +645,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 getMarkerEnumsAsString()));
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
-                isBusinessFunctionsForValdiationRulesEnabled()));
+                isBusinessFunctionsForValidationRulesEnabled()));
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT,
                 isChangingOverTimeDefaultEnabled()));
@@ -1711,7 +1711,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     }
 
     @Override
-    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
+    public boolean isBusinessFunctionsForValidationRulesEnabled() {
         return businessFunctionsForValidationRules;
     }
 

@@ -209,7 +209,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
             assertEquals(props.isRulesWithoutReferencesAllowedEnabled(), (i & 1) == 1);
             assertEquals(props.isPersistenceSupportEnabled(), (i & 1) == 1);
             assertEquals(props.isMarkerEnumsEnabled(), (i & 1) == 1);
-            assertEquals(props.isBusinessFunctionsForValdiationRulesEnabled(), (i & 1) == 1);
+            assertEquals(props.isBusinessFunctionsForValidationRulesEnabled(), (i & 1) == 1);
             assertEquals(props.isChangingOverTimeDefaultEnabled(), (i & 1) == 1);
         }
     }
@@ -226,6 +226,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         props.setRuntimeIdPrefix("newRuntimeIdPrefix");
         props.setDerivedUnionIsImplementedRuleEnabled(true);
         props.setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+        props.setBusinessFunctionsForValidationRules(true);
         props.setChangingOverTimeDefault(false);
         props.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy(" ", "yyyy-MM", true));
         IIpsObjectPath path = new IpsObjectPath(ipsProject);
@@ -272,6 +273,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isProductDefinitionProject());
         assertTrue(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
+        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertEquals("newRuntimeIdPrefix", props.getRuntimeIdPrefix());
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
@@ -395,6 +397,7 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
         assertTrue(props.isJavaProjectContainsClassesForDynamicDatatypes());
         assertFalse(props.isDerivedUnionIsImplementedRuleEnabled());
         assertTrue(props.isReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled());
+        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
         assertFalse(props.isChangingOverTimeDefaultEnabled());
         assertEquals("myConvention", props.getChangesOverTimeNamingConventionIdForGeneratedCode());
         assertEquals("testPrefix", props.getRuntimeIdPrefix());
@@ -480,25 +483,18 @@ public class IpsProjectPropertiesTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXmlForRulesUsedInBusinessFunctions() {
-        IpsProjectProperties props = initPropertiesWithDocumentElement();
-
-        assertTrue(props.isBusinessFunctionsForValdiationRulesEnabled());
-    }
-
-    @Test
-    public void testIsBusinessFunctionsForValdiationRulesEnabled_default() {
+    public void testIsBusinessFunctionsForValidationRulesEnabled_default() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
 
-        assertFalse(props.isBusinessFunctionsForValdiationRulesEnabled());
+        assertFalse(props.isBusinessFunctionsForValidationRulesEnabled());
     }
 
     @Test
-    public void testIsBusinessFunctionsForValdiationRulesEnabled() {
+    public void testIsBusinessFunctionsForValidationRulesEnabled() {
         IpsProjectProperties props = new IpsProjectProperties(ipsProject);
         props.setBusinessFunctionsForValidationRules(true);
 
-        assertTrue(props.isBusinessFunctionsForValdiationRulesEnabled());
+        assertTrue(props.isBusinessFunctionsForValidationRulesEnabled());
     }
 
     @Test

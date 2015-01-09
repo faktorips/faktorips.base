@@ -567,8 +567,8 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
-        return propertiesInternal.isBusinessFunctionsForValdiationRulesEnabled();
+    public boolean isBusinessFunctionsForValidationRulesEnabled() {
+        return propertiesInternal.isBusinessFunctionsForValidationRulesEnabled();
     }
 
     @Override

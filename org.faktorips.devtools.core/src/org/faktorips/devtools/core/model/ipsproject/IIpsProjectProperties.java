@@ -663,10 +663,10 @@ public interface IIpsProjectProperties {
      * @return <code>true</code> if the option is enabled, <code>false</code> if the option is
      *         disabled or not configured in the .ipsproject file
      */
-    boolean isBusinessFunctionsForValdiationRulesEnabled();
+    boolean isBusinessFunctionsForValidationRulesEnabled();
 
     /**
-     * @see #isBusinessFunctionsForValdiationRulesEnabled()
+     * @see #isBusinessFunctionsForValidationRulesEnabled()
      */
     void setBusinessFunctionsForValidationRules(boolean enabled);
 
