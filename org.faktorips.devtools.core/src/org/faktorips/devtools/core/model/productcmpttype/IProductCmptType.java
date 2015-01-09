@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -215,22 +216,26 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     boolean isLayerSupertype();
 
     /**
-     * Returns <code>true</code> if this product component type is changing over time. Have a look
-     * at {@link #setChangingOverTime(boolean)} for more information about the changing over time
-     * flag.
+     * Returns <code>true</code> if the changing over time flag of this product component type is
+     * enabled. Have a look at {@link #setChangingOverTime(boolean)} for more information about the
+     * changing over time flag.
      * 
-     * @return <code>true</code> if this type is configured to change over time or false if not.
      * @see #setChangingOverTime(boolean)
      */
     public boolean isChangingOverTime();
 
     /**
-     * Configures this product component type to change or be constant over time.
+     * Configures the changing over time flag of this product component type.
      * <p>
-     * If it is set to <code>false</code>, no {@link IProductCmptGeneration}s will exist. All
-     * properties, e.g. {@link IProductCmptTypeAttribute}s, will not be changing over time.
+     * If it is set to <code>false</code>, {@link IProductCmpt instances} of this type do not have
+     * {@link IProductCmptGeneration}s. All properties, e.g. {@link IProductCmptTypeAttribute}s,
+     * will not change over time, too.
+     * <p>
+     * Furthermore no classes and access methods for {@link IProductCmptGeneration generations} will
+     * be generated.
      * 
-     * @param changesOverTime <code>false</code> to specify this type to be not changing over time
+     * @param changesOverTime <code>false</code> to specify this type's changing over time flag as
+     *            disabled
      */
     public void setChangingOverTime(boolean changesOverTime);
 
