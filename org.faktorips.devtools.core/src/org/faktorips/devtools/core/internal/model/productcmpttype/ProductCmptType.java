@@ -93,7 +93,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
     private String instancesIconPath = null;
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = getIpsProject().getReadOnlyProperties().isChangingOverTimeDefaultEnabled();
 
     private final IpsObjectPartCollection<IProductCmptTypeAttribute> attributes;
     private final IpsObjectPartCollection<ITableStructureUsage> tableStructureUsages;

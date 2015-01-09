@@ -106,6 +106,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private static final String SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES = "businessFunctionsForValidationRules"; //$NON-NLS-1$
 
+    private static final String SETTING_CHANGING_OVER_TIME_DEFAULT = "changingOverTimeDefault"; //$NON-NLS-1$
+
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
     private static final String RELEASE_EXTENSION_ID_ATTRIBUTE = "releaseExtensionId"; //$NON-NLS-1$
@@ -166,6 +168,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean associationsInFormulas = false;
     private boolean enableMarkerEnums = true;
     private boolean businessFunctionsForValidationRules = false;
+    private boolean changingOverTimeDefault = true;
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -643,6 +646,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES,
                 isBusinessFunctionsForValdiationRulesEnabled()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT,
+                isChangingOverTimeDefaultEnabled()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -954,7 +960,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         int length = nl.getLength();
         for (int i = 0; i < length; ++i) {
             Element child = (Element)nl.item(i);
-            if (isValidSettingElement(child)) {
+            if (isInvalidSettingElement(child)) {
                 continue;
             }
 
@@ -970,7 +976,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
         }
     }
 
-    private boolean isValidSettingElement(Element child) {
+    private boolean isInvalidSettingElement(Element child) {
         return !child.hasAttribute(SETTING_ATTRIBUTE_NAME)
                 || !(child.hasAttribute(SETTING_ATTRIBUTE_VALUE) || child.hasAttribute(SETTING_ATTRIBUTE_ENABLED));
     }
@@ -1004,6 +1010,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             markerEnumsConfiguredInIpsProjectFile = true;
         } else if (name.equals(SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES)) {
             setBusinessFunctionsForValidationRules(enabled);
+        } else if (name.equals(SETTING_CHANGING_OVER_TIME_DEFAULT)) {
+            setChangingOverTimeDefault(enabled);
         }
     }
 
@@ -1379,6 +1387,9 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- True to allow business functions for validation rules. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"true\"" + " name=\"" + SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- False to set the default state of changing over time flag on product component types to disabled. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " enabled=\"false\"" + " name=\"" + SETTING_CHANGING_OVER_TIME_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1707,6 +1718,16 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setBusinessFunctionsForValidationRules(boolean enabled) {
         businessFunctionsForValidationRules = enabled;
+    }
+
+    @Override
+    public boolean isChangingOverTimeDefaultEnabled() {
+        return changingOverTimeDefault;
+    }
+
+    @Override
+    public void setChangingOverTimeDefault(boolean enabled) {
+        changingOverTimeDefault = enabled;
     }
 
 }

@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectPropertie
 import org.faktorips.devtools.core.model.IVersionProvider;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -669,4 +670,18 @@ public interface IIpsProjectProperties {
      */
     void setBusinessFunctionsForValidationRules(boolean enabled);
 
+    /**
+     * Check if the default state for changing over time flag on {@link IProductCmptType}s is
+     * enabled or disabled.
+     * 
+     * @return <code>false</code> if the default is disabled, <code>true</code> if the default is
+     *         enabled or not configured in the .ipsproject file
+     * @see IProductCmptType#setChangingOverTime(boolean)
+     */
+    boolean isChangingOverTimeDefaultEnabled();
+
+    /**
+     * @see #isChangingOverTimeDefaultEnabled()
+     */
+    void setChangingOverTimeDefault(boolean enabled);
 }

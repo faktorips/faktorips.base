@@ -557,11 +557,6 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
-    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
-        return propertiesInternal.isBusinessFunctionsForValdiationRulesEnabled();
-    }
-
-    @Override
     public boolean isMarkerEnumsEnabled() {
         return propertiesInternal.isMarkerEnumsEnabled();
     }
@@ -572,7 +567,23 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     }
 
     @Override
+    public boolean isBusinessFunctionsForValdiationRulesEnabled() {
+        return propertiesInternal.isBusinessFunctionsForValdiationRulesEnabled();
+    }
+
+    @Override
     public void setBusinessFunctionsForValidationRules(boolean enabled) {
         throw new RuntimeException("This is a read only object and can therefore not be manipulated."); //$NON-NLS-1$
     }
+
+    @Override
+    public boolean isChangingOverTimeDefaultEnabled() {
+        return propertiesInternal.isChangingOverTimeDefaultEnabled();
+    }
+
+    @Override
+    public void setChangingOverTimeDefault(boolean enabled) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
 }
