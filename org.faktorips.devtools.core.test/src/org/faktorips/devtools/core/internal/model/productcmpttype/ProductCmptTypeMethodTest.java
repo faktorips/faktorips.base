@@ -543,4 +543,16 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         superMethod.setDatatype("Integer");
     }
 
+    @Test
+    public void testChangingOverTime_default() {
+        productCmptType.setChangingOverTime(false);
+        method = productCmptType.newProductCmptTypeMethod();
+
+        assertFalse(method.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        method = productCmptType.newProductCmptTypeMethod();
+
+        assertTrue(method.isChangingOverTime());
+    }
 }

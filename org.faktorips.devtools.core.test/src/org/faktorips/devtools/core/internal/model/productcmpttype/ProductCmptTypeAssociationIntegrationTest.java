@@ -531,4 +531,17 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
                 .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
+    @Test
+    public void testChangingOverTime_default() {
+        productType.setChangingOverTime(false);
+        association = productType.newProductCmptTypeAssociation();
+
+        assertFalse(association.isChangingOverTime());
+
+        productType.setChangingOverTime(true);
+        association = productType.newProductCmptTypeAssociation();
+
+        assertTrue(association.isChangingOverTime());
+    }
+
 }

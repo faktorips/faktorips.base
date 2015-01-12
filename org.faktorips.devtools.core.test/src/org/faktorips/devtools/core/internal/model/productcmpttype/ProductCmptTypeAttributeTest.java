@@ -499,4 +499,16 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
+    public void testChangingOverTime_default() {
+        productCmptType.setChangingOverTime(false);
+        productAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertFalse(productAttribute.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        productAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertTrue(productAttribute.isChangingOverTime());
+    }
 }

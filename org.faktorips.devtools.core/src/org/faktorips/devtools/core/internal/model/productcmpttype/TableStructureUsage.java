@@ -51,7 +51,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     private List<TableStructureReference> tableStructures = new ArrayList<TableStructureReference>();
 
     /** Flag indicating if this {@link TableStructureUsage} is static */
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = getProductCmptType().isChangingOverTime();
 
     public TableStructureUsage(IProductCmptType pcType, String id) {
         super(pcType, id);

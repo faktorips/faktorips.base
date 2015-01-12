@@ -47,7 +47,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private String matchingAssociationName = StringUtils.EMPTY;
 
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = getProductCmptType().isChangingOverTime();
 
     private boolean relevant = true;
 

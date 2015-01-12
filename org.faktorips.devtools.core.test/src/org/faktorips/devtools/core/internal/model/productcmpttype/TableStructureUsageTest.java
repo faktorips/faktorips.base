@@ -232,4 +232,16 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertTrue(tableStructureUsage.isPropertyFor(propertyValue));
     }
 
+    @Test
+    public void testChangingOverTime_default() {
+        productCmptType.setChangingOverTime(false);
+        tableStructureUsage = productCmptType.newTableStructureUsage();
+
+        assertFalse(tableStructureUsage.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        tableStructureUsage = productCmptType.newTableStructureUsage();
+
+        assertTrue(tableStructureUsage.isChangingOverTime());
+    }
 }

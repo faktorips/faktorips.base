@@ -50,12 +50,16 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    private EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME,
-            AttributeProperty.VISIBLE);
+    private EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.VISIBLE);
 
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        initChangingOverTimeDefault();
+    }
+
+    private void initChangingOverTimeDefault() {
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, getProductCmptType().isChangingOverTime());
     }
 
     @Override

@@ -43,7 +43,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     private String formulaName = StringUtils.EMPTY;
 
     /** Flag indicating if this is static */
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = getProductCmptType().isChangingOverTime();
 
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
