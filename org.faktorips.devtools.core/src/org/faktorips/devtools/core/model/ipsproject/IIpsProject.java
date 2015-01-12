@@ -907,4 +907,11 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums();
 
+    /**
+     * This method is called when the project internal caches should be cleaned up. For example when
+     * the ips object path has changed.
+     * 
+     */
+    public void clearCaches();
+
 }

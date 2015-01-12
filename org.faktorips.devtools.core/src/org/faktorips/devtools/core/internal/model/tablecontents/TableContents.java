@@ -270,8 +270,8 @@ public class TableContents extends IpsObject implements ITableContents {
      * {@inheritDoc}
      * <p>
      * The reading of XML for {@link TableContents} is normally done by
-     * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
-     * XML DOM parser.
+     * {@link TableContentsSaxHandler}. These methods are only for compatibility to the common XML
+     * DOM parser.
      * 
      * @see #initFromInputStream(InputStream)
      */
@@ -286,8 +286,8 @@ public class TableContents extends IpsObject implements ITableContents {
      * {@inheritDoc}
      * <p>
      * The reading of XML for {@link TableContents} is normally done by
-     * {@link TableContentsStructureCache}. These methods are only for compatibility to the common
-     * XML DOM parser.
+     * {@link TableContentsSaxHandler}. These methods are only for compatibility to the common XML
+     * DOM parser.
      * <p>
      * Up to version 3.12 the {@link TableContents} was derived from {@link TimedIpsObject} and
      * hence the {@link TableRows} were table generations derived from {@link IpsObjectGeneration}.
@@ -375,7 +375,7 @@ public class TableContents extends IpsObject implements ITableContents {
             list.add(new Message(MSGCODE_COLUMNCOUNT_MISMATCH, text, Message.ERROR, this, PROPERTY_TABLESTRUCTURE));
         }
 
-        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(tableStructure);
+        SingleTableContentsValidator singleTableContentsValidator = SingleTableContentsValidator.createFor(this);
         list.add(singleTableContentsValidator.validateIfPossible());
     }
 

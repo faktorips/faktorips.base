@@ -11,17 +11,21 @@ package org.faktorips.devtools.core.internal.model.tablecontents;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This class is used to validate that a table structure with table-type "single content" has only
- * one existing table content. If there are more than one table contents an error message will be
- * created.
+ * This class is used to validate that a project (and its referenced projects) contain at most one
+ * table content instance, if the respective table structure is of type "single content". If there
+ * are more than one table contents for such a structure, an error message is created.
  * <p>
  * Concept discussion: https://wiki.faktorzehn.de/display/FaktorIPSdevelWiki/Validierung
  * 
@@ -31,15 +35,41 @@ import org.faktorips.util.message.MessageList;
 public class SingleTableContentsValidator {
 
     private ITableStructure tableStructure;
+    private IIpsProject ipsProject;
 
     /**
      * Creates a new <code>SingleTableContentsValidator</code>.
      * 
-     * @param tableStructure The <code>ITableStructure</code> which is used to validate.
+     * @param ipsProject the IPS project a new table content is to be created in. Note though, that
+     *            in most cases, this is <em>not</em> the project that contains the table structure.
+     *            Must not be <code>null</code>.
+     * @param tableStructure The <code>ITableStructure</code> of the new table content.
      * 
      */
-    public SingleTableContentsValidator(ITableStructure tableStructure) {
+    public SingleTableContentsValidator(IIpsProject ipsProject, ITableStructure tableStructure) {
+        Assert.isNotNull(ipsProject);
+        this.ipsProject = ipsProject;
         this.tableStructure = tableStructure;
+    }
+
+    /**
+     * Uses the table contents' project and table structure to create a
+     * {@link SingleTableContentsValidator} instance.
+     * 
+     * @param tableContents the table content to be validated.
+     * @return a newly created {@link SingleTableContentsValidator}
+     */
+    public static SingleTableContentsValidator createFor(ITableContents tableContents) {
+        IIpsProject project = tableContents.getIpsProject();
+        return new SingleTableContentsValidator(project, getStructureFor(tableContents, project));
+    }
+
+    private static ITableStructure getStructureFor(ITableContents tableContents, IIpsProject project) {
+        try {
+            return tableContents.findTableStructure(project);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
@@ -75,7 +105,7 @@ public class SingleTableContentsValidator {
     }
 
     private List<IIpsSrcFile> findContentSrcFiles() {
-        return tableStructure.getIpsProject().findAllTableContentsSrcFiles(tableStructure);
+        return ipsProject.findAllTableContentsSrcFiles(tableStructure);
     }
 
     private boolean isNumberOfContentsIllegal() {
