@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.wizards.tablecontents;
 
 import org.faktorips.devtools.core.internal.model.tablecontents.SingleTableContentsValidator;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionValidator;
 import org.faktorips.util.message.Message;
@@ -63,22 +64,22 @@ public class NewTableContentsValidator extends NewProductDefinitionValidator {
         if (getPmo().getSelectedStructure() == null) {
             result.add(new Message(MSG_NO_STRUCTURE, Messages.NewTableContentsValidator_msg_noStructure, Message.ERROR));
         } else {
-            validateSelectedStructure(result, getPmo().getSelectedStructure());
+            validateSelectedStructure(result, getPmo().getIpsProject(), getPmo().getSelectedStructure());
         }
     }
 
-    private void validateSelectedStructure(MessageList result, ITableStructure selectedTableStructure) {
+    private void validateSelectedStructure(MessageList result,
+            IIpsProject ipsProject,
+            ITableStructure selectedTableStructure) {
         if (selectedTableStructure.getNumOfColumns() == 0) {
             result.add(new Message(MSG_INVALID_STRUCTURE, Messages.NewTableContentsValidator_msgInvalidStructure,
                     Message.ERROR));
         }
-        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(
+        SingleTableContentsValidator singleTableContentsValidator = new SingleTableContentsValidator(ipsProject,
                 selectedTableStructure);
         if (singleTableContentsValidator.forbidsAdditionalContents()) {
-            result.add(new Message(
-                    MSG_INVALID_STRUCTURE,
-                    Messages.NewTableContentsValidator_msgNoAdditionalContentsAllowed,
-                    Message.ERROR));
+            result.add(new Message(MSG_INVALID_STRUCTURE,
+                    Messages.NewTableContentsValidator_msgNoAdditionalContentsAllowed, Message.ERROR));
         }
     }
 

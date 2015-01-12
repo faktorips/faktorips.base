@@ -46,9 +46,9 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
         IIpsProjectProperties props = baseProject.getProperties();
         props.setPredefinedDatatypesUsed(new String[] { "Integer" });
         baseProject.setProperties(props);
-        unqualifiedNameCache = new UnqualifiedNameCache(ipsProject);
         hausrat = newProductCmptType(ipsProject, "hausrat");
         productCmptHausrat2013 = newProductCmpt(hausrat, "b.productCmptHausrat2013");
+        unqualifiedNameCache = new UnqualifiedNameCache(ipsProject);
     }
 
     @Test
@@ -121,4 +121,5 @@ public class UnqualifiedNameCacheTest extends AbstractIpsPluginTest {
         assertNotNull(result);
         assertEquals(2, result.size());
     }
+
 }

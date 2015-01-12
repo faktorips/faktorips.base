@@ -75,7 +75,6 @@ import org.faktorips.devtools.core.internal.model.ipsproject.IpsPackageFragmentD
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectProperties;
 import org.faktorips.devtools.core.internal.model.ipsproject.VersionProviderExtensionPoint;
-import org.faktorips.devtools.core.internal.model.tablecontents.TableContentsStructureCache;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ICustomModelExtensions;
@@ -180,9 +179,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     /** validation result cache */
     private ValidationResultCache validationResultCache = new ValidationResultCache();
 
-    /** table contents validation cache */
-    private final TableContentsStructureCache tableContentsValidationCache;
-
     private IpsObjectType[] ipsObjectTypes;
 
     private final CustomModelExtensions customModelExtensions;
@@ -210,7 +206,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         initIpsObjectTypes();
         // has to be done after the ips object types are initialized!
         resourceDeltaVisitor = new ResourceDeltaVisitor(this);
-        tableContentsValidationCache = new TableContentsStructureCache(this);
     }
 
     @Override
@@ -301,7 +296,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getWorkspace().addResourceChangeListener(
                 this,
                 IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE
-                        | IResourceChangeEvent.PRE_REFRESH);
+                | IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -964,6 +959,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public void clearProjectSpecificCaches(IIpsProject ipsProject) {
         ipsProjectDatas.remove(ipsProject);
+        ipsProject.clearCaches();
     }
 
     /**
@@ -1268,7 +1264,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                .size()];
+                                                                                              .size()];
         int i = 0;
         for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
                 .hasNext();) {
@@ -1338,13 +1334,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      */
     public ValidationResultCache getValidationResultCache() {
         return validationResultCache;
-    }
-
-    /**
-     * Returns the cache for the table contents validation.
-     */
-    public TableContentsStructureCache getTableContentsValidationCache() {
-        return tableContentsValidationCache;
     }
 
     /**
@@ -1549,7 +1538,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
             System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
                     new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
-                            Thread.currentThread().getName() }));
+                    Thread.currentThread().getName() }));
         }
     }
 
@@ -1769,8 +1758,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     listener.modificationStatusHasChanged(event);
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
                         System.out
-                                .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                        + listener);
+                        .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
+                                + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {

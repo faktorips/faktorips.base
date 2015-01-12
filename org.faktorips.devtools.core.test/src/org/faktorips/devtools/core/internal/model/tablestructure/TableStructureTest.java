@@ -441,7 +441,7 @@ public class TableStructureTest extends AbstractIpsPluginTest {
         tableContentProj2.getIpsSrcFile().save(true, null);
 
         resultList = tableStructure.searchMetaObjectSrcFiles(true);
-        // assertEquals(3, resultList.size());
+        assertEquals(3, resultList.size());
         assertTrue(resultList.contains(tableContent1.getIpsSrcFile()));
         assertTrue(resultList.contains(tableContent2.getIpsSrcFile()));
         assertTrue(resultList.contains(tableContentProj2.getIpsSrcFile()));

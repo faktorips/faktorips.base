@@ -148,7 +148,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private IFile propertyFile;
 
-    private UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
+    private final UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
+
+    private final TableContentsStructureCache tableContentsStructureCache = new TableContentsStructureCache(this);
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -1434,7 +1436,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return ipsSrcFiles;
         }
 
-        return getIpsModel().getTableContentsValidationCache().getTableContents(structure.getIpsSrcFile());
+        return getTableContentsStructureCache().getTableContents(structure.getIpsSrcFile());
+    }
+
+    public TableContentsStructureCache getTableContentsStructureCache() {
+        return tableContentsStructureCache;
     }
 
     @Override
@@ -1947,6 +1953,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
             root.delete();
         }
         getCorrespondingResource().delete(true, null);
+        unqualifiedNameCache.dispose();
+        tableContentsStructureCache.dispose();
+    }
+
+    @Override
+    public void clearCaches() {
+        unqualifiedNameCache.clear();
+        tableContentsStructureCache.clear();
     }
 
 }
