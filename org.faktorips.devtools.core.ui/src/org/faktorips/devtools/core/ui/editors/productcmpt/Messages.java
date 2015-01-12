@@ -32,6 +32,8 @@ public class Messages extends NLS {
 
     public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
 
+    public static String ComponentPropertiesSection_labelValidFrom;
+
     public static String ConfigElementEditComposite_valueSet;
 
     public static String ConfigElementEditComposite_defaultValue;

@@ -29,6 +29,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -36,11 +37,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.controller.CompositeUIController;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.EditField;
-import org.faktorips.devtools.core.ui.controller.IpsObjectUIController;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
+import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
@@ -67,16 +68,17 @@ public class ComponentPropertiesSection extends IpsSection {
     /** List of controls displaying data (needed to enable / disable). */
     private final List<Text> editControls = new ArrayList<Text>();
 
-    /** Controller to handle update of UI and model automatically. */
-    private CompositeUIController uiMasterController;
-
     private ProductCmptType2RefControl productCmptTypeControl;
 
     private TextButtonControl runtimeIdControl;
 
+    private EditField<GregorianCalendar> validFromField;
+
     private EditField<GregorianCalendar> validToField;
 
     private final ProductCmptEditor editor;
+
+    private ComponentPropertiesPMO componentPropertiesPMO;
 
     public ComponentPropertiesSection(IProductCmpt product, Composite parent, UIToolkit toolkit,
             ProductCmptEditor editor) {
@@ -86,6 +88,7 @@ public class ComponentPropertiesSection extends IpsSection {
         this.product = product;
         this.editor = editor;
         extFactory = new ExtensionPropertyControlFactory(product);
+        componentPropertiesPMO = new ComponentPropertiesPMO(product);
 
         initControls();
         setText(Messages.ProductAttributesSection_attribute);
@@ -100,28 +103,40 @@ public class ComponentPropertiesSection extends IpsSection {
         // Initialize the individual rows of the section
         initProductCmptTypeRow(toolkit);
         initRuntimeIdRow(toolkit);
+        initValidFromRow(toolkit);
         initValidToRow(toolkit);
 
-        // Initialize controllers
-        IpsObjectUIController controller = initUiController();
-        initUiMasterController(controller);
+        bind();
 
         extFactory.createControls(rootPane, toolkit, product);
         extFactory.bind(getBindingContext());
+
+        getBindingContext().updateUI();
     }
 
-    private void initUiMasterController(IpsObjectUIController controller) {
-        uiMasterController = new CompositeUIController();
-        uiMasterController.add(controller);
-        uiMasterController.updateUI();
+    private void bind() {
+        getBindingContext().bindContent(new IpsObjectField(productCmptTypeControl), product,
+                IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+        getBindingContext().bindContent(new TextButtonField(runtimeIdControl), product,
+                IProductCmpt.PROPERTY_RUNTIME_ID);
+
+        getBindingContext().bindContent(validFromField, componentPropertiesPMO,
+                ComponentPropertiesPMO.PROPERTY_VALID_FROM);
+        getBindingContext().bindEnabled(validFromField.getControl(), componentPropertiesPMO,
+                ComponentPropertiesPMO.PROPERTY_VALID_FROM_ENABLED);
+
+        getBindingContext().bindContent(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
     }
 
-    private IpsObjectUIController initUiController() {
-        IpsObjectUIController controller = new IpsObjectUIController(product);
-        controller.add(new IpsObjectField(productCmptTypeControl), product, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        controller.add(runtimeIdControl.getTextControl(), product, IProductCmpt.PROPERTY_RUNTIME_ID);
-        controller.add(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
-        return controller;
+    /**
+     * Create label and text control for the valid-to date of the displayed {@link IProductCmpt}.
+     */
+    private void initValidFromRow(UIToolkit toolkit) {
+        toolkit.createLabel(rootPane, Messages.ComponentPropertiesSection_labelValidFrom);
+        DateControl dateControl = new DateControl(rootPane, toolkit);
+        dateControl.setText(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        validFromField = new DateControlField<GregorianCalendar>(dateControl, GregorianCalendarFormat.newInstance());
+        editControls.add(dateControl.getTextControl());
     }
 
     /**
@@ -222,9 +237,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
     @Override
     protected void performRefresh() {
-        if (uiMasterController != null) {
-            uiMasterController.updateUI();
-        }
+        getBindingContext().updateUI();
         updateRuntimeIdEnableState();
     }
 
@@ -239,13 +252,19 @@ public class ComponentPropertiesSection extends IpsSection {
         }
     }
 
+    /**
+     * FIXME
+     * 
+     * SW 13.1.2015: I would like to remove this listener and use databinding. The problem is that
+     * there is no viewmodel/PMO (which should contain the checkForInconsistenciesToModel() method).
+     * Thus there is no way changing this, except refactoring the whole editor.
+     */
     private class MyModifyListener implements ModifyListener {
 
         @Override
         public void modifyText(ModifyEvent e) {
             productCmptTypeControl.getTextControl().removeModifyListener(this);
-            uiMasterController.updateUI();
-            uiMasterController.updateModel();
+            getBindingContext().updateUI();
             editor.checkForInconsistenciesToModel();
             productCmptTypeControl.getTextControl().addModifyListener(this);
         }
@@ -280,6 +299,48 @@ public class ComponentPropertiesSection extends IpsSection {
             } catch (CoreException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+    }
+
+    public static class ComponentPropertiesPMO extends PresentationModelObject {
+
+        public static final String PROPERTY_VALID_FROM_ENABLED = "validFromEnabled"; //$NON-NLS-1$
+
+        public static final String PROPERTY_VALID_FROM = "validFrom"; //$NON-NLS-1$
+
+        private IProductCmpt productCmpt;
+
+        private boolean productCmptTypeChangingOverTime;
+
+        public ComponentPropertiesPMO(IProductCmpt product) {
+            this.productCmpt = product;
+            productCmptTypeChangingOverTime = isTypeChangingOverTime(product);
+        }
+
+        private boolean isTypeChangingOverTime(IProductCmpt product) {
+            try {
+                IProductCmptType productCmptType = productCmpt.findProductCmptType(product.getIpsProject());
+                return productCmptType != null && productCmptType.isChangingOverTime();
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+
+        public GregorianCalendar getValidFrom() {
+            return productCmpt.getGenerationsOrderedByValidDate()[0].getValidFrom();
+        }
+
+        public void setValidFrom(GregorianCalendar validFrom) {
+            productCmpt.getGenerationsOrderedByValidDate()[0].setValidFrom(validFrom);
+            /*
+             * Update enabled state only. The rest of the fields will be updates automatically.
+             */
+            notifyListeners(new java.beans.PropertyChangeEvent(this, PROPERTY_VALID_FROM_ENABLED, null, null));
+        }
+
+        public boolean isValidFromEnabled() {
+            return !productCmptTypeChangingOverTime;
         }
 
     }
