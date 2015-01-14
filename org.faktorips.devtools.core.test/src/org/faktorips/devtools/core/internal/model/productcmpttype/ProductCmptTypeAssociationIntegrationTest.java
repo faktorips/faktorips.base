@@ -532,6 +532,34 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
     }
 
     @Test
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        association.setTargetRoleSingular("targetRoleSingular");
+        productType.setChangingOverTime(true);
+        association.setChangingOverTime(false);
+
+        MessageList ml = association.validate(association.getIpsProject());
+        assertNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productType.setChangingOverTime(true);
+        association.setChangingOverTime(true);
+
+        ml = association.validate(association.getIpsProject());
+        assertNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productType.setChangingOverTime(false);
+        association.setChangingOverTime(false);
+
+        ml = association.validate(association.getIpsProject());
+        assertNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        association.setChangingOverTime(false);
+        association.setChangingOverTime(true);
+
+        ml = association.validate(association.getIpsProject());
+        assertNotNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
     public void testChangingOverTime_default() {
         productType.setChangingOverTime(false);
         association = productType.newProductCmptTypeAssociation();

@@ -50,6 +50,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("TestProject");
         productCmptType = newProductCmptType(ipsProject, "Type");
         method = productCmptType.newProductCmptTypeMethod();
+        method.setName("methodName");
     }
 
     @Test
@@ -463,6 +464,33 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
 
         assertEquals(1, list.size());
         assertEquals(IProductCmptTypeMethod.MSGCODE_FORMULA_MUSTBE_CHANGING_OVER_TIME, list.getMessage(0).getCode());
+    }
+
+    @Test
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        method.setChangingOverTime(false);
+
+        MessageList ml = method.validate(method.getIpsProject());
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(true);
+        method.setChangingOverTime(true);
+
+        ml = method.validate(method.getIpsProject());
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        method.setChangingOverTime(false);
+
+        ml = method.validate(method.getIpsProject());
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        method.setChangingOverTime(true);
+
+        ml = method.validate(method.getIpsProject());
+        assertNotNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test

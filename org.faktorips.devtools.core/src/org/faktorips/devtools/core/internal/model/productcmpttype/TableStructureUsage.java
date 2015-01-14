@@ -258,6 +258,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         }
 
         validateRoleNameInSupertypeHierarchy(list);
+        validateChangingOverTime(list);
     }
 
     private void validateRoleNameInSupertypeHierarchy(MessageList msgList) throws CoreException {
@@ -270,6 +271,11 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
             String msg = NLS.bind(Messages.TableStructureUsage_msgRoleNameAlreadyInSupertype, getRoleName());
             msgList.add(new Message(MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE, msg, Message.ERROR));
         }
+    }
+
+    private void validateChangingOverTime(MessageList list) {
+        ProductCmptPropertyValidator propertyValidator = new ProductCmptPropertyValidator(this, getProductCmptType());
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(list);
     }
 
     @Override

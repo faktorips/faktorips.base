@@ -312,6 +312,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         super.validateThis(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
+        validateChangingOverTimeFlag(result);
     }
 
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
@@ -343,6 +344,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                 }
             }
         }
+    }
+
+    private void validateChangingOverTimeFlag(MessageList result) {
+        ProductCmptPropertyValidator propertyValidator = new ProductCmptPropertyValidator(this, getProductCmptType());
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
     }
 
     @Override

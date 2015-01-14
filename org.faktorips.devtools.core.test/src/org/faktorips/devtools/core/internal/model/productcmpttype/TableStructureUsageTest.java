@@ -52,6 +52,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
 
         productCmptType = newProductCmptType(project, "test.Product");
         tableStructureUsage = productCmptType.newTableStructureUsage();
+        tableStructureUsage.setRoleName("roleName");
         productCmptType.getIpsSrcFile().save(true, null);
 
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
@@ -216,6 +217,33 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         bStructureUsage.setRoleName("otherName");
         ml = aStructureUsage.validate(aStructureUsage.getIpsProject());
         assertNull(ml.getMessageByCode(ITableStructureUsage.MSGCODE_ROLE_NAME_ALREADY_IN_SUPERTYPE));
+    }
+
+    @Test
+    public void testValidate_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        tableStructureUsage.setChangingOverTime(false);
+
+        MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(true);
+        tableStructureUsage.setChangingOverTime(true);
+
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        tableStructureUsage.setChangingOverTime(false);
+
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        tableStructureUsage.setChangingOverTime(true);
+
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNotNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test

@@ -82,6 +82,13 @@ public interface IProductCmptTypeAssociation extends IAssociation {
             + "ConstrainedChangeOverTimeMismatch"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the property is changing over time while the product
+     * component type does not accept changes in time
+     */
+    public static final String MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME = MSGCODE_PREFIX
+            + "TypeDoesNotAcceptChangingOverTime"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
      */
     public IProductCmptType getProductCmptType();
