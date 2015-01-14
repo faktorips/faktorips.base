@@ -177,6 +177,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
             + "SupertypeNotMarkedAsLayerSupertype"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that setting for changeOverTime of this type differs from
+     * the supertype.
+     */
+    public static final String MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE = MSGCODE_PREFIX
+            + "SettingChangeOverTimeDiffersFromSupertype"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to. Returns
      * <code>null</code> if this type does not refer to a policy component type.
      */

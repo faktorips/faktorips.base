@@ -582,6 +582,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         validateLayerSupertype(list, ipsProject);
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
+        validateIfSuperProductCmptTypeHasSameChangingOverTimeSetting(supertype, list);
+
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
@@ -592,6 +594,13 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForProductCmptTypeAttribute(list, ipsProject);
         validateDefaultCategoryForTableStructureUsages(list, ipsProject);
         validateDefaultCategoryForValidationRules(list, ipsProject);
+    }
+
+    private void validateIfSuperProductCmptTypeHasSameChangingOverTimeSetting(IProductCmptType superProductCmptType,
+            MessageList list) {
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(list, this,
+                superProductCmptType);
     }
 
     private void validateLayerSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {
