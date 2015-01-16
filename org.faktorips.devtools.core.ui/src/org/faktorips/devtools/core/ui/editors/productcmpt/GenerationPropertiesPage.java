@@ -52,7 +52,8 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
 
 /**
- * Page to display a generation's properties.
+ * Page to display a generation's properties or product component properties in case that product
+ * component is not defined as changing over time.
  * 
  * @author Thorsten Guenther
  * @author Alexander Weickmann
@@ -316,6 +317,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     @Override
     public void refresh() {
         updateGenerationName();
+        updateTabFolderName(getPartControl());
 
         // Refreshes the visible controller by application start
         IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
@@ -336,6 +338,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             updateStack();
             createPageContent();
             updateGenerationName();
+            updateTabFolderName(getPartControl());
             resetDataChangeableState();
         }
 
@@ -392,18 +395,22 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private void updateGenerationName() {
         setPartName(getGenerationName(getActiveGeneration()));
-        updateGenerationNameText(getPartControl());
     }
 
-    private void updateGenerationNameText(Control partControl) {
+    private void updateTabFolderName(Control partControl) {
         if (partControl == null) {
             return;
         }
         if (partControl instanceof CTabFolder) {
-            ((CTabFolder)partControl).getItem(0).setText(getPartName());
-            return;
+            if (!getProductCmpt().isChangingOverTimeContainer()) {
+                ((CTabFolder)partControl).getItem(0).setText(Messages.GenerationPropertiesPage_pageTitle);
+                return;
+            } else {
+                ((CTabFolder)partControl).getItem(0).setText(getPartName());
+                return;
+            }
         }
-        updateGenerationNameText(partControl.getParent());
+        updateTabFolderName(partControl.getParent());
     }
 
     @Override

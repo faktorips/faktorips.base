@@ -50,9 +50,11 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
         layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
         formBody.setLayout(layout);
 
-        Composite top = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+        Composite top = createGridComposite(toolkit, formBody, 2, false, GridData.FILL_BOTH);
         new ComponentPropertiesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
-        new GenerationsSection(this, top, toolkit);
+        if (getProductCmpt().isChangingOverTimeContainer()) {
+            new GenerationsSection(this, top, toolkit);
+        }
     }
 
     // Made public to get refresh from editor.

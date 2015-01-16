@@ -167,7 +167,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean isChangingOverTimeContainer() {
-        return false;
+        IProductCmptType productCmptType = null;
+        try {
+            productCmptType = findProductCmptType(getIpsProject());
+        } catch (CoreException e) {
+            throw new RuntimeException(e);
+        }
+        return productCmptType == null ? false : productCmptType.isChangingOverTime();
     }
 
     @Override

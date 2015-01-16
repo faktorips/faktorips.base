@@ -46,6 +46,8 @@ public class Messages extends NLS {
 
     public static String FormulaTestInputValuesControl_PreconditionDialogExecuteFormula_Title;
 
+    public static String GenerationPropertiesPage_pageTitle;
+
     public static String GenerationSelectionDialog_checkboxCanEditRecentGenerations;
 
     public static String GenerationSelectionDialog_infoGenerationsCouldntChangeInfo;
