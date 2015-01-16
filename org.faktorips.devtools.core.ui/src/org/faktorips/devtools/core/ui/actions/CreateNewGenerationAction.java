@@ -60,6 +60,11 @@ public class CreateNewGenerationAction extends IpsAction {
         }
 
         for (IAdaptable selectedElement : typedSelection.getElements()) {
+            if (selectedElement instanceof IProductCmpt) {
+                if (!((IProductCmpt)selectedElement).isChangingOverTimeContainer()) {
+                    return false;
+                }
+            }
             // If the selection contains any other type of elements, it cannot be started
             if (!(selectedElement instanceof IProductCmpt) && !(selectedElement instanceof IProductCmptReference)
                     && !(selectedElement instanceof IIpsSrcFile)) {
@@ -71,6 +76,11 @@ public class CreateNewGenerationAction extends IpsAction {
                 IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selectedElement;
                 if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
                     return false;
+                } else {
+                    IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
+                    if (!productCmpt.isChangingOverTimeContainer()) {
+                        return false;
+                    }
                 }
             }
         }
