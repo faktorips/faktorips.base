@@ -240,52 +240,15 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindAllProductCmpts() throws CoreException {
-        // Create the following types: Type0, Type1 and Type2.
-        IProductCmptType type0 = newProductCmptType(ipsProject, "pack.Type0");
-        IProductCmptType type1 = newProductCmptType(ipsProject, "pack.Type1");
-
-        IProductCmpt product0 = newProductCmpt(type0, "products.Product0");
-        IProductCmpt product1 = newProductCmpt(type1, "products.Product1");
-        IProductCmpt product2 = newProductCmpt(type0, "products.Product2");
-
-        IProductCmpt[] result = ipsProject.findAllProductCmpts(type0, true);
-        assertEquals(2, result.length);
-        assertEquals(product0, result[0]);
-        assertEquals(product2, result[1]);
-
-        result = ipsProject.findAllProductCmpts(null, true);
-        assertEquals(3, result.length);
-        assertEquals(product0, result[0]);
-        assertEquals(product1, result[1]);
-        assertEquals(product2, result[2]);
-
-        // Consider class hierarchy; make type1 a subtype of type0.
-        type1.setSupertype(type0.getQualifiedName());
-        result = ipsProject.findAllProductCmpts(type0, true);
-        assertEquals(3, result.length);
-        assertEquals(product0, result[0]);
-        assertEquals(product1, result[1]);
-        assertEquals(product2, result[2]);
-
-        result = ipsProject.findAllProductCmpts(type0, false);
-        assertEquals(2, result.length);
-        assertEquals(product0, result[0]);
-        assertEquals(product2, result[1]);
-
-        // TODO v2 - test with more than one project
-    }
-
-    @Test
     public void testFindProductCmptsByPolicyCmptWithExistingProductCmptMissingPolicyCmpt() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "MotorProduct");
         newProductCmpt(type, "ProductCmpt1");
-        IProductCmpt[] result = ipsProject.findAllProductCmpts(type, true);
+        IIpsSrcFile[] result = ipsProject.findAllProductCmptSrcFiles(type, true);
         assertEquals(1, result.length);
 
         // Now create a component without product component type.
         newProductCmpt(ipsProject, "ProductCmpt2");
-        result = ipsProject.findAllProductCmpts(type, true);
+        result = ipsProject.findAllProductCmptSrcFiles(type, true);
         assertEquals(1, result.length);
     }
 
@@ -1111,35 +1074,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertNull(ipsProject.findIpsObject(IpsObjectType.POLICY_CMPT_TYPE, "c a.Unknown"));
     }
 
-    @SuppressWarnings("deprecation")
-    // ok to supredd, as the method under test is deprecated
-    @Test
-    public void testFindIpsObjects() throws CoreException {
-        // create the following types: Type0, a.b.Type1 and c.Type2
-        root.getIpsPackageFragment("").createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type0", true, null);
-        IIpsPackageFragment folderAB = root.createPackageFragment("a.b", true, null);
-        folderAB.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type1", true, null);
-        IIpsPackageFragment folderC = root.createPackageFragment("c", true, null);
-        folderC.createIpsFile(IpsObjectType.POLICY_CMPT_TYPE, "Type2", true, null);
-
-        // create table c.Table1
-        folderC.createIpsFile(IpsObjectType.TABLE_STRUCTURE, "Table1", true, null);
-
-        IIpsObject[] result = ipsProject.findIpsObjects(IpsObjectType.PRODUCT_CMPT);
-        assertEquals(0, result.length);
-
-        result = ipsProject.findIpsObjects(IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals(3, result.length);
-
-        IPolicyCmptType pct = (IPolicyCmptType)result[1];
-
-        result = ipsProject.findIpsObjects(IpsObjectType.TABLE_STRUCTURE);
-        assertEquals(1, result.length);
-
-        IIpsObject ipsObj = ipsProject.findIpsObject(pct.getQualifiedNameType());
-        assertEquals(pct, ipsObj);
-    }
-
     /**
      * Test if the findProductCmpts method works with all kind of package fragments root
      */
@@ -1153,7 +1087,8 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         path.newArchiveEntry(archiveFile.getLocation());
         ipsProject.setIpsObjectPath(path);
 
-        ipsProject.findAllProductCmpts(null, true);
+        IIpsSrcFile[] productCmptSrcFiles = ipsProject.findAllProductCmptSrcFiles(null, true);
+        assertEquals(0, productCmptSrcFiles.length);
     }
 
     public IProductCmptType createProductCmptType(IIpsPackageFragment packageFragment,
@@ -2148,31 +2083,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         ml = prj.checkForDuplicateRuntimeIds(new IIpsSrcFile[] { cmpt1.getIpsSrcFile(), cmpt3.getIpsSrcFile() });
         assertEquals(4, ml.size());
         assertNotNull(ml.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void testFindAllIpsObjects() throws CoreException {
-        IIpsObject a = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.POLICY_CMPT_TYPE, "a");
-        IIpsObject b = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT, "b");
-        IIpsObject c = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_STRUCTURE, "c");
-        IIpsObject d = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TABLE_CONTENTS, "d");
-        IIpsObject e = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.BUSINESS_FUNCTION, "e");
-        IIpsObject f = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE, "f");
-        IIpsObject g = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.TEST_CASE_TYPE, "g");
-        IIpsObject h = newIpsObject(ipsProject.getIpsPackageFragmentRoots()[0], IpsObjectType.PRODUCT_CMPT_TYPE, "h");
-
-        List<IIpsObject> result = new ArrayList<IIpsObject>(7);
-        ipsProject.findAllIpsObjects(result);
-
-        assertTrue(result.contains(a));
-        assertTrue(result.contains(b));
-        assertTrue(result.contains(c));
-        assertTrue(result.contains(d));
-        assertTrue(result.contains(e));
-        assertTrue(result.contains(f));
-        assertTrue(result.contains(g));
-        assertTrue(result.contains(h));
     }
 
     /**

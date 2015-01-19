@@ -34,7 +34,6 @@ import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.DefaultVersionProvider;
-import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
@@ -374,25 +373,9 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public IFolder[] getOutputFolders();
 
     /**
-     * Sets the id of the current artifact builder.
-     * 
-     * @deprecated use IIpsProjectProperties to change the project properties
-     */
-    @Deprecated
-    public void setCurrentArtefactBuilderSet(String id);
-
-    /**
      * Sets the new object path.
      */
     public void setIpsObjectPath(IIpsObjectPath newPath) throws CoreException;
-
-    /**
-     * Set the value data types allowed in the project.
-     * 
-     * @deprecated use IIpsProjectProperties to change the project properties
-     */
-    @Deprecated
-    public void setValueDatatypes(ValueDatatype[] types);
 
     /**
      * Returns the language in that the expression language's functions are used. E.g. the
@@ -622,41 +605,15 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     public boolean findDuplicateIpsSrcFile(IpsObjectType type, String qualifiedName);
 
     /**
-     * Returns all objects of the given type found on the class path.
-     * 
-     * @deprecated use {@link IIpsProject#findIpsSrcFiles(IpsObjectType)} due to better performance
-     */
-    @Deprecated
-    public IIpsObject[] findIpsObjects(IpsObjectType type) throws CoreException;
-
-    /**
      * Returns all IPS source files of the given type found on the class path.
      */
     public IIpsSrcFile[] findIpsSrcFiles(IpsObjectType type) throws CoreException;
-
-    /**
-     * Returns all IpsObjects within this IpsProject and the IpsProjects this one depends on.
-     * 
-     * @deprecated use IIpsProject#findAllIpsSrcFiles(IProductCmptType, boolean) due to better
-     *             performance
-     */
-    @Deprecated
-    public void findAllIpsObjects(List<IIpsObject> result);
 
     /**
      * Adds all IPS source files within this IpsProject and the IpsProjects this one depends on to
      * the given list.
      */
     public void findAllIpsSrcFiles(List<IIpsSrcFile> result) throws CoreException;
-
-    /**
-     * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
-     * and match the given filter (object type list).
-     * 
-     * @deprecated use {@link #findAllIpsSrcFiles(IpsObjectType...)} instead
-     */
-    @Deprecated
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] filter);
 
     /**
      * Returns all IPS source files within this IpsProject and the IpsProjects this one depends on
@@ -671,23 +628,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * list.
      */
     public void collectAllIpsSrcFilesOfSrcFolderEntries(List<IIpsSrcFile> result);
-
-    /**
-     * Returns all product components that are based on the given product component type (either
-     * directly or because they are based on a sub type of the given type) in this and all
-     * referenced projects. If productCmptType is null, the method returns all product components
-     * found on the class path.
-     * 
-     * @param includeSubtypes If <code>true</code> is passed also product component that are based
-     *            on sub types of the given product components type are returned, otherwise only
-     *            product components that are directly based on the given type are returned.
-     * 
-     * @deprecated use IIpsProject#findAllProductCmptSrcFiles(IProductCmptType, boolean) due to
-     *             better performance
-     */
-    @Deprecated
-    public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes)
-            throws CoreException;
 
     /**
      * Returns all IPS source files represents product components that are based on the given
@@ -873,15 +813,6 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * types. Returns <code>null</code> if persistence support is not enabled for this IPS project.
      */
     public ITableColumnNamingStrategy getTableColumnNamingStrategy();
-
-    /**
-     * Adds a new <code>DynamicValueDataType</code> to the project at runtime.
-     * 
-     * @deprecated Use {@link org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties} to
-     *             change the project properties.
-     */
-    @Deprecated
-    public void addDynamicValueDataType(DynamicValueDatatype newDatatype);
 
     /**
      * Validates the project and returns the result as list of messages.
