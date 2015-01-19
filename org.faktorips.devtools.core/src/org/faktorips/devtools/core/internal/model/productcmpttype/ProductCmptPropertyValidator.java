@@ -13,18 +13,19 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
 /**
- * This class is used to validate {@link IProductCmptProperty}s.
+ * This class is used to validate {@link IChangingOverTimeProperty}s.
  */
 public class ProductCmptPropertyValidator {
 
     public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
-    public static final String MSGCODE_PREFIX = "PRODUCTCMPTPROPERTY-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "CHANGINGOVERTIMEPROPERTY-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that a product component property is changing over time
@@ -33,11 +34,11 @@ public class ProductCmptPropertyValidator {
     public static final String MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME = MSGCODE_PREFIX
             + "TypeDoesNotAcceptChangingOverTime"; //$NON-NLS-1$
 
-    private IProductCmptProperty productCmptProperty;
+    private IChangingOverTimeProperty property;
     private IProductCmptType productCmptType;
 
-    public ProductCmptPropertyValidator(IProductCmptProperty productCmptProperty, IProductCmptType productCmptType) {
-        this.productCmptProperty = productCmptProperty;
+    public ProductCmptPropertyValidator(IChangingOverTimeProperty property, IProductCmptType productCmptType) {
+        this.property = property;
         this.productCmptType = productCmptType;
     }
 
@@ -51,14 +52,14 @@ public class ProductCmptPropertyValidator {
      *            possibly new validation message
      */
     public void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
-        if (!StringUtils.isEmpty(productCmptProperty.getName())) {
-            if (!productCmptType.isChangingOverTime() && productCmptProperty.isChangingOverTime()) {
+        if (!StringUtils.isEmpty(property.getName())) {
+            if (!productCmptType.isChangingOverTime() && property.isChangingOverTime()) {
                 String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences()
                         .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
                 String text = NLS.bind(Messages.ProductCmptPropertyValidator_msgTypeDoesNotAcceptChangingOverTime,
-                        productCmptProperty.getName(), changingOverTimePluralName);
-                messageList.add(Message.newError(MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME, text,
-                        productCmptProperty, PROPERTY_CHANGING_OVER_TIME));
+                        property.getName(), changingOverTimePluralName);
+                messageList.add(Message.newError(MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME, text, property,
+                        PROPERTY_CHANGING_OVER_TIME));
             }
         }
     }

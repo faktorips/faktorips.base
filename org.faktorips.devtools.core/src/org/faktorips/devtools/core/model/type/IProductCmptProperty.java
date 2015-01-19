@@ -15,7 +15,6 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -32,7 +31,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
  * @author Jan Ortmann
  * @author Stefan Widmaier
  */
-public interface IProductCmptProperty extends ITypePart {
+public interface IProductCmptProperty extends IChangingOverTimeProperty {
 
     /**
      * Returns the type of the property. The different types of product definition properties are
@@ -50,12 +49,6 @@ public interface IProductCmptProperty extends ITypePart {
      * {@link IProductCmpt}.
      */
     public String getPropertyName();
-
-    /**
-     * Returns <code>true</code> if every {@link IProductCmptGeneration} may specify a different
-     * value for this property, <code>false</code> if the value is the same for all generations.
-     */
-    public boolean isChangingOverTime();
 
     /**
      * Returns this property's data type.

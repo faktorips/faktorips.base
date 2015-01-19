@@ -538,25 +538,25 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
         association.setChangingOverTime(false);
 
         MessageList ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productType.setChangingOverTime(true);
         association.setChangingOverTime(true);
 
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productType.setChangingOverTime(false);
         association.setChangingOverTime(false);
 
         ml = association.validate(association.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         association.setChangingOverTime(false);
         association.setChangingOverTime(true);
 
         ml = association.validate(association.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmptTypeAssociation.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(ml.getMessageByCode(ProductCmptPropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test

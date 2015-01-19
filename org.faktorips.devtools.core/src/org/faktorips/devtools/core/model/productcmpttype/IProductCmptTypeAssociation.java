@@ -23,6 +23,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IChangingOverTimeProperty;
 
 /**
  * A directed relationship between to product component types.
@@ -31,7 +32,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * 
  * @author Jan Ortmann
  */
-public interface IProductCmptTypeAssociation extends IAssociation {
+public interface IProductCmptTypeAssociation extends IAssociation, IChangingOverTimeProperty {
 
     /**
      * The list of applicable types. For product component types only aggregations and associations
@@ -51,19 +52,21 @@ public interface IProductCmptTypeAssociation extends IAssociation {
     /**
      * Message code for validation messages when the matching association was not found
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = MSGCODE_PREFIX + "MatchingAssociationNotFound"; //$NON-NLS-1$
+    public static final String MSGCODE_MATCHING_ASSOCIATION_NOT_FOUND = IAssociation.MSGCODE_PREFIX
+            + "MatchingAssociationNotFound"; //$NON-NLS-1$
 
     /**
      * Message code for validation messages when the matching association is invalid
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = MSGCODE_PREFIX + "MatchingAssociationInvalid"; //$NON-NLS-1$
+    public static final String MSGCODE_MATCHING_ASSOCIATION_INVALID = IAssociation.MSGCODE_PREFIX
+            + "MatchingAssociationInvalid"; //$NON-NLS-1$
 
     /**
      * Message code when derived unions and their subsets have different changing over time
      * properties. i.e. a subset is defined as changing over time, but the derived union is defined
      * as static.
      */
-    public static final String MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH = MSGCODE_PREFIX
+    public static final String MSGCODE_DERIVED_UNION_CHANGING_OVER_TIME_MISMATCH = IAssociation.MSGCODE_PREFIX
             + "DerivedUnionChangingOverTimeMismatch"; //$NON-NLS-1$
 
     /**
@@ -71,22 +74,15 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * name. Although these associations could be two different ones we would generate duplicated
      * methods.
      */
-    public static final String MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME = MSGCODE_PREFIX
+    public static final String MSGCODE_MATCHING_ASSOCIATION_DUPLICATE_NAME = IAssociation.MSGCODE_PREFIX
             + "MatchingAssociationDuplicateName"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the property change over time mismatch with the
      * constrained association
      */
-    public static final String MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH = MSGCODE_PREFIX
+    public static final String MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH = IAssociation.MSGCODE_PREFIX
             + "ConstrainedChangeOverTimeMismatch"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the property is changing over time while the product
-     * component type does not accept changes in time
-     */
-    public static final String MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME = MSGCODE_PREFIX
-            + "TypeDoesNotAcceptChangingOverTime"; //$NON-NLS-1$
 
     /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
@@ -208,19 +204,6 @@ public interface IProductCmptTypeAssociation extends IAssociation {
      * @return The qualified name of the policy component type which association is constrained
      */
     String getMatchingAssociationSource();
-
-    /**
-     * Returns whether this association is marked as changing over time (<code>true</code>) or as
-     * static (<code>false</code>). Instances of changing-over-time associations (
-     * {@link IProductCmptLink product component links}) are part of {@link IProductCmptGeneration
-     * product component generations}. Each generation may specify a different target component.
-     * Instances of static associations are part of the {@link IProductCmpt product component}
-     * directly.
-     * 
-     * @return <code>true</code> if instances of this associations change over time,
-     *         <code>false</code> if they are static.
-     */
-    boolean isChangingOverTime();
 
     /**
      * Marks this association as changing over time (<code>true</code>) or static (
