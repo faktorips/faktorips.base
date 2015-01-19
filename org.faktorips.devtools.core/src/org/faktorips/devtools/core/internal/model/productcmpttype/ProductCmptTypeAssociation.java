@@ -385,11 +385,10 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
      * {@link IProductCmptType} is enabled. If the flag of the type is disabled and the flag of the
      * property is enabled, a new error message will be generated.
      * 
-     * @param messageList The {@link MessageList} that holds the validation messages.
-     * @return The {@link MessageList} that holds the validation messages including the possibly new
-     *         validation message
+     * @param messageList The {@link MessageList} that holds the validation messages including the
+     *            possibly new validation message
      */
-    private MessageList validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
+    private void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
         if (!StringUtils.isEmpty(getName())) {
             if (!getProductCmptType().isChangingOverTime() && isChangingOverTime()) {
                 String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences()
@@ -400,7 +399,6 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
                         PROPERTY_CHANGING_OVER_TIME));
             }
         }
-        return messageList;
     }
 
     @Override
