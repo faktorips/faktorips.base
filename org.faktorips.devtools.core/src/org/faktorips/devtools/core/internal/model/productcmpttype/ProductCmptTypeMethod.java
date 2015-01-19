@@ -197,7 +197,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (!StringUtils.isEmpty(getName())) {
-            ProductCmptPropertyValidator propertyValidator = new ProductCmptPropertyValidator(this,
+            ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this,
                     getProductCmptType());
             propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
 

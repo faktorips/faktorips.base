@@ -379,7 +379,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     private void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
-        ProductCmptPropertyValidator propertyValidator = new ProductCmptPropertyValidator(this, getProductCmptType());
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this, getProductCmptType());
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(messageList);
     }
 

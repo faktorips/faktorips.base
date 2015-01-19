@@ -21,7 +21,7 @@ import org.faktorips.util.message.MessageList;
 /**
  * This class is used to validate {@link IChangingOverTimeProperty}s.
  */
-public class ProductCmptPropertyValidator {
+public class ChangingOverTimePropertyValidator {
 
     public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
@@ -37,7 +37,7 @@ public class ProductCmptPropertyValidator {
     private IChangingOverTimeProperty property;
     private IProductCmptType productCmptType;
 
-    public ProductCmptPropertyValidator(IChangingOverTimeProperty property, IProductCmptType productCmptType) {
+    public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property, IProductCmptType productCmptType) {
         this.property = property;
         this.productCmptType = productCmptType;
     }

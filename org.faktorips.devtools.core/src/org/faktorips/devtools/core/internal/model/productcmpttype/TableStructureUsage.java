@@ -274,7 +274,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
     }
 
     private void validateChangingOverTime(MessageList list) {
-        ProductCmptPropertyValidator propertyValidator = new ProductCmptPropertyValidator(this, getProductCmptType());
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this, getProductCmptType());
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(list);
     }
 
