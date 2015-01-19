@@ -113,16 +113,15 @@ public class ProductCmptTypeValidations {
     }
 
     /**
-     * Validates the changinOvetTime property of the product component type to be validated.
-     * <ol>
-     * <li>If the product component type to be validated has a supertype, the supertype of product
-     * component type must has the same setting for changinOvetTime property
-     * </ol>
+     * Validates the changingOverTime property of the product component type.
+     * <p>
+     * If the product component type that has to be validated has a supertype, then the supertype
+     * must have the same setting for changingOverTime property.
      * 
      * @param list The message list containing all validation messages.
      * @param productCmptType The product component type to be validated
      * @param superProductCmptType The product component type that is the supertype of the product
-     *            component type to be validated or null if none is found
+     *            component type that has to be validated or null if none is found
      * 
      */
     public static void validateSuperProductCmptTypeHasSameChangingOverTimeSetting(MessageList list,

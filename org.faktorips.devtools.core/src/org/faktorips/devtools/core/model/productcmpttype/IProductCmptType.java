@@ -181,7 +181,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * the supertype.
      */
     public static final String MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE = MSGCODE_PREFIX
-            + "SettingChangeOverTimeDiffersFromSupertype"; //$NON-NLS-1$
+            + "SettingChangingOverTimeDiffersFromSupertype"; //$NON-NLS-1$
 
     /**
      * Returns the policy component type this product component type refers to. Returns
