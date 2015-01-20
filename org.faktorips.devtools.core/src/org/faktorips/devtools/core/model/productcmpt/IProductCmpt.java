@@ -293,4 +293,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      */
     public IFormula getFormula(String formulaName);
 
+    /**
+     * Returns <code>true</code> if the {@link IProductCmptType}, this {@link IProductCmpt} is based
+     * on, allows changing over time. If not, <code>false</code> is returned.
+     * <p>
+     * In case that the corresponding {@link IProductCmptType} can not be found, we assume that
+     * changing over time is enabled. In that case <code>true</code> is returned.
+     */
+    public boolean allowGenerations();
+
 }

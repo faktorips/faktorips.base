@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
@@ -704,5 +705,18 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IFormula getFormula(String formulaName) {
         return propertyValueCollection.getPropertyValue(IFormula.class, formulaName);
+    }
+
+    @Override
+    public boolean allowGenerations() {
+        try {
+            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+            if (productCmptType == null) {
+                return true;
+            }
+            return productCmptType.isChangingOverTime();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

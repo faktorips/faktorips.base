@@ -1004,4 +1004,32 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNotNull(formula);
         assertEquals("", formula.getFormulaSignature());
     }
+
+    @Test
+    public void testAllowGenerations_changingOverTimeEnabled() throws CoreException {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        newProductCmptType.setChangingOverTime(true);
+        ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        assertTrue(productCmpt.allowGenerations());
+    }
+
+    @Test
+    public void testAllowGenerations_changingOverTimeDisabled() throws CoreException {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        newProductCmptType.setChangingOverTime(false);
+        ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+
+        assertFalse(productCmpt.allowGenerations());
+    }
+
+    @Test
+    public void testAllowGenerations_productCmptTypeCanNotBeFound() throws CoreException {
+        ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        ProductCmpt productCmpt = newProductCmpt(newProductCmptType, "Cmpt1");
+        productCmpt = spy(productCmpt);
+        when(productCmpt.findProductCmptType(ipsProject)).thenReturn(null);
+
+        assertTrue(productCmpt.allowGenerations());
+    }
 }

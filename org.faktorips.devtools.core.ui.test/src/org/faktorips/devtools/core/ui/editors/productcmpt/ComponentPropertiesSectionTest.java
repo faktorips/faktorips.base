@@ -12,9 +12,12 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -95,5 +98,14 @@ public class ComponentPropertiesSectionTest extends AbstractIpsPluginTest {
         ComponentPropertiesPMO pmo = new ComponentPropertiesSection.ComponentPropertiesPMO(productCmpt);
 
         assertTrue(pmo.isValidFromEnabled());
+    }
+
+    @Test
+    public void testIsValidFromEnabled_typeCanNotBeFound() throws CoreException {
+        productCmpt = spy(productCmpt);
+        when(productCmpt.findProductCmptType(ipsProject)).thenReturn(null);
+        ComponentPropertiesPMO pmo = new ComponentPropertiesSection.ComponentPropertiesPMO(productCmpt);
+
+        assertFalse(pmo.isValidFromEnabled());
     }
 }

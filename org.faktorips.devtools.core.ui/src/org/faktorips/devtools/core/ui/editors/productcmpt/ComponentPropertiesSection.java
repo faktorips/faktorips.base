@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -315,16 +314,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
         public ComponentPropertiesPMO(IProductCmpt product) {
             this.productCmpt = product;
-            productCmptTypeChangingOverTime = isTypeChangingOverTime(product);
-        }
-
-        private boolean isTypeChangingOverTime(IProductCmpt product) {
-            try {
-                IProductCmptType productCmptType = productCmpt.findProductCmptType(product.getIpsProject());
-                return productCmptType != null && productCmptType.isChangingOverTime();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            productCmptTypeChangingOverTime = product.allowGenerations();
         }
 
         public GregorianCalendar getValidFrom() {
