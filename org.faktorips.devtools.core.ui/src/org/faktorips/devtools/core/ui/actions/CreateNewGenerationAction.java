@@ -78,7 +78,7 @@ public class CreateNewGenerationAction extends IpsAction {
                     return false;
                 } else {
                     IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                    if (!productCmpt.isChangingOverTimeContainer()) {
+                    if (!productCmpt.allowGenerations()) {
                         return false;
                     }
                 }
