@@ -710,11 +710,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public boolean allowGenerations() {
         try {
-            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-            if (productCmptType == null) {
+            IProductCmptType productComponentType = findProductCmptType(getIpsProject());
+            if (productComponentType == null) {
                 return true;
             }
-            return productCmptType.isChangingOverTime();
+            return productComponentType.isChangingOverTime();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
