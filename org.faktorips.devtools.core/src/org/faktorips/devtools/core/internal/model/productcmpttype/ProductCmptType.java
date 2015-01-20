@@ -582,7 +582,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         validateLayerSupertype(list, ipsProject);
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
-        validateIfSuperProductCmptTypeHasSameChangingOverTimeSetting(supertype, list);
+        validateSuperProductCmptTypeHasSameChangingOverTimeSetting(supertype, list);
 
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
@@ -596,9 +596,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForValidationRules(list, ipsProject);
     }
 
-    private void validateIfSuperProductCmptTypeHasSameChangingOverTimeSetting(IProductCmptType superProductCmptType,
+    private void validateSuperProductCmptTypeHasSameChangingOverTimeSetting(IProductCmptType superProductCmptType,
             MessageList list) {
-
         ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(list, this,
                 superProductCmptType);
     }

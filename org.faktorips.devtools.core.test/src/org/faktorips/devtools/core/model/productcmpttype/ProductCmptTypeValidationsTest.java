@@ -146,10 +146,27 @@ public class ProductCmptTypeValidationsTest {
     }
 
     @Test
-    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsAreDifferent() {
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsBySubtypeFalseAndSupertypeTrue() {
         MessageList messageList = new MessageList();
         when(productCmptType.isChangingOverTime()).thenReturn(false);
         when(superProductCmptType.isChangingOverTime()).thenReturn(true);
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
+                productCmptType, superProductCmptType);
+
+        Message message = messageList
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
+        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
+                message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(Message.ERROR, message.getSeverity());
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsBySubtypeTrueAndSupertypeFalse() {
+        MessageList messageList = new MessageList();
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+        when(superProductCmptType.isChangingOverTime()).thenReturn(false);
 
         ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
                 productCmptType, superProductCmptType);

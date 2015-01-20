@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -131,8 +132,10 @@ public class ProductCmptTypeValidations {
             return;
         }
         if (productCmptType.isChangingOverTime() != superProductCmptType.isChangingOverTime()) {
+            String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
             String text = NLS.bind(Messages.ProductCmptType_error_settingChangingOverTimeDiffersFromSettingInSupertype,
-                    superProductCmptType.getQualifiedName());
+                    changingOverTimePluralName, superProductCmptType.getQualifiedName());
             list.newError(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE, text,
                     productCmptType, IProductCmptType.PROPERTY_CHANGING_OVER_TIME);
         }
