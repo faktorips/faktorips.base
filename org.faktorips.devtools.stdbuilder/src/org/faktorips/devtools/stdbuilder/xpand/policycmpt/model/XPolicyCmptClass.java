@@ -539,4 +539,11 @@ public class XPolicyCmptClass extends XType {
         }
         return false;
     }
+
+    /**
+     * Returns true if the changing over time flag of this product component type is enabled.
+     */
+    public boolean isGenerateGenerationAccessMethods() {
+        return getProductCmptType().isChangingOverTime();
+    }
 }

@@ -498,6 +498,30 @@ public class XPolicyCmptClassTest {
         assertThat(interfaces, hasItem("IDependantObject"));
     }
 
+    @Test
+    public void testIsGenerateGenerationAccessMethods_isChangingOverTime_true() throws Exception {
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(type.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertTrue(policyCmptClass.isGenerateGenerationAccessMethods());
+    }
+
+    @Test
+    public void testIsGenerateGenerationAccessMethods_isChangingOverTime_false() throws Exception {
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        when(type.getIpsProject()).thenReturn(ipsProject);
+        when(type.findProductCmptType(ipsProject)).thenReturn(productCmptType);
+        when(productCmptType.isChangingOverTime()).thenReturn(false);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        assertFalse(policyCmptClass.isGenerateGenerationAccessMethods());
+    }
+
     private XPolicyCmptClass createXPolicyCmptClassSpy() {
         return spy(new XPolicyCmptClass(type, modelContext, modelService));
     }

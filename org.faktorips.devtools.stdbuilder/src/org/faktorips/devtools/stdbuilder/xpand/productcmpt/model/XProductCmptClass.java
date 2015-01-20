@@ -67,4 +67,12 @@ public class XProductCmptClass extends XProductClass {
         }
         return extendedInterfaces;
     }
+
+    /**
+     * Returns true if the changing over time flag of this product component type is enabled.
+     */
+    public boolean isGenerateGenerationAccessMethods() {
+        return getType().isChangingOverTime();
+    }
+
 }

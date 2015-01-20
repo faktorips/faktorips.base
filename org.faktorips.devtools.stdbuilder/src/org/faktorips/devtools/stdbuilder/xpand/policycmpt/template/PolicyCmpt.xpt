@@ -3,6 +3,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
@@ -116,7 +117,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		«IF configured-»
 			«EXPAND getAndSetProductComponent FOR productCmptNode-»
-			«EXPAND getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
+			«IF productCmptNode.generateGenerationAccessMethods»
+				«EXPAND getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
+			«ENDIF-»		
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		«ENDIF-»
 		
@@ -224,7 +227,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	«ENDFOREACH-»
 «ENDDEFINE»
 
-«DEFINE getAndSetProductComponent FOR XProductCmptClass-» 
+«DEFINE getAndSetProductComponent FOR XProductCmptClass-»
 		/**
 		 * «inheritDocOrJavaDocIf(genInterface(), "METHOD_GET_PRODUCTCMPT", name, policyCmptClass.name)»
 		 * 
