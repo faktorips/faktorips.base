@@ -402,7 +402,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             return;
         }
         if (partControl instanceof CTabFolder) {
-            if (!getProductCmpt().isChangingOverTimeContainer()) {
+            if (!getProductCmpt().allowGenerations()) {
                 ((CTabFolder)partControl).getItem(0).setText(Messages.GenerationPropertiesPage_pageTitle);
                 return;
             } else {

@@ -52,7 +52,7 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
 
         Composite top = createGridComposite(toolkit, formBody, 2, false, GridData.FILL_BOTH);
         new ComponentPropertiesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
-        if (getProductCmpt().isChangingOverTimeContainer()) {
+        if (getProductCmpt().allowGenerations()) {
             new GenerationsSection(this, top, toolkit);
         }
     }
