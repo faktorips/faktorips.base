@@ -17,11 +17,10 @@ import org.faktorips.values.NullObject;
 import org.faktorips.values.NullObjectSupport;
 
 /**
- * Default implementation of the <code>Range<code> interface. Implementations of this
- * range that support incremental steps must provide public factory methods instead of public
- * constructors. Within the factory method the checkIfStepFitsIntoBounds() method has to be
- * called on the created object to ensure that the step increment and the bounds of the
- * range are consistent.
+ * Default implementation of the <code>Range</code> interface. Implementations of this range that
+ * support incremental steps must provide public factory methods instead of public constructors.
+ * Within the factory method the checkIfStepFitsIntoBounds() method has to be called on the created
+ * object to ensure that the step increment and the bounds of the range are consistent.
  * 
  * @author Jan Ortmann, Peter Erzberger
  * @author Daniel Hohenberger conversion to Java5

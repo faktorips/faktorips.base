@@ -74,12 +74,12 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      */
     TwoColumnRange(K lowerBound, K upperBound, boolean lowerInclusive, boolean upperInclusive) {
         if (lowerBound == null) {
-            this.lowerBound = Bound.negativeInfinity();
+            this.lowerBound = Bound.<K> negativeInfinity();
         } else {
             this.lowerBound = new Bound<K>(lowerBound, IntervalDirection.getLowerBoundDirection(lowerInclusive));
         }
         if (upperBound == null) {
-            this.upperBound = Bound.positiveInfinity();
+            this.upperBound = Bound.<K> positiveInfinity();
         } else {
             this.upperBound = new Bound<K>(upperBound, IntervalDirection.getUpperBoundDirection(upperInclusive));
         }

@@ -13,7 +13,7 @@ package org.faktorips.valueset;
 /**
  * An interface for a range. Ranges with a lower bound higher than the upper bound are considered
  * empty. Note that it is only useful to define ranges for objects that have a total ordering. The
- * natural ordering is defined by the implementation of the <code>Comparable<code> interface.
+ * natural ordering is defined by the implementation of the <code>Comparable</code> interface.
  * 
  * @author Jan Ortmann
  * @author Daniel Hohenberger conversion to Java5
