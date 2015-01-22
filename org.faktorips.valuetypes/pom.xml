@@ -28,6 +28,9 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
+						<configuration>
+							<failOnError>true</failOnError>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
