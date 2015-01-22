@@ -24,11 +24,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewGenerationWizard;
@@ -54,37 +51,15 @@ public class CreateNewGenerationAction extends IpsAction {
 
     @Override
     protected boolean computeEnabledProperty(IStructuredSelection selection) {
-        TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
-        if (!typedSelection.isValid()) {
+        List<ITimedIpsObject> timedIpsObjects = getTimedIpsObject(selection);
+        if (timedIpsObjects.isEmpty()) {
             return false;
         }
-
-        for (IAdaptable selectedElement : typedSelection.getElements()) {
-            if (selectedElement instanceof IProductCmpt) {
-                if (!((IProductCmpt)selectedElement).isChangingOverTimeContainer()) {
-                    return false;
-                }
-            }
-            // If the selection contains any other type of elements, it cannot be started
-            if (!(selectedElement instanceof IProductCmpt) && !(selectedElement instanceof IProductCmptReference)
-                    && !(selectedElement instanceof IIpsSrcFile)) {
+        for (ITimedIpsObject timedIpsObject : timedIpsObjects) {
+            if (!timedIpsObject.allowGenerations()) {
                 return false;
             }
-
-            // If the selection contains a source file, it must contain a product component
-            if (selectedElement instanceof IIpsSrcFile) {
-                IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selectedElement;
-                if (!IpsObjectType.PRODUCT_CMPT.equals(ipsSrcFile.getIpsObjectType())) {
-                    return false;
-                } else {
-                    IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
-                    if (!productCmpt.allowGenerations()) {
-                        return false;
-                    }
-                }
-            }
         }
-
         return true;
     }
 
@@ -94,18 +69,35 @@ public class CreateNewGenerationAction extends IpsAction {
             return;
         }
 
-        TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
-        List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
-        for (IAdaptable selectedElement : typedSelection.getElements()) {
-            IIpsObject ipsObject = (IIpsObject)selectedElement.getAdapter(IIpsObject.class);
-            if (ipsObject instanceof IProductCmpt) {
-                timedIpsObjects.add((IProductCmpt)ipsObject);
-            }
-        }
+        List<ITimedIpsObject> timedIpsObjects = getTimedIpsObject(selection);
 
         Wizard wizard = new NewGenerationWizard(timedIpsObjects);
         Dialog dialog = new WizardDialog(shell, wizard);
         dialog.open();
+    }
+
+    private List<ITimedIpsObject> getTimedIpsObject(IStructuredSelection selection) {
+        TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
+        if (typedSelection.isValid()) {
+            List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
+            for (IAdaptable selectedElement : typedSelection.getElements()) {
+                IIpsObject ipsObject = (IIpsObject)selectedElement.getAdapter(IIpsObject.class);
+                if (ipsObject instanceof ITimedIpsObject) {
+                    timedIpsObjects.add((ITimedIpsObject)ipsObject);
+                }
+            }
+            if (selectionContainsInvalidType(timedIpsObjects, typedSelection)) {
+                timedIpsObjects.clear();
+            }
+            return timedIpsObjects;
+        } else {
+            return new ArrayList<ITimedIpsObject>(0);
+        }
+    }
+
+    private boolean selectionContainsInvalidType(List<ITimedIpsObject> timedIpsObjects,
+            TypedSelection<IAdaptable> typedSelection) {
+        return timedIpsObjects.size() != typedSelection.getElementCount();
     }
 
 }

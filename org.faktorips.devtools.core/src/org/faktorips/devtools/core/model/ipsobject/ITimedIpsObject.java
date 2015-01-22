@@ -210,4 +210,10 @@ public interface ITimedIpsObject extends IIpsObject {
      * @param newDate new effective date of the only generation in this object.
      */
     public void retainOnlyGeneration(GregorianCalendar oldDate, GregorianCalendar newDate);
+
+    /**
+     * Returns <code>true</code> if this {@link ITimedIpsObject} allows changing over time. If not,
+     * <code>false</code> is returned.
+     */
+    public boolean allowGenerations();
 }
