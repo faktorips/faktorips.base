@@ -79,13 +79,7 @@ public class CreateNewGenerationAction extends IpsAction {
     private List<ITimedIpsObject> getTimedIpsObject(IStructuredSelection selection) {
         TypedSelection<IAdaptable> typedSelection = TypedSelection.createAnyCount(IAdaptable.class, selection);
         if (typedSelection.isValid()) {
-            List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
-            for (IAdaptable selectedElement : typedSelection.getElements()) {
-                IIpsObject ipsObject = (IIpsObject)selectedElement.getAdapter(IIpsObject.class);
-                if (ipsObject instanceof ITimedIpsObject) {
-                    timedIpsObjects.add((ITimedIpsObject)ipsObject);
-                }
-            }
+            List<ITimedIpsObject> timedIpsObjects = collectTimedIpsObjects(typedSelection);
             if (selectionContainsInvalidType(timedIpsObjects, typedSelection)) {
                 timedIpsObjects.clear();
             }
@@ -93,6 +87,17 @@ public class CreateNewGenerationAction extends IpsAction {
         } else {
             return new ArrayList<ITimedIpsObject>(0);
         }
+    }
+
+    private List<ITimedIpsObject> collectTimedIpsObjects(TypedSelection<IAdaptable> typedSelection) {
+        List<ITimedIpsObject> timedIpsObjects = new ArrayList<ITimedIpsObject>(typedSelection.getElementCount());
+        for (IAdaptable selectedElement : typedSelection.getElements()) {
+            IIpsObject ipsObject = (IIpsObject)selectedElement.getAdapter(IIpsObject.class);
+            if (ipsObject instanceof ITimedIpsObject) {
+                timedIpsObjects.add((ITimedIpsObject)ipsObject);
+            }
+        }
+        return timedIpsObjects;
     }
 
     private boolean selectionContainsInvalidType(List<ITimedIpsObject> timedIpsObjects,

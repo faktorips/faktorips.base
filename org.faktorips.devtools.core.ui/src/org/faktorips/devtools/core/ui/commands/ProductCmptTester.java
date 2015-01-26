@@ -23,9 +23,8 @@ public class ProductCmptTester extends PropertyTester {
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         if (receiver instanceof IProductCmpt) {
-            IProductCmpt productCmpt = (IProductCmpt)receiver;
             if (ALLOW_GENERATION.equals(property)) {
-                return allowGenerations(productCmpt);
+                return allowGenerations((IProductCmpt)receiver);
             }
         }
         return false;
