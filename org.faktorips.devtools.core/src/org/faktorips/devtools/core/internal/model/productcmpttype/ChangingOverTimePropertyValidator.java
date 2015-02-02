@@ -34,8 +34,9 @@ public class ChangingOverTimePropertyValidator {
     public static final String MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME = MSGCODE_PREFIX
             + "TypeDoesNotAcceptChangingOverTime"; //$NON-NLS-1$
 
-    private IChangingOverTimeProperty property;
-    private IProductCmptType productCmptType;
+    private final IChangingOverTimeProperty property;
+
+    private final IProductCmptType productCmptType;
 
     public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property, IProductCmptType productCmptType) {
         this.property = property;
