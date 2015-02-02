@@ -43,7 +43,10 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             IProductCmptType productCmptType = (IProductCmptType)ipsSrcFile.getIpsObject();
-            return productCmptType.isChangingOverTime();
+            if (productCmptType.isChangingOverTime()) {
+                return true;
+            }
+            delete(ipsSrcFile);
         }
         return false;
     }
