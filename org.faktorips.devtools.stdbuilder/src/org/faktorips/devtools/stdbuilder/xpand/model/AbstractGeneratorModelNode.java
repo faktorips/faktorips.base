@@ -242,9 +242,10 @@ public abstract class AbstractGeneratorModelNode {
     /**
      * Returns the qualified class name for the given datatype.
      * <p>
-     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered. If
-     * <code>true</code>, the name of the generated product component generation class is returned,
-     * if <code>false</code>, the name of the generated product component class is returned.
+     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered and
+     * changing over time flag of this product component type is enabled. If <code>true</code>, the
+     * name of the generated product component generation class is returned, if <code>false</code>,
+     * the name of the generated product component class is returned.
      * <p>
      * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
      * returned.
@@ -266,9 +267,10 @@ public abstract class AbstractGeneratorModelNode {
     /**
      * Resolves the qualified class name for the given datatype.
      * <p>
-     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered. If
-     * <code>true</code>, the name of the generated product component generation class is returned,
-     * if <code>false</code>, the name of the generated product component class is returned.
+     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered and
+     * changing over time flag of this product component type is enabled. If <code>true</code>, the
+     * name of the generated product component generation class is returned, if <code>false</code>,
+     * the name of the generated product component class is returned.
      * <p>
      * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
      * returned.
@@ -292,21 +294,31 @@ public abstract class AbstractGeneratorModelNode {
      */
     protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean forceImplementation) {
         if (datatype instanceof IPolicyCmptType) {
-            return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
-                    BuilderAspect.getValue(!forceImplementation));
+            return getJavaClassNameForPolicyCmptType(datatype, forceImplementation);
         } else if (datatype instanceof IProductCmptType) {
-            if (useGeneration) {
-                return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class).getSimpleName(
-                        BuilderAspect.getValue(!forceImplementation));
-            } else {
-                return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
-                        BuilderAspect.getValue(!forceImplementation));
-            }
+            return getJavaClassNameForProductCmptType(datatype, useGeneration, forceImplementation);
         } else if (datatype.isVoid()) {
             return "void";
         } else {
             DatatypeHelper datatypeHelper = getIpsProject().getDatatypeHelper(datatype);
             return addImport(datatypeHelper.getJavaClassName());
+        }
+    }
+
+    private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean forceImplementation) {
+        return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getSimpleName(
+                BuilderAspect.getValue(!forceImplementation));
+    }
+
+    private String getJavaClassNameForProductCmptType(Datatype datatype,
+            boolean useGeneration,
+            boolean forceImplementation) {
+        if (useGeneration && ((IProductCmptType)datatype).isChangingOverTime()) {
+            return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class).getSimpleName(
+                    BuilderAspect.getValue(!forceImplementation));
+        } else {
+            return getModelNode((IProductCmptType)datatype, XProductCmptClass.class).getSimpleName(
+                    BuilderAspect.getValue(!forceImplementation));
         }
     }
 

@@ -76,6 +76,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -482,19 +483,76 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 new GenericJPA2PersistenceProvider());
     }
 
+    /**
+     * Returns the qualified class name for the given datatype.
+     * <p>
+     * If the datatype is an {@link IProductCmptType}, the changing over time flag of this product
+     * component type is enabled. If <code>true</code>, the name of the generated product component
+     * generation class is returned, if <code>false</code>, the name of the generated product
+     * component class is returned.
+     * <p>
+     * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
+     * returned.
+     * <p>
+     * Uses the common mechanism that resolves the published interfaces or implementation classes
+     * depending on the respective project settings.
+     * 
+     * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
+     *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
+     * @return the qualified class name for the datatype
+     */
     public String getJavaClassName(Datatype datatype) {
         return getJavaClassName(datatype, true);
     }
 
+    /**
+     * Resolves the qualified class name for the given datatype.
+     * <p>
+     * If the datatype is an {@link IProductCmptType}, the changing over time flag of this product
+     * component type is enabled. If <code>true</code>, the name of the generated product component
+     * generation class is returned, if <code>false</code>, the name of the generated product
+     * component class is returned.
+     * <p>
+     * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
+     * returned.
+     * <p>
+     * Used for special cases where resolving the name of implementation classes may have to be
+     * forced by using resolveTypesToPublishedInterface=<code>false</code>. For standard cases use
+     * {@link #getJavaClassName(Datatype, boolean)}.
+     * 
+     * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
+     *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
+     * @param interfaces Used to force the implementation class of
+     *            {@link org.faktorips.devtools.core.model.type.IType ITypes}. <code>true</code> to
+     *            force the the class name resolver to always return the implementation class name.
+     *            <code>false</code> to get the interface if it is generated or the implementation
+     *            if no interfaces are generated.
+     * 
+     * @return the qualified class name for the datatype
+     */
     public String getJavaClassName(Datatype datatype, boolean interfaces) {
         if (datatype instanceof IPolicyCmptType) {
-            return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
-                    BuilderAspect.getValue(interfaces));
+            return getJavaClassNameForPolicyCmptType(datatype, interfaces);
         } else if (datatype instanceof IProductCmptType) {
+            return getJavaClassNameForProductCmptType(datatype, interfaces);
+        } else {
+            return datatype.getJavaClassName();
+        }
+    }
+
+    private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean interfaces) {
+        return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
+                BuilderAspect.getValue(interfaces));
+    }
+
+    private String getJavaClassNameForProductCmptType(Datatype datatype, boolean interfaces) {
+        if (((IProductCmptType)datatype).isChangingOverTime()) {
             return modelService.getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class,
                     generatorModelContext).getQualifiedName(BuilderAspect.getValue(interfaces));
         } else {
-            return datatype.getJavaClassName();
+            return modelService
+                    .getModelNode((IProductCmptType)datatype, XProductCmptClass.class, generatorModelContext)
+                    .getQualifiedName(BuilderAspect.getValue(interfaces));
         }
     }
 

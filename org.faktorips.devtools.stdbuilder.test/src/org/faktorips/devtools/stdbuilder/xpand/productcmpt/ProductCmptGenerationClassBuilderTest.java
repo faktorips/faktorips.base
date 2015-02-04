@@ -22,7 +22,6 @@ import static org.mockito.Mockito.when;
 import java.net.URL;
 
 import org.eclipse.internal.xtend.expression.parser.SyntaxConstants;
-import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -32,7 +31,7 @@ import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class ProductCmptGenerationClassBuilderTest extends AbstractIpsPluginTest {
+public class ProductCmptGenerationClassBuilderTest {
 
     @Test
     public void testGetTemplate_exists() throws Exception {
