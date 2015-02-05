@@ -79,7 +79,7 @@ public class XProductCmptClassTest {
     @Test
     public void testGetMethodNameGetProductCmpt() throws Exception {
         when(productCmptType.getName()).thenReturn("testType");
-        assertEquals("getTestType", xProductCmptClass.getMethodNameGetProductCmpt());
+        assertEquals("getTestType", xProductCmptClass.getMethodNameGetProduct());
     }
 
     @Test

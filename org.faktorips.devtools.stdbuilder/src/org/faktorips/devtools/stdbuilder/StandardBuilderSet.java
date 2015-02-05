@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
@@ -72,6 +73,7 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
@@ -541,19 +543,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     }
 
     private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean interfaces) {
-        return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
-                BuilderAspect.getValue(interfaces));
+        return getJavaClassName((IPolicyCmptType)datatype, interfaces, XPolicyCmptClass.class);
     }
 
     private String getJavaClassNameForProductCmptType(Datatype datatype, boolean interfaces) {
         if (((IProductCmptType)datatype).isChangingOverTime()) {
-            return modelService.getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class,
-                    generatorModelContext).getQualifiedName(BuilderAspect.getValue(interfaces));
+            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptGenerationClass.class);
         } else {
-            return modelService
-                    .getModelNode((IProductCmptType)datatype, XProductCmptClass.class, generatorModelContext)
-                    .getQualifiedName(BuilderAspect.getValue(interfaces));
+            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptClass.class);
         }
+    }
+
+    private <T extends XType> String getJavaClassName(IType type, boolean interfaces, Class<T> _class) {
+        return modelService.getModelNode(type, _class, generatorModelContext).getQualifiedName(
+                BuilderAspect.getValue(interfaces));
+
     }
 
     /**

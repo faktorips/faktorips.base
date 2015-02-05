@@ -71,6 +71,7 @@ public class XProductAssociationTest {
         when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
         when(modelService.getModelNode(targetCmptType, XProductCmptClass.class, modelContext)).thenReturn(
                 xTargetCmptClass);
+        when(xTargetCmptClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetType");
     }
 
     @Before
@@ -80,17 +81,36 @@ public class XProductAssociationTest {
 
     @Test
     public void testGetTargetClassGenerationName() {
-        String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
+        when(targetCmptType.isChangingOverTime()).thenReturn(true);
+        String targetClassGenerationName = xProductAssociation.getTargetClassProductName();
         assertEquals("ITargetTypeGen", targetClassGenerationName);
     }
 
     @Test
     public void testGetGetterNameForTargetGeneration() throws Exception {
         association.setTarget("test.TargetType");
-        when(xTargetGenerationClass.getMethodNameGetProductComponentGeneration()).thenReturn("getTargetTypeGen");
+        when(targetCmptType.isChangingOverTime()).thenReturn(true);
+        when(xTargetGenerationClass.getMethodNameGetProduct()).thenReturn("getTargetTypeGen");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
+        String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTarget();
         assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
+    }
+
+    @Test
+    public void testGetTargetClassProductComponentName() {
+        when(targetCmptType.isChangingOverTime()).thenReturn(false);
+        String targetClassProductName = xProductAssociation.getTargetClassProductName();
+        assertEquals("ITargetType", targetClassProductName);
+    }
+
+    @Test
+    public void testGetGetterNameForTargetProductComponent() throws Exception {
+        association.setTarget("test.TargetType");
+        when(targetCmptType.isChangingOverTime()).thenReturn(false);
+        when(xTargetCmptClass.getMethodNameGetProduct()).thenReturn("getTargetType");
+        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
+        String getterNameForTargetProduct = xProductAssociation.getMethodNameGetTarget();
+        assertEquals("getTargetType", getterNameForTargetProduct);
     }
 
     @Test

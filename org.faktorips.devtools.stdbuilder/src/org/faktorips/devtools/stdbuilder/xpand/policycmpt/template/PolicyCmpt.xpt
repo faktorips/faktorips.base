@@ -117,7 +117,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		
 		«IF configured-»
 			«EXPAND getAndSetProductComponent FOR productCmptNode-»
-			«IF productCmptNode.generateGenerationAccessMethods»
+			«IF generateGenerationAccessMethods»
 				«EXPAND getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
 			«ENDIF-»		
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
@@ -234,7 +234,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		 public «interfaceName» «method(methodNameGetProductCmpt)»
+		 public «interfaceName» «method(methodNameGetProduct)»
 		 «IF genInterface()»;«ELSE-»
 		 {
 		 	return («interfaceName») «getProductComponent()»;
@@ -247,7 +247,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		 public void «method(methodNameSetProductCmpt, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")»
+		 public void «method(methodNameSetProduct, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")»
 		 «IF genInterface()»;«ELSE-»
 		 {
 	        «setProductComponent(nameForVariable)»;
@@ -287,7 +287,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * @generated
 		 */
 		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		 public «interfaceName» «method(methodNameGetProductComponentGeneration)»
+		 public «interfaceName» «method(methodNameGetProduct)»
 		 «IF genInterface()»;«ELSE-»
 		 {
 		 	return («interfaceName») getProductCmptGeneration();

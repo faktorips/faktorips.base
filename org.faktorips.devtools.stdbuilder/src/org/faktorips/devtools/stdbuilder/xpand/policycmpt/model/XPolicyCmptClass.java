@@ -353,7 +353,7 @@ public class XPolicyCmptClass extends XType {
      * @return the name of the getProductComponentGeneration method
      */
     public String getMethodNameGetProductCmpt() {
-        return getProductCmptNode().getMethodNameGetProductCmpt();
+        return getProductCmptNode().getMethodNameGetProduct();
     }
 
     /**
@@ -364,11 +364,11 @@ public class XPolicyCmptClass extends XType {
      * @return the name of the getProductComponentGeneration method
      */
     public String getMethodNameGetProductCmptGeneration() {
-        return getProductCmptGenerationNode().getMethodNameGetProductComponentGeneration();
+        return getProductCmptGenerationNode().getMethodNameGetProduct();
     }
 
     public String getMethodNameSetProductCmptGeneration() {
-        return getProductCmptGenerationNode().getMethodNameSetProductComponentGeneration();
+        return getProductCmptGenerationNode().getMethodNameSetProduct();
     }
 
     /**

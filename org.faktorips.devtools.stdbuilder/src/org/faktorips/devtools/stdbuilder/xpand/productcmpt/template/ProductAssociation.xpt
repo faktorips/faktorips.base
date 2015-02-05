@@ -97,16 +97,16 @@
      */
      «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
    	«IF oneToMany-»
-	    public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
+	    public «List_("? extends " +targetClassProductName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	    «IF genInterface()»;«ELSE-»
 	    {
 	    	«IF constrain-»
-	    		return «ListUtil()».«convert("super."+methodNameGetter+"(effectiveDate)", targetClassGenerationName + ".class")»;
+	    		return «ListUtil()».«convert("super."+methodNameGetter+"(effectiveDate)", targetClassProductName + ".class")»;
 	    	«ELSE-»
         		«List_("? extends " +targetInterfaceName)» targets = «methodNameGetter»();
-        		«List_(targetClassGenerationName)» result = new «ArrayList(targetClassGenerationName)»();
+        		«List_(targetClassProductName)» result = new «ArrayList(targetClassProductName)»();
 				for («targetInterfaceName» target : targets) {
-					«targetClassGenerationName» gen = target.«methodNameGetTargetGeneration»(effectiveDate);
+					«targetClassProductName» gen = target.«methodNameGetTarget»(effectiveDate);
 					if (gen != null) {
 	                	result.add(gen);
 	            	}
@@ -116,13 +116,13 @@
 	    }
 	    «ENDIF-»
     «ELSE-»
-	    public «targetClassGenerationName» «method(methodNameGetter, Calendar(), "effectiveDate")»
+	    public «targetClassProductName» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	   	«IF genInterface()»;«ELSE-»
 	    {
 	    	«IF constrain-»
-	    		return («targetClassGenerationName»)super.«methodNameGetter»(effectiveDate);
+	    		return («targetClassProductName»)super.«methodNameGetter»(effectiveDate);
 	    	«ELSE-»
-				return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTargetGeneration»(effectiveDate) : null;
+				return «fieldName» != null ? «fieldName».«getTarget()».«methodNameGetTarget»(effectiveDate) : null;
 			«ENDIF-»
     	}
     	«ENDIF-»

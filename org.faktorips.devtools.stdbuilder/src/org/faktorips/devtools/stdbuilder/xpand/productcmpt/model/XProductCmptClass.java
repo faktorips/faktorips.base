@@ -51,14 +51,6 @@ public class XProductCmptClass extends XProductClass {
         return getModelNode(getType(), XProductCmptGenerationClass.class);
     }
 
-    public String getMethodNameGetProductCmpt() {
-        return getJavaNamingConvention().getGetterMethodName(getName());
-    }
-
-    public String getMethodNameSetProductCmpt() {
-        return getJavaNamingConvention().getSetterMethodName(getName());
-    }
-
     @Override
     public LinkedHashSet<String> getExtendedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = super.getExtendedInterfaces();

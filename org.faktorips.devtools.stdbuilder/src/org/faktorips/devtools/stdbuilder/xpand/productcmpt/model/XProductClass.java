@@ -378,4 +378,12 @@ public abstract class XProductClass extends XType {
         }
         return false;
     }
+
+    public String getMethodNameGetProduct() {
+        return getJavaNamingConvention().getGetterMethodName(getName());
+    }
+
+    public String getMethodNameSetProduct() {
+        return getJavaNamingConvention().getSetterMethodName(getName());
+    }
 }

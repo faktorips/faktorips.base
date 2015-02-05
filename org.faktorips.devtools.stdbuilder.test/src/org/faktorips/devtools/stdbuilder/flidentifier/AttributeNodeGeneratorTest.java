@@ -159,7 +159,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
+        when(xProductCmptClass.getMethodNameGetProduct()).thenReturn("getProductCmpt");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -188,7 +188,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
+        when(xProductCmptClass.getMethodNameGetProduct()).thenReturn("getProductCmpt");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -264,7 +264,7 @@ public class AttributeNodeGeneratorTest {
 
     private AttributeNode createAttributeNode(boolean defaultAccess, boolean listOfType) {
         return (AttributeNode)new IdentifierNodeFactory(new TextRegion(attribute.getName(), 0, 0), ipsProject)
-        .createAttributeNode(attribute, defaultAccess, listOfType);
+                .createAttributeNode(attribute, defaultAccess, listOfType);
     }
 
     @Test
@@ -309,7 +309,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(((IProductCmptProperty)attribute).isChangingOverTime()).thenReturn(isChangingOverTime);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
+        when(xProductCmptClass.getMethodNameGetProduct()).thenReturn("getProductCmpt");
         when(contextCompilationResult.getDatatype()).thenReturn(datatypePolicy);
         when(builderSet.getModelNode(datatypePolicy, XPolicyCmptClass.class)).thenReturn(xPolicyCmptClass);
 
