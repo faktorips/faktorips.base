@@ -53,8 +53,9 @@
 				«ENDIF-»
 			«ENDFOREACH-»
 			
-		 	«EXPAND ProductComponent::getProductComponentGeneration FOR productCmptGenerationNode»
-
+			«IF generateGenerationAccessMethods»
+		 	     «EXPAND ProductComponent::getProductComponentGeneration FOR productCmptGenerationNode»
+		 	«ENDIF»
 			«IF configurationForPolicyCmptType»
 				«EXPAND ProductComponent::createPolicyCmpt(this) FOR policyCmptClass»
 			«ENDIF»
