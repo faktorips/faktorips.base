@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -79,6 +80,36 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
+    public void testCreateTocEntryProductCmpt_WithGeneration() throws CoreException {
+        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
+        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
+
+        ProductCmptTocEntry entry = tocFileBuilder.createTocEntry(productCmpt);
+        assertEquals("test.ProductCmpt", entry.getIpsObjectQualifiedName());
+        assertEquals("ProductCmpt", entry.getIpsObjectId());
+        assertEquals("org.faktorips.sample.model.internal.test.ProductCmpt", entry.getImplementationClassName());
+        assertFalse(entry.getGenerationEntries().isEmpty());
+        assertEquals("org.faktorips.sample.model.internal.test.ProductCmptGen", entry.getGenerationImplClassName());
+        assertEquals("org/faktorips/sample/model/internal/test/ProductCmpt.xml", entry.getXmlResourceName());
+    }
+
+    @Test
+    public void testCreateTocEntryProductCmpt_WithOutGeneration() throws CoreException {
+        IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
+        IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
+        productCmptType.setChangingOverTime(false);
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "test.ProductCmpt");
+
+        ProductCmptTocEntry entry = tocFileBuilder.createTocEntry(productCmpt);
+        assertEquals("test.ProductCmpt", entry.getIpsObjectQualifiedName());
+        assertEquals("ProductCmpt", entry.getIpsObjectId());
+        assertEquals("org.faktorips.sample.model.internal.test.ProductCmpt", entry.getImplementationClassName());
+        assertTrue(entry.getGenerationEntries().isEmpty());
+        assertEquals("org/faktorips/sample/model/internal/test/ProductCmpt.xml", entry.getXmlResourceName());
+    }
+
+    @Test
     public void testCreateTocEntryPolicyCmptType() throws CoreException {
         IPolicyCmptType type = newPolicyCmptType(ipsProject, "test.Policy");
         TocEntryObject entry = tocFileBuilder.createTocEntry(type);
@@ -86,16 +117,6 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
         assertEquals("test.Policy", entry.getIpsObjectId());
         assertEquals("org.faktorips.sample.model.internal.test.Policy", entry.getImplementationClassName());
         assertEquals("org/faktorips/sample/model/internal/test/Policy.xml", entry.getXmlResourceName());
-    }
-
-    @Test
-    public void testCreateTocEntryProductCmptType() throws CoreException {
-        IProductCmptType type = newProductCmptType(ipsProject, "test.Product");
-        TocEntryObject entry = tocFileBuilder.createTocEntry(type);
-        assertEquals("test.Product", entry.getIpsObjectQualifiedName());
-        assertEquals("test.Product", entry.getIpsObjectId());
-        assertEquals("org.faktorips.sample.model.internal.test.Product", entry.getImplementationClassName());
-        assertEquals("org/faktorips/sample/model/internal/test/Product.xml", entry.getXmlResourceName());
     }
 
     @Test

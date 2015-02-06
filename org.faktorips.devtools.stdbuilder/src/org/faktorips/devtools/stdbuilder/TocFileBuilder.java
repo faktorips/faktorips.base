@@ -376,20 +376,30 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
         ProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
                 xmlContentRelativeFile.toString(), implementationClass, generationImplClass, validTo);
-        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-        List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
-        for (IIpsObjectGeneration generation : generations) {
-            DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
-            if (validFrom == null) {
-                continue;
-            }
-            IProductCmptGeneration gen = (IProductCmptGeneration)generation;
-            String generationClassName = getBuilderSet().getProductCmptBuilder().getImplementationClass(gen);
-            genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlContentRelativeFile
-                    .toString()));
-        }
-        entry.setGenerationEntries(genEntries);
+        createProductCmptGenerationTocEntries(productCmpt, pcType, xmlContentRelativeFile, entry);
         return entry;
+    }
+
+    private void createProductCmptGenerationTocEntries(IProductCmpt productCmpt,
+            IProductCmptType pcType,
+            IPath xmlContentRelativeFile,
+            ProductCmptTocEntry entry) {
+
+        if (pcType.isChangingOverTime()) {
+            IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
+            List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
+            for (IIpsObjectGeneration generation : generations) {
+                DateTime validFrom = DateTime.createDateOnly(generation.getValidFrom());
+                if (validFrom == null) {
+                    continue;
+                }
+                String generationClassName = getBuilderSet().getProductCmptBuilder().getImplementationClass(
+                        (IProductCmptGeneration)generation);
+                genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlContentRelativeFile
+                        .toString()));
+            }
+            entry.setGenerationEntries(genEntries);
+        }
     }
 
     public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {
