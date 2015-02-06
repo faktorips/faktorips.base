@@ -22,10 +22,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
@@ -139,6 +143,77 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertFalse(pc.isFormulaAvailable("notExistingFormula"));
     }
 
+    @Test
+    public void testIsChangingOverTime_IsFalse() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
+                Collections.<IProductComponentGeneration> emptyList());
+
+        assertFalse(cmpt.isChangingOverTime());
+    }
+
+    @Test
+    public void testIsChangingOverTime_IsTrue() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
+                Arrays.asList(mock(IProductComponentGeneration.class)));
+
+        assertTrue(cmpt.isChangingOverTime());
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetGenerationBase_ThrowUnsupportedOperationException() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
+                Collections.<IProductComponentGeneration> emptyList());
+
+        cmpt.getGenerationBase(new GregorianCalendar());
+    }
+
+    @Test
+    public void testGetGenerationBase_ReturnGeneration() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
+        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
+                Arrays.asList(productComponentGeneration));
+        when(runtimeRepository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900))).thenReturn(
+                productComponentGeneration);
+
+        assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetLatestProductComponentGeneration_ThrowUnsupportedOperationException() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
+                Collections.<IProductComponentGeneration> emptyList());
+
+        cmpt.getLatestProductComponentGeneration();
+    }
+
+    @Test
+    public void testGetLatestProductComponentGeneration_ReturnGeneration() {
+        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId"));
+        IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
+        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
+                Arrays.asList(productComponentGeneration));
+        when(runtimeRepository.getLatestProductComponentGeneration(cmpt)).thenReturn(productComponentGeneration);
+
+        assertEquals(productComponentGeneration, cmpt.getLatestProductComponentGeneration());
+    }
+
     /**
      * Test class for testing the {@link ProductComponent#toXml(Document) toXml} method. This class
      * is used instead of {@link TestProductComponent} because the method
@@ -163,5 +238,6 @@ public class ProductComponentTest extends XmlAbstractTestCase {
              * UnsupportedOperationException in super class implementation.
              */
         }
+
     }
 }

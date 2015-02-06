@@ -112,10 +112,16 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
+        if (!isChangingOverTime()) {
+            throw new UnsupportedOperationException();
+        }
         return getRepository().getProductComponentGeneration(id, effectiveDate);
     }
 
     public IProductComponentGeneration getLatestProductComponentGeneration() {
+        if (!isChangingOverTime()) {
+            throw new UnsupportedOperationException();
+        }
         return getRepository().getLatestProductComponentGeneration(this);
     }
 
@@ -318,5 +324,11 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     protected void writeFormulaToXml(Element element) {
         formulaHandler.writeFormulaToXml(element);
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return !getRepository().getProductComponentGenerations(this).isEmpty();
+
     }
 }
