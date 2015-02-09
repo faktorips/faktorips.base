@@ -49,7 +49,9 @@
 			
 			«IF configured-»
 				«EXPAND PolicyCmpt::getAndSetProductComponent FOR productCmptNode-»
-				«EXPAND PolicyCmpt::getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
+				«IF generateGenerationAccessMethods»
+		 	        «EXPAND PolicyCmpt::getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
+		 	    «ENDIF»
 			«ENDIF-»
 			
 			«EXPAND Methods::method FOREACH methods-»

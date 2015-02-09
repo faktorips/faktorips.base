@@ -167,8 +167,11 @@
 	    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)»
 	    «IF genInterface()»;«ELSE-»
 	    {
-	        return new «currentType.policyImplClassName»(this);
+	     «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(this);
+	        policy.«initialize()»;
+	        return policy;
 	    }
 		«ENDIF»
     «ENDIF»
 «ENDDEFINE»
+
