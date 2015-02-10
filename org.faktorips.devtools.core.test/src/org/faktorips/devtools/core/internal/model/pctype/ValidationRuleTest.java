@@ -24,6 +24,7 @@ import java.util.Locale;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -378,4 +379,92 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
         assertTrue(markers.contains("marker2"));
         assertTrue(markers.contains("marker3"));
     }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreException {
+        MessageList ml = validationRule.validate(validationRule.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_ValidationRuleIsNotConfigurable()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(true);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule.setName("name");
+        validationRule.setConfigurableByProductComponent(false);
+
+        MessageList ml = validationRule.validate(validationRule.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsConfigurable()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(true);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule.setName("name");
+        validationRule.setConfigurableByProductComponent(true);
+
+        MessageList ml = validationRule.validate(validationRule.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndValidationRuleIsNotConfigurable()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(true);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule.setName("name");
+        validationRule.setConfigurableByProductComponent(false);
+
+        MessageList ml = validationRule.validate(validationRule.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(false);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule.setName("name");
+        validationRule.setConfigurableByProductComponent(false);
+
+        MessageList ml = validationRule.validate(validationRule.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+    }
+
+    @Test
+    public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndValidationRuleIsNotConfigurable()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(false);
+        policyCmptType.setProductCmptType("ProductType");
+        validationRule.setName("name");
+        validationRule.setConfigurableByProductComponent(true);
+
+        MessageList ml = validationRule.validate(validationRule.getIpsProject());
+
+        assertNotNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
 }
