@@ -265,16 +265,11 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         }
     }
 
-    private void validateChangingOverTimeFlag(MessageList result) throws CoreException {
-        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-        if (productCmptType == null) {
-            return;
-        }
+    private void validateChangingOverTimeFlag(MessageList result) {
         if (!isProductRelevant()) {
             return;
         }
-        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this,
-                productCmptType);
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
     }
 
@@ -491,5 +486,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     public boolean isPropertyFor(IPropertyValue propertyValue) {
         return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
                 && getPropertyName().equals(propertyValue.getPropertyName());
+    }
+
+    @Override
+    public IProductCmptType getProductCmptType() {
+        try {
+            return getPolicyCmptType().findProductCmptType(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

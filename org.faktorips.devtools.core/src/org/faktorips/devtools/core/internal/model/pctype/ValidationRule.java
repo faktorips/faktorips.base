@@ -23,6 +23,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
@@ -197,16 +198,11 @@ public class ValidationRule extends TypePart implements IValidationRule {
         validateChangingOverTimeFlag(list);
     }
 
-    private void validateChangingOverTimeFlag(MessageList result) throws CoreException {
-        IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-        if (productCmptType == null) {
-            return;
-        }
+    private void validateChangingOverTimeFlag(MessageList result) {
         if (!isConfigurableByProductComponent()) {
             return;
         }
-        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this,
-                productCmptType);
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
     }
 
@@ -595,5 +591,14 @@ public class ValidationRule extends TypePart implements IValidationRule {
         List<String> oldMarkers = this.markers;
         this.markers = newMarkers;
         valueChanged(oldMarkers, newMarkers, PROPERTY_MARKERS);
+    }
+
+    @Override
+    public IProductCmptType getProductCmptType() {
+        try {
+            return getPolicyCmptType().findProductCmptType(getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

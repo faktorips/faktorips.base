@@ -61,6 +61,7 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
     /**
      * Returns the product component type this method belongs to.
      */
+    @Override
     public IProductCmptType getProductCmptType();
 
     /**

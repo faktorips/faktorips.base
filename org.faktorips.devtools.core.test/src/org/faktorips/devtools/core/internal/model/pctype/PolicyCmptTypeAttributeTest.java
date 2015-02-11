@@ -435,6 +435,8 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreException {
+        attribute.setProductRelevant(true);
+        attribute.setName("attributeName");
         MessageList ml = attribute.validate(attribute.getIpsProject());
 
         assertNull(ml

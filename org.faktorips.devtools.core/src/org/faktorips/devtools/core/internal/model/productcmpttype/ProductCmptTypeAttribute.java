@@ -347,7 +347,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     private void validateChangingOverTimeFlag(MessageList result) {
-        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this, getProductCmptType());
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
         propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
     }
 

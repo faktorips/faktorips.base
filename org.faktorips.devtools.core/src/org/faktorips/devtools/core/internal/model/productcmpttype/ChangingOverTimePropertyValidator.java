@@ -28,8 +28,8 @@ public class ChangingOverTimePropertyValidator {
     public static final String MSGCODE_PREFIX = "CHANGINGOVERTIMEPROPERTY-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that a product component property is changing over time
-     * while the product component type does not accept changes in time
+     * Validation message code to indicate that an {@link IChangingOverTimeProperty} is changing
+     * over time while the product component type does not accept changes in time
      */
     public static final String MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME = MSGCODE_PREFIX
             + "TypeDoesNotAcceptChangingOverTime"; //$NON-NLS-1$
@@ -38,9 +38,9 @@ public class ChangingOverTimePropertyValidator {
 
     private final IProductCmptType productCmptType;
 
-    public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property, IProductCmptType productCmptType) {
+    public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property) {
         this.property = property;
-        this.productCmptType = productCmptType;
+        this.productCmptType = property.getProductCmptType();
     }
 
     /**
@@ -53,7 +53,7 @@ public class ChangingOverTimePropertyValidator {
      *            possibly new validation message
      */
     public void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
-        if (!StringUtils.isEmpty(property.getName())) {
+        if (productCmptType != null && !StringUtils.isEmpty(property.getName())) {
             if (!productCmptType.isChangingOverTime() && property.isChangingOverTime()) {
                 String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences()
                         .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();

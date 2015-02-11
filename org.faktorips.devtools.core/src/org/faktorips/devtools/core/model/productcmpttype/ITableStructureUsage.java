@@ -131,6 +131,7 @@ public interface ITableStructureUsage extends IProductCmptProperty {
     /**
      * Returns the {@link IProductCmptType} this table structure usage belongs to.
      */
+    @Override
     public IProductCmptType getProductCmptType();
 
     /**

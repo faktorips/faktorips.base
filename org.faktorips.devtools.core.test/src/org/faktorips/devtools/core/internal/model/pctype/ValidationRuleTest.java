@@ -382,7 +382,12 @@ public class ValidationRuleTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreException {
-        validationRule = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "PolicyWithoutProductCmptType").newRule();
+        PolicyCmptType policyWithoutProductCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
+                "PolicyWithoutProductCmptType");
+        policyWithoutProductCmptType.setConfigurableByProductCmptType(true);
+        validationRule = policyWithoutProductCmptType.newRule();
+        validationRule.setName("vRule");
+        validationRule.setConfigurableByProductComponent(true);
         MessageList ml = validationRule.validate(validationRule.getIpsProject());
 
         assertNull(ml
