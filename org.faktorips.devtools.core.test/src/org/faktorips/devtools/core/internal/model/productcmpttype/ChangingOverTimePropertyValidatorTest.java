@@ -14,8 +14,8 @@ import static org.junit.Assert.assertNull;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -98,7 +98,7 @@ public class ChangingOverTimePropertyValidatorTest extends AbstractIpsPluginTest
 
     @Test
     public void testValidateTypeDoesNotAcceptChangingOverTime_ProductCmptTypeIsNull() throws CoreException {
-        PolicyCmptType policyWithoutProductCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
+        IPolicyCmptType policyWithoutProductCmptType = newPolicyCmptTypeWithoutProductCmptType(ipsProject,
                 "PolicyWithoutProductCmptType");
         policyWithoutProductCmptType.setConfigurableByProductCmptType(true);
         IValidationRule validationRule = policyWithoutProductCmptType.newRule();
