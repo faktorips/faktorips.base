@@ -9,7 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.model.type;
 
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 
@@ -26,9 +27,10 @@ public interface IChangingOverTimeProperty extends ITypePart {
 
     /**
      * Returns the {@link IProductCmptType} this {@link IChangingOverTimeProperty property} belongs
-     * to. If the property belongs to an {@link IPolicyCmptType} the {@link IProductCmptType} that
-     * configures the {@link IPolicyCmptType} is returned.
+     * to or null if the referenced {@link IProductCmptType} could not be found.
+     * 
+     * @throws CoreException if an error occurs during the search
      */
-    public IProductCmptType getProductCmptType();
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

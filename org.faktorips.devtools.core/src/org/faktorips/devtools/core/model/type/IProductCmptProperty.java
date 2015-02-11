@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -96,13 +94,5 @@ public interface IProductCmptProperty extends IChangingOverTimeProperty {
      * @see #getCategory()
      */
     public void setCategory(String category);
-
-    /**
-     * Returns the {@link IProductCmptType} this {@link IProductCmptProperty} belongs to or null if
-     * the referenced {@link IProductCmptType} could not be found.
-     * 
-     * @throws CoreException if an error occurs during the search
-     */
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
 }

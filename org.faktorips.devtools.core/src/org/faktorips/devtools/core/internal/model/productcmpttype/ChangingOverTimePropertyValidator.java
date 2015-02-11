@@ -10,8 +10,10 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IChangingOverTimeProperty;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -40,7 +42,11 @@ public class ChangingOverTimePropertyValidator {
 
     public ChangingOverTimePropertyValidator(IChangingOverTimeProperty property) {
         this.property = property;
-        this.productCmptType = property.getProductCmptType();
+        try {
+            this.productCmptType = property.findProductCmptType(property.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**

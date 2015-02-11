@@ -487,13 +487,4 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
-
-    @Override
-    public IProductCmptType getProductCmptType() {
-        try {
-            return getPolicyCmptType().findProductCmptType(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
-    }
 }

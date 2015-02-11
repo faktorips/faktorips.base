@@ -109,7 +109,6 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
     /**
      * Returns the product component type the attribute belongs to.
      */
-    @Override
     public IProductCmptType getProductCmptType();
 
     /**

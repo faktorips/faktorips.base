@@ -448,4 +448,9 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         return findMatchingPolicyCmptTypeAssociation(getIpsProject());
     }
 
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmptType();
+    }
+
 }

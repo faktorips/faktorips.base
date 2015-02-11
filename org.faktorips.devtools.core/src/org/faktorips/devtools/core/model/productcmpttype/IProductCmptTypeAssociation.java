@@ -87,7 +87,6 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
     /**
      * Returns the product component type this relation belongs to. Never returns <code>null</code>.
      */
-    @Override
     public IProductCmptType getProductCmptType();
 
     /**
