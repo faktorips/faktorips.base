@@ -159,7 +159,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProduct()).thenReturn("getProductCmpt");
+        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -188,7 +188,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(xProductAttribute.isChangingOverTime()).thenReturn(false);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProduct()).thenReturn("getProductCmpt");
+        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
 
         CompilationResult<JavaCodeFragment> compilationResult = attributeNodeGenerator
                 .getCompilationResultForCurrentNode(attributeNode, contextCompilationResult);
@@ -309,7 +309,7 @@ public class AttributeNodeGeneratorTest {
         when(builderSet.getModelNode(type, XProductCmptClass.class)).thenReturn(xProductCmptClass);
         when(((IProductCmptProperty)attribute).isChangingOverTime()).thenReturn(isChangingOverTime);
         when(xProductAttribute.getMethodNameGetter()).thenReturn("getAttribute");
-        when(xProductCmptClass.getMethodNameGetProduct()).thenReturn("getProductCmpt");
+        when(xProductCmptClass.getMethodNameGetProductCmpt()).thenReturn("getProductCmpt");
         when(contextCompilationResult.getDatatype()).thenReturn(datatypePolicy);
         when(builderSet.getModelNode(datatypePolicy, XPolicyCmptClass.class)).thenReturn(xPolicyCmptClass);
 

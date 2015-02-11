@@ -148,7 +148,7 @@
 	     * @generated
 	     */
 	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-	    public «interfaceName» «method(methodNameGetProduct)»
+	    public «interfaceName» «method(methodNameGetProductCmpt)»
 	    «IF genInterface()»;«ELSE-»
 	    {
 	        return («interfaceName»)«getProductComponent()»;
@@ -169,7 +169,7 @@
 	    public «publishedInterfaceName» «method(methodNameCreatePolicyCmpt)»
 	    «IF genInterface()»;«ELSE-»
 	    {
-	        «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProduct»());
+	        «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
 	        policy.«setProductCmptGeneration("this")»;
 	        policy.«initialize()»;
 	        return policy;

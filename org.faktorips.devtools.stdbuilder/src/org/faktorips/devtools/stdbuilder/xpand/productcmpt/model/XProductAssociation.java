@@ -16,9 +16,11 @@ import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XAssociation;
+import org.faktorips.devtools.stdbuilder.xpand.model.XClass;
 import org.faktorips.util.StringUtil;
 
 public class XProductAssociation extends XAssociation {
@@ -38,21 +40,16 @@ public class XProductAssociation extends XAssociation {
         return (IProductCmptType)super.getTargetType();
     }
 
-    public String getTargetClassProductName() {
-        return getModelNode().getSimpleName(BuilderAspect.INTERFACE);
+    public String getTargetClassGenerationName() {
+        IType target = getTargetType();
+        XClass modelNode = getModelNode(target, XProductCmptGenerationClass.class);
+        return modelNode.getSimpleName(BuilderAspect.INTERFACE);
     }
 
-    public String getMethodNameGetTarget() {
-        return getModelNode().getMethodNameGetProduct();
-    }
-
-    private XProductClass getModelNode() {
-        if (getTargetType().isChangingOverTime()) {
-            return getModelNode(getTargetType(), XProductCmptGenerationClass.class);
-        } else {
-            return getModelNode(getTargetType(), XProductCmptClass.class);
-        }
-
+    public String getMethodNameGetTargetGeneration() {
+        IType target = getTargetType();
+        XProductCmptGenerationClass modelNode = getModelNode(target, XProductCmptGenerationClass.class);
+        return modelNode.getMethodNameGetProductComponentGeneration();
     }
 
     public String getMethodNameGetLinksFor() {

@@ -195,7 +195,7 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         IProductCmptTypeAttribute attribute = (IProductCmptTypeAttribute)node.getAttribute();
         if (!attribute.isChangingOverTime() && isChanginOverTimeContext(contextDatatype)) {
             XProductCmptClass xProductCmptClass = getModelNode(attribute.getType(), XProductCmptClass.class);
-            return xProductCmptClass.getMethodNameGetProduct() + "().";
+            return xProductCmptClass.getMethodNameGetProductCmpt() + "().";
         } else {
             return StringUtils.EMPTY;
         }

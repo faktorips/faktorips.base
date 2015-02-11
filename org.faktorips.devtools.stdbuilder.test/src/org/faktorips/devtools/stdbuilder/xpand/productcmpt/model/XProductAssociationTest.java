@@ -82,35 +82,23 @@ public class XProductAssociationTest {
     @Test
     public void testGetTargetClassGenerationName() {
         when(targetCmptType.isChangingOverTime()).thenReturn(true);
-        String targetClassGenerationName = xProductAssociation.getTargetClassProductName();
+        String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
         assertEquals("ITargetTypeGen", targetClassGenerationName);
     }
 
     @Test
     public void testGetGetterNameForTargetGeneration() throws Exception {
         association.setTarget("test.TargetType");
-        when(targetCmptType.isChangingOverTime()).thenReturn(true);
-        when(xTargetGenerationClass.getMethodNameGetProduct()).thenReturn("getTargetTypeGen");
+        when(xTargetGenerationClass.getMethodNameGetProductComponentGeneration()).thenReturn("getTargetTypeGen");
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTarget();
+        String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
         assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
     }
 
     @Test
     public void testGetTargetClassProductComponentName() {
-        when(targetCmptType.isChangingOverTime()).thenReturn(false);
-        String targetClassProductName = xProductAssociation.getTargetClassProductName();
-        assertEquals("ITargetType", targetClassProductName);
-    }
-
-    @Test
-    public void testGetGetterNameForTargetProductComponent() throws Exception {
-        association.setTarget("test.TargetType");
-        when(targetCmptType.isChangingOverTime()).thenReturn(false);
-        when(xTargetCmptClass.getMethodNameGetProduct()).thenReturn("getTargetType");
-        XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
-        String getterNameForTargetProduct = xProductAssociation.getMethodNameGetTarget();
-        assertEquals("getTargetType", getterNameForTargetProduct);
+        String targetClassProductName = xProductAssociation.getTargetClassGenerationName();
+        assertEquals("ITargetTypeGen", targetClassProductName);
     }
 
     @Test

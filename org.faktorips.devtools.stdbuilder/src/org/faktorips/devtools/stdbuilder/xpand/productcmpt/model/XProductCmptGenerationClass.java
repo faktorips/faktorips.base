@@ -92,6 +92,14 @@ public class XProductCmptGenerationClass extends XProductClass {
         return super.getClassHierarchy(XProductCmptGenerationClass.class);
     }
 
+    public String getMethodNameGetProductComponentGeneration() {
+        return getJavaNamingConvention().getGetterMethodName(getName());
+    }
+
+    public String getMethodNameSetProductComponentGeneration() {
+        return getJavaNamingConvention().getSetterMethodName(getName());
+    }
+
     public Set<XMethod> getOptionalFormulas() {
         Set<XMethod> optionalMethods = new HashSet<XMethod>();
         Set<XMethod> methods = getMethods();

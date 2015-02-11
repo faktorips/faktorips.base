@@ -146,7 +146,7 @@
 		     * @generated
 		     */
 		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
-		    public «interfaceName» «method(methodNameGetProduct, Calendar(), varNameEffectiveDate)»
+		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), varNameEffectiveDate)»
 		    «IF genInterface()»;«ELSE-»
 		    {
 		        return («interfaceName»)«getRepository()».«getProductComponentGeneration("getId()", varNameEffectiveDate)»;
