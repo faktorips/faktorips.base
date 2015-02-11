@@ -64,6 +64,9 @@ public class XPolicyCmptClassTest {
     private IPolicyCmptType type;
 
     @Mock
+    private IProductCmptType productCmptType;
+
+    @Mock
     private XPolicyAttribute attributeNode1;
 
     @Mock
@@ -322,11 +325,29 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedInterfaces_configuredPolicyCmptType() {
+    public void testGetExtendedInterfaces_configuredPolicyCmptType_changingOverTime() throws CoreException {
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+
         when(type.hasSupertype()).thenReturn(false);
         when(type.isConfigurableByProductCmptType()).thenReturn(true);
-        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        when(type.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
 
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
+        LinkedHashSet<String> extendedInterfaces = policyCmptClass.getExtendedInterfaces();
+
+        assertEquals(1, extendedInterfaces.size());
+        assertThat(extendedInterfaces, hasItem("ITimedConfigurableModelObject"));
+    }
+
+    @Test
+    public void testGetExtendedInterfaces_configuredPolicyCmptType_notChangingOverTime() throws CoreException {
+        when(productCmptType.isChangingOverTime()).thenReturn(false);
+
+        when(type.hasSupertype()).thenReturn(false);
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+        when(type.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
+
+        XPolicyCmptClass policyCmptClass = new XPolicyCmptClass(type, modelContext, modelService);
         LinkedHashSet<String> extendedInterfaces = policyCmptClass.getExtendedInterfaces();
 
         assertEquals(1, extendedInterfaces.size());
@@ -465,13 +486,38 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces() throws CoreException {
-        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_changingOverTime() throws CoreException {
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+
         when(type.hasSupertype()).thenReturn(false);
         when(type.isDependantType()).thenReturn(true);
+        when(type.isConfigurableByProductCmptType()).thenReturn(true);
+        when(type.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
         doReturn(superXType).when(policyCmptClass).getSupertype();
         when(superXType.isConfigured()).thenReturn(false);
+        setUpGenerateSupport(true);
+
+        LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();
+        assertThat(
+                interfaces,
+                hasItems("INotificationSupport", "ICopySupport", "IDeltaSupport", "IVisitorSupport",
+                        "IDependantObject", "ITimedConfigurableModelObject"));
+    }
+
+    @Test
+    public void testGetExtendedOrImplementedInterfaces_withAllInterfaces_notChangingOverTime() throws CoreException {
+        when(productCmptType.isChangingOverTime()).thenReturn(false);
+
+        when(type.hasSupertype()).thenReturn(false);
+        when(type.isDependantType()).thenReturn(true);
         when(type.isConfigurableByProductCmptType()).thenReturn(true);
+        when(type.findProductCmptType(any(IIpsProject.class))).thenReturn(productCmptType);
+
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+        doReturn(superXType).when(policyCmptClass).getSupertype();
+        when(superXType.isConfigured()).thenReturn(false);
         setUpGenerateSupport(true);
 
         LinkedHashSet<String> interfaces = policyCmptClass.getExtendedOrImplementedInterfaces();

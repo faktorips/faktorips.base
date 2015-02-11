@@ -22,6 +22,7 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
+import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.values.ObjectUtil;
 
 /**
@@ -42,15 +43,23 @@ public class ModelObjectDelta implements IModelObjectDelta {
                 return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED);
             }
         }
+
         ModelObjectDelta delta = newEmptyDelta(object, refObject);
+
         if (object instanceof IConfigurableModelObject && refObject != null) {
             IConfigurableModelObject confObject = (IConfigurableModelObject)object;
             IConfigurableModelObject confRefObject = (IConfigurableModelObject)refObject;
             delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT,
                     confObject.getProductComponent(), confRefObject.getProductComponent(), options);
-            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION,
+        }
+
+        if (object instanceof ITimedConfigurableModelObject && refObject != null) {
+            ITimedConfigurableModelObject confObject = (ITimedConfigurableModelObject)object;
+            ITimedConfigurableModelObject confRefObject = (ITimedConfigurableModelObject)refObject;
+            delta.checkPropertyChange(ITimedConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION,
                     confObject.getProductCmptGeneration(), confRefObject.getProductCmptGeneration(), options);
         }
+
         return delta;
     }
 
