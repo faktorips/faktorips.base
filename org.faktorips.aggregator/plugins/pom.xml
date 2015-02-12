@@ -34,7 +34,6 @@
 		<module>../../org.faktorips.nls.devtools.stdbuilder.nl1</module>
 		<module>../../org.faktorips.nls.devtools.stdbuilder.ui.nl1</module>
 		<module>../../org.faktorips.runtime.java5</module>
-		<module>../../org.faktorips.runtime.java5/client</module>
 		<module>../../org.faktorips.util</module>
 		<module>../../org.faktorips.valuetypes.java5</module>
 		<module>../../org.faktorips.valuetypes.joda</module>

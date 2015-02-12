@@ -53,10 +53,20 @@
 	</build>
 	
 	<dependencies>
-		<!-- dependency to runtime-client to ensure it was built before this p2 repository -->
+		<!-- dependencies to runtime, valuetypes and runtime-client to ensure it was built before this p2 repository -->
 		<dependency>
 			<groupId>org.faktorips</groupId>
 			<artifactId>faktorips-runtime-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.faktorips</groupId>
+			<artifactId>faktorips-runtime</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.faktorips</groupId>
+			<artifactId>faktorips-valuetypes</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

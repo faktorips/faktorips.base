@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<properties>
+		<maven-javadoc-plugin-version>2.10.1</maven-javadoc-plugin-version>
+		<maven-source-plugin-version>2.4</maven-source-plugin-version>
+		<maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
+		<maven-surefire-plugin>2.18.1</maven-surefire-plugin>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<groupId>org.faktorips</groupId>
+	<artifactId>faktorips-nexus</artifactId>
+	<version>3.14.2-SNAPSHOT</version>
+
+	<name>Faktor-IPS Library for Maven</name>
+	<url>http://www.faktorzehn.org</url>
+
+	<scm>
+		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
+		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>GNU Affero General Public License Version 3 with additional permissions</name>
+			<url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>dirmeier</id>
+			<name>Cornelius Dirmeier</name>
+			<email>Cornelius.Dirmeier@faktorzehn.de</email>
+		</developer>
+	</developers>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>../</directory>
+				<includes>
+					<include>LICENSE.txt</include>
+					<include>agpl-3.0.txt</include>
+				</includes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<!-- should not deploy itself, the client-jar is deployd with the other
+					libraries -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin-version}</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin-version}</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<failOnError>false</failOnError>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin-version}</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin}</version>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>../../org.faktorips.runtime.java5/client</module>
+		<module>../../org.faktorips.runtime.java5/nexus</module>
+		<module>../../org.faktorips.valuetypes.java5/nexus</module>
+	</modules>
+
+</project>
