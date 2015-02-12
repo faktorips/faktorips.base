@@ -10,6 +10,9 @@
 		<maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
 		<maven-surefire-plugin>2.18.1</maven-surefire-plugin>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Findbugs and Checkstyle already run in tycho build -->
+		<findbugs.skip>true</findbugs.skip>
+		<checkstyle.skip>true</checkstyle.skip>
 	</properties>
 
 	<groupId>org.faktorips</groupId>
@@ -50,6 +53,23 @@
 				</includes>
 			</resource>
 		</resources>
+		<pluginManagement>
+			<!-- Checkstyle and Findbugs are not used in nexus poms. However we should 
+				set a specific plugin version because the findbugs:findbugs and checkstyle:checkstyle
+				goals are executed by the aggregator -->
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>2.9.1</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>findbugs-maven-plugin</artifactId>
+					<version>2.4.0</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<!-- should not deploy itself, the client-jar is deployd with the other
