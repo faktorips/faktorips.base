@@ -56,7 +56,7 @@ public class ProductCmptTocEntryTest extends XmlAbstractTestCase {
     }
 
     @Test
-    public void testToXml_WithOutGenerationEntry() {
+    public void testToXml_WithoutGenerationEntry() {
         ProductCmptTocEntry entry = new ProductCmptTocEntry("MotorPolicy", "MotorPolicy", "MotorProduct", "2005-01",
                 "org/samples/MotorPolice.ipsproduct", "org.samples.MotorPolicyPk", "org.samples.MotorPolicyPkAnpStufe",
                 new DateTime(2010, 1, 18));

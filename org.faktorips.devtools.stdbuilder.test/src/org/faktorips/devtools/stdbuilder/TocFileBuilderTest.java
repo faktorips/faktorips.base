@@ -95,7 +95,7 @@ public class TocFileBuilderTest extends AbstractStdBuilderTest {
     }
 
     @Test
-    public void testCreateTocEntryProductCmpt_WithOutGeneration() throws CoreException {
+    public void testCreateTocEntryProductCmpt_WithoutGeneration() throws CoreException {
         IPolicyCmptType type = newPolicyAndProductCmptType(ipsProject, "test.PolicyType", "test.ProductCmpt");
         IProductCmptType productCmptType = type.findProductCmptType(ipsProject);
         productCmptType.setChangingOverTime(false);
