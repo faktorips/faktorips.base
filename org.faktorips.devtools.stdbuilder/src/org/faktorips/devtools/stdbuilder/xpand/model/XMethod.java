@@ -74,7 +74,7 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     public String getJavaClassName() {
         Datatype datatype = getDatatype();
-        return getJavaClassNameInternal(datatype);
+        return getJavaClassName(datatype);
     }
 
     public String getNotPrimitiveJavaClassName() {
@@ -82,12 +82,13 @@ public class XMethod extends AbstractGeneratorModelNode {
         if (datatype instanceof ValueDatatype && datatype.isPrimitive()) {
             datatype = ((ValueDatatype)datatype).getWrapperType();
         }
-        return getJavaClassNameInternal(datatype);
+        return getJavaClassName(datatype);
     }
 
-    protected String getJavaClassNameInternal(Datatype datatype) {
+    protected String getJavaClassName(Datatype datatype) {
         boolean useInterface = (getMethod().getModifier().isPublished() || getMethod() instanceof IPolicyCmptTypeMethod);
-        return getJavaClassName(datatype, !useInterface);
+        boolean useGeneration = getMethod() instanceof IProductCmptTypeMethod;
+        return getJavaClassName(datatype, useGeneration, !useInterface);
     }
 
     public Set<XParameter> getParameters() {

@@ -37,7 +37,7 @@ public class XParameter extends AbstractGeneratorModelNode {
      */
     public String getJavaClassName() {
         XMethod xMethod = getModelNode(getParameter().getParameterContainer(), XMethod.class);
-        return xMethod.getJavaClassNameInternal(getDatatype());
+        return xMethod.getJavaClassName(getDatatype());
     }
 
     protected Datatype getDatatype() {
