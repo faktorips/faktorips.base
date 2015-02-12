@@ -4,41 +4,18 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<maven-javadoc-plugin-version>2.10.1</maven-javadoc-plugin-version>
-		<maven-source-plugin-version>2.4</maven-source-plugin-version>
-		<maven-compiler-plugin-version>3.2</maven-compiler-plugin-version>
-		<maven-surefire-plugin>2.18.1</maven-surefire-plugin>
-	</properties>
+	<parent>
+		<groupId>org.faktorips</groupId>
+		<artifactId>faktorips-nexus</artifactId>
+		<version>3.14.2-SNAPSHOT</version>
+		<relativePath>../../org.faktorips.aggregator/nexus/pom.xml</relativePath>
+	</parent>
 
 	<groupId>org.faktorips</groupId>
 	<artifactId>faktorips-runtime-client</artifactId>
-	<version>3.14.1-SNAPSHOT</version>
 
 	<name>Faktor-IPS Runtime Client Library</name>
 	<description>Client Runtime library for Faktor-IPS</description>
-	<url>http://faktorzehn.org</url>
-
-	<scm>
-		<url>https://projekte.faktorzehn.de/gitweb/?p=faktorips/faktorips.base.git</url>
-		<connection>scm:git:ssh://projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
-	</scm>
-
-	<licenses>
-		<license>
-			<name>GNU Affero General Public License Version 3 with additional permissions</name>
-			<url>http://www.gnu.org/licenses/agpl-3.0-standalone.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
-
-	<developers>
-		<developer>
-			<id>dirmeier</id>
-			<name>Cornelius Dirmeier</name>
-			<email>Cornelius.Dirmeier@faktorzehn.de</email>
-		</developer>
-	</developers>
 
 	<dependencies>
 		<dependency>
@@ -50,20 +27,21 @@
 
 	<build>
 		<sourceDirectory>target/client-src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>../</directory>
-				<includes>
-					<include>LICENSE.txt</include>
-					<include>agpl-3.0.txt</include>
-				</includes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<!-- copy client relevant source files first (generate-sources) -->
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.7</version>
+				<dependencies>
+					<!-- Need to force using the maven-filtering plugin 1.3 to avoid Bug 
+						https://jira.codehaus.org/browse/MSHARED-325
+						You may remove this dependency when updating the version of maven-resources-plugin -->
+					<dependency>
+						<groupId>org.apache.maven.shared</groupId>
+						<artifactId>maven-filtering</artifactId>
+						<version>1.3</version>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<id>copy-source-files</id>
@@ -91,63 +69,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
-			<plugin>
-				<!-- should not deploy itself, the client-jar is deployd with the other 
-					libraries -->
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<version>2.8.2</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${maven-compiler-plugin-version}</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin-version}</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<failOnError>false</failOnError>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin-version}</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>${maven-surefire-plugin}</version>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
 			</plugin>
 		</plugins>
 
