@@ -242,48 +242,21 @@ public abstract class AbstractGeneratorModelNode {
     /**
      * Returns the qualified class name for the given datatype.
      * <p>
-     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered and
-     * changing over time flag of this product component type is enabled. If <code>true</code>, the
-     * name of the generated product component generation class is returned, if <code>false</code>,
-     * the name of the generated product component class is returned.
-     * <p>
-     * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
-     * returned.
-     * <p>
-     * Uses the common mechanism that resolves the published interfaces or implementation classes
-     * depending on the respective project settings.
      * 
      * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
      *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
-     * @param useGeneration specifies whether to resolve the generation class name (
-     *            <code>true</code>) or product component class name (<code>false</code>).
-     *            Considered only in case of an {@link IPolicyCmptType}.
      * @return the qualified class name for the datatype
      */
-    protected String getJavaClassName(Datatype datatype, boolean useGeneration) {
-        return getJavaClassName(datatype, useGeneration, false);
+    protected String getJavaClassName(Datatype datatype) {
+        return getJavaClassName(datatype, false);
     }
 
     /**
      * Resolves the qualified class name for the given datatype.
      * <p>
-     * If the datatype is an {@link IProductCmptType}, the flag "useGeneration" is considered and
-     * changing over time flag of this product component type is enabled. If <code>true</code>, the
-     * name of the generated product component generation class is returned, if <code>false</code>,
-     * the name of the generated product component class is returned.
-     * <p>
-     * If the datatype is an {@link IPolicyCmptType} the name of the generated policy class is
-     * returned.
-     * <p>
-     * Used for special cases where resolving the name of implementation classes may have to be
-     * forced by using resolveTypesToPublishedInterface=<code>false</code>. For standard cases use
-     * {@link #getJavaClassName(Datatype, boolean)}.
      * 
      * @param datatype The datatype to retrieve the class name for. May be a value datatype as well
      *            as an {@link org.faktorips.devtools.core.model.type.IType IType}.
-     * @param useGeneration specifies whether to resolve the generation class name (
-     *            <code>true</code>) or product component class name (<code>false</code>).
-     *            Considered only in case of an {@link IPolicyCmptType}.
      * @param forceImplementation Used to force the implementation class of
      *            {@link org.faktorips.devtools.core.model.type.IType ITypes}. <code>true</code> to
      *            force the the class name resolver to always return the implementation class name.
@@ -292,11 +265,11 @@ public abstract class AbstractGeneratorModelNode {
      * 
      * @return the qualified class name for the datatype
      */
-    protected String getJavaClassName(Datatype datatype, boolean useGeneration, boolean forceImplementation) {
+    protected String getJavaClassName(Datatype datatype, boolean forceImplementation) {
         if (datatype instanceof IPolicyCmptType) {
             return getJavaClassNameForPolicyCmptType(datatype, forceImplementation);
         } else if (datatype instanceof IProductCmptType) {
-            return getJavaClassNameForProductCmptType(datatype, useGeneration, forceImplementation);
+            return getJavaClassNameForProductCmptType(datatype, forceImplementation);
         } else if (datatype.isVoid()) {
             return "void";
         } else {
@@ -310,10 +283,8 @@ public abstract class AbstractGeneratorModelNode {
                 BuilderAspect.getValue(!forceImplementation));
     }
 
-    private String getJavaClassNameForProductCmptType(Datatype datatype,
-            boolean useGeneration,
-            boolean forceImplementation) {
-        if (useGeneration && ((IProductCmptType)datatype).isChangingOverTime()) {
+    private String getJavaClassNameForProductCmptType(Datatype datatype, boolean forceImplementation) {
+        if (((IProductCmptType)datatype).isChangingOverTime()) {
             return getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class).getSimpleName(
                     BuilderAspect.getValue(!forceImplementation));
         } else {
