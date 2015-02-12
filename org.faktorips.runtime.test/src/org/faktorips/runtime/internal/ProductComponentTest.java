@@ -168,8 +168,8 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     @Test(expected = UnsupportedOperationException.class)
     public void testGetGenerationBase_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
         IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
-        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
-                "versionId"));
+        ProductComponentTestClass cmpt = new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId");
 
         cmpt.getGenerationBase(new GregorianCalendar());
     }
@@ -191,8 +191,8 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     @Test(expected = UnsupportedOperationException.class)
     public void testGetLatestProductComponentGeneration_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
         IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
-        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
-                "versionId"));
+        ProductComponentTestClass cmpt = new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
+                "versionId");
 
         cmpt.getLatestProductComponentGeneration();
     }
