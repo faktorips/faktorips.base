@@ -13,7 +13,7 @@
 
 	<groupId>org.faktorips</groupId>
 	<artifactId>faktorips-runtime-client</artifactId>
-	<version>3.14.1-SNAPSHOT</version>
+	<version>3.14.2-SNAPSHOT</version>
 
 	<name>Faktor-IPS Runtime Client Library</name>
 	<description>Client Runtime library for Faktor-IPS</description>

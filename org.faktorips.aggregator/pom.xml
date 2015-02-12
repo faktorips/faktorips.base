@@ -33,7 +33,7 @@
 
 	<build>
 		<extensions>
-			<!-- Include this build artifact to every child's classpath. This is used 
+			<!-- Include this build artifact to every child's classpath. This is used
 				for example by the checkstyle or findbugs configuration -->
 			<extension>
 				<groupId>org.faktorips</groupId>
@@ -41,12 +41,26 @@
 				<version>1.0.2</version>
 			</extension>
 		</extensions>
+
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<artifacts>${project.artifactId},faktorips-runtime-client</artifacts>
+				</configuration>
+			</plugin>
+		</plugins>
+
 		<!-- TARGET PLATFORM MUST REFERENCE FEATURES ONLY -->
-		<!-- and we have some problems with the babel dependencies because not every host is included in target -->
-		
-		<!-- <plugins> <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>target-platform-configuration</artifactId> 
-			<version>${tycho-version}</version> <configuration> <target> <artifact> <groupId>org.faktorips</groupId> 
-			<artifactId>org.faktorips.aggregator.target</artifactId> <version>3.5.2</version> 
+		<!-- and we have some problems with the babel dependencies because not 
+			every host is included in target -->
+
+		<!-- <plugins> <plugin> <groupId>org.eclipse.tycho</groupId> <artifactId>target-platform-configuration</artifactId>
+			<version>${tycho-version}</version> <configuration> <target> <artifact> 
+			<groupId>org.faktorips</groupId>
+			<artifactId>org.faktorips.aggregator.target</artifactId> <version>3.5.2</version>
 			</artifact> </target> </configuration> </plugin> </plugins> -->
 	</build>
 
@@ -54,7 +68,7 @@
 		<profile>
 			<id>tagScm</id>
 			<activation>
-				<!-- This profile should be active by default, also if there is a next 
+				<!-- This profile should be active by default, also if there is a next
 					version set -->
 				<activeByDefault>true</activeByDefault>
 				<property>
