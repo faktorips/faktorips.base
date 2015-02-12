@@ -42,13 +42,22 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            IProductCmptType productCmptType = (IProductCmptType)ipsSrcFile.getIpsObject();
-            if (productCmptType.isChangingOverTime()) {
+
+            // checks if product component type was deleted from project
+            // this is important for the deleting of corresponding generated generation java files
+            if (!ipsSrcFile.exists()) {
+                return true;
+            }
+            if (isChangingOverTime(ipsSrcFile)) {
                 return true;
             }
             delete(ipsSrcFile);
         }
         return false;
+    }
+
+    private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_CHANGING_OVER_TIME));
     }
 
     @Override
