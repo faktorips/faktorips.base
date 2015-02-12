@@ -523,8 +523,8 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         }
     }
 
-    private <T extends XType> String getJavaClassName(IType type, boolean interfaces, Class<T> _class) {
-        return modelService.getModelNode(type, _class, generatorModelContext).getQualifiedName(
+    private <T extends XType> String getJavaClassName(IType type, boolean interfaces, Class<T> modelNodeClass) {
+        return modelService.getModelNode(type, modelNodeClass, generatorModelContext).getQualifiedName(
                 BuilderAspect.getValue(interfaces));
 
     }

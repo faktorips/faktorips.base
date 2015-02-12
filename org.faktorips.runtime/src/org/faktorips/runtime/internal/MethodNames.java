@@ -94,7 +94,7 @@ public class MethodNames {
     public static final String REMOVE_CHILD_MODEL_OBJECT_INTERNAL = "removeChildModelObjectInternal";
 
     /**
-     * @see org.faktorips.runtime.IConfigurableModelObject#getProductCmptGeneration()
+     * @see org.faktorips.runtime.ITimedConfigurableModelObject#getProductCmptGeneration()
      */
     public static final String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
 
