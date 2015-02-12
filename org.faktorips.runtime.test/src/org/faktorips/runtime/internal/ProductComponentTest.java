@@ -166,18 +166,16 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetGenerationBase_ThrowUnsupportedOperationException() {
+    public void testGetGenerationBase_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
         IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
         ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
                 "versionId"));
-        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
-                Collections.<IProductComponentGeneration> emptyList());
 
         cmpt.getGenerationBase(new GregorianCalendar());
     }
 
     @Test
-    public void testGetGenerationBase_ReturnGeneration() {
+    public void testGetGenerationBase_ReturnGenerationBaseIfChangingOverTime() {
         IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
         ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
                 "versionId"));
@@ -191,18 +189,16 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetLatestProductComponentGeneration_ThrowUnsupportedOperationException() {
+    public void testGetLatestProductComponentGeneration_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
         IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
         ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
                 "versionId"));
-        when(runtimeRepository.getProductComponentGenerations(cmpt)).thenReturn(
-                Collections.<IProductComponentGeneration> emptyList());
 
         cmpt.getLatestProductComponentGeneration();
     }
 
     @Test
-    public void testGetLatestProductComponentGeneration_ReturnGeneration() {
+    public void testGetLatestProductComponentGeneration_ReturnLatestGenerationIfChangingOverTime() {
         IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
         ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
                 "versionId"));

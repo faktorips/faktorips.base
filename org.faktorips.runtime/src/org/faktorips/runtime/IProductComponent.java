@@ -51,24 +51,20 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
     public DateTime getValidTo();
 
     /**
-     * Throws an {@link UnsupportedOperationException} if this product component has not
-     * {@link IProductComponentGeneration product component generations} otherwise returns the
-     * generation that is effective on the given date or <code>null</code> if no generation is
-     * effective on that date.
+     * Returns the generation that is effective on the given date or <code>null</code> if no
+     * generation is effective on that date.
      * 
-     * @throws UnsupportedOperationException if this product component has not product component
+     * @throws UnsupportedOperationException if this product component has no product component
      *             generations.
      * @throws NullPointerException if effective date is <code>null</code>.
      */
     public IProductComponentGeneration getGenerationBase(Calendar effectiveDate);
 
     /**
-     * Throws an {@link UnsupportedOperationException} if this product component has not
-     * {@link IProductComponentGeneration product component generations} otherwise returns the
-     * latest product component generation of the provided product component or <code>null</code> if
-     * non available.
+     * Returns the latest product component generation of the provided product component or
+     * <code>null</code> if non available.
      * 
-     * @throws UnsupportedOperationException if this product component has not product component
+     * @throws UnsupportedOperationException if this product component has no product component
      *             generations.
      */
     public IProductComponentGeneration getLatestProductComponentGeneration();
@@ -98,6 +94,7 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Returns <code>true</code> if this product component has {@link IProductComponentGeneration
      * product component generations}.
      * 
+     * @since 3.15
      */
     public boolean isChangingOverTime();
 
