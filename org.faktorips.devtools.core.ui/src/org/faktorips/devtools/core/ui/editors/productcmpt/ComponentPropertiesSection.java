@@ -90,7 +90,7 @@ public class ComponentPropertiesSection extends IpsSection {
         componentPropertiesPMO = new ComponentPropertiesPMO(product);
 
         initControls();
-        setText(Messages.ProductAttributesSection_attribute);
+        setText(Messages.ComponentPropertiesSection_title);
     }
 
     @Override

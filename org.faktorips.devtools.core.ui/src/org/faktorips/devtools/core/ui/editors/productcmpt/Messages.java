@@ -32,6 +32,8 @@ public class Messages extends NLS {
 
     public static String DefaultsAndRangesEditDialog_valueNotContainedInValueSet;
 
+    public static String ComponentPropertiesSection_title;
+
     public static String ComponentPropertiesSection_labelValidFrom;
 
     public static String ConfigElementEditComposite_valueSet;
@@ -87,8 +89,6 @@ public class Messages extends NLS {
     public static String FormulaEditDialog_Formula;
 
     public static String FormulaEditDialog_availableParameters;
-
-    public static String ProductAttributesSection_attribute;
 
     public static String RelationsSection_cardinality;
 
