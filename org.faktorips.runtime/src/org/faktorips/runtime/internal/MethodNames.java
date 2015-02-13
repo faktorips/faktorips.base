@@ -193,6 +193,11 @@ public class MethodNames {
      */
     public static final String VISITOR_VISIT = "visit";
 
+    /**
+     * @see org.faktorips.runtime.IProductComponent#isChangingOverTime()
+     */
+    public static final String IS_CHANGING_OVER_TIME = "isChangingOverTime";
+
     public static final String METHOD_NEW_COPY = "newCopyInternal";
 
     public static final String METHOD_COPY_ASSOCIATIONS = "copyAssociationsInternal";

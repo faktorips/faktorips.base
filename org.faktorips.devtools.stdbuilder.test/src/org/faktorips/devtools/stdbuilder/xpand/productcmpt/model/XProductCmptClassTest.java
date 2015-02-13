@@ -98,15 +98,25 @@ public class XProductCmptClassTest {
     @Test
     public void testIsGenerateGenerationAccessMethods_isChangingOverTime_true() throws Exception {
         when(productCmptType.isChangingOverTime()).thenReturn(true);
-
         assertTrue(xProductCmptClass.isGenerateGenerationAccessMethods());
     }
 
     @Test
     public void testIsGenerateGenerationAccessMethods_isChangingOverTime_false() throws Exception {
         when(productCmptType.isChangingOverTime()).thenReturn(false);
-
         assertFalse(xProductCmptClass.isGenerateGenerationAccessMethods());
+    }
+
+    @Test
+    public void testIsGenerateIsChangingOverTimeAccessMethod_trueIfNoSupertype() {
+        when(productCmptType.hasSupertype()).thenReturn(false);
+        assertTrue(xProductCmptClass.isGenerateIsChangingOverTimeAccessMethod());
+    }
+
+    @Test
+    public void testIsGenerateIsChangingOverTimeAccessMethod_falseIfSupertype() {
+        when(productCmptType.hasSupertype()).thenReturn(true);
+        assertFalse(xProductCmptClass.isGenerateIsChangingOverTimeAccessMethod());
     }
 
 }

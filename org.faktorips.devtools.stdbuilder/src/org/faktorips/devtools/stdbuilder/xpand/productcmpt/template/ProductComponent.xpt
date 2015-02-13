@@ -50,10 +50,23 @@
 		        super(repository, id, kindId, versionId);
 		        «EXPAND ProductAttribute::setDefaultValue FOREACH attributes-»
 			}
-           «IF generateGenerationAccessMethods»
-			   «EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
-		   «ENDIF-»	
-
+			
+            «IF generateGenerationAccessMethods»
+			    «EXPAND getProductComponentGeneration FOR productCmptGenerationNode-»
+		    «ENDIF-»
+		    
+		    «IF generateIsChangingOverTimeAccessMethod-»
+			    /**
+		     	 * «inheritDoc()»
+		     	 * 
+		     	 * @generated
+		     	 */
+			    @Override
+				public boolean «isChangingOverTime()» {
+					return «changingOverTime»;
+				}
+			«ENDIF-»
+		   
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
@@ -73,10 +86,10 @@
 			«ENDFOREACH-»
 			
 	    	/**
-	     	* «inheritDoc()»
-	     	* 
-	     	* @generated
-	     	*/
+	     	 * «inheritDoc()»
+	     	 * 
+	     	 * @generated
+	     	 */
 	    	@Override
 	    	protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 	        	super.«doInitPropertiesFromXml("configMap")»;

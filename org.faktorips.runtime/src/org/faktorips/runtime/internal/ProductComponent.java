@@ -326,9 +326,4 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         formulaHandler.writeFormulaToXml(element);
     }
 
-    @Override
-    public boolean isChangingOverTime() {
-        return !getRepository().getProductComponentGenerations(this).isEmpty();
-
-    }
 }
