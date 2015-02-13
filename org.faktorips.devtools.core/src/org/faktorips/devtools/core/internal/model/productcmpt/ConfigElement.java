@@ -334,11 +334,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         }
         setValueSetType(newValueSetType);
         EnumValueSet newValueSet = (EnumValueSet)valueSet;
-        if (Datatype.BOOLEAN.equals(newValueSet.getValueDatatype())
-                || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSet.getValueDatatype())) {
+        ValueDatatype newValueSetDatatype = newValueSet.findValueDatatype(getIpsProject());
+        if (Datatype.BOOLEAN.equals(newValueSetDatatype)
+                || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSetDatatype)) {
             newValueSet.addValue(Boolean.TRUE.toString());
             newValueSet.addValue(Boolean.FALSE.toString());
-            if (!newValueSet.getValueDatatype().isPrimitive()) {
+            if (!newValueSetDatatype.isPrimitive()) {
                 newValueSet.addValue(null);
             }
         }

@@ -13,8 +13,8 @@ package org.faktorips.devtools.core.internal.model.valueset;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -128,22 +128,26 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     /**
      * Returns the datatype this value set is based on or <code>null</code>, if the datatype is not
      * provided by the parent or the datatype provided is not a <code>ValueDatatype</code>.
+     * 
+     * @deprecated This method may provide the wrong datatype instance because always searches in
+     *             the current project instead of a given context ips project. Use
+     *             {@link #findValueDatatype(IIpsProject)} instead.
      */
+    @Deprecated
     public ValueDatatype getValueDatatype() {
-        try {
-            // TODO getIpsProject() needs to be replaced with a paramter!
-            return ((IValueSetOwner)getParent()).findValueDatatype(getIpsProject());
-        } catch (CoreException e) {
-            throw new RuntimeException(e);
-        }
+        return findValueDatatype(getIpsProject());
     }
 
     /**
      * Returns the data type this value set is based on or <code>null</code>, if the data type is
      * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
      */
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
-        return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
+        try {
+            return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -273,19 +277,9 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     /**
      * Returns <code>true</code> if the {@link ValueDatatype} is null or not a primitive datatype.
      */
-    protected boolean isContainingNullAllowed() {
-        ValueDatatype dataType = getValueDatatype();
+    protected boolean isContainingNullAllowed(IIpsProject ipsProject) {
+        ValueDatatype dataType = findValueDatatype(ipsProject);
         return dataType == null || !dataType.isPrimitive();
     }
 
-    protected boolean enumDatatypeEqualForContainsValueSet(ValueDatatype datatype, ValueDatatype subDatatype) {
-        if (!bothEnumTypeAdapters(datatype, subDatatype)) {
-            return false;
-        }
-        return ((EnumTypeDatatypeAdapter)datatype).equalsForContainsValueSet((EnumTypeDatatypeAdapter)subDatatype);
-    }
-
-    private boolean bothEnumTypeAdapters(ValueDatatype datatype, ValueDatatype subDatatype) {
-        return datatype instanceof EnumTypeDatatypeAdapter && subDatatype instanceof EnumTypeDatatypeAdapter;
-    }
 }

@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
 import org.faktorips.devtools.core.model.tablestructure.IIndex;
@@ -36,8 +35,6 @@ public class TableAccessFunction implements ITableAccessFunction {
     private final List<String> argTypeNames;
 
     private final IColumn column;
-
-    private List<Datatype> argTypes;
 
     public TableAccessFunction(IIndex key, IColumn column) {
         ArgumentCheck.notNull(key);
@@ -83,19 +80,6 @@ public class TableAccessFunction implements ITableAccessFunction {
     @Override
     public List<String> getArgTypes() {
         return argTypeNames;
-    }
-
-    @Override
-    public List<Datatype> findArgTypes() {
-        if (argTypes == null) {
-            argTypes = new ArrayList<Datatype>();
-            IIpsProject project = getIpsProject();
-            for (String argType : argTypeNames) {
-                argTypes.add(project.findValueDatatype(argType));
-            }
-            argTypes = Collections.unmodifiableList(argTypes);
-        }
-        return argTypes;
     }
 
     @Override
