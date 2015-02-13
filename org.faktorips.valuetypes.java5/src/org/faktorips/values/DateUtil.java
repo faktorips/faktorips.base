@@ -49,7 +49,7 @@ public class DateUtil {
     };
 
     private static final String REGEX_ISO_DATE = "\\d{4}-\\d{1,2}-\\d{1,2}";
-    private static final String REGEX_ISO_TIME = "([01]\\d|[2][1-3]):([0-5]\\d):([0-5]\\d)";
+    private static final String REGEX_ISO_TIME = "([01]\\d|[2][0-3]):([0-5]\\d):([0-5]\\d)";
     private static final Pattern PATERN_ISO_DATE = Pattern.compile("^" + REGEX_ISO_DATE + "$");
     private static final Pattern PATERN_ISO_TIME = Pattern.compile("^" + REGEX_ISO_TIME + "$");
     private static final Pattern PATERN_ISO_DATE_TIME = Pattern.compile("^" + REGEX_ISO_DATE + " " + REGEX_ISO_TIME
