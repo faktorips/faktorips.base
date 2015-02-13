@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.ui.controller.fields.enumproposal.ConfigElementProposalProvider;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +63,7 @@ public class ConfigElementProposalProviderTest {
     @Before
     public void setUp() throws Exception {
         enumValueSet = new EnumValueSet(propertyValue, "ID");
-        when(enumValueSet.getValueDatatype()).thenReturn(enumValueDatatype);
+        when(enumValueSet.findValueDatatype(ipsProject)).thenReturn(enumValueDatatype);
         when(enumValueDatatype.isEnum()).thenReturn(true);
         when(enumValueDatatype.isParsable("aaaaa")).thenReturn(true);
         when(enumValueDatatype.isParsable("bbbbb")).thenReturn(true);

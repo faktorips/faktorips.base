@@ -238,9 +238,9 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         pageElement.addPageElements(new TextPageElement(getContext().getMessage(
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + COLON_SEPARATOR
-                + getContext().getDatatypeFormatter()
-                .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK,
-                getContext()));
+                + getContext().getDatatypeFormatter().formatValue(
+                        ((ValueSet)valueSet).findValueDatatype(getContext().getIpsProject()), defaultValue),
+                TextType.BLOCK, getContext()));
 
         if (valueSet.isEnum()) {
             pageElement.addPageElements(createEnumValueSetCell((EnumValueSet)valueSet));
@@ -256,14 +256,14 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         StringBuilder builder = new StringBuilder();
         builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
         builder.append(COLON_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
-                rangeValueSet.getLowerBound()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(
+                rangeValueSet.findValueDatatype(getContext().getIpsProject()), rangeValueSet.getLowerBound()));
         builder.append(COMMA_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
-                rangeValueSet.getUpperBound()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(
+                rangeValueSet.findValueDatatype(getContext().getIpsProject()), rangeValueSet.getUpperBound()));
         builder.append(COMMA_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(rangeValueSet.getValueDatatype(),
-                rangeValueSet.getStep()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(
+                rangeValueSet.findValueDatatype(getContext().getIpsProject()), rangeValueSet.getStep()));
 
         TextPageElement textPageElement = new TextPageElement(builder.toString(), TextType.BLOCK, getContext());
         return textPageElement;
@@ -282,7 +282,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
             if (builder.length() > 0) {
                 builder.append(COMMA_SEPARATOR);
             }
-            builder.append(getContext().getDatatypeFormatter().formatValue(enumValueSet.getValueDatatype(), enumValue));
+            builder.append(getContext().getDatatypeFormatter().formatValue(
+                    enumValueSet.findValueDatatype(getContext().getIpsProject()), enumValue));
 
         }
         TextPageElement textPageElement = new TextPageElement(getContext().getMessage(

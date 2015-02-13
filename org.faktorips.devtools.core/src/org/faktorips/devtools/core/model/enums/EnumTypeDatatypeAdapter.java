@@ -432,25 +432,4 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return getEnumValueContainer().getQualifiedName();
     }
 
-    /**
-     * Returns <code>true</code> if this adapter and the given adapter should be considered equal
-     * when comparing value sets.
-     * <p>
-     * In contrast to {@link #equals(Object)} this method also returns <code>true</code> if this
-     * adapter has a content and the other does not, as well as the other way round. This is the
-     * case when an attribute is overwritten in a custom project that also introduces a enum
-     * content. See test cases for further info.
-     */
-    public boolean equalsForContainsValueSet(EnumTypeDatatypeAdapter subDatatype) {
-        return enumType.equals(subDatatype.enumType) && contentsEqualForContainsValueSet(subDatatype);
-    }
-
-    private boolean contentsEqualForContainsValueSet(EnumTypeDatatypeAdapter subDatatype) {
-        if (enumContent == null || subDatatype.enumContent == null) {
-            return true;
-        } else {
-            return enumContent.equals(subDatatype.enumContent);
-        }
-    }
-
 }

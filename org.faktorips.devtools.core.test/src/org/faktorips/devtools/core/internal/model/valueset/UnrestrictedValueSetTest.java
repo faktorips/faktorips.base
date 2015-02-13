@@ -16,6 +16,9 @@ import java.util.GregorianCalendar;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumContent;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
@@ -32,6 +35,10 @@ import org.w3c.dom.Element;
 
 public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
 
+    private static final String MY_ENUM_CONTENT = "MyEnumContent";
+
+    private static final String MY_EXTENSIBLE_ENUM = "MyExtensibleEnum";
+
     private IPolicyCmptTypeAttribute attr;
     private IConfigElement ce;
 
@@ -40,23 +47,35 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
 
     private IPolicyCmptType policyCmptType;
 
+    private IIpsProject productIpsProject;
+
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        ipsProject = super.newIpsProject("TestProject");
+        ipsProject = super.newIpsProject();
+        productIpsProject = super.newIpsProject();
+        IIpsObjectPath ipsObjectPath = productIpsProject.getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject);
+        productIpsProject.setIpsObjectPath(ipsObjectPath);
         policyCmptType = newPolicyAndProductCmptType(ipsProject, "test.Base", "test.Product");
         IProductCmptType productCmptType = policyCmptType.findProductCmptType(ipsProject);
         attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
         attr.setDatatype(Datatype.STRING.getQualifiedName());
 
-        IProductCmpt cmpt = newProductCmpt(productCmptType, "test.Product");
+        IProductCmpt cmpt = newProductCmpt(productIpsProject, "test.Product");
+        cmpt.setProductCmptType(productCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 
         ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("attr");
 
+        EnumType enumType = newEnumType(ipsProject, MY_EXTENSIBLE_ENUM);
+        enumType.setExtensible(true);
+        enumType.setEnumContentName(MY_ENUM_CONTENT);
+        EnumContent newEnumContent = newEnumContent(productIpsProject, MY_ENUM_CONTENT);
+        newEnumContent.setEnumType(MY_EXTENSIBLE_ENUM);
     }
 
     @Test
@@ -186,15 +205,6 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsValueSet_DatatypeIsNull() {
-        attr.setDatatype(null);
-        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
-        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", false);
-
-        assertFalse(unrestrictedValueSet.containsValueSet(subSet));
-    }
-
-    @Test
     public void testContainsValueSet_EqualValueSetsWithoutNull() {
         IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(ce, "1", false);
         UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", false);
@@ -224,6 +234,16 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
         UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", true);
 
         assertFalse(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_enum() {
+        attr.setDatatype(MY_EXTENSIBLE_ENUM);
+
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(attr, "1", true);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", true);
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
     }
 
 }

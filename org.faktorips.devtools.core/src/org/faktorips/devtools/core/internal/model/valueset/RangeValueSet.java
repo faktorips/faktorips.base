@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
@@ -196,24 +197,25 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     @Override
     public boolean containsValueSet(IValueSet subset) {
-        ValueDatatype datatype = getValueDatatype();
-        ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
-        if (!datatype.equals(subDatatype)) {
+        IIpsProject contextProject = subset.getIpsProject();
+        ValueDatatype datatype = findValueDatatype(contextProject);
+        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        if (!ObjectUtils.equals(datatype, subDatatype)) {
             return false;
         }
-        if (!checkValidRanges(subset)) {
+        if (!checkValidRanges(subset, contextProject)) {
             return false;
         }
 
         return checkIsRangeSubset((IRangeValueSet)subset, (NumericDatatype)datatype);
     }
 
-    private boolean checkValidRanges(IValueSet subset) {
+    private boolean checkValidRanges(IValueSet subset, IIpsProject contextProject) {
         try {
-            if (!isValid(getIpsProject())) {
+            if (!isValid(contextProject)) {
                 return false;
             }
-            if (!(subset instanceof RangeValueSet) || !subset.isValid(getIpsProject())) {
+            if (!(subset instanceof RangeValueSet) || !subset.isValid(contextProject)) {
                 return false;
             }
         } catch (CoreException e) {
@@ -312,7 +314,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         ObjectProperty lowerBoundProperty = new ObjectProperty(this, PROPERTY_LOWERBOUND);
         ObjectProperty upperBoundProperty = new ObjectProperty(this, PROPERTY_UPPERBOUND);
         ObjectProperty stepProperty = new ObjectProperty(this, PROPERTY_STEP);
-        ValueDatatype datatype = getValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
         if (datatype == null) {
             String text = Messages.Range_msgUnknownDatatype;
             list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, text, Message.ERROR, parentObjectProperty,
@@ -494,7 +496,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
 
     @Override
     public boolean isContainsNull() {
-        return containsNull && isContainingNullAllowed();
+        return containsNull && isContainingNullAllowed(getIpsProject());
     }
 
     @Override

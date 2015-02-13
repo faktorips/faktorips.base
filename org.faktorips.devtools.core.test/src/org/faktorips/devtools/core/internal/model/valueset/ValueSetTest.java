@@ -177,6 +177,6 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         UnrestrictedValueSet unrestricted = new UnrestrictedValueSet(owner1, "1");
         unrestricted.setContainsNull(true);
         owner1.setDatatype(Datatype.PRIMITIVE_INT.getName());
-        assertFalse(unrestricted.isContainingNullAllowed());
+        assertFalse(unrestricted.isContainingNullAllowed(ipsProject));
     }
 }

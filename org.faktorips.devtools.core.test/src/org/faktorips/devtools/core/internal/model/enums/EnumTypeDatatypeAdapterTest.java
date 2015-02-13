@@ -22,7 +22,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.valueset.ContainsValueSetEnumDatatpeTest;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
@@ -298,18 +297,6 @@ public class EnumTypeDatatypeAdapterTest {
     private void assertReflexiveUnequal(EnumTypeDatatypeAdapter adapter1, EnumTypeDatatypeAdapter adapter2) {
         assertFalse(adapter1.equals(adapter2));
         assertFalse(adapter2.equals(adapter1));
-    }
-
-    /**
-     * @see ContainsValueSetEnumDatatpeTest
-     */
-    @Test
-    public void equalsForContainsValueSet_nullContent() {
-        EnumTypeDatatypeAdapter adapter1 = new EnumTypeDatatypeAdapter(enumType, enumContent);
-        EnumTypeDatatypeAdapter adapter2 = new EnumTypeDatatypeAdapter(enumType, null);
-
-        assertTrue(adapter1.equalsForContainsValueSet(adapter2));
-        assertTrue(adapter2.equalsForContainsValueSet(adapter1));
     }
 
 }
