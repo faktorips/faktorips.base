@@ -60,6 +60,9 @@ public class DateUtilTest {
         assertFalse(DateUtil.isIsoTime("00:00:60"));
         assertTrue(DateUtil.isIsoTime("00:00:00"));
         assertTrue(DateUtil.isIsoTime("01:02:03"));
+        assertTrue(DateUtil.isIsoTime("20:00:00"));
+        assertTrue(DateUtil.isIsoTime("20:10:10"));
+        assertTrue(DateUtil.isIsoTime("20:59:59"));
         assertTrue(DateUtil.isIsoTime("23:59:59"));
     }
 
@@ -69,6 +72,7 @@ public class DateUtilTest {
         assertFalse(DateUtil.isIsoDateTime("2008-01-01 1:2:3"));
         assertFalse(DateUtil.isIsoDateTime("01-01-2008 23:59:59"));
         assertTrue(DateUtil.isIsoDateTime("2008-01-01 00:00:00"));
+        assertTrue(DateUtil.isIsoDateTime("2015-10-06 20:01:00"));
     }
 
     @Test
@@ -108,6 +112,8 @@ public class DateUtilTest {
         assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-9-9 01:02:03"));
         date = new GregorianCalendar(2005, 9, 10, 1, 2, 3).getTime();
         assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10 01:02:03"));
+        date = new GregorianCalendar(2005, 9, 10, 20, 2, 3).getTime();
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10 20:02:03"));
     }
 
     @Test
