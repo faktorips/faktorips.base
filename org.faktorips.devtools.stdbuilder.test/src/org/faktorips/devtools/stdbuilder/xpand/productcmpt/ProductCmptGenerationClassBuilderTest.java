@@ -53,10 +53,10 @@ public class ProductCmptGenerationClassBuilderTest {
         when(ipsSrcFile.getIpsObject()).thenReturn(productCmptType);
         when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
 
-        ProductCmptGenerationClassBuilder productCmptClassBuilder = new ProductCmptGenerationClassBuilder(false,
-                mock(StandardBuilderSet.class), mock(GeneratorModelContext.class), null);
+        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
+                false, mock(StandardBuilderSet.class), mock(GeneratorModelContext.class), null);
 
-        ProductCmptGenerationClassBuilder spy = spy(productCmptClassBuilder);
+        ProductCmptGenerationClassBuilder spy = spy(productCmptGenerationClassBuilder);
         assertFalse(spy.isBuilderFor(ipsSrcFile));
         verify(spy).delete(ipsSrcFile);
     }
@@ -69,10 +69,10 @@ public class ProductCmptGenerationClassBuilderTest {
         when(ipsSrcFile.getIpsObject()).thenReturn(productCmptType);
         when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT_TYPE);
 
-        ProductCmptGenerationClassBuilder productCmptClassBuilder = new ProductCmptGenerationClassBuilder(false,
-                mock(StandardBuilderSet.class), mock(GeneratorModelContext.class), null);
+        ProductCmptGenerationClassBuilder productCmptGenerationClassBuilder = new ProductCmptGenerationClassBuilder(
+                false, mock(StandardBuilderSet.class), mock(GeneratorModelContext.class), null);
 
-        ProductCmptGenerationClassBuilder spy = spy(productCmptClassBuilder);
+        ProductCmptGenerationClassBuilder spy = spy(productCmptGenerationClassBuilder);
 
         assertTrue(spy.isBuilderFor(ipsSrcFile));
         verify(spy, never()).delete(ipsSrcFile);

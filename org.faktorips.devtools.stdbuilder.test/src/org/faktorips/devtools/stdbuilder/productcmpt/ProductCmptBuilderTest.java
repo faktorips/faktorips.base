@@ -106,11 +106,9 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     public void testBuild_buildJavaFileIntoSrcFolder() throws CoreException {
         // build should not throw an exception even if the reference to the type is missing
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        IFile generatedPolicyCmptTypeJavaFile = createExpectedPolicyCmptTypeFileFromSrcFolder();
-        IFile generatedProductCmptTypeJavaFile = createExpectedProductCmptTypeFileFromSrcFolder();
+        IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromSrcFolder();
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromSrcFolder();
-        assertTrue(generatedPolicyCmptTypeJavaFile.exists());
-        assertTrue(generatedProductCmptTypeJavaFile.exists());
+        assertTrue(generatedProductCmptJavaFile.exists());
         assertTrue(generatedProductCmptGenerationJavaFile.exists());
     }
 
@@ -133,7 +131,7 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         assertTrue(generatedProductCmptGenerationJavaFile.exists());
         assertTrue(generatedProductCmptJavaFile.exists());
 
-        productCmpt.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        productCmpt.delete();
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
         assertFalse(generatedProductCmptGenerationJavaFile.exists());
         assertFalse(generatedProductCmptJavaFile.exists());
@@ -142,14 +140,14 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
     @Test
     public void testDelete_deleteJavaFileFromSrcFolder() throws CoreException {
         ipsProject.getProject().build(IncrementalProjectBuilder.FULL_BUILD, null);
-        IFile generatedProductCmptTypeJavaFile = createExpectedProductCmptTypeFileFromSrcFolder();
+        IFile generatedProductCmptJavaFile = createExpectedProductCmptFileFromSrcFolder();
         IFile generatedProductCmptGenerationJavaFile = createExpectedProductCmptGenerationFileFromSrcFolder();
-        assertTrue(generatedProductCmptTypeJavaFile.exists());
+        assertTrue(generatedProductCmptJavaFile.exists());
         assertTrue(generatedProductCmptGenerationJavaFile.exists());
 
-        productCmptType.getIpsSrcFile().getCorrespondingFile().delete(true, false, null);
+        productCmptType.delete();
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, null);
-        assertFalse(generatedProductCmptTypeJavaFile.exists());
+        assertFalse(generatedProductCmptJavaFile.exists());
         assertFalse(generatedProductCmptGenerationJavaFile.exists());
     }
 
@@ -169,13 +167,8 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
     }
 
-    private IFile createExpectedProductCmptTypeFileFromSrcFolder() {
+    private IFile createExpectedProductCmptFileFromSrcFolder() {
         String path = "/" + ipsProject.getName() + "/src/org/faktorips/sample/model/internal/ProductType.java";
-        return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-    }
-
-    private IFile createExpectedPolicyCmptTypeFileFromSrcFolder() {
-        String path = "/" + ipsProject.getName() + "/src/org/faktorips/sample/model/internal/PolicyType.java";
         return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
     }
 
