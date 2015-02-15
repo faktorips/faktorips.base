@@ -148,7 +148,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                     validationRuleConfig != null && validationRuleConfig.isActive() ? getContext().getMessage(
                             HtmlExportMessages.ProductGenerationAttributeTable_validationRulesActive) : getContext()
                             .getMessage(HtmlExportMessages.ProductGenerationAttributeTable_validationRulesInactive),
-                            TextType.BLOCK, getContext());
+                    TextType.BLOCK, getContext());
             cells[i + 1].addStyles(Style.CENTER);
 
         }
@@ -239,7 +239,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + COLON_SEPARATOR
                 + getContext().getDatatypeFormatter()
-                .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK,
+                        .formatValue(((ValueSet)valueSet).getValueDatatype(), defaultValue), TextType.BLOCK,
                 getContext()));
 
         if (valueSet.isEnum()) {
@@ -535,8 +535,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
         IPageElement cardinalities = new TextPageElement(
                 productCmptLink.getMinCardinality() + ".." //$NON-NLS-1$
-                + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
-                + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
+                        + getCardinalityRepresentation(productCmptLink.getMaxCardinality()) + " (" //$NON-NLS-1$
+                        + getCardinalityRepresentation(productCmptLink.getDefaultCardinality()) + ")", cardinalityStyles, getContext()); //$NON-NLS-1$
 
         return new WrapperPageElement(WrapperType.BLOCK, getContext()).addPageElements(targetLink, cardinalities);
     }
@@ -630,8 +630,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         headline.add(productGenerationAttributeTableGenerationFrom);
 
         for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            headline.add(getContext().getSimpleDateFormat().format(
-                    productCmpt.getProductCmptGeneration(i).getValidFrom().getTime()));
+            headline.add(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_values));
         }
         return headline;
     }
