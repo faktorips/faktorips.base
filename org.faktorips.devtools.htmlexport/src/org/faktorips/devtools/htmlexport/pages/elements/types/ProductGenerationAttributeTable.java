@@ -628,11 +628,23 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         List<String> headline = new ArrayList<String>();
 
         headline.add(productGenerationAttributeTableGenerationFrom);
-
-        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
-            headline.add(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_values));
+        if (productCmpt.allowGenerations()) {
+            addHeadlineForProductCmptWithGeneration(headline);
+        } else {
+            adHeadlineForProductCmptWithoutGeneration(headline);
         }
         return headline;
+    }
+
+    private void addHeadlineForProductCmptWithGeneration(List<String> headline) {
+        for (int i = 0; i < productCmpt.getNumOfGenerations(); i++) {
+            headline.add(getContext().getSimpleDateFormat().format(
+                    productCmpt.getProductCmptGeneration(i).getValidFrom().getTime()));
+        }
+    }
+
+    private void adHeadlineForProductCmptWithoutGeneration(List<String> headline) {
+        headline.add(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_values));
     }
 
     @Override
