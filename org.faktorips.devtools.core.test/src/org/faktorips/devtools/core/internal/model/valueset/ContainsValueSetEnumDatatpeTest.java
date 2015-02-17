@@ -16,7 +16,6 @@ import java.util.Collections;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -32,8 +31,6 @@ import org.junit.Test;
  * knows both the enum type as well as an enum content. The content is introduced in the same
  * project. {@link ValueSet#containsValueSet(org.faktorips.devtools.core.model.valueset.IValueSet)}
  * must return <code>true</code> in this case.
- * 
- * @see EnumTypeDatatypeAdapter#equalsForContainsValueSet(EnumTypeDatatypeAdapter)
  */
 public class ContainsValueSetEnumDatatpeTest extends AbstractIpsPluginTest {
 
