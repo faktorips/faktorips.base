@@ -19,9 +19,15 @@
 		«ELSE-»
 		 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", generationConceptNameSingular, productCmptClassNode.name, description)»
 		«ENDIF-»
+		«IF !productCmptType.changingOverTime-»
+		 * «localizedJDoc("DEPRECATED_CLASS", generationConceptNameSingular)»
+		«ENDIF-»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		«IF !productCmptType.changingOverTime-»
+		 @Deprecated
+		«ENDIF-»
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 

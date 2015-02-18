@@ -44,9 +44,21 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
             // check if the product component type was deleted is important as otherwise the
             // deletion of corresponding generated generation java files will no longer work
-            return !ipsSrcFile.exists() || isChangingOverTime(ipsSrcFile);
+            if (!ipsSrcFile.exists()) {
+                return true;
+            }
+            if (isChangingOverTime(ipsSrcFile)) {
+                return true;
+            }
+            // in case of that generated generation java class exist and corresponding product
+            // component type is not changing over time this generation class must be generated
+            // again and must be set as @Deprecated
+            if (getJavaFile(ipsSrcFile).exists() && !isChangingOverTime(ipsSrcFile)) {
+                return true;
+            }
         }
         return false;
+
     }
 
     private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {

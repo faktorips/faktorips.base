@@ -111,4 +111,5 @@ public class XProductCmptGenerationClass extends XProductClass {
 
         return optionalMethods;
     }
+
 }
