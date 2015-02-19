@@ -542,7 +542,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         protected abstract IIpsObjectGeneration getGeneration();
 
         public void update() {
-            if (getGeneration() == null) {
+            if (getGeneration() == null || !getGeneration().getTimedIpsObject().allowGenerations()) {
                 setText(null);
                 setToolTipText(null);
                 setEnabled(false);
