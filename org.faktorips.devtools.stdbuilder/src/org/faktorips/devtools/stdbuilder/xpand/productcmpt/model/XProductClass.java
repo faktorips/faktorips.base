@@ -360,6 +360,11 @@ public abstract class XProductClass extends XType {
                 getLanguageUsedInGeneratedSourceCode(), true);
     }
 
+    public String getGenerationConceptNamePlural() {
+        return getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(
+                getLanguageUsedInGeneratedSourceCode(), true);
+    }
+
     private IChangesOverTimeNamingConvention getChangesOverTimeNamingConvention() {
         IChangesOverTimeNamingConvention convention = getIpsProject()
                 .getChangesInTimeNamingConventionForGeneratedCode();

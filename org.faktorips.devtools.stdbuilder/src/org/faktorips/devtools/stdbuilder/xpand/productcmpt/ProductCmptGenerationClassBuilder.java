@@ -42,23 +42,28 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            // check if the product component type was deleted is important as otherwise the
-            // deletion of corresponding generated generation java files will no longer work
-            if (!ipsSrcFile.exists()) {
-                return true;
-            }
-            if (isChangingOverTime(ipsSrcFile)) {
-                return true;
-            }
-            // in case of that generated generation java class exist and corresponding product
-            // component type is not changing over time this generation class must be generated
-            // again and must be set as @Deprecated
-            if (getJavaFile(ipsSrcFile).exists() && !isChangingOverTime(ipsSrcFile)) {
-                return true;
-            }
+            return !isIpsSrcFileExistent(ipsSrcFile) || isChangingOverTime(ipsSrcFile)
+                    || isGenerateDeprecatedGeneration(ipsSrcFile);
         }
         return false;
 
+    }
+
+    /**
+     * Checks if the product component type was deleted is important as otherwise the deletion of
+     * corresponding generated generation java files will no longer work
+     */
+    private boolean isIpsSrcFileExistent(IIpsSrcFile ipsSrcFile) {
+        return ipsSrcFile.exists();
+    }
+
+    /**
+     * In case of that generated generation java class exist and corresponding product component
+     * type is not changing over time this generation class must be generated again and must be set
+     * as deprecated
+     */
+    private boolean isGenerateDeprecatedGeneration(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getJavaFile(ipsSrcFile).exists() && !isChangingOverTime(ipsSrcFile);
     }
 
     private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {

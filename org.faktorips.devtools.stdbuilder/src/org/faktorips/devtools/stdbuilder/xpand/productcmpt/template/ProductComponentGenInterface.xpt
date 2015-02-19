@@ -17,7 +17,7 @@
 		 * «localizedJDoc("INTERFACE", generationConceptNameSingular, productCmptClassNode.name)»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		«IF !productCmptType.changingOverTime-»
-		 * «localizedJDoc("DEPRECATED_INTERFACE", generationConceptNameSingular)»
+		 * «localizedJDoc("DEPRECATED_INTERFACE", generationConceptNamePlural)»
 		«ENDIF-»
 		 * @generated
 		 */
