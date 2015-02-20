@@ -47,4 +47,6 @@ public class Messages extends NLS {
 
     public static String DeltaType_multilingualMismatch;
 
+    public static String DeltaType_invalidGenerations;
+
 }

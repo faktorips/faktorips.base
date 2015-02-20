@@ -46,4 +46,6 @@ public class Messages extends NLS {
 
     public static String MultilingualMismatchEntry_convertToInternatlStringValue;
 
+    public static String InvalidGenerationsDeltaEntry_description;
+
 }

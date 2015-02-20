@@ -73,7 +73,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (getEditorInput() instanceof ProductCmptEditorInput) {
             ProductCmptEditorInput productCmptEditorInput = (ProductCmptEditorInput)getEditorInput();
             IProductCmptGeneration inputGeneration = productCmptEditorInput.getProductCmptGeneration();
-            if (inputGeneration != null) {
+            if (inputGeneration != null && !inputGeneration.isDeleted()) {
                 initialGeneration = inputGeneration;
             }
         }
@@ -224,8 +224,18 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     protected void refreshIncludingStructuralChanges() {
         getIpsSrcFile().getIpsObject();
+        fixActiveGeneration();
         if (getGenerationPropertiesPage() != null) {
             generationPropertiesPage.rebuildInclStructuralChanges();
+        }
+    }
+
+    /**
+     * Current generation may be deleted in delta fix.
+     */
+    void fixActiveGeneration() {
+        if (getActiveGeneration().isDeleted()) {
+            setActiveGeneration(getInitialGeneration());
         }
     }
 
