@@ -176,9 +176,9 @@
 	    «IF genInterface()»;«ELSE-»
 	    {
 	        «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
-	      «IF currentType.changingOverTime»
+	      «IF currentType.changingOverTime-»
 	        policy.«setProductCmptGeneration("this")»;
-	      «ENDIF» 
+	      «ENDIF-» 
 	        policy.«initialize()»;
 	        return policy;
 	    }
