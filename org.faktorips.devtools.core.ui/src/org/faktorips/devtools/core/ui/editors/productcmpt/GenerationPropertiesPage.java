@@ -270,15 +270,20 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     }
 
     private void createToolbar() {
-        gotoPreviousGenerationAction = createGotoPreviousGenerationAction();
-        gotoNextGenerationAction = createGotoNextGenerationAction();
-        Action openModelDescription = createOpenModelDescriptionAction();
-
         IToolBarManager toolbarManager = getManagedForm().getForm().getToolBarManager();
-        toolbarManager.add(gotoPreviousGenerationAction);
-        toolbarManager.add(gotoNextGenerationAction);
+        if (getProductCmpt().allowGenerations()) {
+            createGotoPreviousNextGenerationAction(toolbarManager);
+        }
+        Action openModelDescription = createOpenModelDescriptionAction();
         toolbarManager.add(openModelDescription);
         getManagedForm().getForm().updateToolBar();
+    }
+
+    private void createGotoPreviousNextGenerationAction(IToolBarManager toolbarManager) {
+        gotoNextGenerationAction = createGotoNextGenerationAction();
+        gotoPreviousGenerationAction = createGotoPreviousGenerationAction();
+        toolbarManager.add(gotoPreviousGenerationAction);
+        toolbarManager.add(gotoNextGenerationAction);
     }
 
     private GotoGenerationAction createGotoPreviousGenerationAction() {
@@ -542,7 +547,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         protected abstract IIpsObjectGeneration getGeneration();
 
         public void update() {
-            if (getGeneration() == null || !getGeneration().getTimedIpsObject().allowGenerations()) {
+            if (getGeneration() == null) {
                 setText(null);
                 setToolTipText(null);
                 setEnabled(false);
