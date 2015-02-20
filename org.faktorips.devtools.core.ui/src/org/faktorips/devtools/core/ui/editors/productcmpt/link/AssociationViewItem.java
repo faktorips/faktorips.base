@@ -15,6 +15,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.workbenchadapters.AssociationWorkbenchAdapter;
 
 /**
  * Item represents an association in the product component editor's link section. Holds a reference
@@ -25,10 +26,12 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 public class AssociationViewItem extends AbstractAssociationViewItem {
 
     private final IProductCmptTypeAssociation association;
+    private final AssociationWorkbenchAdapter workbenchAdapter;
 
     protected AssociationViewItem(IProductCmptLinkContainer container, IProductCmptTypeAssociation association) {
         super(container);
         this.association = association;
+        workbenchAdapter = new AssociationWorkbenchAdapter(association.getProductCmptType().isChangingOverTime());
     }
 
     @Override
@@ -42,7 +45,7 @@ public class AssociationViewItem extends AbstractAssociationViewItem {
 
     @Override
     public Image getImage() {
-        return IpsUIPlugin.getImageHandling().getImage(association);
+        return IpsUIPlugin.getImageHandling().getImage(workbenchAdapter.getImageDescriptor(association));
     }
 
     @Override

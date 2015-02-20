@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -246,7 +247,8 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     private void addChangingOverTimeDecorationIfRequired(EditField<?> editField, int pixelsToLeftUponControlFocus) {
-        if (propertyIsNotChangingOverTime()) {
+        IProductCmptType productCmptType = (IProductCmptType)getProperty().getParent();
+        if (productCmptType.isChangingOverTime() && propertyIsNotChangingOverTime()) {
             addChangingOverTimeDecoration(editField, pixelsToLeftUponControlFocus);
         }
     }
