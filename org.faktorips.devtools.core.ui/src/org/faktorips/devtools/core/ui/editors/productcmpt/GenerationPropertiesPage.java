@@ -346,9 +346,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             updateTabFolderName(getPartControl());
             resetDataChangeableState();
         }
-
-        gotoPreviousGenerationAction.update();
-        gotoNextGenerationAction.update();
+        if (getProductCmpt().allowGenerations()) {
+            gotoPreviousGenerationAction.update();
+            gotoNextGenerationAction.update();
+        }
     }
 
     IMessage getNotLatestGenerationMessage() {
