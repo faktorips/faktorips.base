@@ -42,32 +42,29 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
         if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
-            return !isIpsSrcFileExistent(ipsSrcFile) || isChangingOverTime(ipsSrcFile)
-                    || isGenerateDeprecatedGeneration(ipsSrcFile);
+            return isChangingOverTime(ipsSrcFile) || isGenerateDeprecatedGeneration(ipsSrcFile);
         }
         return false;
 
     }
 
     /**
-     * Checks if the product component type was deleted is important as otherwise the deletion of
-     * corresponding generated generation java files will no longer work
+     * Returns whether the product component type of the given {@link IIpsSrcFile} is changing over
+     * time or not. If the {@link IIpsSrcFile} does not exists we assume it was changing over time
+     * to delete previously created java files.
      */
-    private boolean isIpsSrcFileExistent(IIpsSrcFile ipsSrcFile) {
-        return ipsSrcFile.exists();
+    private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return !ipsSrcFile.exists()
+                || Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_CHANGING_OVER_TIME));
     }
 
     /**
-     * In case of that generated generation java class exist and corresponding product component
-     * type is not changing over time this generation class must be generated again and must be set
-     * as deprecated
+     * If the generated java file already exists we need to build the generation also if the type
+     * currently is not changing over time. This is used to generate &#64;deprecated annotations in
+     * the generation class files.
      */
     private boolean isGenerateDeprecatedGeneration(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return getJavaFile(ipsSrcFile).exists() && !isChangingOverTime(ipsSrcFile);
-    }
-
-    private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_CHANGING_OVER_TIME));
+        return getJavaFile(ipsSrcFile).exists();
     }
 
     @Override
