@@ -254,15 +254,20 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     private boolean isProductCmptTypeChangingOverTime() {
+        IProductCmptType productCmptType = findProductCmptType();
+        return productCmptType != null && productCmptType.isChangingOverTime();
+    }
+
+    private IProductCmptType findProductCmptType() {
+        IProductCmptType productCmptType = null;
         if (getProperty() != null) {
             try {
-                IProductCmptType productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
-                return productCmptType != null && productCmptType.isChangingOverTime();
+                productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
         }
-        return false;
+        return productCmptType;
     }
 
     private boolean propertyIsNotChangingOverTime() {
