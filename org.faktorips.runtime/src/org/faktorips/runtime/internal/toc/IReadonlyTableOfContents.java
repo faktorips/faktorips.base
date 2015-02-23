@@ -76,6 +76,11 @@ public interface IReadonlyTableOfContents {
     public Set<ModelTypeTocEntry> getModelTypeTocEntries();
 
     /**
+     * Returns all toc's entries representing enum contents.
+     */
+    public List<EnumContentTocEntry> getEnumContentTocEntries();
+
+    /**
      * Returns the toc entry representing enum contents for the specified implementation class.
      */
     public EnumContentTocEntry getEnumContentTocEntry(String className);

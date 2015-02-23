@@ -256,6 +256,11 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     @Override
+    public List<EnumContentTocEntry> getEnumContentTocEntries() {
+        return new ArrayList<EnumContentTocEntry>(enumContentImplClassTocEntryMap.values());
+    }
+
+    @Override
     public EnumContentTocEntry getEnumContentTocEntry(String className) {
         return enumContentImplClassTocEntryMap.get(className);
     }
