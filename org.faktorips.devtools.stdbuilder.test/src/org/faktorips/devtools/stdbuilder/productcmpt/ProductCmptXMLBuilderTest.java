@@ -176,6 +176,27 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertTargetRuntimeID(xmlFile, refTarget.getRuntimeId(), false);
     }
 
+    @Test
+    public void testDeleteDummyGenerationsIfProductCmptTypeDoesNotAllowGenerations() throws CoreException, IOException,
+            SAXException, ParserConfigurationException {
+        incrementalBuild();
+        assertNumberOfGenerations(productCmpt, 1);
+
+        productCmptType.setChangingOverTime(false);
+        productCmptType.getIpsSrcFile().save(true, null);
+        incrementalBuild();
+        assertNumberOfGenerations(productCmpt, 0);
+    }
+
+    private void assertNumberOfGenerations(IProductCmpt productCmpt, int expectedGenerationCount) throws SAXException,
+            IOException, ParserConfigurationException, CoreException {
+        IFile xmlFile = getXmlFile(productCmpt);
+        Document document = getDocumentBuilder().parse(xmlFile.getContents());
+        Element prodCmptElement = document.getDocumentElement();
+        List<Element> generationElements = getChildElementsByTagName(prodCmptElement, IProductCmptGeneration.TAG_NAME);
+        assertEquals(expectedGenerationCount, generationElements.size());
+    }
+
     private void assertTargetRuntimeID(IFile file, String expectedRuntimeId, boolean changingLinks)
             throws SAXException, IOException, ParserConfigurationException, CoreException {
         Document document = getDocumentBuilder().parse(file.getContents());
@@ -193,7 +214,7 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertEquals(expectedRuntimeId, linkElements.get(0).getAttribute("targetRuntimeId"));
     }
 
-    private List<Element> getChildElementsByTagName(Element prodCmptElement, String tagName) {
+    private static List<Element> getChildElementsByTagName(Element prodCmptElement, String tagName) {
         List<Element> linkElements = new ArrayList<Element>();
         NodeList nodeList = prodCmptElement.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {

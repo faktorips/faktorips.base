@@ -134,12 +134,25 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     /**
-     * Set the internal valid from date. Should only be updated by the first product component
-     * generation.
+     * Sets the new valid from date.
+     * <p>
+     * <strong>Attention:</strong> Conceptually, the valid from date of the first generation must be
+     * equal to the valid from date of the product component itself. Therefore, if clients call this
+     * method, then to achieve data consistency clients must set the valid from date of the first
+     * generation, too.
      * 
-     * @param validfrom The new valid form date
+     * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository this
+     *             product component belongs to does not allow to modify its contents
+     * 
+     * @see ProductComponentGeneration#setValidFrom(DateTime)
      */
-    void setValidFrom(DateTime validfrom) {
+    public void setValidFrom(DateTime validfrom) {
+        if (getRepository() != null && !getRepository().isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
+        if (validfrom == null) {
+            throw new NullPointerException();
+        }
         this.validFrom = validfrom;
     }
 

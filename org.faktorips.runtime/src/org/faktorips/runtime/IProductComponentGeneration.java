@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import org.faktorips.runtime.internal.DateTime;
 import org.faktorips.runtime.internal.ProductComponent;
 
 /**
@@ -60,12 +61,19 @@ public interface IProductComponentGeneration extends IRuntimeObject, IProductCom
     public IProductComponentGeneration getNextGeneration();
 
     /**
+     * Returns the date from which this generation is valid.
+     * 
+     * @return The valid from date of this generation
+     */
+    public DateTime getValidFrom();
+
+    /**
      * Returns the point in time this generation is valid from in the given time zone. This method
      * never returns <code>null</code>.
      * 
      * @throws NullPointerException if zone is <code>null</code>.
      */
-    Date getValidFrom(TimeZone zone);
+    public Date getValidFrom(TimeZone zone);
 
     /**
      * Returns the <code>IProductComponentLink</code> for the association with the given role name

@@ -31,6 +31,7 @@ import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.junit.Before;
 import org.junit.Test;
@@ -180,6 +181,40 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         when(repository.getLatestProductComponentGeneration(cmpt)).thenReturn(productComponentGeneration);
 
         assertEquals(productComponentGeneration, cmpt.getLatestProductComponentGeneration());
+    }
+
+    @Test
+    public void testSetValidFrom() {
+        when(repository.isModifiable()).thenReturn(true);
+
+        pc.setValidFrom(new DateTime(2010, 1, 1));
+
+        assertEquals(new DateTime(2010, 1, 1), pc.getValidFrom());
+    }
+
+    @Test
+    public void testSetValidFrom_noRuntimeRepository() {
+        pc = spy(pc);
+        when(pc.getRepository()).thenReturn(null);
+
+        pc.setValidFrom(new DateTime(2010, 1, 1));
+
+        assertEquals(new DateTime(2010, 1, 1), pc.getValidFrom());
+    }
+
+    @Test(expected = IllegalRepositoryModificationException.class)
+    public void testSetValidFrom_throwExceptionIfRepositoryNotModifiable() {
+        when(repository.isModifiable()).thenReturn(false);
+
+        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+
+        pc.setValidFrom(new DateTime(2010, 1, 1));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
+        when(repository.isModifiable()).thenReturn(true);
+        pc.setValidFrom(null);
     }
 
     /**

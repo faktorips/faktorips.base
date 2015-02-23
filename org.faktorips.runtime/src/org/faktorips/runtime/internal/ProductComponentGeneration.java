@@ -38,7 +38,7 @@ import org.w3c.dom.NodeList;
  * 
  */
 public abstract class ProductComponentGeneration extends RuntimeObject implements IProductComponentGeneration,
-        IXmlPersistenceSupport {
+IXmlPersistenceSupport {
 
     // the product component this generation belongs to.
     private ProductComponent productCmpt;
@@ -88,16 +88,27 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     }
 
     @Override
+    public DateTime getValidFrom() {
+        return validFrom;
+    }
+
+    @Override
     public final Date getValidFrom(TimeZone zone) {
         return validFrom.toDate(zone);
     }
 
     /**
      * Sets the new valid from date.
+     * <p>
+     * <strong>Attention:</strong> Conceptually, the valid from date of the first generation must be
+     * equal to the valid from date of the product component itself. Therefore, if clients call this
+     * method on the first generation of a product component, to achieve data consistency, clients
+     * must set the valid from date of the product component, too.
      * 
      * @throws org.faktorips.runtime.IllegalRepositoryModificationException if the repository this
-     *             generation belongs to does not allow to modify its contents. The method is
-     *             provided to ease the development of test cases.
+     *             generation belongs to does not allow to modify its contents
+     * 
+     * @see ProductComponent#setValidFrom(DateTime)
      */
     public void setValidFrom(DateTime newValidFrom) {
         if (getRepository() != null && !getRepository().isModifiable()) {
@@ -107,9 +118,6 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
             throw new NullPointerException();
         }
         validFrom = newValidFrom;
-        if (getPreviousGeneration() == null) {
-            productCmpt.setValidFrom(newValidFrom);
-        }
     }
 
     public IFormulaEvaluator getFormulaEvaluator() {

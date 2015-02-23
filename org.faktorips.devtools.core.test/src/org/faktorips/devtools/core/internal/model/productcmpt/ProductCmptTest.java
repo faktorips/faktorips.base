@@ -24,6 +24,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructureUsage;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -87,7 +89,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IIpsSrcFile srcFile;
     private IIpsProject ipsProject;
     private IPolicyCmptType policyCmptType;
-    private IProductCmptTypeAttribute attr;
+    private IProductCmptTypeAttribute attr1;
     private IProductCmptTypeAttribute attr2;
     private IProductCmptType type;
 
@@ -103,10 +105,45 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         type = newProductCmptType(ipsProject, "ProdType");
         policyCmptType = newPolicyCmptType(ipsProject, "PolType");
-        attr = new ProductCmptTypeAttribute(type, "IDAttr1");
-        attr.setName("TypeAttr1");
+        attr1 = new ProductCmptTypeAttribute(type, "IDAttr1");
+        attr1.setName("TypeAttr1");
         attr2 = new ProductCmptTypeAttribute(type, "IDAttr2");
         attr2.setName("TypeAttr2");
+    }
+
+    @Test
+    public void testGetChildrenThis_generationsAreAllowed() {
+        productCmpt.setProductCmptType(type.getQualifiedName());
+
+        IPropertyValue property1 = productCmpt.newPropertyValue(attr1);
+        IPropertyValue property2 = productCmpt.newPropertyValue(attr2);
+
+        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        association.setTarget(type.getQualifiedName());
+        association.setTargetRoleSingular("association");
+
+        IProductCmptLink link = productCmpt.newLink("association");
+        link.setTarget(productCmpt.getQualifiedName());
+
+        IIpsObjectGeneration generation = productCmpt.newGeneration();
+
+        // Verify
+        List<IIpsElement> children = Arrays.asList(productCmpt.getChildrenThis());
+        assertTrue(children.contains(property1));
+        assertTrue(children.contains(property2));
+        assertTrue(children.contains(link));
+        assertTrue(children.contains(generation));
+    }
+
+    @Test
+    public void testGetChildrenThis_generationsAreNotAllowed() {
+        type.setChangingOverTime(false);
+        productCmpt.setProductCmptType(type.getQualifiedName());
+
+        IIpsObjectGeneration generation = productCmpt.newGeneration();
+
+        List<IIpsElement> children = Arrays.asList(productCmpt.getChildrenThis());
+        assertFalse(children.contains(generation));
     }
 
     @Test
@@ -377,7 +414,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml() {
+    public void testToXml() throws CoreException {
         productCmpt.setProductCmptType("MotorProduct");
         productCmpt.setRuntimeId("MotorProductId");
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
@@ -386,7 +423,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.newGeneration();
 
         Element element = productCmpt.toXml(newDocument());
-        ProductCmpt copy = new ProductCmpt();
+        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
         copy.initFromXml(element);
         assertEquals("MotorProduct", copy.getProductCmptType());
         assertEquals("MotorProductId", copy.getRuntimeId());
@@ -405,12 +442,12 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_AttributeValues() {
+    public void testToXml_AttributeValues() throws CoreException {
         attr2.setChangingOverTime(false);
         IPropertyValue propertyValue = productCmpt.newPropertyValue(attr2);
         Element xml = productCmpt.toXml(newDocument());
 
-        ProductCmpt copy = new ProductCmpt();
+        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
         copy.initFromXml(xml);
         IAttributeValue copyAttributeValue = copy.getAttributeValue(attr2.getName());
         assertNotNull(copyAttributeValue);
@@ -425,11 +462,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_TableContentUsage() {
+    public void testToXml_TableContentUsage() throws CoreException {
         productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), "tc"));
         Element xml = productCmpt.toXml(newDocument());
 
-        ProductCmpt copy = new ProductCmpt();
+        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
         copy.initFromXml(xml);
         assertEquals(1, productCmpt.getTableContentUsages().length);
     }
@@ -442,25 +479,25 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testToXml_Formula() {
+    public void testToXml_Formula() throws CoreException {
         IFormula newFormula = (IFormula)productCmpt.newPropertyValue(new ProductCmptTypeMethod(
                 mock(IProductCmptType.class), "Id"));
         newFormula.setExpression("anyExpression");
         Element xml = productCmpt.toXml(newDocument());
 
-        ProductCmpt copy = new ProductCmpt();
+        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
         copy.initFromXml(xml);
         assertEquals(1, productCmpt.getFormulas().length);
     }
 
     @Test
-    public void testToXml_Links() {
+    public void testToXml_Links() throws CoreException {
         attr2.setChangingOverTime(false);
         IProductCmptLink newLink = productCmpt.newLink("newLink");
         newLink.setTarget("target");
         Element xml = productCmpt.toXml(newDocument());
 
-        ProductCmpt copy = new ProductCmpt();
+        ProductCmpt copy = newProductCmpt(ipsProject, "TestProductCopy");
         copy.initFromXml(xml);
         List<IProductCmptLink> linksCopy = copy.getLinksAsList("newLink");
         assertNotNull(linksCopy);
@@ -747,7 +784,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(0,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
-        productCmpt.newPropertyValue(attr);
+        productCmpt.newPropertyValue(attr1);
         assertEquals(1,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
@@ -781,17 +818,17 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetAttributeValue() {
-        productCmpt.newPropertyValue(attr);
+        productCmpt.newPropertyValue(attr1);
         assertNotNull(productCmpt.getAttributeValue("TypeAttr1"));
         assertNull(productCmpt.getAttributeValue("NonExistentAttr"));
     }
 
     @Test
     public void testHasPropertyValue() {
-        assertFalse(productCmpt.hasPropertyValue(attr));
+        assertFalse(productCmpt.hasPropertyValue(attr1));
 
-        productCmpt.newPropertyValue(attr);
-        assertTrue(productCmpt.hasPropertyValue(attr));
+        productCmpt.newPropertyValue(attr1);
+        assertTrue(productCmpt.hasPropertyValue(attr1));
     }
 
     @Test

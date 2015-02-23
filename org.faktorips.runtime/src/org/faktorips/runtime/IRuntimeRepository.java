@@ -235,7 +235,7 @@ public interface IRuntimeRepository {
      * Returns the product component generation that follows the provided generation with respect to
      * its valid from date.
      * <p>
-     * If there is no further generation this method return <code>null</code>.
+     * If there is no further generation this method returns <code>null</code>.
      * 
      * @return The next generation with respect to the valid from date.
      * @throws IllegalArgumentException if the given product component generation could not be found
@@ -247,7 +247,7 @@ public interface IRuntimeRepository {
      * Returns the product component generation that is prior to the provided generation with
      * respect to its valid from date.
      * <p>
-     * If there is no previous generation this method return <code>null</code>.
+     * If there is no previous generation this method returns <code>null</code>.
      * 
      * @return The previous generation with respect to the valid from date.
      * @throws IllegalArgumentException if the given product component generation could not be found

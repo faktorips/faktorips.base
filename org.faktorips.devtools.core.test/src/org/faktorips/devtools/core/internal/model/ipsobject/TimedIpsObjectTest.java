@@ -46,6 +46,17 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetValidFrom_FromFirstGeneration() {
+        IIpsObjectGeneration gen = timedObject.newGeneration();
+
+        GregorianCalendar newValidFrom = new GregorianCalendar(1000, 1, 1);
+        timedObject.setValidFrom(newValidFrom);
+
+        assertEquals(newValidFrom, timedObject.getValidFrom());
+        assertEquals(newValidFrom, gen.getValidFrom());
+    }
+
+    @Test
     public void testGetChildren() throws CoreException {
         assertEquals(0, timedObject.getChildren().length);
         IIpsObjectGeneration gen = timedObject.newGeneration();
