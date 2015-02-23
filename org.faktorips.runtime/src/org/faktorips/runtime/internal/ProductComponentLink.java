@@ -105,10 +105,12 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         this.cardinality = cardinality;
     }
 
+    @Override
     public CardinalityRange getCardinality() {
         return cardinality;
     }
 
+    @Override
     public void initFromXml(Element element) {
         associationName = element.getAttribute("association");
         targetId = element.getAttribute("targetRuntimeId");
@@ -126,6 +128,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         initExtensionPropertiesFromXml(element);
     }
 
+    @Override
     public Element toXml(Document document) {
         Element linkElement = document.createElement("Link");
         linkElement.setAttribute("association", getAssociationName());
@@ -139,6 +142,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         return linkElement;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T getTarget() {
         try {
@@ -148,10 +152,12 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         }
     }
 
+    @Override
     public String getTargetId() {
         return targetId;
     }
 
+    @Override
     public String getAssociationName() {
         return associationName;
     }
@@ -170,6 +176,7 @@ public class ProductComponentLink<T extends IProductComponent> extends RuntimeOb
         return sb.toString();
     }
 
+    @Override
     public IProductComponentLinkSource getSource() {
         return source;
     }

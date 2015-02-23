@@ -10,7 +10,6 @@
 
 package org.faktorips.runtime.internal.toc;
 
-
 /**
  * This special kind of {@link ModelTypeTocEntry} represents an entry for product component types
  * 

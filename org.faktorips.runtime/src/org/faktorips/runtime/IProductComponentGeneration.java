@@ -40,6 +40,7 @@ public interface IProductComponentGeneration extends IRuntimeObject, IProductCom
      * Returns the repository this product component generation belongs to. This method never
      * returns <code>null</code>.
      */
+    @Override
     public IRuntimeRepository getRepository();
 
     /**

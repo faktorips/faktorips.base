@@ -22,6 +22,7 @@ package org.faktorips.runtime;
  */
 public class DeltaComputationOptionsByPosition implements IDeltaComputationOptions {
 
+    @Override
     public ComputationMethod getMethod(String association) {
         return ComputationMethod.BY_POSITION;
     }
@@ -29,6 +30,7 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
     /**
      * Returns <code>true</code> if the specified object references are identical.
      */
+    @Override
     public boolean isSame(IModelObject object1, IModelObject object2) {
         return object1 == object2;
     }
@@ -36,6 +38,7 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
     /**
      * Returns <code>false</code>.
      */
+    @Override
     public boolean ignore(Class<?> clazz, String property) {
         return false;
     }

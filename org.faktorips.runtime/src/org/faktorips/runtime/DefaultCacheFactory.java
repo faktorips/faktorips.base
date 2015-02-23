@@ -79,6 +79,7 @@ public class DefaultCacheFactory extends AbstractCacheFactory {
         return initSize;
     }
 
+    @Override
     public <K, V> Memoizer<K, V> createCache(IComputable<K, V> computable) {
         Integer initSize = initialSizeMap.get(computable.getValueClass());
         if (initSize == null) {

@@ -279,6 +279,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
 
     static class InverseLongComparator implements Comparator<Long> {
 
+        @Override
         public int compare(Long first, Long second) {
             return -1 * first.compareTo(second);
         }

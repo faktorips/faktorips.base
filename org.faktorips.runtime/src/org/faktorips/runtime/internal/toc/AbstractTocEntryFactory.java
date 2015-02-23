@@ -30,6 +30,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implements ITocEntryFactory<T> {
 
+    @Override
     public T createFromXml(Element entryElement) {
         String ipsObjectId = entryElement.getAttribute(PROPERTY_IPS_OBJECT_ID);
         String ipsObjectQualifiedName = entryElement.getAttribute(PROPERTY_IPS_OBJECT_QNAME);
@@ -85,6 +86,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
             return newEntry;
         }
 
+        @Override
         public String getXmlTag() {
             return ProductCmptTocEntry.XML_TAG;
         }
@@ -103,6 +105,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                     implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return TableContentTocEntry.XML_TAG;
         }
@@ -120,6 +123,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
             return new TestCaseTocEntry(ipsObjectId, ipsObjectQualifiedName, xmlResourceName, implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return TestCaseTocEntry.TEST_XML_TAG;
         }
@@ -138,6 +142,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                     implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return EnumContentTocEntry.XML_TAG;
         }
@@ -155,6 +160,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
             return new EnumXmlAdapterTocEntry(ipsObjectId, ipsObjectQualifiedName, implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return EnumXmlAdapterTocEntry.XML_TAG;
         }
@@ -176,6 +182,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                     implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return FormulaTestTocEntry.FORMULA_TEST_XML_TAG;
         }
@@ -194,6 +201,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                     implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return ProductCmptTypeTocEntry.XML_TAG;
         }
@@ -212,6 +220,7 @@ public abstract class AbstractTocEntryFactory<T extends TocEntryObject> implemen
                     implementationClassName);
         }
 
+        @Override
         public String getXmlTag() {
             return PolicyCmptTypeTocEntry.XML_TAG;
         }

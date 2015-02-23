@@ -30,6 +30,7 @@ public class ClassLoaderProductDataProviderFactory implements IProductDataProvid
         this.classLoader = classLoader;
     }
 
+    @Override
     public IProductDataProvider newInstance() {
         ClassLoaderDataSource dataSource = new ClassLoaderDataSource(classLoader);
         return new ClassLoaderProductDataProvider(dataSource, tocResourcePath, checkForModifications);

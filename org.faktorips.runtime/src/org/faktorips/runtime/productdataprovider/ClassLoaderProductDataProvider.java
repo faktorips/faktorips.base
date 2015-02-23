@@ -14,6 +14,7 @@ import java.io.InputStream;
 
 import org.faktorips.runtime.IVersionChecker;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
@@ -21,7 +22,6 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntryObject;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -52,6 +52,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
 
         super(new IVersionChecker() {
 
+            @Override
             public boolean isCompatibleVersion(String oldVersion, String newVersion) {
                 return oldVersion.equals(newVersion);
             }
@@ -79,10 +80,12 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
                 .getProductDataVersion();
     }
 
+    @Override
     public Element getProductCmptData(ProductCmptTocEntry tocEntry) throws DataModifiedException {
         return getDocumentElement(tocEntry);
     }
 
+    @Override
     public Element getTestcaseElement(TestCaseTocEntry tocEntry) throws DataModifiedException {
         return getDocumentElement(tocEntry);
     }
@@ -94,6 +97,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         return documentElement;
     }
 
+    @Override
     public Element getProductCmptGenerationData(GenerationTocEntry tocEntry) throws DataModifiedException {
         Element docElement = getDocumentElement(tocEntry.getParent().getXmlResourceName());
         NodeList nl = docElement.getChildNodes();
@@ -112,10 +116,12 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         throw new RuntimeException("Can't find the generation for the TOC entry '" + tocEntry + "'");
     }
 
+    @Override
     public InputStream getTableContentAsStream(TableContentTocEntry tocEntry) throws DataModifiedException {
         return getResourceAsStream(tocEntry);
     }
 
+    @Override
     public InputStream getEnumContentAsStream(EnumContentTocEntry tocEntry) throws DataModifiedException {
         return getResourceAsStream(tocEntry);
     }
@@ -135,10 +141,12 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         return element;
     }
 
+    @Override
     public synchronized ReadonlyTableOfContents getToc() {
         return toc;
     }
 
+    @Override
     public String getVersion() {
         return tocFileLastModified;
     }
@@ -149,6 +157,7 @@ public class ClassLoaderProductDataProvider extends AbstractProductDataProvider 
         }
     }
 
+    @Override
     public <T> Element getTocEntryData(CustomTocEntryObject<T> tocEntry) throws DataModifiedException {
         return getDocumentElement(tocEntry);
     }

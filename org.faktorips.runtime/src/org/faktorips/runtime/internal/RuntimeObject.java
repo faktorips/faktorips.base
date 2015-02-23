@@ -66,10 +66,12 @@ public class RuntimeObject implements IRuntimeObject {
         }
     }
 
+    @Override
     public Set<String> getExtensionPropertyIds() {
         return extPropertyValues.keySet();
     }
 
+    @Override
     public Object getExtensionPropertyValue(String propertyId) {
         return extPropertyValues.get(propertyId);
     }

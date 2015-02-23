@@ -58,22 +58,27 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * {@inheritDoc}
      */
+    @Override
     public IConfigurableModelObject createPolicyComponent() {
         throw new RuntimeException("Product component does not configure a policy component.");
     }
 
+    @Override
     public final IProductComponent getProductComponent() {
         return productCmpt;
     }
 
+    @Override
     public final IProductComponentGeneration getPreviousGeneration() {
         return getRepository().getPreviousProductComponentGeneration(this);
     }
 
+    @Override
     public final IProductComponentGeneration getNextGeneration() {
         return getRepository().getNextProductComponentGeneration(this);
     }
 
+    @Override
     public IRuntimeRepository getRepository() {
         return productCmpt.getRepository();
     }
@@ -82,6 +87,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         return validFrom.toDate(zone).getTime();
     }
 
+    @Override
     public final Date getValidFrom(TimeZone zone) {
         return validFrom.toDate(zone);
     }
@@ -101,6 +107,9 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
             throw new NullPointerException();
         }
         validFrom = newValidFrom;
+        if (getPreviousGeneration() == null) {
+            productCmpt.setValidFrom(newValidFrom);
+        }
     }
 
     public IFormulaEvaluator getFormulaEvaluator() {
@@ -115,6 +124,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * 
      * @throws NullPointerException if genElement is <code>null</code>.
      */
+    @Override
     public void initFromXml(Element genElement) {
         if (validFrom != null && getRepository() != null && !getRepository().isModifiable()) {
             throw new IllegalRepositoryModificationException();
@@ -272,10 +282,12 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
         this.productCmpt = productCmpt;
     }
 
+    @Override
     public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
         throw new RuntimeException("Not implemented yet.");
     }
 
+    @Override
     public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
         throw new RuntimeException("Not implemented yet.");
     }
@@ -283,6 +295,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isValidationRuleActivated(String ruleName) {
         ValidationRuleConfiguration ruleConfig = nameToValidationRuleConfigMap.get(ruleName);
         return ruleConfig != null && ruleConfig.isActive();
@@ -296,6 +309,7 @@ public abstract class ProductComponentGeneration extends RuntimeObject implement
      * 
      * @param document a document, that can be used to create XML elements.
      */
+    @Override
     public Element toXml(Document document) {
         Element genElement = document.createElement("ProductComponentGeneration");
         writePropertiesToXml(genElement);

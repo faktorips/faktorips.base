@@ -26,6 +26,7 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Returns the repository this product component belongs to. This method never returns
      * <code>null</code>.
      */
+    @Override
     public IRuntimeRepository getRepository();
 
     /**

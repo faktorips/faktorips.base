@@ -64,6 +64,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
         cache = new ConcurrentHashMap<K, Future<SoftValue<V>>>(initSize, loadFactor, concurrencyLevel);
     }
 
+    @Override
     public V compute(final K key) throws InterruptedException {
         // In case of SoftReference is garbaged or CancellationException we want to try again - in
         // all other cases we exit with return or throwing an exception
@@ -72,6 +73,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
             if (future == null) {
                 Callable<SoftValue<V>> eval = new Callable<SoftValue<V>>() {
 
+                    @Override
                     public SoftValue<V> call() throws Exception {
                         V computed = computable.compute(key);
                         if (computed == null) {
@@ -138,6 +140,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
         }
     }
 
+    @Override
     public Class<? super V> getValueClass() {
         return computable.getValueClass();
     }

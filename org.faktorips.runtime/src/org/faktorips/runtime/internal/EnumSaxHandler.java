@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.faktorips.values.InternationalString;
 import org.faktorips.values.DefaultInternationalString;
+import org.faktorips.values.InternationalString;
 import org.faktorips.values.LocalizedString;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;

@@ -18,6 +18,7 @@ public abstract class AbstractComputable<K, V> implements IComputable<K, V> {
         this.valueClass = valueClass;
     }
 
+    @Override
     public Class<? super V> getValueClass() {
         return valueClass;
     }

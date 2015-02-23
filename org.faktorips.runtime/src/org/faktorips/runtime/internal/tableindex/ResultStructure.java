@@ -62,6 +62,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
         return Collections.unmodifiableSet(resultSet);
     }
 
+    @Override
     public void merge(ResultStructure<R> otherStructure) {
         resultSet.addAll(otherStructure.resultSet);
     }
@@ -102,6 +103,7 @@ public class ResultStructure<R> extends SearchStructure<R> implements MergeAndCo
         return "ResultStructure [resultSet=" + resultSet + "]";
     }
 
+    @Override
     public ResultStructure<R> copy() {
         return new ResultStructure<R>(this.resultSet);
     }

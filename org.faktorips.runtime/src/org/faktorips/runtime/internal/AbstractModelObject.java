@@ -65,6 +65,7 @@ public abstract class AbstractModelObject implements IModelObject {
         // empty default implementation
     }
 
+    @Override
     public MessageList validate(IValidationContext context) {
         if (context == null) {
             throw new NullPointerException();

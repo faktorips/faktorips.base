@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.faktorips.runtime.internal.AbstractClassLoadingRuntimeRepository;
 import org.faktorips.runtime.internal.DateTime;
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
@@ -26,7 +27,6 @@ import org.faktorips.runtime.internal.toc.ReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
 import org.faktorips.runtime.internal.toc.TocEntry;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -332,14 +332,17 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
             throw new RuntimeException("Error creating document builder.", e1);
         }
         builder.setErrorHandler(new ErrorHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void fatalError(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void warning(SAXParseException e) throws SAXException {
                 throw e;
             }
@@ -347,6 +350,7 @@ public class ClassloaderRuntimeRepository extends AbstractClassLoadingRuntimeRep
         return builder;
     }
 
+    @Override
     public boolean isModifiable() {
         return false;
     }

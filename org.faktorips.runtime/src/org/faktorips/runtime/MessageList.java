@@ -282,6 +282,7 @@ public class MessageList implements Serializable, Iterable<Message> {
     /**
      * Returns an iterator over the messages in this list.
      */
+    @Override
     public Iterator<Message> iterator() {
         return messages.iterator();
     }

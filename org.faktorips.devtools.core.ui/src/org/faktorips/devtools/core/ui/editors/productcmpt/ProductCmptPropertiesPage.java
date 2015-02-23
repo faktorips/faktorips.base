@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "PolicyCmpt"; //$NON-NLS-1$
+    final static String PAGE_ID = "ProductCmpt"; //$NON-NLS-1$
 
     public ProductCmptPropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.ProductCmptPropertiesPage_pageTitle);

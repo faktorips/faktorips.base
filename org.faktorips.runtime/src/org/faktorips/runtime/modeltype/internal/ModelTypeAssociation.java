@@ -59,31 +59,38 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         this.modelType = modelType;
     }
 
+    @Override
     public String getLabelForPlural(Locale locale) {
         String label = pluralLabelsByLocale.get(locale);
         return IpsStringUtils.isEmpty(label) ? getNamePlural() : label;
     }
 
+    @Override
     public IModelType getModelType() {
         return modelType;
     }
 
+    @Override
     public AssociationType getAssociationType() {
         return associationType;
     }
 
+    @Override
     public int getMaxCardinality() {
         return maxCardinality;
     }
 
+    @Override
     public int getMinCardinality() {
         return minCardinality;
     }
 
+    @Override
     public String getNamePlural() {
         return namePlural;
     }
 
+    @Override
     public IModelType getTarget() throws ClassNotFoundException {
         if (targetJavaClassName != null && targetJavaClassName.length() > 0) {
             Class<?> targetClass = loadClass(targetJavaClassName);
@@ -92,6 +99,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return null;
     }
 
+    @Override
     public List<IModelObject> getTargetObjects(IModelObject source) {
         List<IModelObject> targets = new ArrayList<IModelObject>();
         try {
@@ -133,6 +141,7 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
                 source), e);
     }
 
+    @Override
     public boolean isProductRelevant() {
         return isProductRelevant;
     }
@@ -288,26 +297,32 @@ public class ModelTypeAssociation extends AbstractModelElement implements IModel
         return sb.toString();
     }
 
+    @Override
     public String getUsedName() {
         return isTargetRolePluralRequired ? getNamePlural() : getName();
     }
 
+    @Override
     public boolean isDerivedUnion() {
         return isDerivedUnion;
     }
 
+    @Override
     public boolean isSubsetOfADerivedUnion() {
         return isSubsetOfADerivedUnion;
     }
 
+    @Override
     public String getInverseAssociation() {
         return inverseAssociation;
     }
 
+    @Override
     public String getMatchingAssociationName() {
         return matchingAssociationName;
     }
 
+    @Override
     public String getMatchingAssociationSource() {
         return matchingAssociationSource;
     }

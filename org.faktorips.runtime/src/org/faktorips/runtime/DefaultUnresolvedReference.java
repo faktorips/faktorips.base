@@ -58,6 +58,7 @@ public class DefaultUnresolvedReference implements IUnresolvedReference {
                 + targetClass.getName());
     }
 
+    @Override
     public void resolve(IObjectReferenceStore store) throws Exception {
         Object target = store.getObject(targetClass, targetId);
         establishMethod.invoke(sourceObj, new Object[] { target });

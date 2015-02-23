@@ -159,6 +159,7 @@ public class DateTime implements Comparable<DateTime>, Serializable {
                 + ':' + (second < 10 ? "0" + second : second);
     }
 
+    @Override
     public int compareTo(DateTime other) {
         if (year != other.year) {
             return year - other.year;
