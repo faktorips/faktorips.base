@@ -233,7 +233,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     /**
      * Current generation may be deleted in delta fix.
      */
-    void fixActiveGeneration() {
+    private void fixActiveGeneration() {
         if (getActiveGeneration().isDeleted()) {
             setActiveGeneration(getInitialGeneration());
         }
