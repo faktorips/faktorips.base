@@ -195,7 +195,7 @@
 		«IF oneToMany-»
         	return «fieldName».get(productComponent.getId());
         «ELSE-»
-        	return «fieldName».«getTargetId()».equals(productComponent.getId()) ? «fieldName» : null;
+        	return «fieldName» != null && «fieldName».«getTargetId()».equals(productComponent.getId()) ? «fieldName» : null;
         «ENDIF-»
     }
     «ENDIF-»
