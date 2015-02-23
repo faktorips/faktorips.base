@@ -11,7 +11,9 @@
 package org.faktorips.runtime;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.faktorips.runtime.internal.DateTime;
 
@@ -44,6 +46,24 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Returns the version id that identifies this product component in its kind.
      */
     public String getVersionId();
+
+    /**
+     * Returns the date from which this product component is valid. If this product component
+     * supports generations this is the same valid from date as the first generation.
+     * 
+     * @return The valid from date of this product component
+     */
+    public DateTime getValidFrom();
+
+    /**
+     * Returns the date from which this product component is valid as a {@link Date}. If this
+     * product component supports generations this is the same valid from date as the first
+     * generation.
+     * 
+     * @param timeZone The time zone which is used to calculate the returned valid from date.
+     * @return The valid from date of this product component
+     */
+    public Date getValidFrom(TimeZone timeZone);
 
     /**
      * Returns the date when this product component expires. Returning <code>null</code> means no

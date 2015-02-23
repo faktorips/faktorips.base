@@ -318,11 +318,11 @@ public class ComponentPropertiesSection extends IpsSection {
         }
 
         public GregorianCalendar getValidFrom() {
-            return productCmpt.getGenerationsOrderedByValidDate()[0].getValidFrom();
+            return productCmpt.getValidFrom();
         }
 
         public void setValidFrom(GregorianCalendar validFrom) {
-            productCmpt.getGenerationsOrderedByValidDate()[0].setValidFrom(validFrom);
+            productCmpt.setValidFrom(validFrom);
             /*
              * Update enabled state only. The rest of the fields will be updates automatically.
              */

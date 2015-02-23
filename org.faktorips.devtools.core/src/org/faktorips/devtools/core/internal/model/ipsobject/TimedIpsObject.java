@@ -282,6 +282,16 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
+    public GregorianCalendar getValidFrom() {
+        return getFirstGeneration().getValidFrom();
+    }
+
+    @Override
+    public void setValidFrom(GregorianCalendar validFrom) {
+        getFirstGeneration().setValidFrom(validFrom);
+    }
+
+    @Override
     public GregorianCalendar getValidTo() {
         return validTo;
     }

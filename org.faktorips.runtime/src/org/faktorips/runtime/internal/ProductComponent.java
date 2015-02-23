@@ -12,13 +12,16 @@ package org.faktorips.runtime.internal;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.formula.IFormulaEvaluator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,25 +37,43 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     private static final String IS_NULL = "isNull";
 
+    private static final String VALID_FROM = "validFrom";
+
     private static final String VALID_TO = "validTo";
 
-    // the component's id that identifies it in the repository
+    /**
+     * The component's id that identifies it in the repository
+     */
     private String id;
 
-    // The repository the component uses to resolve references to other components.
+    /**
+     * The repository the component uses to resolve references to other components.
+     */
     private transient IRuntimeRepository repository;
 
-    // the component's kindId
+    /**
+     * The component's kindId
+     */
     private String productKindId;
 
-    // the component's versionId
+    /**
+     * The component's versionId
+     */
     private String versionId;
 
-    // the date at which this product component expires. Set to null indicates no
-    // limitation
+    /**
+     * The date from which this product component is valid.
+     */
+    private DateTime validFrom;
+
+    /**
+     * The date at which this product component expires. Set to null indicates no limitation
+     */
     private DateTime validTo;
 
-    // handles the formulas
+    /**
+     * Handles the formulas
+     */
     private final FormulaHandler formulaHandler;
 
     /**
@@ -87,30 +108,59 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         this.formulaHandler = new FormulaHandler(this, this.repository);
     }
 
+    @Override
     public String getKindId() {
         return productKindId;
     }
 
+    @Override
     public String getVersionId() {
         return versionId;
     }
 
+    @Override
     public final String getId() {
         return id;
     }
 
+    @Override
+    public DateTime getValidFrom() {
+        return validFrom;
+    }
+
+    @Override
+    public Date getValidFrom(TimeZone zone) {
+        return validFrom.toDate(zone);
+    }
+
+    /**
+     * Set the internal valid from date. Should only be updated by the first product component
+     * generation.
+     * 
+     * @param validfrom The new valid form date
+     */
+    void setValidFrom(DateTime validfrom) {
+        this.validFrom = validfrom;
+    }
+
+    @Override
     public DateTime getValidTo() {
         return validTo;
     }
 
     public void setValidTo(DateTime validTo) {
+        if (getRepository() != null && !getRepository().isModifiable()) {
+            throw new IllegalRepositoryModificationException();
+        }
         this.validTo = validTo;
     }
 
+    @Override
     public IRuntimeRepository getRepository() {
         return repository;
     }
 
+    @Override
     public IProductComponentGeneration getGenerationBase(Calendar effectiveDate) {
         if (!isChangingOverTime()) {
             throw new UnsupportedOperationException();
@@ -118,6 +168,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         return getRepository().getProductComponentGeneration(id, effectiveDate);
     }
 
+    @Override
     public IProductComponentGeneration getLatestProductComponentGeneration() {
         if (!isChangingOverTime()) {
             throw new UnsupportedOperationException();
@@ -134,7 +185,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * 
      * @throws NullPointerException if cmptElement is <code>null</code>.
      */
+    @Override
     public void initFromXml(Element cmptElement) {
+        String validFromValue = cmptElement.getAttribute(VALID_FROM);
+        validFrom = DateTime.parseIso(validFromValue);
         Element validToNode = (Element)cmptElement.getElementsByTagName(VALID_TO).item(0);
         if (validToNode == null || Boolean.parseBoolean(validToNode.getAttribute(IS_NULL))) {
             validTo = null;
@@ -214,6 +268,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      * 
      * @param document a document, that can be used to create XML elements.
      */
+    @Override
     public Element toXml(Document document) {
         return toXml(document, true);
     }
@@ -231,6 +286,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
      */
     public Element toXml(Document document, boolean includeGenerations) {
         Element prodCmptElement = document.createElement("ProductComponent");
+        writeValidFromToXml(prodCmptElement);
         writeValidToToXml(prodCmptElement);
         writePropertiesToXml(prodCmptElement);
         writeTableUsagesToXml(prodCmptElement);
@@ -245,6 +301,10 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
             }
         }
         return prodCmptElement;
+    }
+
+    private void writeValidFromToXml(Element prodCmptElement) {
+        prodCmptElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
     }
 
     private void writeValidToToXml(Element prodCmptElement) {
@@ -296,10 +356,12 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
         ValueToXmlHelper.addTableUsageToElement(element, structureUsage, tableContentName);
     }
 
+    @Override
     public IProductComponentLink<? extends IProductComponent> getLink(String linkName, IProductComponent target) {
         return null;
     }
 
+    @Override
     public List<IProductComponentLink<? extends IProductComponent>> getLinks() {
         return new ArrayList<IProductComponentLink<? extends IProductComponent>>();
     }

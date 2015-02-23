@@ -63,6 +63,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -501,12 +502,34 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        IIpsElement[] childrenThis = super.getChildrenThis();
         List<IIpsElement> children = new ArrayList<IIpsElement>();
-        children.addAll(Arrays.asList(childrenThis));
+        if (allowGenerations()) {
+            IIpsElement[] childrenThis = super.getChildrenThis();
+            children.addAll(Arrays.asList(childrenThis));
+        }
         children.addAll(propertyValueCollection.getAllPropertyValues());
         children.addAll(getLinksAsList());
         return children.toArray(new IIpsElement[children.size()]);
+    }
+
+    @Override
+    public Element toXml(Document doc) {
+        Element xmlElement = super.toXml(doc);
+        if (!allowGenerations()) {
+            writeDummyGeneration(doc, xmlElement);
+        }
+        return xmlElement;
+    }
+
+    /**
+     * For compatibility reasons we always keep one generation also if the type does not support
+     * generations (is not changing over time). In the {@link #getChildrenThis()} method we hide
+     * this dummy generation. Hence the toXml framework methods do not write it automatically.
+     */
+    private void writeDummyGeneration(Document doc, Element rootElement) {
+        IProductCmptGeneration generation = getFirstGeneration();
+        Element generationElement = generation.toXml(doc);
+        rootElement.appendChild(generationElement);
     }
 
     @Override
