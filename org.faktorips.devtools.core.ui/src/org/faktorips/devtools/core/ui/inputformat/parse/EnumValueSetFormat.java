@@ -12,7 +12,11 @@
 package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
@@ -47,16 +51,16 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         if (values.length == 0) {
             return EnumValueSet.ENUM_VALUESET_EMPTY;
         }
-        IInputFormat<String> inputFormat = getInputFormat();
-        StringBuffer buffer = new StringBuffer();
-        for (String id : values) {
-            if (buffer.length() > 0) {
-                buffer.append(" " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+
+        final IInputFormat<String> inputFormat = getInputFormat();
+        List<String> formattedValues = Lists.transform(Arrays.asList(values), new Function<String, String>() {
+            @Override
+            public String apply(String value) {
+                return inputFormat.format(value);
             }
-            String formatedEnumText = inputFormat.format(id);
-            buffer.append(formatedEnumText);
-        }
-        return buffer.toString();
+        });
+
+        return StringUtils.join(formattedValues, " " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
