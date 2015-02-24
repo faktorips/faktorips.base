@@ -70,7 +70,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     }
 
     @Override
-    public IModelTypeAssociation getAssociation(String name) throws IllegalArgumentException {
+    public IModelTypeAssociation getAssociation(String name) {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);
         if (finder.association == null) {
@@ -86,12 +86,12 @@ public class ModelType extends AbstractModelElement implements IModelType {
     }
 
     @Override
-    public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException {
+    public IModelTypeAttribute getDeclaredAttribute(int index) {
         return attributes.get(index);
     }
 
     @Override
-    public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException {
+    public IModelTypeAttribute getDeclaredAttribute(String name) {
         IModelTypeAttribute attr = attributesByName.get(name);
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
@@ -100,7 +100,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
     }
 
     @Override
-    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException {
+    public IModelTypeAttribute getAttribute(String name) {
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
         if (finder.attribute == null) {
