@@ -29,6 +29,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
@@ -36,7 +37,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
@@ -46,6 +47,7 @@ import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.GregorianCalendarFormat;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * Section to display and edit the product attributes
@@ -302,7 +304,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
     }
 
-    public static class ComponentPropertiesPMO extends PresentationModelObject {
+    public static class ComponentPropertiesPMO extends IpsObjectPartPmo {
 
         public static final String PROPERTY_VALID_FROM_ENABLED = "validFromEnabled"; //$NON-NLS-1$
 
@@ -312,9 +314,12 @@ public class ComponentPropertiesSection extends IpsSection {
 
         private boolean productCmptTypeChangingOverTime;
 
-        public ComponentPropertiesPMO(IProductCmpt product) {
-            this.productCmpt = product;
-            productCmptTypeChangingOverTime = product.allowGenerations();
+        public ComponentPropertiesPMO(IProductCmpt productCmpt) {
+            super(productCmpt);
+            this.productCmpt = productCmpt;
+            productCmptTypeChangingOverTime = productCmpt.allowGenerations();
+            mapValidationMessagesFor(new ObjectProperty(productCmpt, IIpsObjectGeneration.PROPERTY_VALID_FROM)).to(
+                    new ObjectProperty(this, PROPERTY_VALID_FROM));
         }
 
         public GregorianCalendar getValidFrom() {
