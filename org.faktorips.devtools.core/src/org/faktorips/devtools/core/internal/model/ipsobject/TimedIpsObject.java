@@ -306,8 +306,32 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        validateValidFrom(list, ipsProject);
+        validateValidTo(list);
+    }
+
+    private void validateValidFrom(MessageList list, IIpsProject ipsProject) throws CoreException {
+        // make sure to validate the valid from date which is stored on the first generation.
+        // this won't happen automatically if the object does not allow generations.
+        // (because the first generation won't be included in the children of the object)
+        if (!allowGenerations()) {
+            MessageList generationMessages = getFirstGeneration().validate(ipsProject);
+            // Hide away the fact that the invalid object is the generation
+            for (Message message : generationMessages) {
+                String[] invalidProperties = new String[message.getInvalidObjectProperties().length];
+                for (int i = 0; i < message.getInvalidObjectProperties().length; i++) {
+                    invalidProperties[i] = message.getInvalidObjectProperties()[i].getProperty();
+                }
+                Message reroutedMessage = new Message(message.getCode(), message.getText(), message.getSeverity(),
+                        this, invalidProperties);
+                list.add(reroutedMessage);
+            }
+        }
+    }
+
+    private void validateValidTo(MessageList list) {
         if (getValidTo() == null) {
-            // empty validTo - valid forever.
+            // empty validTo - valid forever
             return;
         }
 

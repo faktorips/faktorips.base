@@ -322,11 +322,11 @@ public class ComponentPropertiesSection extends IpsSection {
         }
 
         public void setValidFrom(GregorianCalendar validFrom) {
-            productCmpt.setValidFrom(validFrom);
-            /*
-             * Update enabled state only. The rest of the fields will be updates automatically.
-             */
-            notifyListeners(new java.beans.PropertyChangeEvent(this, PROPERTY_VALID_FROM_ENABLED, null, null));
+            // We expect valid from to be set to a meaningful date!
+            // -> Simply don't accept the value if the user provides null as input
+            if (validFrom != null) {
+                productCmpt.setValidFrom(validFrom);
+            }
         }
 
         public boolean isValidFromEnabled() {
