@@ -317,7 +317,9 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
     }
 
     private void writeValidFromToXml(Element prodCmptElement) {
-        prodCmptElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
+        if (validFrom != null) {
+            prodCmptElement.setAttribute(VALID_FROM, validFrom.toIsoFormat());
+        }
     }
 
     private void writeValidToToXml(Element prodCmptElement) {

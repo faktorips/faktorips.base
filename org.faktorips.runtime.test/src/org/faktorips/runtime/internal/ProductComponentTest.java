@@ -226,7 +226,6 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         public ProductComponentTestClass(IRuntimeRepository repository) {
             super(repository, "id", "productKindId", "versionId");
-            setValidFrom(new DateTime(2010, 1, 1));
         }
 
         @Override
