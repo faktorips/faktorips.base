@@ -32,8 +32,11 @@ import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
+import org.faktorips.devtools.core.internal.model.enums.EnumContent;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -55,6 +58,10 @@ import org.w3c.dom.Element;
 
 public class EnumValueSetTest extends AbstractIpsPluginTest {
 
+    private static final String MY_ENUM_CONTENT = "MyEnumContent";
+
+    private static final String MY_EXTENSIBLE_ENUM = "MyExtensibleEnum";
+
     private DefaultEnumType gender;
 
     private IPolicyCmptType policyCmptType;
@@ -64,6 +71,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
     private IConfigElement ce;
 
     private IIpsProject ipsProject;
+    private IIpsProject productIpsProject;
     private IProductCmptGeneration generation;
 
     @Override
@@ -74,7 +82,11 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         new DefaultEnumValue(gender, "male");
         new DefaultEnumValue(gender, "female");
 
-        ipsProject = super.newIpsProject("TestProject");
+        ipsProject = newIpsProject();
+        productIpsProject = newIpsProject();
+        IIpsObjectPath ipsObjectPath = productIpsProject.getIpsObjectPath();
+        ipsObjectPath.newIpsProjectRefEntry(ipsProject);
+        productIpsProject.setIpsObjectPath(ipsObjectPath);
         policyCmptType = newPolicyCmptType(ipsProject, "test.Base");
         attr = policyCmptType.newPolicyCmptTypeAttribute();
         attr.setName("attr");
@@ -84,12 +96,18 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         productCmptType = newProductCmptType(ipsProject, "test.Product");
         productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
 
-        IProductCmpt cmpt = newProductCmpt(ipsProject, "test.Product");
+        IProductCmpt cmpt = newProductCmpt(productIpsProject, "test.Product");
         cmpt.setProductCmptType(productCmptType.getQualifiedName());
         generation = (IProductCmptGeneration)cmpt.newGeneration(new GregorianCalendar(20006, 4, 26));
 
         ce = generation.newConfigElement();
         ce.setPolicyCmptTypeAttribute("attr");
+
+        EnumType enumType = newEnumType(ipsProject, MY_EXTENSIBLE_ENUM);
+        enumType.setExtensible(true);
+        enumType.setEnumContentName(MY_ENUM_CONTENT);
+        EnumContent newEnumContent = newEnumContent(productIpsProject, MY_ENUM_CONTENT);
+        newEnumContent.setEnumType(MY_EXTENSIBLE_ENUM);
     }
 
     @Test
@@ -273,6 +291,27 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         subset.setContainsNull(true);
 
         assertFalse(superset.containsValueSet(subset));
+    }
+
+    @Test
+    public void testContainsValueSet_differentProjects() {
+        EnumValueSet superset = new EnumValueSet(attr, "id1");
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+
+        boolean containsValueSet = superset.containsValueSet(subset);
+
+        assertTrue(containsValueSet);
+    }
+
+    @Test
+    public void testContainsValueSet_differentProjects_extensibleEnum() {
+        attr.setDatatype(MY_EXTENSIBLE_ENUM);
+        EnumValueSet superset = new EnumValueSet(attr, "id1");
+        EnumValueSet subset = new EnumValueSet(ce, "id2");
+
+        boolean containsValueSet = superset.containsValueSet(subset);
+
+        assertTrue(containsValueSet);
     }
 
     @Test

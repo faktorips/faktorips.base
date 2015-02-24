@@ -62,7 +62,6 @@ import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.builder.IpsBuilder;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.DynamicValueDatatype;
 import org.faktorips.devtools.core.internal.model.ExtensionFunctionResolversCache;
 import org.faktorips.devtools.core.internal.model.IpsElement;
 import org.faktorips.devtools.core.internal.model.IpsModel;
@@ -148,7 +147,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private IFile propertyFile;
 
-    private UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
+    private final UnqualifiedNameCache unqualifiedNameCache = new UnqualifiedNameCache(this);
+
+    private final TableContentsStructureCache tableContentsStructureCache = new TableContentsStructureCache(this);
 
     /**
      * Constructor needed for <code>IProject.getNature()</code> and
@@ -192,7 +193,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsProjectProperties getProperties() {
         if (TRACE_IPSPROJECT_PROPERTIES) {
             System.out
-                    .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
+            .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
         }
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
@@ -526,34 +527,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return file.equals(ipsObject.getIpsSrcFile());
     }
 
-    /**
-     * @deprecated use IIpsProjectProperties to change the project properties
-     */
-    @Deprecated
-    @Override
-    public void setCurrentArtefactBuilderSet(String id) {
-        IIpsProjectProperties properties = getProperties();
-        properties.setBuilderSetId(id);
-        saveProjectProperties(properties);
-    }
-
     public void setValueDatatypes(String[] ids) {
         IIpsProjectProperties properties = getProperties();
         properties.setPredefinedDatatypesUsed(ids);
         saveProjectProperties(properties);
-    }
-
-    /**
-     * @deprecated use IIpsProjectProperties to change the project properties
-     */
-    @Deprecated
-    @Override
-    public void setValueDatatypes(ValueDatatype[] types) {
-        String[] ids = new String[types.length];
-        for (int i = 0; i < types.length; i++) {
-            ids[i] = types[i].getQualifiedName();
-        }
-        setValueDatatypes(ids);
     }
 
     @Override
@@ -916,55 +893,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
         return findIpsSrcFile(new QualifiedNameType(qualifiedName, type));
     }
 
-    /**
-     * @deprecated use this{@link #findIpsSrcFiles(IpsObjectType)} instead
-     */
-    @Override
-    @Deprecated
-    public IIpsObject[] findIpsObjects(IpsObjectType type) {
-        return filesToIpsObjects(findIpsSrcFiles(type));
-    }
-
-    /**
-     * Returns all IpsObjects within this IpsProject and the IpsProjects this one depends on.
-     * 
-     * @deprecated use this{@link #findAllIpsSrcFiles(List)} instead
-     */
-    @Override
-    @Deprecated
-    public void findAllIpsObjects(List<IIpsObject> result) {
-        // this is not the most efficient implementation, however, you should use
-        // findIpsSrcFiles anyway!
-        List<IIpsSrcFile> files = new ArrayList<IIpsSrcFile>();
-        findAllIpsSrcFiles(files);
-        for (IIpsSrcFile file : files) {
-            IIpsObject ipsObject = null;
-            if (file.exists()) {
-                ipsObject = file.getIpsObject();
-                if (ipsObject != null) {
-                    result.add(ipsObject);
-                }
-            }
-        }
-    }
-
-    private IIpsObject[] filesToIpsObjects(IIpsSrcFile[] files) {
-        // this is not the most effizient implementation, however, you should use
-        // findIpsSrcFiles anyway!
-        List<IIpsObject> objects = new ArrayList<IIpsObject>(files.length);
-        for (IIpsSrcFile file : files) {
-            IIpsObject ipsObject = null;
-            if (file.exists()) {
-                ipsObject = file.getIpsObject();
-                if (ipsObject != null) {
-                    objects.add(ipsObject);
-                }
-            }
-        }
-
-        return objects.toArray(new IIpsObject[objects.size()]);
-    }
-
     @SuppressWarnings("unchecked")
     private <T extends IIpsObject> List<T> filesToIpsObjects(List<IIpsSrcFile> files, Class<? extends T> clazz) {
 
@@ -1017,17 +945,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
 
     private void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType ipsObjectType) {
         result.addAll(getIpsObjectPathInternal().findIpsSrcFiles(ipsObjectType));
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     * @deprecated use findAllIpsSrcFiles(IpsObjectType... ipsObjectTypes)
-     */
-    @Override
-    @Deprecated
-    public void findAllIpsSrcFiles(List<IIpsSrcFile> result, IpsObjectType[] ipsObjectTypes) {
-        result.addAll(findAllIpsSrcFilesInternal(ipsObjectTypes));
     }
 
     protected List<IIpsSrcFile> findAllIpsSrcFilesInternal(IpsObjectType... ipsObjectTypesVarArg) {
@@ -1354,17 +1271,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IProductCmpt[] findAllProductCmpts(IProductCmptType productCmptType, boolean includeSubtypes)
-            throws CoreException {
-        List<IProductCmpt> result = new ArrayList<IProductCmpt>();
-        IIpsSrcFile[] files = findAllProductCmptSrcFiles(productCmptType, includeSubtypes);
-        for (IIpsSrcFile iIpsSrcFile : files) {
-            result.add((IProductCmpt)iIpsSrcFile.getIpsObject());
-        }
-        return result.toArray(new IProductCmpt[result.size()]);
-    }
-
-    @Override
     public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeCmptsForSubtypes)
             throws CoreException {
 
@@ -1434,7 +1340,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return ipsSrcFiles;
         }
 
-        return getIpsModel().getTableContentsValidationCache().getTableContents(structure.getIpsSrcFile());
+        return getTableContentsStructureCache().getTableContents(structure.getIpsSrcFile());
+    }
+
+    public TableContentsStructureCache getTableContentsStructureCache() {
+        return tableContentsStructureCache;
     }
 
     @Override
@@ -1592,17 +1502,6 @@ public class IpsProject extends IpsElement implements IIpsProject {
     @Override
     public IProductCmptNamingStrategy getProductCmptNamingStrategy() {
         return getPropertiesInternal().getProductCmptNamingStrategy();
-    }
-
-    /**
-     * @deprecated Use {@link org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties} to
-     *             change the project properties.
-     */
-    @Deprecated
-    @Override
-    public void addDynamicValueDataType(DynamicValueDatatype newDatatype) {
-        (getPropertiesInternal()).addDefinedDatatype(newDatatype);
-        saveProjectProperties(getProperties());
     }
 
     @Override
@@ -1987,6 +1886,14 @@ public class IpsProject extends IpsElement implements IIpsProject {
             root.delete();
         }
         getCorrespondingResource().delete(true, null);
+        unqualifiedNameCache.dispose();
+        tableContentsStructureCache.dispose();
+    }
+
+    @Override
+    public void clearCaches() {
+        unqualifiedNameCache.clear();
+        tableContentsStructureCache.clear();
     }
 
     @Override

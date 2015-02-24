@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +41,8 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
     private final String referencedName;
 
     private final String name;
+
+    private List<Datatype> cachedArgTypes;
 
     /**
      * @param tableContentsQName cannot be null
@@ -91,8 +95,20 @@ public class TableAccessFunctionFlFunctionAdapter extends AbstractFlFunctionAdap
 
     @Override
     public Datatype[] getArgTypes() {
-        List<Datatype> argTypes = fct.findArgTypes();
+        List<Datatype> argTypes = findArgTypes();
         return argTypes.toArray(new Datatype[argTypes.size()]);
+    }
+
+    private List<Datatype> findArgTypes() {
+        if (cachedArgTypes == null) {
+            ArrayList<Datatype> newCachedArgTypes = new ArrayList<Datatype>();
+            IIpsProject project = getIpsProject();
+            for (String argType : fct.getArgTypes()) {
+                newCachedArgTypes.add(project.findValueDatatype(argType));
+            }
+            cachedArgTypes = Collections.unmodifiableList(newCachedArgTypes);
+        }
+        return cachedArgTypes;
     }
 
     protected ITableAccessFunction getTableAccessFunction() {

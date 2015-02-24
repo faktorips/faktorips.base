@@ -18,10 +18,12 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.AssertionFailedException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProject;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -35,7 +37,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class SingleTableContentsValidatorTest {
 
     @Mock
-    private IpsProject ipsProject;
+    private IpsProject ipsProjectBase;
+    @Mock
+    private IpsProject ipsProjectA;
 
     @Mock
     private TableStructure tableStructure;
@@ -49,21 +53,22 @@ public class SingleTableContentsValidatorTest {
 
     @Before
     public void setup() {
-        validator = new SingleTableContentsValidator(tableStructure);
-        when(tableStructure.getIpsProject()).thenReturn(ipsProject);
+        validator = new SingleTableContentsValidator(ipsProjectBase, tableStructure);
+        when(contentsSrcFile1.getIpsProject()).thenReturn(ipsProjectBase);
+        when(contentsSrcFile2.getIpsProject()).thenReturn(ipsProjectBase);
     }
 
     @Test
     public void testValidateIfPossible() {
-        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
-        MessageList messageList = new SingleTableContentsValidator(tableStructure).validateIfPossible();
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
+        MessageList messageList = new SingleTableContentsValidator(ipsProjectBase, tableStructure).validateIfPossible();
 
         assertEquals(1, messageList.size());
     }
 
     @Test
     public void testValidateIfPossible_TableStructureIsNull() {
-        MessageList messageList = new SingleTableContentsValidator(null).validateIfPossible();
+        MessageList messageList = new SingleTableContentsValidator(ipsProjectBase, null).validateIfPossible();
 
         assertNotNull(messageList);
         assertEquals(0, messageList.size());
@@ -76,26 +81,26 @@ public class SingleTableContentsValidatorTest {
 
     @Test
     public void testCanValidate_TableStructureIsNull() {
-        assertFalse(new SingleTableContentsValidator(null).canValidate());
+        assertFalse(new SingleTableContentsValidator(ipsProjectBase, null).canValidate());
     }
 
     @Test
     public void testValidateAndAppendMessages_SingleContent_TooManyContents() {
-        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
 
         validateAndAssertMessageCount(1);
     }
 
     @Test
     public void testValidateAndAppendMessages_SingleContent_NoContents() {
-        setUpContentSrcFiles();
+        setUpContentSrcFiles(ipsProjectBase);
 
         validateAndAssertMessageCount(0);
     }
 
     @Test
     public void testValidateAndAppendMessages_SingleContent_SingleContents() {
-        setUpContentSrcFiles(contentsSrcFile1);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1);
 
         validateAndAssertMessageCount(0);
     }
@@ -103,7 +108,7 @@ public class SingleTableContentsValidatorTest {
     @Test
     public void testValidateAndAppendMessages_MultiContent_TooManyContents() {
         when(tableStructure.isMultipleContentsAllowed()).thenReturn(true);
-        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
 
         validateAndAssertMessageCount(0);
     }
@@ -111,7 +116,7 @@ public class SingleTableContentsValidatorTest {
     @Test
     public void testValidateAndAppendMessages_MultiContent_NoContents() {
         when(tableStructure.isMultipleContentsAllowed()).thenReturn(true);
-        setUpContentSrcFiles();
+        setUpContentSrcFiles(ipsProjectBase);
 
         validateAndAssertMessageCount(0);
     }
@@ -119,7 +124,7 @@ public class SingleTableContentsValidatorTest {
     @Test
     public void testValidateAndAppendMessages_MultiContent_SingleContents() {
         when(tableStructure.isMultipleContentsAllowed()).thenReturn(true);
-        setUpContentSrcFiles(contentsSrcFile1);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1);
 
         validateAndAssertMessageCount(0);
     }
@@ -129,7 +134,7 @@ public class SingleTableContentsValidatorTest {
         when(tableStructure.getName()).thenReturn("tableStructure");
         when(contentsSrcFile1.getIpsObjectName()).thenReturn("contentsSrcFile1");
         when(contentsSrcFile2.getIpsObjectName()).thenReturn("contentsSrcFile2");
-        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
 
         MessageList messageList = new MessageList();
         validator.validateAndAppendMessages(messageList);
@@ -140,7 +145,7 @@ public class SingleTableContentsValidatorTest {
 
     @Test
     public void testForbidsAdditionalContents_multiContentStructure() {
-        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
         when(tableStructure.isMultipleContentsAllowed()).thenReturn(true);
 
         assertFalse(validator.forbidsAdditionalContents());
@@ -148,33 +153,54 @@ public class SingleTableContentsValidatorTest {
 
     @Test
     public void testForbidsAdditionalContents_singleContentStructure_noContents() {
-        setUpContentSrcFiles();
+        setUpContentSrcFiles(ipsProjectBase);
 
         assertFalse(validator.forbidsAdditionalContents());
     }
 
     @Test
     public void testForbidsAdditionalContents_singleContentStructure_oneContents() {
-        setUpContentSrcFiles(contentsSrcFile1);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1);
 
         assertTrue(validator.forbidsAdditionalContents());
     }
 
     @Test
     public void testForbidsAdditionalContents_singleContentStructure_multipleContents() {
-        setUpContentSrcFiles(contentsSrcFile1, contentsSrcFile2);
+        setUpContentSrcFiles(ipsProjectBase, contentsSrcFile1, contentsSrcFile2);
 
         assertTrue(validator.forbidsAdditionalContents());
     }
 
     @Test
     public void testForbidsAdditionalContents_nullStructure() {
-        validator = new SingleTableContentsValidator(null);
+        validator = new SingleTableContentsValidator(ipsProjectBase, null);
 
         assertTrue(validator.forbidsAdditionalContents());
     }
 
-    private void setUpContentSrcFiles(IIpsSrcFile... srcFileArray) {
+    @Test
+    public void testValidateIfPossible_contentInDifferentProject() {
+        setUpContentSrcFiles(ipsProjectA, contentsSrcFile1);
+        validator = new SingleTableContentsValidator(ipsProjectA, tableStructure);
+
+        assertTrue(validator.forbidsAdditionalContents());
+    }
+
+    @Test
+    public void testValidateIfPossible_ignoresContentInDifferentProject() {
+        setUpContentSrcFiles(ipsProjectA, contentsSrcFile1);
+        validator = new SingleTableContentsValidator(ipsProjectBase, tableStructure);
+
+        assertFalse(validator.forbidsAdditionalContents());
+    }
+
+    @Test(expected = AssertionFailedException.class)
+    public void testConstructor_projectNull() {
+        validator = new SingleTableContentsValidator(null, tableStructure);
+    }
+
+    private void setUpContentSrcFiles(IIpsProject ipsProject, IIpsSrcFile... srcFileArray) {
         when(ipsProject.findAllTableContentsSrcFiles(tableStructure)).thenReturn(createList(srcFileArray));
     }
 

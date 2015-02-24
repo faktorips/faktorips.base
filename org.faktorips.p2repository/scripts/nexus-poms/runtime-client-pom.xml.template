@@ -4,12 +4,12 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.faktorips</groupId>
-	<artifactId>faktorips-runtime</artifactId>
+	<artifactId>faktorips-runtime-client</artifactId>
 	<version>@version@</version>
 	<packaging>jar</packaging>
 	
-	<name>Faktor-IPS Runtime</name>
-	<description>Runtime library for Faktor-IPS</description>
+	<name>Faktor-IPS Runtime for Clients</name>
+	<description>Client Runtime library for Faktor-IPS</description>
 	<url>http://faktorzehn.org</url>
 
 	<scm>
@@ -39,11 +39,6 @@
            <artifactId>faktorips-valuetypes</artifactId>
            <version>@version@</version>
         </dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
-		</dependency>
     </dependencies>
 
 </project>

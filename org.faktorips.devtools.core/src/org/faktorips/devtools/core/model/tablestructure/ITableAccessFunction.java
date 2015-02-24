@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model.tablestructure;
 
 import java.util.List;
 
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
 /**
@@ -45,8 +44,6 @@ public interface ITableAccessFunction {
      * Returns the function's arguments' types.
      */
     public List<String> getArgTypes();
-
-    public List<Datatype> findArgTypes();
 
     /**
      * Returns the description of this function

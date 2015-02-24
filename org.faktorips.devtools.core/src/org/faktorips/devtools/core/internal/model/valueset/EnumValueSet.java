@@ -158,12 +158,13 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public boolean containsValueSet(IValueSet subset) {
-        ValueDatatype datatype = getValueDatatype();
+        IIpsProject contextProject = subset.getIpsProject();
+        ValueDatatype datatype = findValueDatatype(contextProject);
 
         if (!(subset instanceof EnumValueSet)) {
             return false;
         }
-        if (!datatypesCompatible(subset, datatype)) {
+        if (!datatypesCompatible(subset, datatype, contextProject)) {
             return false;
         }
         if (!isContainsNull() && subset.isContainsNull()) {
@@ -175,27 +176,21 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (subset.isAbstract()) {
             return false;
         }
-        return containsAllValues(subset);
+        return containsAllValues(subset, contextProject);
     }
 
-    private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype) {
-        ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
-        if (enumDatatypeEqualForContainsValueSet(datatype, subDatatype)) {
-            return true;
-        }
-        if (datatype == null || !datatype.equals(subDatatype)) {
-            return false;
-        }
-        return true;
+    private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype, IIpsProject contextProject) {
+        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        return ObjectUtils.equals(datatype, subDatatype);
     }
 
-    private boolean containsAllValues(IValueSet subset) {
+    private boolean containsAllValues(IValueSet subset, IIpsProject contextProject) {
         IEnumValueSet enumSubset = (IEnumValueSet)subset;
         String[] subsetValues = enumSubset.getValues();
 
         for (String value : subsetValues) {
             try {
-                if (!containsValue(value, getIpsProject())) {
+                if (!containsValue(value, contextProject)) {
                     return false;
                 }
             } catch (CoreException e) {
@@ -318,7 +313,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        ValueDatatype datatype = getValueDatatype();
+        ValueDatatype datatype = findValueDatatype(ipsProject);
 
         if (datatype != null && datatype.isPrimitive() && isContainsNull()) {
             String text = Messages.ValueSet_msgNullNotSupported;
@@ -335,7 +330,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     @Override
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException {
         MessageList list = new MessageList();
-        validateValueWithoutDuplicateCheck(list, index, getValueDatatype());
+        validateValueWithoutDuplicateCheck(list, index, findValueDatatype(ipsProject));
         if (list.getSeverity() != Message.ERROR) {
             checkForDuplicate(list, index);
         }
@@ -416,7 +411,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public String toShortString() {
-        ValueDatatype type = getValueDatatype();
+        ValueDatatype type = findValueDatatype(getIpsProject());
         if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
             List<String> result = new ArrayList<String>(values.size());
             for (String id : values) {

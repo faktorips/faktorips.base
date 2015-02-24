@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +37,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.testcase.IpsTestRunner;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -329,9 +329,12 @@ public class TestSelectionComposite extends Composite {
      * @throws CoreException if getting objects from a <code>IIpsProject</code> fails.
      */
     public IIpsObject[] getAllIpsTestObjects() throws CoreException {
+        List<IIpsSrcFile> allIpsSrcFiles = project.findAllIpsSrcFiles(IpsObjectType.TEST_CASE,
+                IpsObjectType.PRODUCT_CMPT);
         List<IIpsObject> list = new ArrayList<IIpsObject>();
-        list.addAll(new ArrayList<IIpsObject>(Arrays.asList(project.findIpsObjects(IpsObjectType.TEST_CASE))));
-        list.addAll(new ArrayList<IIpsObject>(Arrays.asList(project.findIpsObjects(IpsObjectType.PRODUCT_CMPT))));
+        for (IIpsSrcFile ipsSrcFile : allIpsSrcFiles) {
+            list.add(ipsSrcFile.getIpsObject());
+        }
         return list.toArray(new IIpsObject[list.size()]);
     }
 

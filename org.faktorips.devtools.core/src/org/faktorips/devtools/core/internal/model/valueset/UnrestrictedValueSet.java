@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
@@ -102,14 +103,11 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public boolean containsValueSet(IValueSet subset) {
-        ValueDatatype datatype = getValueDatatype();
-        ValueDatatype subDatatype = ((ValueSet)subset).getValueDatatype();
+        IIpsProject contextProject = subset.getIpsProject();
+        ValueDatatype datatype = findValueDatatype(contextProject);
+        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
 
-        if (enumDatatypeEqualForContainsValueSet(datatype, subDatatype)) {
-            return true;
-        }
-
-        if (datatype == null || !datatype.equals(subDatatype)) {
+        if (!ObjectUtils.equals(datatype, subDatatype)) {
             return false;
         }
 
@@ -152,7 +150,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
 
     @Override
     public boolean isContainsNull() {
-        return containsNull && isContainingNullAllowed();
+        return containsNull && isContainingNullAllowed(getIpsProject());
     }
 
     @Override

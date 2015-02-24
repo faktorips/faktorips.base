@@ -494,9 +494,9 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         el.setPolicyCmptTypeAttribute("attrX");
 
         RangeValueSet range = new RangeValueSet(el, "10");
-        range.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
+        assertEquals(range.findValueDatatype(ipsProject).getQualifiedName(), Datatype.DECIMAL.getQualifiedName());
         RangeValueSet subset = new RangeValueSet(el, "20");
-        subset.getValueDatatype().getQualifiedName().equals(Datatype.DECIMAL.getQualifiedName());
+        assertEquals(subset.findValueDatatype(ipsProject).getQualifiedName(), Datatype.DECIMAL.getQualifiedName());
 
         assertTrue(range.containsValueSet(subset));
     }
