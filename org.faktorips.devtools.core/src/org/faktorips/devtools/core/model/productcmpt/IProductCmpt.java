@@ -62,8 +62,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Validation message code that indicates if the product component has invalid generations. This
-     * could be in case where the product component does not allow generations, but still has
-     * generations.
+     * could be in case when the product component does not allow, but still has generations.
      */
     public static final String MSGCODE_INVALID_GENERATIONS = MSGCODE_PREFIX + "InvalidGenerations"; //$NON-NLS-1$
 

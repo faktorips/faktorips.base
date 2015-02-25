@@ -234,12 +234,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
         for (IDeltaEntry entry : entries) {
-            validateNotConfiguredProperties(entry, list);
-            validateInvalidGenerations(entry, list);
+            validateNotConfiguredProperties(list, entry);
+            validateInvalidGenerations(list, entry);
         }
     }
 
-    private void validateNotConfiguredProperties(IDeltaEntry entry, MessageList list) {
+    private void validateNotConfiguredProperties(MessageList list, IDeltaEntry entry) {
         if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
             String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
                     ((IDeltaEntryForProperty)entry).getDescription());
@@ -247,7 +247,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
     }
 
-    private void validateInvalidGenerations(IDeltaEntry entry, MessageList list) {
+    private void validateInvalidGenerations(MessageList list, IDeltaEntry entry) {
         if (entry.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
             String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
                     .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
