@@ -274,6 +274,23 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_InvalidGenerations() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        type.setChangingOverTime(true);
+        ProductCmpt product = newProductCmpt(type, "products.Testproduct");
+        product.newGeneration(new GregorianCalendar(2015, 0, 1));
+        product.newGeneration(new GregorianCalendar(2015, 1, 1));
+        product.newGeneration(new GregorianCalendar(2016, 7, 28));
+
+        MessageList ml = product.validate(type.getIpsProject());
+        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INVALID_GENERATIONS));
+
+        type.setChangingOverTime(false);
+        ml = product.validate(type.getIpsProject());
+        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INVALID_GENERATIONS));
+    }
+
+    @Test
     // Suppressed "unused" warning for improved readability
     @SuppressWarnings("unused")
     public void testFindPropertyValues() throws CoreException {

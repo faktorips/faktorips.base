@@ -42,7 +42,9 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -204,6 +206,20 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         list.add(list2);
 
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
+
+        validateInvalidGenerations(list, ipsProject);
+    }
+
+    private void validateInvalidGenerations(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
+        IDeltaEntry[] entries = delta.getEntries();
+        for (IDeltaEntry entrie : entries) {
+            if (entrie.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
+                String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
+                list.add(new Message(MSGCODE_INVALID_GENERATIONS, text, Message.WARNING, this));
+            }
+        }
     }
 
     @Override
