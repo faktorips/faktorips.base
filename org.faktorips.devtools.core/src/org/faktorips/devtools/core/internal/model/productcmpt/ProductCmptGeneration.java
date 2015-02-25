@@ -509,9 +509,9 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         IDeltaEntry[] entries = delta.getEntries();
         for (IDeltaEntry entrie : entries) {
             if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-                String text = NLS.bind(Messages.ProductCmptGeneration_msgAttributeWithMissingConfigElement,
+                String text = NLS.bind(Messages.ProductCmptGeneration_msgPropertyNotConfigured,
                         ((IDeltaEntryForProperty)entrie).getDescription());
-                list.add(new Message(MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT, text, Message.WARNING, this));
+                list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
             }
         }
 

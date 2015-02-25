@@ -274,6 +274,21 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_PropertyNotConfigured() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        IProductCmptTypeAttribute attribute = type.newProductCmptTypeAttribute("attribtue");
+        attribute.setChangingOverTime(true);
+        ProductCmpt product = newProductCmpt(type, "products.Testproduct");
+
+        MessageList ml = product.validate(type.getIpsProject());
+        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_PROPERTY_NOT_CONFIGURED));
+
+        attribute.setChangingOverTime(false);
+        ml = product.validate(type.getIpsProject());
+        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_PROPERTY_NOT_CONFIGURED));
+    }
+
+    @Test
     public void testValidate_InvalidGenerations() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         type.setChangingOverTime(true);

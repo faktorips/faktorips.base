@@ -68,6 +68,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public static final String MSGCODE_INVALID_GENERATIONS = MSGCODE_PREFIX + "InvalidGenerations"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the product component type for this product
+     * component contains an attribute, method or tableStructureUsage that has no corresponding
+     * property configured in this generation.
+     */
+    public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
+
+    /**
      * Returns the product component's generation at the specified index.
      * 
      * @throws IndexOutOfBoundsException if the index is out of bounds.

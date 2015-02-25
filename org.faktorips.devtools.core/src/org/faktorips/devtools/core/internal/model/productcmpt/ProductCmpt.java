@@ -45,6 +45,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -207,7 +208,21 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
 
+        validateNotConfiguredProperties(list, ipsProject);
+
         validateInvalidGenerations(list, ipsProject);
+    }
+
+    private void validateNotConfiguredProperties(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
+        IDeltaEntry[] entries = delta.getEntries();
+        for (IDeltaEntry entrie : entries) {
+            if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
+                String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
+                        ((IDeltaEntryForProperty)entrie).getDescription());
+                list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
+            }
+        }
     }
 
     private void validateInvalidGenerations(MessageList list, IIpsProject ipsProject) throws CoreException {

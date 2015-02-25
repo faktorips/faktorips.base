@@ -410,7 +410,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         attribute.setName("test");
         msgList = gen.validate(ipsProject);
         assertFalse(msgList.isEmpty());
-        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT));
+        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_PROPERTY_NOT_CONFIGURED));
     }
 
     @Test
