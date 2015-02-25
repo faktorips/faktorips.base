@@ -182,6 +182,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (type == null) {
             return;
         }
+        if (!validateTypeHierarchy(list, ipsProject, type)) {
+            return;
+        }
+        validateName(list, ipsProject);
+        validateRuntimeId(list, ipsProject);
+        validateLinks(list, ipsProject, type);
+        validateDifferencesToModel(list, ipsProject);
+    }
+
+    private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type)
+            throws CoreException {
         Message message = TypeValidations.validateTypeHierachy(type, ipsProject);
         if (message != null) {
             String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
@@ -189,15 +200,23 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, msg, Message.ERROR, type,
                     PROPERTY_PRODUCT_CMPT_TYPE));
             // do not continue validation if hierarchy is invalid
-            return;
+            return false;
         }
+        return true;
+    }
+
+    private void validateName(MessageList list, IIpsProject ipsProject) {
         IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validate(getName());
         for (Message msg : list2) {
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
             list.add(msgNew);
         }
-        list2 = strategy.validateRuntimeId(getRuntimeId());
+    }
+
+    private void validateRuntimeId(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
+        MessageList list2 = strategy.validateRuntimeId(getRuntimeId());
         for (Message msg : list2) {
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_RUNTIME_ID);
             list.add(msgNew);
@@ -205,35 +224,34 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
         list2 = getIpsProject().checkForDuplicateRuntimeIds(new IIpsSrcFile[] { getIpsSrcFile() });
         list.add(list2);
-
-        new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
-
-        validateNotConfiguredProperties(list, ipsProject);
-
-        validateInvalidGenerations(list, ipsProject);
     }
 
-    private void validateNotConfiguredProperties(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateLinks(MessageList list, IIpsProject ipsProject, IProductCmptType type) {
+        new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
+    }
+
+    private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) throws CoreException {
         IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
         IDeltaEntry[] entries = delta.getEntries();
-        for (IDeltaEntry entrie : entries) {
-            if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-                String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
-                        ((IDeltaEntryForProperty)entrie).getDescription());
-                list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
-            }
+        for (IDeltaEntry entry : entries) {
+            validateNotConfiguredProperties(entry, list);
+            validateInvalidGenerations(entry, list);
         }
     }
 
-    private void validateInvalidGenerations(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
-        IDeltaEntry[] entries = delta.getEntries();
-        for (IDeltaEntry entrie : entries) {
-            if (entrie.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
-                String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
-                list.add(new Message(MSGCODE_INVALID_GENERATIONS, text, Message.WARNING, this));
-            }
+    private void validateNotConfiguredProperties(IDeltaEntry entry, MessageList list) {
+        if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
+            String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
+                    ((IDeltaEntryForProperty)entry).getDescription());
+            list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
+        }
+    }
+
+    private void validateInvalidGenerations(IDeltaEntry entry, MessageList list) {
+        if (entry.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
+            String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
+            list.add(new Message(MSGCODE_INVALID_GENERATIONS, text, Message.WARNING, this));
         }
     }
 
