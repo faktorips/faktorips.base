@@ -32,7 +32,9 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
     public void testCreateAnnotation() throws Exception {
         JavaCodeFragment codeFragment = jaxbGen.createAnnotation(null);
         assertNotNull(codeFragment);
-        String testSsourcecode = "@XmlJavaTypeAdapter(value = ProductConfigurationXmlAdapter.class)\n@XmlAttribute(name = \"product-component.id\")\n";
+        String testSsourcecode = "@XmlJavaTypeAdapter(value = ProductConfigurationXmlAdapter.class)"
+                + System.getProperty("line.separator") + "@XmlAttribute(name = \"product-component.id\")"
+                + System.getProperty("line.separator");
         assertEquals(testSsourcecode, codeFragment.getSourcecode());
         ImportDeclaration importDeclaration = codeFragment.getImportDeclaration();
         assertTrue(importDeclaration.getImports().contains("org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter"));

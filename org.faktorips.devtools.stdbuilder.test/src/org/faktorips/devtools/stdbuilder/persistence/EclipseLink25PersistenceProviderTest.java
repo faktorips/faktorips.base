@@ -57,7 +57,7 @@ public class EclipseLink25PersistenceProviderTest {
         JavaCodeFragment indexAnnotations = provider.getIndexAnnotations(persistentAttributeInfo);
 
         assertNotNull(indexAnnotations);
-        assertEquals("@Index(name=\"INDEX_NAME\")\n", indexAnnotations.getSourcecode());
+        assertEquals("@Index(name=\"INDEX_NAME\")" + System.getProperty("line.separator"),
+                indexAnnotations.getSourcecode());
     }
-
 }
