@@ -240,6 +240,40 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_NameDoesNotComplyToNamingStrategy() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
+        ProductCmpt product = newProductCmpt(type, "Product");
+        IIpsProjectProperties projectProperties = ipsProject.getProperties();
+        projectProperties.setProductCmptNamingStrategy(new DateBasedProductCmptNamingStrategy());
+        ipsProject.setProperties(projectProperties);
+
+        MessageList validationMessages = product.validate(ipsProject);
+        assertNotNull(validationMessages.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_ILLEGAL_VERSION_ID));
+    }
+
+    @Test
+    public void testValidate_RuntimeIdDoesNotComplyToNamingStrategy() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
+        ProductCmpt product = newProductCmpt(type, "Product");
+        product.setRuntimeId("");
+
+        MessageList validationMessages = product.validate(ipsProject);
+        assertNotNull(validationMessages.getMessageByCode(IProductCmptNamingStrategy.MSGCODE_INVALID_RUNTIME_ID_FORMAT));
+    }
+
+    @Test
+    public void testValidate_DuplicateRuntimeIds() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
+        ProductCmpt product1 = newProductCmpt(type, "Product1");
+        ProductCmpt product2 = newProductCmpt(type, "Product2");
+        product1.setRuntimeId("Product");
+        product2.setRuntimeId("Product");
+
+        MessageList validationMessages = product1.validate(ipsProject);
+        assertNotNull(validationMessages.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+    }
+
+    @Test
     // Suppressed "unused" warning for improved readability
     @SuppressWarnings("unused")
     public void testFindPropertyValues() throws CoreException {
