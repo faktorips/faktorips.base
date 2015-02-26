@@ -310,10 +310,12 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
         validateValidTo(list);
     }
 
+    /**
+     * This method ensures the validation of the valid from date which is stored on the first
+     * generation. This won't happen automatically if the object does not allow generations, because
+     * the first generation won't be included in the children of the object.
+     */
     private void validateValidFrom(MessageList list) {
-        // make sure to validate the valid from date which is stored on the first generation.
-        // this won't happen automatically if the object does not allow generations.
-        // (because the first generation won't be included in the children of the object)
         if (!allowGenerations()) {
             ((IpsObjectGeneration)getFirstGeneration()).validateValidFromFormat(list, this);
         }
