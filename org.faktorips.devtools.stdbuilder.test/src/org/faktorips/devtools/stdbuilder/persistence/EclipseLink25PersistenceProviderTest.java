@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,7 +58,7 @@ public class EclipseLink25PersistenceProviderTest {
         JavaCodeFragment indexAnnotations = provider.getIndexAnnotations(persistentAttributeInfo);
 
         assertNotNull(indexAnnotations);
-        assertEquals("@Index(name=\"INDEX_NAME\")" + System.getProperty("line.separator"),
+        assertEquals("@Index(name=\"INDEX_NAME\")" + StringUtil.getSystemLineSeparator(),
                 indexAnnotations.getSourcecode());
     }
 }
