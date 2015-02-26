@@ -11,10 +11,13 @@
 package org.faktorips.devtools.core.model.productcmpttype;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpttype.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
 
 /**
@@ -108,6 +111,35 @@ public class ProductCmptTypeValidations {
         }
 
         return message;
+    }
+
+    /**
+     * Validates the changingOverTime property of the product component type.
+     * <p>
+     * If the product component type that has to be validated has a supertype, then the supertype
+     * must have the same setting for changingOverTime property.
+     * 
+     * @param list The message list containing all validation messages.
+     * @param productCmptType The product component type to be validated
+     * @param superProductCmptType The product component type that is the supertype of the product
+     *            component type that has to be validated or null if none is found
+     * 
+     */
+    public static void validateSuperProductCmptTypeHasSameChangingOverTimeSetting(MessageList list,
+            IProductCmptType productCmptType,
+            IProductCmptType superProductCmptType) {
+        if (superProductCmptType == null) {
+            return;
+        }
+        if (productCmptType.isChangingOverTime() != superProductCmptType.isChangingOverTime()) {
+            String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences()
+                    .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural();
+            String text = NLS.bind(Messages.ProductCmptType_error_settingChangingOverTimeDiffersFromSettingInSupertype,
+                    changingOverTimePluralName, superProductCmptType.getQualifiedName());
+            list.newError(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE, text,
+                    productCmptType, IProductCmptType.PROPERTY_CHANGING_OVER_TIME);
+        }
+
     }
 
     static boolean isConsistentHierarchy(String policyCmptType,

@@ -29,9 +29,11 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.AbstractXmlFileBuilder;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.values.DateUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -46,6 +48,8 @@ import org.w3c.dom.NodeList;
 public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
 
     public static final String XML_ATTRIBUTE_TARGET_RUNTIME_ID = "targetRuntimeId"; //$NON-NLS-1$
+
+    public static final String XML_ATTRIBUTE_VALID_FROM = "validFrom";
 
     private final ExpressionXMLBuilderHelper expressionXMLBuilderHelper;
     private MultiStatus buildStatus;
@@ -76,37 +80,40 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
             Document document = IpsPlugin.getDefault().getDocumentBuilder().newDocument();
             Element root = productCmpt.toXml(document);
 
+            writeValidFrom(productCmpt, root);
             updateTargetRuntimeId(productCmpt, root);
-
-            IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
-            NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
-            for (int i = 0; i < generations.length; i++) {
-                updateTargetRuntimeId((IProductCmptGeneration)generations[i], (Element)generationNodes.item(i));
-
-                // creating compiled formula expressions
-                if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
-                    IFormula[] formulas = ((IProductCmptGeneration)generations[i]).getFormulas();
-                    NodeList formulaElements = ((Element)generationNodes.item(i))
-                            .getElementsByTagName(Formula.TAG_NAME);
-                    expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements,
-                            buildStatus);
-                }
-            }
-
-            if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
-                IFormula[] formulas = productCmpt.getFormulas();
-                NodeList formulaElements = root.getElementsByTagName(Formula.TAG_NAME);
-                expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements,
-                        buildStatus);
-            }
-
-            try {
-                super.build(ipsSrcFile, XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset()));
-            } catch (TransformerException e) {
-                throw new CoreRuntimeException(new CoreException(new IpsStatus(e)));
-            }
+            updateGenerations(productCmpt, document, root);
+            compileFormulas(productCmpt, document, root);
+            build(ipsSrcFile, root);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private void writeValidFrom(IProductCmpt productCmpt, Element root) {
+        root.setAttribute(XML_ATTRIBUTE_VALID_FROM,
+                DateUtil.gregorianCalendarToIsoDateString(productCmpt.getValidFrom()));
+    }
+
+    private void updateGenerations(IProductCmpt productCmpt, Document document, Element root) {
+        NodeList generationNodes = root.getElementsByTagName(IIpsObjectGeneration.TAG_NAME);
+        if (productCmpt.allowGenerations()) {
+            updateTargetAndCompileFormulaInGenerations(productCmpt, document, generationNodes);
+        } else {
+            removeDummyGeneration(root, generationNodes);
+        }
+    }
+
+    private void updateTargetAndCompileFormulaInGenerations(IProductCmpt productCmpt,
+            Document document,
+            NodeList generationNodes) {
+        IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
+        for (int i = 0; i < generations.length && i < generationNodes.getLength(); i++) {
+            IProductCmptGeneration generation = (IProductCmptGeneration)generations[i];
+            Element generationElement = (Element)generationNodes.item(i);
+
+            updateTargetRuntimeId(generation, generationElement);
+            compileFormulas(generation, document, generationElement);
         }
     }
 
@@ -143,16 +150,42 @@ public class ProductCmptXMLBuilder extends AbstractXmlFileBuilder {
     }
 
     private String getTargetRuntimeId(IProductCmptLink link) {
-        IProductCmpt productCmpt;
         try {
-            productCmpt = link.findTarget(link.getIpsProject());
+            IProductCmpt productCmpt = link.findTarget(link.getIpsProject());
+            if (productCmpt != null) {
+                return productCmpt.getRuntimeId();
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e.getMessage(), e);
         }
-        if (productCmpt != null) {
-            return productCmpt.getRuntimeId();
-        }
         return "";
+    }
+
+    private void compileFormulas(IPropertyValueContainer propertyValueContainer, Document document, Element node) {
+        if (getStandardBuilderSet().getFormulaCompiling().isCompileToXml()) {
+            List<IFormula> formulas = propertyValueContainer.getPropertyValues(IFormula.class);
+            NodeList formulaElements = node.getElementsByTagName(Formula.TAG_NAME);
+            expressionXMLBuilderHelper.addCompiledFormulaExpressions(document, formulas, formulaElements, buildStatus);
+        }
+    }
+
+    /**
+     * For compatibility reasons we have still one generation also if the product component type
+     * does not support generations. For the runtime XML we want to remove this dummy generation.
+     */
+    private void removeDummyGeneration(Element root, NodeList generationNodes) {
+        for (int i = 0; i < generationNodes.getLength(); i++) {
+            root.removeChild(generationNodes.item(i));
+        }
+    }
+
+    private void build(IIpsSrcFile ipsSrcFile, Element root) throws CoreException {
+        try {
+            String nodeToString = XmlUtil.nodeToString(root, ipsSrcFile.getIpsProject().getXmlFileCharset());
+            build(ipsSrcFile, nodeToString);
+        } catch (TransformerException e) {
+            throw new CoreRuntimeException(new CoreException(new IpsStatus(e)));
+        }
     }
 
     /**

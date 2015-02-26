@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -430,5 +431,109 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         messageList = attribute.validate(ipsProject);
         assertEquals(1, messageList.size());
         assertEquals(PolicyCmptTypeAttribute.MSGCODE_ILLEGAL_VALUESET_TYPE, messageList.getMessage(0).getCode());
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreException {
+        attribute.setProductRelevant(true);
+        attribute.setName("attributeName");
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotProductRelevant()
+            throws CoreException {
+        newProductCmptType(ipsProject, "ProductType");
+        pcType.setProductCmptType("ProductType");
+        attribute.setProductRelevant(false);
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsNotProductRelevant()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        pcType.setProductCmptType("ProductType");
+        productCmptType.setChangingOverTime(true);
+        attribute.setProductRelevant(false);
+        attribute.setName("name");
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsProductRelevant()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        pcType.setProductCmptType("ProductType");
+        attribute.setName("name");
+        productCmptType.setChangingOverTime(true);
+        attribute.setProductRelevant(true);
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsNotProductRelevant()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        pcType.setProductCmptType("ProductType");
+        attribute.setName("name");
+        productCmptType.setChangingOverTime(false);
+        attribute.setProductRelevant(false);
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_ReturnMessage_IfProductCmptTypeIsNotChangingOverTimeAndAttributeIsProductRelevant()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        pcType.setProductCmptType("ProductType");
+        attribute.setName("name");
+        productCmptType.setChangingOverTime(false);
+        attribute.setProductRelevant(true);
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNotNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testChangingOverTime_default() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(true);
+        pcType.setProductCmptType("ProductType");
+        attribute.setName("name");
+        attribute.setProductRelevant(true);
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+
+        ml = attribute.validate(attribute.getIpsProject());
+
+        assertNotNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 }

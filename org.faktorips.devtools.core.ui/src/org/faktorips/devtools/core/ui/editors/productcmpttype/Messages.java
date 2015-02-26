@@ -116,6 +116,7 @@ public class Messages extends NLS {
     public static String CustomIconSection_UnsupportedType_Label;
 
     public static String GeneralInfoSection_abstractLabel;
+    public static String GeneralInfoSection_changingOverTimeLabel;
     public static String GeneralInfoSection_configuredTypeLabel;
     public static String GeneralInfoSection_configuresLabel;
 

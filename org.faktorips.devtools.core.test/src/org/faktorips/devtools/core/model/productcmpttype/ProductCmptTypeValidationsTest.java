@@ -9,13 +9,17 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.model.productcmpttype;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +35,9 @@ public class ProductCmptTypeValidationsTest {
 
     @Mock
     private IProductCmptType superProductCmptType;
+
+    @Mock
+    private IProductCmptType productCmptType;
 
     @Mock
     private IPolicyCmptType foundSuperPolicyCmptType;
@@ -100,4 +107,75 @@ public class ProductCmptTypeValidationsTest {
         assertTrue(constistent);
     }
 
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnEmptyListIfSuperTypeIsNull() {
+        MessageList messageList = new MessageList();
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
+                productCmptType, null);
+
+        assertNull(messageList
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE));
+
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnEmptyListIfChangingOverTimeSettingsAreBothTrue() {
+        MessageList messageList = new MessageList();
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+        when(superProductCmptType.isChangingOverTime()).thenReturn(true);
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
+                productCmptType, superProductCmptType);
+
+        assertNull(messageList
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE));
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnEmptyListIfChangingOverTimeSettingsAreBothFalse() {
+        MessageList messageList = new MessageList();
+        when(productCmptType.isChangingOverTime()).thenReturn(false);
+        when(superProductCmptType.isChangingOverTime()).thenReturn(false);
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
+                productCmptType, superProductCmptType);
+
+        assertNull(messageList
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE));
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsBySubtypeFalseAndSupertypeTrue() {
+        MessageList messageList = new MessageList();
+        when(productCmptType.isChangingOverTime()).thenReturn(false);
+        when(superProductCmptType.isChangingOverTime()).thenReturn(true);
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
+                productCmptType, superProductCmptType);
+
+        Message message = messageList
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
+        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
+                message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(Message.ERROR, message.getSeverity());
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsBySubtypeTrueAndSupertypeFalse() {
+        MessageList messageList = new MessageList();
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+        when(superProductCmptType.isChangingOverTime()).thenReturn(false);
+
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(messageList,
+                productCmptType, superProductCmptType);
+
+        Message message = messageList
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
+        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
+                message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(Message.ERROR, message.getSeverity());
+    }
 }

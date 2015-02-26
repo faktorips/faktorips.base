@@ -22,9 +22,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.junit.Before;
@@ -56,8 +57,13 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
 
     @Test
     public void testComputeEnabledProperty_DisabledIfElementOtherThanProductCmptOrProductCmptReferenceOrIpsSrcFileIncluded() {
-        IStructuredSelection selection = new StructuredSelection(Arrays.asList(mock(IProductCmpt.class),
-                mock(IProductCmptReference.class), mock(IIpsSrcFile.class), mock(IEnumType.class)));
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(productCmpt.allowGenerations()).thenReturn(true);
+        when(productCmpt.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        when(ipsSrcFile.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        IStructuredSelection selection = new StructuredSelection(Arrays.asList(productCmpt,
+                mock(IProductCmptReference.class), ipsSrcFile, mock(IEnumType.class)));
 
         assertFalse(action.computeEnabledProperty(selection));
     }
@@ -65,9 +71,11 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
     @Test
     public void testComputeEnabledProperty_EnabledIfOnlyProductCmptOrProductCmptReferenceOrProductCmptIpsSrcFileIncluded() {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.PRODUCT_CMPT);
-        IStructuredSelection selection = new StructuredSelection(Arrays.asList(mock(IProductCmpt.class),
-                mock(IProductCmptReference.class), ipsSrcFile));
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(productCmpt.allowGenerations()).thenReturn(true);
+        when(productCmpt.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        when(ipsSrcFile.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        IStructuredSelection selection = new StructuredSelection(Arrays.asList(productCmpt, ipsSrcFile));
 
         assertTrue(action.computeEnabledProperty(selection));
     }
@@ -75,10 +83,51 @@ public class CreateNewGenerationActionTest extends AbstractIpsPluginTest {
     @Test
     public void testComputeEnabledProperty_DisabledIfIpsSrcFileContainsOtherThanProductCmpt() {
         IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
-        when(ipsSrcFile.getIpsObjectType()).thenReturn(IpsObjectType.ENUM_CONTENT);
+        when(ipsSrcFile.getAdapter(IIpsObject.class)).thenReturn(mock(IEnumContent.class));
         IStructuredSelection selection = new StructuredSelection(ipsSrcFile);
 
         assertFalse(action.computeEnabledProperty(selection));
     }
 
+    @Test
+    public void testComputeEnabledProperty_DisabledIfProductCmptDoesNotAllowGenerations() {
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(productCmpt.allowGenerations()).thenReturn(false);
+        when(productCmpt.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        IStructuredSelection selection = new StructuredSelection(Arrays.asList(productCmpt));
+
+        assertFalse(action.computeEnabledProperty(selection));
+    }
+
+    @Test
+    public void testComputeEnabledProperty_EnabledIfProductCmptAllowsGenerations() {
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(productCmpt.allowGenerations()).thenReturn(true);
+        when(productCmpt.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        IStructuredSelection selection = new StructuredSelection(Arrays.asList(productCmpt));
+
+        assertTrue(action.computeEnabledProperty(selection));
+    }
+
+    @Test
+    public void testComputeEnabledProperty_DisabledIfIpsSrcFileContainsProductCmptAndDoesNotAllowGenerations() {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(productCmpt.allowGenerations()).thenReturn(false);
+        when(ipsSrcFile.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        IStructuredSelection selection = new StructuredSelection(Arrays.asList(ipsSrcFile));
+
+        assertFalse(action.computeEnabledProperty(selection));
+    }
+
+    @Test
+    public void testComputeEnabledProperty_EnabledIfIpsSrcFileContainsProductCmptAndAllowsGenerations() {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        IProductCmpt productCmpt = mock(IProductCmpt.class);
+        when(productCmpt.allowGenerations()).thenReturn(true);
+        when(ipsSrcFile.getAdapter(IIpsObject.class)).thenReturn(productCmpt);
+        IStructuredSelection selection = new StructuredSelection(Arrays.asList(ipsSrcFile));
+
+        assertTrue(action.computeEnabledProperty(selection));
+    }
 }

@@ -52,6 +52,7 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
 
         productCmptType = newProductCmptType(project, "test.Product");
         tableStructureUsage = productCmptType.newTableStructureUsage();
+        tableStructureUsage.setRoleName("roleName");
         productCmptType.getIpsSrcFile().save(true, null);
 
         newIpsObject(project, IpsObjectType.TABLE_STRUCTURE, "test.TableStructure1");
@@ -219,6 +220,33 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        tableStructureUsage.setChangingOverTime(false);
+
+        MessageList ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(true);
+        tableStructureUsage.setChangingOverTime(true);
+
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        tableStructureUsage.setChangingOverTime(false);
+
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        tableStructureUsage.setChangingOverTime(true);
+
+        ml = tableStructureUsage.validate(tableStructureUsage.getIpsProject());
+        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
     public void testIsPolicyCmptTypeProperty() {
         assertFalse(tableStructureUsage.isPolicyCmptTypeProperty());
     }
@@ -232,4 +260,16 @@ public class TableStructureUsageTest extends AbstractIpsPluginTest {
         assertTrue(tableStructureUsage.isPropertyFor(propertyValue));
     }
 
+    @Test
+    public void testChangingOverTime_default() {
+        productCmptType.setChangingOverTime(false);
+        tableStructureUsage = productCmptType.newTableStructureUsage();
+
+        assertFalse(tableStructureUsage.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        tableStructureUsage = productCmptType.newTableStructureUsage();
+
+        assertTrue(tableStructureUsage.isChangingOverTime());
+    }
 }

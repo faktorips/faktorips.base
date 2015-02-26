@@ -1,14 +1,12 @@
 /*******************************************************************************
-<<<<<<< HEAD
- * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * <<<<<<< HEAD Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
  * This source code is available under the terms of the AGPL Affero General Public License version
  * 3.
  * 
  * Please see LICENSE.txt for full license terms, including the additional permissions and
- * restrictions as well as the possibility of alternative license terms.
-=======
- * Copyright (c) 2005-2012 Faktor Zehn AG und andere.
+ * restrictions as well as the possibility of alternative license terms. ======= Copyright (c)
+ * 2005-2012 Faktor Zehn AG und andere.
  *
  * Alle Rechte vorbehalten.
  *
@@ -17,8 +15,8 @@
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
  *
- * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de
->>>>>>> 660c2b7... FIPS-2479 :: fix new delta for subtrees
+ * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de >>>>>>>
+ * 660c2b7... FIPS-2479 :: fix new delta for subtrees
  *******************************************************************************/
 
 package org.faktorips.runtime.internal;
@@ -28,19 +26,25 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.faktorips.runtime.DeltaComputationOptionsByPosition;
+import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IDeltaComputationOptions;
 import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
+import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
+import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.IValidationContext;
 import org.faktorips.runtime.MessageList;
 import org.junit.Test;
@@ -105,6 +109,57 @@ public class ModelObjectDeltaTest {
         assertTrue(delta.isClassChanged());
         assertFalse(delta.isEmpty());
         assertTrue(delta.isChanged());
+    }
+
+    @Test
+    public void testNewDelta_ConfigurableModelObjectsSameProductComponent() {
+        IProductComponent productComponent = mock(IProductComponent.class);
+        IModelObject obj1 = new MyConfigurableModelObject("obj1", productComponent);
+        IModelObject obj2 = new MyConfigurableModelObject("obj2", productComponent);
+
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(obj1, obj2, new DeltaComputationOptionsByPosition());
+
+        assertFalse(delta.isChanged());
+    }
+
+    @Test
+    public void testNewDelta_ConfigurableModelObjectsDifferentProductComponent() {
+        IProductComponent productComponent1 = mock(IProductComponent.class);
+        IProductComponent productComponent2 = mock(IProductComponent.class);
+        IModelObject obj1 = new MyConfigurableModelObject("obj1", productComponent1);
+        IModelObject obj2 = new MyConfigurableModelObject("obj2", productComponent2);
+
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(obj1, obj2, new DeltaComputationOptionsByPosition());
+
+        assertTrue(delta.isChanged());
+        assertTrue(delta.isPropertyChanged(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT));
+    }
+
+    @Test
+    public void testNewDelta_TimedConfigurableModelObjectsSameProductComponentGeneration() {
+        IProductComponent productComponent = mock(IProductComponent.class);
+        IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
+        IModelObject obj1 = new MyTimedConfigurableModelObject("obj1", productComponent, productComponentGeneration);
+        IModelObject obj2 = new MyTimedConfigurableModelObject("obj2", productComponent, productComponentGeneration);
+
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(obj1, obj2, new DeltaComputationOptionsByPosition());
+
+        assertFalse(delta.isChanged());
+    }
+
+    @Test
+    public void testNewDelta_TimedConfigurableModelObjectsDifferentProductComponentGeneration() {
+        IProductComponent productComponent1 = mock(IProductComponent.class);
+        IProductComponent productComponent2 = mock(IProductComponent.class);
+        IProductComponentGeneration productComponentGeneration1 = mock(IProductComponentGeneration.class);
+        IProductComponentGeneration productComponentGeneration2 = mock(IProductComponentGeneration.class);
+        IModelObject obj1 = new MyTimedConfigurableModelObject("obj1", productComponent1, productComponentGeneration1);
+        IModelObject obj2 = new MyTimedConfigurableModelObject("obj2", productComponent2, productComponentGeneration2);
+
+        ModelObjectDelta delta = ModelObjectDelta.newDelta(obj1, obj2, new DeltaComputationOptionsByPosition());
+
+        assertTrue(delta.isChanged());
+        assertTrue(delta.isPropertyChanged(ITimedConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION));
     }
 
     @Test
@@ -443,6 +498,7 @@ public class ModelObjectDeltaTest {
             this.property = property;
         }
 
+        @Override
         public MessageList validate(IValidationContext context) {
             return null;
         }
@@ -452,6 +508,7 @@ public class ModelObjectDeltaTest {
             return id;
         }
 
+        @Override
         public IModelObjectDelta computeDelta(IModelObject otherObject, IDeltaComputationOptions options) {
             MyModelObject other = (MyModelObject)otherObject;
             ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(this, otherObject);
@@ -482,6 +539,54 @@ public class ModelObjectDeltaTest {
 
     }
 
+    class MyConfigurableModelObject extends MyModelObject implements IConfigurableModelObject {
+
+        private final IProductComponent productComponent;
+
+        public MyConfigurableModelObject(String id, IProductComponent productComponent) {
+            super(id);
+            this.productComponent = productComponent;
+        }
+
+        @Override
+        public IProductComponent getProductComponent() {
+            return productComponent;
+        }
+
+        @Override
+        public IProductComponentGeneration getProductCmptGeneration() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Calendar getEffectiveFromAsCalendar() {
+            return null;
+        }
+
+        @Override
+        public void initialize() {
+
+        }
+
+    }
+
+    class MyTimedConfigurableModelObject extends MyConfigurableModelObject implements ITimedConfigurableModelObject {
+
+        private final IProductComponentGeneration productComponentGeneration;
+
+        public MyTimedConfigurableModelObject(String id, IProductComponent productComponent,
+                IProductComponentGeneration productComponentGeneration) {
+            super(id, productComponent);
+            this.productComponentGeneration = productComponentGeneration;
+        }
+
+        @Override
+        public IProductComponentGeneration getProductCmptGeneration() {
+            return productComponentGeneration;
+        }
+
+    }
+
     static class Visitor implements IModelObjectDeltaVisitor {
 
         private final boolean rc;
@@ -492,6 +597,7 @@ public class ModelObjectDeltaTest {
             this.rc = rc;
         }
 
+        @Override
         public boolean visit(IModelObjectDelta delta) {
             visitedDeltas.add(delta);
             return rc;
@@ -508,20 +614,24 @@ public class ModelObjectDeltaTest {
             this.computationMethod = computationMethod;
         }
 
+        @Override
         public ComputationMethod getMethod(String association) {
             return computationMethod;
         }
 
+        @Override
         public boolean ignore(Class<?> clazz, String property) {
             return false;
         }
 
+        @Override
         public boolean isSame(IModelObject object1, IModelObject object2) {
             MyModelObject mo1 = (MyModelObject)object1;
             MyModelObject mo2 = (MyModelObject)object2;
             return mo1.id.equals(mo2.id);
         }
 
+        @Override
         public boolean isCreateSubtreeDelta() {
             return true;
         }

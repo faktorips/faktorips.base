@@ -57,6 +57,9 @@ getId() :
 	
 getRepository() :
 	"getRepository()";
+	
+isChangingOverTime() :
+	"isChangingOverTime()";	
 
 // ---------------------------------
 // Methods in ProductComponentGeneration

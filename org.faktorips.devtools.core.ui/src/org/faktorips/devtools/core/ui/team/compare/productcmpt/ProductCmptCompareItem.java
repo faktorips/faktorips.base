@@ -221,7 +221,7 @@ public class ProductCmptCompareItem extends AbstractCompareItem {
      */
     private String getAttributeListHeader(IProductPartsContainer valueContainer) {
         StringBuffer sb = new StringBuffer();
-        String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_attribute;
+        String attrString = org.faktorips.devtools.core.ui.editors.productcmpt.Messages.GenerationPropertiesPage_pageTitle;
         conditionalAppendGenerationDateAndTab(valueContainer, sb);
         sb.append(TAB).append(attrString).append(COLON_BLANK);
         return sb.toString();

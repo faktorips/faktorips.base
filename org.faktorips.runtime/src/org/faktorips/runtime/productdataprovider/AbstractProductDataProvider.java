@@ -56,14 +56,17 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
             throw new RuntimeException("Error creating document builder.", e1);
         }
         builder.setErrorHandler(new ErrorHandler() {
+            @Override
             public void error(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void fatalError(SAXParseException e) throws SAXException {
                 throw e;
             }
 
+            @Override
             public void warning(SAXParseException e) throws SAXException {
                 throw e;
             }
@@ -92,6 +95,7 @@ public abstract class AbstractProductDataProvider implements IProductDataProvide
         return docBuilderHolder.get();
     }
 
+    @Override
     public boolean isCompatibleToBaseVersion() {
         return getVersionChecker().isCompatibleVersion(getVersion(), getBaseVersion());
     }

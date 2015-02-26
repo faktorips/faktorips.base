@@ -107,6 +107,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
      *         less than, equal to or greater than the lower bound of the other range.
      * 
      */
+    @Override
     public int compareTo(TwoColumnRange<K> other) {
         return lowerBound.compareTo(other.lowerBound);
     }
@@ -265,6 +266,7 @@ class TwoColumnRange<K extends Comparable<? super K>> implements Comparable<TwoC
             return (Bound<K>)POSITIVE_INFINITY;
         }
 
+        @Override
         public int compareTo(Bound<K> otherBound) {
             if (isInfinity() || otherBound.isInfinity()) {
                 return compareInfinity(otherBound);

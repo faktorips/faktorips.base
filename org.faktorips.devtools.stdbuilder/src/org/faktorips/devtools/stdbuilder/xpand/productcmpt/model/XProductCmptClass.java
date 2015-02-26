@@ -67,4 +67,34 @@ public class XProductCmptClass extends XProductClass {
         }
         return extendedInterfaces;
     }
+
+    /**
+     * Returns whether access methods for generations should be generated.
+     * <p>
+     * This is the case if the <em>changing over time</em> flag of the product component type is
+     * set.
+     */
+    public boolean isGenerateGenerationAccessMethods() {
+        return isChangingOverTime();
+    }
+
+    /**
+     * Returns whether the access method to retrieve the changing over time flag should be
+     * generated.
+     * <p>
+     * This is the case if the product component type does not have a super type.
+     */
+    public boolean isGenerateIsChangingOverTimeAccessMethod() {
+        return !hasSupertype();
+    }
+
+    /**
+     * Returns whether the product component type is changing over time.
+     * <p>
+     * Not to be confused with {@link #isChangeOverTimeClass()}.
+     */
+    public boolean isChangingOverTime() {
+        return getType().isChangingOverTime();
+    }
+
 }

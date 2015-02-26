@@ -11,6 +11,7 @@
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.MultiStatus;
@@ -35,7 +36,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * A class that provides the
- * {@link ExpressionXMLBuilderHelper#addCompiledFormulaExpressions(Document, IExpression[], NodeList, MultiStatus)}
+ * {@link ExpressionXMLBuilderHelper#addCompiledFormulaExpressions(Document, List, NodeList, MultiStatus)}
  * method for {@link AbstractXmlFileBuilder}s handling {@link IExpression}s.
  * 
  * @author schwering
@@ -79,7 +80,7 @@ public class ExpressionXMLBuilderHelper {
      *            when compilation produces an error
      */
     public void addCompiledFormulaExpressions(Document document,
-            IExpression[] formulas,
+            List<? extends IExpression> formulas,
             NodeList formulaElements,
             MultiStatus buildStatus) {
         Map<String, IExpression> formulaMap = getFormulas(formulas);
@@ -117,10 +118,9 @@ public class ExpressionXMLBuilderHelper {
         return sourceCode;
     }
 
-    private Map<String, IExpression> getFormulas(IExpression[] formulas) {
+    private Map<String, IExpression> getFormulas(List<? extends IExpression> formulas) {
         Map<String, IExpression> formulaMap = new HashMap<String, IExpression>();
-        for (int i = 0; i < formulas.length; i++) {
-            IExpression expression = formulas[i];
+        for (IExpression expression : formulas) {
             formulaMap.put(expression.getFormulaSignature(), expression);
         }
         return formulaMap;

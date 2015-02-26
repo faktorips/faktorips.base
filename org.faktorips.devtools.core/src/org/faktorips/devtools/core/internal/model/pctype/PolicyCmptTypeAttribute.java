@@ -20,6 +20,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -151,7 +152,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (StringUtils.isEmpty(computationMethodSignature)) {
             return null;
         }
-        IProductCmptType productCmptType = getPolicyCmptType().findProductCmptType(ipsProject);
+        IProductCmptType productCmptType = findProductCmptType(ipsProject);
         if (productCmptType == null) {
             return null;
         }
@@ -230,6 +231,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         validateProductRelevant(result, ipsProject);
         validateOverwrite(result, ipsProject);
         validateValueSetType(result);
+        validateChangingOverTimeFlag(result);
     }
 
     private void validateProductRelevant(MessageList result, IIpsProject ipsProject) throws CoreException {
@@ -261,6 +263,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
                 }
             }
         }
+    }
+
+    private void validateChangingOverTimeFlag(MessageList result) {
+        if (!isProductRelevant()) {
+            return;
+        }
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
     }
 
     private boolean isAllowedValueSet(IValueSet valueSet) {

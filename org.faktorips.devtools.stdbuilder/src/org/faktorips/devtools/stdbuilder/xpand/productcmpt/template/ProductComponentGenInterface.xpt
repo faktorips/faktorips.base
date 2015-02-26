@@ -16,8 +16,14 @@
 		/**
 		 * «localizedJDoc("INTERFACE", generationConceptNameSingular, productCmptClassNode.name)»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+		«IF !productCmptType.changingOverTime-»
+		 * «localizedJDoc("DEPRECATED_INTERFACE", generationConceptNamePlural)»
+		«ENDIF-»
 		 * @generated
 		 */
+		«IF !productCmptType.changingOverTime-»
+		 @Deprecated
+		«ENDIF-» 
 		public interface «interfaceName» 
 		«IF extendsInterface-»
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»

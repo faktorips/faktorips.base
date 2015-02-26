@@ -95,10 +95,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * This default implementation returns the class loader with which this repository class has
      * been loaded.
      */
+    @Override
     public ClassLoader getClassLoader() {
         return getClass().getClassLoader();
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -108,6 +110,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return name;
     }
 
+    @Override
     public final void addDirectlyReferencedRepository(IRuntimeRepository repository) {
         if (!(repository instanceof AbstractRuntimeRepository)) {
             throw new IllegalArgumentException(
@@ -116,10 +119,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         repositories.add(repository);
     }
 
+    @Override
     public List<IRuntimeRepository> getDirectlyReferencedRepositories() {
         return Collections.unmodifiableList(repositories);
     }
 
+    @Override
     public List<IRuntimeRepository> getAllReferencedRepositories() {
         if (allRepositories != null) {
             return allRepositories;
@@ -142,6 +147,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return allRepositories;
     }
 
+    @Override
     public final IProductComponent getProductComponent(String id) {
         IProductComponent pc = getProductComponentInternal(id);
         if (pc != null) {
@@ -156,6 +162,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return null;
     }
 
+    @Override
     public final IProductComponent getExistingProductComponent(String id) {
         if (id == null) {
             return null;
@@ -173,6 +180,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract IProductComponent getProductComponentInternal(String id);
 
+    @Override
     public final IProductComponent getProductComponent(String kindId, String versionId) {
         IProductComponent pc = getProductComponentInternal(kindId, versionId);
         if (pc != null) {
@@ -193,6 +201,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract IProductComponent getProductComponentInternal(String kindId, String versionId);
 
+    @Override
     public final List<IProductComponent> getAllProductComponents(String kindId) {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         if (kindId == null) {
@@ -212,6 +221,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllProductComponents(String kindId, List<IProductComponent> result);
 
+    @Override
     public IProductComponentGeneration getExistingProductComponentGeneration(String id, Calendar effectiveDate) {
         IProductComponentGeneration gen = getProductComponentGeneration(id, effectiveDate);
         if (gen != null) {
@@ -224,6 +234,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         throw new ProductCmptGenerationNotFoundException(name, id, effectiveDate, true);
     }
 
+    @Override
     public final IProductComponentGeneration getProductComponentGeneration(String id, Calendar effectiveDate) {
 
         IProductComponentGeneration pcGen = getProductComponentGenerationInternal(id, effectiveDate);
@@ -252,6 +263,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     protected abstract IProductComponentGeneration getProductComponentGenerationInternal(String id,
             Calendar effectiveDate);
 
+    @Override
     public final <T extends IProductComponent> List<T> getAllProductComponents(Class<T> productCmptClass) {
         List<T> result = new ArrayList<T>();
         getAllProductComponentsInternal(productCmptClass, result);
@@ -283,6 +295,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
+    @Override
     public final List<IProductComponent> getAllProductComponents() {
         List<IProductComponent> result = new ArrayList<IProductComponent>();
         getAllProductComponents(result);
@@ -299,6 +312,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllProductComponents(List<IProductComponent> result);
 
+    @Override
     public final List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt) {
         List<IProductComponentGeneration> result = new ArrayList<IProductComponentGeneration>();
         getProductComponentGenerations(productCmpt, result);
@@ -316,6 +330,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
     public abstract void getProductComponentGenerations(IProductComponent productCmpt,
             List<IProductComponentGeneration> result);
 
+    @Override
     public final List<String> getAllProductComponentIds() {
         List<String> result = new ArrayList<String>();
         getAllProductComponentIds(result);
@@ -332,6 +347,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllProductComponentIds(List<String> result);
 
+    @Override
     public List<ITable> getAllTables() {
         List<ITable> result = new ArrayList<ITable>();
         getAllTables(result);
@@ -348,6 +364,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract void getAllTables(List<ITable> result);
 
+    @Override
     public final <T extends ITable> T getTable(Class<T> tableClass) {
         T table = getTableInternal(tableClass);
         if (table != null) {
@@ -370,6 +387,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract <T extends ITable> T getTableInternal(Class<T> tableClass);
 
+    @Override
     public ITable getTable(String qualifiedTableName) {
         ITable table = getTableInternal(qualifiedTableName);
         if (table != null) {
@@ -390,6 +408,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract ITable getTableInternal(String qualifiedTableName);
 
+    @Override
     public final List<IpsTest2> getAllIpsTestCases(IRuntimeRepository runtimeRepository) {
         List<IpsTest2> result = new ArrayList<IpsTest2>();
         getAllIpsTestCases(result, runtimeRepository);
@@ -400,6 +419,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return result;
     }
 
+    @Override
     public List<IpsTest2> getIpsTestCasesStartingWith(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         List<IpsTest2> result = new ArrayList<IpsTest2>();
         getIpsTestCasesStartingWith(qNamePrefix, result, runtimeRepository);
@@ -424,10 +444,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
             List<IpsTest2> result,
             IRuntimeRepository runtimeRepository);
 
+    @Override
     public IpsTest2 getIpsTest(String qName) {
         return getIpsTest(qName, this);
     }
 
+    @Override
     public IpsTest2 getIpsTest(String qName, IRuntimeRepository runtimeRepository) {
         IpsTest2 test = getIpsTestCase(qName, runtimeRepository);
         if (test != null) {
@@ -436,10 +458,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return getIpsTestSuite(qName, runtimeRepository);
     }
 
+    @Override
     public IpsTestCaseBase getIpsTestCase(String qName) {
         return getIpsTestCase(qName, this);
     }
 
+    @Override
     public IpsTestCaseBase getIpsTestCase(String qName, IRuntimeRepository runtimeRepository) {
         if (qName == null) {
             throw new NullPointerException();
@@ -467,10 +491,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract IpsTestCaseBase getIpsTestCaseInternal(String qName, IRuntimeRepository runtimeRepository);
 
+    @Override
     public IpsTestSuite getIpsTestSuite(String qNamePrefix) {
         return getIpsTestSuite(qNamePrefix, this);
     }
 
+    @Override
     public IpsTestSuite getIpsTestSuite(String qNamePrefix, IRuntimeRepository runtimeRepository) {
         if (qNamePrefix == null) {
             throw new NullPointerException();
@@ -523,6 +549,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return qName.substring(0, index);
     }
 
+    @Override
     public IProductComponentGeneration getNextProductComponentGeneration(IProductComponentGeneration generation) {
         if (equals(generation.getRepository())) {
             return getNextProductComponentGenerationInternal(generation);
@@ -539,6 +566,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getNextProductComponentGenerationInternal(IProductComponentGeneration generation);
 
+    @Override
     public int getNumberOfProductComponentGenerations(IProductComponent productCmpt) {
         if (equals(productCmpt.getRepository())) {
             return getNumberOfProductComponentGenerationsInternal(productCmpt);
@@ -556,6 +584,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract int getNumberOfProductComponentGenerationsInternal(IProductComponent productCmpt);
 
+    @Override
     public final IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation) {
         if (equals(generation.getRepository())) {
             return getPreviousProductComponentGenerationInternal(generation);
@@ -573,6 +602,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getPreviousProductComponentGenerationInternal(IProductComponentGeneration generation);
 
+    @Override
     public final IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt) {
         if (equals(productCmpt.getRepository())) {
             return getLatestProductComponentGenerationInternal(productCmpt);
@@ -590,6 +620,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
 
     protected abstract IProductComponentGeneration getLatestProductComponentGenerationInternal(IProductComponent productCmpt);
 
+    @Override
     public IModelType getModelType(Class<?> modelObjectClass) {
         if (modelTypes.containsKey(modelObjectClass)) {
             return modelTypes.get(modelObjectClass);
@@ -646,14 +677,17 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return modelType;
     }
 
+    @Override
     public IModelType getModelType(IModelObject modelObject) {
         return getModelType(modelObject.getClass());
     }
 
+    @Override
     public IModelType getModelType(IProductComponent modelObject) {
         return getModelType(modelObject.getClass());
     }
 
+    @Override
     public final Set<String> getAllModelTypeImplementationClasses() {
         Set<String> result = new HashSet<String>();
         getAllModelTypeImplementationClasses(result);
@@ -676,6 +710,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      *             {@link #getEnumValue(Class, Object)} instead. This method may be returned in
      *             future releases.
      */
+    @Override
     @Deprecated
     public Object getEnumValue(String uniqueId) {
         int index = uniqueId.indexOf('#');
@@ -692,6 +727,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
+    @Override
     public final <T> T getEnumValue(Class<T> clazz, Object value) {
         if (value == null) {
             return null;
@@ -730,6 +766,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         throw new IllegalStateException("Unable to call the getEnumValueId of the provided enumeration value.", e); //$NON-NLS-1$
     }
 
+    @Override
     public final <T> List<T> getEnumValues(Class<T> clazz) {
         List<T> values;
         IEnumValueLookupService<T> lookup = getEnumValueLookupService(clazz);
@@ -814,10 +851,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         }
     }
 
+    @Override
     public void addEnumValueLookupService(IEnumValueLookupService<?> lookup) {
         enumValueLookups.put(lookup.getEnumTypeClass(), lookup);
     }
 
+    @Override
     public <T> IEnumValueLookupService<T> getEnumValueLookupService(Class<T> enumClazz) {
         @SuppressWarnings("unchecked")
         // because we store every kind of enumValueLookupService in the same map we could not know
@@ -826,6 +865,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         return enumValueLookupService;
     }
 
+    @Override
     public void removeEnumValueLookupService(IEnumValueLookupService<?> lookup) {
         enumValueLookups.remove(lookup.getEnumTypeClass());
     }
@@ -884,6 +924,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * @throws RuntimeException Exceptions that are thrown while trying to load a class from the
      *             class loader or creating the jaxb context are wrapped into a runtime exception
      */
+    @Override
     public JAXBContext newJAXBContext() {
         try {
             Set<String> classNames = getAllModelTypeImplementationClasses();
@@ -910,6 +951,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * If you want to support formula evaluation you have to override this method or use
      * {@link AbstractRuntimeRepository#setFormulaEvaluatorFactory(IFormulaEvaluatorFactory)}.
      */
+    @Override
     public IFormulaEvaluatorFactory getFormulaEvaluatorFactory() {
         return formulaEvaluatorFactory;
     }
@@ -921,6 +963,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
         this.formulaEvaluatorFactory = formulaEvaluatorFactory;
     }
 
+    @Override
     public <T> T getCustomRuntimeObject(Class<T> type, String ipsObjectQualifiedName) {
         T pc = getCustomRuntimeObjectInternal(type, ipsObjectQualifiedName);
         if (pc != null) {
@@ -941,10 +984,12 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      */
     protected abstract <T> T getCustomRuntimeObjectInternal(Class<T> type, String ipsObjectQualifiedName);
 
+    @Override
     public IRuntimeRepositoryLookup getRuntimeRepositoryLookup() {
         return runtimeRepositoryLookup;
     }
 
+    @Override
     public void setRuntimeRepositoryLookup(IRuntimeRepositoryLookup repositoryLookup) {
         this.runtimeRepositoryLookup = repositoryLookup;
     }
@@ -953,6 +998,7 @@ public abstract class AbstractRuntimeRepository implements IRuntimeRepository {
      * Comparator for IpsTest2 objects
      */
     private class IpsTestComparator implements Comparator<IpsTest2> {
+        @Override
         public int compare(IpsTest2 o1, IpsTest2 o2) {
             return (o1).getQualifiedName().compareTo((o2).getQualifiedName());
         }

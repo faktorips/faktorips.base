@@ -47,25 +47,30 @@ public class ModelType extends AbstractModelElement implements IModelType {
         super(repository);
     }
 
+    @Override
     public IModelTypeAssociation getDeclaredAssociation(int index) {
         return associations.get(index);
     }
 
+    @Override
     public IModelTypeAssociation getDeclaredAssociation(String name) {
         return associationsByName.get(name);
     }
 
+    @Override
     public List<IModelTypeAssociation> getDeclaredAssociations() {
         return Collections.unmodifiableList(associations);
     }
 
+    @Override
     public List<IModelTypeAssociation> getAssociations() {
         AssociationsCollector asscCollector = new AssociationsCollector();
         asscCollector.visitHierarchy(this);
         return asscCollector.result;
     }
 
-    public IModelTypeAssociation getAssociation(String name) throws IllegalArgumentException {
+    @Override
+    public IModelTypeAssociation getAssociation(String name) {
         AssociationFinder finder = new AssociationFinder(name);
         finder.visitHierarchy(this);
         if (finder.association == null) {
@@ -75,15 +80,18 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return finder.association;
     }
 
+    @Override
     public List<IModelObject> getTargetObjects(IModelObject source, String associationName) {
         return getAssociation(associationName).getTargetObjects(source);
     }
 
-    public IModelTypeAttribute getDeclaredAttribute(int index) throws IndexOutOfBoundsException {
+    @Override
+    public IModelTypeAttribute getDeclaredAttribute(int index) {
         return attributes.get(index);
     }
 
-    public IModelTypeAttribute getDeclaredAttribute(String name) throws IllegalArgumentException {
+    @Override
+    public IModelTypeAttribute getDeclaredAttribute(String name) {
         IModelTypeAttribute attr = attributesByName.get(name);
         if (attr == null) {
             throw new IllegalArgumentException("The type " + this + " hasn't got a declared attribute " + name);
@@ -91,7 +99,8 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return attr;
     }
 
-    public IModelTypeAttribute getAttribute(String name) throws IllegalArgumentException {
+    @Override
+    public IModelTypeAttribute getAttribute(String name) {
         AttributeFinder finder = new AttributeFinder(name);
         finder.visitHierarchy(this);
         if (finder.attribute == null) {
@@ -101,28 +110,34 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return finder.attribute;
     }
 
+    @Override
     public List<IModelTypeAttribute> getDeclaredAttributes() {
         return Collections.unmodifiableList(attributes);
     }
 
+    @Override
     public List<IModelTypeAttribute> getAttributes() {
         AttributeCollector attrCollector = new AttributeCollector();
         attrCollector.visitHierarchy(this);
         return attrCollector.result;
     }
 
+    @Override
     public Object getAttributeValue(IModelObject source, String attributeName) {
         return getAttribute(attributeName).getValue(source);
     }
 
+    @Override
     public void setAttributeValue(IModelObject source, String attributeName, Object value) {
         getAttribute(attributeName).setValue(source, value);
     }
 
+    @Override
     public Class<?> getJavaClass() throws ClassNotFoundException {
         return loadClass(className);
     }
 
+    @Override
     public Class<?> getJavaInterface() throws ClassNotFoundException {
         String interfaceName = className.replace(".internal", "");
         interfaceName = interfaceName.substring(0, interfaceName.lastIndexOf('.') + 1) + 'I'
@@ -130,6 +145,7 @@ public class ModelType extends AbstractModelElement implements IModelType {
         return loadClass(interfaceName);
     }
 
+    @Override
     public IModelType getSuperType() {
         if (superTypeName != null && superTypeName.length() > 0) {
             Class<?> superclass = loadClass(superTypeName);

@@ -25,6 +25,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.InternationalStringXmlHelper;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.type.TypePart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -192,6 +193,16 @@ public class ValidationRule extends TypePart implements IValidationRule {
         validateReplacementParameters(ipsProject, list);
 
         validateMarker(list, ipsProject);
+
+        validateChangingOverTimeFlag(list);
+    }
+
+    private void validateChangingOverTimeFlag(MessageList result) {
+        if (!isConfigurableByProductComponent()) {
+            return;
+        }
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
     }
 
     private void validateMarker(MessageList list, IIpsProject ipsProject) {

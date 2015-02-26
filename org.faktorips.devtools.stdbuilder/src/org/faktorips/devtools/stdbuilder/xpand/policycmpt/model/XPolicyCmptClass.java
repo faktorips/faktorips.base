@@ -39,6 +39,7 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IDependantObject;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.INotificationSupport;
+import org.faktorips.runtime.ITimedConfigurableModelObject;
 import org.faktorips.runtime.IVisitorSupport;
 import org.faktorips.runtime.internal.AbstractModelObject;
 
@@ -164,7 +165,7 @@ public class XPolicyCmptClass extends XType {
     public LinkedHashSet<String> getExtendedInterfaces() {
         LinkedHashSet<String> extendedInterfaces = new LinkedHashSet<String>();
         if (isFirstConfigurableInHierarchy()) {
-            extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+            extendedInterfaces.add(getConfigurationClassName());
         } else if (!hasSupertype()) {
             extendedInterfaces.add(addImport(IModelObject.class));
         }
@@ -193,9 +194,17 @@ public class XPolicyCmptClass extends XType {
             extendedInterfaces.add(addImport(IDependantObject.class));
         }
         if (isFirstConfigurableInHierarchy()) {
-            extendedInterfaces.add(addImport(IConfigurableModelObject.class));
+            extendedInterfaces.add(getConfigurationClassName());
         }
         return extendedInterfaces;
+    }
+
+    private String getConfigurationClassName() {
+        if (getProductCmptType().isChangingOverTime()) {
+            return addImport(ITimedConfigurableModelObject.class);
+        } else {
+            return addImport(IConfigurableModelObject.class);
+        }
     }
 
     @Override
@@ -538,5 +547,12 @@ public class XPolicyCmptClass extends XType {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns true if the changing over time flag of this product component type is enabled.
+     */
+    public boolean isGenerateGenerationAccessMethods() {
+        return getProductCmptType().isChangingOverTime();
     }
 }

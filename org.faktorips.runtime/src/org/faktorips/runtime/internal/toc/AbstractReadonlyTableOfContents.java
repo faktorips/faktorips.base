@@ -121,65 +121,78 @@ public abstract class AbstractReadonlyTableOfContents implements IReadonlyTableO
      * Returns the toc entry representing a product component for the given id or null if no entry
      * exists for the given id.
      */
+    @Override
     public abstract ProductCmptTocEntry getProductCmptTocEntry(String id);
 
     /**
      * Returns the toc entry representing a product component for the given product component kind
      * id and versionId or null if no such entry exists.
      */
+    @Override
     public abstract ProductCmptTocEntry getProductCmptTocEntry(String kindId, String versionId);
 
     /**
      * Returns all toc's entries representing product components.
      */
+    @Override
     public abstract List<ProductCmptTocEntry> getProductCmptTocEntries();
 
     /**
      * Returns all toc's entries representing product components that belong to the indicated
      * product component kind.
      */
+    @Override
     public abstract List<ProductCmptTocEntry> getProductCmptTocEntries(String kindId);
 
     /**
      * Returns all toc's entries representing tables.
      */
+    @Override
     public abstract List<TableContentTocEntry> getTableTocEntries();
 
     /**
      * Returns all toc's entries representing test cases.
      */
+    @Override
     public abstract List<TestCaseTocEntry> getTestCaseTocEntries();
 
     /**
      * Returns a toc entry representing a test case for the given qualified name.
      */
+    @Override
     public abstract TestCaseTocEntry getTestCaseTocEntryByQName(String qName);
 
     /**
      * Returns a toc entry representing a table for the table's class object.
      */
+    @Override
     public abstract TableContentTocEntry getTableTocEntryByClassname(String implementationClass);
 
     /**
      * Returns a toc entry representing a table for this table's qualified table name.
      */
+    @Override
     public abstract TableContentTocEntry getTableTocEntryByQualifiedTableName(String qualifiedTableName);
 
     /**
      * Returns all toc's entries representing model types.
      */
+    @Override
     public abstract Set<ModelTypeTocEntry> getModelTypeTocEntries();
 
     /**
      * Returns the toc entry representing enum contents for the specified implementation class.
      */
+    @Override
     public abstract EnumContentTocEntry getEnumContentTocEntry(String className);
 
     /**
      * Returns all toc entries that link to an enumeration xml adapter.
      */
+    @Override
     public abstract Set<EnumXmlAdapterTocEntry> getEnumXmlAdapterTocEntries();
 
+    @Override
     public String getProductDataVersion() {
         return productDataVersion;
     }

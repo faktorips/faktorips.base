@@ -200,6 +200,7 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         }
     }
 
+    @Override
     public void testStarted(IpsTest2 test) {
         // format: TEST_CASE_STARTED<qualifiedName>{<fullPath>}
         writer.print(TEST_STARTED);
@@ -217,11 +218,13 @@ public class SocketIpsTestRunner extends AbstractIpsTestRunner {
         writer.print("}");
     }
 
+    @Override
     public void testFinished(IpsTest2 test) {
         writer.print(TEST_FINISHED);
         writer.println(test.getQualifiedName());
     }
 
+    @Override
     public void testFailureOccured(IpsTestFailure failure) {
         if (failure.isError()) {
             postError(failure.getThrowable(), failure.getTestCase().getQualifiedName());

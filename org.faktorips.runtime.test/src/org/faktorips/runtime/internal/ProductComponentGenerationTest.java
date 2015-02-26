@@ -15,12 +15,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.faktorips.runtime.IRuntimeRepository;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.InMemoryRuntimeRepository;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.faktorips.valueset.IntegerRange;
@@ -126,4 +130,37 @@ public class ProductComponentGenerationTest extends XmlAbstractTestCase {
         String nodeValue = childNodes.item(31).getFirstChild().getTextContent();
         assertEquals("tableContentNameValue", nodeValue);
     }
+
+    @Test
+    public void testSetValidFrom() {
+        gen.setValidFrom(new DateTime(2010, 1, 1));
+        assertEquals(new DateTime(2010, 1, 1), gen.getValidFrom());
+    }
+
+    @Test
+    public void testSetValidFrom_noRuntimeRepository() {
+        gen = spy(gen);
+        when(gen.getRepository()).thenReturn(null);
+
+        gen.setValidFrom(new DateTime(2010, 1, 1));
+
+        assertEquals(new DateTime(2010, 1, 1), gen.getValidFrom());
+    }
+
+    @Test(expected = IllegalRepositoryModificationException.class)
+    public void testSetValidFrom_throwExceptionIfRepositoryNotModifiable() {
+        IRuntimeRepository repository = mock(IRuntimeRepository.class);
+        when(repository.isModifiable()).thenReturn(false);
+
+        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+        gen = new TestProductCmptGeneration(pc);
+
+        gen.setValidFrom(new DateTime(2010, 1, 1));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
+        gen.setValidFrom(null);
+    }
+
 }

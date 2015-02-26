@@ -80,11 +80,10 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Validation message code to indicate that the product component type for this generation
-     * contains an attribute that has no corresponding configuration element configured in this
-     * generation.
+     * contains an attribute, method or tableStructureUsage that has no corresponding property
+     * configured in this generation.
      */
-    public static final String MSGCODE_ATTRIBUTE_WITH_MISSING_CONFIG_ELEMENT = MSGCODE_PREFIX
-            + "AttributeWithMissingConfigElement"; //$NON-NLS-1$
+    public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
 
     /**
      * Validation message code to identify the message that informs about a link to a product

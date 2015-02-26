@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
@@ -40,7 +41,30 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
 
     @Override
     public boolean isBuilderFor(IIpsSrcFile ipsSrcFile) throws CoreException {
-        return IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType());
+        if (IpsObjectType.PRODUCT_CMPT_TYPE.equals(ipsSrcFile.getIpsObjectType())) {
+            return isChangingOverTime(ipsSrcFile) || isGenerateDeprecatedGeneration(ipsSrcFile);
+        }
+        return false;
+
+    }
+
+    /**
+     * Returns whether the product component type of the given {@link IIpsSrcFile} is changing over
+     * time or not. If the {@link IIpsSrcFile} does not exists we assume it was changing over time
+     * to delete previously created java files.
+     */
+    private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return !ipsSrcFile.exists()
+                || Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_CHANGING_OVER_TIME));
+    }
+
+    /**
+     * If the generated java file already exists we need to build the generation also if the type
+     * currently is not changing over time. This is used to generate &#64;deprecated annotations in
+     * the generation class files.
+     */
+    private boolean isGenerateDeprecatedGeneration(IIpsSrcFile ipsSrcFile) throws CoreException {
+        return getJavaFile(ipsSrcFile).exists();
     }
 
     @Override

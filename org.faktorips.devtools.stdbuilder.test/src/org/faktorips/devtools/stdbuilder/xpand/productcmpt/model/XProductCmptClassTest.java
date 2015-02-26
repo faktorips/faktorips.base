@@ -11,7 +11,9 @@
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -91,6 +93,30 @@ public class XProductCmptClassTest {
         Set<XProductCmptClass> superclasses = xProductCmptClass.getClassHierarchy();
         assertEquals(3, superclasses.size());
         assertThat(superclasses, hasItems(xSuperType, xSuperSuperType));
+    }
+
+    @Test
+    public void testIsGenerateGenerationAccessMethods_isChangingOverTime_true() throws Exception {
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
+        assertTrue(xProductCmptClass.isGenerateGenerationAccessMethods());
+    }
+
+    @Test
+    public void testIsGenerateGenerationAccessMethods_isChangingOverTime_false() throws Exception {
+        when(productCmptType.isChangingOverTime()).thenReturn(false);
+        assertFalse(xProductCmptClass.isGenerateGenerationAccessMethods());
+    }
+
+    @Test
+    public void testIsGenerateIsChangingOverTimeAccessMethod_trueIfNoSupertype() {
+        when(productCmptType.hasSupertype()).thenReturn(false);
+        assertTrue(xProductCmptClass.isGenerateIsChangingOverTimeAccessMethod());
+    }
+
+    @Test
+    public void testIsGenerateIsChangingOverTimeAccessMethod_falseIfSupertype() {
+        when(productCmptType.hasSupertype()).thenReturn(true);
+        assertFalse(xProductCmptClass.isGenerateIsChangingOverTimeAccessMethod());
     }
 
 }

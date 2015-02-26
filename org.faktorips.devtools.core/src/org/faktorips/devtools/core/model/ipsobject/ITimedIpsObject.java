@@ -143,6 +143,24 @@ public interface ITimedIpsObject extends IIpsObject {
     public int getNumOfGenerations();
 
     /**
+     * Returns the date from which this {@link ITimedIpsObject} is valid. This needs to be the same
+     * date as the first generation is valid from.
+     * 
+     * @return The valid from of this product component.
+     */
+    public GregorianCalendar getValidFrom();
+
+    /**
+     * Set the date from which this product component is valid. This method automatically adjusts
+     * the valid from date of the first generation.
+     * 
+     * @param validFrom The new valid from date for this {@link ITimedIpsObject}
+     */
+    public void setValidFrom(GregorianCalendar validFrom);
+
+    /**
+     * Returns the date when this product component expires.
+     * 
      * @return The date this IpsObject is valid on or <code>null</code> if this IpsObject is valid
      *         forever.
      */
@@ -210,4 +228,10 @@ public interface ITimedIpsObject extends IIpsObject {
      * @param newDate new effective date of the only generation in this object.
      */
     public void retainOnlyGeneration(GregorianCalendar oldDate, GregorianCalendar newDate);
+
+    /**
+     * Returns <code>true</code> if this {@link ITimedIpsObject} allows changing over time. If not,
+     * <code>false</code> is returned.
+     */
+    public boolean allowGenerations();
 }

@@ -11,7 +11,9 @@
 package org.faktorips.runtime;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.faktorips.runtime.internal.DateTime;
 
@@ -26,6 +28,7 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Returns the repository this product component belongs to. This method never returns
      * <code>null</code>.
      */
+    @Override
     public IRuntimeRepository getRepository();
 
     /**
@@ -45,6 +48,24 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
     public String getVersionId();
 
     /**
+     * Returns the date from which this product component is valid. If this product component
+     * supports generations this is the same valid from date as the first generation.
+     * 
+     * @return The valid from date of this product component
+     */
+    public DateTime getValidFrom();
+
+    /**
+     * Returns the date from which this product component is valid as a {@link Date}. If this
+     * product component supports generations this is the same valid from date as the first
+     * generation.
+     * 
+     * @param timeZone The time zone which is used to calculate the returned valid from date.
+     * @return The valid from date of this product component
+     */
+    public Date getValidFrom(TimeZone timeZone);
+
+    /**
      * Returns the date when this product component expires. Returning <code>null</code> means no
      * end of the validity period.
      */
@@ -54,6 +75,8 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * Returns the generation that is effective on the given date or <code>null</code> if no
      * generation is effective on that date.
      * 
+     * @throws UnsupportedOperationException if this product component has no product component
+     *             generations.
      * @throws NullPointerException if effective date is <code>null</code>.
      */
     public IProductComponentGeneration getGenerationBase(Calendar effectiveDate);
@@ -61,6 +84,9 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
     /**
      * Returns the latest product component generation of the provided product component or
      * <code>null</code> if non available.
+     * 
+     * @throws UnsupportedOperationException if this product component has no product component
+     *             generations.
      */
     public IProductComponentGeneration getLatestProductComponentGeneration();
 
@@ -84,5 +110,13 @@ public interface IProductComponent extends IRuntimeObject, IProductComponentLink
      * @since 3.8
      */
     public List<IProductComponentLink<? extends IProductComponent>> getLinks();
+
+    /**
+     * Returns <code>true</code> if this product component has {@link IProductComponentGeneration
+     * product component generations}.
+     * 
+     * @since 3.15
+     */
+    public boolean isChangingOverTime();
 
 }

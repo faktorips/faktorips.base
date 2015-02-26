@@ -36,7 +36,9 @@
 «DEFINE getterSetterAdder FOR XProductAssociation-»
 	«IF !derivedUnion»
 		«EXPAND getterProductCmpt»
-		«EXPAND getterProductCmptGen»
+		«IF generateGenerationAccessMethods»
+		 	«EXPAND getterProductCmptGen»
+		«ENDIF»
 		«EXPAND getterProductCmptPerIndex»
 		«IF !genInterface()-»
 			«EXPAND setterMethodForToOne»

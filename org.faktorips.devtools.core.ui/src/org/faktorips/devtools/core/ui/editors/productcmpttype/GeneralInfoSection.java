@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpttype;
 
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,7 +33,8 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.util.ArgumentCheck;
 
 /**
- * Section to edit supertype, abstract flag and configured <tt>IPolicyCmptType</tt>.
+ * Section to edit supertype, abstract flag, changing over time flag, layer supertype flag, and
+ * configured <tt>IPolicyCmptType</tt>.
  * 
  * @author Jan Ortmann
  */
@@ -78,13 +80,22 @@ public class GeneralInfoSection extends IpsSection {
                 productCmptType.getIpsProject(), composite, toolkit, false);
         getBindingContext().bindContent(supertypeRefControl, productCmptType, IType.PROPERTY_SUPERTYPE);
 
-        Composite modifyerComposite = toolkit.createGridComposite(client, 2, false, false);
+        Composite modifyerComposite = toolkit.createGridComposite(client, 3, false, false);
 
         // Abstract flag
         Checkbox abstractCheckbox = toolkit
                 .createCheckbox(modifyerComposite, Messages.GeneralInfoSection_abstractLabel);
         ((GridData)abstractCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
         getBindingContext().bindContent(abstractCheckbox, productCmptType, IType.PROPERTY_ABSTRACT);
+
+        // ChangingOverTime flag
+        String changingOverTimePluralName = IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
+                .getGenerationConceptNamePlural();
+        Checkbox changingOverTimeCheckbox = toolkit.createCheckbox(modifyerComposite,
+                NLS.bind(Messages.GeneralInfoSection_changingOverTimeLabel, changingOverTimePluralName));
+        ((GridData)changingOverTimeCheckbox.getLayoutData()).grabExcessHorizontalSpace = false;
+        getBindingContext().bindContent(changingOverTimeCheckbox, productCmptType,
+                IProductCmptType.PROPERTY_CHANGING_OVER_TIME);
 
         // Layer Supertype flag
         Checkbox layerSupertypeCheckbox = toolkit.createCheckbox(modifyerComposite,

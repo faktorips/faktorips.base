@@ -28,8 +28,14 @@ public class TestProductComponent extends ProductComponent {
         return new TestProductCmptGeneration(this);
     }
 
+    @Override
     public IConfigurableModelObject createPolicyComponent() {
         throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
     }
 
 }

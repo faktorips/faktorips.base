@@ -43,7 +43,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     private String formulaName = StringUtils.EMPTY;
 
     /** Flag indicating if this is static */
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = getProductCmptType().isChangingOverTime();
 
     public ProductCmptTypeMethod(IProductCmptType parent, String id) {
         super(parent, id);
@@ -197,6 +197,9 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     protected void validateChangingOverTime(MessageList result, IIpsProject ipsProject) throws CoreException {
         if (!StringUtils.isEmpty(getName())) {
+            ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
+            propertyValidator.validateTypeDoesNotAcceptChangingOverTime(result);
+
             IMethod superMethod = findOverriddenMethod(ipsProject);
             if (superMethod == null) {
                 superMethod = findOverloadedFormulaMethod(ipsProject);

@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
  */
 public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
 
-    final static String PAGE_ID = "PolicyCmpt"; //$NON-NLS-1$
+    final static String PAGE_ID = "ProductCmpt"; //$NON-NLS-1$
 
     public ProductCmptPropertiesPage(IpsObjectEditor editor) {
         super(editor, PAGE_ID, Messages.ProductCmptPropertiesPage_pageTitle);
@@ -50,9 +50,11 @@ public class ProductCmptPropertiesPage extends IpsObjectEditorPage {
         layout.horizontalSpacing = HORIZONTAL_SECTION_SPACE;
         formBody.setLayout(layout);
 
-        Composite top = createGridComposite(toolkit, formBody, 2, true, GridData.FILL_BOTH);
+        Composite top = createGridComposite(toolkit, formBody, 2, false, GridData.FILL_BOTH);
         new ComponentPropertiesSection(getProductCmpt(), top, toolkit, getProductCmptEditor());
-        new GenerationsSection(this, top, toolkit);
+        if (getProductCmpt().allowGenerations()) {
+            new GenerationsSection(this, top, toolkit);
+        }
     }
 
     // Made public to get refresh from editor.

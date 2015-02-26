@@ -10,7 +10,6 @@
 
 package org.faktorips.runtime.internal.toc;
 
-
 /**
  * A {@link TocEntryObject} representing an enum content element
  * 

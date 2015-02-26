@@ -55,6 +55,7 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
         return result;
     }
 
+    @Override
     public void merge(UniqueResultStructure<R> otherStructure) {
         throw new UnsupportedOperationException("Unique key violation: " + this + " cannot be merged with "
                 + otherStructure.uniqueResult + "");
@@ -104,6 +105,7 @@ public class UniqueResultStructure<R> extends SearchStructure<R> implements
      * <p>
      * The {@link UniqueResultStructure} is immutable. Hence it is not needed to create a copy.
      */
+    @Override
     public UniqueResultStructure<R> copy() {
         return this;
     }

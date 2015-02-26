@@ -25,7 +25,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -246,9 +248,26 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     private void addChangingOverTimeDecorationIfRequired(EditField<?> editField, int pixelsToLeftUponControlFocus) {
-        if (propertyIsNotChangingOverTime()) {
+        if (isProductCmptTypeChangingOverTime() && propertyIsNotChangingOverTime()) {
             addChangingOverTimeDecoration(editField, pixelsToLeftUponControlFocus);
         }
+    }
+
+    private boolean isProductCmptTypeChangingOverTime() {
+        IProductCmptType productCmptType = findProductCmptType();
+        return productCmptType != null && productCmptType.isChangingOverTime();
+    }
+
+    private IProductCmptType findProductCmptType() {
+        IProductCmptType productCmptType = null;
+        if (getProperty() != null) {
+            try {
+                productCmptType = getProperty().findProductCmptType(propertyValue.getIpsProject());
+            } catch (CoreException e) {
+                throw new CoreRuntimeException(e);
+            }
+        }
+        return productCmptType;
     }
 
     private boolean propertyIsNotChangingOverTime() {

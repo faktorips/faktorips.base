@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -32,6 +33,11 @@ public class XProductAssociation extends XAssociation {
     @Override
     public IProductCmptTypeAssociation getAssociation() {
         return (IProductCmptTypeAssociation)super.getAssociation();
+    }
+
+    @Override
+    protected IProductCmptType getTargetType() {
+        return (IProductCmptType)super.getTargetType();
     }
 
     public String getTargetClassGenerationName() {
@@ -97,6 +103,14 @@ public class XProductAssociation extends XAssociation {
      */
     public String getJavadocKey(String prefix) {
         return prefix + (isOneToMany() ? "_MANY" : "_ONE");
+    }
+
+    /**
+     * Returns true if the changing over time flag of association target product component type is
+     * enabled.
+     */
+    public boolean isGenerateGenerationAccessMethods() {
+        return getTargetType().isChangingOverTime();
     }
 
 }

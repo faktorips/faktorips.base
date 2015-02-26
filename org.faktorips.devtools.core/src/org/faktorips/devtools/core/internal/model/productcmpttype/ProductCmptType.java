@@ -93,6 +93,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     private boolean configurationForPolicyCmptType = true;
     private String policyCmptType = ""; //$NON-NLS-1$
     private String instancesIconPath = null;
+    private boolean changingOverTime = getIpsProject().getReadOnlyProperties().isChangingOverTimeDefaultEnabled();
 
     private final IpsObjectPartCollection<IProductCmptTypeAttribute> attributes;
     private final IpsObjectPartCollection<ITableStructureUsage> tableStructureUsages;
@@ -206,6 +207,18 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public boolean isLayerSupertype() {
         return layerSupertype;
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return changingOverTime;
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changesOverTime) {
+        boolean oldValue = this.changingOverTime;
+        this.changingOverTime = changesOverTime;
+        valueChanged(oldValue, changesOverTime, PROPERTY_CHANGING_OVER_TIME);
     }
 
     @Override
@@ -376,6 +389,9 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 element.getAttribute(PROPERTY_CONFIGURATION_FOR_POLICY_CMPT_TYPE)).booleanValue();
         layerSupertype = Boolean.valueOf(element.getAttribute(PROPERTY_LAYER_SUPERTYPE)).booleanValue();
         instancesIconPath = element.getAttribute(PROPERTY_ICON_FOR_INSTANCES);
+        String changingOverTimeValue = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
+        changingOverTime = StringUtils.isEmpty(changingOverTimeValue) ? true : Boolean.valueOf(changingOverTimeValue)
+                .booleanValue();
     }
 
     @Override
@@ -386,6 +402,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         element.setAttribute(PROPERTY_LAYER_SUPERTYPE, String.valueOf(layerSupertype));
         element.setAttribute(PROPERTY_POLICY_CMPT_TYPE, policyCmptType);
         element.setAttribute(PROPERTY_ICON_FOR_INSTANCES, instancesIconPath);
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(changingOverTime));
     }
 
     @Override
@@ -565,6 +582,8 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
         validateLayerSupertype(list, ipsProject);
         validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(list, ipsProject);
+        validateSuperProductCmptTypeHasSameChangingOverTimeSetting(supertype, list);
+
         validateIfAnOverrideOfOverloadedFormulaExists(list, ipsProject);
         list.add(TypeValidations.validateOtherTypeWithSameNameTypeInIpsObjectPath(IpsObjectType.POLICY_CMPT_TYPE,
                 getQualifiedName(), ipsProject, this));
@@ -575,6 +594,12 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForProductCmptTypeAttribute(list, ipsProject);
         validateDefaultCategoryForTableStructureUsages(list, ipsProject);
         validateDefaultCategoryForValidationRules(list, ipsProject);
+    }
+
+    private void validateSuperProductCmptTypeHasSameChangingOverTimeSetting(IProductCmptType superProductCmptType,
+            MessageList list) {
+        ProductCmptTypeValidations.validateSuperProductCmptTypeHasSameChangingOverTimeSetting(list, this,
+                superProductCmptType);
     }
 
     private void validateLayerSupertype(MessageList list, IIpsProject ipsProject) throws CoreException {

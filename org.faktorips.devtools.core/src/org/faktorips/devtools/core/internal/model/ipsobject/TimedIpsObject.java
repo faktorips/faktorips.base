@@ -282,6 +282,16 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     }
 
     @Override
+    public GregorianCalendar getValidFrom() {
+        return getFirstGeneration().getValidFrom();
+    }
+
+    @Override
+    public void setValidFrom(GregorianCalendar validFrom) {
+        getFirstGeneration().setValidFrom(validFrom);
+    }
+
+    @Override
     public GregorianCalendar getValidTo() {
         return validTo;
     }
@@ -296,8 +306,24 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        validateValidFrom(list);
+        validateValidTo(list);
+    }
+
+    /**
+     * This method ensures the validation of the valid from date which is stored on the first
+     * generation. This won't happen automatically if the object does not allow generations, because
+     * the first generation won't be included in the children of the object.
+     */
+    private void validateValidFrom(MessageList list) {
+        if (!allowGenerations()) {
+            ((IpsObjectGeneration)getFirstGeneration()).validateValidFromFormat(list, this);
+        }
+    }
+
+    private void validateValidTo(MessageList list) {
         if (getValidTo() == null) {
-            // empty validTo - valid forever.
+            // empty validTo - valid forever
             return;
         }
 

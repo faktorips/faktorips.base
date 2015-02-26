@@ -74,6 +74,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
                     .getName());
             IComputable<String, IProductComponent> productCmptComputer = new AbstractComputable<String, IProductComponent>(
                     productCmptClass) {
+                @Override
                 public IProductComponent compute(String key) throws InterruptedException {
                     return getNotCachedProductComponent(key);
                 }
@@ -86,6 +87,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             IComputable<GenerationId, IProductComponentGeneration> productCmptGenComputer = new AbstractComputable<GenerationId, IProductComponentGeneration>(
                     productCmptGenClass) {
 
+                @Override
                 public IProductComponentGeneration compute(GenerationId key) throws InterruptedException {
                     return getNotCachedProductComponentGeneration(key);
                 }
@@ -97,6 +99,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
             Class<ITable> tableClass = (Class<ITable>)cl.loadClass(ITable.class.getName());
             IComputable<String, ITable> tableComputer = new AbstractComputable<String, ITable>(tableClass) {
 
+                @Override
                 public ITable compute(String key) throws InterruptedException {
                     return getNotCachedTable(key);
                 }
@@ -106,6 +109,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
 
             IComputable<Class<?>, List<?>> enumValueComputer = new AbstractComputable<Class<?>, List<?>>(List.class) {
 
+                @Override
                 public List<?> compute(Class<?> key) throws InterruptedException {
                     return getNotCachedEnumValues(key);
                 }
@@ -199,6 +203,7 @@ public abstract class AbstractCachingRuntimeRepository extends AbstractRuntimeRe
 
     private <T> IComputable<String, T> initCache(final Class<T> type) {
         IComputable<String, T> computer = new AbstractComputable<String, T>(type) {
+            @Override
             public T compute(String key) throws InterruptedException {
                 return getNotCachedCustomObject(type, key);
             }
