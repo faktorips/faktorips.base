@@ -736,4 +736,28 @@ public class IpsObjectPathTest extends AbstractIpsPluginTest {
         assertThat(result, hasItem(cmptType1.getIpsSrcFile()));
     }
 
+    @Test
+    public void testFindIpsSrcFiles() throws Exception {
+        QualifiedNameType nameType = new QualifiedNameType("MyName", IpsObjectType.PRODUCT_CMPT_TYPE);
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class);
+        when(ipsSrcFile.exists()).thenReturn(true);
+        IIpsContainerEntry newContainer = mock(IIpsContainerEntry.class);
+        when(newContainer.isContainer()).thenReturn(true);
+        when(newContainer.getType()).thenReturn(IIpsObjectPathEntry.TYPE_CONTAINER);
+        when(newContainer.getIpsProject()).thenReturn(ipsProject);
+        IIpsObjectPathEntry otherEntry = mock(IIpsObjectPathEntry.class);
+        when(otherEntry.getType()).thenReturn(IIpsObjectPathEntry.TYPE_SRC_FOLDER);
+        when(otherEntry.getIpsProject()).thenReturn(ipsProject);
+        path.setEntries(new IIpsObjectPathEntry[] { newContainer, otherEntry });
+        IIpsObjectPathEntry containerEntry = mock(IIpsObjectPathEntry.class);
+        when(newContainer.resolveEntries()).thenReturn(Arrays.asList(containerEntry));
+        when(containerEntry.findIpsSrcFile(nameType)).thenReturn(ipsSrcFile);
+        when(containerEntry.getType()).thenReturn(IIpsObjectPathEntry.TYPE_CONTAINER);
+        when(containerEntry.getIpsProject()).thenReturn(ipsProject);
+
+        IIpsSrcFile foundIpsSrcFile = path.findIpsSrcFile(nameType);
+
+        assertSame(ipsSrcFile, foundIpsSrcFile);
+    }
+
 }
