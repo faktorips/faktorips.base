@@ -13,6 +13,8 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -59,6 +61,9 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
             sb.append(getInputFormat().format(step));
         }
         sb.append(RangeValueSet.RANGE_VALUESET_END);
+        if (getValueSet().isContainsNull()) {
+            sb.append(' ' + getNullPresentation());
+        }
         return sb.toString();
     }
 
@@ -76,19 +81,41 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         String[] splitedBounds = stringWithoutBrackets.split(REGEX_BOUND_SEPERATOR, 2);
         String lowerBound = parseValue(splitedBounds[0]);
         if (splitedBounds.length == 2) {
-            String[] splitedUpperBoundAndStep = splitedBounds[1].split(REGEX_STEP_SEPERATOR, 2);
-            String upperBound = parseValue(splitedUpperBoundAndStep[0]);
-            String step = getStep(splitedUpperBoundAndStep);
-            if (!isEqualContentRange(lowerBound, upperBound, step)) {
-                return createNewRangeValueSet(lowerBound, upperBound, step);
+            String[] splitedUpperBoundAndStepAndNullPresentation = splitedBounds[1].split(REGEX_STEP_SEPERATOR, 2);
+            String upperBound = parseValue(splitedUpperBoundAndStepAndNullPresentation[0]);
+            String step = getStep(splitedUpperBoundAndStepAndNullPresentation);
+            boolean containsNull = isContainsNull(getNulRepresentation(splitedUpperBoundAndStepAndNullPresentation));
+            if (!isEqualContentRange(lowerBound, upperBound, step, containsNull)) {
+                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull);
             }
         }
         return getValueSet();
     }
 
+    private boolean isContainsNull(String nullPresentation) {
+        return StringUtils.isNotBlank(nullPresentation) ? getNullPresentation().equals(
+                nullPresentation.trim()) : false;
+    }
+
+    private String getNullPresentation() {
+        return NLS.bind(Messages.RangeValueSetFormat_includingNull, IpsPlugin.getDefault().getIpsPreferences()
+                .getNullPresentation());
+    }
+
+    private String getNulRepresentation(String[] splitSeperator) {
+        if (splitSeperator.length == 2) {
+            String nullRepresentation[] = splitSeperator[1].split("]"); //$NON-NLS-1$
+            if (nullRepresentation.length == 2) {
+                return nullRepresentation[1];
+            }
+        }
+        return null;
+    }
+
     private String getStep(String[] splitSeperator) {
         if (splitSeperator.length == 2) {
-            return parseValue(splitSeperator[1]);
+            String step[] = splitSeperator[1].split("]"); //$NON-NLS-1$
+            return parseValue(step[0]);
         } else {
             return null;
         }
@@ -103,20 +130,18 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         }
     }
 
-    private boolean isEqualContentRange(String lowerBound, String upperBound, String step) {
+    private boolean isEqualContentRange(String lowerBound, String upperBound, String step, boolean containsNull) {
         if (getValueSet() instanceof IRangeValueSet) {
             IRangeValueSet range = (IRangeValueSet)getValueSet();
             return ObjectUtils.equals(range.getLowerBound(), lowerBound)
                     && ObjectUtils.equals(range.getUpperBound(), upperBound)
-                    && ObjectUtils.equals(step, range.getStep());
+                    && ObjectUtils.equals(step, range.getStep()) && (containsNull == getValueSet().isContainsNull());
         }
         return false;
     }
 
-    private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step) {
-        IRangeValueSet range = new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step,
-                getValueSet().isContainsNull());
-        return range;
+    private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step, boolean isContainsNull) {
+        return new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step, isContainsNull);
     }
 
     @Override
@@ -134,7 +159,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         if (valueSet.isRange() && isUnlimitedRange((IRangeValueSet)valueSet)) {
             return valueSet;
         } else {
-            return createNewRangeValueSet(null, null, null);
+            return createNewRangeValueSet(null, null, null, false);
         }
     }
 
