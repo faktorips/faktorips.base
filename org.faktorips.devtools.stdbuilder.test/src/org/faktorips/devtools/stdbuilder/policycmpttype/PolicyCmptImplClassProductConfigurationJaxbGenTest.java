@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 import org.faktorips.codegen.ImportDeclaration;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.stdbuilder.AnnotatedJavaElementType;
+import org.faktorips.util.StringUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +33,9 @@ public class PolicyCmptImplClassProductConfigurationJaxbGenTest {
     public void testCreateAnnotation() throws Exception {
         JavaCodeFragment codeFragment = jaxbGen.createAnnotation(null);
         assertNotNull(codeFragment);
-        String testSsourcecode = "@XmlJavaTypeAdapter(value = ProductConfigurationXmlAdapter.class)\n@XmlAttribute(name = \"product-component.id\")\n";
+        String testSsourcecode = "@XmlJavaTypeAdapter(value = ProductConfigurationXmlAdapter.class)"
+                + StringUtil.getSystemLineSeparator() + "@XmlAttribute(name = \"product-component.id\")"
+                + StringUtil.getSystemLineSeparator();
         assertEquals(testSsourcecode, codeFragment.getSourcecode());
         ImportDeclaration importDeclaration = codeFragment.getImportDeclaration();
         assertTrue(importDeclaration.getImports().contains("org.faktorips.runtime.jaxb.ProductConfigurationXmlAdapter"));

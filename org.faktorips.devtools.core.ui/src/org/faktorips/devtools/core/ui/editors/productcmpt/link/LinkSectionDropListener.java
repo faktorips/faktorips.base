@@ -79,6 +79,12 @@ public class LinkSectionDropListener extends IpsFileTransferViewerDropAdapter {
         super.dragEnter(event);
     }
 
+    // Overridden to make it accessible in test cases
+    @Override
+    protected List<IProductCmpt> getTransferElements(TransferData transferType) {
+        return super.getTransferElements(transferType);
+    }
+
     @Override
     public boolean validateDrop(Object target, int operation, TransferData transferType) {
         if (target == null | !linksSection.isDataChangeable()) {
