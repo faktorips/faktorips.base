@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.IoUtil;
 import org.junit.Test;
 
 /**
@@ -194,10 +196,13 @@ public class CreateIpsArchiveOperationTest extends AbstractIpsPluginTest {
     }
 
     private boolean coreExceptionThrownOnGetResourceAsStream(IIpsArchive archive) {
+        InputStream inputStream = null;
         try {
-            archive.getResourceAsStream("test.gif");
+            inputStream = archive.getResourceAsStream("test.gif");
         } catch (CoreRuntimeException e) {
             return true;
+        } finally {
+            IoUtil.close(inputStream);
         }
         return false;
     }

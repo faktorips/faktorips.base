@@ -49,6 +49,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArchive;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.StreamUtil;
 
 /**
@@ -227,17 +228,20 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         File file = getFileFromPath();
 
         modificationStamp = getActualFileModificationStamp();
-        JarFile jar;
+        JarFile jar = null;
         try {
             jar = new JarFile(file);
+            indexContent(jar);
         } catch (IOException e) {
             throw new CoreRuntimeException(new IpsStatus("Error reading ips archive " + getLocation(), e)); //$NON-NLS-1$
-        }
-        indexContent(jar);
-        try {
-            jar.close();
-        } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus("Error closing ips archive " + getLocation())); //$NON-NLS-1$
+        } finally {
+            try {
+                if (jar != null) {
+                    jar.close();
+                }
+            } catch (IOException e) {
+                throw new CoreRuntimeException(new IpsStatus("Error closing ips archive " + getLocation())); //$NON-NLS-1$
+            }
         }
     }
 
@@ -325,6 +329,8 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
         } catch (IOException e) {
             throw new CoreRuntimeException(new IpsStatus(
                     "Error reading " + JAVA_MAPPING_ENTRY_NAME + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
+        } finally {
+            IoUtil.close(is);
         }
     }
 
@@ -401,25 +407,29 @@ public class IpsArchive extends AbstractIpsStorage implements IIpsArchive {
             return null;
         }
         readArchiveContentIfNecessary();
-        JarFile archive;
+        JarFile archive = null;
         try {
             File archiveFile = getFileFromPath();
             archive = new JarFile(archiveFile);
+            JarEntry entry = archive.getJarEntry(path);
+            if (entry == null) {
+                throw new CoreRuntimeException(new IpsStatus("Entry " + path + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            try {
+                return StreamUtil.copy(archive.getInputStream(entry), 1024);
+            } catch (IOException e) {
+                throw new CoreRuntimeException(new IpsStatus(
+                        "Error reading data for " + path + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+
         } catch (IOException e) {
             throw new CoreRuntimeException(new IpsStatus("Error opening jarfile " + archivePath, e)); //$NON-NLS-1$
-        }
-        JarEntry entry = archive.getJarEntry(path);
-        if (entry == null) {
-            throw new CoreRuntimeException(new IpsStatus("Entry " + path + " not found in archive " + archivePath)); //$NON-NLS-1$ //$NON-NLS-2$
-        }
-        try {
-            return StreamUtil.copy(archive.getInputStream(entry), 1024);
-        } catch (IOException e) {
-            throw new CoreRuntimeException(new IpsStatus(
-                    "Error reading data for " + path + " from archive " + archivePath, e)); //$NON-NLS-1$ //$NON-NLS-2$
+
         } finally {
             try {
-                archive.close();
+                if (archive != null) {
+                    archive.close();
+                }
             } catch (IOException e) {
                 throw new CoreRuntimeException(new IpsStatus(
                         "Error closing stream reading " + path + " from archive " + this, e)); //$NON-NLS-1$ //$NON-NLS-2$

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -23,7 +24,6 @@ import java.util.List;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -31,6 +31,7 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -131,13 +132,13 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         // check (link) targets
         IProductCmptLink link = cmptAGeneration.newLink(associationToB1);
         link.setTarget(cmptB1.getQualifiedName());
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB1)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB1, cmptB2)));
-        assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
-        assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2, cmptB3)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1, cmptB1)));
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptC1, cmptB2)));
+        assertFalse(dropListener.validateDrop(link, operation, mockElementTransfer(cmptB1)));
+        assertFalse(dropListener.validateDrop(link, operation, mockElementTransfer(cmptB1, cmptB2)));
+        assertTrue(dropListener.validateDrop(link, operation, mockElementTransfer(cmptB2)));
+        assertTrue(dropListener.validateDrop(link, operation, mockElementTransfer(cmptB2, cmptB3)));
+        assertFalse(dropListener.validateDrop(link, operation, mockElementTransfer(cmptC1)));
+        assertFalse(dropListener.validateDrop(link, operation, mockElementTransfer(cmptC1, cmptB1)));
+        assertFalse(dropListener.validateDrop(link, operation, mockElementTransfer(cmptC1, cmptB2)));
         link.delete();
     }
 
@@ -149,10 +150,10 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
         IProductCmptLink link = cmptA.getFirstGeneration().newLink(associationToB1);
         link.setTarget(cmptB1.getQualifiedName());
-        assertTrue(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
+        assertTrue(dropListener.validateDrop(link, operation, mockElementTransfer(cmptB2)));
 
         when(linkSection.isDataChangeable()).thenReturn(false);
-        assertFalse(dropListener.validateDrop(link, operation, getTransfer(cmptB2)));
+        assertFalse(dropListener.validateDrop(link, operation, mockElementTransfer(cmptB2)));
     }
 
     @Test
@@ -194,9 +195,9 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
         dropListener.setToMove(b1Link1);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
-        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, mockElementTransfer(cmptA)));
         dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
-        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertFalse(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, mockElementTransfer(cmptA)));
     }
 
     @Test
@@ -205,9 +206,9 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
         dropListener.setToMove(staticLinkToB1);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
-        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, mockElementTransfer(cmptA)));
         dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
-        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertTrue(dropListener.validateDrop(staticLinkToB2, DND.DROP_MOVE, mockElementTransfer(cmptA)));
     }
 
     @Test
@@ -216,9 +217,9 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
 
         dropListener.setToMove(staticLinkToB1);
         dropListener.setLocation(ViewerDropAdapter.LOCATION_AFTER);
-        assertFalse(dropListener.validateDrop(staticLinkToC1, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertFalse(dropListener.validateDrop(staticLinkToC1, DND.DROP_MOVE, mockElementTransfer(cmptA)));
         dropListener.setLocation(ViewerDropAdapter.LOCATION_BEFORE);
-        assertFalse(dropListener.validateDrop(staticLinkToC1, DND.DROP_MOVE, getTransfer(cmptA)));
+        assertFalse(dropListener.validateDrop(staticLinkToC1, DND.DROP_MOVE, mockElementTransfer(cmptA)));
     }
 
     @Test
@@ -268,13 +269,15 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
             int bitmask) {
         // transfertype will be ignored anyway. Ignore "getTransfer(cmptA)".
         assertEquals((bitmask & 1 << 0) == 1 << 0,
-                dropListener.validateDrop(b1Link1, DND.DROP_MOVE, getTransfer(cmptA)));
+                dropListener.validateDrop(b1Link1, DND.DROP_MOVE, mockElementTransfer(cmptA)));
         assertEquals((bitmask & 1 << 1) == 1 << 1,
-                dropListener.validateDrop(b1Link2, DND.DROP_MOVE, getTransfer(cmptA)));
+                dropListener.validateDrop(b1Link2, DND.DROP_MOVE, mockElementTransfer(cmptA)));
         assertEquals((bitmask & 1 << 2) == 1 << 2,
-                dropListener.validateDrop(b2Link3, DND.DROP_MOVE, getTransfer(cmptA)));
-        assertEquals((bitmask & 1 << 3) == 1 << 3, dropListener.validateDrop(cLink1, DND.DROP_MOVE, getTransfer(cmptA)));
-        assertEquals((bitmask & 1 << 4) == 1 << 4, dropListener.validateDrop(cLink2, DND.DROP_MOVE, getTransfer(cmptA)));
+                dropListener.validateDrop(b2Link3, DND.DROP_MOVE, mockElementTransfer(cmptA)));
+        assertEquals((bitmask & 1 << 3) == 1 << 3,
+                dropListener.validateDrop(cLink1, DND.DROP_MOVE, mockElementTransfer(cmptA)));
+        assertEquals((bitmask & 1 << 4) == 1 << 4,
+                dropListener.validateDrop(cLink2, DND.DROP_MOVE, mockElementTransfer(cmptA)));
     }
 
     @Test
@@ -432,11 +435,9 @@ public class LinkSectionDropListenerTest extends AbstractIpsPluginTest {
         }
     }
 
-    private TransferData getTransfer(ProductCmpt... cmpts) {
-        String[] filenames = getFilenames(cmpts);
-        TransferData transfer = FileTransfer.getInstance().getSupportedTypes()[0];
-        FileTransfer.getInstance().javaToNative(filenames, transfer);
-        return transfer;
+    private TransferData mockElementTransfer(IProductCmpt... cmpts) {
+        when(dropListener.getTransferElements(any(TransferData.class))).thenReturn(Arrays.asList(cmpts));
+        return mock(TransferData.class);
     }
 
     private String[] getFilenames(ProductCmpt... cmpts) {
