@@ -623,8 +623,16 @@ public class IpsObjectPath implements IIpsObjectPath {
             if (search.isStopSearch()) {
                 break;
             }
-            if (entry.isContainer()) {
-                searchContainerIpsObjectPath(search, searchContext, entry);
+        }
+    }
+
+    private void searchEntry(AbstractSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
+        if (entry.isContainer()) {
+            searchContainerIpsObjectPath(search, searchContext, entry);
+        } else if (searchContext.visitAndConsiderContentsOf(entry)) {
+            search.processEntry(entry);
+            if (!search.isStopSearch()) {
+                searchReferencedProject(search, searchContext, entry);
             }
         }
     }
@@ -637,15 +645,6 @@ public class IpsObjectPath implements IIpsObjectPath {
             searchEntry(search, searchContext, childEntry);
             if (search.isStopSearch()) {
                 break;
-            }
-        }
-    }
-
-    private void searchEntry(AbstractSearch search, IpsObjectPathSearchContext searchContext, IIpsObjectPathEntry entry) {
-        if (searchContext.visitAndConsiderContentsOf(entry)) {
-            search.processEntry(entry);
-            if (!search.isStopSearch()) {
-                searchReferencedProject(search, searchContext, entry);
             }
         }
     }
