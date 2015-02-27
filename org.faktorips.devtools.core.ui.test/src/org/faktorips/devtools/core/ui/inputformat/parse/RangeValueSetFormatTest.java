@@ -129,9 +129,9 @@ public class RangeValueSetFormatTest {
 
         assertNotNull(parseInternal);
         assertEquals(result.getLowerBound(), "10");
-        assertEquals(result.getUpperBound(), "3 ..2]" + NULL_PRESENTATION);
+        assertEquals(result.getUpperBound(), "3 ..2");
         assertEquals(result.getStep(), null);
-        assertFalse(result.isContainsNull());
+        assertTrue(result.isContainsNull());
     }
 
     @Test

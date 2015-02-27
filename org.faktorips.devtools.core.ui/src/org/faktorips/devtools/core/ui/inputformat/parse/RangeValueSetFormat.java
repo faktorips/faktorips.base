@@ -32,6 +32,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private static final String REGEX_STEP_SEPERATOR = "(\\s*/\\s*)"; //$NON-NLS-1$
     private static final String REGEX_BOUND_SEPERATOR = "(\\s*\\.\\.+\\s*)"; //$NON-NLS-1$
     private static final String REGEX_BRACKETS = "(^\\[?)|(\\]?$)"; //$NON-NLS-1$
+    private static final String LAST_BRACKET_SEPERATOR = "]"; //$NON-NLS-1$
 
     public RangeValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
@@ -77,24 +78,10 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private IValueSet parseNonEmptyString(String stringToBeParsed) {
-        String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, StringUtils.EMPTY);
-        String[] splitedBounds = stringWithoutBrackets.split(REGEX_BOUND_SEPERATOR, 2);
-        String lowerBound = parseValue(splitedBounds[0]);
-        if (splitedBounds.length == 2) {
-            String[] splitedUpperBoundAndStepAndNullPresentation = splitedBounds[1].split(REGEX_STEP_SEPERATOR, 2);
-            String upperBound = parseValue(splitedUpperBoundAndStepAndNullPresentation[0]);
-            String step = getStep(splitedUpperBoundAndStepAndNullPresentation);
-            boolean containsNull = isContainsNull(getNulRepresentation(splitedUpperBoundAndStepAndNullPresentation));
-            if (!isEqualContentRange(lowerBound, upperBound, step, containsNull)) {
-                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull);
-            }
-        }
-        return getValueSet();
-    }
+        boolean containsNull = stringToBeParsed.endsWith(getNullPresentation());
+        int lastBracketIndex = stringToBeParsed.lastIndexOf(LAST_BRACKET_SEPERATOR) + 1;
 
-    private boolean isContainsNull(String nullPresentation) {
-        return StringUtils.isNotBlank(nullPresentation) ? getNullPresentation().equals(
-                nullPresentation.trim()) : false;
+        return parseValueSet(stringToBeParsed.substring(0, lastBracketIndex), containsNull);
     }
 
     private String getNullPresentation() {
@@ -102,20 +89,24 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
                 .getNullPresentation());
     }
 
-    private String getNulRepresentation(String[] splitSeperator) {
-        if (splitSeperator.length == 2) {
-            String nullRepresentation[] = splitSeperator[1].split("]"); //$NON-NLS-1$
-            if (nullRepresentation.length == 2) {
-                return nullRepresentation[1];
+    private IValueSet parseValueSet(String stringToBeParsed, boolean containsNull) {
+        String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, StringUtils.EMPTY);
+        String[] splitedBounds = stringWithoutBrackets.split(REGEX_BOUND_SEPERATOR, 2);
+        String lowerBound = parseValue(splitedBounds[0]);
+        if (splitedBounds.length == 2) {
+            String[] splitedUpperBoundAndStep = splitedBounds[1].split(REGEX_STEP_SEPERATOR, 2);
+            String upperBound = parseValue(splitedUpperBoundAndStep[0]);
+            String step = getStep(splitedUpperBoundAndStep);
+            if (!isEqualContentRange(lowerBound, upperBound, step, containsNull)) {
+                return createNewRangeValueSet(lowerBound, upperBound, step, containsNull);
             }
         }
-        return null;
+        return getValueSet();
     }
 
     private String getStep(String[] splitSeperator) {
         if (splitSeperator.length == 2) {
-            String step[] = splitSeperator[1].split("]"); //$NON-NLS-1$
-            return parseValue(step[0]);
+            return parseValue(splitSeperator[1]);
         } else {
             return null;
         }
@@ -140,8 +131,10 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
         return false;
     }
 
-    private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step, boolean isContainsNull) {
-        return new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step, isContainsNull);
+    private IValueSet createNewRangeValueSet(String lowerBound, String upperBound, String step, boolean containsNull) {
+        IRangeValueSet range = new RangeValueSet(getValueSetOwner(), getNextPartId(), lowerBound, upperBound, step,
+                containsNull);
+        return range;
     }
 
     @Override
