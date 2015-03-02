@@ -12,7 +12,7 @@ package org.faktorips.runtime;
 
 /**
  * Callback interface for the delta computation.
- *
+ * 
  * @author Jan Ortmann
  */
 public interface IDeltaComputationOptions {
@@ -91,7 +91,7 @@ public interface IDeltaComputationOptions {
      * Returns <code>true</code> if the given property should be ignored in the delta computation.
      * If you compare for example two versions of the same contract, you might want to ignore the
      * different in the creation time, as otherwise two versions would always be different.
-     *
+     * 
      * @param clazz The class the property belongs to.
      * @param property The name of the property.
      */
@@ -107,11 +107,23 @@ public interface IDeltaComputationOptions {
      * <p>
      * The creation of delta elements for subtree nodes is based on reflection and may cause a
      * performance issue if used in massive delta computation with many added or removed subtrees.
-     *
+     * 
      * @return <code>true</code> if a delta should be created for every element of an added or
      *         removed subtree.
      * @since 3.15
      */
     public boolean isCreateSubtreeDelta();
+
+    /**
+     * Compares two objects for equality by given model class and property, where either one or both
+     * objects may be <code>null</code>.
+     * 
+     * @param clazz The class the property belongs to.
+     * @param property The name of the property.
+     * @param value1 the first object
+     * @param value2 the second object
+     * @return <code>true</code> if the values of both objects are the same
+     */
+    boolean areObjectsEqual(Class<?> clazz, String property, Object value1, Object value2);
 
 }
