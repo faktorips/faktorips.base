@@ -35,10 +35,10 @@ import org.junit.Test;
 
 public class CSVTableImportOperationTest extends AbstractTableTest {
 
-    ITableRows importTarget;
-    AbstractExternalTableFormat format;
+    private ITableRows importTarget;
+    private AbstractExternalTableFormat format;
 
-    File file;
+    private File file;
 
     private IIpsProject ipsProject;
     private ITableContents contents;
@@ -100,6 +100,9 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
+        assertEquals("simple text", contents.getTableRows().getRow(0).getValue(7));
+        assertFalse("  simple text  ".equals(contents.getTableRows().getRow(0).getValue(7)));
+
     }
 
     @Test

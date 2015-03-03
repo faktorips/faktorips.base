@@ -142,7 +142,7 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 for (short j = 0; j < Math.min(structure.getNumOfColumns(), readLine.length); j++) {
                     String ipsValue = null;
 
-                    String tableField = readLine[j];
+                    String tableField = getTableField(readLine[j]);
                     if (j < readLine.length) {
                         if (!(nullRepresentationString.equals(tableField))) {
                             ipsValue = getIpsValue(tableField, datatypes[j]);
@@ -171,6 +171,10 @@ public class CSVTableImportOperation extends AbstractTableImportOperation {
                 IpsPlugin.log(e);
             }
         }
+    }
+
+    private String getTableField(String tableField) {
+        return tableField == null ? null : tableField.trim();
     }
 
     private boolean isEmptyRow(String[] row) {
