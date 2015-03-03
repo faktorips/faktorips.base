@@ -115,13 +115,13 @@ public interface IDeltaComputationOptions {
     public boolean isCreateSubtreeDelta();
 
     /**
-     * Compares two objects for equality by given model class and property, where either one or both
-     * objects may be <code>null</code>.
+     * Compares two objects for equality by the given model class and property, where either one or
+     * both objects may be <code>null</code>.
      * 
      * @param clazz The class the property belongs to.
      * @param property The name of the property.
-     * @param value1 the first object
-     * @param value2 the second object
+     * @param value1 The first object to compare
+     * @param value2 The second object to compare
      * @return <code>true</code> if the values of both objects are the same
      */
     boolean areObjectsEqual(Class<?> clazz, String property, Object value1, Object value2);
