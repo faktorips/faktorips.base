@@ -651,7 +651,7 @@ public class ModelObjectDeltaTest {
         }
 
         @Override
-        public boolean areObjectsEqual(Class<?> modelClass, String property, Object value1, Object value2) {
+        public boolean areValueEqual(Class<?> modelClass, String property, Object value1, Object value2) {
             return false;
         }
 

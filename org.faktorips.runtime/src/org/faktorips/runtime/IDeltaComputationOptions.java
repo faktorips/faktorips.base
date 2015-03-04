@@ -124,6 +124,6 @@ public interface IDeltaComputationOptions {
      * @param value2 The second object to compare
      * @return <code>true</code> if the values of both objects are the same
      */
-    boolean areObjectsEqual(Class<?> clazz, String property, Object value1, Object value2);
+    boolean areValueEqual(Class<?> clazz, String property, Object value1, Object value2);
 
 }
