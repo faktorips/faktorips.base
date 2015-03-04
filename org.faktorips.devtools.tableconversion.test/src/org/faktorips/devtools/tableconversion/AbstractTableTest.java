@@ -71,7 +71,7 @@ public abstract class AbstractTableTest extends AbstractIpsPluginTest {
         row1.setValue(4, "" + Integer.MAX_VALUE);
         row1.setValue(5, "" + new BigDecimal(922337203685477000.0));
         row1.setValue(6, "10.23EUR");
-        row1.setValue(7, "  simple text  ");
+        row1.setValue(7, "simple text");
 
         IRow row2 = exportSource.newRow();
         row2.setValue(0, "false");

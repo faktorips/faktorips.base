@@ -100,9 +100,6 @@ public class CSVTableImportOperationTest extends AbstractTableTest {
                 "NULL", true, ml, true);
         op.run(new NullProgressMonitor());
         assertTrue(ml.isEmpty());
-        assertEquals("simple text", contents.getTableRows().getRow(0).getValue(7));
-        assertFalse("  simple text  ".equals(contents.getTableRows().getRow(0).getValue(7)));
-
     }
 
     @Test

@@ -23,7 +23,7 @@ public class StringValueConverter extends AbstractValueConverter {
 
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        return externalDataValue.toString();
+        return externalDataValue.toString().trim();
     }
 
     @Override
