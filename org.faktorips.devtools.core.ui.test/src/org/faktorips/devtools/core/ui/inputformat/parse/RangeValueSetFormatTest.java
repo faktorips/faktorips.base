@@ -140,6 +140,21 @@ public class RangeValueSetFormatTest {
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "100");
+        assertEquals(result.getStep(), "2");
+        assertTrue(result.isContainsNull());
+    }
+
+    @Test
+    public void testParseInternal_RangeIncludesNullWithoutBrackets() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("10 .. 100/ 2" + ' ' + NULL_PRESENTATION);
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "100");
+        assertEquals(result.getStep(), "2");
         assertTrue(result.isContainsNull());
     }
 
@@ -149,7 +164,22 @@ public class RangeValueSetFormatTest {
         IRangeValueSet result = (IRangeValueSet)parseInternal;
 
         assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "100");
+        assertEquals(result.getStep(), "2");
         assertTrue(result.isContainsNull());
+    }
+
+    @Test
+    public void testParseInternal_RangeNotIncludesNullWithBlank() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 100/ 2]" + ' ');
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "100");
+        assertEquals(result.getStep(), "2");
+        assertFalse(result.isContainsNull());
     }
 
     @Test

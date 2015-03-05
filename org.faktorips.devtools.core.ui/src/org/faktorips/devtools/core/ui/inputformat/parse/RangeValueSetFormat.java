@@ -31,8 +31,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private static final String UNLIMITED_BOUND = "*"; //$NON-NLS-1$
     private static final String REGEX_STEP_SEPERATOR = "(\\s*/\\s*)"; //$NON-NLS-1$
     private static final String REGEX_BOUND_SEPERATOR = "(\\s*\\.\\.+\\s*)"; //$NON-NLS-1$
-    private static final String REGEX_BRACKETS = "(^\\[?)|(\\]?$)"; //$NON-NLS-1$
-    private static final String LAST_BRACKET_SEPERATOR = "]"; //$NON-NLS-1$
+    private static final String REGEX_BRACKETS = "(^\\s*\\[?)|(\\]?\\s*$)"; //$NON-NLS-1$
 
     public RangeValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
@@ -79,9 +78,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     private IValueSet parseNonEmptyString(String stringToBeParsed) {
         boolean containsNull = stringToBeParsed.endsWith(getNullPresentation());
-        int lastBracketIndex = stringToBeParsed.lastIndexOf(LAST_BRACKET_SEPERATOR) + 1;
-
-        return parseValueSet(stringToBeParsed.substring(0, lastBracketIndex), containsNull);
+        String inputWihoutNullPresentation = StringUtils.removeEnd(stringToBeParsed, getNullPresentation());
+        return parseValueSet(inputWihoutNullPresentation, containsNull);
     }
 
     private String getNullPresentation() {
@@ -92,8 +90,8 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     private IValueSet parseValueSet(String stringToBeParsed, boolean containsNull) {
         String stringWithoutBrackets = stringToBeParsed.replaceAll(REGEX_BRACKETS, StringUtils.EMPTY);
         String[] splitedBounds = stringWithoutBrackets.split(REGEX_BOUND_SEPERATOR, 2);
-        String lowerBound = parseValue(splitedBounds[0]);
         if (splitedBounds.length == 2) {
+            String lowerBound = parseValue(splitedBounds[0]);
             String[] splitedUpperBoundAndStep = splitedBounds[1].split(REGEX_STEP_SEPERATOR, 2);
             String upperBound = parseValue(splitedUpperBoundAndStep[0]);
             String step = getStep(splitedUpperBoundAndStep);
