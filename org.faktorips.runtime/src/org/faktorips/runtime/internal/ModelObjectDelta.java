@@ -364,7 +364,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (!options.areValueEqual(modelClass, property, value1, value2)) {
+        if (!options.areValuesEqual(modelClass, property, value1, value2)) {
             markPropertyChanged(property);
         }
 
