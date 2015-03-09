@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.DateDatatype;
@@ -33,6 +34,7 @@ import org.faktorips.devtools.core.ui.inputformat.DateTimeISOStringFormatFactory
 import org.faktorips.devtools.core.ui.inputformat.IDatatypeInputFormatFactory;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 import org.faktorips.devtools.core.ui.inputformat.TimeISOStringFormatFactory;
+import org.faktorips.devtools.core.ui.inputformat.parse.Messages;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -186,7 +188,9 @@ public class UIDatatypeFormatterTest {
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(rangeValueSet);
-        assertEquals("[1 ... 11 / 5] (inkl. <null>)", formatString);
+        String message = NLS.bind(Messages.RangeValueSetFormat_includingNull, IpsPlugin.getDefault()
+                .getIpsPreferences().getNullPresentation());
+        assertEquals("[1 ... 11 / 5] " + message, formatString);
     }
 
     @Test
