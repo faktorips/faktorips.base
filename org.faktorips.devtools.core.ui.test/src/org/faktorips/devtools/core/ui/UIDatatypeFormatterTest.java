@@ -182,10 +182,11 @@ public class UIDatatypeFormatterTest {
         Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
         Mockito.when(rangeValueSet.getUpperBound()).thenReturn("11");
         Mockito.when(rangeValueSet.getStep()).thenReturn("5");
+        Mockito.when(rangeValueSet.isContainsNull()).thenReturn(true);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(rangeValueSet);
-        assertEquals("[1 ... 11 / 5]", formatString);
+        assertEquals("[1 ... 11 / 5] (inkl. <null>)", formatString);
     }
 
     @Test
@@ -194,6 +195,7 @@ public class UIDatatypeFormatterTest {
         Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
         Mockito.when(rangeValueSet.getUpperBound()).thenReturn(null);
         Mockito.when(rangeValueSet.getStep()).thenReturn("5");
+        Mockito.when(rangeValueSet.isContainsNull()).thenReturn(false);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(rangeValueSet);
@@ -206,6 +208,7 @@ public class UIDatatypeFormatterTest {
         Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
         Mockito.when(rangeValueSet.getUpperBound()).thenReturn("10");
         Mockito.when(rangeValueSet.getStep()).thenReturn(null);
+        Mockito.when(rangeValueSet.isContainsNull()).thenReturn(false);
 
         UIDatatypeFormatter formatter = new UIDatatypeFormatter();
         String formatString = formatter.formatValueSet(rangeValueSet);

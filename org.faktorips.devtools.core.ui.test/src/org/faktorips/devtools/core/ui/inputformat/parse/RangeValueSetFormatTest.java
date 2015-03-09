@@ -171,6 +171,18 @@ public class RangeValueSetFormatTest {
     }
 
     @Test
+    public void testParseInternal_Range_NoCorrectContainsNullPresentation() {
+        IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 100/ 2]" + ' ' + "WrongInclNull");
+        IRangeValueSet result = (IRangeValueSet)parseInternal;
+
+        assertNotNull(parseInternal);
+        assertEquals(result.getLowerBound(), "10");
+        assertEquals(result.getUpperBound(), "100");
+        assertEquals(result.getStep(), "2] WrongInclNull");
+        assertFalse(result.isContainsNull());
+    }
+
+    @Test
     public void testParseInternal_RangeNotIncludesNullWithBlank() {
         IValueSet parseInternal = rangeVSFormat.parseInternal("[10 .. 100/ 2]" + ' ');
         IRangeValueSet result = (IRangeValueSet)parseInternal;

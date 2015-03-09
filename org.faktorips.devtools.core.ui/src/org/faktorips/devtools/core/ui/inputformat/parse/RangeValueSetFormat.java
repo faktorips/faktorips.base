@@ -61,7 +61,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
             sb.append(getInputFormat().format(step));
         }
         sb.append(RangeValueSet.RANGE_VALUESET_END);
-        if (getValueSet().isContainsNull()) {
+        if (range.isContainsNull()) {
             sb.append(' ' + getNullPresentation());
         }
         return sb.toString();
