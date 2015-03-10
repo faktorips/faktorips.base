@@ -1048,7 +1048,7 @@
             class="org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportWizard"
             icon="icons/importpref_obj.gif"
             id="org.faktorips.devtools.stdbuilder.ui.messagesImportWizard"
-            name="MessagesImportWizard">
+            name="%MessagesImportWizard">
       </wizard>
     </extension>
 
