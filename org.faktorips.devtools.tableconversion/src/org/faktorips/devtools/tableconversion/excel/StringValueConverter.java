@@ -30,7 +30,7 @@ public class StringValueConverter extends AbstractValueConverter {
         if (externalDataValue instanceof Double) {
             return AbstractExternalTableFormat.doubleToStringWithoutDecimalPlaces((Double)externalDataValue);
         }
-        return externalDataValue == null ? null : externalDataValue.toString();
+        return externalDataValue == null ? null : externalDataValue.toString().trim();
     }
 
     @Override

@@ -35,10 +35,10 @@ import org.junit.Test;
 
 public class CSVTableImportOperationTest extends AbstractTableTest {
 
-    ITableRows importTarget;
-    AbstractExternalTableFormat format;
+    private ITableRows importTarget;
+    private AbstractExternalTableFormat format;
 
-    File file;
+    private File file;
 
     private IIpsProject ipsProject;
     private ITableContents contents;
