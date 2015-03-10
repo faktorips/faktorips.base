@@ -192,9 +192,11 @@ public class ProductCmptTocEntry extends TocEntryObject {
         if (validTo != null) {
             entryElement.setAttribute(PROPERTY_VALID_TO, validTo.toIsoFormat());
         }
-        entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
-        for (GenerationTocEntry generationEntry : generationEntries.values()) {
-            entryElement.appendChild(generationEntry.toXml(entryElement.getOwnerDocument()));
+        if (!getGenerationEntries().isEmpty()) {
+            entryElement.setAttribute(PROPERTY_GENERATION_IMPL_CLASS_NAME, generationImplClassName);
+            for (GenerationTocEntry generationEntry : generationEntries.values()) {
+                entryElement.appendChild(generationEntry.toXml(entryElement.getOwnerDocument()));
+            }
         }
     }
 
@@ -277,6 +279,7 @@ public class ProductCmptTocEntry extends TocEntryObject {
 
     static class InverseLongComparator implements Comparator<Long> {
 
+        @Override
         public int compare(Long first, Long second) {
             return -1 * first.compareTo(second);
         }

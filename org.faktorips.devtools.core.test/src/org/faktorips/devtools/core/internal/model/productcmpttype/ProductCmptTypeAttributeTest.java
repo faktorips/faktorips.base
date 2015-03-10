@@ -499,4 +499,43 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     }
 
+    @Test
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        productAttribute.setChangingOverTime(false);
+
+        MessageList ml = productAttribute.validate(productAttribute.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(true);
+        productAttribute.setChangingOverTime(true);
+
+        ml = productAttribute.validate(productAttribute.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        productAttribute.setChangingOverTime(false);
+
+        ml = productAttribute.validate(productAttribute.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        productAttribute.setChangingOverTime(true);
+
+        ml = productAttribute.validate(productAttribute.getIpsProject());
+        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testChangingOverTime_default() {
+        productCmptType.setChangingOverTime(false);
+        productAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertFalse(productAttribute.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        productAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertTrue(productAttribute.isChangingOverTime());
+    }
 }

@@ -50,6 +50,7 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         ipsProject = newIpsProject("TestProject");
         productCmptType = newProductCmptType(ipsProject, "Type");
         method = productCmptType.newProductCmptTypeMethod();
+        method.setName("methodName");
     }
 
     @Test
@@ -466,6 +467,33 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        method.setChangingOverTime(false);
+
+        MessageList ml = method.validate(method.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(true);
+        method.setChangingOverTime(true);
+
+        ml = method.validate(method.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        method.setChangingOverTime(false);
+
+        ml = method.validate(method.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        method.setChangingOverTime(true);
+
+        ml = method.validate(method.getIpsProject());
+        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
     public void testValidate_overloaded_ChangingOverTime_ChangingOverTime() throws CoreException {
         MessageList list = new MessageList();
         method.setOverloadsFormula(true);
@@ -543,4 +571,16 @@ public class ProductCmptTypeMethodTest extends AbstractIpsPluginTest {
         superMethod.setDatatype("Integer");
     }
 
+    @Test
+    public void testChangingOverTime_default() {
+        productCmptType.setChangingOverTime(false);
+        method = productCmptType.newProductCmptTypeMethod();
+
+        assertFalse(method.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        method = productCmptType.newProductCmptTypeMethod();
+
+        assertTrue(method.isChangingOverTime());
+    }
 }

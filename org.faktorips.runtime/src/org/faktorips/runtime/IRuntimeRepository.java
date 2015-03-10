@@ -215,8 +215,14 @@ public interface IRuntimeRepository {
     public List<IProductComponent> getAllProductComponents();
 
     /**
-     * Returns all product component generations for the given proudct component. Returns an empty
+     * Returns all product component generations for the given product component. Returns an empty
      * list if no generation is available.
+     * <p>
+     * The generations are ordered by valid from date in reverse order that means the latest
+     * generation (latest valid from date) is the first one, the oldest generation is the last one.
+     * 
+     * @return The list of product component generations ordered by the valid from date in reverse
+     *         order
      */
     public List<IProductComponentGeneration> getProductComponentGenerations(IProductComponent productCmpt);
 
@@ -227,23 +233,40 @@ public interface IRuntimeRepository {
 
     /**
      * Returns the product component generation that follows the provided generation with respect to
-     * its effective date.
+     * its valid from date.
+     * <p>
+     * If there is no further generation this method returns <code>null</code>.
+     * 
+     * @return The next generation with respect to the valid from date.
+     * @throws IllegalArgumentException if the given product component generation could not be found
+     *             in this repository or in any dependent repository.
      */
     public IProductComponentGeneration getNextProductComponentGeneration(IProductComponentGeneration generation);
 
     /**
      * Returns the product component generation that is prior to the provided generation with
-     * respect to its effective date.
+     * respect to its valid from date.
+     * <p>
+     * If there is no previous generation this method returns <code>null</code>.
+     * 
+     * @return The previous generation with respect to the valid from date.
+     * @throws IllegalArgumentException if the given product component generation could not be found
+     *             in this repository or in any dependent repository.
      */
     public IProductComponentGeneration getPreviousProductComponentGeneration(IProductComponentGeneration generation);
 
     /**
      * Returns the latest product component generation of the provided product component.
+     * 
+     * @return The generation with the latest valid from date
      */
     public IProductComponentGeneration getLatestProductComponentGeneration(IProductComponent productCmpt);
 
     /**
-     * Returns a list of the ids of all product components held by this repository.
+     * Returns a list of the IDs of all product components held by this repository or any dependent
+     * repository.
+     * 
+     * @return All valid product component IDs that are accessible by this repository.
      */
     public List<String> getAllProductComponentIds();
 

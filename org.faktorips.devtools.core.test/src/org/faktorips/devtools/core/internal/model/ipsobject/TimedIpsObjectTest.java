@@ -25,6 +25,10 @@ import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.util.message.Message;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -43,6 +47,17 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         IIpsProject project = newIpsProject(new ArrayList<Locale>());
         timedObject = newProductCmpt(project, "Product");
         ((ProductCmpt)timedObject).setRuntimeId("abc");
+    }
+
+    @Test
+    public void testGetValidFrom_FromFirstGeneration() {
+        IIpsObjectGeneration gen = timedObject.newGeneration();
+
+        GregorianCalendar newValidFrom = new GregorianCalendar(1000, 1, 1);
+        timedObject.setValidFrom(newValidFrom);
+
+        assertEquals(newValidFrom, timedObject.getValidFrom());
+        assertEquals(newValidFrom, gen.getValidFrom());
     }
 
     @Test
@@ -291,4 +306,33 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
         assertEquals(new GregorianCalendar(2007, 0, 1), timedObject.getGeneration(2).getValidFrom());
         assertNull(timedObject.getGeneration(2).getValidTo());
     }
+
+    /**
+     * <strong>Scenario:</strong><br>
+     * The valid from date of the {@link ITimedIpsObject} is stored at the first generation, even if
+     * the object does not allow generations. This test case creates this setup and employs an
+     * invalid valid from date which has to be validated.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * A validation message must be produced.
+     */
+    @Test
+    public void testValidate_NoGenerationsAllowed_ValidFromDate() throws CoreException {
+        // Setup
+        IIpsProject ipsProject = newIpsProject();
+
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "NotChangingProductCmptType");
+        productCmptType.setChangingOverTime(false);
+
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "NotChangingProductCmpt");
+        productCmpt.setValidFrom(null);
+
+        // Execute
+        MessageList messageList = productCmpt.validate(ipsProject);
+
+        // Verify
+        Message message = messageList.getMessageByCode(IIpsObjectGeneration.MSGCODE_INVALID_FORMAT_VALID_FROM);
+        assertEquals(productCmpt, message.getInvalidObjectProperties()[0].getObject());
+    }
+
 }

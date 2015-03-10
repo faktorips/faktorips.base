@@ -323,7 +323,7 @@
       </command>
       <command
             id="org.faktorips.devtools.core.ui.command.CreateNewGeneration"
-            name="%IpsDeepCopyAction_name" categoryId="org.faktorips.devtools.core.ui.category.productcreate">
+            name="Create New Generation..." categoryId="org.faktorips.devtools.core.ui.category.productcreate">
       </command>
       <command
             id="org.faktorips.devtools.core.ui.command.CreateNewVersion"
@@ -1048,7 +1048,7 @@
             class="org.faktorips.devtools.core.ui.wizards.messagesimport.MessagesImportWizard"
             icon="icons/importpref_obj.gif"
             id="org.faktorips.devtools.stdbuilder.ui.messagesImportWizard"
-            name="MessagesImportWizard">
+            name="%MessagesImportWizard">
       </wizard>
     </extension>
 
@@ -2160,9 +2160,12 @@
                <iterate
                      ifEmpty="false"
                      operator="and">
-                  <adapt
-                        type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
-                  </adapt>
+                     <adapt
+                           type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.allowGenerations">
+                        </test>
+                     </adapt>
                </iterate>
             </with>
          </enabledWhen>
@@ -2341,6 +2344,13 @@
             namespace="org.faktorips.devtools.core.ui.commands.IpsElementTester"
             properties="isEditable,isContainerEditable"
             type="org.faktorips.devtools.core.model.IIpsElement">
+      </propertyTester>
+      <propertyTester
+            class="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
+            id="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
+            namespace="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
+            properties="allowGenerations"
+            type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
       </propertyTester>
    </extension>
    

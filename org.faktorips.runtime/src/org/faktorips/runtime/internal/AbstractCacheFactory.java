@@ -25,18 +25,22 @@ public abstract class AbstractCacheFactory implements ICacheFactory {
         super();
     }
 
+    @Override
     public IComputable<Class<?>, List<?>> createEnumCache(IComputable<Class<?>, List<?>> computable) {
         return createCache(computable);
     }
 
+    @Override
     public IComputable<String, IProductComponent> createProductCmptCache(IComputable<String, IProductComponent> computable) {
         return createCache(computable);
     }
 
+    @Override
     public IComputable<GenerationId, IProductComponentGeneration> createProductCmptGenerationCache(IComputable<GenerationId, IProductComponentGeneration> computable) {
         return createCache(computable);
     }
 
+    @Override
     public IComputable<String, ITable> createTableCache(IComputable<String, ITable> computable) {
         return createCache(computable);
     }

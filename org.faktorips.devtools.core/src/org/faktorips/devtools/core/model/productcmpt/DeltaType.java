@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
+
 /**
  * Type of a delta.
  * 
@@ -25,7 +28,9 @@ public enum DeltaType {
     VALUE_HOLDER_MISMATCH(Messages.DeltaType_valueHolderMismatch),
     MULTILINGUAL_MISMATCH(Messages.DeltaType_multilingualMismatch),
     LINK_WITHOUT_ASSOCIATION(Messages.DeltaType_LinksNotFoundInTheModel),
-    LINK_CHANGING_OVER_TIME_MISMATCH(Messages.DeltaType_LinksWithWrongParent);
+    LINK_CHANGING_OVER_TIME_MISMATCH(Messages.DeltaType_LinksWithWrongParent),
+    INVALID_GENERATIONS(NLS.bind(Messages.DeltaType_invalidGenerations, IpsPlugin.getDefault().getIpsPreferences()
+            .getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true)));
 
     private final String description;
 

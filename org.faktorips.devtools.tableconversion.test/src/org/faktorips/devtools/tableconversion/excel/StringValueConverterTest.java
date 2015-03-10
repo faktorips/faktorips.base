@@ -38,6 +38,16 @@ public class StringValueConverterTest {
     }
 
     @Test
+    public void testGetIpsValue_ReturnTrimmedStringValue() {
+        MessageList ml = new MessageList();
+        StringValueConverter converter = new StringValueConverter();
+        String value = converter.getIpsValue("  1234  ", ml);
+        assertTrue(Datatype.STRING.isParsable(value));
+        assertTrue(ml.isEmpty());
+        assertEquals("1234", value);
+    }
+
+    @Test
     public void testGetExternalDataValue() {
         MessageList ml = new MessageList();
         StringValueConverter converter = new StringValueConverter();

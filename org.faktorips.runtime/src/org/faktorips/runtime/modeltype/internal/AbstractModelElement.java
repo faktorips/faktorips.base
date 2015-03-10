@@ -44,16 +44,19 @@ public class AbstractModelElement implements IModelElement {
         this.repository = repository;
     }
 
+    @Override
     public String getLabel(Locale locale) {
         String label = labelsByLocale.get(locale);
         return IpsStringUtils.isEmpty(label) ? getName() : label;
     }
 
+    @Override
     public String getDescription(Locale locale) {
         String description = descriptionsByLocale.get(locale);
         return IpsStringUtils.isEmpty(description) ? IpsStringUtils.EMPTY : description;
     }
 
+    @Override
     public Object getExtensionPropertyValue(String propertyId) {
         if (extPropertyValues == null) {
             return null;
@@ -71,10 +74,12 @@ public class AbstractModelElement implements IModelElement {
         extPropertyValues.put(propertyId, value);
     }
 
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void initFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int i = 0; i < parser.getAttributeCount(); i++) {
             if (parser.getAttributeLocalName(i).equals(PROPERTY_NAME)) {
@@ -142,6 +147,7 @@ public class AbstractModelElement implements IModelElement {
         labelsByLocale.put(locale, value);
     }
 
+    @Override
     public Set<String> getExtensionPropertyIds() {
         if (extPropertyValues == null) {
             return new HashSet<String>(0);
@@ -149,6 +155,7 @@ public class AbstractModelElement implements IModelElement {
         return extPropertyValues.keySet();
     }
 
+    @Override
     public void initExtPropertiesFromXml(XMLStreamReader parser) throws XMLStreamException {
         for (int event = parser.next(); event != XMLStreamConstants.END_DOCUMENT; event = parser.next()) {
             switch (event) {
@@ -199,6 +206,7 @@ public class AbstractModelElement implements IModelElement {
         }
     }
 
+    @Override
     public IRuntimeRepository getRepository() {
         return repository;
     }

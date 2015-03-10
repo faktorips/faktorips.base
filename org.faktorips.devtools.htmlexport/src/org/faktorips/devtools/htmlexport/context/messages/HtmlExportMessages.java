@@ -79,6 +79,7 @@ public interface HtmlExportMessages {
     public static final String ProductGenerationAttributeTable_validationRules = "ProductGenerationAttributeTable_validationRules";
     public static final String ProductGenerationAttributeTable_validationRulesActive = "ProductGenerationAttributeTable_validationRulesActive";
     public static final String ProductGenerationAttributeTable_validationRulesInactive = "ProductGenerationAttributeTable_validationRulesInactive";
+    public static final String ProductGenerationAttributeTable_values = "ProductGenerationAttributeTable_values";
 
     public static final String ValidationRuleTablePageElement_headlineDescription = "ValidationRuleTablePageElement_headlineDescription";
     public static final String ValidationRuleTablePageElement_headlineMessageCode = "ValidationRuleTablePageElement_headlineMessageCode";

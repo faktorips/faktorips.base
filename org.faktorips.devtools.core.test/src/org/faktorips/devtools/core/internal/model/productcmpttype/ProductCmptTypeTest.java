@@ -1166,6 +1166,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
+        assertTrue(productCmptType.isChangingOverTime());
     }
 
     @Test
@@ -1176,6 +1177,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         productCmptType.newProductCmptTypeAssociation().setTargetRoleSingular("role");
         productCmptType.newTableStructureUsage().setRoleName("roleTsu");
         productCmptType.newMethod().setName("method1");
+        productCmptType.setChangingOverTime(false);
 
         Element el = productCmptType.toXml(newDocument());
         productCmptType = newProductCmptType(ipsProject, "Copy");
@@ -1188,6 +1190,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         assertEquals(1, productCmptType.getNumOfAssociations());
         assertEquals(1, productCmptType.getNumOfTableStructureUsages());
         assertEquals(1, productCmptType.getNumOfMethods());
+        assertFalse(productCmptType.isChangingOverTime());
     }
 
     @Test
@@ -2887,6 +2890,33 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         // only the second to find
         assertEquals(1, findOverrideAttributeCandidates.size());
         assertEquals("NotOverride", findOverrideAttributeCandidates.get(0).getName());
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnEmptyListIfChangingOverTimeSettingsAreBothTrue()
+            throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        superProductCmptType.setChangingOverTime(true);
+
+        MessageList result = productCmptType.validate(ipsProject);
+
+        assertNull(result.getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE));
+    }
+
+    @Test
+    public void testValidateSuperProductCmptTypeHasSameChangingOverTimeSetting_returnMessageListIfChangingOverTimeSettingsAreDifferent()
+            throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        superProductCmptType.setChangingOverTime(false);
+
+        MessageList result = productCmptType.validate(ipsProject);
+
+        Message message = result
+                .getMessageByCode(IProductCmptType.MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE);
+        assertEquals(productCmptType, message.getInvalidObjectProperties()[0].getObject());
+        assertEquals(IProductCmptType.PROPERTY_CHANGING_OVER_TIME,
+                message.getInvalidObjectProperties()[0].getProperty());
+        assertEquals(Message.ERROR, message.getSeverity());
     }
 
     private Change performDeleteResourceChange(IIpsSrcFile ipsSrcFile, IProgressMonitor pm) throws CoreException {

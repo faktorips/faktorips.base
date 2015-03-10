@@ -531,4 +531,45 @@ public class ProductCmptTypeAssociationIntegrationTest extends AbstractIpsPlugin
                 .getMessageByCode(IProductCmptTypeAssociation.MSGCODE_CONSTRAINED_CHANGEOVERTIME_MISMATCH));
     }
 
+    @Test
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        association.setTargetRoleSingular("targetRoleSingular");
+        productType.setChangingOverTime(true);
+        association.setChangingOverTime(false);
+
+        MessageList ml = association.validate(association.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productType.setChangingOverTime(true);
+        association.setChangingOverTime(true);
+
+        ml = association.validate(association.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productType.setChangingOverTime(false);
+        association.setChangingOverTime(false);
+
+        ml = association.validate(association.getIpsProject());
+        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        association.setChangingOverTime(false);
+        association.setChangingOverTime(true);
+
+        ml = association.validate(association.getIpsProject());
+        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testChangingOverTime_default() {
+        productType.setChangingOverTime(false);
+        association = productType.newProductCmptTypeAssociation();
+
+        assertFalse(association.isChangingOverTime());
+
+        productType.setChangingOverTime(true);
+        association = productType.newProductCmptTypeAssociation();
+
+        assertTrue(association.isChangingOverTime());
+    }
+
 }

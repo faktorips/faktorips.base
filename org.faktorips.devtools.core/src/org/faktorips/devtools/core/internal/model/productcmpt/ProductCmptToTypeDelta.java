@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.InvalidGenerationsDeltaEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
@@ -36,6 +37,7 @@ public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
 
     @Override
     protected void createAdditionalEntriesAndChildren() throws CoreException {
+        checkInvalidGenerations();
         for (IIpsObjectGeneration generation : getPropertyValueContainer().getGenerationsOrderedByValidDate()) {
             ProductCmptGeneration productCmptGen = (ProductCmptGeneration)generation;
             IPropertyValueContainerToTypeDelta computeDeltaToModel = productCmptGen
@@ -43,6 +45,12 @@ public class ProductCmptToTypeDelta extends PropertyValueContainerToTypeDelta {
             addChild(computeDeltaToModel);
         }
         findAndSetPredecessors();
+    }
+
+    private void checkInvalidGenerations() {
+        if (!getPropertyValueContainer().allowGenerations() && getPropertyValueContainer().getGenerations().size() > 1) {
+            addEntry(new InvalidGenerationsDeltaEntry(getPropertyValueContainer()));
+        }
     }
 
     private void findAndSetPredecessors() {

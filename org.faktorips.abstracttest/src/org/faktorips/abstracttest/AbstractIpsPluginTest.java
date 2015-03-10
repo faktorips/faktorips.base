@@ -185,10 +185,23 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         IpsPlugin.getDefault().setSuppressLoggingDuringTest(false);
         IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (IProject project : projects) {
-            project.delete(true, true, null);
+            deleteProject(project);
         }
         getIpsModel().removeChangeListener(contentsChangeListener);
         tearDownExtension();
+    }
+
+    private void deleteProject(IProject project) throws CoreException, InterruptedException {
+        try {
+            project.delete(true, true, null);
+        } catch (CoreException e) {
+            // We are running into some race condition on Windows
+            // Wait a little and try to delete one more time when this happens
+            if (project.exists()) {
+                Thread.sleep(100);
+                project.delete(true, true, null);
+            }
+        }
     }
 
     protected Document createXmlDocument(String xmlTag) throws ParserConfigurationException {
@@ -369,8 +382,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
         properties
-                .setMinRequiredVersionNumber(
-                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        .setMinRequiredVersionNumber(
+                "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(properties);
     }
 
@@ -411,7 +424,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
-                }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+        }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
     protected void setAutoBuild(boolean autoBuild) throws CoreException {

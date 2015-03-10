@@ -36,6 +36,7 @@ public class PropertiesReadingInternationalString implements InternationalString
         messageHelper = messagesHelper;
     }
 
+    @Override
     public String get(Locale locale) {
         return messageHelper.getMessage(key, locale);
     }

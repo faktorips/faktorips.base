@@ -37,6 +37,7 @@ public class SimpleCache implements IComputable<Object, Object> {
         objects = new ConcurrentHashMap<Object, Object>(initialCapacity);
     }
 
+    @Override
     public Object compute(Object key) throws InterruptedException {
         Object result = objects.get(key);
         if (result != null) {
@@ -56,6 +57,7 @@ public class SimpleCache implements IComputable<Object, Object> {
         }
     }
 
+    @Override
     public Class<? super Object> getValueClass() {
         return computable.getValueClass();
     }

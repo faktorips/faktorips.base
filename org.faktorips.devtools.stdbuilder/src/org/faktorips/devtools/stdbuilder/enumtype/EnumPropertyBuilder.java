@@ -27,6 +27,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
+import org.faktorips.util.IoUtil;
 import org.faktorips.util.LocalizedStringsSet;
 
 /**
@@ -87,7 +88,13 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
         try {
             IFile file = getPropertyFile(enumType.getIpsSrcFile(), enumPropertyGenerator.getLocale());
             if (file != null && file.exists()) {
-                enumPropertyGenerator.readFromStream(file.getContents());
+                InputStream contents = null;
+                try {
+                    contents = file.getContents();
+                    enumPropertyGenerator.readFromStream(contents);
+                } finally {
+                    IoUtil.close(contents);
+                }
             }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);

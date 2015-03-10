@@ -10,18 +10,21 @@
 
 package org.faktorips.runtime;
 
+import org.faktorips.values.ObjectUtil;
+
 /**
  * Delta computation options that create child deltas per position and don't ignore any property.
- *
+ * 
  * TODO the following reference does not exist
- *
- *
+ * 
+ * 
  * @see IDeltaComputationOptions.ComputationMethod#BY_POSITION
- *
+ * 
  * @author Jan Ortmann
  */
 public class DeltaComputationOptionsByPosition implements IDeltaComputationOptions {
 
+    @Override
     public ComputationMethod getMethod(String association) {
         return ComputationMethod.BY_POSITION;
     }
@@ -29,6 +32,7 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
     /**
      * Returns <code>true</code> if the specified object references are identical.
      */
+    @Override
     public boolean isSame(IModelObject object1, IModelObject object2) {
         return object1 == object2;
     }
@@ -36,12 +40,18 @@ public class DeltaComputationOptionsByPosition implements IDeltaComputationOptio
     /**
      * Returns <code>false</code>.
      */
+    @Override
     public boolean ignore(Class<?> clazz, String property) {
         return false;
     }
 
+    @Override
     public boolean isCreateSubtreeDelta() {
         return false;
     }
 
+    @Override
+    public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
+        return ObjectUtil.equals(value1, value2);
+    }
 }

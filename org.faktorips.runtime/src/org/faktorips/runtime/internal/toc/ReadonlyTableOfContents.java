@@ -256,6 +256,11 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
     }
 
     @Override
+    public List<EnumContentTocEntry> getEnumContentTocEntries() {
+        return new ArrayList<EnumContentTocEntry>(enumContentImplClassTocEntryMap.values());
+    }
+
+    @Override
     public EnumContentTocEntry getEnumContentTocEntry(String className) {
         return enumContentImplClassTocEntryMap.get(className);
     }
@@ -279,6 +284,7 @@ public class ReadonlyTableOfContents extends AbstractReadonlyTableOfContents {
         return results;
     }
 
+    @Override
     public <T> CustomTocEntryObject<T> getCustomTocEntry(Class<T> type, String ipsObjectQualifiedName) {
         Map<String, CustomTocEntryObject<?>> otherTocEntryMap = otherTocEntryMaps.get(type);
         if (otherTocEntryMap != null) {

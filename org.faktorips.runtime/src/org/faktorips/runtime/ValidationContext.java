@@ -63,10 +63,12 @@ public class ValidationContext implements IValidationContext {
         this(Locale.getDefault());
     }
 
+    @Override
     public Locale getLocale() {
         return locale;
     }
 
+    @Override
     public Object getValue(String propertyName) {
         return propertyValues.get(propertyName);
     }

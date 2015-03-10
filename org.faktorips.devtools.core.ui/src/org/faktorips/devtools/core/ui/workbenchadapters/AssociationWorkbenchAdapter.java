@@ -29,6 +29,16 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     public static final String ASSOCIATION_TYPE_ASSOCIATION_IMAGE = "AssociationType-Association.gif"; //$NON-NLS-1$
     public static final String ASSOCIATION_TYPE_AGGREGATION_IMAGE = "AssociationType-Aggregation.gif"; //$NON-NLS-1$
 
+    private final boolean showChangingOverTimeOverlay;
+
+    public AssociationWorkbenchAdapter() {
+        this(true);
+    }
+
+    public AssociationWorkbenchAdapter(boolean showChangingOverTimeOverlay) {
+        this.showChangingOverTimeOverlay = showChangingOverTimeOverlay;
+    }
+
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IAssociation) {
@@ -56,10 +66,9 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
 
     private String[] getImageOverlays(IAssociation association) {
         String[] overlays = new String[4];
-
         if (association instanceof IPolicyCmptTypeAssociation) {
+            IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
             try {
-                IPolicyCmptTypeAssociation polAssociation = (IPolicyCmptTypeAssociation)association;
                 if (polAssociation.isConfigurable()
                         && polAssociation.isConstrainedByProductStructure(association.getIpsProject())) {
                     overlays[IDecoration.TOP_RIGHT] = OverlayIcons.PRODUCT_OVR;
@@ -70,11 +79,10 @@ public class AssociationWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
         }
         if (association instanceof IProductCmptTypeAssociation) {
             IProductCmptTypeAssociation productAssociation = (IProductCmptTypeAssociation)association;
-            if (!productAssociation.isChangingOverTime()) {
+            if (showChangingOverTimeOverlay && !productAssociation.isChangingOverTime()) {
                 overlays[IDecoration.TOP_LEFT] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
             }
         }
-
         if (association.isConstrain()) {
             overlays[IDecoration.BOTTOM_RIGHT] = OverlayIcons.OVERRIDE_OVR;
         }

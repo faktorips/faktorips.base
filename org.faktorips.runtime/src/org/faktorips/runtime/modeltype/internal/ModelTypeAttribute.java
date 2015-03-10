@@ -50,10 +50,12 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         this.modelType = modelType;
     }
 
+    @Override
     public IModelType getModelType() {
         return modelType;
     }
 
+    @Override
     public Class<?> getDatatype() throws ClassNotFoundException {
         if (datatype == null) {
             datatype = findDatatype();
@@ -61,14 +63,17 @@ public class ModelTypeAttribute extends AbstractModelElement implements IModelTy
         return datatype;
     }
 
+    @Override
     public AttributeType getAttributeType() {
         return attributeType;
     }
 
+    @Override
     public ValueSetType getValueSetType() {
         return valueSetType;
     }
 
+    @Override
     public boolean isProductRelevant() {
         return isProductRelevant;
     }

@@ -10,7 +10,6 @@
 
 package org.faktorips.runtime.internal.toc;
 
-
 /**
  * A {@link TocEntryObject} for test cases
  * 

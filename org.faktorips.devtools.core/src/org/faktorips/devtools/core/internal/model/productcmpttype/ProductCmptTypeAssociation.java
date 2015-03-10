@@ -47,7 +47,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
 
     private String matchingAssociationName = StringUtils.EMPTY;
 
-    private boolean changingOverTime = true;
+    private boolean changingOverTime = getProductCmptType().isChangingOverTime();
 
     private boolean relevant = true;
 
@@ -276,6 +276,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         validateMatchingAsoociation(list, ipsProject);
         validateDerivedUnionChangingOverTimeProperty(list, ipsProject);
         validateConstrainedChangeOverTime(list, ipsProject);
+        validateTypeDoesNotAcceptChangingOverTime(list);
     }
 
     /**
@@ -377,6 +378,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
         }
     }
 
+    private void validateTypeDoesNotAcceptChangingOverTime(MessageList messageList) {
+        ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
+        propertyValidator.validateTypeDoesNotAcceptChangingOverTime(messageList);
+    }
+
     @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
@@ -440,6 +446,11 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     @Override
     public IAssociation findMatchingAssociation() throws CoreException {
         return findMatchingPolicyCmptTypeAssociation(getIpsProject());
+    }
+
+    @Override
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+        return getProductCmptType();
     }
 
 }

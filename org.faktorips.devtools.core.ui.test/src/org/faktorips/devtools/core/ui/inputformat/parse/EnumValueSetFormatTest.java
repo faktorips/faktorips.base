@@ -100,4 +100,37 @@ public class EnumValueSetFormatTest {
         assertEquals("test", enumVS.getValue(0));
         assertEquals("test1", enumVS.getValue(1));
     }
+
+    @Test
+    public void testFormatInternal_EmptyStringInFront() {
+        enumValueSet.addValue("");
+        enumValueSet.addValue("A");
+        enumValueSet.addValue("B");
+
+        String formatted = ((EnumValueSetFormat)enumVSFormat).formatInternal(enumValueSet);
+
+        assertEquals(" | A | B", formatted);
+    }
+
+    @Test
+    public void testFormatInternal_EmptyStringInMiddle() {
+        enumValueSet.addValue("A");
+        enumValueSet.addValue("");
+        enumValueSet.addValue("B");
+
+        String formatted = ((EnumValueSetFormat)enumVSFormat).formatInternal(enumValueSet);
+
+        assertEquals("A |  | B", formatted);
+    }
+
+    @Test
+    public void testFormatInternal_EmptyStringOnEnd() {
+        enumValueSet.addValue("A");
+        enumValueSet.addValue("B");
+        enumValueSet.addValue("");
+
+        String formatted = ((EnumValueSetFormat)enumVSFormat).formatInternal(enumValueSet);
+
+        assertEquals("A | B | ", formatted);
+    }
 }

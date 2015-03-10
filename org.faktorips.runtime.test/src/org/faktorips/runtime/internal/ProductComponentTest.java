@@ -22,16 +22,21 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.faktorips.runtime.IConfigurableModelObject;
 import org.faktorips.runtime.IProductComponent;
+import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.IProductComponentLink;
 import org.faktorips.runtime.IRuntimeRepository;
-import org.faktorips.runtime.InMemoryRuntimeRepository;
+import org.faktorips.runtime.IllegalRepositoryModificationException;
 import org.faktorips.runtime.XmlAbstractTestCase;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -39,12 +44,14 @@ import org.w3c.dom.NodeList;
 
 public class ProductComponentTest extends XmlAbstractTestCase {
 
+    @Mock
     private IRuntimeRepository repository;
+
     private ProductComponent pc;
 
     @Before
     public void setUp() {
-        repository = new InMemoryRuntimeRepository();
+        MockitoAnnotations.initMocks(this);
         pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
     }
 
@@ -52,8 +59,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
     // the verify for the parameterized map cannot be type safe
     @Test
     public void testCallInitMethodsOnInitFromXML() {
-        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository, "id", "productKindId",
-                "versionId"));
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
         Element element = setUpElement();
 
         cmpt.initFromXml(element);
@@ -95,9 +101,7 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
     @Test
     public void testCallWriteMethodsOnToXML() {
-        IRuntimeRepository runtimeRepository = mock(IRuntimeRepository.class);
-        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(runtimeRepository, "id", "productKindId",
-                "versionId"));
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
         Document document = mock(Document.class);
         Element prodCmptElement = mock(Element.class);
         Document ownerDocument = mock(Document.class);
@@ -122,10 +126,10 @@ public class ProductComponentTest extends XmlAbstractTestCase {
 
         pc.writeTableUsageToXml(prodCmptElement, "structureUsageValue", "tableContentNameValue");
 
-        assertEquals(10, childNodes.getLength());
         Node namedItem = childNodes.item(9).getAttributes().getNamedItem("structureUsage");
-        assertEquals("structureUsageValue", namedItem.getNodeValue());
         String nodeValue = childNodes.item(9).getFirstChild().getTextContent();
+        assertEquals(10, childNodes.getLength());
+        assertEquals("structureUsageValue", namedItem.getNodeValue());
         assertEquals("tableContentNameValue", nodeValue);
     }
 
@@ -139,6 +143,80 @@ public class ProductComponentTest extends XmlAbstractTestCase {
         assertFalse(pc.isFormulaAvailable("notExistingFormula"));
     }
 
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetGenerationBase_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
+        when(cmpt.isChangingOverTime()).thenReturn(false);
+
+        cmpt.getGenerationBase(new GregorianCalendar());
+    }
+
+    @Test
+    public void testGetGenerationBase_ReturnGenerationBaseIfChangingOverTime() {
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
+        when(cmpt.isChangingOverTime()).thenReturn(true);
+        IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
+
+        when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
+        when(repository.getProductComponentGeneration("id", new GregorianCalendar(1, 1, 1900))).thenReturn(
+                productComponentGeneration);
+
+        assertEquals(productComponentGeneration, cmpt.getGenerationBase(new GregorianCalendar(1, 1, 1900)));
+    }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void testGetLatestProductComponentGeneration_ThrowUnsupportedOperationExceptionIfNotChangingOverTime() {
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
+        when(cmpt.isChangingOverTime()).thenReturn(false);
+        cmpt.getLatestProductComponentGeneration();
+    }
+
+    @Test
+    public void testGetLatestProductComponentGeneration_ReturnLatestGenerationIfChangingOverTime() {
+        ProductComponentTestClass cmpt = spy(new ProductComponentTestClass(repository));
+        when(cmpt.isChangingOverTime()).thenReturn(true);
+        IProductComponentGeneration productComponentGeneration = mock(IProductComponentGeneration.class);
+
+        when(repository.getProductComponentGenerations(cmpt)).thenReturn(Arrays.asList(productComponentGeneration));
+        when(repository.getLatestProductComponentGeneration(cmpt)).thenReturn(productComponentGeneration);
+
+        assertEquals(productComponentGeneration, cmpt.getLatestProductComponentGeneration());
+    }
+
+    @Test
+    public void testSetValidFrom() {
+        when(repository.isModifiable()).thenReturn(true);
+
+        pc.setValidFrom(new DateTime(2010, 1, 1));
+
+        assertEquals(new DateTime(2010, 1, 1), pc.getValidFrom());
+    }
+
+    @Test
+    public void testSetValidFrom_noRuntimeRepository() {
+        pc = spy(pc);
+        when(pc.getRepository()).thenReturn(null);
+
+        pc.setValidFrom(new DateTime(2010, 1, 1));
+
+        assertEquals(new DateTime(2010, 1, 1), pc.getValidFrom());
+    }
+
+    @Test(expected = IllegalRepositoryModificationException.class)
+    public void testSetValidFrom_throwExceptionIfRepositoryNotModifiable() {
+        when(repository.isModifiable()).thenReturn(false);
+
+        pc = new TestProductComponent(repository, "TestProduct", "TestProductKind", "TestProductVersion");
+
+        pc.setValidFrom(new DateTime(2010, 1, 1));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testSetValidFrom_throwExceptionIfValidFromIsNull() {
+        when(repository.isModifiable()).thenReturn(true);
+        pc.setValidFrom(null);
+    }
+
     /**
      * Test class for testing the {@link ProductComponent#toXml(Document) toXml} method. This class
      * is used instead of {@link TestProductComponent} because the method
@@ -146,9 +224,8 @@ public class ProductComponentTest extends XmlAbstractTestCase {
      */
     public static class ProductComponentTestClass extends ProductComponent {
 
-        public ProductComponentTestClass(IRuntimeRepository repository, String id, String productKindId,
-                String versionId) {
-            super(repository, id, productKindId, versionId);
+        public ProductComponentTestClass(IRuntimeRepository repository) {
+            super(repository, "id", "productKindId", "versionId");
         }
 
         @Override
@@ -163,5 +240,11 @@ public class ProductComponentTest extends XmlAbstractTestCase {
              * UnsupportedOperationException in super class implementation.
              */
         }
+
+        @Override
+        public boolean isChangingOverTime() {
+            return true;
+        }
+
     }
 }

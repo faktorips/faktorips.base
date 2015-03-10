@@ -23,6 +23,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory.Position;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -44,6 +46,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
     public static final String PROPERTY_LAYER_SUPERTYPE = "layerSupertype"; //$NON-NLS-1$
 
     public static final String PROPERTY_ICON_FOR_INSTANCES = "instancesIcon"; //$NON-NLS-1$
+
+    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     public static final List<String> SUPPORTED_ICON_EXTENSIONS = Collections.unmodifiableList(Arrays.asList(
             "gif", "png")); //$NON-NLS-1$//$NON-NLS-2$
@@ -173,6 +177,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
             + "SupertypeNotMarkedAsLayerSupertype"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that setting for changeOverTime of this type differs from
+     * the supertype.
+     */
+    public static final String MSGCODE_SETTING_CHANGING_OVER_TIME_DIFFERS_FROM_SUPERTYPE = MSGCODE_PREFIX
+            + "SettingChangingOverTimeDiffersFromSupertype"; //$NON-NLS-1$
+
+    /**
      * Returns the policy component type this product component type refers to. Returns
      * <code>null</code> if this type does not refer to a policy component type.
      */
@@ -210,6 +221,30 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @see #setLayerSupertype(boolean)
      */
     boolean isLayerSupertype();
+
+    /**
+     * Returns <code>true</code> if the changing over time flag of this product component type is
+     * enabled. Have a look at {@link #setChangingOverTime(boolean)} for more information about the
+     * changing over time flag.
+     * 
+     * @see #setChangingOverTime(boolean)
+     */
+    public boolean isChangingOverTime();
+
+    /**
+     * Configures the changing over time flag of this product component type.
+     * <p>
+     * If it is set to <code>false</code>, {@link IProductCmpt instances} of this type do not have
+     * {@link IProductCmptGeneration}s. All properties, e.g. {@link IProductCmptTypeAttribute}s,
+     * will not change over time, too.
+     * <p>
+     * Furthermore no classes and access methods for {@link IProductCmptGeneration generations} will
+     * be generated.
+     * 
+     * @param changesOverTime <code>false</code> to specify this type's changing over time flag as
+     *            disabled
+     */
+    public void setChangingOverTime(boolean changesOverTime);
 
     /**
      * Sets the policy component type this type refers to.

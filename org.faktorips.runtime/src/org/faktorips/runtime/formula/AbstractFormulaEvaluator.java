@@ -41,6 +41,7 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
         this.nameToExpressionMap = nameToExpressionMap;
     }
 
+    @Override
     public Object getObject() {
         return object;
     }
@@ -50,6 +51,7 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
      * 
      * @throws IllegalArgumentException if the formula signature is unknown
      */
+    @Override
     public Object evaluate(String formularName, Object... parameters) {
         try {
             return evaluateInternal(formularName, parameters);
@@ -84,6 +86,7 @@ public abstract class AbstractFormulaEvaluator implements IFormulaEvaluator {
      * @return a map containing the expressions (with their names as keys) held by this formula
      *         evaluator
      */
+    @Override
     public Map<String, String> getNameToExpressionMap() {
         Map<String, String> map = new LinkedHashMap<String, String>();
         map.putAll(nameToExpressionMap);

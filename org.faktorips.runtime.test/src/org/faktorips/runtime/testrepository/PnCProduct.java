@@ -22,4 +22,9 @@ public abstract class PnCProduct extends ProductComponent {
         super(repository, id, productKindId, versionId);
     }
 
+    @Override
+    public boolean isChangingOverTime() {
+        return true;
+    }
+
 }

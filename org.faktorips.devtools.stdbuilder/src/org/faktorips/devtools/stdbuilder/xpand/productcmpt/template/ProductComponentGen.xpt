@@ -19,9 +19,15 @@
 		«ELSE-»
 		 * «localizedJDocOrDescription("CLASS_NO_INTERFACE", generationConceptNameSingular, productCmptClassNode.name, description)»
 		«ENDIF-»
+		«IF !productCmptType.changingOverTime-»
+		 * «localizedJDoc("DEPRECATED_CLASS", generationConceptNamePlural)»
+		«ENDIF-»
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		«IF !productCmptType.changingOverTime-»
+		 @Deprecated
+		«ENDIF-»
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
@@ -115,7 +121,7 @@
 	        «EXPAND TableUsages::doInitFromXmlMethod FOREACH tables-»
 		
 			«EXPAND ProductCommons::writeToXmlMethods-»
-
+			
 			«EXPAND createPolicyCmpt(productCmptClassNode) FOREACH policyTypeClassHierarchy»
 
 			«IF generateMethodGenericCreatePolicyComponent»
@@ -170,7 +176,9 @@
 	    «IF genInterface()»;«ELSE-»
 	    {
 	        «currentType.policyImplClassName» policy = new «currentType.policyImplClassName»(«currentType.methodNameGetProductCmpt»());
+	      «IF currentType.changingOverTime-»
 	        policy.«setProductCmptGeneration("this")»;
+	      «ENDIF-» 
 	        policy.«initialize()»;
 	        return policy;
 	    }

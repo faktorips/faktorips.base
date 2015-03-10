@@ -109,7 +109,7 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
     }
 
     private boolean isCreateFunctionsPage() {
-        return getIpsPart().getIpsProject().getReadOnlyProperties().isBusinessFunctionsForValdiationRulesEnabled();
+        return getIpsPart().getIpsProject().getReadOnlyProperties().isBusinessFunctionsForValidationRulesEnabled();
     }
 
     private Control createFunctionsPage(TabFolder folder) {

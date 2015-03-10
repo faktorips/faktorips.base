@@ -57,14 +57,17 @@ public class CmdLineIpsTestRunner extends AbstractIpsTestRunner {
         return runtimeRepositories;
     }
 
+    @Override
     public void testStarted(IpsTest2 test) {
         System.out.println("Test " + test.getQualifiedName() + " started.");
     }
 
+    @Override
     public void testFinished(IpsTest2 test) {
         System.out.println("Test " + test.getQualifiedName() + " finished.");
     }
 
+    @Override
     public void testFailureOccured(IpsTestFailure failure) {
         System.out.println("Test failed. Expected " + failure.getExpectedValue() + " but was "
                 + failure.getActualValue());

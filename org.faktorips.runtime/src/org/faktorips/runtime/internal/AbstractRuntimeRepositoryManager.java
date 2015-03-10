@@ -46,6 +46,7 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
      * @deprecated since 3.9.0: The method name was a false translation from German. The correct
      *             method is called {@link #getCurrentRuntimeRepository()}
      */
+    @Override
     @Deprecated
     public synchronized IRuntimeRepository getActualRuntimeRepository() {
         return getCurrentRuntimeRepository();
@@ -54,6 +55,7 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
     /**
      * {@inheritDoc}
      */
+    @Override
     public synchronized IRuntimeRepository getCurrentRuntimeRepository() {
         if (!isRepositoryUpToDate(currentRuntimeRepository) || !isReferencedRepositorysUpToDate()) {
             currentRuntimeRepository = createNewRuntimeRepository();
@@ -111,15 +113,18 @@ public abstract class AbstractRuntimeRepositoryManager implements IRuntimeReposi
         return true;
     }
 
+    @Override
     public final void addDirectlyReferencedManager(IRuntimeRepositoryManager manager) {
         allManagers = null;
         managers.add(manager);
     }
 
+    @Override
     public List<IRuntimeRepositoryManager> getDirectlyReferencedRepositoryManagers() {
         return Collections.unmodifiableList(managers);
     }
 
+    @Override
     public List<IRuntimeRepositoryManager> getAllReferencedRepositoryManagers() {
         List<IRuntimeRepositoryManager> result = allManagers;
         if (result == null) {

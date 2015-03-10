@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.tablestructure.ITableAccessFunction;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.stdbuilder.bf.BusinessFunctionBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumContentBuilder;
 import org.faktorips.devtools.stdbuilder.enumtype.EnumPropertyBuilder;
@@ -72,10 +73,12 @@ import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.XpandBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.model.AbstractGeneratorModelNode;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.model.XType;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.PolicyCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptClassBuilder;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenerationClassBuilder;
+import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptClass;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.model.XProductCmptGenerationClass;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
@@ -482,20 +485,48 @@ public class StandardBuilderSet extends DefaultBuilderSet {
                 new GenericJPA2PersistenceProvider());
     }
 
+    /**
+     * Returns the qualified class name for the given datatype.
+     * 
+     * @param datatype datatype to retrieve the class name for
+     */
     public String getJavaClassName(Datatype datatype) {
         return getJavaClassName(datatype, true);
     }
 
+    /**
+     * Resolves the qualified class name for the given datatype.
+     * 
+     * @param datatype datatype to retrieve the class name for.
+     * @param interfaces flag indicating whether the class name should be resolved to the published
+     *            interface type
+     */
     public String getJavaClassName(Datatype datatype, boolean interfaces) {
         if (datatype instanceof IPolicyCmptType) {
-            return getModelNode((IPolicyCmptType)datatype, XPolicyCmptClass.class).getQualifiedName(
-                    BuilderAspect.getValue(interfaces));
+            return getJavaClassNameForPolicyCmptType(datatype, interfaces);
         } else if (datatype instanceof IProductCmptType) {
-            return modelService.getModelNode((IProductCmptType)datatype, XProductCmptGenerationClass.class,
-                    generatorModelContext).getQualifiedName(BuilderAspect.getValue(interfaces));
+            return getJavaClassNameForProductCmptType(datatype, interfaces);
         } else {
             return datatype.getJavaClassName();
         }
+    }
+
+    private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean interfaces) {
+        return getJavaClassName((IPolicyCmptType)datatype, interfaces, XPolicyCmptClass.class);
+    }
+
+    private String getJavaClassNameForProductCmptType(Datatype datatype, boolean interfaces) {
+        if (((IProductCmptType)datatype).isChangingOverTime()) {
+            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptGenerationClass.class);
+        } else {
+            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptClass.class);
+        }
+    }
+
+    private <T extends XType> String getJavaClassName(IType type, boolean interfaces, Class<T> modelNodeClass) {
+        return modelService.getModelNode(type, modelNodeClass, generatorModelContext).getQualifiedName(
+                BuilderAspect.getValue(interfaces));
+
     }
 
     /**

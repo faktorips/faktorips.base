@@ -123,14 +123,17 @@ public class IpsTestCaseJUnitAdapter extends TestCase implements IpsTestListener
         return MessageFormat.format(failureFormat, failureDetails.toArray());
     }
 
+    @Override
     public void testStarted(IpsTest2 test) {
         // nothing to do
     }
 
+    @Override
     public void testFinished(IpsTest2 arg0) {
         // nothing to do
     }
 
+    @Override
     public void testFailureOccured(IpsTestFailure f) {
         failures.add(f);
     }

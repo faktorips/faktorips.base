@@ -71,6 +71,7 @@ public class XProductAssociationTest {
         when(xTargetGenerationClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetTypeGen");
         when(modelService.getModelNode(targetCmptType, XProductCmptClass.class, modelContext)).thenReturn(
                 xTargetCmptClass);
+        when(xTargetCmptClass.getSimpleName(BuilderAspect.INTERFACE)).thenReturn("ITargetType");
     }
 
     @Before
@@ -80,6 +81,7 @@ public class XProductAssociationTest {
 
     @Test
     public void testGetTargetClassGenerationName() {
+        when(targetCmptType.isChangingOverTime()).thenReturn(true);
         String targetClassGenerationName = xProductAssociation.getTargetClassGenerationName();
         assertEquals("ITargetTypeGen", targetClassGenerationName);
     }
@@ -91,6 +93,12 @@ public class XProductAssociationTest {
         XProductAssociation xProductAssociation = new XProductAssociation(association, modelContext, modelService);
         String getterNameForTargetGeneration = xProductAssociation.getMethodNameGetTargetGeneration();
         assertEquals("getTargetTypeGen", getterNameForTargetGeneration);
+    }
+
+    @Test
+    public void testGetTargetClassProductComponentName() {
+        String targetClassProductName = xProductAssociation.getTargetClassGenerationName();
+        assertEquals("ITargetTypeGen", targetClassProductName);
     }
 
     @Test

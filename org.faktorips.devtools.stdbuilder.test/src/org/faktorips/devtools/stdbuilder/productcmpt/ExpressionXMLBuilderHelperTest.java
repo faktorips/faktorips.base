@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.core.runtime.MultiStatus;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
@@ -80,7 +81,7 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
         when(formula2.getFormulaSignature()).thenReturn("StatischeFormel2");
         IProductCmptTypeMethod method2 = mock(IProductCmptTypeMethod.class);
         when(formula2.findFormulaSignature(ipsProject)).thenReturn(method2);
-        IExpression[] formulas = Arrays.asList(formula1, formula2).toArray(new IExpression[2]);
+        List<IFormula> formulas = Arrays.asList(formula1, formula2);
 
         helper.addCompiledFormulaExpressions(getTestDocument(), formulas, formulaElements, buildStatus);
 
@@ -100,7 +101,7 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
         when(formula2.getFormulaSignature()).thenReturn("NormaleFormel2");
         IProductCmptTypeMethod method2 = mock(IProductCmptTypeMethod.class);
         when(formula2.findFormulaSignature(ipsProject)).thenReturn(method2);
-        IExpression[] formulas = Arrays.asList(formula1, formula2).toArray(new IExpression[2]);
+        List<IFormula> formulas = Arrays.asList(formula1, formula2);
 
         helper.addCompiledFormulaExpressions(getTestDocument(), formulas, formulaElements, buildStatus);
 

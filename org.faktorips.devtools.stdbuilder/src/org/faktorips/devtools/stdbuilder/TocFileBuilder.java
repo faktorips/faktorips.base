@@ -376,6 +376,16 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
 
         ProductCmptTocEntry entry = new ProductCmptTocEntry(ipsObjectId, ipsObjectQName, kindId, versionId,
                 xmlContentRelativeFile.toString(), implementationClass, generationImplClass, validTo);
+        if (pcType.isChangingOverTime()) {
+            createProductCmptGenerationTocEntries(productCmpt, xmlContentRelativeFile, entry);
+        }
+        return entry;
+    }
+
+    private void createProductCmptGenerationTocEntries(IProductCmpt productCmpt,
+            IPath xmlContentRelativeFile,
+            ProductCmptTocEntry entry) {
+
         IIpsObjectGeneration[] generations = productCmpt.getGenerationsOrderedByValidDate();
         List<GenerationTocEntry> genEntries = new ArrayList<GenerationTocEntry>(generations.length);
         for (IIpsObjectGeneration generation : generations) {
@@ -383,13 +393,12 @@ public class TocFileBuilder extends AbstractArtefactBuilder {
             if (validFrom == null) {
                 continue;
             }
-            IProductCmptGeneration gen = (IProductCmptGeneration)generation;
-            String generationClassName = getBuilderSet().getProductCmptBuilder().getImplementationClass(gen);
+            String generationClassName = getBuilderSet().getProductCmptBuilder().getImplementationClass(
+                    (IProductCmptGeneration)generation);
             genEntries.add(new GenerationTocEntry(entry, validFrom, generationClassName, xmlContentRelativeFile
                     .toString()));
         }
         entry.setGenerationEntries(genEntries);
-        return entry;
     }
 
     public TocEntryObject createTocEntry(ITableContents tableContents) throws CoreException {

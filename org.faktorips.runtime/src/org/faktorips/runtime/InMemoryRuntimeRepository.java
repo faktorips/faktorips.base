@@ -197,6 +197,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
         result.addAll(productCmpts.keySet());
     }
 
+    @Override
     public boolean isModifiable() {
         return true;
     }
@@ -397,19 +398,20 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
     }
 
     private static class ProductCmptGenerationComparator implements Comparator<IProductComponentGeneration> {
-    
+
         private TimeZone timeZone;
-    
+
         private ProductCmptGenerationComparator(TimeZone timeZone) {
             this.timeZone = timeZone;
         }
-    
+
+        @Override
         public int compare(IProductComponentGeneration gen1, IProductComponentGeneration gen2) {
-    
+
             if (ObjectUtil.equals(gen1, gen2)) {
                 return 0;
             }
-    
+
             if (gen1.getValidFrom(timeZone).before(gen2.getValidFrom(timeZone))) {
                 return -1;
             }
@@ -418,7 +420,7 @@ public class InMemoryRuntimeRepository extends AbstractRuntimeRepository {
             }
             return 0;
         }
-    
+
     }
 
 }

@@ -53,28 +53,36 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
 
     @Override
     protected void addStructureData() {
-        IProductCmptType productCmptType;
+        IProductCmptType productCmptType = findProductCmptType();
+        if (productCmptType == null) {
+            return;
+        }
+
+        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
+                new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+                new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
+                        TargetType.CONTENT, getContext().getLabel(productCmptType), true) }));
+    }
+
+    private IProductCmptType findProductCmptType() {
+        IProductCmptType productCmptType = null;
         try {
             productCmptType = getContext().getIpsProject().findProductCmptType(
                     getDocumentedIpsObject().getProductCmptType());
         } catch (CoreException e) {
             getContext().addStatus(
                     new IpsStatus(IStatus.ERROR, "Error getting  " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
-            return;
         }
-
-        addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-            new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
-            new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
-                        TargetType.CONTENT, getContext().getLabel(productCmptType), true) }));
+        return productCmptType;
     }
 
     @Override
     protected void buildInternal() {
         super.buildInternal();
-
-        addGenerationsList();
-
+        IProductCmptType productCmptType = findProductCmptType();
+        if (productCmptType != null && productCmptType.isChangingOverTime()) {
+            addGenerationsList();
+        }
         addGenerationAttributeTable();
     }
 
@@ -124,7 +132,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
 
         wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-        .createTextPageElements(validFroms)), getContext()));
+                .createTextPageElements(validFroms)), getContext()));
         addPageElements(wrapper);
     }
 }

@@ -24,12 +24,12 @@ import org.faktorips.runtime.IDeltaSupport;
 import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
-import org.faktorips.values.ObjectUtil;
+import org.faktorips.runtime.ITimedConfigurableModelObject;
 
 /**
  * IModelObjectDelta implementation.
- *
- * @author Jan ortmann
+ * 
+ * @author Jan Ortmann
  */
 public class ModelObjectDelta implements IModelObjectDelta {
 
@@ -75,15 +75,23 @@ public class ModelObjectDelta implements IModelObjectDelta {
                 return new ModelObjectDelta(object, refObject, CHANGED, CLASS_CHANGED);
             }
         }
+
         ModelObjectDelta delta = newEmptyDelta(object, refObject);
+
         if (object instanceof IConfigurableModelObject && refObject != null) {
             IConfigurableModelObject confObject = (IConfigurableModelObject)object;
             IConfigurableModelObject confRefObject = (IConfigurableModelObject)refObject;
             delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_COMPONENT,
                     confObject.getProductComponent(), confRefObject.getProductComponent(), options);
-            delta.checkPropertyChange(IConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION,
+        }
+
+        if (object instanceof ITimedConfigurableModelObject && refObject != null) {
+            ITimedConfigurableModelObject confObject = (ITimedConfigurableModelObject)object;
+            ITimedConfigurableModelObject confRefObject = (ITimedConfigurableModelObject)refObject;
+            delta.checkPropertyChange(ITimedConfigurableModelObject.PROPERTY_PRODUCT_CMPT_GENERATION,
                     confObject.getProductCmptGeneration(), confRefObject.getProductCmptGeneration(), options);
         }
+
         return delta;
     }
 
@@ -327,22 +335,27 @@ public class ModelObjectDelta implements IModelObjectDelta {
         children.add(childDelta);
     }
 
+    @Override
     public IModelObject getOriginalObject() {
         return original;
     }
 
+    @Override
     public IModelObject getReferenceObject() {
         return referenceObject;
     }
 
+    @Override
     public int getKind() {
         return kind;
     }
 
+    @Override
     public int getKindOfChange() {
         return kindOfChange;
     }
 
+    @Override
     public String getAssociation() {
         return association;
     }
@@ -351,9 +364,10 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (!ObjectUtil.equals(value1, value2)) {
+        if (!options.areValuesEqual(modelClass, property, value1, value2)) {
             markPropertyChanged(property);
         }
+
     }
 
     public void checkPropertyChange(String property, int value1, int value2, IDeltaComputationOptions options) {
@@ -414,14 +428,17 @@ public class ModelObjectDelta implements IModelObjectDelta {
         kindOfChange |= PROPERTY_CHANGED;
     }
 
+    @Override
     public boolean isClassChanged() {
         return (kindOfChange & CLASS_CHANGED) > 0;
     }
 
+    @Override
     public boolean isPropertyChanged() {
         return (kindOfChange & PROPERTY_CHANGED) > 0;
     }
 
+    @Override
     public List<String> getChangedProperties() {
         if (changedProperties == null) {
             return new ArrayList<String>(0);
@@ -429,6 +446,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return new ArrayList<String>(changedProperties);
     }
 
+    @Override
     public boolean isPropertyChanged(String propertyName) {
         if (changedProperties == null || propertyName == null) {
             return false;
@@ -443,42 +461,52 @@ public class ModelObjectDelta implements IModelObjectDelta {
         kind |= MOVED;
     }
 
+    @Override
     public boolean isMoved() {
         return (kind & MOVED) > 0;
     }
 
+    @Override
     public boolean isDifferentObjectAtPosition() {
         return (kind & DIFFERENT_OBJECT_AT_POSITION) > 0;
     }
 
+    @Override
     public boolean isAdded() {
         return (kind & ADDED) > 0;
     }
 
+    @Override
     public boolean isChanged() {
         return (kind & CHANGED) > 0;
     }
 
+    @Override
     public boolean isChildChanged() {
         return (kindOfChange & CHILD_CHANGED) > 0;
     }
 
+    @Override
     public boolean isEmpty() {
         return kind == EMPTY;
     }
 
+    @Override
     public boolean isRemoved() {
         return (kind & REMOVED) > 0;
     }
 
+    @Override
     public boolean isStructureChanged() {
         return (kindOfChange & STRUCTURE_CHANGED) > 0;
     }
 
+    @Override
     public List<IModelObjectDelta> getChildDeltas() {
         return Collections.unmodifiableList(children);
     }
 
+    @Override
     public List<IModelObjectDelta> getChildDeltas(int kind) {
         final List<IModelObjectDelta> childrenOfKind = new ArrayList<IModelObjectDelta>();
         for (IModelObjectDelta child : children) {
@@ -489,6 +517,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
         return childrenOfKind;
     }
 
+    @Override
     public void accept(IModelObjectDeltaVisitor visitor) {
         if (visitor.visit(this)) {
             for (int i = 0; i < children.size(); i++) {

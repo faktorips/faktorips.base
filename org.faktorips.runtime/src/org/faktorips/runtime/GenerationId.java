@@ -60,6 +60,7 @@ public class GenerationId implements Comparable<GenerationId> {
         return qName + " " + validFrom.toIsoFormat();
     }
 
+    @Override
     public int compareTo(GenerationId other) {
         int c = qName.compareTo(other.qName);
         if (c != 0) {

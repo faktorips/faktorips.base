@@ -94,7 +94,7 @@ public class MethodNames {
     public static final String REMOVE_CHILD_MODEL_OBJECT_INTERNAL = "removeChildModelObjectInternal";
 
     /**
-     * @see org.faktorips.runtime.IConfigurableModelObject#getProductCmptGeneration()
+     * @see org.faktorips.runtime.ITimedConfigurableModelObject#getProductCmptGeneration()
      */
     public static final String GET_PRODUCT_CMPT_GENERATION = "getProductCmptGeneration";
 
@@ -192,6 +192,11 @@ public class MethodNames {
      * @see org.faktorips.runtime.IModelObjectVisitor#visit(org.faktorips.runtime.IModelObject)
      */
     public static final String VISITOR_VISIT = "visit";
+
+    /**
+     * @see org.faktorips.runtime.IProductComponent#isChangingOverTime()
+     */
+    public static final String IS_CHANGING_OVER_TIME = "isChangingOverTime";
 
     public static final String METHOD_NEW_COPY = "newCopyInternal";
 

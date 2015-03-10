@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
@@ -41,7 +42,10 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
+import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -62,6 +66,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -177,6 +182,17 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         if (type == null) {
             return;
         }
+        if (!validateTypeHierarchy(list, ipsProject, type)) {
+            return;
+        }
+        validateName(list, ipsProject);
+        validateRuntimeId(list, ipsProject);
+        validateLinks(list, ipsProject, type);
+        validateDifferencesToModel(list, ipsProject);
+    }
+
+    private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type)
+            throws CoreException {
         Message message = TypeValidations.validateTypeHierachy(type, ipsProject);
         if (message != null) {
             String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
@@ -184,15 +200,23 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             list.add(new Message(MSGCODE_INCONSISTENT_TYPE_HIERARCHY, msg, Message.ERROR, type,
                     PROPERTY_PRODUCT_CMPT_TYPE));
             // do not continue validation if hierarchy is invalid
-            return;
+            return false;
         }
+        return true;
+    }
+
+    private void validateName(MessageList list, IIpsProject ipsProject) {
         IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
         MessageList list2 = strategy.validate(getName());
         for (Message msg : list2) {
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_NAME);
             list.add(msgNew);
         }
-        list2 = strategy.validateRuntimeId(getRuntimeId());
+    }
+
+    private void validateRuntimeId(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IProductCmptNamingStrategy strategy = ipsProject.getProductCmptNamingStrategy();
+        MessageList list2 = strategy.validateRuntimeId(getRuntimeId());
         for (Message msg : list2) {
             Message msgNew = new Message(msg.getCode(), msg.getText(), msg.getSeverity(), this, PROPERTY_RUNTIME_ID);
             list.add(msgNew);
@@ -200,8 +224,35 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
         list2 = getIpsProject().checkForDuplicateRuntimeIds(new IIpsSrcFile[] { getIpsSrcFile() });
         list.add(list2);
+    }
 
+    private void validateLinks(MessageList list, IIpsProject ipsProject, IProductCmptType type) {
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
+    }
+
+    private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) throws CoreException {
+        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
+        IDeltaEntry[] entries = delta.getEntries();
+        for (IDeltaEntry entry : entries) {
+            validateNotConfiguredProperties(list, entry);
+            validateInvalidGenerations(list, entry);
+        }
+    }
+
+    private void validateNotConfiguredProperties(MessageList list, IDeltaEntry entry) {
+        if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
+            String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
+                    ((IDeltaEntryForProperty)entry).getDescription());
+            list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
+        }
+    }
+
+    private void validateInvalidGenerations(MessageList list, IDeltaEntry entry) {
+        if (entry.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
+            String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
+                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
+            list.add(new Message(MSGCODE_INVALID_GENERATIONS, text, Message.WARNING, this));
+        }
     }
 
     @Override
@@ -500,12 +551,34 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        IIpsElement[] childrenThis = super.getChildrenThis();
         List<IIpsElement> children = new ArrayList<IIpsElement>();
-        children.addAll(Arrays.asList(childrenThis));
+        if (allowGenerations()) {
+            IIpsElement[] childrenThis = super.getChildrenThis();
+            children.addAll(Arrays.asList(childrenThis));
+        }
         children.addAll(propertyValueCollection.getAllPropertyValues());
         children.addAll(getLinksAsList());
         return children.toArray(new IIpsElement[children.size()]);
+    }
+
+    @Override
+    public Element toXml(Document doc) {
+        Element xmlElement = super.toXml(doc);
+        if (!allowGenerations()) {
+            writeDummyGeneration(doc, xmlElement);
+        }
+        return xmlElement;
+    }
+
+    /**
+     * For compatibility reasons we always keep one generation also if the type does not support
+     * generations (is not changing over time). In the {@link #getChildrenThis()} method we hide
+     * this dummy generation. Hence the toXml framework methods do not write it automatically.
+     */
+    private void writeDummyGeneration(Document doc, Element rootElement) {
+        IProductCmptGeneration generation = getFirstGeneration();
+        Element generationElement = generation.toXml(doc);
+        rootElement.appendChild(generationElement);
     }
 
     @Override
@@ -699,5 +772,22 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IFormula getFormula(String formulaName) {
         return propertyValueCollection.getPropertyValue(IFormula.class, formulaName);
+    }
+
+    /**
+     * Returns <code>true</code> if the {@link IProductCmptType}, this {@link IProductCmpt} is based
+     * on, allows changing over time. If not, <code>false</code> is returned.
+     * <p>
+     * In case that the corresponding {@link IProductCmptType} can not be found, we assume that
+     * changing over time is enabled. In that case <code>true</code> is returned.
+     */
+    @Override
+    public boolean allowGenerations() {
+        try {
+            IProductCmptType productComponentType = findProductCmptType(getIpsProject());
+            return productComponentType == null ? true : productComponentType.isChangingOverTime();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 }

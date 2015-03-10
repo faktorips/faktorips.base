@@ -111,6 +111,9 @@ public class LinksContentProviderTest {
         listAssociations.add(asso2);
         when(type.findAllNotDerivedAssociations(ipsProject)).thenReturn(listAssociations);
         when(gen.isContainerFor(asso2)).thenReturn(true);
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        when(asso2.getProductCmptType()).thenReturn(productCmptType);
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
 
         AssociationViewItem[] associationItems = provider.getAssociationItems(type, ipsProject, gen);
         assertTrue(associationItems.length == 1);
@@ -126,6 +129,9 @@ public class LinksContentProviderTest {
         when(link1.findAssociation(ipsProject)).thenReturn(asso1);
         IProductCmptLinkContainer container = LinkCreatorUtil.getLinkContainerFor(gen, asso1);
         when(link1.getProductCmptLinkContainer()).thenReturn(container);
+        IProductCmptType productCmptType = mock(IProductCmptType.class);
+        when(asso1.getProductCmptType()).thenReturn(productCmptType);
+        when(productCmptType.isChangingOverTime()).thenReturn(true);
 
         AssociationViewItem expectedAssoViewItem = new AssociationViewItem(container, asso1);
         Object parent = provider.getParent(linkViewItem);

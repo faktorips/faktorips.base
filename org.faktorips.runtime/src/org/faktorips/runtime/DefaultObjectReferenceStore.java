@@ -26,12 +26,14 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
     private Map<Object, List<Object>> objects = new HashMap<Object, List<Object>>(100);
     private List<IUnresolvedReference> references = new ArrayList<IUnresolvedReference>();
 
+    @Override
     public void resolveReferences() throws Exception {
         for (IUnresolvedReference ref : references) {
             ref.resolve(this);
         }
     }
 
+    @Override
     public void putObject(Object id, Object object) {
         List<Object> list = objects.get(id);
         if (list == null) {
@@ -48,10 +50,12 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
         }
     }
 
+    @Override
     public void addUnresolvedReference(IUnresolvedReference reference) {
         references.add(reference);
     }
 
+    @Override
     public Object getObject(Class<?> clazz, Object id) {
         List<Object> objectsWithId = objects.get(id);
         if (objectsWithId == null) {
@@ -65,10 +69,12 @@ public class DefaultObjectReferenceStore implements IObjectReferenceStore {
         return null;
     }
 
+    @Override
     public Collection<List<Object>> getAllObjects() {
         return objects.values();
     }
 
+    @Override
     public Collection<IUnresolvedReference> getAllUnresolvedReferences() {
         return references;
     }

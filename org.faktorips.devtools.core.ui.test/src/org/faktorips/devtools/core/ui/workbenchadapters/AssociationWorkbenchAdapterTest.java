@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -110,6 +111,19 @@ public class AssociationWorkbenchAdapterTest extends AbstractIpsPluginTest {
 
         assertNotNull(imageDescriptor);
         assertTrue(createImageDescriptorWithChangeOvertime(
+                AssociationWorkbenchAdapter.ASSOCIATION_TYPE_ASSOCIATION_IMAGE).equals(imageDescriptor));
+    }
+
+    @Test
+    public void testGetImageDescriptor_DoesNotOverlayChangeOverTime() {
+        when(aProductAssociation.getAssociationType()).thenReturn(AssociationType.ASSOCIATION);
+        when(aProductAssociation.isChangingOverTime()).thenReturn(false);
+
+        workbenchAdapter = new AssociationWorkbenchAdapter(false);
+        ImageDescriptor imageDescriptor = workbenchAdapter.getImageDescriptor(aProductAssociation);
+
+        assertNotNull(imageDescriptor);
+        assertFalse(createImageDescriptorWithChangeOvertime(
                 AssociationWorkbenchAdapter.ASSOCIATION_TYPE_ASSOCIATION_IMAGE).equals(imageDescriptor));
     }
 

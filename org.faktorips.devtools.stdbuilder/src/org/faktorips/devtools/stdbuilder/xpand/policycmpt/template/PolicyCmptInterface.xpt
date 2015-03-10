@@ -1,7 +1,7 @@
 «IMPORT org::faktorips::devtools::core::builder::naming»
 «IMPORT org::faktorips::devtools::stdbuilder»
-«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
 
@@ -49,7 +49,9 @@
 			
 			«IF configured-»
 				«EXPAND PolicyCmpt::getAndSetProductComponent FOR productCmptNode-»
-				«EXPAND PolicyCmpt::getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
+				«IF generateGenerationAccessMethods»
+		 	        «EXPAND PolicyCmpt::getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
+		 	    «ENDIF»
 			«ENDIF-»
 			
 			«EXPAND Methods::method FOREACH methods-»

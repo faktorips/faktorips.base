@@ -12,13 +12,13 @@ package org.faktorips.runtime.productdataprovider;
 
 import java.io.InputStream;
 
+import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.faktorips.runtime.internal.toc.EnumContentTocEntry;
 import org.faktorips.runtime.internal.toc.GenerationTocEntry;
 import org.faktorips.runtime.internal.toc.IReadonlyTableOfContents;
 import org.faktorips.runtime.internal.toc.ProductCmptTocEntry;
 import org.faktorips.runtime.internal.toc.TableContentTocEntry;
 import org.faktorips.runtime.internal.toc.TestCaseTocEntry;
-import org.faktorips.runtime.internal.toc.CustomTocEntryObject;
 import org.w3c.dom.Element;
 
 /**

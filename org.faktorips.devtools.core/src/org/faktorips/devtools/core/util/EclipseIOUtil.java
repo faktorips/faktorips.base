@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.util.IoUtil;
 
 /**
  * This is a utility class handling IO operations concerning the eclipse resource framework.
@@ -38,6 +39,8 @@ public class EclipseIOUtil {
      * a VCS the possibility to react for example by checking out the requested file.
      * <p>
      * The method was introduced because of issue FIPS-754
+     * <p>
+     * The given input stream will be closed by this method.
      * 
      * @param file The file you want to write to.
      * @param inputStream the input stream you want to write to the file
@@ -53,12 +56,16 @@ public class EclipseIOUtil {
             boolean force,
             boolean keepHistory,
             IProgressMonitor progressMonitor) throws CoreException {
-        if (!file.isReadOnly()
-                || file.getWorkspace().validateEdit(new IFile[] { file }, IWorkspace.VALIDATE_PROMPT).isOK()) {
-            file.setContents(inputStream, force, keepHistory, progressMonitor);
-        } else {
-            IpsPlugin.log(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
-                    "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
+        try {
+            if (!file.isReadOnly()
+                    || file.getWorkspace().validateEdit(new IFile[] { file }, IWorkspace.VALIDATE_PROMPT).isOK()) {
+                file.setContents(inputStream, force, keepHistory, progressMonitor);
+            } else {
+                IpsPlugin.log(new Status(IStatus.ERROR, IpsPlugin.PLUGIN_ID,
+                        "Cannot write to file " + file.getFullPath() + ". Maybe it is locked or readonly.")); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        } finally {
+            IoUtil.close(inputStream);
         }
     }
 
