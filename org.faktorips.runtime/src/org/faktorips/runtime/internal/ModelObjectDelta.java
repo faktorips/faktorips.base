@@ -25,12 +25,11 @@ import org.faktorips.runtime.IModelObject;
 import org.faktorips.runtime.IModelObjectDelta;
 import org.faktorips.runtime.IModelObjectDeltaVisitor;
 import org.faktorips.runtime.ITimedConfigurableModelObject;
-import org.faktorips.values.ObjectUtil;
 
 /**
  * IModelObjectDelta implementation.
- *
- * @author Jan ortmann
+ * 
+ * @author Jan Ortmann
  */
 public class ModelObjectDelta implements IModelObjectDelta {
 
@@ -365,9 +364,10 @@ public class ModelObjectDelta implements IModelObjectDelta {
         if (options.ignore(modelClass, property)) {
             return;
         }
-        if (!ObjectUtil.equals(value1, value2)) {
+        if (!options.areValuesEqual(modelClass, property, value1, value2)) {
             markPropertyChanged(property);
         }
+
     }
 
     public void checkPropertyChange(String property, int value1, int value2, IDeltaComputationOptions options) {
