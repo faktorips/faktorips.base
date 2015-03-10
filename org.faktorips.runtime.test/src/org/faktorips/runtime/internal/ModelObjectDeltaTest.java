@@ -7,14 +7,14 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms. ======= Copyright (c)
  * 2005-2012 Faktor Zehn AG und andere.
- *
+ * 
  * Alle Rechte vorbehalten.
- *
+ * 
  * Dieses Programm und alle mitgelieferten Sachen (Dokumentationen, Beispiele, Konfigurationen,
  * etc.) duerfen nur unter den Bedingungen der Faktor-Zehn-Community Lizenzvereinbarung - Version
  * 0.1 (vor Gruendung Community) genutzt werden, die Bestandteil der Auslieferung ist und auch unter
  * http://www.faktorzehn.org/fips:lizenz eingesehen werden kann.
- *
+ * 
  * Mitwirkende: Faktor Zehn AG - initial API and implementation - http://www.faktorzehn.de >>>>>>>
  * 660c2b7... FIPS-2479 :: fix new delta for subtrees
  *******************************************************************************/
@@ -50,7 +50,7 @@ import org.faktorips.runtime.MessageList;
 import org.junit.Test;
 
 /**
- *
+ * 
  * @author Jan Ortmann
  */
 public class ModelObjectDeltaTest {
@@ -477,6 +477,20 @@ public class ModelObjectDeltaTest {
         assertTrue(visitor.visitedDeltas.contains(grandchildDelta));
     }
 
+    @Test
+    public void testCheckPropertyChange_ReturnTrueIfObjectAreDifferent() {
+        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
+        delta.checkPropertyChange("property", objectA, objectB, OPTIONS);
+        assertTrue(delta.isPropertyChanged("property"));
+    }
+
+    @Test
+    public void testCheckPropertyChange_ReturnFalseIfObjectAreEqual() {
+        ModelObjectDelta delta = ModelObjectDelta.newEmptyDelta(objectA, objectB);
+        delta.checkPropertyChange("property", objectA, objectA, OPTIONS);
+        assertFalse(delta.isPropertyChanged("property"));
+    }
+
     static class MyModelObject implements IModelObject, IDeltaSupport {
 
         private final String id;
@@ -634,6 +648,11 @@ public class ModelObjectDeltaTest {
         @Override
         public boolean isCreateSubtreeDelta() {
             return true;
+        }
+
+        @Override
+        public boolean areValuesEqual(Class<?> modelClass, String property, Object value1, Object value2) {
+            return false;
         }
 
     }
