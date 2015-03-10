@@ -426,11 +426,11 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             sb.append(RANGE_STEP_SEPERATOR);
             sb.append(step);
         }
+        sb.append(RANGE_VALUESET_END);
         if (isContainsNull()) {
             sb.append(NLS.bind(Messages.RangeValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
                     .getNullPresentation()));
         }
-        sb.append(RANGE_VALUESET_END);
         return sb.toString();
     }
 
