@@ -86,7 +86,7 @@ public class XValidationRule extends AbstractGeneratorModelNode {
     }
 
     public boolean isValidateAttributes() {
-        return !isValidatedAttrSpecifiedInSrc() && getValidationRule().getValidatedAttributes().length > 0;
+        return getValidationRule().getValidatedAttributes().length > 0;
     }
 
     public List<String> getValidatedAttributeConstants() {
