@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.faktorips.runtime
 Bundle-Version: 3.15.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Require-Bundle: org.faktorips.valuetypes,
- org.junit;bundle-version="3.8.2"
+ org.junit;bundle-version="3.8.2",
+ org.junit4
 Export-Package: org.faktorips.runtime,org.faktorips.runtime.caching,or
  g.faktorips.runtime.formula,org.faktorips.runtime.internal,org.faktor
  ips.runtime.internal.tableindex,org.faktorips.runtime.internal.toc,or

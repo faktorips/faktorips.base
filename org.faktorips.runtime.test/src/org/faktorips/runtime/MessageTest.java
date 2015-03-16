@@ -153,7 +153,7 @@ public class MessageTest extends XmlAbstractTestCase {
 
     @Test(expected = NullPointerException.class)
     public void testMessage_NPE() {
-        Message.error("text").invalidObjects((Object)null);
+        Message.error("text").invalidObjectWithProperties((Object)null);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class MessageTest extends XmlAbstractTestCase {
         assertFalse(msg.equals(msg2));
 
         // different referenced object properties (different number of properties)
-        msg2 = Message.error("blblbla").code("1").invalidObjects("object", "property").create();
+        msg2 = Message.error("blblbla").code("1").invalidObjectWithProperties("object", "property").create();
 
         assertFalse(msg.equals(msg2));
 
@@ -396,6 +396,88 @@ public class MessageTest extends XmlAbstractTestCase {
 
         assertEquals(1, message.getMarkers().size());
         assertThat(message.getMarkers(), hasItem(testMarker));
+    }
+
+    @Test
+    public void testInvalideObjects_OneInvalideObjectProperty() {
+        ObjectProperty invalidObjectProperty = new ObjectProperty(this, "prop1");
+        Message message = Message.error("messageText").invalidObjects(invalidObjectProperty).create();
+
+        assertEquals(1, message.getNumOfInvalidObjectProperties());
+        assertEquals("prop1", message.getInvalidObjectProperties().get(0).getProperty());
+    }
+
+    @Test
+    public void testInvalideObjects_ArrayOfInvalideObjectProperties() {
+        ObjectProperty[] objectProperties = { new ObjectProperty(this, "prop1"), new ObjectProperty(this, "prop2") };
+        Message message = Message.error("messageText").invalidObjects(objectProperties).create();
+
+        assertEquals(2, message.getNumOfInvalidObjectProperties());
+        assertEquals("prop1", message.getInvalidObjectProperties().get(0).getProperty());
+        assertEquals("prop2", message.getInvalidObjectProperties().get(1).getProperty());
+    }
+
+    @Test
+    public void testInvalideObjects_InvalideObjectPropertiesAsVarArgs() {
+        Object object1 = new Object();
+        Object object2 = new Object();
+        Message message = Message.error("messageText")
+                .invalidObjects(new ObjectProperty(object1, "prop1"), new ObjectProperty(object2, "prop2")).create();
+
+        assertEquals(2, message.getNumOfInvalidObjectProperties());
+        assertEquals(object1, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals("prop1", message.getInvalidObjectProperties().get(0).getProperty());
+        assertEquals(object2, message.getInvalidObjectProperties().get(1).getObject());
+        assertEquals("prop2", message.getInvalidObjectProperties().get(1).getProperty());
+    }
+
+    @Test
+    public void testInvalideObjects_InvalideObjectPropertyAsVarArgs() {
+        Object object1 = new Object();
+        Message message = Message.error("messageText").invalidObjects(new ObjectProperty(object1, "prop1")).create();
+
+        assertEquals(1, message.getNumOfInvalidObjectProperties());
+        assertEquals(object1, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals("prop1", message.getInvalidObjectProperties().get(0).getProperty());
+    }
+
+    @Test
+    public void testInvalideObjects_InvalideObject() {
+        Object object1 = new Object();
+        Message message = Message.error("messageText").invalidObjectWithProperties(object1).create();
+
+        assertEquals(1, message.getNumOfInvalidObjectProperties());
+        assertEquals(object1, message.getInvalidObjectProperties().get(0).getObject());
+    }
+
+    @Test
+    public void testInvalideObjects_ArrayListOfInvalideObjectProperties() {
+        List<ObjectProperty> objectProperties = Arrays.asList(new ObjectProperty(this, "prop1"), new ObjectProperty(
+                this, "prop2"));
+        Message message = Message.error("messageText").invalidObjects(objectProperties).create();
+
+        assertEquals(2, message.getNumOfInvalidObjectProperties());
+        assertEquals("prop1", message.getInvalidObjectProperties().get(0).getProperty());
+        assertEquals("prop2", message.getInvalidObjectProperties().get(1).getProperty());
+    }
+
+    @Test
+    public void testInvalideObjectWithProperties() {
+        Object object1 = new Object();
+        Message message = Message.error("messageText").invalidObjectWithProperties(object1, "prop1", "prop2").create();
+
+        assertEquals(2, message.getNumOfInvalidObjectProperties());
+        assertEquals(object1, message.getInvalidObjectProperties().get(0).getObject());
+        assertEquals(object1, message.getInvalidObjectProperties().get(1).getObject());
+        assertEquals("prop1", message.getInvalidObjectProperties().get(0).getProperty());
+        assertEquals("prop2", message.getInvalidObjectProperties().get(1).getProperty());
+    }
+
+    @Test
+    public void testInvalidObjectWithProperties_WithoutProperties() {
+        Message message = Message.error("messageText").invalidObjectWithProperties(new Object()).create();
+
+        assertEquals(1, message.getNumOfInvalidObjectProperties());
     }
 
 }
