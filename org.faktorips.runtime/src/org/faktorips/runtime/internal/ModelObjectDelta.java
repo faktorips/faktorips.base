@@ -267,7 +267,7 @@ public class ModelObjectDelta implements IModelObjectDelta {
     private static void createSubtreeDeltaIfNeeded(IModelObject existingObject,
             ModelObjectDelta delta,
             IDeltaComputationOptions options) {
-        if (options.isCreateSubtreeDelta()) {
+        if (options != null && options.isCreateSubtreeDelta()) {
             createSubtreeDelta(existingObject, delta, options);
         }
     }
