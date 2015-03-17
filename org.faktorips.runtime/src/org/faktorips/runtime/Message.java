@@ -637,7 +637,7 @@ public class Message implements Serializable {
         }
 
         /**
-         * Set an object properties that message refers to.
+         * Set object properties that message refers to.
          * 
          * @param invalidObjectProperties Object properties that message refers to
          * @return This builder instance to directly add further properties
