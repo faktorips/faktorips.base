@@ -15,6 +15,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -100,5 +101,19 @@ public class ValueHolderToFormattedStringWrapperTest {
                 ValueDatatype.DECIMAL);
         String convertedString = wrapper.convertToString(new ArrayList<String>());
         assertEquals(StringUtils.EMPTY, convertedString);
+    }
+
+    @Test
+    public void testConvertToString() throws Exception {
+        IAttributeValue attrValue = mock(IAttributeValue.class);
+        ValueHolderToFormattedStringWrapper valueHolderToFormattedStringWrapper = new ValueHolderToFormattedStringWrapper(
+                attrValue, ValueDatatype.STRING);
+        assertEquals("", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("")));
+        assertEquals("a", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("a")));
+        assertEquals("a | b | c", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("a", "b", "c")));
+        assertEquals(" | b | c", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("", "b", "c")));
+        assertEquals("a | b | ", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("a", "b", "")));
+        assertEquals(" | b | ", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("", "b", "")));
+        assertEquals(" |  | ", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("", "", "")));
     }
 }

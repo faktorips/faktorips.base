@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -99,14 +100,7 @@ public class ValueHolderToFormattedStringWrapper {
     }
 
     protected String convertToString(List<String> stringValues) {
-        StringBuilder sb = new StringBuilder();
-        for (String string : stringValues) {
-            if (sb.length() != 0) {
-                sb.append(MULTI_VALUE_SEPARATOR);
-            }
-            sb.append(string);
-        }
-        return sb.toString();
+        return StringUtils.join(stringValues, MULTI_VALUE_SEPARATOR);
     }
 
 }
