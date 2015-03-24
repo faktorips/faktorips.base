@@ -13,6 +13,7 @@ package org.faktorips.runtime;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -86,7 +87,7 @@ public class Message implements Serializable {
     /**
      * A set of {@link IMarker} containing additional information.
      */
-    private final Set<IMarker> markers;
+    private final Set<? extends IMarker> markers;
 
     /**
      * Creates a new message by using the fields of a {@link Builder}.
@@ -261,7 +262,7 @@ public class Message implements Serializable {
      *            The List of markers is
      */
     public Message(String code, String text, Severity severity, List<ObjectProperty> invalidObjectProperties,
-            List<MsgReplacementParameter> parameters, Set<IMarker> markers) {
+            List<MsgReplacementParameter> parameters, Set<? extends IMarker> markers) {
         this.code = code;
         this.text = text;
         this.severity = severity;
@@ -468,7 +469,7 @@ public class Message implements Serializable {
      * Returns a set of {@link IMarker}s associated with this class. Returns an empty set if no
      * markers are set.
      */
-    public Set<IMarker> getMarkers() {
+    public Set<? extends IMarker> getMarkers() {
         return markers;
     }
 
@@ -589,7 +590,7 @@ public class Message implements Serializable {
 
         private List<MsgReplacementParameter> replacementParams;
 
-        private Set<IMarker> markers;
+        private Set<? extends IMarker> markers;
 
         /**
          * Creates a new builder that is able to create a proper {@link Message} with all needed
@@ -702,13 +703,13 @@ public class Message implements Serializable {
         }
 
         /**
-         * Set a set of markers that should be provided to the new message.
+         * Set a collection of markers that should be provided to the new message.
          * 
          * @param markers a set of markers
          * @return This builder instance to directly add further properties
          */
-        public Builder markers(Set<IMarker> markers) {
-            this.markers = markers;
+        public Builder markers(Collection<? extends IMarker> markers) {
+            this.markers = new HashSet<IMarker>(markers);
             return this;
         }
 
