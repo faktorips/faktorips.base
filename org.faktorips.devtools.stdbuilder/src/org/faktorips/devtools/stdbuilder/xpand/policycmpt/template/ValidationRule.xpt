@@ -97,7 +97,7 @@
      * @generated
      */
     protected «Message()» «method(methodNameCreateMessage, createMessageParameters)» {
-    	«IF validateAttributes-»
+    	«IF validateAttributes && !validatedAttrSpecifiedInSrc-»
                 «List_(ObjectProperty())» invalidObjectProperties = «Arrays()».asList(
                 «FOREACH validatedAttributeConstants AS constant SEPARATOR ","-»
                 new «ObjectProperty()»(this, «constant»)
@@ -117,9 +117,11 @@
        	
        	«Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
        		.code(«constantNameMessageCode»)
-	      «IF validateAttributes-»
+	      «IF validatedAttrSpecifiedInSrc-»
+       		.invalidObjects(«Arrays()».asList(invalidObjectProperties))
+       	  «ELSEIF validateAttributes-»
        		.invalidObjects(invalidObjectProperties)
-	      «ELSEIF !validatedAttrSpecifiedInSrc-»
+	      «ELSE-»
     	    .invalidObject(new «ObjectProperty()»(this))
 	      «ENDIF-»
        	  «IF containsReplacementParameters-»

@@ -137,7 +137,7 @@ public class Message implements Serializable {
      * @param invalidObject An object properties the message refers to
      */
     public Message(String code, String text, Severity severity, Object invalidObject) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObject, (String)null));
+        this(new Builder(text, severity).code(code).invalidObjectWithProperties(invalidObject, (String)null));
     }
 
     /**
@@ -149,7 +149,7 @@ public class Message implements Serializable {
      * @param invalidObjectProperty An object property the message refers to
      */
     public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty) {
-        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperty));
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperty));
     }
 
     /**
@@ -163,7 +163,7 @@ public class Message implements Serializable {
      * @param invalidObjectProperties An array of propertie's names the message refers to
      */
     public Message(String code, String text, Severity severity, Object invalidObject, String... invalidObjectProperties) {
-        this(new Builder(text, severity).code(code).invalidObjects(invalidObject, invalidObjectProperties));
+        this(new Builder(text, severity).code(code).invalidObjectWithProperties(invalidObject, invalidObjectProperties));
     }
 
     /**
@@ -210,12 +210,12 @@ public class Message implements Serializable {
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
-     * @param invalidObjectProperties A list of object properties the message refers to
+     * @param invalidObjectProperty A list of object properties the message refers to
      * @param parameters an array of replacement parameters
      */
-    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
+    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty,
             MsgReplacementParameter... parameters) {
-        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperty).replacements(parameters)
                 .markers(Collections.<IMarker> emptySet()));
     }
 
@@ -225,12 +225,12 @@ public class Message implements Serializable {
      * @param code A message code that identifies the kind of the message
      * @param text The human readable text of this message
      * @param severity The message's severity: {@link #ERROR}, {@link #WARNING} or {@link #INFO}
-     * @param invalidObjectProperties An object properties the message refers to
+     * @param invalidObjectProperty An object properties the message refers to
      * @param parameters a list of replacement parameters
      */
-    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperties,
+    public Message(String code, String text, Severity severity, ObjectProperty invalidObjectProperty,
             List<MsgReplacementParameter> parameters) {
-        this(new Builder(text, severity).code(code).invalidObject(invalidObjectProperties).replacements(parameters)
+        this(new Builder(text, severity).code(code).invalidObjects(invalidObjectProperty).replacements(parameters)
                 .markers(Collections.<IMarker> emptySet()));
     }
 
@@ -569,9 +569,9 @@ public class Message implements Serializable {
      * {@link #Message(String, Severity)} or by calling one of the static creation methods like
      * {@link Message#error(String)}, {@link Message#warning(String)} or
      * {@link Message#info(String)}. Afterwards add needed information to the builder for example
-     * call {@link #invalidObjects(Object object, String... properties)} to provide some invalid
-     * object properties. When the builder has every information that is needed to create a proper
-     * message call {@link #create()}.
+     * call {@link #invalidObjectWithProperties(Object object, String... properties)} to provide
+     * some invalid object properties. When the builder has every information that is needed to
+     * create a proper message call {@link #create()}.
      * 
      * @see Message#error(String)
      * @see Message#warning(String)
@@ -630,10 +630,20 @@ public class Message implements Serializable {
          * 
          * @param invalidObjectProperty An object property that message refers to
          * @return This builder instance to directly add further properties
+         * 
          */
         public Builder invalidObject(ObjectProperty invalidObjectProperty) {
-            this.invalidObjectProperties = Arrays.asList(invalidObjectProperty);
-            return this;
+            return invalidObjects(new ObjectProperty[] { invalidObjectProperty });
+        }
+
+        /**
+         * Set object properties that message refers to.
+         * 
+         * @param invalidObjectProperties Object properties that message refers to
+         * @return This builder instance to directly add further properties
+         */
+        public Builder invalidObjects(ObjectProperty... invalidObjectProperties) {
+            return invalidObjects(Arrays.asList(invalidObjectProperties));
         }
 
         /**
@@ -643,8 +653,9 @@ public class Message implements Serializable {
          * @param object The object the message refers to
          * @param properties Some properties the message refers to
          * @return This builder instance to directly add further properties
+         * 
          */
-        public Builder invalidObjects(Object object, String... properties) {
+        public Builder invalidObjectWithProperties(Object object, String... properties) {
             invalidObjectProperties = new ArrayList<ObjectProperty>();
             if (properties.length == 0) {
                 invalidObjectProperties.add(new ObjectProperty(object));
