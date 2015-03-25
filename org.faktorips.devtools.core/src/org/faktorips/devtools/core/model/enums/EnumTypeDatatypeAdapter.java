@@ -402,6 +402,18 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return getEnumContent() != null;
     }
 
+    public boolean isCovariant(ValueDatatype datatype) {
+        if (datatype instanceof EnumTypeDatatypeAdapter) {
+            return isCovariant((EnumTypeDatatypeAdapter)datatype);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isCovariant(EnumTypeDatatypeAdapter datatype) {
+        return enumType.isSubEnumTypeOrSelf(datatype.enumType, enumType.getIpsProject());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof EnumTypeDatatypeAdapter) {

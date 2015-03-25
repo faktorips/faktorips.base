@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model;
 
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 
@@ -38,6 +39,28 @@ public class DatatypeUtil {
         }
         IEnumType enumType = ((EnumTypeDatatypeAdapter)datatype).getEnumType();
         return enumType.isExtensible();
+    }
+
+    /**
+     * Returns <code>true</code> if the first datatype is covariant to the second one that means it
+     * is either the same type or it is a subtype of the second one.
+     * 
+     * @param datatype1 The datatype that is checked to be covariant to the second one
+     * @param datatype2 The second datatype to check
+     * 
+     * @return <code>true</code> if the first datatype is covariant to the second one
+     */
+    public static final boolean isCovariant(ValueDatatype datatype1, ValueDatatype datatype2) {
+        if (datatype1.equals(datatype2)) {
+            return true;
+        } else {
+            if (datatype1 instanceof EnumTypeDatatypeAdapter) {
+                EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)datatype1;
+                return enumTypeDatatypeAdapter.isCovariant(datatype2);
+            } else {
+                return false;
+            }
+        }
     }
 
 }
