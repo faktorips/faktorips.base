@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -317,6 +318,14 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         super.validateDefaultValue(valueDatatype, result, ipsProject);
         if (isDefaultValueForbidden(valueDatatype)) {
             expectNoDefaultValue(result);
+        }
+    }
+
+    @Override
+    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
+        if (!getDatatype().equals(superAttr.getDatatype())) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
+                    Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this, PROPERTY_DATATYPE));
         }
     }
 

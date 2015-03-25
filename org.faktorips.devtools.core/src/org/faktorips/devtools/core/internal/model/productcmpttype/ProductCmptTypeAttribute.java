@@ -19,10 +19,12 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -30,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.AttributeProperty;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
@@ -384,6 +387,19 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,
                     NLS.bind(Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, defaultValue),
                     this, PROPERTY_DEFAULT_VALUE);
+        }
+    }
+
+    @Override
+    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
+        try {
+            if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
+                result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE, NLS.bind(
+                        Messages.ProductCmptTypeAttribute_error_incompatibleDatatypes, getName()), Message.ERROR, this,
+                        PROPERTY_DATATYPE));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 
