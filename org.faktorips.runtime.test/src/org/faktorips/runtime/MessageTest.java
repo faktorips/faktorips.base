@@ -395,7 +395,7 @@ public class MessageTest extends XmlAbstractTestCase {
         markerArray[0] = null;
 
         assertEquals(1, message.getMarkers().size());
-        assertThat(message.getMarkers(), hasItem(testMarker));
+        assertEquals(testMarker, message.getMarkers().iterator().next());
     }
 
     @Test
