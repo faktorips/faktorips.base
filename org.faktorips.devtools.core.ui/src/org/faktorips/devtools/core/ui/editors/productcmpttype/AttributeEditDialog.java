@@ -143,6 +143,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
 
         getToolkit().createFormLabel(workArea, Messages.AttributeEditDialog_datatypeLabel);
         DatatypeRefControl datatypeControl = getToolkit().createDatatypeRefEdit(attribute.getIpsProject(), workArea);
+        datatypeControl.setAbstractAllowed(true);
         datatypeControl.setVoidAllowed(false);
         datatypeControl.setOnlyValueDatatypesAllowed(true);
         getBindingContext().bindContent(datatypeControl, attribute, IAttribute.PROPERTY_DATATYPE);
