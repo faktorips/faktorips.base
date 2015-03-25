@@ -35,6 +35,7 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.resource.DeleteResourceChange;
 import org.faktorips.abstracttest.AbstractDependencyTest;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsObjectPath;
 import org.faktorips.devtools.core.internal.model.ipsproject.IpsProjectRefEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
@@ -75,6 +76,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.memento.Memento;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -84,6 +86,12 @@ import org.w3c.dom.Element;
  * @author Jan Ortmann
  */
 public class ProductCmptTypeTest extends AbstractDependencyTest {
+
+    private static final String SUPER_ENUM_TYPE = "SuperEnumType";
+
+    private static final String ENUM_TYPE = "EnumType";
+
+    private static final String ATTR1 = "attr1";
 
     private IIpsProject ipsProject;
 
@@ -111,6 +119,11 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         policyCmptType.setSupertype(superPolicyCmptType.getQualifiedName());
         superSuperProductCmptType = newProductCmptType(ipsProject, "SuperSuperProduct");
         superProductCmptType.setSupertype(superSuperProductCmptType.getQualifiedName());
+        EnumType superEnum = newEnumType(ipsProject, SUPER_ENUM_TYPE);
+        superEnum.setAbstract(true);
+        EnumType enumType = newEnumType(ipsProject, ENUM_TYPE);
+        enumType.setSuperEnumType(ENUM_TYPE);
+
     }
 
     @Test
@@ -2957,6 +2970,69 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
                 ipsProject);
         Collections.sort(properties, new ProductCmptPropertyComparator(contextType));
         return properties;
+    }
+
+    @Test
+    public void testValidateNoAbstractDatatypeOfAttributes_abstractType() throws Exception {
+        productCmptType.setAbstract(true);
+        IAttribute superAttr1 = superProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+
+        MessageList list = new MessageList();
+        productCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testValidateNoAbstractDatatypeOfAttributes_correct() throws Exception {
+        IAttribute superAttr1 = superProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+        IAttribute attr1 = productCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(ENUM_TYPE);
+
+        MessageList list = new MessageList();
+        productCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testValidateNoAbstractDatatypeOfAttributes_notOverwritten() throws Exception {
+        IAttribute superAttr1 = superProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+
+        MessageList list = new MessageList();
+        productCmptType.validateAbstractAttributes(list, ipsProject);
+
+        Message message = list.getMessageByCode(IProductCmptType.MSGCODE_ABSTRACT_MISSING);
+        assertNotNull(message);
+        assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
+                message.getInvalidObjectProperties()[0]);
+    }
+
+    @Test
+    public void testValidateNoAbstractDatatypeOfAttributes_overwrittenAbstractType() throws Exception {
+        IAttribute superAttr1 = superProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+        IAttribute attr1 = productCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(SUPER_ENUM_TYPE);
+
+        MessageList list = productCmptType.validate(ipsProject);
+
+        Message message = list.getMessageByCode(IProductCmptType.MSGCODE_ABSTRACT_MISSING);
+        assertNotNull(message);
+        assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE), message.getInvalidObjectProperties()[0]);
+        assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
+                message.getInvalidObjectProperties()[1]);
     }
 
 }

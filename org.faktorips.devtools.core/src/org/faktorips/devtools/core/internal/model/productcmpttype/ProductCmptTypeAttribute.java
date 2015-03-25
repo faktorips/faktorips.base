@@ -313,9 +313,16 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void validateThis(MessageList result, IIpsProject ipsProject) throws CoreException {
         super.validateThis(result, ipsProject);
+        validateAbstractDatatype(result, ipsProject);
         validateAllowedValueSetTypes(result);
         validateOverwriteFlag(result, ipsProject);
         validateChangingOverTimeFlag(result);
+    }
+
+    private void validateAbstractDatatype(MessageList result, IIpsProject ipsProject) throws CoreException {
+        if (!getType().isAbstract()) {
+            new AttributeAbstractDatatypeValidator(this, ipsProject).validateNotAbstractDatatype(result);
+        }
     }
 
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {

@@ -66,6 +66,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ProductCmptTypeValidations;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.IType;
@@ -594,6 +595,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         validateDefaultCategoryForProductCmptTypeAttribute(list, ipsProject);
         validateDefaultCategoryForTableStructureUsages(list, ipsProject);
         validateDefaultCategoryForValidationRules(list, ipsProject);
+        validateAbstractAttributes(list, ipsProject);
     }
 
     private void validateSuperProductCmptTypeHasSameChangingOverTimeSetting(IProductCmptType superProductCmptType,
@@ -669,10 +671,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (StringUtils.isEmpty(getPolicyCmptType())) {
             return;
         }
-        IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
-        if (policyCmptType != null) {
+        IPolicyCmptType foundPolicyCmptType = findPolicyCmptType(ipsProject);
+        if (foundPolicyCmptType != null) {
             msgList.add(ProductCmptTypeValidations.validateProductCmptTypeAbstractWhenPolicyCmptTypeAbstract(
-                    policyCmptType.isAbstract(), isAbstract(), this));
+                    foundPolicyCmptType.isAbstract(), isAbstract(), this));
         }
     }
 
@@ -710,11 +712,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this,
-                    null);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForFormulaSignatureDefinitions(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForFormulaSignatureDefinitions, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_FORMULA_SIGNATURE_DEFINITIONS, text, ProductCmptType.this,
+                            null);
+                }
     }
 
     private void validateDefaultCategoryForPolicyCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
@@ -722,10 +724,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForPolicyCmptTypeAttributes(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForPolicyCmptTypeAttributes, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_POLICY_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this, null);
+                }
     }
 
     private void validateDefaultCategoryForProductCmptTypeAttribute(MessageList list, IIpsProject ipsProject)
@@ -733,11 +735,11 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this,
-                    null);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForProductCmptTypeAttributes(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForProductCmptTypeAttributes, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_PRODUCT_CMPT_TYPE_ATTRIBUTES, text, ProductCmptType.this,
+                            null);
+                }
     }
 
     private void validateDefaultCategoryForTableStructureUsages(MessageList list, IIpsProject ipsProject)
@@ -745,10 +747,10 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(
                 ProductCmptPropertyType.TABLE_STRUCTURE_USAGE, true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this, null);
-        }
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForTableStructureUsages(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForTableStructureUsages, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_TABLE_STRUCTURE_USAGES, text, ProductCmptType.this, null);
+                }
     }
 
     private void validateDefaultCategoryForValidationRules(MessageList list, IIpsProject ipsProject)
@@ -756,10 +758,20 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         boolean propertyTypeExistsInTypeHierarchy = findProductCmptProperties(ProductCmptPropertyType.VALIDATION_RULE,
                 true, ipsProject).size() > 0;
-        if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
-            String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
-            list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this, null);
+                if (propertyTypeExistsInTypeHierarchy && findDefaultCategoryForValidationRules(ipsProject) == null) {
+                    String text = NLS.bind(Messages.ProductCmptCategory_NoDefaultForValidationRules, getName());
+                    list.newError(MSGCODE_NO_DEFAULT_CATEGORY_FOR_VALIDATION_RULES, text, ProductCmptType.this, null);
+                }
+    }
+
+    void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) throws CoreException {
+        if (!isAbstract()) {
+            List<IAttribute> findAllAttributes = findOverrideAttributeCandidates(ipsProject);
+            for (IAttribute attribute : findAllAttributes) {
+                new AttributeAbstractDatatypeValidator(attribute, this, ipsProject).validateNotAbstractDatatype(list);
+            }
         }
+
     }
 
     @Override
@@ -807,7 +819,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 if (!matchingPolicyCmptTypeAssociations.getPolicyCmptType().isConfigurableByProductCmptType()) {
                     IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
                             getQualifiedNameType(), matchingPolicyCmptTypeAssociations.getPolicyCmptType()
-                                    .getQualifiedNameType());
+                            .getQualifiedNameType());
                     dependencies.add(dependency);
                 }
             }
@@ -1237,25 +1249,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
      */
     boolean findIsCategoryNameUsedTwiceInSupertypeHierarchy(final String categoryName, IIpsProject ipsProject)
             throws CoreException {
-
-        class CategoryCounter extends TypeHierarchyVisitor<IProductCmptType> {
-            int categoriesFound = 0;
-
-            public CategoryCounter(IIpsProject ipsProject) {
-                super(ipsProject);
-            }
-
-            @Override
-            protected boolean visit(IProductCmptType currentType) {
-                for (IProductCmptCategory category : currentType.getCategories()) {
-                    if (categoryName.equals(category.getName())) {
-                        categoriesFound++;
-                    }
-                }
-                return categoriesFound < 2;
-            }
-        }
-        CategoryCounter counter = new CategoryCounter(ipsProject);
+        CategoryCounter counter = new CategoryCounter(categoryName, ipsProject);
         counter.start(this);
         return counter.categoriesFound > 1;
     }
@@ -1630,4 +1624,25 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
 
     }
+
+    private static class CategoryCounter extends TypeHierarchyVisitor<IProductCmptType> {
+        private int categoriesFound = 0;
+        private String categoryName;
+
+        public CategoryCounter(String categoryName, IIpsProject ipsProject) {
+            super(ipsProject);
+            this.categoryName = categoryName;
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) {
+            for (IProductCmptCategory category : currentType.getCategories()) {
+                if (categoryName.equals(category.getName())) {
+                    categoriesFound++;
+                }
+            }
+            return categoriesFound < 2;
+        }
+    }
+
 }

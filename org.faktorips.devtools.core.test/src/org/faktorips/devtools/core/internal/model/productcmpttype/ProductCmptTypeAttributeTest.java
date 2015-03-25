@@ -27,17 +27,22 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.classtypes.StringDatatype;
+import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -48,11 +53,17 @@ import org.w3c.dom.Element;
  */
 public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
+    private static final String ATTR1 = "attr1";
+
+    private static final String SUPER_ENUM_TYPE = "SuperEnum";
+
     private IIpsProject ipsProject;
 
     private IProductCmptType productCmptType;
 
     private IProductCmptTypeAttribute productAttribute;
+
+    private IType superProductCmptType;
 
     @Override
     @Before
@@ -65,6 +76,10 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         productAttribute = productCmptType.newProductCmptTypeAttribute();
         productAttribute.setName("productAttribute");
+
+        superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
+        EnumType enumType = newEnumType(ipsProject, SUPER_ENUM_TYPE);
+        enumType.setAbstract(true);
     }
 
     @Test
@@ -133,7 +148,7 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         aInSupertype.delete();
         assertNull(productAttribute.findOverwrittenAttribute(ipsProject)); // this should not return
-                                                                           // itself!
+        // itself!
     }
 
     @Test
@@ -505,25 +520,29 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setChangingOverTime(false);
 
         MessageList ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(true);
         productAttribute.setChangingOverTime(true);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(false);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
 
         productCmptType.setChangingOverTime(false);
         productAttribute.setChangingOverTime(true);
 
         ml = productAttribute.validate(productAttribute.getIpsProject());
-        assertNotNull(ml.getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertNotNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
 
     @Test
@@ -538,4 +557,24 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         assertTrue(productAttribute.isChangingOverTime());
     }
+
+    @Test
+    public void testValidateNoAbstractDatatypeOfAttributes_overwrittenAbstractType() throws Exception {
+        IAttribute superAttr1 = superProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+        IAttribute attr1 = productCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(SUPER_ENUM_TYPE);
+
+        MessageList list = productCmptType.validate(ipsProject);
+
+        Message message = list.getMessageByCode(IProductCmptType.MSGCODE_ABSTRACT_MISSING);
+        assertNotNull(message);
+        assertEquals(new ObjectProperty(attr1, IAttribute.PROPERTY_DATATYPE), message.getInvalidObjectProperties()[0]);
+        assertEquals(new ObjectProperty(productCmptType, IType.PROPERTY_ABSTRACT),
+                message.getInvalidObjectProperties()[1]);
+    }
+
 }
