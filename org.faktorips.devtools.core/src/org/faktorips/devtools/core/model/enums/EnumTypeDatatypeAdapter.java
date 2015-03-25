@@ -402,6 +402,15 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
         return getEnumContent() != null;
     }
 
+    /**
+     * Checks whether this {@link EnumTypeDatatypeAdapter} is covariant to the given datatype. This
+     * enum is covariant if both datatypes are equal or if the other datatype is also a
+     * {@link EnumTypeDatatypeAdapter} and its enum type is a super type of this one. That means
+     * this enum type must be the same or a subtype of the other enum type.
+     * 
+     * @param datatype The datatype to check
+     * @return <code>true</code> if this enum type is covariant to the given datatype
+     */
     public boolean isCovariant(ValueDatatype datatype) {
         if (datatype instanceof EnumTypeDatatypeAdapter) {
             return isCovariant((EnumTypeDatatypeAdapter)datatype);

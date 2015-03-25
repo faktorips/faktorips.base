@@ -10,10 +10,10 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
+import org.faktorips.devtools.core.model.DatatypeUtil;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -107,7 +107,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         ValueDatatype datatype = findValueDatatype(contextProject);
         ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
 
-        if (!ObjectUtils.equals(datatype, subDatatype)) {
+        if (!DatatypeUtil.isCovariant(subDatatype, datatype)) {
             return false;
         }
 
