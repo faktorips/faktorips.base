@@ -2973,7 +2973,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoAbstractDatatypeOfAttributes_abstractType() throws Exception {
+    public void testValidateAbstractAttributes_abstractType() throws Exception {
         productCmptType.setAbstract(true);
         IAttribute superAttr1 = superProductCmptType.newAttribute();
         superAttr1.setName(ATTR1);
@@ -2986,7 +2986,20 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoAbstractDatatypeOfAttributes_correct() throws Exception {
+    public void testValidateAbstractAttributes_abstractSubtype() throws Exception {
+        IAttribute superAttr1 = superProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+        productCmptType.setAbstract(true);
+
+        MessageList list = new MessageList();
+        productCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_correct() throws Exception {
         IAttribute superAttr1 = superProductCmptType.newAttribute();
         superAttr1.setName(ATTR1);
         superAttr1.setDatatype(SUPER_ENUM_TYPE);
@@ -3002,7 +3015,24 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoAbstractDatatypeOfAttributes_notOverwritten() throws Exception {
+    public void testValidateAbstractAttributes_correct_MultiSubclass() throws Exception {
+        superSuperProductCmptType.newAttribute();
+        IAttribute superAttr1 = superSuperProductCmptType.newAttribute();
+        superAttr1.setName(ATTR1);
+        superAttr1.setDatatype(SUPER_ENUM_TYPE);
+        IAttribute attr1 = superProductCmptType.newAttribute();
+        attr1.setName(ATTR1);
+        attr1.setOverwrite(true);
+        attr1.setDatatype(ENUM_TYPE);
+
+        MessageList list = new MessageList();
+        productCmptType.validateAbstractAttributes(list, ipsProject);
+
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    public void testValidateAbstractAttributes_notOverwritten() throws Exception {
         IAttribute superAttr1 = superProductCmptType.newAttribute();
         superAttr1.setName(ATTR1);
         superAttr1.setDatatype(SUPER_ENUM_TYPE);
@@ -3017,7 +3047,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testValidateNoAbstractDatatypeOfAttributes_overwrittenAbstractType() throws Exception {
+    public void testValidateAbstractAttributes_overwrittenAbstractType() throws Exception {
         IAttribute superAttr1 = superProductCmptType.newAttribute();
         superAttr1.setName(ATTR1);
         superAttr1.setDatatype(SUPER_ENUM_TYPE);

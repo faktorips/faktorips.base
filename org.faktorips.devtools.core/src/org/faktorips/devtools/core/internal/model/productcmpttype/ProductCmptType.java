@@ -304,18 +304,24 @@ public class ProductCmptType extends Type implements IProductCmptType {
         if (ProductCmptPropertyType.TABLE_STRUCTURE_USAGE == type) {
             return findTableStructureUsage(propName, ipsProject);
         }
-        IPolicyCmptType policyCmptType = findPolicyCmptType(ipsProject);
-        if (policyCmptType == null) {
+        return findProductCmptPropertyInPolicy(type, propName, ipsProject);
+    }
+
+    private IProductCmptProperty findProductCmptPropertyInPolicy(ProductCmptPropertyType type,
+            String propName,
+            IIpsProject ipsProject) throws CoreException {
+        IPolicyCmptType foundPolicyCmptType = findPolicyCmptType(ipsProject);
+        if (foundPolicyCmptType == null) {
             return null;
         }
         if (ProductCmptPropertyType.VALIDATION_RULE == type) {
-            IValidationRule rule = policyCmptType.findValidationRule(propName, ipsProject);
+            IValidationRule rule = foundPolicyCmptType.findValidationRule(propName, ipsProject);
             if (rule != null && rule.isConfigurableByProductComponent()) {
                 return rule;
             }
         }
         if (ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE == type) {
-            IPolicyCmptTypeAttribute attr = policyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
+            IPolicyCmptTypeAttribute attr = foundPolicyCmptType.findPolicyCmptTypeAttribute(propName, ipsProject);
             if (attr != null && attr.isProductRelevant()) {
                 return attr;
             }
@@ -766,12 +772,14 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     void validateAbstractAttributes(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (!isAbstract()) {
-            List<IAttribute> findAllAttributes = findOverrideAttributeCandidates(ipsProject);
-            for (IAttribute attribute : findAllAttributes) {
-                new AttributeAbstractDatatypeValidator(attribute, this, ipsProject).validateNotAbstractDatatype(list);
+            List<IAttribute> allAttributes = findAllAttributes(ipsProject);
+            for (IAttribute attribute : allAttributes) {
+                if (!attribute.isOfType(getQualifiedNameType())) {
+                    new AttributeAbstractDatatypeValidator(attribute, this, ipsProject)
+                    .validateNotAbstractDatatype(list);
+                }
             }
         }
-
     }
 
     @Override
@@ -819,7 +827,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 if (!matchingPolicyCmptTypeAssociations.getPolicyCmptType().isConfigurableByProductCmptType()) {
                     IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
                             getQualifiedNameType(), matchingPolicyCmptTypeAssociations.getPolicyCmptType()
-                            .getQualifiedNameType());
+                                    .getQualifiedNameType());
                     dependencies.add(dependency);
                 }
             }
@@ -1046,25 +1054,6 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     @Override
     public IProductCmptCategory findCategory(final String name, IIpsProject ipsProject) throws CoreException {
-        class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
-            private final String categoryName;
-
-            private IProductCmptCategory category;
-
-            private ProductCmptCategoryFinder(IIpsProject ipsProject, String categoryName) {
-                super(ipsProject);
-                this.categoryName = categoryName;
-            }
-
-            @Override
-            protected boolean visit(IProductCmptType currentType) {
-                if (currentType.getCategory(categoryName) != null) {
-                    category = currentType.getCategory(categoryName);
-                    return false;
-                }
-                return true;
-            }
-        }
 
         ProductCmptCategoryFinder visitor = new ProductCmptCategoryFinder(ipsProject, name);
         visitor.start(this);
@@ -1642,6 +1631,27 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 }
             }
             return categoriesFound < 2;
+        }
+    }
+
+    private static class ProductCmptCategoryFinder extends TypeHierarchyVisitor<IProductCmptType> {
+
+        private final String categoryName;
+
+        private IProductCmptCategory category;
+
+        private ProductCmptCategoryFinder(IIpsProject ipsProject, String categoryName) {
+            super(ipsProject);
+            this.categoryName = categoryName;
+        }
+
+        @Override
+        protected boolean visit(IProductCmptType currentType) {
+            if (currentType.getCategory(categoryName) != null) {
+                category = currentType.getCategory(categoryName);
+                return false;
+            }
+            return true;
         }
     }
 
