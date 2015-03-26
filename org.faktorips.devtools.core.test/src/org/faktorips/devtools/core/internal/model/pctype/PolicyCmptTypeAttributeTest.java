@@ -35,6 +35,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
@@ -536,4 +537,27 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertNotNull(ml
                 .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
     }
+
+    @Test
+    public void testValidate_OverwrittenAttributeHasDifferentDatatype() throws Exception {
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setOverwrite(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
+
+        PolicyCmptType supertype = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "sup.SuperType");
+        pcType.setSupertype(supertype.getQualifiedName());
+        IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute("name");
+        superAttr.setDatatype("Integer");
+
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
+
+        attribute.setDatatype(superAttr.getDatatype());
+        ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
+    }
+
 }

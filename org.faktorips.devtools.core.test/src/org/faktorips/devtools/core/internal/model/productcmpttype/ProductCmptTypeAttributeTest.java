@@ -57,6 +57,8 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     private static final String SUPER_ENUM_TYPE = "SuperEnum";
 
+    private static final String ENUM_TYPE = "Enum";
+
     private IIpsProject ipsProject;
 
     private IProductCmptType productCmptType;
@@ -78,8 +80,11 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute.setName("productAttribute");
 
         superProductCmptType = newProductCmptType(ipsProject, "SuperProduct");
-        EnumType enumType = newEnumType(ipsProject, SUPER_ENUM_TYPE);
-        enumType.setAbstract(true);
+
+        EnumType superEnumType = newEnumType(ipsProject, SUPER_ENUM_TYPE);
+        superEnumType.setAbstract(true);
+        EnumType enumType = newEnumType(ipsProject, ENUM_TYPE);
+        enumType.setSuperEnumType(SUPER_ENUM_TYPE);
     }
 
     @Test
@@ -556,6 +561,52 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
         productAttribute = productCmptType.newProductCmptTypeAttribute();
 
         assertTrue(productAttribute.isChangingOverTime());
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttributeHasDifferentDatatype() throws Exception {
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("name");
+        attribute.setDatatype("String");
+        attribute.setOverwrite(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+
+        ProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
+        productCmptType.setSupertype(supertype.getQualifiedName());
+        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute("name");
+        superAttr.setDatatype("Integer");
+
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+
+        attribute.setDatatype(superAttr.getDatatype());
+        ml = attribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttributeCovariantDatatype() throws Exception {
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("name");
+        attribute.setDatatype(ENUM_TYPE);
+        attribute.setOverwrite(true);
+        ProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
+        productCmptType.setSupertype(supertype.getQualifiedName());
+        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute("name");
+        superAttr.setDatatype(SUPER_ENUM_TYPE);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
+
+        superAttr.setDatatype(ENUM_TYPE);
+        attribute.setDatatype(SUPER_ENUM_TYPE);
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE));
     }
 
     @Test

@@ -73,4 +73,11 @@ public class DatatypeUtilTest {
         assertFalse(DatatypeUtil.isCovariant(mock(ValueDatatype.class), superenumDatatype));
     }
 
+    @Test
+    public void testIsCovariant_null() throws Exception {
+        assertFalse(DatatypeUtil.isCovariant(null, enumDatatype));
+        assertFalse(DatatypeUtil.isCovariant(superenumDatatype, null));
+        assertFalse(DatatypeUtil.isCovariant(null, null));
+    }
+
 }

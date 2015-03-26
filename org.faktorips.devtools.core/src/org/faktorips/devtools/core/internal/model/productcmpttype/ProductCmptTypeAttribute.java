@@ -325,6 +325,19 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
+    @Override
+    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
+        try {
+            if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
+                result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE, NLS.bind(
+                        Messages.ProductCmptTypeAttribute_error_incompatibleDatatypes, getName()), Message.ERROR, this,
+                        PROPERTY_DATATYPE));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     private void validateAllowedValueSetTypes(MessageList result) throws CoreException {
         if (!getAllowedValueSetTypes(getIpsProject()).contains(getValueSet().getValueSetType())) {
             result.add(Message.newError(MSGCODE_INVALID_VALUE_SET, NLS.bind(
@@ -394,19 +407,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             result.newError(MSGCODE_DEFAULT_NOT_IN_VALUESET_WHILE_HIDDEN,
                     NLS.bind(Messages.ProductCmptTypeAttribute_msgDefaultValueNotInValueSetWhileHidden, defaultValue),
                     this, PROPERTY_DEFAULT_VALUE);
-        }
-    }
-
-    @Override
-    protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
-        try {
-            if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
-                result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE, NLS.bind(
-                        Messages.ProductCmptTypeAttribute_error_incompatibleDatatypes, getName()), Message.ERROR, this,
-                        PROPERTY_DATATYPE));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
