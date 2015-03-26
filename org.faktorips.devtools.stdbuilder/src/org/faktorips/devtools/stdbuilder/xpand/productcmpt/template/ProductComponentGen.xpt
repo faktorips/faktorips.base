@@ -56,8 +56,14 @@
 		     */
 			public «method(implClassName, productCmptClassNode.implClassName, "productCmpt")» {
 				super(productCmpt);
-				«EXPAND ProductAttribute::setDefaultValue FOREACH attributes-»
+				«EXPAND ProductAttribute::setDefaultValue FOREACH attributesInclOverwritten-»
 			}
+
+			«FOREACH attributesInclOverwritten AS this-»
+				«IF generateAbstractGetter-»
+					«EXPAND ProductAttribute::abstractGetter-»
+				«ENDIF»
+			«ENDFOREACH»
 
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 

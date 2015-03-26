@@ -183,7 +183,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 «ENDDEFINE»
 
 «DEFINE getterForProductAttributes(XPolicyCmptClass currentClass) FOR XProductAttribute-»
-	«IF !overwrite-»
+	«IF generateInterfaceGetter-»
 		 /**
 	     * «localizedJDoc("METHOD_GET_VALUE_IN_POLICY", name)»
 	     «IF descriptionForJDoc.length > 0-»
@@ -192,6 +192,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
+	     «overrideAnnotationIf(overwrite)»
 	    «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
 	    	«IF changingOverTime-»
 	        	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();

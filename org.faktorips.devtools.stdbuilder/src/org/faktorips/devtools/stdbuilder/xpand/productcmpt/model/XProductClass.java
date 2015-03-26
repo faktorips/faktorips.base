@@ -86,6 +86,28 @@ public abstract class XProductClass extends XType {
     @Override
     public Set<XProductAttribute> getAttributes() {
         if (isCached(XProductAttribute.class)) {
+            return filterAttributes(getCachedObjects(XProductAttribute.class));
+        } else {
+            Set<XProductAttribute> nodesForParts = initNodesForParts(getAttributesInternal(isChangeOverTimeClass()),
+                    XProductAttribute.class);
+            putToCache(nodesForParts);
+            return filterAttributes(nodesForParts);
+        }
+    }
+
+    private Set<XProductAttribute> filterAttributes(Set<XProductAttribute> xAttributes) {
+        LinkedHashSet<XProductAttribute> result = new LinkedHashSet<XProductAttribute>(xAttributes);
+        for (Iterator<XProductAttribute> iterator = result.iterator(); iterator.hasNext();) {
+            XProductAttribute xProductAttribute = iterator.next();
+            if (!xProductAttribute.isGenerateContentCode()) {
+                iterator.remove();
+            }
+        }
+        return result;
+    }
+
+    public Set<XProductAttribute> getAttributesInclOverwritten() {
+        if (isCached(XProductAttribute.class)) {
             return getCachedObjects(XProductAttribute.class);
         } else {
             Set<XProductAttribute> nodesForParts = initNodesForParts(getAttributesInternal(isChangeOverTimeClass()),

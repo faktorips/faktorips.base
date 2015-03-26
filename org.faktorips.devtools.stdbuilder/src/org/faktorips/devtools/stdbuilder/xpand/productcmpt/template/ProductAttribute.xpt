@@ -1,29 +1,35 @@
 «IMPORT org::faktorips::devtools::stdbuilder»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::productcmpt::template::ProductAttributeExtension»
 
 «DEFINE constantForPropertyName FOR XProductAttribute-»
-	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("FIELD_PROPERTY_NAME", name)»
 		* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
 		public static final String «field(constantNamePropertyName)» = "«name»";
-	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE memberField FOR XProductAttribute-»
-	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("FIELD_VALUE", name.toFirstUpper())»
 	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	 	* @generated
 	 	*/
     	private «javaClassName» «field(fieldName)»;
-    «ENDIF-»
+«ENDDEFINE»
+
+«DEFINE abstractGetter FOR XProductAttribute-»
+		/**
+	 	* «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
+	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
+	 	* @generated
+	 	*/
+		public abstract «javaClassName» «method(methodNameGetter)»;
 «ENDDEFINE»
 
 «DEFINE getterSetter FOR XProductAttribute-»
@@ -33,13 +39,12 @@
 «ENDDEFINE»
 
 «DEFINE setDefaultValue FOR XProductAttribute-»	
-	«IF (overwrite || !defaultValueNull)-»
+	«IF callSetDefaultValue-»
 		«methodNameSetterInternal»(«defaultValueCode»);
 	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE getter FOR XProductAttribute-»
-	«IF !overwrite-»
 		/**
 	 	* «inheritDocOrJavaDocIf(genInterface(), "METHOD_GETVALUE", name, descriptionForJDoc)»
 	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
@@ -55,7 +60,6 @@
 		«IF multilingual-»
 			«EXPAND multilingualGetter-»
 		«ENDIF»
-	«ENDIF»
 «ENDDEFINE»
 
 «DEFINE multilingualGetter FOR XProductAttribute-»
@@ -87,7 +91,6 @@
 «ENDDEFINE»
 
 «DEFINE setter FOR XProductAttribute-»
-	«IF !overwrite-»
 		/**
 	 	* «localizedJDoc("METHOD_SETVALUE", name, description)»
 	 	* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
@@ -97,11 +100,10 @@
 			«EXPAND ProductCommons::checkRepositoryModifyable-»
 			«methodNameSetterInternal»(«getReferenceOrSafeCopyIfNecessary("newValue")»);
 		}
-	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE internalSetter FOR XProductAttribute-»
-	«IF (!overwrite && !genInterface())-»
+	«IF (!genInterface())-»
 		/**
  		* «localizedJDoc("METHOD_SETVALUE_INTERNAL", name, description)»
  		* «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
@@ -114,13 +116,10 @@
 «ENDDEFINE»
 
 «DEFINE initFromXmlMethodCall FOR XProductAttribute-»
-	«IF !overwrite-»
 		«methodNameDoInitFromXml»(configMap);
-    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE initFromXmlMethod FOR XProductAttribute-»
-	«IF !overwrite-»
 		/**
  		* @generated
  		*/
@@ -135,7 +134,6 @@
 	        «ENDIF-»
 	        }
 	    }
-    «ENDIF-»
 «ENDDEFINE»
 
 «DEFINE initMultiValueAttributeFromXml FOR XProductAttribute-»
@@ -155,13 +153,10 @@
 «ENDDEFINE»
 
 «DEFINE writeAttributeToXmlMethodCall FOR XProductAttribute-»
-	«IF !overwrite-»
 		«methodNameWriteToXml»(element);
-	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE writeAttributeToXmlMethod FOR XProductAttribute-»
-	«IF !overwrite-»
 	    /**
 	     * @generated
 	     */
@@ -186,5 +181,4 @@
 	        «ENDIF-»
 	        element.appendChild(attributeElement);
 		}
-	«ENDIF-»
 «ENDDEFINE»

@@ -33,10 +33,13 @@
 		 	«FOREACH attributes AS this-»
 		 		«REM»
 		 		 TODO the old code generator generated the getter always to the published interface»
+		 		 !!! If you fix this you need to generate abstract getter for public-abstract attributes in ProductComponent 
 		 		«IF published -»
 			 	«ENDIF-»
 			 	«ENDREM»
+			 	«IF generateInterfaceGetter-»
 					«EXPAND ProductAttribute::getter»
+				«ENDIF-»
 		 	«ENDFOREACH-»
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
