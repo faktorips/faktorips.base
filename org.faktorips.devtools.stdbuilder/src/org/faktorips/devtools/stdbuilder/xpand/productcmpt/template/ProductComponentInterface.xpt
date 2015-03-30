@@ -30,10 +30,10 @@
 			 	«ENDIF-»
 		 	«ENDFOREACH-»
 		 
-		 	«FOREACH attributes AS this-»
+		 	«FOREACH attributesInclOverwritten AS this-»
 		 		«REM»
-		 		 TODO the old code generator generated the getter always to the published interface»
-		 		 !!! If you fix this you need to generate abstract getter for public-abstract attributes in ProductComponent 
+		 		 TODO the old code generator generated the getter always to the published interface
+		 		 !!! If you fix this you need to generate abstract getter for public-abstract attributes in ProductComponent
 		 		«IF published -»
 			 	«ENDIF-»
 			 	«ENDREM»

@@ -192,7 +192,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	     «overrideAnnotationIf(overwrite)»
+	     «overrideAnnotationIf(overwrite && currentClass.hasSupertype())»
 	    «IF generatePublishedInterfaces»public«ELSE»protected«ENDIF» «javaClassName» «method(methodNameGetter)» {
 	    	«IF changingOverTime-»
 	        	return «currentClass.methodNameGetProductCmptGeneration»().«methodNameGetter»();
