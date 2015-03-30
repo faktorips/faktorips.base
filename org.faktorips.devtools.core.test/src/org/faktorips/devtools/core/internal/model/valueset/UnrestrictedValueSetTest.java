@@ -39,6 +39,8 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
 
     private static final String MY_EXTENSIBLE_ENUM = "MyExtensibleEnum";
 
+    private static final String MY_SUPER_ENUM = "MySuperEnum";
+
     private IPolicyCmptTypeAttribute attr;
     private IConfigElement ce;
 
@@ -73,9 +75,13 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
 
         EnumType enumType = newEnumType(ipsProject, MY_EXTENSIBLE_ENUM);
         enumType.setExtensible(true);
+        enumType.setSuperEnumType(MY_SUPER_ENUM);
         enumType.setEnumContentName(MY_ENUM_CONTENT);
         EnumContent newEnumContent = newEnumContent(productIpsProject, MY_ENUM_CONTENT);
         newEnumContent.setEnumType(MY_EXTENSIBLE_ENUM);
+
+        EnumType superEnumType = newEnumType(ipsProject, MY_SUPER_ENUM);
+        superEnumType.setAbstract(true);
     }
 
     @Test
@@ -244,6 +250,32 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
         UnrestrictedValueSet subSet = new UnrestrictedValueSet(ce, "1", true);
 
         assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+    }
+
+    @Test
+    public void testContainsValueSet_differentDatatypes() throws Exception {
+        IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
+        attr2.setName("attr");
+        attr2.setDatatype(MY_EXTENSIBLE_ENUM);
+
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(attr, "1", true);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(attr2, "1", true);
+
+        assertFalse(subSet.containsValueSet(unrestrictedValueSet));
+    }
+
+    @Test
+    public void testContainsValueSet_covariant() throws Exception {
+        attr.setDatatype(MY_SUPER_ENUM);
+        IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
+        attr2.setName("attr");
+        attr2.setDatatype(MY_EXTENSIBLE_ENUM);
+
+        IUnrestrictedValueSet unrestrictedValueSet = new UnrestrictedValueSet(attr, "1", true);
+        UnrestrictedValueSet subSet = new UnrestrictedValueSet(attr2, "1", true);
+
+        assertTrue(unrestrictedValueSet.containsValueSet(subSet));
+        assertFalse(subSet.containsValueSet(unrestrictedValueSet));
     }
 
 }

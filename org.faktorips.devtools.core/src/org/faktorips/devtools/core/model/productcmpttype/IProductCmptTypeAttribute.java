@@ -107,6 +107,13 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
             + "DefaultNotInValueSetWhileHidden"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that an attribute overwrites another but has a different
+     * datatype.
+     */
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeIncompatibleDatatype"; //$NON-NLS-1$
+
+    /**
      * Returns the product component type the attribute belongs to.
      */
     public IProductCmptType getProductCmptType();

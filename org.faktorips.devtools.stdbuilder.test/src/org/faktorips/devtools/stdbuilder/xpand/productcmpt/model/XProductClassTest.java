@@ -164,6 +164,10 @@ public class XProductClassTest {
         when(modelService.getModelNode(attr1, XProductAttribute.class, modelContext)).thenReturn(attrNode1);
         when(modelService.getModelNode(attr2, XProductAttribute.class, modelContext)).thenReturn(attrNode2);
         when(modelService.getModelNode(attr3, XProductAttribute.class, modelContext)).thenReturn(attrNode3);
+
+        when(attrNode1.isGenerateContentCode()).thenReturn(true);
+        when(attrNode2.isGenerateContentCode()).thenReturn(true);
+        when(attrNode3.isGenerateContentCode()).thenReturn(true);
     }
 
     @Test
@@ -304,6 +308,30 @@ public class XProductClassTest {
         Set<IProductCmptTypeAssociation> associations = xProductClass.getAssociationsInternal(false);
 
         assertEquals(2, associations.size());
+    }
+
+    @Test
+    public void testGetAttributes_nonGenerated() throws Exception {
+        XProductCmptGenerationClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
+        when(attrNode1.isGenerateContentCode()).thenReturn(false);
+        when(attrNode3.isGenerateContentCode()).thenReturn(false);
+
+        Set<XProductAttribute> result = productClass.getAttributes();
+
+        assertTrue(result.isEmpty());
+    }
+
+    @Test
+    public void testGetAttributes_someGenerated() throws Exception {
+        XProductCmptGenerationClass productClass = new XProductCmptGenerationClass(type, modelContext, modelService);
+        when(attrNode1.isGenerateContentCode()).thenReturn(false);
+        when(attrNode3.isGenerateContentCode()).thenReturn(true);
+
+        Set<XProductAttribute> result = productClass.getAttributes();
+
+        assertEquals(1, result.size());
+        assertThat(result, hasItem(attrNode3));
+
     }
 
 }

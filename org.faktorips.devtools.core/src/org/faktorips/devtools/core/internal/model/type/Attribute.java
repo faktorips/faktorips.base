@@ -130,7 +130,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
         IStatus status = ValidationUtils.validateFieldName(name, ipsProject);
         if (!status.isOK()) {
             result.add(new Message(MSGCODE_INVALID_ATTRIBUTE_NAME, Messages.Attribute_msg_InvalidAttributeName + name
-                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$ 
+                    + "!", Message.ERROR, this, PROPERTY_NAME)); //$NON-NLS-1$
         }
         ValueDatatype datatypeObject = ValidationUtils.checkValueDatatypeReference(getDatatype(), false, this,
                 PROPERTY_DATATYPE, "", result); //$NON-NLS-1$
@@ -160,21 +160,20 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     private void validateAgainstOverwrittenAttribute(MessageList result, IAttribute superAttr) {
+        validateOverwrittenDatatype(superAttr, result);
         if (!getValueSet().isDetailedSpecificationOf(superAttr.getValueSet())) {
             String text = Messages.Attribute_ValueSet_not_SubValueSet_of_the_overridden_attribute;
             String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
             result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
         }
         validateNullIncompatible(result, superAttr.getValueSet());
-        if (!getDatatype().equals(superAttr.getDatatype())) {
-            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE,
-                    Messages.Attribute_msg_Overwritten_datatype_different, Message.ERROR, this, PROPERTY_DATATYPE));
-        }
         if (!getModifier().equals(superAttr.getModifier())) {
             result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
                     Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this, PROPERTY_MODIFIER));
         }
     }
+
+    protected abstract void validateOverwrittenDatatype(IAttribute superAttr, MessageList result);
 
     private void validateNullIncompatible(MessageList list, IValueSet modelValueSet) {
         new ValueSetNullIncompatibleValidator(modelValueSet, getValueSet()).validateAndAppendMessages(list);

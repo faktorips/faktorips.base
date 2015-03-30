@@ -137,29 +137,6 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_OverwrittenAttributeHasDifferentDatatype() throws Exception {
-        attribute.setName("name");
-        attribute.setDatatype("String");
-        attribute.setOverwrite(true);
-
-        MessageList ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
-
-        IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
-        type.setSupertype(supertype.getQualifiedName());
-        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
-        superAttr.setName("name");
-        superAttr.setDatatype("Integer");
-
-        ml = attribute.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
-
-        attribute.setDatatype(superAttr.getDatatype());
-        ml = attribute.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE));
-    }
-
-    @Test
     public void testValidate_OverwrittenAttributeHasDifferentModifier() throws Exception {
         attribute.setName("name");
         attribute.setDatatype("String");

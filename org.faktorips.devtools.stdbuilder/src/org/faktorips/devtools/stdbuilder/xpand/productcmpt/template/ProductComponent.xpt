@@ -48,7 +48,7 @@
 		     */
 			public «method(implClassName, IRuntimeRepository(), "repository", "String", "id", "String", "kindId", "String", "versionId")» {
 		        super(repository, id, kindId, versionId);
-		        «EXPAND ProductAttribute::setDefaultValue FOREACH attributes-»
+		        «EXPAND ProductAttribute::setDefaultValue FOREACH attributesInclOverwritten-»
 			}
 			
             «IF generateGenerationAccessMethods»
@@ -66,6 +66,12 @@
 					return «changingOverTime»;
 				}
 			«ENDIF-»
+			
+			«FOREACH attributesInclOverwritten AS this-»
+				«IF generateAbstractGetter-»
+					«EXPAND ProductAttribute::abstractGetter-»
+				«ENDIF»
+			«ENDFOREACH»
 		   
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 			

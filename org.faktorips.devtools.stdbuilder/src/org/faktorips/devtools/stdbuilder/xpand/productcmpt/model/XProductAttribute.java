@@ -161,4 +161,49 @@ public class XProductAttribute extends XAttribute {
         return getAttribute().isChangingOverTime();
     }
 
+    @Override
+    public XProductAttribute getOverwrittenAttribute() {
+        return (XProductAttribute)super.getOverwrittenAttribute();
+    }
+
+    /**
+     * Checks whether the attribute is abstract or not. The attribute is abstract if its datatype is
+     * an abstract datatype.
+     */
+    public boolean isAbstract() {
+        return getDatatype().isAbstract();
+    }
+
+    public boolean isGenerateAbstractGetter() {
+        return !isGeneratePublishedInterfaces() && !isGenerateContentCode() && !isOverwrite();
+    }
+
+    public boolean isGenerateInterfaceGetter() {
+        return isGenerateContentCode() || !isOverwrite();
+    }
+
+    /**
+     * The default value is set under following circumstances:
+     * 
+     * <li>For abstract attributes we never call setDefaultValue</li> <li>If the default value is
+     * not <code>null</code> then call setDefaultValue</li> <li>If the attribute was configured in a
+     * super type we always call setDefaultValue. To get this we could check if it is not abstract
+     * and no content code is generated.</li>
+     * 
+     */
+    public boolean isCallSetDefaultValue() {
+        return !isAbstract() && (!isDefaultValueNull() || !isGenerateContentCode());
+    }
+
+    /**
+     * For abstract attributes we only generate an abstract getter but no further elements hence
+     * this method returns <code>false</code>.
+     * 
+     * If the attribute is overwriting an other attribute we only generate code if the super
+     * attribute was abstract.
+     */
+    protected boolean isGenerateContentCode() {
+        return !isAbstract() && (!isOverwrite() || getOverwrittenAttribute().isAbstract());
+    }
+
 }

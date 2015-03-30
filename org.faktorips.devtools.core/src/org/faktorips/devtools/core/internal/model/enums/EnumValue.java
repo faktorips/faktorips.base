@@ -188,7 +188,7 @@ public class EnumValue extends BaseIpsObjectPart implements IEnumValue {
             return null;
         }
         int attributeIndex = enumAttribute.getEnumType().getIndexOfEnumAttribute(enumAttribute, isEnumTypeValue());
-        if (enumAttributeValues.size() - 1 < attributeIndex) {
+        if (attributeIndex < 0 || enumAttributeValues.size() - 1 < attributeIndex) {
             return null;
         }
         return enumAttributeValues.getPart(attributeIndex);
