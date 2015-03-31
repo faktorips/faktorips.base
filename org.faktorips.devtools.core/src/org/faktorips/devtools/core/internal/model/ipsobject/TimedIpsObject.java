@@ -85,6 +85,8 @@ public abstract class TimedIpsObject extends IpsObject implements ITimedIpsObjec
             public int compare(IIpsObjectGeneration gen1, IIpsObjectGeneration gen2) {
                 if (gen1.getValidFrom() == null) {
                     return gen2.getValidFrom() == null ? 0 : -1;
+                } else if (gen2.getValidFrom() == null) {
+                    return 1;
                 }
                 return gen1.getValidFrom().after(gen2.getValidFrom()) ? 1 : -1;
             }

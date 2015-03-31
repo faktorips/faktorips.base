@@ -84,40 +84,87 @@ public class TimedIpsObjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetGenerations() {
+    public void testGetGenerations_noGens() {
         IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
         assertEquals(0, generations.length);
+    }
 
+    @Test
+    public void testGetGenerations_oneGen() {
         IIpsObjectGeneration gen1 = timedObject.newGeneration();
         gen1.setValidFrom(new GregorianCalendar(2004, 1, 1));
-        generations = timedObject.getGenerationsOrderedByValidDate();
+
+        IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
+
         assertEquals(1, generations.length);
         assertEquals(gen1, generations[0]);
+    }
 
+    @Test
+    public void testGetGenerations_twoGens() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2004, 1, 1));
         IIpsObjectGeneration gen2 = timedObject.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2005, 1, 1));
-        generations = timedObject.getGenerationsOrderedByValidDate();
+
+        IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
+
         assertEquals(2, generations.length);
         assertEquals(gen1, generations[0]);
         assertEquals(gen2, generations[1]);
+    }
 
-        // change gen2 valid from date, so that now gen2 should come first
+    @Test
+    public void testGetGenerations_twoGensReverse() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2004, 1, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
         gen2.setValidFrom(new GregorianCalendar(2003, 1, 1));
-        generations = timedObject.getGenerationsOrderedByValidDate();
+
+        IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
+
         assertEquals(2, generations.length);
         assertEquals(gen2, generations[0]);
         assertEquals(gen1, generations[1]);
+    }
 
-        // gen2 has valid from date null => is should come last
-        gen2.setValidFrom(null);
-        generations = timedObject.getGenerationsOrderedByValidDate();
+    @Test
+    public void testGetGenerations_twoGensFirstNull() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(null);
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(new GregorianCalendar(2004, 1, 1));
+
+        IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
+
         assertEquals(2, generations.length);
         assertEquals(gen1, generations[0]);
         assertEquals(gen2, generations[1]);
+    }
 
-        // now also gen1 has valid from date null
+    @Test
+    public void testGetGenerations_twoGensSecondNull() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        gen1.setValidFrom(new GregorianCalendar(2004, 1, 1));
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
+        gen2.setValidFrom(null);
+
+        IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
+
+        assertEquals(2, generations.length);
+        assertEquals(gen2, generations[0]);
+        assertEquals(gen1, generations[1]);
+    }
+
+    @Test
+    public void testGetGenerations_twoGensBothNull() {
+        IIpsObjectGeneration gen1 = timedObject.newGeneration();
+        IIpsObjectGeneration gen2 = timedObject.newGeneration();
         gen1.setValidFrom(null);
-        generations = timedObject.getGenerationsOrderedByValidDate();
+        gen2.setValidFrom(null);
+
+        IIpsObjectGeneration[] generations = timedObject.getGenerationsOrderedByValidDate();
+
         assertEquals(2, generations.length);
         assertEquals(gen1, generations[0]);
         assertEquals(gen2, generations[1]);
