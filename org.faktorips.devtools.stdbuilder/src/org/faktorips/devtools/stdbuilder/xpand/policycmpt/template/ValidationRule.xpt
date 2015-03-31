@@ -118,7 +118,7 @@
        	«Message()».Builder builder = new «Message()».Builder(msgText, «severityConstant»)
        		.code(«constantNameMessageCode»)
 	      «IF validatedAttrSpecifiedInSrc-»
-       		.invalidObjects(«Arrays()».asList(invalidObjectProperties))
+       		.invalidObjects(invalidObjectProperties)
        	  «ELSEIF validateAttributes-»
        		.invalidObjects(invalidObjectProperties)
 	      «ELSE-»
