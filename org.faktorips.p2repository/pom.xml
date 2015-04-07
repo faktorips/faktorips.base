@@ -32,7 +32,6 @@
 		<snapshotQualifier>-SNAPSHOT</snapshotQualifier>
 	</properties>
 
-
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.aggregator.sites</artifactId>
@@ -51,9 +50,10 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<dependencies>
-		<!-- dependencies to runtime, valuetypes and runtime-client to ensure it was built before this p2 repository -->
+		<!-- dependencies to runtime, valuetypes and runtime-client to ensure it
+			was built before this p2 repository -->
 		<dependency>
 			<groupId>org.faktorips</groupId>
 			<artifactId>faktorips-runtime-client</artifactId>
@@ -72,6 +72,26 @@
 	</dependencies>
 
 	<profiles>
+		<profile>
+			<id>CI</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<id>pdrone.faktor-ips_3_snapshots</id>
+					<url>http://drone.faktorzehn.de:8080/maven/faktor-ips_3_snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<configuration>
+							<skip>false</skip>
+							<repositoryId>pdrone.faktor-ips_3_snapshots</repositoryId>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>setFinalRelease</id>
 			<activation>
@@ -145,7 +165,8 @@
 										<zip update="true" destfile="${deploy.zipRuntimeAndValuetypes}">
 											<fileset dir="${project.build.directory}/repository/plugins"
 												includes="org.faktorips.runtime*.jar" />
-											<fileset dir="${project.basedir}/../org.faktorips.runtime/client/target/"
+											<fileset
+												dir="${project.basedir}/../org.faktorips.runtime/client/target/"
 												includes="faktorips-runtime-client*.jar" />
 											<fileset dir="${project.build.directory}/repository/plugins"
 												includes="org.faktorips.valuetypes*.jar" />
@@ -207,7 +228,9 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>${deploy.script.callssh}</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.buildComposites} ${deploy.basedir} ${deploy.repositoryDir}</commandlineArgs>
+									<commandlineArgs>${deploy.user}@${deploy.server}
+										${deploy.script.buildComposites} ${deploy.basedir}
+										${deploy.repositoryDir}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
@@ -226,7 +249,7 @@
 			</activation>
 			<build>
 				<plugins>
-				
+
 					<!-- Update poms for maven central upload -->
 					<plugin>
 						<groupId>com.google.code.maven-replacer-plugin</groupId>
@@ -266,7 +289,8 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>${deploy.script.maven-central}</executable>
-									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${basedir}/..</commandlineArgs>
+									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier}
+										${deploy.release} ${basedir}/..</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
