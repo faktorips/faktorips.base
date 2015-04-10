@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.EnumSet;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -19,6 +21,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -43,6 +46,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
     private String defaultValue = null;
 
     private boolean overwrites;
+
+    protected EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.VISIBLE);
 
     public Attribute(IType parent, String id) {
         super(parent, id);
@@ -109,15 +114,49 @@ public abstract class Attribute extends TypePart implements IAttribute {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+
+        // setting defaults
+        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME, AttributeProperty.VISIBLE);
+
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
+            setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
+        }
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
     }
 
+    protected void setProperty(AttributeProperty property, boolean state) {
+        if (state) {
+            properties.add(property);
+        } else {
+            properties.remove(property);
+        }
+    }
+
+    protected boolean isPropertySet(AttributeProperty property) {
+        return properties.contains(property);
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changesOverTime) {
+        boolean oldValue = isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, changesOverTime);
+        valueChanged(oldValue, changesOverTime);
+    }
+
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME,
+                "" + properties.contains(AttributeProperty.CHANGING_OVER_TIME)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$

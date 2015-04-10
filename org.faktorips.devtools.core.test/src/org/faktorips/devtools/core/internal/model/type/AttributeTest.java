@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,17 +25,18 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
+import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
-import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -52,21 +54,30 @@ import org.w3c.dom.Element;
 public class AttributeTest extends AbstractIpsPluginTest {
 
     private IIpsProject ipsProject;
-    private IType type;
-    private IAttribute attribute;
+
+    private IProductCmptType productCmptType;
+
+    private IPolicyCmptType policyCmptType;
+
+    private IAttribute productCmptTypeAttribute;
+
+    private IAttribute policyCmptTypeAttribute;
 
     @Override
     @Before
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject();
-        type = newProductCmptType(ipsProject, "Product");
-        attribute = ((IProductCmptType)type).newProductCmptTypeAttribute();
+        productCmptType = newProductCmptType(ipsProject, "Product");
+        policyCmptType = newPolicyCmptType(ipsProject, "policyCmptType");
+        policyCmptType.setProductCmptType("Product");
+        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+        policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
     }
 
     @Test
     public void testValidate_defaultNotInValueset() throws Exception {
-        IProductCmptTypeAttribute attributeWithValueSet = ((IProductCmptType)type).newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute attributeWithValueSet = productCmptType.newProductCmptTypeAttribute();
         attributeWithValueSet.setDatatype(Datatype.INTEGER.getQualifiedName());
         attributeWithValueSet.setValueSetType(ValueSetType.RANGE);
         IRangeValueSet range = (IRangeValueSet)attributeWithValueSet.getValueSet();
@@ -90,103 +101,105 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_defaultNotParsableUnknownDatatype() throws Exception {
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attribute.setDefaultValue("1");
+        productCmptTypeAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        productCmptTypeAttribute.setDefaultValue("1");
 
-        MessageList ml = attribute.validate(attribute.getIpsProject());
+        MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
 
-        attribute.setDatatype("a");
-        ml = attribute.validate(attribute.getIpsProject());
+        productCmptTypeAttribute.setDatatype("a");
+        ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_UNKNOWN_DATATYPE));
     }
 
     @Test
     public void testValidate_defaultNotParsableInvalidDatatype() throws Exception {
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        productCmptTypeAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
 
-        MessageList ml = attribute.validate(attribute.getIpsProject());
+        MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
 
-        attribute.setDatatype("abc");
-        ml = attribute.validate(attribute.getIpsProject());
+        productCmptTypeAttribute.setDatatype("abc");
+        ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_DEFAULT_NOT_PARSABLE_INVALID_DATATYPE));
     }
 
     @Test
     public void testValidate_valueNotParsable() throws Exception {
-        attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
-        attribute.setDefaultValue("1");
-        MessageList ml = attribute.validate(attribute.getIpsProject());
+        productCmptTypeAttribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        productCmptTypeAttribute.setDefaultValue("1");
+        MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
 
-        attribute.setDefaultValue("a");
-        ml = attribute.validate(attribute.getIpsProject());
+        productCmptTypeAttribute.setDefaultValue("a");
+        ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
     }
 
     @Test
     public void testValidate_invalidAttributeName() throws Exception {
-        attribute.setName("test");
-        MessageList ml = attribute.validate(attribute.getIpsProject());
+        productCmptTypeAttribute.setName("test");
+        MessageList ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
 
-        attribute.setName("a.b");
-        ml = attribute.validate(attribute.getIpsProject());
+        productCmptTypeAttribute.setName("a.b");
+        ml = productCmptTypeAttribute.validate(productCmptTypeAttribute.getIpsProject());
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_INVALID_ATTRIBUTE_NAME));
     }
 
     @Test
     public void testValidate_OverwrittenAttributeHasDifferentModifier() throws Exception {
-        attribute.setName("name");
-        attribute.setDatatype("String");
-        attribute.setModifier(Modifier.PUBLIC);
-        attribute.setOverwrite(true);
+        productCmptTypeAttribute.setName("name");
+        productCmptTypeAttribute.setDatatype("String");
+        productCmptTypeAttribute.setModifier(Modifier.PUBLIC);
+        productCmptTypeAttribute.setOverwrite(true);
 
-        MessageList ml = attribute.validate(ipsProject);
+        MessageList ml = productCmptTypeAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
 
         IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
-        type.setSupertype(supertype.getQualifiedName());
+        productCmptType.setSupertype(supertype.getQualifiedName());
         IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
         superAttr.setName("name");
         superAttr.setDatatype("String");
         superAttr.setModifier(Modifier.PUBLISHED);
 
-        ml = attribute.validate(ipsProject);
+        ml = productCmptTypeAttribute.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
 
-        attribute.setModifier(superAttr.getModifier());
-        ml = attribute.validate(ipsProject);
+        productCmptTypeAttribute.setModifier(superAttr.getModifier());
+        ml = productCmptTypeAttribute.validate(ipsProject);
         assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER));
     }
 
     @Test
     public void testSetName() {
-        testPropertyAccessReadWrite(Attribute.class, IIpsElement.PROPERTY_NAME, attribute, "newName");
+        testPropertyAccessReadWrite(Attribute.class, IIpsElement.PROPERTY_NAME, productCmptTypeAttribute, "newName");
     }
 
     @Test
     public void testSetValueDatatype() {
-        testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DATATYPE, attribute, "newDatatype");
+        testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DATATYPE, productCmptTypeAttribute,
+                "newDatatype");
     }
 
     @Test
     public void testFindValueDatatype() throws CoreException {
-        attribute.setDatatype(Datatype.BOOLEAN.getName());
-        assertEquals(Datatype.BOOLEAN, attribute.findDatatype(ipsProject));
-        attribute.setDatatype("unkown");
-        assertNull(attribute.findDatatype(ipsProject));
+        productCmptTypeAttribute.setDatatype(Datatype.BOOLEAN.getName());
+        assertEquals(Datatype.BOOLEAN, productCmptTypeAttribute.findDatatype(ipsProject));
+        productCmptTypeAttribute.setDatatype("unkown");
+        assertNull(productCmptTypeAttribute.findDatatype(ipsProject));
     }
 
     @Test
     public void testSetDefaultValue() {
-        testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DEFAULT_VALUE, attribute, "newDefault");
+        testPropertyAccessReadWrite(Attribute.class, IAttribute.PROPERTY_DEFAULT_VALUE, productCmptTypeAttribute,
+                "newDefault");
     }
 
     @Test
     public void testInitFromXml() {
-        IProductCmptTypeAttribute attr = ((IProductCmptType)type).newProductCmptTypeAttribute();
+        IProductCmptTypeAttribute attr = productCmptType.newProductCmptTypeAttribute();
         Element rootEl = getTestDocument().getDocumentElement();
 
         // product attribute
@@ -199,23 +212,23 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        attribute.setName("a1");
-        attribute.setDefaultValue("newDefault");
-        attribute.setModifier(Modifier.PUBLIC);
-        attribute.setDatatype("Date");
+        productCmptTypeAttribute.setName("a1");
+        productCmptTypeAttribute.setDefaultValue("newDefault");
+        productCmptTypeAttribute.setModifier(Modifier.PUBLIC);
+        productCmptTypeAttribute.setDatatype("Date");
 
-        Element el = attribute.toXml(newDocument());
+        Element el = productCmptTypeAttribute.toXml(newDocument());
 
-        IAttribute copy = ((IProductCmptType)type).newProductCmptTypeAttribute();
+        IAttribute copy = productCmptType.newProductCmptTypeAttribute();
         copy.initFromXml(el);
-        assertEquals(attribute.getName(), copy.getName());
-        assertEquals(attribute.getModifier(), copy.getModifier());
-        assertEquals(attribute.getDatatype(), copy.getDatatype());
-        assertEquals(attribute.getDefaultValue(), copy.getDefaultValue());
+        assertEquals(productCmptTypeAttribute.getName(), copy.getName());
+        assertEquals(productCmptTypeAttribute.getModifier(), copy.getModifier());
+        assertEquals(productCmptTypeAttribute.getDatatype(), copy.getDatatype());
+        assertEquals(productCmptTypeAttribute.getDefaultValue(), copy.getDefaultValue());
 
         // test null as default value
-        attribute.setDefaultValue(null);
-        el = attribute.toXml(newDocument());
+        productCmptTypeAttribute.setDefaultValue(null);
+        el = productCmptTypeAttribute.toXml(newDocument());
         copy.initFromXml(el);
         assertNull(copy.getDefaultValue());
     }
@@ -225,7 +238,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         MessageList list = new MessageList();
         IEnumType enumType = newEnumType(ipsProject, "EnumType");
         EnumTypeDatatypeAdapter adapter = new EnumTypeDatatypeAdapter(enumType, null);
-        ((Attribute)attribute).validateDefaultValue(StringUtils.EMPTY, adapter, list, ipsProject);
+        ((Attribute)productCmptTypeAttribute).validateDefaultValue(StringUtils.EMPTY, adapter, list, ipsProject);
 
         assertFalse(list.isEmpty());
         assertNotNull(list.getMessageByCode(IAttribute.MSGCODE_VALUE_NOT_PARSABLE));
@@ -262,6 +275,93 @@ public class AttributeTest extends AbstractIpsPluginTest {
         assertEquals(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET, messageList.getMessage(0).getCode());
         assertEquals(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET, messageList.getMessage(1)
                 .getCode());
+    }
+
+    @Test
+    public void testValidate_OverwrittenAttributeHasDifferentChangingOverTime() throws Exception {
+        productCmptTypeAttribute.setName("name");
+        productCmptTypeAttribute.setDatatype("String");
+        productCmptTypeAttribute.setChangingOverTime(false);
+        productCmptTypeAttribute.setOverwrite(true);
+
+        MessageList ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+
+        IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
+        productCmptType.setSupertype(supertype.getQualifiedName());
+        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
+        superAttr.setName("name");
+        superAttr.setDatatype("String");
+        superAttr.setChangingOverTime(true);
+
+        ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+
+        productCmptTypeAttribute.setChangingOverTime(superAttr.isChangingOverTime());
+        ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
+        productCmptType.setChangingOverTime(true);
+        productCmptTypeAttribute.setChangingOverTime(false);
+
+        MessageList ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptTypeAttribute.setName("productAttribute");
+
+        ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(true);
+        productCmptTypeAttribute.setChangingOverTime(true);
+
+        ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        productCmptTypeAttribute.setChangingOverTime(false);
+
+        ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+
+        productCmptType.setChangingOverTime(false);
+        productCmptTypeAttribute.setChangingOverTime(true);
+
+        ml = productCmptTypeAttribute.validate(ipsProject);
+        assertNotNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testChangingOverTime_productCmptTypeAttribute() {
+        productCmptType.setChangingOverTime(false);
+        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertFalse(productCmptTypeAttribute.isChangingOverTime());
+
+        productCmptType.setChangingOverTime(true);
+        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+
+        assertTrue(productCmptTypeAttribute.isChangingOverTime());
+    }
+
+    @Test
+    public void testChangingOverTime_policyCmptTypeAttribute() {
+        assertTrue(productCmptTypeAttribute.isChangingOverTime());
+
+        policyCmptTypeAttribute.setChangingOverTime(false);
+        assertFalse(policyCmptTypeAttribute.isChangingOverTime());
+
     }
 
     private List<String> list(String... values) {

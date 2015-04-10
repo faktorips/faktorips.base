@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model.productcmpttype;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -53,8 +52,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     private IValueSet valueSet;
 
-    private EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.VISIBLE);
-
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
@@ -73,8 +70,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        // setting defaults
-        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME, AttributeProperty.VISIBLE);
 
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
@@ -98,8 +93,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CHANGING_OVER_TIME,
-                "" + properties.contains(AttributeProperty.CHANGING_OVER_TIME)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
                 "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
         element.setAttribute(PROPERTY_VISIBLE, "" + properties.contains(AttributeProperty.VISIBLE)); //$NON-NLS-1$
@@ -177,30 +170,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         IValueSet oldset = valueSet;
         valueSet = source.copy(this, getNextPartId());
         valueChanged(oldset, valueSet);
-    }
-
-    private void setProperty(AttributeProperty property, boolean state) {
-        if (state) {
-            properties.add(property);
-        } else {
-            properties.remove(property);
-        }
-    }
-
-    private boolean isPropertySet(AttributeProperty property) {
-        return properties.contains(property);
-    }
-
-    @Override
-    public boolean isChangingOverTime() {
-        return isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
-    }
-
-    @Override
-    public void setChangingOverTime(boolean changesOverTime) {
-        boolean oldValue = isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
-        setProperty(AttributeProperty.CHANGING_OVER_TIME, changesOverTime);
-        valueChanged(oldValue, changesOverTime);
     }
 
     @Override

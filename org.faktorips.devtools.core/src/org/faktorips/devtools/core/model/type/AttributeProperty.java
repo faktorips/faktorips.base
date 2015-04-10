@@ -28,7 +28,6 @@ public enum AttributeProperty {
      * This property defines whether an attribute may change over time, that means in different
      * generations.
      * <p>
-     * This property is supported by {@link IProductCmptTypeAttribute} only.
      */
     CHANGING_OVER_TIME,
 

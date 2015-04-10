@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -36,6 +37,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -75,6 +77,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
             persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
         }
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, true);
     }
 
     @Override
@@ -348,6 +351,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
@@ -474,11 +478,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     public IPersistentAttributeInfo getPersistenceAttributeInfo() {
         return persistenceAttributeInfo;
-    }
-
-    @Override
-    public boolean isChangingOverTime() {
-        return true;
     }
 
     @Override
