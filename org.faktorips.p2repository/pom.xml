@@ -228,9 +228,7 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>${deploy.script.callssh}</executable>
-									<commandlineArgs>${deploy.user}@${deploy.server}
-										${deploy.script.buildComposites} ${deploy.basedir}
-										${deploy.repositoryDir}</commandlineArgs>
+									<commandlineArgs>${deploy.user}@${deploy.server} ${deploy.script.buildComposites} ${deploy.basedir} ${deploy.repositoryDir}</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
@@ -289,8 +287,7 @@
 								<phase>deploy</phase>
 								<configuration>
 									<executable>${deploy.script.maven-central}</executable>
-									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier}
-										${deploy.release} ${basedir}/..</commandlineArgs>
+									<commandlineArgs>${unqualifiedVersion}${snapshotQualifier} ${deploy.release} ${basedir}/..</commandlineArgs>
 								</configuration>
 							</execution>
 						</executions>
