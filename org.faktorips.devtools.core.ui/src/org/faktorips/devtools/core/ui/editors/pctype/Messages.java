@@ -192,6 +192,8 @@ public class Messages extends NLS {
 
     public static String AttributeEditDialog_TypeCantBeFound;
 
+    public static String AttributeEditDialog_changeOverTimeCheckbox;
+
     public static String PctEditor_title;
 
     public static String PersistentSection_labelIndexName;
