@@ -76,13 +76,6 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
             + "OverwrittenAttributeSingeMultiValueDiffers"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that an attribute overwrites another but change over time
-     * configuration differs
-     */
-    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
-            + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that an attribute overwrites another but multilingual
      * configuration differs
      */

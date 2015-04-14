@@ -324,11 +324,6 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
                             Messages.ProductCmptTypeAttribute_msgOverwritten_singleValueMultipleValuesDifference,
                             Message.ERROR, this, PROPERTY_MULTI_VALUE_ATTRIBUTE));
                 }
-                if (isChangingOverTime() != superAttr.isChangingOverTime()) {
-                    result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME,
-                            Messages.ProductCmptTypeAttribute_msgOverwritten_ChangingOverTimeAttribute_different,
-                            Message.ERROR, this, PROPERTY_CHANGING_OVER_TIME));
-                }
                 if (isMultilingual() != superAttr.isMultilingual()) {
                     result.add(Message.newError(MSGCODE_OVERWRITTEN_ATTRIBUTE_MULTILINGUAL_DIFFERS,
                             Messages.ProductCmptTypeAttribute_msgOverwritten_multilingual_different, this,

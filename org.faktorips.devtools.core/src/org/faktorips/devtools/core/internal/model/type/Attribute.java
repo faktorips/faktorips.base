@@ -192,6 +192,10 @@ public abstract class Attribute extends TypePart implements IAttribute {
                 String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
                         PROPERTY_OVERWRITES, PROPERTY_NAME }));
+            } else if (isChangingOverTime() != superAttr.isChangingOverTime()) {
+                result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME,
+                        Messages.Attribute_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
+                        PROPERTY_CHANGING_OVER_TIME));
             } else {
                 validateAgainstOverwrittenAttribute(result, superAttr);
             }

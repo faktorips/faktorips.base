@@ -192,34 +192,6 @@ public class ProductCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_OverwrittenAttributeHasDifferentChangingOverTime() throws Exception {
-        productAttribute.setName("name");
-        productAttribute.setDatatype("String");
-        productAttribute.setChangingOverTime(false);
-        productAttribute.setOverwrite(true);
-
-        MessageList ml = productAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
-
-        IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
-        productCmptType.setSupertype(supertype.getQualifiedName());
-        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
-        superAttr.setName("name");
-        superAttr.setDatatype("String");
-        superAttr.setChangingOverTime(true);
-
-        ml = productAttribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
-
-        productAttribute.setChangingOverTime(superAttr.isChangingOverTime());
-        ml = productAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
-    }
-
-    @Test
     public void testValidate_invalidValueSet() throws Exception {
         productAttribute.setName("name");
         productAttribute.setDatatype("String");

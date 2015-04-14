@@ -74,20 +74,20 @@ public interface IAttribute extends IChangingOverTimeProperty {
      * Validation message code to indicate that the attribute is marked overwriting an attribute in
      * the super type hierarchy, but there is no such attribute.
      */
-    public static final String MSGCODE_NOTHING_TO_OVERWRITE = IAttribute.MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
+    public static final String MSGCODE_NOTHING_TO_OVERWRITE = MSGCODE_PREFIX + "NothingToOverwrite"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but does has an
      * incompatible value set.
      */
-    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET = MSGCODE_PREFIX
             + "OverwrittenAttributeModifier"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but has a different
      * datatype.
      */
-    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE = IAttribute.MSGCODE_PREFIX
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_DATATYPE = MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentDatatype"; //$NON-NLS-1$
 
     /**
@@ -96,6 +96,13 @@ public interface IAttribute extends IChangingOverTimeProperty {
      */
     public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeDifferentModifier"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that an attribute overwrites another but change over time
+     * configuration differs
+     */
+    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
+            + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
 
     /**
      * Sets the attribute's name.

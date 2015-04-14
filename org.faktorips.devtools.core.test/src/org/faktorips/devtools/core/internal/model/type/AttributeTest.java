@@ -25,18 +25,17 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
-import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.XmlUtil;
@@ -57,11 +56,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     private IProductCmptType productCmptType;
 
-    private IPolicyCmptType policyCmptType;
-
     private IAttribute productCmptTypeAttribute;
-
-    private IAttribute policyCmptTypeAttribute;
 
     @Override
     @Before
@@ -69,10 +64,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
         super.setUp();
         ipsProject = newIpsProject();
         productCmptType = newProductCmptType(ipsProject, "Product");
-        policyCmptType = newPolicyCmptType(ipsProject, "policyCmptType");
-        policyCmptType.setProductCmptType("Product");
-        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
-        policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute();
+        productCmptTypeAttribute = productCmptType.newAttribute();
     }
 
     @Test
@@ -279,92 +271,43 @@ public class AttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidate_OverwrittenAttributeHasDifferentChangingOverTime() throws Exception {
-        productCmptTypeAttribute.setName("name");
-        productCmptTypeAttribute.setDatatype("String");
-        productCmptTypeAttribute.setChangingOverTime(false);
-        productCmptTypeAttribute.setOverwrite(true);
+        IAttribute attribute = productCmptType.newAttribute();
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setChangingOverTime(false);
+        attribute.setOverwrite(true);
 
-        MessageList ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
 
-        IProductCmptType supertype = newProductCmptType(ipsProject, "sup.SuperType");
+        IType supertype = newProductCmptType(ipsProject, "sup.SuperType");
         productCmptType.setSupertype(supertype.getQualifiedName());
-        IProductCmptTypeAttribute superAttr = supertype.newProductCmptTypeAttribute();
+        IAttribute superAttr = supertype.newAttribute();
         superAttr.setName("name");
         superAttr.setDatatype("String");
         superAttr.setChangingOverTime(true);
 
-        ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
+        ml = attribute.validate(ipsProject);
+        assertNotNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
 
-        productCmptTypeAttribute.setChangingOverTime(superAttr.isChangingOverTime());
-        ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(IProductCmptTypeAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
-    }
-
-    @Test
-    public void testValidateChangingOverTime_typeDoesNotAcceptChangingOverTime() throws CoreException {
-        productCmptType.setChangingOverTime(true);
-        productCmptTypeAttribute.setChangingOverTime(false);
-
-        MessageList ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
-
-        productCmptTypeAttribute.setName("productAttribute");
-
-        ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
-
-        productCmptType.setChangingOverTime(true);
-        productCmptTypeAttribute.setChangingOverTime(true);
-
-        ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
-
-        productCmptType.setChangingOverTime(false);
-        productCmptTypeAttribute.setChangingOverTime(false);
-
-        ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
-
-        productCmptType.setChangingOverTime(false);
-        productCmptTypeAttribute.setChangingOverTime(true);
-
-        ml = productCmptTypeAttribute.validate(ipsProject);
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        attribute.setChangingOverTime(superAttr.isChangingOverTime());
+        ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test
     public void testChangingOverTime_productCmptTypeAttribute() {
-        productCmptType.setChangingOverTime(false);
-        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
+        IAttribute attribute = productCmptType.newAttribute();
+        attribute.setChangingOverTime(true);
+        assertTrue(attribute.isChangingOverTime());
 
-        assertFalse(productCmptTypeAttribute.isChangingOverTime());
-
-        productCmptType.setChangingOverTime(true);
-        productCmptTypeAttribute = productCmptType.newProductCmptTypeAttribute();
-
-        assertTrue(productCmptTypeAttribute.isChangingOverTime());
-    }
-
-    @Test
-    public void testChangingOverTime_policyCmptTypeAttribute() {
-        assertTrue(productCmptTypeAttribute.isChangingOverTime());
-
-        policyCmptTypeAttribute.setChangingOverTime(false);
-        assertFalse(policyCmptTypeAttribute.isChangingOverTime());
+        attribute.setChangingOverTime(false);
+        assertFalse(attribute.isChangingOverTime());
 
     }
 
     private List<String> list(String... values) {
         return Arrays.asList(values);
     }
+
 }
