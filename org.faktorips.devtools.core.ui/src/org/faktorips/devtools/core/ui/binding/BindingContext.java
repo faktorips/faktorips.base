@@ -125,7 +125,7 @@ public class BindingContext {
         for (FieldPropertyMapping<?> mapping : copy) {
             removeMappingIfControlIsDisposed(mapping);
             try {
-                mapping.setControlValue();
+                mapping.setControlValue(true);
             } catch (Exception e) {
                 IpsPlugin.log(new IpsStatus("Error updating control for property " + mapping.getPropertyName() //$NON-NLS-1$
                         + " of object " + mapping.getObject(), e)); //$NON-NLS-1$

@@ -48,6 +48,11 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
         this.uiPlugin = uiPlugin;
     }
 
+    @Override
+    public IValueSet parse(String stringToBeparsed) {
+        return super.parse(stringToBeparsed, false);
+    }
+
     protected boolean isAllowedValueSetType(ValueSetType valueSetType) {
         return isAllowedValueSetType(valueSetType, false);
     }
@@ -86,10 +91,13 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
         ValueDatatype valueDatatype = getValueDatatype();
         if (cachedInputFormat == null || valueDatatype != cachedValueDatatype) {
             cachedInputFormat = uiPlugin.getInputFormat(valueDatatype, valueSetOwner.getIpsProject());
+            cachedInputFormat.setNullString(getNullPresentationInValueSet());
             cachedValueDatatype = valueDatatype;
         }
         return cachedInputFormat;
     }
+
+    protected abstract String getNullPresentationInValueSet();
 
     private ValueDatatype getValueDatatype() {
         try {

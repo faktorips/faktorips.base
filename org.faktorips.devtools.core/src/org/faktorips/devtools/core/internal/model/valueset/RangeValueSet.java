@@ -428,8 +428,8 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
         }
         sb.append(RANGE_VALUESET_END);
         if (isContainsNull()) {
-            sb.append(NLS.bind(Messages.RangeValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
-                    .getNullPresentation()));
+            sb.append(" (").append(NLS.bind(Messages.ValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences() //$NON-NLS-1$
+                    .getNullPresentation())).append(")"); //$NON-NLS-1$
         }
         return sb.toString();
     }

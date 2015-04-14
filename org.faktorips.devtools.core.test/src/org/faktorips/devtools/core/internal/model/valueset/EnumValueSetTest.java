@@ -26,10 +26,12 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.PrimitiveIntegerDatatype;
 import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.enums.DefaultEnumType;
 import org.faktorips.devtools.core.enums.DefaultEnumValue;
 import org.faktorips.devtools.core.internal.model.enums.EnumContent;
@@ -870,6 +872,31 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         String shortString = enumValueSet.toShortString();
 
         assertEquals("{a | b}", shortString);
+    }
+
+    @Test
+    public void testFormatList_EnumValueSet_abstract_excludingNull() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        enumValueSet.setAbstract(true);
+
+        String shortString = enumValueSet.toShortString();
+
+        String nullText = NLS.bind(Messages.ValueSet_excludingNull, IpsPlugin.getDefault().getIpsPreferences()
+                .getNullPresentation());
+        assertEquals(NLS.bind(Messages.EnumValueSet_abstract, nullText), shortString);
+    }
+
+    @Test
+    public void testFormatList_EnumValueSet_abstract_includingNull() throws Exception {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        enumValueSet.setAbstract(true);
+        enumValueSet.setContainsNull(true);
+
+        String shortString = enumValueSet.toShortString();
+
+        String nullText = NLS.bind(Messages.ValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
+                .getNullPresentation());
+        assertEquals(NLS.bind(Messages.EnumValueSet_abstract, nullText), shortString);
     }
 
 }

@@ -80,8 +80,11 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
             return rangeValueSetFormat;
         } else if (enumValueSetFormat.isResponsibleFor(stringToBeParsed)) {
             return enumValueSetFormat;
+        } else if (StringUtils.isEmpty(stringToBeParsed)) {
+            return unrestrictedValueSetFormat;
+        } else {
+            return null;
         }
-        return null;
     }
 
     private IValueSet getValueSet() {

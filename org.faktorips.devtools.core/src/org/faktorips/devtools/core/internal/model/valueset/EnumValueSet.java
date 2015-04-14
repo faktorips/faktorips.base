@@ -18,7 +18,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.EnumDatatype;
@@ -411,30 +415,32 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     @Override
     public String toShortString() {
-        ValueDatatype type = findValueDatatype(getIpsProject());
-        if (type != null && type instanceof EnumDatatype && ((EnumDatatype)type).isSupportingNames()) {
-            List<String> result = new ArrayList<String>(values.size());
-            for (String id : values) {
-                String formatedEnumText = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                        .formatValue(type, id);
-                result.add(formatedEnumText);
-            }
-            return result.toString();
+        if (isAbstract()) {
+            return toStringAbstractEnumValueSet();
+        } else {
+            final ValueDatatype type = findValueDatatype(getIpsProject());
+
+            List<String> formattedValues = Lists.transform(values, new Function<String, String>() {
+                @Override
+                public String apply(String value) {
+                    return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter().formatValue(type, value);
+                }
+            });
+            return ENUM_VALUESET_START + StringUtils.join(formattedValues, ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE)
+                    + ENUM_VALUESET_END;
         }
-        return formatList(values);
     }
 
-    private String formatList(List<String> stringValues) {
-        StringBuilder stringBuilder = new StringBuilder(ENUM_VALUESET_START);
-        for (Iterator<String> iterator = stringValues.iterator(); iterator.hasNext();) {
-            String value = iterator.next();
-            stringBuilder.append(value);
-            if (iterator.hasNext()) {
-                stringBuilder.append(ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE);
-            }
+    private String toStringAbstractEnumValueSet() {
+        String nullText;
+        if (isContainsNull()) {
+            nullText = NLS.bind(Messages.ValueSet_includingNull, IpsPlugin.getDefault().getIpsPreferences()
+                    .getNullPresentation());
+        } else {
+            nullText = NLS.bind(Messages.ValueSet_excludingNull, IpsPlugin.getDefault().getIpsPreferences()
+                    .getNullPresentation());
         }
-        stringBuilder.append(ENUM_VALUESET_END);
-        return stringBuilder.toString();
+        return NLS.bind(Messages.EnumValueSet_abstract, nullText);
     }
 
     @Override

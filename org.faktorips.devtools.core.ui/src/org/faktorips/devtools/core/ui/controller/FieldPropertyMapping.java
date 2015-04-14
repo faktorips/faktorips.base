@@ -43,6 +43,13 @@ public interface FieldPropertyMapping<T> {
     public void setControlValue();
 
     /**
+     * Updates the value in the edit field with the value from the obejct's property.
+     * 
+     * @param force Whether the update should be forced, default is <code>false</code>
+     */
+    public void setControlValue(boolean force);
+
+    /**
      * Getting the current value of the property.
      * 
      * @return The current value of the property in the object
