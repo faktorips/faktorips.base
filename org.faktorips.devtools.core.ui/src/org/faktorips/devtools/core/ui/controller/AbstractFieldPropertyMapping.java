@@ -63,14 +63,20 @@ public abstract class AbstractFieldPropertyMapping<T> implements FieldPropertyMa
     protected abstract void setPropertyValueInternal();
 
     @Override
-    public void setControlValue() {
+    public final void setControlValue() {
+        setControlValue(false);
+    }
+
+    @Override
+    public void setControlValue(boolean force) {
         try {
             if (getField().getControl().isDisposed()) {
                 return;
             }
             T propertyValue = getPropertyValue();
 
-            if (getField().isTextContentParsable() && ObjectUtils.equals(propertyValue, getField().getValue())) {
+            if (!force && getField().isTextContentParsable()
+                    && ObjectUtils.equals(propertyValue, getField().getValue())) {
                 if (getField() instanceof StringValueComboField) {
                     /*
                      * special case: if the field is a combo field the getValue method returns null

@@ -14,11 +14,13 @@ package org.faktorips.devtools.core.ui.inputformat.parse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -35,6 +37,11 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
 
     public EnumValueSetFormat(IValueSetOwner valueSetOwner, IpsUIPlugin uiPlugin) {
         super(valueSetOwner, uiPlugin);
+    }
+
+    @Override
+    protected String getNullPresentationInValueSet() {
+        return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
     }
 
     @Override
@@ -60,7 +67,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
             }
         });
 
-        return StringUtils.join(formattedValues, " " + EnumValueSet.ENUM_VALUESET_SEPARATOR + " "); //$NON-NLS-1$ //$NON-NLS-2$
+        return StringUtils.join(formattedValues, EnumValueSet.ENUM_VALUESET_SEPARATOR_WITH_WHITESPACE);
     }
 
     @Override
@@ -68,7 +75,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
         if (EnumValueSet.ENUM_VALUESET_EMPTY.equals(stringToBeparsed)) {
             return createNewEnumValueSet(new ArrayList<String>());
         }
-        String[] split = stringToBeparsed.split("\\" + EnumValueSet.ENUM_VALUESET_SEPARATOR); //$NON-NLS-1$
+        String[] split = stringToBeparsed.split(Pattern.quote(EnumValueSet.ENUM_VALUESET_SEPARATOR));
         List<String> parsedValues = parseValues(split);
         if (!isEqualContent(parsedValues)) {
             EnumValueSet enumValueSet = createNewEnumValueSet(parsedValues);
@@ -92,16 +99,45 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
 
     private List<String> parseValues(String[] split) {
         List<String> parseValues = new ArrayList<String>();
-        for (String value : split) {
-            String parsedValue = parseValue(value);
-            parseValues.add(parsedValue);
+        for (String text : split) {
+            String parsedValue = parseValue(text);
+            if (isValidValue(text, parsedValue)) {
+                parseValues.add(parsedValue);
+            }
         }
         return parseValues;
     }
 
+    /**
+     * A value is valid if the parsed value is not <code>null</code> or if the text (raw, not yet
+     * parsed value) is the null presentation.
+     * <p>
+     * It is necessary to check whether the raw input text is the null presentation because the
+     * parser also returns <code>null</code> if the value is invalid. For example: the
+     * IntegerInputFormat parses the String "abc" to <code>null</code>. But this is no valid value.
+     */
+    private boolean isValidValue(String text, String parsedValue) {
+        return parsedValue != null || getNullPresentationInValueSet().equals(text.trim());
+    }
+
     @Override
     public boolean isResponsibleFor(String resultingText) {
-        return isAllowedValueSetType(ValueSetType.ENUM);
+        return isOnlyAllowedValueSetType(ValueSetType.ENUM)
+                || (isAllowedValueSetType(ValueSetType.ENUM) && textLooksLikeEnum(resultingText));
+    }
+
+    /**
+     * If there is text, we assume it is an enum value set. If there is no text it is only
+     * considered as enum value set, if the input format can parse the empty string to a legal
+     * value. Considering {@link #getNullPresentationInValueSet()} we always use the configured null
+     * presentation. Hence only a datatype like String, where an empty String is a legal value,
+     * returns <code>true</code>. For other datatypes we assume that no entry should be parsed to
+     * <unrestricted>, hence it is no enum value set.
+     * 
+     */
+    private boolean textLooksLikeEnum(String text) {
+        String parsedValue = getInputFormat().parse(text);
+        return !text.isEmpty() || parsedValue != null;
     }
 
 }

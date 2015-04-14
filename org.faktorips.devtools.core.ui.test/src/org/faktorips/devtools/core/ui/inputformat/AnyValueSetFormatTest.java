@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -52,6 +53,12 @@ public class AnyValueSetFormatTest {
     @Mock
     private IIpsModel ipsModel;
 
+    @Mock
+    private IInputFormat<String> cachedInputFormat;
+
+    @Mock
+    private ValueDatatype datatype;
+
     private EnumValueSet enumValueSet;
 
     private AnyValueSetFormat format;
@@ -61,10 +68,10 @@ public class AnyValueSetFormatTest {
         enumValueSet = new EnumValueSet(configElement, "ID");
         when(configElement.getValueSet()).thenReturn(enumValueSet);
         when(configElement.getIpsProject()).thenReturn(ipsProject);
-        format = new AnyValueSetFormat(configElement, uiPlugin);
-        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(Arrays.asList(ValueSetType.ENUM));
+        when(configElement.findValueDatatype(ipsProject)).thenReturn(datatype);
         when(configElement.getIpsModel()).thenReturn(ipsModel);
         when(configElement.getIpsObject()).thenReturn(ipsObject);
+        when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(cachedInputFormat);
         format = new AnyValueSetFormat(configElement, uiPlugin);
     }
 
@@ -93,6 +100,13 @@ public class AnyValueSetFormatTest {
     }
 
     @Test
+    public void testParseInternalEmptyReturnUnrestrictedValueSetIfValueEmpty() throws Exception {
+        IValueSet parseInternal = format.parseInternal("");
+
+        assertTrue(parseInternal instanceof UnrestrictedValueSet);
+    }
+
+    @Test
     public void testParseInternalUnrestrictedValueSet() throws Exception {
         when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
                 Arrays.asList(ValueSetType.ENUM, ValueSetType.UNRESTRICTED));
@@ -103,4 +117,15 @@ public class AnyValueSetFormatTest {
         assertTrue(parseInternal instanceof UnrestrictedValueSet);
         assertEquals(configElement, parseInternal.getParent());
     }
+
+    @Test
+    public void testParseInternal_ReturnOriginValueSetIfValueSetFormatIsNull() throws Exception {
+        when(configElement.getAllowedValueSetTypes(ipsProject)).thenReturn(
+                Arrays.asList(ValueSetType.RANGE, ValueSetType.UNRESTRICTED));
+
+        IValueSet parseInternal = format.parseInternal("|aabc|");
+
+        assertEquals(parseInternal, enumValueSet);
+    }
+
 }

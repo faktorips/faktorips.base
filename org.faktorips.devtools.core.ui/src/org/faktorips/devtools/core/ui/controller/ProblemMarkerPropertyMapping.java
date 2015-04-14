@@ -34,7 +34,7 @@ public class ProblemMarkerPropertyMapping<T> extends FieldPropertyMappingByPrope
     }
 
     @Override
-    public void setControlValue() {
+    public void setControlValue(boolean force) {
         // do not update the control - this mapping should only show error markers
     }
 

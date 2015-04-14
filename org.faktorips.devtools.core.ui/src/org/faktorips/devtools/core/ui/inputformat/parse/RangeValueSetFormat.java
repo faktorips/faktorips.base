@@ -38,6 +38,11 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     @Override
+    protected String getNullPresentationInValueSet() {
+        return UNLIMITED_BOUND;
+    }
+
+    @Override
     public String formatInternal(IValueSet value) {
         if (value instanceof IRangeValueSet) {
             return formatRangeValueSet(value);
@@ -112,7 +117,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     protected String parseValue(String value) {
-        if (UNLIMITED_BOUND.equals(value) || StringUtils.isEmpty(value)) {
+        if (StringUtils.isEmpty(value)) {
             return null;
         } else {
             return super.parseValue(value);

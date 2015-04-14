@@ -30,6 +30,11 @@ public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
     }
 
     @Override
+    protected String getNullPresentationInValueSet() {
+        return StringUtils.EMPTY;
+    }
+
+    @Override
     protected IValueSet parseInternal(String stringToBeparsed) {
         final IValueSet valueSet = getValueSet();
         if (valueSet.isUnrestricted()) {
@@ -47,7 +52,7 @@ public class UnrestrictedValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     public boolean isResponsibleFor(String stringToBeParsed) {
-        return ((StringUtils.isEmpty(stringToBeParsed) || isUnrestrictedText(stringToBeParsed)) && isUnrestrictedAllowed())
+        return ((isUnrestrictedText(stringToBeParsed)) && isUnrestrictedAllowed())
                 || isOnlyAllowedValueSetType(ValueSetType.UNRESTRICTED);
     }
 

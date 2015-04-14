@@ -26,6 +26,8 @@ public class Messages extends NLS {
 
     public static String ValueSet_msgNullNotSupported;
 
+    public static String EnumValueSet_abstract;
+
     public static String EnumValueSet_msgValueNotParsable;
     public static String EnumValueSet_msgDuplicateValue;
     public static String EnumValueSet_msgValueNotParsableDatatypeUnknown;
@@ -34,7 +36,8 @@ public class Messages extends NLS {
     public static String Range_msgLowerboundGreaterUpperbound;
     public static String Range_msgPropertyValueNotParsable;
 
-    public static String RangeValueSet_includingNull;
+    public static String ValueSet_includingNull;
+    public static String ValueSet_excludingNull;
 
     public static String RangeValueSet_msgStepRangeMismatch;
     public static String RangeValueSet_msgStepWithLowerNull;
