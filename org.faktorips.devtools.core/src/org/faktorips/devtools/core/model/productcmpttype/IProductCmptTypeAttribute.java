@@ -126,15 +126,6 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     public void setValueSetCopy(IValueSet source);
 
-    // /**
-    // * Configures this attribute to change or be constant over time. If <code>true</code> every
-    // * {@link IProductCmptGeneration} may specify a different value for this attribute. If
-    // * <code>false</code> the value is the same for all generations.
-    // *
-    // * @param changesOverTime whether or not this attribute should change over time
-    // */
-    // public void setChangingOverTime(boolean changesOverTime);
-
     /**
      * Returns whether this attribute is a multi value attribute or not.
      * <p>

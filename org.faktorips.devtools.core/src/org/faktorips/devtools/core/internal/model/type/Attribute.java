@@ -47,7 +47,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     private boolean overwrites;
 
-    protected EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.VISIBLE);
+    protected EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
 
     public Attribute(IType parent, String id) {
         super(parent, id);
@@ -115,9 +115,6 @@ public abstract class Attribute extends TypePart implements IAttribute {
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
 
-        // setting defaults
-        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME, AttributeProperty.VISIBLE);
-
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
             setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
@@ -155,8 +152,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_CHANGING_OVER_TIME,
-                "" + properties.contains(AttributeProperty.CHANGING_OVER_TIME)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(isChangingOverTime()));
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$

@@ -12,8 +12,6 @@ package org.faktorips.devtools.core.model.type;
 
 import java.util.EnumSet;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-
 /**
  * This enum defines several properties that may be supported by an {@link IAttribute}.
  * <p>
