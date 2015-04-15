@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -17,8 +18,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
-import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -29,7 +31,6 @@ import org.junit.Test;
 
 public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
 
-    private IIpsPackageFragmentRoot root;
     private IIpsProject ipsProject;
 
     @Override
@@ -37,13 +38,12 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
         ipsProject = newIpsProject("AdapterTestProject");
-        root = newIpsPackageFragmentRoot(ipsProject, null, "root");
     }
 
     @Test
     public void testGetImageDescriptorOverwrittenAttribute() throws CoreException {
-        IProductCmptType aSuperType = newProductCmptType(root, "ASuperType");
-        IProductCmptType bNormalType = newProductCmptType(root, "BNormalType");
+        IProductCmptType aSuperType = newProductCmptType(ipsProject, "ASuperType");
+        IProductCmptType bNormalType = newProductCmptType(ipsProject, "BNormalType");
         bNormalType.setSupertype(aSuperType.getQualifiedName());
 
         IProductCmptProperty superAttribute = aSuperType.newProductCmptTypeAttribute("overwrittenAttribute");
@@ -56,17 +56,43 @@ public class AttributeWorkbenchAdapterTest extends AbstractIpsPluginTest {
 
         ImageDescriptor imageDescriptor = superAdapter.getImageDescriptor(superAttribute);
         assertNotNull(imageDescriptor);
-        assertTrue(createImageDescriptorWithOverwrittenOverlay(false).equals(imageDescriptor));
+        assertTrue(createImageDescriptorWithOverlays(false, false).equals(imageDescriptor));
 
         imageDescriptor = superAdapter.getImageDescriptor(normalAttribute);
         assertNotNull(imageDescriptor);
-        assertTrue(createImageDescriptorWithOverwrittenOverlay(true).equals(imageDescriptor));
+        assertTrue(createImageDescriptorWithOverlays(true, false).equals(imageDescriptor));
     }
 
-    private ImageDescriptor createImageDescriptorWithOverwrittenOverlay(boolean isOverride) {
+    @Test
+    public void testGetImageDescriptor_staticOverlayForStaticProductAttribute() throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductType");
+        IProductCmptTypeAttribute productCmptTypeAttribute = productCmptType
+                .newProductCmptTypeAttribute("testAttribute");
+        productCmptTypeAttribute.setChangingOverTime(false);
+
+        IWorkbenchAdapter adapter = (IWorkbenchAdapter)productCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
+        ImageDescriptor imageDescriptor = adapter.getImageDescriptor(productCmptTypeAttribute);
+        assertEquals(createImageDescriptorWithOverlays(false, true), imageDescriptor);
+    }
+
+    @Test
+    public void testGetImageDescriptor_staticOverlayForStaticPolicyAttribute() throws CoreException {
+        IPolicyCmptType policyCmptType = newPolicyCmptType(ipsProject, "TestPolicyType");
+        IPolicyCmptTypeAttribute policyCmptTypeAttribute = policyCmptType.newPolicyCmptTypeAttribute("testAttribute");
+        policyCmptTypeAttribute.setChangingOverTime(false);
+
+        IWorkbenchAdapter adapter = (IWorkbenchAdapter)policyCmptTypeAttribute.getAdapter(IWorkbenchAdapter.class);
+        ImageDescriptor imageDescriptor = adapter.getImageDescriptor(policyCmptTypeAttribute);
+        assertEquals(createImageDescriptorWithOverlays(false, true), imageDescriptor);
+    }
+
+    private ImageDescriptor createImageDescriptorWithOverlays(boolean override, boolean nonChangingOverTime) {
         String baseImage = AttributeWorkbenchAdapter.PUBLISHED_BASE_IMAGE;
         String[] overlays = new String[4];
-        if (isOverride) {
+        if (nonChangingOverTime) {
+            overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+        }
+        if (override) {
             overlays[3] = OverlayIcons.OVERRIDE_OVR;
         }
         return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseImage, overlays);
