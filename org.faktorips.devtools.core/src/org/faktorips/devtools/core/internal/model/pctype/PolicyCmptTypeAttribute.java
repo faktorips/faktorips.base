@@ -282,7 +282,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     private void validateChangingOverTimeFlag(MessageList result) {
-        if (!isProductRelevant()) {
+        if (!isProductRelevant() || !isChangeable()) {
             return;
         }
         ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);

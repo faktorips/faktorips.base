@@ -458,6 +458,19 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotChangeble() throws CoreException {
+        newProductCmptType(ipsProject, "ProductType");
+        pcType.setProductCmptType("ProductType");
+        attribute.setProductRelevant(true);
+        attribute.setAttributeType(AttributeType.CONSTANT);
+
+        MessageList ml = attribute.validate(attribute.getIpsProject());
+
+        assertNull(ml
+                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsChangingOverTimeAndAttributeIsNotProductRelevant()
             throws CoreException {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
