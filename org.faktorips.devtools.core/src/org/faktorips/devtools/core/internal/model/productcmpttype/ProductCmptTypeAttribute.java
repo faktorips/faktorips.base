@@ -55,11 +55,20 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        initDefaults();
+    }
+
+    private void initDefaults() {
         initChangingOverTimeDefault();
+        initVisibleDefault();
     }
 
     private void initChangingOverTimeDefault() {
         setProperty(AttributeProperty.CHANGING_OVER_TIME, getProductCmptType().isChangingOverTime());
+    }
+
+    private void initVisibleDefault() {
+        setProperty(AttributeProperty.VISIBLE, true);
     }
 
     @Override
@@ -70,11 +79,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-
-        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
-            String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
-            setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
-        }
+        initDefaults();
         if (element.hasAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE)) {
             String multiValueAttributeElement = element.getAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE);
             setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, Boolean.parseBoolean(multiValueAttributeElement));
@@ -93,10 +98,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
-        element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE,
-                "" + properties.contains(AttributeProperty.MULTI_VALUE_ATTRIBUTE)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_VISIBLE, "" + properties.contains(AttributeProperty.VISIBLE)); //$NON-NLS-1$
-        element.setAttribute(PROPERTY_MULTILINGUAL, "" + properties.contains(AttributeProperty.MULTILINGUAL)); //$NON-NLS-1$
+        element.setAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE, String.valueOf(isMultiValueAttribute()));
+        element.setAttribute(PROPERTY_VISIBLE, String.valueOf(isVisible()));
+        element.setAttribute(PROPERTY_MULTILINGUAL, String.valueOf(isMultilingual()));
     }
 
     @Override

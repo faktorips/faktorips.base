@@ -114,7 +114,6 @@ public abstract class Attribute extends TypePart implements IAttribute {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
             setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));

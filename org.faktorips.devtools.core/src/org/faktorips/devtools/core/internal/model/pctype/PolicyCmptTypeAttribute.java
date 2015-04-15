@@ -77,7 +77,19 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
             persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
         }
-        setProperty(AttributeProperty.CHANGING_OVER_TIME, true);
+        initChangingOverTimeDefault();
+    }
+
+    private void initChangingOverTimeDefault() {
+        try {
+            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+            if (productCmptType == null) {
+                return;
+            }
+            setProperty(AttributeProperty.CHANGING_OVER_TIME, productCmptType.isChangingOverTime());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
