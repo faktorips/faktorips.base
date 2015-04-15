@@ -224,15 +224,18 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("42EUR", attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertFalse(attribute.isOverwrite());
+        assertTrue(attribute.isChangingOverTime());
 
         attribute.initFromXml((Element)nl.item(1));
         assertEquals("2", attribute.getId());
         assertNull(attribute.getDefaultValue());
         assertNotNull(attribute.getValueSet());
         assertEquals(EnumValueSet.class, attribute.getValueSet().getClass());
+        assertFalse(attribute.isChangingOverTime());
 
         attribute.initFromXml((Element)nl.item(2));
         assertTrue(attribute.isOverwrite());
+        assertTrue(attribute.isChangingOverTime());
     }
 
     @Test
@@ -249,6 +252,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setOverwrite(false);
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setCategory("foo");
+        attribute.setChangingOverTime(false);
         RangeValueSet set = (RangeValueSet)attribute.getValueSet();
         set.setLowerBound("unten");
         set.setUpperBound("oben");
@@ -269,6 +273,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         assertEquals("oben", ((IRangeValueSet)copy.getValueSet()).getUpperBound());
         assertEquals("step", ((IRangeValueSet)copy.getValueSet()).getStep());
         assertEquals("foo", copy.getCategory());
+        assertFalse(copy.isChangingOverTime());
 
         // Nun ein Attribut mit GenericEnumvalueset testen.
         attribute.setName("age");
@@ -566,20 +571,15 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
         productCmptType.setChangingOverTime(true);
         pcType.setProductCmptType("ProductType");
+        attribute = pcType.newPolicyCmptTypeAttribute();
         attribute.setName("name");
         attribute.setProductRelevant(true);
 
-        MessageList ml = attribute.validate(attribute.getIpsProject());
-
-        assertNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        assertTrue(attribute.isChangingOverTime());
 
         productCmptType.setChangingOverTime(false);
-
-        ml = attribute.validate(attribute.getIpsProject());
-
-        assertNotNull(ml
-                .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+        attribute = pcType.newPolicyCmptTypeAttribute();
+        assertFalse(attribute.isChangingOverTime());
     }
 
     @Test

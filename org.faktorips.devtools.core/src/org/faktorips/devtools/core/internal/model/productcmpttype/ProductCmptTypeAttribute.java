@@ -55,19 +55,10 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     public ProductCmptTypeAttribute(IProductCmptType parent, String id) {
         super(parent, id);
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
-        initDefaults();
+        initPropertyDefaultVisible();
     }
 
-    private void initDefaults() {
-        initChangingOverTimeDefault();
-        initVisibleDefault();
-    }
-
-    private void initChangingOverTimeDefault() {
-        setProperty(AttributeProperty.CHANGING_OVER_TIME, getProductCmptType().isChangingOverTime());
-    }
-
-    private void initVisibleDefault() {
+    private void initPropertyDefaultVisible() {
         setProperty(AttributeProperty.VISIBLE, true);
     }
 
@@ -79,7 +70,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        initDefaults();
+        initPropertyDefaultVisible();
         if (element.hasAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE)) {
             String multiValueAttributeElement = element.getAttribute(PROPERTY_MULTI_VALUE_ATTRIBUTE);
             setProperty(AttributeProperty.MULTI_VALUE_ATTRIBUTE, Boolean.parseBoolean(multiValueAttributeElement));
@@ -92,7 +83,11 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
             String multiLanguageAttribute = element.getAttribute(PROPERTY_MULTILINGUAL);
             setProperty(AttributeProperty.MULTILINGUAL, Boolean.parseBoolean(multiLanguageAttribute));
         }
+    }
 
+    @Override
+    protected void initPropertyDefaultChangingOverTime() {
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, getProductCmptType().isChangingOverTime());
     }
 
     @Override

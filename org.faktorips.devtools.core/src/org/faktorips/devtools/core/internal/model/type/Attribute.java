@@ -47,11 +47,12 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     private boolean overwrites;
 
-    protected EnumSet<AttributeProperty> properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
+    private final EnumSet<AttributeProperty> properties = EnumSet.noneOf(AttributeProperty.class);
 
     public Attribute(IType parent, String id) {
         super(parent, id);
         name = ""; //$NON-NLS-1$
+        initPropertyDefaultChangingOverTime();
     }
 
     @Override
@@ -114,6 +115,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        initPropertyDefaultChangingOverTime();
         if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
             String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
             setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
@@ -123,6 +125,8 @@ public abstract class Attribute extends TypePart implements IAttribute {
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
     }
+
+    protected abstract void initPropertyDefaultChangingOverTime();
 
     protected void setProperty(AttributeProperty property, boolean state) {
         if (state) {

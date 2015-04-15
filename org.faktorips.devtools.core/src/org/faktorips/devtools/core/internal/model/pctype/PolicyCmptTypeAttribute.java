@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.internal.model.pctype;
 
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -76,19 +75,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
         if (pcType.getIpsProject().isPersistenceSupportEnabled()) {
             persistenceAttributeInfo = newPart(PersistentAttributeInfo.class);
-        }
-        initChangingOverTimeDefault();
-    }
-
-    private void initChangingOverTimeDefault() {
-        try {
-            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
-            if (productCmptType == null) {
-                return;
-            }
-            setProperty(AttributeProperty.CHANGING_OVER_TIME, productCmptType.isChangingOverTime());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
     }
 
@@ -363,10 +349,20 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
-        properties = EnumSet.of(AttributeProperty.CHANGING_OVER_TIME);
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+    }
+
+    @Override
+    protected void initPropertyDefaultChangingOverTime() {
+        try {
+            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+            boolean changingOverTime = productCmptType == null ? true : productCmptType.isChangingOverTime();
+            setProperty(AttributeProperty.CHANGING_OVER_TIME, changingOverTime);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
