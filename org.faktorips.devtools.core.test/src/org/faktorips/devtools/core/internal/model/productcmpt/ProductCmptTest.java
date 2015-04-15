@@ -52,6 +52,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
+import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
@@ -91,7 +92,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     private IPolicyCmptType policyCmptType;
     private IProductCmptTypeAttribute attr1;
     private IProductCmptTypeAttribute attr2;
-    private IProductCmptType type;
+    private IProductCmptType productCmptType;
 
     @Override
     @Before
@@ -103,23 +104,24 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         srcFile = pack.createIpsFile(IpsObjectType.PRODUCT_CMPT, "TestProduct", true, null);
         productCmpt = (ProductCmpt)srcFile.getIpsObject();
 
-        type = newProductCmptType(ipsProject, "ProdType");
+        productCmptType = newProductCmptType(ipsProject, "ProdType");
         policyCmptType = newPolicyCmptType(ipsProject, "PolType");
-        attr1 = new ProductCmptTypeAttribute(type, "IDAttr1");
+        policyCmptType.setProductCmptType("ProdType");
+        attr1 = new ProductCmptTypeAttribute(productCmptType, "IDAttr1");
         attr1.setName("TypeAttr1");
-        attr2 = new ProductCmptTypeAttribute(type, "IDAttr2");
+        attr2 = new ProductCmptTypeAttribute(productCmptType, "IDAttr2");
         attr2.setName("TypeAttr2");
     }
 
     @Test
     public void testGetChildrenThis_generationsAreAllowed() {
-        productCmpt.setProductCmptType(type.getQualifiedName());
+        productCmpt.setProductCmptType(productCmptType.getQualifiedName());
 
         IPropertyValue property1 = productCmpt.newPropertyValue(attr1);
         IPropertyValue property2 = productCmpt.newPropertyValue(attr2);
 
-        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
-        association.setTarget(type.getQualifiedName());
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setTarget(productCmptType.getQualifiedName());
         association.setTargetRoleSingular("association");
 
         IProductCmptLink link = productCmpt.newLink("association");
@@ -137,8 +139,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetChildrenThis_generationsAreNotAllowed() {
-        type.setChangingOverTime(false);
-        productCmpt.setProductCmptType(type.getQualifiedName());
+        productCmptType.setChangingOverTime(false);
+        productCmpt.setProductCmptType(productCmptType.getQualifiedName());
 
         IIpsObjectGeneration generation = productCmpt.newGeneration();
 
@@ -148,11 +150,11 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testDependsOn() throws Exception {
-        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
         association.setTargetRoleSingular("testAsso");
-        association.setTarget(type.getQualifiedName());
-        ProductCmpt targetProductCmpt = newProductCmpt(type, "referenced");
+        association.setTarget(productCmptType.getQualifiedName());
+        ProductCmpt targetProductCmpt = newProductCmpt(productCmptType, "referenced");
         IProductCmptLink link = productCmpt.newLink(association);
         link.setTarget(targetProductCmpt.getQualifiedName());
 
@@ -309,19 +311,19 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     // Suppressed "unused" warning for improved readability
     @SuppressWarnings("unused")
     public void testFindPropertyValues() throws CoreException {
-        IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
 
         // Create some properties on the product component
-        IProductCmptTypeAttribute productAttribute1 = type.newProductCmptTypeAttribute("productAttribute1");
-        IProductCmptTypeAttribute productAttribute2 = type.newProductCmptTypeAttribute("productAttribute2");
-        IProductCmptTypeAttribute productAttribute3 = type.newProductCmptTypeAttribute("productAttribute3");
+        IProductCmptTypeAttribute productAttribute1 = productCmptType.newProductCmptTypeAttribute("productAttribute1");
+        IProductCmptTypeAttribute productAttribute2 = productCmptType.newProductCmptTypeAttribute("productAttribute2");
+        IProductCmptTypeAttribute productAttribute3 = productCmptType.newProductCmptTypeAttribute("productAttribute3");
 
         // Create some properties on the generation
-        IProductCmptTypeAttribute genAttribute1 = type.newProductCmptTypeAttribute("g1");
-        IProductCmptTypeAttribute genAttribute2 = type.newProductCmptTypeAttribute("g2");
+        IProductCmptTypeAttribute genAttribute1 = productCmptType.newProductCmptTypeAttribute("g1");
+        IProductCmptTypeAttribute genAttribute2 = productCmptType.newProductCmptTypeAttribute("g2");
 
         // Create a category and assign some properties
-        IProductCmptCategory category = type.newCategory("myCategory");
+        IProductCmptCategory category = productCmptType.newCategory("myCategory");
         productAttribute1.setCategory(category.getName());
         productAttribute3.setCategory(category.getName());
         genAttribute2.setCategory(category.getName());
@@ -383,13 +385,43 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      * should be returned.
      */
     @Test
-    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDate() throws CoreException {
-        IProductCmptCategory category = type.newCategory("myCategory");
-        IProductCmptTypeAttribute productAttribute = type.newProductCmptTypeAttribute("productAttribute");
+    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDate_ForProductAttribute()
+            throws CoreException {
+        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        IProductCmptTypeAttribute productAttribute = productCmptType.newProductCmptTypeAttribute("productAttribute");
         productAttribute.setCategory(category.getName());
 
-        IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
         IPropertyValue productValue = productCmpt.newPropertyValue(productAttribute);
+
+        List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(category,
+                new GregorianCalendar(2070, 1, 1), ipsProject);
+        assertEquals(productValue, propertyValues.get(0));
+        assertEquals(1, propertyValues.size());
+    }
+
+    /**
+     * 
+     * <strong>Scenario:</strong><br>
+     * The {@link IPropertyValue property values} are requested but no
+     * {@link IProductCmptGeneration} exists for the indicated effective date.
+     * <p>
+     * <strong>Expected Outcome:</strong><br>
+     * Only the {@link IPropertyValue property values} belonging to the {@link IProductCmpt} itself
+     * should be returned.
+     */
+    @Test
+    public void testFindPropertyValues_NoGenerationWithTheIndicatedEffectiveDateForPolicyAttribute()
+            throws CoreException {
+        IProductCmptCategory category = productCmptType.newCategory("myCategory");
+        IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
+        policyAttribute.setProductRelevant(true);
+        policyAttribute.setAttributeType(AttributeType.CHANGEABLE);
+        policyAttribute.setCategory(category.getName());
+        productCmptType.setPolicyCmptType("PolType");
+
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
+        IPropertyValue productValue = productCmpt.newPropertyValue(policyAttribute);
 
         List<IPropertyValue> propertyValues = productCmpt.findPropertyValues(category,
                 new GregorianCalendar(2070, 1, 1), ipsProject);
@@ -408,15 +440,15 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindPropertyValues_NoCategoryGiven() throws CoreException {
-        IProductCmptCategory category1 = type.newCategory("category1");
-        IProductCmptCategory category2 = type.newCategory("category2");
+        IProductCmptCategory category1 = productCmptType.newCategory("category1");
+        IProductCmptCategory category2 = productCmptType.newCategory("category2");
 
-        IProductCmptTypeAttribute productAttribute1 = type.newProductCmptTypeAttribute("productAttribute1");
+        IProductCmptTypeAttribute productAttribute1 = productCmptType.newProductCmptTypeAttribute("productAttribute1");
         productAttribute1.setCategory(category1.getName());
-        IProductCmptTypeAttribute productAttribute2 = type.newProductCmptTypeAttribute("productAttribute2");
+        IProductCmptTypeAttribute productAttribute2 = productCmptType.newProductCmptTypeAttribute("productAttribute2");
         productAttribute2.setCategory(category2.getName());
 
-        IProductCmpt productCmpt = newProductCmpt(type, "MyProduct");
+        IProductCmpt productCmpt = newProductCmpt(productCmptType, "MyProduct");
         GregorianCalendar validFrom = createValidFromDate(1);
         IProductCmptGeneration generation = (IProductCmptGeneration)productCmpt.newGeneration(validFrom);
         IPropertyValue productValue1 = generation.newPropertyValue(productAttribute1);
@@ -873,7 +905,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
-        productCmpt.newPropertyValue(new ProductCmptTypeMethod(type, "BaseMethod"));
+        productCmpt.newPropertyValue(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));
         assertEquals(2,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
@@ -948,7 +980,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsContainerForChangingAssociation() {
-        IProductCmptTypeAssociation changingAssoc = type.newProductCmptTypeAssociation();
+        IProductCmptTypeAssociation changingAssoc = productCmptType.newProductCmptTypeAssociation();
         changingAssoc.setChangingOverTime(true);
 
         assertFalse(productCmpt.isContainerFor(changingAssoc));
@@ -956,7 +988,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsContainerForStaticAssociation() {
-        IProductCmptTypeAssociation staticAssoc = type.newProductCmptTypeAssociation();
+        IProductCmptTypeAssociation staticAssoc = productCmptType.newProductCmptTypeAssociation();
         staticAssoc.setChangingOverTime(false);
 
         assertTrue(productCmpt.isContainerFor(staticAssoc));
