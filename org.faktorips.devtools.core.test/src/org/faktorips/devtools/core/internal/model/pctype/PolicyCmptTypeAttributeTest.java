@@ -435,6 +435,37 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitChangingOverTimeDefault_Attribute_ChangingOverTimeSettingIsUnchanged_IfProductCmptType_IsNull() {
+        IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
+
+        assertTrue(attribute.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitChangingOverTimeDefault_Attribute_isChangingOverTime_IfProductCmptType_IsChangingOverTime()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(true);
+        pcType.setProductCmptType("ProductType");
+
+        IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
+
+        assertTrue(attribute.isChangingOverTime());
+    }
+
+    @Test
+    public void testInitChangingOverTimeDefault_Attribute_isNotChangingOverTime_IfProductCmptType_IsNotChangingOverTime()
+            throws CoreException {
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(false);
+        pcType.setProductCmptType("ProductType");
+
+        IPolicyCmptTypeAttribute attribute = pcType.newPolicyCmptTypeAttribute();
+
+        assertFalse(attribute.isChangingOverTime());
+    }
+
+    @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfProductCmptTypeIsNull() throws CoreException {
         attribute.setProductRelevant(true);
         attribute.setName("attributeName");
