@@ -182,6 +182,10 @@ public abstract class XAttribute extends AbstractGeneratorModelNode {
         }
     }
 
+    public boolean isChangingOverTime() {
+        return getAttribute().isChangingOverTime();
+    }
+
     public String getReferenceOrSafeCopyIfNecessary(String memberVarName) {
         JavaCodeFragment fragment = getDatatypeHelper().referenceOrSafeCopyIfNeccessary(memberVarName);
         addImport(fragment.getImportDeclaration());

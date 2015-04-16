@@ -35,6 +35,8 @@
 		 
 			«EXPAND ProductAttribute::memberField FOREACH attributes-»
 			
+			«EXPAND DefaultAndAllowedValues::defaultAndAllowedValuesFields FOREACH configuredAttributes-»
+			
 			«EXPAND ProductAssociation::field FOREACH associations-»
 			
 			«EXPAND TableUsages::propertyField FOREACH tables-»
@@ -75,6 +77,8 @@
 		   
 			«EXPAND ProductAttribute::getterSetter FOREACH attributes»
 			
+			«EXPAND DefaultAndAllowedValues::getter FOREACH configuredAttributes-»
+			
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 			
 			«EXPAND TableUsages::getterAndSetter FOREACH tables»
@@ -100,9 +104,11 @@
 	    	protected void «doInitPropertiesFromXml(Map("String", Element()) + " configMap")» {
 	        	super.«doInitPropertiesFromXml("configMap")»;
 	        	«EXPAND ProductAttribute::initFromXmlMethodCall FOREACH attributes-»
+	        	«EXPAND DefaultAndAllowedValues::initFromXmlMethodCall FOREACH configuredAttributes-»
 	    	}
 
         	«EXPAND ProductAttribute::initFromXmlMethod FOREACH attributes-»
+        	«EXPAND DefaultAndAllowedValues::initFromXmlMethod FOREACH configuredAttributes-»
 		    
 			«IF containsNotDerivedOrConstrainingAssociations-»
 			    /**

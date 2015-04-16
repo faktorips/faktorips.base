@@ -147,16 +147,13 @@ public abstract class XProductClass extends XType {
     }
 
     /**
-     * Returns the list of configured policy attributes. With the parameter you could specify
-     * whether you want the attributes that change over time or attributes not changing over time.
-     * <p>
-     * This method needs to be final because it may be called in constructor
+     * Returns the list of configured policy attributes.
      * 
-     * @return the list of policy attributes configured by this product component.
+     * @return the list of policy attributes configured by this product class.
      */
-    protected Set<XPolicyAttribute> getConfiguredAttributesInternal() {
+    Set<XPolicyAttribute> getConfiguredAttributesInternal() {
         Set<XPolicyAttribute> resultingAttributes = new LinkedHashSet<XPolicyAttribute>();
-        if (isConfigurationForPolicyCmptType() && isChangeOverTimeClass()) {
+        if (isConfigurationForPolicyCmptType()) {
             XPolicyCmptClass policyCmptClass = getPolicyCmptClass();
             if (!policyCmptClass.isConfiguredBy(getType().getQualifiedName())) {
                 return resultingAttributes;
@@ -169,10 +166,8 @@ public abstract class XProductClass extends XType {
                     }
                 }
             }
-            return resultingAttributes;
-        } else {
-            return resultingAttributes;
         }
+        return resultingAttributes;
     }
 
     @Override

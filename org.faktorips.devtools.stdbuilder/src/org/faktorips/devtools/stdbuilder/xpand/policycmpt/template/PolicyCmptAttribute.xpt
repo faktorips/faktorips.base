@@ -129,7 +129,7 @@
 		«IF genInterface()-»;«ELSE-»
 		{
 			«IF productRelevant-»
-				return «getProductCmptGeneration(published)».«methodNameGetAllowedValuesFor»(context);
+				return «getPropertyValueContainer(published)».«methodNameGetAllowedValuesFor»(context);
 			«ELSE-»
 				return «IF overwrite»«typeName».«ENDIF»«constantNameValueSet»;
 			«ENDIF-»
@@ -140,7 +140,7 @@
 
 «DEFINE initConfigurableAttribute FOR XPolicyAttribute-»
 	«IF generateInitWithProductData-»
-		«methodNameSetterInternalIfGenerateChangeSupport»(«getProductCmptGeneration(published)».«methodNameGetDefaultValue»());
+		«methodNameSetterInternalIfGenerateChangeSupport»(«getPropertyValueContainer(published)».«methodNameGetDefaultValue»());
     «ENDIF-»
 «ENDDEFINE»
 

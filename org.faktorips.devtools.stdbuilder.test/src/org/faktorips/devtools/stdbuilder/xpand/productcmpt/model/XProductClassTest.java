@@ -263,7 +263,7 @@ public class XProductClassTest {
     }
 
     @Test
-    public void testGetConfiguredAttributes() throws Exception {
+    public void testGetConfiguredAttributesInternal() throws Exception {
         when(xProductClass.getType()).thenReturn(type);
         doReturn(true).when(xProductClass).isChangeOverTimeClass();
         doReturn(xPolicyCmpt).when(xProductClass).getPolicyCmptClass();
@@ -280,12 +280,12 @@ public class XProductClassTest {
         when(polAttrNode1.isGenerateGetAllowedValuesForAndGetDefaultValue()).thenReturn(true);
         when(polAttrNode2.isProductRelevant()).thenReturn(true);
 
-        Set<XPolicyAttribute> associations = new LinkedHashSet<XPolicyAttribute>();
-        associations.add(polAttrNode1);
-        associations.add(polAttrNode2);
-        associations.add(polAttrNode3);
+        Set<XPolicyAttribute> attributes = new LinkedHashSet<XPolicyAttribute>();
+        attributes.add(polAttrNode1);
+        attributes.add(polAttrNode2);
+        attributes.add(polAttrNode3);
 
-        when(xPolicyCmpt.getAttributes()).thenReturn(associations);
+        when(xPolicyCmpt.getAttributes()).thenReturn(attributes);
 
         assertTrue(xProductClass.getConfiguredAttributesInternal().isEmpty());
 

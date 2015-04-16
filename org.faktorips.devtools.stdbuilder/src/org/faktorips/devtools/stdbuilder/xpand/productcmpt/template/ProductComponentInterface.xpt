@@ -41,6 +41,12 @@
 					«EXPAND ProductAttribute::getter»
 				«ENDIF-»
 		 	«ENDFOREACH-»
+		 	
+		 	«FOREACH configuredAttributes AS this-»
+				«IF published-»
+					«EXPAND DefaultAndAllowedValues::getter»
+				«ENDIF»
+			«ENDFOREACH»
 
 			«EXPAND ProductAssociation::getterSetterAdder FOREACH associations»
 

@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.model.XMethod;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.devtools.stdbuilder.xpand.productcmpt.ProductCmptGenJavaClassNameProvider;
 import org.faktorips.runtime.IProductComponentGeneration;
 import org.faktorips.runtime.internal.ProductComponentGeneration;
@@ -110,6 +111,18 @@ public class XProductCmptGenerationClass extends XProductClass {
         }
 
         return optionalMethods;
+    }
+
+    @Override
+    public Set<XPolicyAttribute> getConfiguredAttributes() {
+        Set<XPolicyAttribute> attributes = super.getConfiguredAttributes();
+        Set<XPolicyAttribute> changingOverTimeAttributes = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : attributes) {
+            if (attribute.isChangingOverTime()) {
+                changingOverTimeAttributes.add(attribute);
+            }
+        }
+        return changingOverTimeAttributes;
     }
 
 }
