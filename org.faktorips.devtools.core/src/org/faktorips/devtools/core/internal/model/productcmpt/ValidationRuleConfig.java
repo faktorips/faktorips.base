@@ -17,8 +17,6 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -74,9 +72,8 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     @Override
     public IValidationRule findValidationRule(IIpsProject ipsProject) throws CoreException {
-        IProductCmptGeneration generation = (IProductCmptGeneration)getParent();
-        IProductCmpt component = (IProductCmpt)generation.getParent();
-        IPolicyCmptType pcType = component.findPolicyCmptType(ipsProject);
+        IPropertyValueContainer propertyValueContainer = (IPropertyValueContainer)getParent();
+        IPolicyCmptType pcType = propertyValueContainer.findPolicyCmptType(ipsProject);
         if (pcType != null) {
             IValidationRule rule = pcType.findValidationRule(validationRuleName, ipsProject);
             return rule;
