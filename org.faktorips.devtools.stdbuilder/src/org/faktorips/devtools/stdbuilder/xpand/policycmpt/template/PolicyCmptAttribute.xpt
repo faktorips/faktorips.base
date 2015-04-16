@@ -71,7 +71,7 @@
 				«ELSE-»
 			        «localizedComment("COMMENT_DERIVED_ATTRIBUTE_METHOD_CALL")»
 			        «EXPAND formulaParameterDeclaration FOR formulaSignature-»
-			        return «getProductCmptGeneration(false && formulaSignature.published)».«EXPAND formulaCall FOR formulaSignature-»;			
+			        return «getPropertyValueContainer(false)».«EXPAND formulaCall FOR formulaSignature-»;			
 				«ENDIF-»
 			«ENDIF-»
 		}
