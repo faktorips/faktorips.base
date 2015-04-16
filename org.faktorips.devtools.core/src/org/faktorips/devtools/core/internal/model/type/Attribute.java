@@ -204,13 +204,13 @@ public abstract class Attribute extends TypePart implements IAttribute {
             String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
             result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
         }
+        validateNullIncompatible(result, superAttr.getValueSet());
         if (isChangingOverTimeValidationNecessary() && ((Attribute)superAttr).isChangingOverTimeValidationNecessary()
                 && hasSuperAttributeDifferentChangingOverTime(superAttr)) {
             result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME,
                     Messages.Attribute_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
                     PROPERTY_CHANGING_OVER_TIME));
         }
-        validateNullIncompatible(result, superAttr.getValueSet());
         if (!getModifier().equals(superAttr.getModifier())) {
             result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
                     Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this, PROPERTY_MODIFIER));
