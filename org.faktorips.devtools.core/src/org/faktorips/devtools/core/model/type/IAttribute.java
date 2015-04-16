@@ -184,4 +184,5 @@ public interface IAttribute extends IChangingOverTimeProperty {
      * @param changesOverTime whether or not this attribute should change over time
      */
     public void setChangingOverTime(boolean changesOverTime);
+
 }

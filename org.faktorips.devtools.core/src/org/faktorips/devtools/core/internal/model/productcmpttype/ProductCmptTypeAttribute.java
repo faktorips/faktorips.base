@@ -373,4 +373,9 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         }
     }
 
+    @Override
+    public boolean isChangingOverTimeValidationNecessary() {
+        return true;
+    }
+
 }

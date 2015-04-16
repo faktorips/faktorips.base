@@ -191,10 +191,6 @@ public abstract class Attribute extends TypePart implements IAttribute {
                 String text = NLS.bind(Messages.Attribute_msgNothingToOverwrite, getName());
                 result.add(new Message(MSGCODE_NOTHING_TO_OVERWRITE, text, Message.ERROR, this, new String[] {
                         PROPERTY_OVERWRITES, PROPERTY_NAME }));
-            } else if (isChangingOverTime() != superAttr.isChangingOverTime()) {
-                result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME,
-                        Messages.Attribute_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
-                        PROPERTY_CHANGING_OVER_TIME));
             } else {
                 validateAgainstOverwrittenAttribute(result, superAttr);
             }
@@ -208,11 +204,23 @@ public abstract class Attribute extends TypePart implements IAttribute {
             String code = MSGCODE_OVERWRITTEN_ATTRIBUTE_INCOMPAIBLE_VALUESET;
             result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
         }
+        if (isChangingOverTimeValidationNecessary() && ((Attribute)superAttr).isChangingOverTimeValidationNecessary()
+                && hasSuperAttributeDifferentChangingOverTime(superAttr)) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME,
+                    Messages.Attribute_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
+                    PROPERTY_CHANGING_OVER_TIME));
+        }
         validateNullIncompatible(result, superAttr.getValueSet());
         if (!getModifier().equals(superAttr.getModifier())) {
             result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
                     Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this, PROPERTY_MODIFIER));
         }
+    }
+
+    protected abstract boolean isChangingOverTimeValidationNecessary();
+
+    private boolean hasSuperAttributeDifferentChangingOverTime(IAttribute superAttr) {
+        return isChangingOverTime() != superAttr.isChangingOverTime();
     }
 
     protected abstract void validateOverwrittenDatatype(IAttribute superAttr, MessageList result);
