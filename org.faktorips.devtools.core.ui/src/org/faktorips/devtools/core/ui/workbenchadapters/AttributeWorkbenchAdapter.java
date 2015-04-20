@@ -14,7 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
@@ -29,23 +28,21 @@ public class AttributeWorkbenchAdapter extends IpsObjectPartWorkbenchAdapter {
     protected ImageDescriptor getImageDescriptor(IIpsObjectPart ipsObjectPart) {
         if (ipsObjectPart instanceof IAttribute) {
             IAttribute attribute = (IAttribute)ipsObjectPart;
-            String baseImage = PUBLISHED_BASE_IMAGE;
-            if (attribute.getModifier().isPublic()) {
-                baseImage = PUBLIC_BASE_IMAGE;
-            }
-            String[] overlays = new String[4];
 
+            String baseImage = attribute.getModifier().isPublished() ? PUBLISHED_BASE_IMAGE : PUBLIC_BASE_IMAGE;
+
+            String[] overlays = new String[4];
+            if (!attribute.isChangingOverTime()) {
+                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
+            }
             if (attribute instanceof IPolicyCmptTypeAttribute
                     && ((IPolicyCmptTypeAttribute)attribute).isProductRelevant()) {
                 overlays[1] = OverlayIcons.PRODUCT_OVR;
             }
-            if (attribute instanceof IProductCmptTypeAttribute
-                    && !((IProductCmptTypeAttribute)attribute).isChangingOverTime()) {
-                overlays[0] = OverlayIcons.NOT_CHANGEOVERTIME_OVR;
-            }
             if (attribute.isOverwrite()) {
                 overlays[3] = OverlayIcons.OVERRIDE_OVR;
             }
+
             return IpsUIPlugin.getImageHandling().getSharedOverlayImage(baseImage, overlays);
         }
         return getDefaultImageDescriptor();

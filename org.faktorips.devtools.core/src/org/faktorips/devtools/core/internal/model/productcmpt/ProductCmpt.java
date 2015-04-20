@@ -62,7 +62,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -463,18 +462,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IPropertyValue newPropertyValue(IProductCmptProperty property) {
-        if (isAllowedPropertyType(property)) {
-            IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
-            objectHasChanged();
-            return newPropertyValue;
-        }
-        return null;
-    }
-
-    private boolean isAllowedPropertyType(IProductCmptProperty property) {
-        return (property.getProductCmptPropertyType() == ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE)
-                || (property.getProductCmptPropertyType() == ProductCmptPropertyType.TABLE_STRUCTURE_USAGE)
-                || (property.getProductCmptPropertyType() == ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION);
+        IPropertyValue newPropertyValue = propertyValueCollection.newPropertyValue(this, property, getNextPartId());
+        objectHasChanged();
+        return newPropertyValue;
     }
 
     @Override
@@ -491,18 +481,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IProductCmptLink newLinkInternal = createAndAddNewLinkInternal(id);
             return newLinkInternal;
         }
-        if (isAllowedPropertyTagName(xmlTagName)) {
-            IIpsObjectPart newPartThis = propertyValueCollection.newPropertyValue(this, xmlTagName, id);
-            return newPartThis;
-        }
-
-        return null;
-    }
-
-    private boolean isAllowedPropertyTagName(String xmlTagName) {
-        return xmlTagName.equals(AttributeValue.TAG_NAME)
-                || xmlTagName.equals(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueXmlTagName())
-                || xmlTagName.equals(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueXmlTagName());
+        return propertyValueCollection.newPropertyValue(this, xmlTagName, id);
     }
 
     @Override

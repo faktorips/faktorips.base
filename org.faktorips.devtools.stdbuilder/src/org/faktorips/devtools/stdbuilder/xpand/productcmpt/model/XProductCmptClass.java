@@ -16,6 +16,7 @@ import java.util.Set;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.ProductComponent;
 
@@ -95,6 +96,18 @@ public class XProductCmptClass extends XProductClass {
      */
     public boolean isChangingOverTime() {
         return getType().isChangingOverTime();
+    }
+
+    @Override
+    public Set<XPolicyAttribute> getConfiguredAttributes() {
+        Set<XPolicyAttribute> attributes = super.getConfiguredAttributes();
+        Set<XPolicyAttribute> nonChangingOverTimeAttributes = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : attributes) {
+            if (!attribute.isChangingOverTime()) {
+                nonChangingOverTimeAttributes.add(attribute);
+            }
+        }
+        return nonChangingOverTimeAttributes;
     }
 
 }

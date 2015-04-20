@@ -374,12 +374,17 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (configGroup == null) {
             return;
         }
+
+        getBindingContext().clearValidationStatus();
+
         Control[] children = configGroup.getChildren();
         for (Control element : children) {
             element.dispose();
         }
+
         createConfigGroupContent();
         configGroup.layout();
+
         getBindingContext().updateUI();
     }
 
@@ -391,13 +396,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         if (attribute.isChangeable()) {
             Composite labelEditColumnComposite = getToolkit().createLabelEditColumnComposite(area);
 
-            Checkbox checkbox = getToolkit().createCheckbox(labelEditColumnComposite,
-                    Messages.AttributeEditDialog_defaultValueConfigured);
-            GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-            checkboxLayoutData.horizontalSpan = 2;
-            checkbox.setLayoutData(checkboxLayoutData);
-            getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
-            bindRefreshAllowedValueSetTypes(checkbox);
+            createProductRelevantCheckbox(labelEditColumnComposite);
+            createChangingOverTimeCheckbox(labelEditColumnComposite);
 
             getToolkit().createFormLabel(labelEditColumnComposite, Messages.AttributeEditDialog_labelCategory);
             createCategoryCombo(labelEditColumnComposite);
@@ -451,6 +451,26 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 createMethodAndOpenDialog();
             }
         });
+    }
+
+    private void createProductRelevantCheckbox(Composite parent) {
+        Checkbox checkbox = getToolkit().createCheckbox(parent, Messages.AttributeEditDialog_defaultValueConfigured);
+        GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        checkboxLayoutData.horizontalSpan = 2;
+        checkbox.setLayoutData(checkboxLayoutData);
+        getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT);
+        bindRefreshAllowedValueSetTypes(checkbox);
+    }
+
+    private void createChangingOverTimeCheckbox(Composite parent) {
+        String checkboxLabel = NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural());
+        Checkbox checkbox = getToolkit().createCheckbox(parent, checkboxLabel);
+        GridData checkboxLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+        checkboxLayoutData.horizontalSpan = 2;
+        checkbox.setLayoutData(checkboxLayoutData);
+        getBindingContext().bindContent(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
+        getBindingContext().bindEnabled(checkbox, attribute, IPolicyCmptTypeAttribute.PROPERTY_PRODUCT_RELEVANT, true);
     }
 
     private void bindRefreshAllowedValueSetTypes(Checkbox checkbox) {

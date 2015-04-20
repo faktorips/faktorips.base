@@ -14,7 +14,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -29,8 +28,6 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
  * @author Jan Ortmann
  */
 public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, IProductCmptProperty {
-
-    public static final String PROPERTY_CHANGING_OVER_TIME = "changingOverTime"; //$NON-NLS-1$
 
     public static final String PROPERTY_VISIBLE = "visible"; //$NON-NLS-1$
 
@@ -77,13 +74,6 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      */
     public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_SINGE_MULTI_VALUE_DIFFERES = IAttribute.MSGCODE_PREFIX
             + "OverwrittenAttributeSingeMultiValueDiffers"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that an attribute overwrites another but change over time
-     * configuration differs
-     */
-    public static final String MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME = IAttribute.MSGCODE_PREFIX
-            + "OverwrittenAttributeDifferentChangeOverTime"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that an attribute overwrites another but multilingual
@@ -135,15 +125,6 @@ public interface IProductCmptTypeAttribute extends IAttribute, IValueSetOwner, I
      * Creates a copy of the given value set and assigns it to this attribute.
      */
     public void setValueSetCopy(IValueSet source);
-
-    /**
-     * Configures this attribute to change or be constant over time. If <code>true</code> every
-     * {@link IProductCmptGeneration} may specify a different value for this attribute. If
-     * <code>false</code> the value is the same for all generations.
-     * 
-     * @param changesOverTime whether or not this attribute should change over time
-     */
-    public void setChangingOverTime(boolean changesOverTime);
 
     /**
      * Returns whether this attribute is a multi value attribute or not.

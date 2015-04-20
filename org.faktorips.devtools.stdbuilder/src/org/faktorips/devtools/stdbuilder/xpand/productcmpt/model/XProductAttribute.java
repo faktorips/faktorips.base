@@ -157,10 +157,6 @@ public class XProductAttribute extends XAttribute {
         return getModelNode(getAttribute(), XSingleValueOfMultiValueAttribute.class);
     }
 
-    public boolean isChangingOverTime() {
-        return getAttribute().isChangingOverTime();
-    }
-
     @Override
     public XProductAttribute getOverwrittenAttribute() {
         return (XProductAttribute)super.getOverwrittenAttribute();

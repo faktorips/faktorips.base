@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
+import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IMethod;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -267,7 +268,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     private void validateChangingOverTimeFlag(MessageList result) {
-        if (!isProductRelevant()) {
+        if (!isProductRelevant() || !isChangeable()) {
             return;
         }
         ChangingOverTimePropertyValidator propertyValidator = new ChangingOverTimePropertyValidator(this);
@@ -351,6 +352,17 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         productRelevant = Boolean.valueOf(element.getAttribute(PROPERTY_PRODUCT_RELEVANT)).booleanValue();
         attributeType = AttributeType.getAttributeType(element.getAttribute(PROPERTY_ATTRIBUTE_TYPE));
         computationMethodSignature = element.getAttribute(PROPERTY_COMPUTATION_METHOD_SIGNATURE);
+    }
+
+    @Override
+    protected void initPropertyDefaultChangingOverTime() {
+        try {
+            IProductCmptType productCmptType = findProductCmptType(getIpsProject());
+            boolean changingOverTime = productCmptType == null ? true : productCmptType.isChangingOverTime();
+            setProperty(AttributeProperty.CHANGING_OVER_TIME, changingOverTime);
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -477,11 +489,6 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     @Override
-    public boolean isChangingOverTime() {
-        return true;
-    }
-
-    @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
         return getPolicyCmptType().findProductCmptType(ipsProject);
     }
@@ -496,4 +503,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
         return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
                 && getPropertyName().equals(propertyValue.getPropertyName());
     }
+
+    @Override
+    public boolean isChangingOverTimeValidationNecessary() {
+        return isProductRelevant() && getAttributeType().equals(AttributeType.CHANGEABLE);
+    }
+
 }

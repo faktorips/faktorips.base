@@ -387,6 +387,10 @@ public class XPolicyAttribute extends XAttribute {
         return getPolicyCmptNode().getMethodNameGetProductCmptGeneration();
     }
 
+    public String getMethodNameGetProductCmpt() {
+        return getPolicyCmptNode().getMethodNameGetProductCmpt();
+    }
+
     public XPolicyCmptClass getPolicyCmptNode() {
         IPolicyCmptType polType = getIpsObjectPartContainer().getPolicyCmptType();
         XPolicyCmptClass xPolicyCmptClass = getModelNode(polType, XPolicyCmptClass.class);

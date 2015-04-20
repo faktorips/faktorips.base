@@ -141,6 +141,7 @@ public interface IPolicyCmptTypeAttribute extends IAttribute, IValueSetOwner, IP
 
     /**
      * Sets if this attribute is product relevant or not.
+     * 
      */
     public void setProductRelevant(boolean newValue);
 

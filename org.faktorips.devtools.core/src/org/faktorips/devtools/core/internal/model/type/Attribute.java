@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.type;
 
+import java.util.EnumSet;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -19,6 +21,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.type.AttributeProperty;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -44,9 +47,12 @@ public abstract class Attribute extends TypePart implements IAttribute {
 
     private boolean overwrites;
 
+    private final EnumSet<AttributeProperty> properties = EnumSet.noneOf(AttributeProperty.class);
+
     public Attribute(IType parent, String id) {
         super(parent, id);
         name = ""; //$NON-NLS-1$
+        initPropertyDefaultChangingOverTime();
     }
 
     @Override
@@ -109,15 +115,47 @@ public abstract class Attribute extends TypePart implements IAttribute {
     @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
+        initPropertyDefaultChangingOverTime();
+        if (element.hasAttribute(PROPERTY_CHANGING_OVER_TIME)) {
+            String changingOverTimeAttribute = element.getAttribute(PROPERTY_CHANGING_OVER_TIME);
+            setProperty(AttributeProperty.CHANGING_OVER_TIME, Boolean.parseBoolean(changingOverTimeAttribute));
+        }
         name = element.getAttribute(PROPERTY_NAME);
         datatype = element.getAttribute(PROPERTY_DATATYPE);
         defaultValue = ValueToXmlHelper.getValueFromElement(element, "DefaultValue"); //$NON-NLS-1$
         overwrites = Boolean.valueOf(element.getAttribute(PROPERTY_OVERWRITES)).booleanValue();
     }
 
+    protected abstract void initPropertyDefaultChangingOverTime();
+
+    protected void setProperty(AttributeProperty property, boolean state) {
+        if (state) {
+            properties.add(property);
+        } else {
+            properties.remove(property);
+        }
+    }
+
+    protected boolean isPropertySet(AttributeProperty property) {
+        return properties.contains(property);
+    }
+
+    @Override
+    public boolean isChangingOverTime() {
+        return isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
+    }
+
+    @Override
+    public void setChangingOverTime(boolean changesOverTime) {
+        boolean oldValue = isPropertySet(AttributeProperty.CHANGING_OVER_TIME);
+        setProperty(AttributeProperty.CHANGING_OVER_TIME, changesOverTime);
+        valueChanged(oldValue, changesOverTime);
+    }
+
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        element.setAttribute(PROPERTY_CHANGING_OVER_TIME, String.valueOf(isChangingOverTime()));
         element.setAttribute(PROPERTY_NAME, name);
         element.setAttribute(PROPERTY_DATATYPE, datatype);
         ValueToXmlHelper.addValueToElement(defaultValue, element, "DefaultValue"); //$NON-NLS-1$
@@ -167,10 +205,22 @@ public abstract class Attribute extends TypePart implements IAttribute {
             result.newError(code, text, getValueSet(), IEnumValueSet.PROPERTY_VALUES);
         }
         validateNullIncompatible(result, superAttr.getValueSet());
+        if (isChangingOverTimeValidationNecessary() && ((Attribute)superAttr).isChangingOverTimeValidationNecessary()
+                && hasSuperAttributeDifferentChangingOverTime(superAttr)) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME,
+                    Messages.Attribute_msgOverwritten_ChangingOverTimeAttribute_different, Message.ERROR, this,
+                    PROPERTY_CHANGING_OVER_TIME));
+        }
         if (!getModifier().equals(superAttr.getModifier())) {
             result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_MODIFIER,
                     Messages.Attribute_msg_Overwritten_modifier_different, Message.ERROR, this, PROPERTY_MODIFIER));
         }
+    }
+
+    protected abstract boolean isChangingOverTimeValidationNecessary();
+
+    private boolean hasSuperAttributeDifferentChangingOverTime(IAttribute superAttr) {
+        return isChangingOverTime() != superAttr.isChangingOverTime();
     }
 
     protected abstract void validateOverwrittenDatatype(IAttribute superAttr, MessageList result);

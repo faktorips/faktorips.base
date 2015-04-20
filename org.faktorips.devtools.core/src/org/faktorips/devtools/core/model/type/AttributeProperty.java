@@ -12,8 +12,6 @@ package org.faktorips.devtools.core.model.type;
 
 import java.util.EnumSet;
 
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-
 /**
  * This enum defines several properties that may be supported by an {@link IAttribute}.
  * <p>
@@ -28,7 +26,6 @@ public enum AttributeProperty {
      * This property defines whether an attribute may change over time, that means in different
      * generations.
      * <p>
-     * This property is supported by {@link IProductCmptTypeAttribute} only.
      */
     CHANGING_OVER_TIME,
 

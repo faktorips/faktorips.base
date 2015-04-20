@@ -77,6 +77,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         }
         createDefaultValueEditField(editFields);
         createEditFieldsForExtensionProperties();
+        addOverlaysToEditFields(editFields);
     }
 
     private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
@@ -160,6 +161,12 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         extPropControlFactory.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extPropControlFactory.bind(getBindingContext());
+    }
+
+    private void addOverlaysToEditFields(List<EditField<?>> editFields) {
+        for (EditField<?> editField : editFields) {
+            addChangingOverTimeDecorationIfRequired(editField);
+        }
     }
 
     @Override

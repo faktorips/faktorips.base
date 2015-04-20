@@ -10,22 +10,31 @@
 
 package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelCaches;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyCmptClass;
 import org.faktorips.runtime.internal.ProductComponent;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,6 +67,7 @@ public class XProductCmptClassTest {
 
     @Before
     public void initMocks() throws Exception {
+        when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);
         when(ipsProject.getJavaNamingConvention()).thenReturn(new JavaNamingConvention());
         when(productCmptType.findSupertype(ipsProject)).thenReturn(superType);
@@ -117,6 +127,35 @@ public class XProductCmptClassTest {
     public void testIsGenerateIsChangingOverTimeAccessMethod_falseIfSupertype() {
         when(productCmptType.hasSupertype()).thenReturn(true);
         assertFalse(xProductCmptClass.isGenerateIsChangingOverTimeAccessMethod());
+    }
+
+    @Test
+    public void testGetConfiguredAttributes() {
+        // setup
+        XPolicyAttribute xNonChangingAttribute = mock(XPolicyAttribute.class);
+        when(xNonChangingAttribute.isProductRelevant()).thenReturn(true);
+        when(xNonChangingAttribute.isChangingOverTime()).thenReturn(false);
+        when(xNonChangingAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue()).thenReturn(true);
+        XPolicyAttribute xChangingAttribute = mock(XPolicyAttribute.class);
+        when(xChangingAttribute.isProductRelevant()).thenReturn(true);
+        when(xChangingAttribute.isChangingOverTime()).thenReturn(true);
+        when(xChangingAttribute.isGenerateGetAllowedValuesForAndGetDefaultValue()).thenReturn(true);
+
+        XPolicyCmptClass xPolicyCmptClass = mock(XPolicyCmptClass.class);
+        when(xPolicyCmptClass.isConfiguredBy(productCmptType.getQualifiedName())).thenReturn(true);
+        when(xPolicyCmptClass.getAttributes()).thenReturn(
+                new HashSet<XPolicyAttribute>(Arrays.asList(xNonChangingAttribute, xChangingAttribute)));
+
+        XProductCmptClass xProductCmptClassSpy = spy(xProductCmptClass);
+        doReturn(xPolicyCmptClass).when(xProductCmptClassSpy).getPolicyCmptClass();
+        when(xProductCmptClassSpy.isConfigurationForPolicyCmptType()).thenReturn(true);
+
+        // execute
+        Set<XPolicyAttribute> configuredAttributes = xProductCmptClassSpy.getConfiguredAttributes();
+
+        // verify
+        assertThat(configuredAttributes, hasItem(xNonChangingAttribute));
+        assertThat(configuredAttributes, not(hasItem(xChangingAttribute)));
     }
 
 }
