@@ -506,7 +506,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public boolean isChangingOverTimeValidationNecessary() {
-        return isProductRelevant();
+        return isProductRelevant() && getAttributeType().equals(AttributeType.CHANGEABLE);
     }
 
 }

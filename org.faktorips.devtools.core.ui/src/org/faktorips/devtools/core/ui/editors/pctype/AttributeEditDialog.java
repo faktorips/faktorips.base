@@ -376,12 +376,15 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
 
         getBindingContext().clearValidationStatus();
+
         Control[] children = configGroup.getChildren();
         for (Control element : children) {
             element.dispose();
         }
+
         createConfigGroupContent();
         configGroup.layout();
+
         getBindingContext().updateUI();
     }
 
@@ -662,22 +665,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
                     IpsPlugin
-                    .getDefault()
-                    .getIpsModel()
-                    .executeModificationsWithSingleEvent(
-                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                            .getDefault()
+                            .getIpsModel()
+                            .executeModificationsWithSingleEvent(
+                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
-                                @Override
-                                protected boolean execute() throws CoreException {
-                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                    attribute.setModifier(overwrittenAttribute.getModifier());
-                                    attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
-                                    attribute.setAttributeType(overwrittenAttribute.getAttributeType());
-                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                    attribute.setCategory(overwrittenAttribute.getCategory());
-                                    return true;
-                                }
-                            });
+                                        @Override
+                                        protected boolean execute() throws CoreException {
+                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                            attribute.setModifier(overwrittenAttribute.getModifier());
+                                            attribute.setProductRelevant(overwrittenAttribute.isProductRelevant());
+                                            attribute.setAttributeType(overwrittenAttribute.getAttributeType());
+                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                            attribute.setCategory(overwrittenAttribute.getCategory());
+                                            return true;
+                                        }
+                                    });
                 }
             }
 
@@ -715,8 +718,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
         if (valueSetSpecificationControl != null) {
             valueSetSpecificationControl
-            .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
-                    : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
+                    .setEditMode(attribute.isProductRelevant() ? ValueSetControlEditMode.ALL_KIND_OF_SETS
+                            : ValueSetControlEditMode.ONLY_NONE_ABSTRACT_SETS);
             valueSetSpecificationControl.setDataChangeable(enabled);
         }
     }

@@ -495,8 +495,9 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateChangingOverTime_DoesNotReturnMessage_IfAttributeIsNotChangeble() throws CoreException {
-        newProductCmptType(ipsProject, "ProductType");
-        pcType.setProductCmptType("ProductType");
+        IProductCmptType productCmptType = newProductCmptType(ipsProject, "ProductType");
+        productCmptType.setChangingOverTime(false);
+        pcType.setProductCmptType(productCmptType.getQualifiedName());
         attribute.setProductRelevant(true);
         attribute.setAttributeType(AttributeType.CONSTANT);
 
@@ -504,6 +505,26 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
 
         assertNull(ml
                 .getMessageByCode(ChangingOverTimePropertyValidator.MSGCODE_TYPE_DOES_NOT_ACCEPT_CHANGING_OVER_TIME));
+    }
+
+    @Test
+    public void testValidateChangingOverTime_DoesNotReturnMessage_IfOverwrittenAndNotChangeble() throws CoreException {
+        IPolicyCmptType supertype = newPolicyCmptTypeWithoutProductCmptType(ipsProject, "sup.SuperType");
+        pcType.setSupertype(supertype.getQualifiedName());
+        IPolicyCmptTypeAttribute superAttr = supertype.newPolicyCmptTypeAttribute("name");
+        superAttr.setDatatype("Integer");
+        superAttr.setProductRelevant(true);
+        superAttr.setChangingOverTime(false);
+
+        attribute.setName("name");
+        attribute.setDatatype("String");
+        attribute.setOverwrite(true);
+        attribute.setAttributeType(AttributeType.CONSTANT);
+        attribute.setProductRelevant(true);
+        attribute.setChangingOverTime(true);
+
+        MessageList ml = attribute.validate(ipsProject);
+        assertNull(ml.getMessageByCode(IAttribute.MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_DIFFERENT_CHANGE_OVER_TIME));
     }
 
     @Test
