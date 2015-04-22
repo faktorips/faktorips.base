@@ -406,20 +406,42 @@ public class XPolicyCmptClass extends XType {
         return resultingSet;
     }
 
-    public Set<XPolicyAttribute> getAttributesToInitWithProductData() {
+    public Set<XPolicyAttribute> getChangingOverTimeAttributesToInitWithProductData() {
         Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
         for (XPolicyAttribute attribute : getAttributes()) {
-            if (attribute.isGenerateInitWithProductData()) {
+            if (attribute.isGenerateInitWithProductData() && attribute.isChangingOverTime()) {
                 resultingSet.add(attribute);
             }
         }
         return resultingSet;
     }
 
-    public Set<XPolicyAttribute> getAttributesToInitWithoutProductDataAndOverwritten() {
+    public Set<XPolicyAttribute> getChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten() {
         Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
         for (XPolicyAttribute attribute : getAttributes()) {
-            if (attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite()) {
+            if (attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite()
+                    && attribute.isChangingOverTime()) {
+                resultingSet.add(attribute);
+            }
+        }
+        return resultingSet;
+    }
+
+    public Set<XPolicyAttribute> getNotChangingOverTimeAttributesToInitWithProductData() {
+        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : getAttributes()) {
+            if (attribute.isGenerateInitWithProductData() && !attribute.isChangingOverTime()) {
+                resultingSet.add(attribute);
+            }
+        }
+        return resultingSet;
+    }
+
+    public Set<XPolicyAttribute> getNotChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten() {
+        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
+        for (XPolicyAttribute attribute : getAttributes()) {
+            if (attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite()
+                    && !attribute.isChangingOverTime()) {
                 resultingSet.add(attribute);
             }
         }
