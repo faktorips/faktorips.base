@@ -102,21 +102,9 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
 		    «ENDIF-»
-		     «IF configured && (!changingOverTimeAttributesToInitWithProductData.isEmpty || !changingOverTimeAttributesToInitWithoutProductDataAndOverwritten.isEmpty)-»
-				 if («methodNameGetProductCmptGeneration»() != null) {
-	               «EXPAND initializeAttributesWithProductDataAndChangingOverTime-»
-	    	          «IF hasSupertype()-»
-		                 «EXPAND initializeAttributesWithoutProductDataAndOverwrittenAndChangingOverTime-»
-	                  «ENDIF-»
-				 }
-		    «ENDIF-»
-		    «IF configured && (!notChangingOverTimeAttributesToInitWithProductData.isEmpty || !notChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten.isEmpty)-»
-				if («methodNameGetProductCmpt»() != null) {
-	               «EXPAND initializeAttributesWithProductDataAndNotChangingOverTime-»
-	    	          «IF hasSupertype()-»
-		                 «EXPAND initializeAttributesWithoutProductDataAndOverwrittenAndNotChangingOverTime-»
-	                  «ENDIF-»
-				 }
+		    «IF configured-»
+		    	«EXPAND initializeAttributes(methodNameGetProductCmptGeneration , true)-»
+		    	«EXPAND initializeAttributes(methodNameGetProductCmpt, false)-»
 		    «ENDIF-»
 		    // begin-user-code
 		    // end-user-code
@@ -146,28 +134,23 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE initializeAttributesWithProductDataAndChangingOverTime FOR XPolicyCmptClass-»
-	«FOREACH changingOverTimeAttributesToInitWithProductData AS this-»
-		«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-	«ENDFOREACH-»
-«ENDDEFINE»
-
-«DEFINE initializeAttributesWithProductDataAndNotChangingOverTime FOR XPolicyCmptClass-»
-	«FOREACH notChangingOverTimeAttributesToInitWithProductData AS this-»
-		«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-	«ENDFOREACH-»
-«ENDDEFINE»
-
-«DEFINE initializeAttributesWithoutProductDataAndOverwrittenAndChangingOverTime FOR XPolicyCmptClass-»
-   	«FOREACH changingOverTimeAttributesToInitWithoutProductDataAndOverwritten AS this-»
-   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
-   	«ENDFOREACH-»
-«ENDDEFINE»
-
-«DEFINE initializeAttributesWithoutProductDataAndOverwrittenAndNotChangingOverTime FOR XPolicyCmptClass-»
-   	«FOREACH notChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten AS this-»
-   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
-   	«ENDFOREACH-»
+«DEFINE initializeAttributes(String methodNameGetProductConfiguration, boolean changingOverTime) FOR XPolicyCmptClass-»
+	«IF isGenerateAttributeInitCode(changingOverTime)-»
+		if («methodNameGetProductConfiguration»() != null) {
+			«FOREACH getAttributesToInit(true, changingOverTime) AS attribute-»
+			«LET (XPolicyAttribute)attribute AS this-»
+				«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+			«ENDLET-»
+			«ENDFOREACH-»
+			«IF hasSupertype()-»
+			   	«FOREACH getAttributesToInit(false, changingOverTime) AS attribute-»
+					«LET (XPolicyAttribute)attribute AS this-»
+			   			«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+			   		«ENDLET-»
+			   	«ENDFOREACH-»
+			«ENDIF-»
+		}
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE constructors FOR XPolicyCmptClass-»

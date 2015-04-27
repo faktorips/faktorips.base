@@ -27,6 +27,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -244,7 +245,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetChangingOverTimeAttributesToInitWithProductData() {
+    public void testGetAttributesToInit_ChangingOverTimeWithProductData() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
@@ -261,7 +262,7 @@ public class XPolicyCmptClassTest {
         doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
-        Set<XPolicyAttribute> result = policyCmptClass.getChangingOverTimeAttributesToInitWithProductData();
+        Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(true, true);
 
         // Verify
         assertTrue(result.contains(a1));
@@ -269,7 +270,7 @@ public class XPolicyCmptClassTest {
         assertEquals(2, result.size());
     }
 
-    public void testGetNotChangingOverTimeAttributesToInitWithProductData() {
+    public void testGetAttributesToInit_NotChangingOverTimeWithProductData() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
@@ -286,7 +287,7 @@ public class XPolicyCmptClassTest {
         doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
-        Set<XPolicyAttribute> result = policyCmptClass.getNotChangingOverTimeAttributesToInitWithProductData();
+        Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(true, false);
 
         // Verify
         assertTrue(result.contains(a1));
@@ -295,7 +296,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten() {
+    public void testGetAttributesToInit_ChangingOverTimeWithoutProductDataAndOverwritten() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
@@ -314,8 +315,7 @@ public class XPolicyCmptClassTest {
         doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
-        Set<XPolicyAttribute> result = policyCmptClass
-                .getChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten();
+        Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(false, true);
 
         // Verify
         assertTrue(result.contains(a3));
@@ -323,7 +323,7 @@ public class XPolicyCmptClassTest {
     }
 
     @Test
-    public void testGetNotChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten() {
+    public void testGetAttributesToInit_NotChangingOverTimeWithoutProductDataAndOverwritten() {
         XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
 
         XPolicyAttribute a1 = mock(XPolicyAttribute.class);
@@ -342,12 +342,55 @@ public class XPolicyCmptClassTest {
         doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1, a2, a3))).when(policyCmptClass).getAttributes();
 
         // Execute
-        Set<XPolicyAttribute> result = policyCmptClass
-                .getNotChangingOverTimeAttributesToInitWithoutProductDataAndOverwritten();
+        Set<XPolicyAttribute> result = policyCmptClass.getAttributesToInit(false, false);
 
         // Verify
         assertTrue(result.contains(a3));
         assertEquals(1, result.size());
+    }
+
+    @Test
+    public void testIsGenerateAttributeInitCode_changingOverTime() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        XPolicyAttribute a1 = mock(XPolicyAttribute.class);
+        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1))).when(policyCmptClass)
+                .getAttributesToInit(true, true);
+        doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(false, true);
+
+        assertTrue(policyCmptClass.isGenerateAttributeInitCode(true));
+    }
+
+    @Test
+    public void testIsGenerateAttributeInitCode_changingOverTime2() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(true, true);
+        doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(false, true);
+
+        assertFalse(policyCmptClass.isGenerateAttributeInitCode(true));
+    }
+
+    @Test
+    public void testIsGenerateAttributeInitCode_static() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        XPolicyAttribute a1 = mock(XPolicyAttribute.class);
+        doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(true, false);
+        doReturn(new HashSet<XPolicyAttribute>(Arrays.asList(a1))).when(policyCmptClass).getAttributesToInit(false,
+                false);
+
+        assertTrue(policyCmptClass.isGenerateAttributeInitCode(false));
+    }
+
+    @Test
+    public void testIsGenerateAttributeInitCode_static2() {
+        XPolicyCmptClass policyCmptClass = createXPolicyCmptClassSpy();
+
+        doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(true, false);
+        doReturn(Collections.emptySet()).when(policyCmptClass).getAttributesToInit(false, false);
+
+        assertFalse(policyCmptClass.isGenerateAttributeInitCode(false));
     }
 
     @Test
