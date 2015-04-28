@@ -11,10 +11,16 @@
 package org.faktorips.runtime.util;
 
 import java.lang.ref.SoftReference;
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.MessageFormat;
+import java.text.ParsePosition;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import org.faktorips.values.NullObject;
 
 /**
  * A MessagesHelper is a set of strings available in different locales. A localized string can be
@@ -113,8 +119,53 @@ public class MessagesHelper {
      */
     public String getMessage(String key, Locale locale, Object... replacements) {
         String s = getMessage(key, locale);
-        MessageFormat mf = new MessageFormat(s, locale);
+        IpsMessageFormat mf = new IpsMessageFormat(s, locale);
         return mf.format(replacements);
+    }
+
+    private static class IpsMessageFormat extends Format {
+
+        /**
+         * Comment for <code>serialVersionUID</code>
+         */
+        private static final long serialVersionUID = 1L;
+
+        private final MessageFormat delegateFormat;
+
+        public IpsMessageFormat(String pattern, Locale locale) {
+            delegateFormat = new MessageFormat(pattern, locale);
+        }
+
+        @Override
+        public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+            if (obj.getClass().isArray()) {
+                return delegateFormat.format(handleNullObjects((Object[])obj), toAppendTo, pos);
+            } else {
+                return delegateFormat.format(handleNullObject(obj), toAppendTo, pos);
+            }
+        }
+
+        private Object[] handleNullObjects(Object[] arguments) {
+            Object[] result = Arrays.copyOf(arguments, arguments.length);
+            for (int i = 0; i < arguments.length; i++) {
+                result[i] = handleNullObject(arguments[i]);
+            }
+            return result;
+        }
+
+        private Object handleNullObject(Object argument) {
+            if (argument instanceof NullObject) {
+                return null;
+            } else {
+                return argument;
+            }
+        }
+
+        @Override
+        public Object parseObject(String source, ParsePosition pos) {
+            return delegateFormat.parse(source, pos);
+        }
+
     }
 
 }
