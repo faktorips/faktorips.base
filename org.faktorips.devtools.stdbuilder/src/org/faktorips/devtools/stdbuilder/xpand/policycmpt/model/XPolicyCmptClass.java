@@ -406,24 +406,47 @@ public class XPolicyCmptClass extends XType {
         return resultingSet;
     }
 
-    public Set<XPolicyAttribute> getAttributesToInitWithProductData() {
+    /**
+     * Returns whether initialization code should be generated for changing over time attributes or
+     * static attributes respectively. This is the case if there are attributes with the matching
+     * changing over time property.
+     * 
+     * @param changingOverTime the changing over time property of attributes. <code>true</code> if
+     *            attributes that change over time should be considered. <code>false</code> if
+     *            static attributes should be considered.
+     * @return <code>true</code> if initialization code is required, <code>false</code> otherwise.
+     */
+    public boolean isGenerateAttributeInitCode(boolean changingOverTime) {
+        return !getAttributesToInit(true, changingOverTime).isEmpty()
+                || !getAttributesToInit(false, changingOverTime).isEmpty();
+    }
+
+    /**
+     * Returns this policy component class' attributes matching the given properties.
+     * 
+     * @param initWithProductData <code>true</code> to consider attributes that return
+     *            <code>true</code> for {@link XPolicyAttribute#isGenerateInitWithProductData()},
+     *            <code>false</code> for all other attributes.
+     * @param changingOverTime <code>true</code> to consider attributes that change over time,
+     *            <code>false</code> for static attributes.
+     */
+    public Set<XPolicyAttribute> getAttributesToInit(boolean initWithProductData, boolean changingOverTime) {
         Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
         for (XPolicyAttribute attribute : getAttributes()) {
-            if (attribute.isGenerateInitWithProductData()) {
+            if (changingOverTime == attribute.isChangingOverTime()
+                    && matchesInitWithProductData(initWithProductData, attribute)) {
                 resultingSet.add(attribute);
             }
         }
         return resultingSet;
     }
 
-    public Set<XPolicyAttribute> getAttributesToInitWithoutProductDataAndOverwritten() {
-        Set<XPolicyAttribute> resultingSet = new LinkedHashSet<XPolicyAttribute>();
-        for (XPolicyAttribute attribute : getAttributes()) {
-            if (attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite()) {
-                resultingSet.add(attribute);
-            }
+    private boolean matchesInitWithProductData(boolean initWithProductData, XPolicyAttribute attribute) {
+        if (initWithProductData) {
+            return attribute.isGenerateInitWithProductData();
+        } else {
+            return attribute.isGenerateInitWithoutProductData() && attribute.isOverwrite();
         }
-        return resultingSet;
     }
 
     public Set<XPolicyAttribute> getAttributesForDeltaComputation() {

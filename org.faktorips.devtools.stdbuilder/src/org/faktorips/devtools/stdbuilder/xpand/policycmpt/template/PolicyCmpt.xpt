@@ -102,15 +102,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	    	«IF hasSupertype()-»
 		        super.«initialize()»;
 		    «ENDIF-»
-		    «IF configured && (!attributesToInitWithProductData.isEmpty || !attributesToInitWithoutProductDataAndOverwritten.isEmpty)-»
-				if («methodNameGetProductCmptGeneration»() == null) {
-					return;
-				}
+		    «IF configured-»
+		    	«EXPAND initializeAttributes(methodNameGetProductCmptGeneration , true)-»
+		    	«EXPAND initializeAttributes(methodNameGetProductCmpt, false)-»
 		    «ENDIF-»
-	        «EXPAND initializeAttributesWithProductData-»
-	    	«IF hasSupertype()-»
-		        «EXPAND initializeAttributesWithoutProductDataAndOverwritten-»
-	        «ENDIF-»
 		    // begin-user-code
 		    // end-user-code
 	    }
@@ -139,16 +134,23 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 	«ENDFILE»
 «ENDDEFINE»
 
-«DEFINE initializeAttributesWithProductData FOR XPolicyCmptClass-»
-	«FOREACH attributesToInitWithProductData AS this-»
-		«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
-	«ENDFOREACH-»
-«ENDDEFINE»
-
-«DEFINE initializeAttributesWithoutProductDataAndOverwritten FOR XPolicyCmptClass-»
-   	«FOREACH attributesToInitWithoutProductDataAndOverwritten AS this-»
-   		«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
-   	«ENDFOREACH-»
+«DEFINE initializeAttributes(String methodNameGetProductConfiguration, boolean changingOverTime) FOR XPolicyCmptClass-»
+	«IF isGenerateAttributeInitCode(changingOverTime)-»
+		if («methodNameGetProductConfiguration»() != null) {
+			«FOREACH getAttributesToInit(true, changingOverTime) AS attribute-»
+			«LET (XPolicyAttribute)attribute AS this-»
+				«EXPAND PolicyCmptAttribute::initConfigurableAttribute-»
+			«ENDLET-»
+			«ENDFOREACH-»
+			«IF hasSupertype()-»
+			   	«FOREACH getAttributesToInit(false, changingOverTime) AS attribute-»
+					«LET (XPolicyAttribute)attribute AS this-»
+			   			«methodNameSetterInternalIfGenerateChangeSupport»(«defaultValueCode»);
+			   		«ENDLET-»
+			   	«ENDFOREACH-»
+			«ENDIF-»
+		}
+	«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE constructors FOR XPolicyCmptClass-»
