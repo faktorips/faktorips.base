@@ -93,7 +93,7 @@ public class EnumerationControlFactory extends DefaultControlFactory {
 
     private String[] getProposals(ValueDatatype datatype, IInputFormat<String> inputFormat) {
         EnumerationProposalProvider enumerationProposalProvider = new EnumerationProposalProvider(datatype, null,
-                inputFormat, EnumerationProposalAdapter.PROPOSAL_REPLACE);
+                inputFormat);
         IContentProposal[] proposals = enumerationProposalProvider.getProposals(StringUtils.EMPTY, 0);
         String[] proposalsAsString = new String[proposals.length];
         for (int i = 0; i < proposals.length; i++) {

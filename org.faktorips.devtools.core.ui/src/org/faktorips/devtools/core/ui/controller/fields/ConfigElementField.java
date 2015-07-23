@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.AbstractProposalProvider;
 import org.faktorips.devtools.core.ui.controller.fields.enumproposal.ConfigElementProposalProvider;
 import org.faktorips.devtools.core.ui.editors.productcmpt.AnyValueSetControl;
+import org.faktorips.devtools.core.ui.editors.productcmpt.ContentProposalListener;
 import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 
@@ -53,12 +54,13 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
                 IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype,
                         getIpsProject());
                 AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
-                        valueDatatype, inputFormat, ContentProposalAdapter.PROPOSAL_INSERT);
-                new UIToolkit(null).attachContentProposalAdapter(getTextControl(), proposalProvider,
-                        ContentProposalAdapter.PROPOSAL_INSERT, null);
+                        valueDatatype, inputFormat);
+                ContentProposalAdapter contentProposalAdapter = new UIToolkit(null).attachContentProposalAdapter(
+                        getTextControl(), proposalProvider, ContentProposalAdapter.PROPOSAL_IGNORE, null);
+                ContentProposalListener contentProposalListener = new ContentProposalListener(contentProposalAdapter);
+                contentProposalAdapter.addContentProposalListener(contentProposalListener);
             } catch (CoreException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new CoreRuntimeException(e);
             }
         }
     }
