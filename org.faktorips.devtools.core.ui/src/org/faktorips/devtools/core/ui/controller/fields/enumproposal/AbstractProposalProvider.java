@@ -13,9 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
+import org.eclipse.ui.dialogs.SearchPattern;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -31,17 +31,16 @@ import org.faktorips.devtools.core.ui.internal.ContentProposal;
 public abstract class AbstractProposalProvider implements IContentProposalProvider {
 
     private final IInputFormat<String> inputFormat;
-    private IValueSetOwner valueSetOwner;
-    private ValueDatatype valueDatatype;
-    private int proposalAcceptanceStyle;
-    private IValueSource valueSource;
+    private final IValueSetOwner valueSetOwner;
+    private final ValueDatatype valueDatatype;
+    private final IValueSource valueSource;
+    private final SearchPattern searchPattern = new SearchPattern(SearchPattern.RULE_BLANK_MATCH
+            | SearchPattern.RULE_CAMELCASE_MATCH | SearchPattern.RULE_PATTERN_MATCH | SearchPattern.RULE_PREFIX_MATCH);
 
-    public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype,
-            IInputFormat<String> inputFormat, int proposalAcceptanceStyle) {
+    public AbstractProposalProvider(IValueSetOwner owner, ValueDatatype valueDatatype, IInputFormat<String> inputFormat) {
         this.valueSetOwner = owner;
         this.valueDatatype = valueDatatype;
         this.inputFormat = inputFormat;
-        this.proposalAcceptanceStyle = proposalAcceptanceStyle;
         valueSource = createValueSource(valueSetOwner, valueDatatype);
     }
 
@@ -66,10 +65,6 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         return inputFormat;
     }
 
-    public int getProposalAcceptanceStyle() {
-        return proposalAcceptanceStyle;
-    }
-
     protected String format(String value) {
         return inputFormat.format(value);
     }
@@ -85,33 +80,38 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
         return StringUtils.left(contents, position);
     }
 
+    /**
+     * This implementation uses the {@link SearchPattern} to matches the prefix (pattern) against
+     * the value.
+     * <p>
+     * To get perfect match from {@link SearchPattern} we have to special cases:
+     * <ol>
+     * <li>The prefix is trimmed before it is used as pattern. This is necessary because the
+     * {@link SearchPattern} would only try perfect match if the pattern ends with a blank.</li>
+     * <li>The value is capitalized before we try to match. This is necessary to be able to search
+     * entries by camel-case-pattern also if they start with a lower case.</li>
+     * </ol>
+     */
     private List<IContentProposal> createContentProposals(String prefix) {
+        searchPattern.setPattern(prefix.trim());
         List<IContentProposal> result = new ArrayList<IContentProposal>();
-        List<String> allowedValuesAsList = getAllowedValuesAsList();
-        for (String valueInModel : allowedValuesAsList) {
-            addContentProposalIfApplicable(result, prefix, valueInModel);
+        for (String valueInModel : getAllowedValuesAsList()) {
+            String formattedValue = format(valueInModel);
+            if (isApplicable(valueInModel, formattedValue)) {
+                ContentProposal contentProposal = createProposal(prefix, formattedValue);
+                result.add(contentProposal);
+            }
         }
         return result;
     }
 
-    private void addContentProposalIfApplicable(List<IContentProposal> result, String prefix, String valueInModel) {
-        String formattedValue = format(valueInModel);
-        if (isApplicable(prefix, valueInModel, formattedValue)) {
-            ContentProposal contentProposal = createProposal(prefix, formattedValue);
-            result.add(contentProposal);
-        }
-    }
-
     private ContentProposal createProposal(String prefix, String formattedValue) {
-        final String textToInsert = getContentForAcceptanceStyle(getProposalAcceptanceStyle(), prefix, formattedValue);
+        final String textToInsert = getContentForAcceptanceStyle(formattedValue);
         ContentProposal contentProposal = new ContentProposal(textToInsert, formattedValue, null, prefix);
         return contentProposal;
     }
 
-    private String getContentForAcceptanceStyle(int acceptanceStyle, String prefix, String formattedValue) {
-        if (acceptanceStyle == ContentProposalAdapter.PROPOSAL_INSERT) {
-            return formattedValue.substring(prefix.length());
-        }
+    private String getContentForAcceptanceStyle(String formattedValue) {
         return formattedValue;
     }
 
@@ -120,13 +120,17 @@ public abstract class AbstractProposalProvider implements IContentProposalProvid
      * formattedValues allowed in the model. The comparison of formattedValue and prefix is not case
      * sensitive.
      * 
-     * @param prefix specifies the scope of the considered user input.
      * @param valueInModel is an allowed value declared in the model.
      * @param formattedValue formatted string representation of valueInModel.
+     * 
      * @return <code>true</code> if the proposal provider can be used for formatted values.
      */
-    protected boolean isApplicable(String prefix, String valueInModel, String formattedValue) {
-        return formattedValue.toLowerCase().startsWith(prefix.toLowerCase());
+    protected boolean isApplicable(String valueInModel, String formattedValue) {
+        return match(formattedValue);
+    }
+
+    private boolean match(String value) {
+        return searchPattern.matches(StringUtils.capitalize(value));
     }
 
     /**

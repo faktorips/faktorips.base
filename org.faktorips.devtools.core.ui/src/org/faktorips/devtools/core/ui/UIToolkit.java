@@ -1067,8 +1067,9 @@ public class UIToolkit {
      *            {@link ContentProposalAdapter#PROPOSAL_INSERT}
      * @param labelProvider Specifies how the content proposals are shown to the user. May be null
      *            to simply provide {@link ContentProposal#getLabel()}
+     * @return The created {@link ContentProposalAdapter}
      */
-    public void attachContentProposalAdapter(Control control,
+    public ContentProposalAdapter attachContentProposalAdapter(Control control,
             IContentProposalProvider proposalProvider,
             int proposalAcceptanceStyle,
             ILabelProvider labelProvider) {
@@ -1106,6 +1107,7 @@ public class UIToolkit {
         controlDecoration.setImage(decoration.getImage());
         controlDecoration.setDescriptionText(decoration.getDescription());
         controlDecoration.setShowOnlyOnFocus(true);
+        return contentProposalAdapter;
     }
 
     /**

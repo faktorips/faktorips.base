@@ -80,8 +80,7 @@ public class EnumerationProposalAdapter extends ContentProposalAdapter {
             ValueDatatype valueDatatype,
             IValueSetOwner owner,
             IInputFormat<String> inputFormat) {
-        IContentProposalProvider proposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat,
-                PROPOSAL_REPLACE);
+        IContentProposalProvider proposalProvider = new EnumerationProposalProvider(valueDatatype, owner, inputFormat);
         EnumerationProposalAdapter proposalAdapter = new EnumerationProposalAdapter(text, proposalProvider, null, null);
         proposalAdapter.setProposalAcceptanceStyle(PROPOSAL_REPLACE);
         proposalAdapter.addListenerForOpenOnClick(text, button);

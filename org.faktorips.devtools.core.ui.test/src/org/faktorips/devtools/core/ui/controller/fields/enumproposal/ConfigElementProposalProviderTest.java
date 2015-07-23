@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 
-import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
@@ -83,8 +82,7 @@ public class ConfigElementProposalProviderTest {
         when(inputFormat.format("aaaaa")).thenReturn("enumA aaaaa");
         when(inputFormat.format("bbbbb")).thenReturn("enumB bbbbb");
         when(inputFormat.format("ccccc")).thenReturn("en um C ccccc");
-        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat,
-                ContentProposalAdapter.PROPOSAL_INSERT);
+        valueSetProposalProvider = new ConfigElementProposalProvider(propertyValue, enumValueDatatype, inputFormat);
     }
 
     @Test
@@ -116,7 +114,7 @@ public class ConfigElementProposalProviderTest {
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals(" aaaaa", proposals[0].getContent());
+        assertEquals("enumA aaaaa", proposals[0].getContent());
     }
 
     @Test
@@ -127,7 +125,18 @@ public class ConfigElementProposalProviderTest {
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals("C ccccc", proposals[0].getContent());
+        assertEquals("en um C ccccc", proposals[0].getContent());
+    }
+
+    @Test
+    public void testGetProposalsOneContent_withCamelCase() throws Exception {
+        setUpEnumValueSet();
+
+        IContentProposal[] proposals = valueSetProposalProvider.getProposals("EB", 2);
+
+        assertNotNull(proposals);
+        assertEquals(1, proposals.length);
+        assertEquals("enumB bbbbb", proposals[0].getContent());
     }
 
     @Test
@@ -158,7 +167,7 @@ public class ConfigElementProposalProviderTest {
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals(" bbbbb", proposals[0].getContent());
+        assertEquals("enumB bbbbb", proposals[0].getContent());
     }
 
     @Test
@@ -194,7 +203,7 @@ public class ConfigElementProposalProviderTest {
 
         assertNotNull(proposals);
         assertEquals(1, proposals.length);
-        assertEquals(" bbbbb", proposals[0].getContent());
+        assertEquals("enumB bbbbb", proposals[0].getContent());
     }
 
     @Test
@@ -210,7 +219,7 @@ public class ConfigElementProposalProviderTest {
     }
 
     @Test
-    public void testGetProposals_CaseSensitive() {
+    public void testGetProposals_CaseInSensitive() {
         enumValueSet.addValue("foobar");
         enumValueSet.addValue("fooBares");
         when(inputFormat.format("foobar")).thenReturn("foobar");
@@ -219,9 +228,11 @@ public class ConfigElementProposalProviderTest {
         IContentProposal[] proposals = valueSetProposalProvider.getProposals("foob", 4);
 
         assertNotNull(proposals);
-        assertEquals(1, proposals.length);
+        assertEquals(2, proposals.length);
         assertEquals("foobar", proposals[0].getLabel());
-        assertEquals("ar", proposals[0].getContent());
+        assertEquals("foobar", proposals[0].getContent());
+        assertEquals("fooBares", proposals[1].getLabel());
+        assertEquals("fooBares", proposals[1].getContent());
     }
 
     private void setUpEnumValueSet() {

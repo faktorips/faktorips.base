@@ -24,8 +24,8 @@ import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
 public class EnumerationProposalProvider extends AbstractProposalProvider {
 
     public EnumerationProposalProvider(ValueDatatype valueDatatype, IValueSetOwner owner,
-            IInputFormat<String> inputFormat, int proposalAcceptanceStyle) {
-        super(owner, valueDatatype, inputFormat, proposalAcceptanceStyle);
+            IInputFormat<String> inputFormat) {
+        super(owner, valueDatatype, inputFormat);
     }
 
     @Override
