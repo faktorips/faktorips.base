@@ -74,9 +74,9 @@ public class EnumTypeBuilder extends DefaultJavaSourceFileBuilder {
 
     private static final String VARNAME_PRODUCT_REPOSITORY = "productRepository";
 
-    private static final String VARNAME_MESSAGE_HELPER = "messageHelper";
+    private static final String VARNAME_MESSAGE_HELPER = "MESSAGE_HELPER";
 
-    private static final String VARNAME_ID_MAP = "idMap";
+    private static final String VARNAME_ID_MAP = "ID_MAP";
 
     private static final String VARNAME_INDEX = "index";
 

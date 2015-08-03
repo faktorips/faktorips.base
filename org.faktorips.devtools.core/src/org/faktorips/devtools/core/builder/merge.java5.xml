@@ -11,6 +11,7 @@
 	<merge:pull sourceGet="Member/getFlags" targetMarkup="^gen$" equals="Member/getName" targetPut="Member/setFlags"/>
 	<merge:pull sourceGet="Type/getSuperInterfaces" sourceTransfer="(\s*@\s*extends|\s*@\s*implements)(.*?)(?:&lt;!--|(?:\n\r?|\r\n?))" targetMarkup="^gen$" targetPut="Type/addSuperInterface"/>
 	<merge:pull sourceGet="Type/getSuperclass" targetMarkup="^gen$" targetPut="Type/setSuperclass"/>
+	<merge:pull sourceGet="Initializer/getBody" targetMarkup="^gen$" targetPut="Initializer/setBody"/>    	
 	<merge:pull sourceGet="Method/getBody" targetMarkup="^gen$" targetPut="Method/setBody"/>    	
 	<merge:pull sourceGet="Method/getReturnType" targetMarkup="^gen$" targetPut="Method/setReturnType"/>
 	<merge:pull sourceGet="Method/getExceptions" targetMarkup="^gen$" targetPut="Method/addException"/>
