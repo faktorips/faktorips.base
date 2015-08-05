@@ -40,7 +40,7 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      * Creates and new BigDecimalRange with the provided lower and upper bounds.
      */
     public static final BigDecimalRange valueOf(String lower, String upper) {
-        return new BigDecimalRange(new BigDecimal(lower), new BigDecimal(upper));
+        return new BigDecimalRange(bigDecimalOf(lower), bigDecimalOf(upper));
     }
 
     /**
@@ -48,7 +48,15 @@ public class BigDecimalRange extends DefaultRange<BigDecimal> {
      * and an indicator saying if the null value is contained.
      */
     public static final BigDecimalRange valueOf(String lower, String upper, String step, boolean containsNull) {
-        return new BigDecimalRange(new BigDecimal(lower), new BigDecimal(upper), new BigDecimal(step), containsNull);
+        return new BigDecimalRange(bigDecimalOf(lower), bigDecimalOf(upper), bigDecimalOf(step), containsNull);
+    }
+
+    private static BigDecimal bigDecimalOf(String textToParse) {
+        if (textToParse == null || textToParse.isEmpty()) {
+            return null;
+        } else {
+            return new BigDecimal(textToParse);
+        }
     }
 
     /**

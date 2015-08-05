@@ -21,13 +21,42 @@ import java.util.Set;
 import org.junit.Test;
 
 public class BigDecimalRangeTest {
+
     @Test
-    public void testValueOf() {
+    public void testBigDecimalOf() {
         BigDecimalRange range = BigDecimalRange.valueOf("1.25", "5.67");
         BigDecimal lower = range.getLowerBound();
         BigDecimal upper = range.getUpperBound();
         assertEquals(BigDecimal.valueOf(125, 2), lower);
         assertEquals(BigDecimal.valueOf(567, 2), upper);
+    }
+
+    @Test
+    public void testBigDecimalOf_upperAndStepBoundsNull() {
+        BigDecimalRange range = BigDecimalRange.valueOf("0", null, null, false);
+
+        assertEquals(new BigDecimalRange(BigDecimal.valueOf(0), null), range);
+    }
+
+    @Test
+    public void testBigDecimalOf_lowerAndStepBoundsNull() {
+        BigDecimalRange range = BigDecimalRange.valueOf(null, "0", null, false);
+
+        assertEquals(new BigDecimalRange(null, BigDecimal.valueOf(0)), range);
+    }
+
+    @Test
+    public void testBigDecimalOf_lowerAndUpperBoundsNull() {
+        BigDecimalRange range = BigDecimalRange.valueOf(null, null, "0", true);
+
+        assertEquals(BigDecimalRange.valueOf(null, null, BigDecimal.valueOf(0), true), range);
+    }
+
+    @Test
+    public void testBigDecimalOf_boundsEmpty() {
+        BigDecimalRange range = BigDecimalRange.valueOf("", "", "", false);
+
+        assertEquals(new BigDecimalRange(null, null), range);
     }
 
     @Test
