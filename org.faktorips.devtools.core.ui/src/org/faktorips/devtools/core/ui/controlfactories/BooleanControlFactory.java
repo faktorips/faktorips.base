@@ -25,8 +25,11 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.datatype.classtypes.BooleanDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
+import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -69,8 +72,23 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype) {
         LinkedHashMap<String, String> optionsMap = initOptions(valueSet, datatype);
         RadioButtonGroup<String> radioButtonGroup = toolkit.createRadioButtonGroup(parent, optionsMap);
+        registerUpdateListener(valueSet.getValueSetOwner(), datatype, radioButtonGroup);
         updateButtonEnablement(valueSet, datatype, radioButtonGroup);
         return radioButtonGroup;
+    }
+
+    private void registerUpdateListener(final IValueSetOwner valueSetOwner,
+            final ValueDatatype datatype,
+            final RadioButtonGroup<String> radioButtonGroup) {
+        valueSetOwner.getIpsModel().addChangeListener(new ContentsChangeListener() {
+
+            @Override
+            public void contentsChanged(ContentChangeEvent event) {
+                if (event.isAffected(valueSetOwner)) {
+                    updateButtonEnablement(valueSetOwner.getValueSet(), datatype, radioButtonGroup);
+                }
+            }
+        });
     }
 
     protected LinkedHashMap<String, String> initOptions(IValueSet valueSet, ValueDatatype datatype) {
