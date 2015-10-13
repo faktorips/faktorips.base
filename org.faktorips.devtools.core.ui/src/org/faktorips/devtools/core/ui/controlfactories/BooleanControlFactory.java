@@ -15,6 +15,8 @@ import java.util.LinkedHashMap;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -72,7 +74,9 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             ValueDatatype datatype) {
         LinkedHashMap<String, String> optionsMap = initOptions(valueSet, datatype);
         RadioButtonGroup<String> radioButtonGroup = toolkit.createRadioButtonGroup(parent, optionsMap);
-        registerUpdateListener(valueSet.getValueSetOwner(), datatype, radioButtonGroup);
+        if (valueSet != null) {
+            registerUpdateListener(valueSet.getValueSetOwner(), datatype, radioButtonGroup);
+        }
         updateButtonEnablement(valueSet, datatype, radioButtonGroup);
         return radioButtonGroup;
     }
@@ -80,13 +84,21 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
     private void registerUpdateListener(final IValueSetOwner valueSetOwner,
             final ValueDatatype datatype,
             final RadioButtonGroup<String> radioButtonGroup) {
-        valueSetOwner.getIpsModel().addChangeListener(new ContentsChangeListener() {
+        final ContentsChangeListener contentChangeListener = new ContentsChangeListener() {
 
             @Override
             public void contentsChanged(ContentChangeEvent event) {
                 if (event.isAffected(valueSetOwner)) {
                     updateButtonEnablement(valueSetOwner.getValueSet(), datatype, radioButtonGroup);
                 }
+            }
+        };
+        valueSetOwner.getIpsModel().addChangeListener(contentChangeListener);
+        radioButtonGroup.getComposite().addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                valueSetOwner.getIpsModel().removeChangeListener(contentChangeListener);
             }
         });
     }
