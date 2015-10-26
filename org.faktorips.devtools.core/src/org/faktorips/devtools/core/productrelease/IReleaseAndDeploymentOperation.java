@@ -67,6 +67,16 @@ public interface IReleaseAndDeploymentOperation {
     public boolean preCommit(IIpsProject ipsProject, IProgressMonitor progressMonitor);
 
     /**
+     * Customize the tag name for the new version. This hook is called directly before tagging the
+     * source control.
+     * 
+     * @param version The name of the version that will be deployed
+     * @param ipsProject The project that will be deployed
+     * @return The comment that should be used for tagging the source control
+     */
+    public String getTagName(String version, IIpsProject ipsProject);
+
+    /**
      * This method should start the deployment on the selected target system. If this method does
      * not return before deployment is ready, the progress monitor should be used to indicate the
      * progress. When deployment is right, the method returns true, if something is wrong and the

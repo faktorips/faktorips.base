@@ -111,6 +111,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
         when(productReleaseProcessor.getReleaseAndDeploymentOperation()).thenReturn(releaseAndDeploymentOperation);
         when(releaseAndDeploymentOperation.preCommit(any(IIpsProject.class), any(IProgressMonitor.class))).thenReturn(
                 true);
+        when(releaseAndDeploymentOperation.getTagName("abc", ipsProject)).thenReturn("CUSTOM_TAG_NAME");
 
         ArrayList<ITargetSystem> targetSystems = new ArrayList<ITargetSystem>();
         targetSystems.add(new DefaultTargetSystem("test123"));
@@ -119,8 +120,8 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
 
         verify(releaseAndDeploymentOperation).preCommit(eq(ipsProject), any(IProgressMonitor.class));
 
-        verify(releaseAndDeploymentOperation).buildReleaseAndDeployment(eq(ipsProject), eq("abc"), eq(targetSystems),
-                any(IProgressMonitor.class));
+        verify(releaseAndDeploymentOperation).buildReleaseAndDeployment(eq(ipsProject), eq("CUSTOM_TAG_NAME"),
+                eq(targetSystems), any(IProgressMonitor.class));
 
         verify(releaseAndDeploymentOperation).additionalResourcesToCommit(ipsProject);
 
@@ -162,7 +163,7 @@ public class ProductReleaseProcessorTest extends AbstractIpsPluginTest {
             verify(teamOperationsFactory, atLeastOnce()).createTeamOperations(any(ObservableProgressMessages.class));
             verify(teamOperations).commitFiles(any(IProject.class), (IResource[])any(),
                     eq(Messages.ReleaseAndDeploymentOperation_commit_comment + "abc"), any(IProgressMonitor.class));
-            verify(teamOperations).tagProject(any(IProject.class), eq("abc"), any(IProgressMonitor.class));
+            verify(teamOperations).tagProject(eq("abc"), any(IProject.class), any(IProgressMonitor.class));
         } finally {
             singletonMockHelper.reset();
         }

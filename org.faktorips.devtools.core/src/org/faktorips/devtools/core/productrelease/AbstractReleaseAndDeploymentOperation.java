@@ -43,6 +43,18 @@ public abstract class AbstractReleaseAndDeploymentOperation implements IReleaseA
     }
 
     @Override
+    public String getTagName(String version, IIpsProject ipsProject) {
+        String tag = version;
+        if (tag.matches("[0-9].*")) { //$NON-NLS-1$
+            // tag must start with a letter
+            tag = "v" + tag; //$NON-NLS-1$
+        }
+        // replace not allowed characters to '_'
+        tag = tag.replaceAll("[\\$,\\.:;@]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
+        return tag;
+    }
+
+    @Override
     public void setObservableProgressMessages(ObservableProgressMessages observableProgressMessages) {
         this.observableProgressMessages = observableProgressMessages;
     }

@@ -37,17 +37,13 @@ public interface ITeamOperations {
             throws TeamException, InterruptedException;
 
     /**
-     * Tag the project with the specified version. Because the version could contain invalid
-     * characters, the tagging operation may change the version to a valid tag name. This tag name
-     * is returned by this method.
+     * Tag the project with the specified tag name.
      * 
-     * @param project the project to tag
-     * @param version the version which is used as tab name base
+     * @param tagName the tag name used to for source control tagging
+     * @param project TODO
      * @param monitor a progress monitor to indicate the progress
-     * @return the tag name created from version
      */
-    public String tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
-            InterruptedException;
+    public void tagProject(String tagName, IProject project, IProgressMonitor monitor) throws TeamException, InterruptedException;
 
     /**
      * Returns the name of the version control system.

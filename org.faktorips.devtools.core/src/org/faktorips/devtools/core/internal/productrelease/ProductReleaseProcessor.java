@@ -220,7 +220,9 @@ public class ProductReleaseProcessor {
 
     private String tagProject(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
-        return teamOperation.tagProject(ipsProject.getProject(), newVersion, monitor);
+        String tagName = getReleaseAndDeploymentOperation().getTagName(newVersion, ipsProject);
+        teamOperation.tagProject(newVersion, ipsProject.getProject(), monitor);
+        return tagName;
     }
 
     private void buildProject(IIpsProject ipsProject, IProgressMonitor monitor) throws CoreException {

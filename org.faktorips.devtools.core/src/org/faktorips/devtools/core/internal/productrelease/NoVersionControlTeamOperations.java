@@ -33,9 +33,9 @@ public class NoVersionControlTeamOperations implements ITeamOperations {
     }
 
     @Override
-    public String tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
+    public void tagProject(String version, IProject project, IProgressMonitor monitor) throws TeamException,
             InterruptedException {
-        return version;
+        // do nothing
     }
 
     @Override

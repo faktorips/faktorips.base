@@ -125,32 +125,22 @@ public abstract class AbstractTeamOperations implements ITeamOperations {
     }
 
     @Override
-    public String tagProject(IProject project, String version, IProgressMonitor monitor) throws TeamException,
+    public void tagProject(String tagName, IProject project, IProgressMonitor monitor) throws TeamException,
             InterruptedException {
-        String tag = version;
-        if (tag.matches("[0-9].*")) { //$NON-NLS-1$
-            // tag must start with a letter
-            tag = "v" + tag; //$NON-NLS-1$
-        }
-        // replace not allowed characters to '_'
-        tag = tag.replaceAll("[\\$,\\.:;@]", "_"); //$NON-NLS-1$ //$NON-NLS-2$
-
         RepositoryProvider repositoryProvider = RepositoryProvider.getProvider(project);
         if (repositoryProvider == null) {
             observableProgressMessages.warning(Messages.CvsTeamOperations_status_notVersionized);
-            return tag;
-        }
+        } else {
+            IResource[] resources = new IResource[] { project };
 
-        IResource[] resources = new IResource[] { project };
-
-        IStatus status = tagProject(repositoryProvider, resources, tag, monitor);
-        if (status.getException() != null) {
-            throw new InterruptedException("Error while tagging: " + status.getException().getMessage()); //$NON-NLS-1$
-        } else if (status.getSeverity() == IStatus.ERROR) {
-            throw new InterruptedException(status.getMessage());
+            IStatus status = tagProject(repositoryProvider, resources, tagName, monitor);
+            if (status.getException() != null) {
+                throw new InterruptedException("Error while tagging: " + status.getException().getMessage()); //$NON-NLS-1$
+            } else if (status.getSeverity() == IStatus.ERROR) {
+                throw new InterruptedException(status.getMessage());
+            }
+            observableProgressMessages.info(NLS.bind(Messages.ProductReleaseProcessor_status_tag_success, tagName));
         }
-        observableProgressMessages.info(NLS.bind(Messages.ProductReleaseProcessor_status_tag_success, tag));
-        return tag;
     }
 
     /**
