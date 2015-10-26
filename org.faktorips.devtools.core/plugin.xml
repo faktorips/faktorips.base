@@ -258,7 +258,7 @@
          </property>
          <property
                name="aboutImage"
-               value="platform:/plugin/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon128.gif">
+               value="platform:/plugin/org.faktorips.devtools.core/icons/fips_about.png">
          </property>
          <property
                name="aboutText"
@@ -266,7 +266,7 @@
          </property>
          <property
                name="windowImages"
-               value="platform:/plugin/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon16.gif,platform:/plugin/org.faktorips.devtools.core.ui/icons/FaktorIpsIcon32.gif">
+               value="platform:/plugin/org.faktorips.devtools.core/icons/fips_window16.png,platform:/plugin/org.faktorips.devtools.core/icons/fips_window32.png,platform:/plugin/org.faktorips.devtools.core/icons/fips_window64.png">
          </property>
          
          <property
@@ -277,7 +277,15 @@
 		    name="applicationCSSResources"
 		    value="platform:/plugin/org.eclipse.platform/images/">
 		</property>
-
+		<property
+			name="startupForegroundColor"
+			value="565656"/>
+		<property
+			name="startupProgressRect"
+			value="27,253,500,8"/>
+		<property
+			name="startupMessageRect"
+			value="27,264,500,20"/>
       </product>
    </extension>
 
