@@ -173,7 +173,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
         validateOverloadedFormulaSignature(result, ipsProject);
     }
 
-    protected void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) throws CoreException {
+    protected void validateOverloadedFormulaSignature(MessageList result, IIpsProject ipsProject) {
         if (isFormulaSignatureDefinition() && isOverloadsFormula() && !StringUtils.isEmpty(getFormulaName())) {
             FormulaNameFinder finder = new FormulaNameFinder(ipsProject);
             finder.start(getProductCmptType().findSuperProductCmptType(ipsProject));

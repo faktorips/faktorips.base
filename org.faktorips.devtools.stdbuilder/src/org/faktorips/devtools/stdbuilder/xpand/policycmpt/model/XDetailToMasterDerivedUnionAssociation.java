@@ -50,15 +50,11 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
         if (getTypeOfAssociation().equals(xClass.getType())) {
             return false;
         }
-        try {
-            IPolicyCmptType supertype = (IPolicyCmptType)xClass.getType().findSupertype(xClass.getIpsProject());
-            FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
-                    getAssociation(), xClass.getIpsProject());
-            findSubsetOfDerivedUnionVisitor.start(supertype);
-            return findSubsetOfDerivedUnionVisitor.isSubsetFound();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptType supertype = (IPolicyCmptType)xClass.getType().findSupertype(xClass.getIpsProject());
+        FindSubsetOfDerivedUnionVisitor findSubsetOfDerivedUnionVisitor = new FindSubsetOfDerivedUnionVisitor(
+                getAssociation(), xClass.getIpsProject());
+        findSubsetOfDerivedUnionVisitor.start(supertype);
+        return findSubsetOfDerivedUnionVisitor.isSubsetFound();
     }
 
     /**

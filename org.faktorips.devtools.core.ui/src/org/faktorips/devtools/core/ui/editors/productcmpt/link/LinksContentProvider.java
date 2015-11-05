@@ -42,17 +42,13 @@ public class LinksContentProvider implements ITreeContentProvider {
             throw new RuntimeException("Unknown input element type " + inputElement.getClass()); //$NON-NLS-1$
         }
         IProductCmptGeneration generation = (IProductCmptGeneration)inputElement;
-        try {
-            IProductCmpt pc = generation.getProductCmpt();
+        IProductCmpt pc = generation.getProductCmpt();
 
-            IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
-            if (pcType == null) {
-                return getDetachedAssociationViewItems(generation);
-            } else {
-                return getAssociationItems(pcType, pc.getIpsProject(), generation);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptType pcType = pc.findProductCmptType(generation.getIpsProject());
+        if (pcType == null) {
+            return getDetachedAssociationViewItems(generation);
+        } else {
+            return getAssociationItems(pcType, pc.getIpsProject(), generation);
         }
     }
 

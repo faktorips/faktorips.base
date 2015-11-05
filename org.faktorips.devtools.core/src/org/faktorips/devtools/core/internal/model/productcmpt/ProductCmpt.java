@@ -25,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
@@ -82,21 +81,25 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private final ProductPartCollection productPartCollection = new ProductPartCollection(propertyValueCollection,
             linkCollection);
 
+    private final IpsObjectType ipsObjectType;
+
     private String productCmptType = ""; //$NON-NLS-1$
 
     private String runtimeId = ""; //$NON-NLS-1$
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
+        this.ipsObjectType = file.getIpsObjectType();
     }
 
     public ProductCmpt() {
         super();
+        ipsObjectType = IpsObjectType.PRODUCT_CMPT;
     }
 
     @Override
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.PRODUCT_CMPT;
+        return ipsObjectType;
     }
 
     @Override
@@ -160,7 +163,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return ipsProject.findProductCmptType(productCmptType);
     }
 
@@ -185,13 +188,14 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return;
         }
         validateName(list, ipsProject);
-        validateRuntimeId(list, ipsProject);
+        if (!isTemplate()) {
+            validateRuntimeId(list, ipsProject);
+        }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
     }
 
-    private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type)
-            throws CoreException {
+    private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {
         Message message = TypeValidations.validateTypeHierachy(type, ipsProject);
         if (message != null) {
             String typeLabel = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(type);
@@ -297,7 +301,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+                            IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
@@ -762,11 +766,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
      */
     @Override
     public boolean allowGenerations() {
-        try {
-            IProductCmptType productComponentType = findProductCmptType(getIpsProject());
-            return productComponentType == null ? true : productComponentType.isChangingOverTime();
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IProductCmptType productComponentType = findProductCmptType(getIpsProject());
+        return productComponentType == null ? true : productComponentType.isChangingOverTime();
     }
+
+    @Override
+    public boolean isTemplate() {
+        return getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
+    }
+
 }

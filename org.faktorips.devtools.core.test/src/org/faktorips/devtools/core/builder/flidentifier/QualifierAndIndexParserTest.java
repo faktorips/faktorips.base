@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AssociationNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
@@ -111,7 +110,7 @@ public class QualifierAndIndexParserTest extends AbstractParserTest {
         assertEquals(productCmpt, node.getProductCmpt());
     }
 
-    private void initProdCmptAndType() throws CoreException {
+    private void initProdCmptAndType() {
         ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
         list.add(productCmptIpsSrcFileOther);
         list.add(productCmptIpsSrcFile);

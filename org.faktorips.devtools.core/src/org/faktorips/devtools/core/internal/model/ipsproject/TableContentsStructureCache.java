@@ -17,8 +17,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
@@ -181,11 +179,7 @@ public class TableContentsStructureCache {
     }
 
     private String getTableStructureName(IIpsSrcFile tableContent) {
-        try {
-            return tableContent.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return tableContent.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
     }
 
     public void removeTableStructure(IIpsSrcFile tableStructure) {

@@ -11,14 +11,16 @@
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -37,10 +39,11 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
+import org.faktorips.devtools.core.ui.IIpsSrcFileViewItem;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
 
 /**
- * The presentation model object for the {@link NewProductCmptWizard}.
+ * The presentation model object for the {@link NewProductWizard}.
  * 
  * @author dirmeier
  */
@@ -50,13 +53,23 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     public static final String PROPERTY_SELECTED_TYPE = "selectedType"; //$NON-NLS-1$
 
+    public static final String PROPERTY_SELECTED_TEMPLATE = "selectedTemplate"; //$NON-NLS-1$
+
     public static final String PROPERTY_KIND_ID = "kindId"; //$NON-NLS-1$
 
     public static final String PROPERTY_VERSION_ID = "versionId"; //$NON-NLS-1$
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
+    public static final String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
+
     public static final String PROPERTY_NEED_VERSION_ID = "needVersionId"; //$NON-NLS-1$
+
+    public static final String PROPERTY_SHOW_TEMPLATES = "showTemplates"; //$NON-NLS-1$
+
+    public static final String PROPERTY_SHOW_DESCRIPTION = "showDescription"; //$NON-NLS-1$
+
+    public static final ProductCmptViewItem NULL_TEMPLATE = new ProductCmptViewItem(null);
 
     private final NewProductCmptValidator validator;
 
@@ -64,7 +77,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private IProductCmptType selectedType;
 
-    private Set<IProductCmptType> baseTypes = new HashSet<IProductCmptType>();
+    private ProductCmptViewItem selectedTemplate;
+
+    private final Set<IProductCmptType> baseTypes = new TreeSet<IProductCmptType>(new BaseTypeComparator());
 
     private String kindId = StringUtils.EMPTY;
 
@@ -76,7 +91,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private boolean copyValidProductCmpt;
 
-    private List<IProductCmptType> subtypes;
+    private final List<IProductCmptType> subtypes = new ArrayList<IProductCmptType>();
+
+    private final List<ProductCmptViewItem> templates = new ArrayList<ProductCmptViewItem>();
 
     private IProductCmptGeneration addToProductCmptGeneration;
 
@@ -84,21 +101,24 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private String runtimeId = StringUtils.EMPTY;
 
+    private boolean template = false;
+
     public NewProductCmptPMO() {
+        this(false);
+    }
+
+    public NewProductCmptPMO(boolean template) {
         super();
+        this.template = template;
         validator = new NewProductCmptValidator(this);
     }
 
     @Override
     public void setIpsProject(IIpsProject ipsProject) {
         updateBaseTypeList(ipsProject);
-        try {
-            if (selectedBaseType != null
-                    && !selectedBaseType.equals(ipsProject.findProductCmptType(selectedBaseType.getQualifiedName()))) {
-                selectedBaseType = null;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (selectedBaseType != null
+                && !selectedBaseType.equals(ipsProject.findProductCmptType(selectedBaseType.getQualifiedName()))) {
+            selectedBaseType = null;
         }
         updateVersionId(ipsProject);
         updateRuntimeId(ipsProject);
@@ -137,7 +157,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         if (ipsProject == null) {
             return;
         }
-        baseTypes = new HashSet<IProductCmptType>();
+        baseTypes.clear();
         try {
             IIpsSrcFile[] findIpsSrcFiles = ipsProject.findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT_TYPE);
             Set<IIpsSrcFile> concreteTypes = new HashSet<IIpsSrcFile>();
@@ -147,7 +167,6 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
                     concreteTypes.add(ipsSrcFile);
                 }
             }
-            baseTypes = new HashSet<IProductCmptType>();
             addBaseTypesRecursive(concreteTypes, ipsProject);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
@@ -182,24 +201,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     /**
      * @return Returns the baseTypes.
      */
-    public List<IProductCmptType> getBaseTypes() {
-        List<IProductCmptType> sortedBaseTypes = new ArrayList<IProductCmptType>(baseTypes);
-        Collections.sort(sortedBaseTypes, new Comparator<IProductCmptType>() {
-
-            @Override
-            public int compare(IProductCmptType o1, IProductCmptType o2) {
-                MultiLanguageSupport multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
-                if (multiLanguageSupport != null) {
-                    String label1 = multiLanguageSupport.getLocalizedLabel(o1);
-                    String label2 = multiLanguageSupport.getLocalizedLabel(o2);
-                    return label1.compareTo(label2);
-                } else {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            }
-
-        });
-        return sortedBaseTypes;
+    public Set<IProductCmptType> getBaseTypes() {
+        return baseTypes;
     }
 
     /**
@@ -215,6 +218,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     public void setSelectedBaseType(IProductCmptType selectedBaseType) {
         IProductCmptType oldSelection = this.selectedBaseType;
         this.selectedBaseType = selectedBaseType;
+        updateTemplatesList();
         updateSubtypeList();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_BASE_TYPE, oldSelection, selectedBaseType));
 
@@ -226,6 +230,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     public void setSelectedType(IProductCmptType selectedType) {
         IProductCmptType oldSelection = this.selectedType;
         this.selectedType = selectedType;
+        updateTemplatesList();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_TYPE, oldSelection, selectedType));
     }
 
@@ -236,33 +241,105 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return selectedType;
     }
 
+    public ProductCmptViewItem getSelectedTemplate() {
+        return selectedTemplate;
+    }
+
+    public void setSelectedTemplate(ProductCmptViewItem selectedTemplate) {
+        IIpsSrcFileViewItem oldTemplate = this.selectedTemplate;
+        this.selectedTemplate = selectedTemplate;
+        updateSubtypeList();
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_SELECTED_TEMPLATE, oldTemplate, selectedType));
+    }
+
     public List<IProductCmptType> getSubtypes() {
         return subtypes;
     }
 
-    private void updateSubtypeList() {
+    public void updateSubtypeList() {
+        subtypes.clear();
         if (isCopyValidMode()) {
-            subtypes = Arrays.asList(selectedType);
+            subtypes.add(selectedType);
             return;
         }
 
-        ArrayList<IProductCmptType> result = new ArrayList<IProductCmptType>();
-        if (selectedBaseType == null) {
-            subtypes = result;
+        IProductCmptType referenceType;
+        if (selectedTemplate != null && selectedTemplate.getProductCmpt() != null) {
+            referenceType = selectedTemplate.getProductCmpt().findProductCmptType(getIpsProject());
         } else {
-            List<IType> subtypesList = selectedBaseType.findSubtypes(true, true, getIpsProject());
+            referenceType = selectedBaseType;
+        }
+        if (referenceType != null) {
+            List<IType> subtypesList = referenceType.findSubtypes(true, true, getIpsProject());
             for (IType type : subtypesList) {
-                if (!type.isAbstract()) {
-                    result.add((IProductCmptType)type);
+                if (template || !type.isAbstract()) {
+                    subtypes.add((IProductCmptType)type);
                 }
             }
-            subtypes = result;
-            if (!subtypes.isEmpty()) {
+            setDefaultSelection();
+        }
+    }
+
+    /**
+     * This method may set a type as selected if there is no valid selection. We only want to have a
+     * default selection if there is either only one selectable type or if we do not have templates.
+     * If there are template we do not want to select any type because this may reduce the list of
+     * available templates.
+     */
+    private void setDefaultSelection() {
+        if (selectedType == null || !subtypes.contains(selectedType)) {
+            if (subtypes.size() == 1 || (!subtypes.isEmpty() && isShowDescription())) {
                 setSelectedType(subtypes.get(0));
             } else {
                 setSelectedType(null);
             }
         }
+    }
+
+    public void updateTemplatesList() {
+        templates.clear();
+        if (isCopyValidMode()) {
+            return;
+        }
+        List<IIpsSrcFile> templateSrcFiles;
+        Map<String, ProductCmptViewItem> viewItemNames = new HashMap<String, ProductCmptViewItem>();
+        if (selectedBaseType != null && selectedType == null) {
+            templateSrcFiles = getIpsProject().findAllProductTemplates(selectedBaseType, true);
+        } else if (selectedType != null) {
+            templateSrcFiles = getIpsProject().findCompatibleProductTemplates(selectedType);
+        } else {
+            templateSrcFiles = new ArrayList<IIpsSrcFile>();
+        }
+        templates.add(NULL_TEMPLATE);
+        for (IIpsSrcFile ipsSrcFile : templateSrcFiles) {
+            ProductCmptViewItem viewItem = new ProductCmptViewItem(ipsSrcFile);
+            viewItemNames.put(viewItem.getName(), viewItem);
+        }
+        templates.addAll(viewItemNames.values());
+        if (selectedTemplate != NULL_TEMPLATE && !containsSelectedTemplate()) {
+            setSelectedTemplate(NULL_TEMPLATE);
+        }
+    }
+
+    private boolean containsSelectedTemplate() {
+        for (ProductCmptViewItem viewItem : templates) {
+            if (viewItem.contains(selectedTemplate)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<ProductCmptViewItem> getTemplates() {
+        return templates;
+    }
+
+    public boolean isShowTemplates() {
+        return !isShowDescription();
+    }
+
+    public boolean isShowDescription() {
+        return templates.size() <= 1;
     }
 
     /**
@@ -288,6 +365,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     public void setVersionId(String versionId) {
         String oldId = this.versionId;
         this.versionId = versionId;
+        updateRuntimeId(getIpsProject());
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_VERSION_ID, oldId, versionId));
     }
 
@@ -300,7 +378,9 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private void updateRuntimeId(IIpsProject ipsProject) {
         try {
-            setRuntimeId(ipsProject.getProductCmptNamingStrategy().getUniqueRuntimeId(ipsProject, getName()));
+            if (ipsProject != null) {
+                setRuntimeId(ipsProject.getProductCmptNamingStrategy().getUniqueRuntimeId(ipsProject, getName()));
+            }
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         } catch (IllegalArgumentException e) {
@@ -427,19 +507,15 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     private void initializeTypeAndBaseTypeForProductCmptCopy(IProductCmpt productCmptToCopy) {
-        try {
-            IProductCmptType productCmptType = productCmptToCopy.findProductCmptType(productCmptToCopy.getIpsProject());
-            copyValidProductCmpt = productCmptType != null;
-            setSelectedType(productCmptType);
+        IProductCmptType productCmptType = productCmptToCopy.findProductCmptType(productCmptToCopy.getIpsProject());
+        copyValidProductCmpt = productCmptType != null;
+        setSelectedType(productCmptType);
 
-            SelectedBaseTypeVisitor baseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(),
-                    productCmptToCopy.getIpsProject());
-            baseTypeVisitor.start(productCmptType);
-            setSelectedBaseType(baseTypeVisitor.selectedBaseType);
+        SelectedBaseTypeVisitor baseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(),
+                productCmptToCopy.getIpsProject());
+        baseTypeVisitor.start(productCmptType);
+        setSelectedBaseType(baseTypeVisitor.selectedBaseType);
 
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
     }
 
     /**
@@ -514,9 +590,23 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return runtimeId;
     }
 
+    public boolean isTemplate() {
+        return template;
+    }
+
+    public void setTemplate(boolean template) {
+        boolean old = this.template;
+        this.template = template;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_TEMPLATE, old, this.template));
+    }
+
     @Override
     public IpsObjectType getIpsObjectType() {
-        return IpsObjectType.PRODUCT_CMPT;
+        if (template) {
+            return IpsObjectType.PRODUCT_TEMPLATE;
+        } else {
+            return IpsObjectType.PRODUCT_CMPT;
+        }
     }
 
     /**
@@ -527,6 +617,28 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return copyProductCmpt;
     }
 
+    private static final class BaseTypeComparator implements Comparator<IProductCmptType>, Serializable {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public int compare(IProductCmptType o1, IProductCmptType o2) {
+            MultiLanguageSupport multiLanguageSupport = IpsPlugin.getMultiLanguageSupport();
+            if (multiLanguageSupport != null) {
+                String label1 = multiLanguageSupport.getLocalizedLabel(o1);
+                String label2 = multiLanguageSupport.getLocalizedLabel(o2);
+                return label1.compareTo(label2);
+            } else {
+                int namesCompared = o1.getName().compareTo(o2.getName());
+                if (namesCompared == 0 && !o1.equals(o2)) {
+                    // different objects with the same name, order doesn't matter but we need both
+                    return 1;
+                } else {
+                    return namesCompared;
+                }
+            }
+        }
+    }
+
     /**
      * Searches the type hierarchy and looks for a supertype that is part of the base type list.
      * 
@@ -534,11 +646,11 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      */
     private static class SelectedBaseTypeVisitor extends TypeHierarchyVisitor<IProductCmptType> {
 
-        private final List<IProductCmptType> baseTypes;
+        private final Set<IProductCmptType> baseTypes;
 
         private IProductCmptType selectedBaseType = null;
 
-        public SelectedBaseTypeVisitor(List<IProductCmptType> baseTypes, IIpsProject ipsProject) {
+        public SelectedBaseTypeVisitor(Set<IProductCmptType> baseTypes, IIpsProject ipsProject) {
             super(ipsProject);
             this.baseTypes = baseTypes;
         }

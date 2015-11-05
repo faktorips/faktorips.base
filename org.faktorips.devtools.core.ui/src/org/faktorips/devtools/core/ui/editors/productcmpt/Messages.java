@@ -82,6 +82,8 @@ public class Messages extends NLS {
 
     public static String ProductAttributesSection_template;
 
+    public static String ProductCmptEditor_productCmptTitle;
+
     public static String ProductCmptEditor_productComponent;
 
     public static String FormulaEditDialog_editFormula;
@@ -93,6 +95,8 @@ public class Messages extends NLS {
     public static String RelationsSection_cardinality;
 
     public static String RelationsLabelProvider_undefined;
+
+    public static String ProductCmptEditor_templateTitle;
 
     public static String ProductCmptEditor_title_GenerationMissmatch;
 

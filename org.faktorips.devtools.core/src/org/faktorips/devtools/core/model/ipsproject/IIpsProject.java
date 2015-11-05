@@ -466,7 +466,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the first object with the indicated type and qualified name found on the object path.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns the first object with the indicated qualified name type found on the object path.
@@ -485,7 +485,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the first product component type with the given qualified name found on the path.
      */
-    public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException;
+    public IProductCmptType findProductCmptType(String qualifiedName);
 
     /**
      * Returns the product component with the given qualified name or <code>null</code> if no such
@@ -500,6 +500,19 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException If an error occurs during the search.
      */
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
+
+    /**
+     * Returns the product template with the given qualified name or <code>null</code> if no such
+     * product template exists. If more than one product template with the given name exists, the
+     * first one found is returned.
+     * 
+     * @param qualifiedName The qualified name to find the product template for.
+     * 
+     * @return The first product component identified by the given qualified name that has been
+     *         found.
+     * 
+     */
+    public IProductCmpt findProductTemplate(String qualifiedName);
 
     /**
      * Returns a collection of ipsSrcfiles containing product components with the given unqualified
@@ -642,6 +655,31 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes)
             throws CoreException;
+
+    /**
+     * Returns all templates which are based on the given {@link IProductCmptType}. If the parameter
+     * includeTemplatesForSubtypes is true also templates based on subtypes will be returned.
+     * 
+     * @param productCmptType The product component type that should that is used by the templates
+     * @param includeTemplatesForSubtypes <code>true</code> to include subtypes while searching for
+     *            templates
+     * @return Returns a list of {@link IIpsSrcFile}, every source file holds a template that is
+     *         based on the given type
+     */
+    public List<IIpsSrcFile> findAllProductTemplates(IProductCmptType productCmptType,
+            boolean includeTemplatesForSubtypes);
+
+    /**
+     * Returns all templates that are compatible to the given product component type. A template is
+     * compatible if it is based on the same product component type or on any supertype of the
+     * specified one.
+     * 
+     * @param productCmptType The product component type to which the returned templates are
+     *            compatible to
+     * @return A list of all templates found from this project (including referenced projects) that
+     *         are compatible to the specified type
+     */
+    public List<IIpsSrcFile> findCompatibleProductTemplates(IProductCmptType productCmptType);
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing test cases that are based on the given

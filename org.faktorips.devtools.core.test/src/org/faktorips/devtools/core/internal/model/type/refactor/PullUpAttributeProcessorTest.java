@@ -48,7 +48,7 @@ public class PullUpAttributeProcessorTest {
     private PullUpAttributeProcessor pullUpAttributeProcessor;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         when(attribute.getIpsProject()).thenReturn(ipsProject);
         when(attribute.getType()).thenReturn(type);

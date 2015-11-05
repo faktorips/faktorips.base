@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IType;
@@ -26,7 +23,6 @@ import org.faktorips.devtools.htmlexport.helper.path.TargetType;
 import org.faktorips.devtools.htmlexport.pages.elements.core.IPageElement;
 import org.faktorips.devtools.htmlexport.pages.elements.core.PageElementUtils;
 import org.faktorips.devtools.htmlexport.pages.elements.core.Style;
-import org.faktorips.devtools.htmlexport.pages.elements.core.TextPageElement;
 
 /**
  * Represents a table with the associations of an {@link IType} as rows and the attributes of the
@@ -72,15 +68,9 @@ public class AssociationTablePageElement extends AbstractIpsObjectPartsContainer
 
         IPageElement[] elements = new PageElementUtils(getContext()).createTextPageElements(values);
 
-        try {
-            IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
-            elements[linkElementIndex] = new PageElementUtils(getContext()).createLinkPageElement(getContext(), target,
-                    TargetType.CONTENT, target.getName(), true);
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.WARNING, "Error setting Link to target of " + association.getName(), e)); //$NON-NLS-1$
-            elements[linkElementIndex] = new TextPageElement("", getContext()); //$NON-NLS-1$
-        }
+        IIpsObject target = type.getIpsProject().findIpsObject(type.getIpsObjectType(), association.getTarget());
+        elements[linkElementIndex] = new PageElementUtils(getContext()).createLinkPageElement(getContext(), target,
+                TargetType.CONTENT, target.getName(), true);
 
         return Arrays.asList(elements);
     }

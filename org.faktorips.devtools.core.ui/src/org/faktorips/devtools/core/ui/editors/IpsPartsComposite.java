@@ -67,7 +67,7 @@ import org.faktorips.util.message.MessageList;
  * delete button.
  */
 public abstract class IpsPartsComposite extends ViewerButtonComposite implements ISelectionProvider,
-        IDataChangeableReadWriteAccess {
+IDataChangeableReadWriteAccess {
 
     /** The object the parts belong to. */
     private final IIpsObject ipsObject;
@@ -647,12 +647,8 @@ public abstract class IpsPartsComposite extends ViewerButtonComposite implements
 
     private void updateStateOverrideButton() {
         if (overrideButton != null) {
-            try {
-                overrideButton.setEnabled(getType().hasExistingSupertype(getType().getIpsProject())
-                        && isOptionInclude(Option.CAN_OVERRIDE));
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            overrideButton.setEnabled(getType().hasExistingSupertype(getType().getIpsProject())
+                    && isOptionInclude(Option.CAN_OVERRIDE));
         }
     }
 

@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.binding;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.util.BeanUtil;
 
@@ -46,10 +47,12 @@ public abstract class ControlPropertyBinding {
         super();
         this.control = control;
         this.object = object;
-        property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
-        if (expectedType != null && !expectedType.equals(property.getPropertyType())) {
-            throw new IllegalArgumentException(
-                    "Property " + propertyName + " of type " + object.getClass() + " is not of type " + expectedType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        if (StringUtils.isNotEmpty(propertyName)) {
+            property = BeanUtil.getPropertyDescriptor(object.getClass(), propertyName);
+            if (expectedType != null && !expectedType.isAssignableFrom(property.getPropertyType())) {
+                throw new IllegalArgumentException(
+                        "Property " + propertyName + " of type " + object.getClass() + " is not of type " + expectedType); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            }
         }
     }
 
@@ -66,7 +69,7 @@ public abstract class ControlPropertyBinding {
     }
 
     public String getPropertyName() {
-        return getProperty().getName();
+        return getProperty() == null ? null : getProperty().getName();
     }
 
     public final void updateUI(String propertyName) {
@@ -100,7 +103,7 @@ public abstract class ControlPropertyBinding {
 
     @Override
     public String toString() {
-        return "Binding " + object.toString() + "#" + property.getName() + " to control " + control; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        return "Binding " + object.toString() + "#" + (property == null ? null : property.getName()) + " to control " + control; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     protected Object readProperty() {

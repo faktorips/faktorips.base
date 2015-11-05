@@ -10,14 +10,13 @@
 
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import java.beans.PropertyChangeEvent;
-
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.LocalResourceManager;
 import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.ui.UIToolkit;
@@ -45,7 +44,7 @@ public class TypeSelectionPage extends WizardPage {
     public TypeSelectionPage(NewProductCmptPMO pmo) {
         super(Messages.TypeSelectionPage_name);
         this.pmo = pmo;
-        setTitle(Messages.TypeSelectionPage_title);
+        setTitle(NLS.bind(Messages.TypeSelectionPage_title, pmo.getIpsObjectType().getDisplayName()));
         resourManager = new LocalResourceManager(JFaceResources.getResources());
         bindingContext = new BindingContext();
     }
@@ -66,8 +65,8 @@ public class TypeSelectionPage extends WizardPage {
 
         toolkit.createHorizonzalLine(composite);
 
-        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit, pmo,
-                NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE);
+        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit, bindingContext, pmo,
+                NewProductCmptPMO.PROPERTY_SELECTED_BASE_TYPE, pmo.getBaseTypes());
         typeSelectionComposite.setTitle(Messages.TypeSelectionPage_label_type);
 
         setControl(composite);
@@ -114,30 +113,9 @@ public class TypeSelectionPage extends WizardPage {
             return pmo;
         }
 
-        /**
-         * @return Returns the page.
-         */
         @Override
         public TypeSelectionPage getPage() {
             return (TypeSelectionPage)super.getPage();
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if (evt.getPropertyName().equals(NewProductCmptPMO.PROPERTY_IPS_PROJECT)) {
-                updateListViewer();
-            }
-            super.propertyChange(evt);
-        }
-
-        @Override
-        public void updateUI() {
-            super.updateUI();
-            updateListViewer();
-        }
-
-        private void updateListViewer() {
-            getPage().typeSelectionComposite.setListInput(getPmo().getBaseTypes());
         }
 
         @Override

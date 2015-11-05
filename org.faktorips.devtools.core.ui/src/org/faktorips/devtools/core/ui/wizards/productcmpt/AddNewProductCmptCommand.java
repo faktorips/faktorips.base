@@ -104,7 +104,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
                 if (selectedAssociationParameter != null) {
                     association = (IProductCmptTypeAssociation)generation.findProductCmptType(
                             generation.getIpsProject()).findAssociation(selectedAssociationParameter,
-                            generation.getIpsProject());
+                                    generation.getIpsProject());
                     initWizard(generation, association, null, HandlerUtil.getActiveShell(event));
                 } else {
                     association = (IProductCmptTypeAssociation)structureReference
@@ -127,7 +127,7 @@ public class AddNewProductCmptCommand extends AbstractAddAndNewProductCmptComman
         try {
             IProductCmptType targetProductCmptType = association.findTargetProductCmptType(sourceGeneration
                     .getIpsProject());
-            NewProductCmptWizard newProductCmptWizard = new NewProductCmptWizard();
+            NewProductWizard newProductCmptWizard = new NewProductCmptWizard();
             newProductCmptWizard.initDefaults(sourceGeneration.getIpsSrcFile().getIpsPackageFragment(),
                     targetProductCmptType, targetProductCmpt);
             newProductCmptWizard.setAddToAssociation(sourceGeneration, association);

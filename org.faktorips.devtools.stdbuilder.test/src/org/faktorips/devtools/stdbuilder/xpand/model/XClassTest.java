@@ -20,7 +20,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.JavaNamingConvention;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.builder.naming.JavaClassNaming;
@@ -89,7 +88,7 @@ public class XClassTest {
     }
 
     @Test
-    public void testHasNonAbstractSupertype_NoSupertype() throws CoreException {
+    public void testHasNonAbstractSupertype_NoSupertype() {
         XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(false, false);
         when(xPolicyClass.getType().findSupertype(any(IIpsProject.class))).thenReturn(null);
 
@@ -97,25 +96,24 @@ public class XClassTest {
     }
 
     @Test
-    public void testHasNonAbstractSupertype_AllSupertypesAbstract() throws CoreException {
+    public void testHasNonAbstractSupertype_AllSupertypesAbstract() {
         XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(true, true);
         assertFalse(xPolicyClass.hasNonAbstractSupertype());
     }
 
     @Test
-    public void testHasNonAbstractSupertype_OnlySupertypeNonAbstract() throws CoreException {
+    public void testHasNonAbstractSupertype_OnlySupertypeNonAbstract() {
         XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(false, true);
         assertTrue(xPolicyClass.hasNonAbstractSupertype());
     }
 
     @Test
-    public void testHasNonAbstractSupertype_OnlySuperSupertypeNonAbstract() throws CoreException {
+    public void testHasNonAbstractSupertype_OnlySuperSupertypeNonAbstract() {
         XPolicyCmptClass xPolicyClass = setUpTypeHierarchy(true, false);
         assertTrue(xPolicyClass.hasNonAbstractSupertype());
     }
 
-    private XPolicyCmptClass setUpTypeHierarchy(boolean superIsAbstract, boolean superSuperIsAbstract)
-            throws CoreException {
+    private XPolicyCmptClass setUpTypeHierarchy(boolean superIsAbstract, boolean superSuperIsAbstract) {
         XPolicyCmptClass xPolicyClass = mock(XPolicyCmptClass.class, CALLS_REAL_METHODS);
         IIpsProject ipsProjectMock = mock(IIpsProject.class, CALLS_REAL_METHODS);
 

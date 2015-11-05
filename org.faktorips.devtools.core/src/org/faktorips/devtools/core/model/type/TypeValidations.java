@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.model.type;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.type.Messages;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -62,13 +61,13 @@ public class TypeValidations {
                 return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, NLS.bind(
                         Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getDisplayName()),
                         Message.ERROR, thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
-                                : new ObjectProperty[0]);
+                : new ObjectProperty[0]);
             }
             return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
                     Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
                     new Object[] { otherIpsObjectType.getId(), file.getIpsProject() }), Message.WARNING,
                     thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
-                            : new ObjectProperty[0]);
+            : new ObjectProperty[0]);
 
         }
         return null;
@@ -80,7 +79,7 @@ public class TypeValidations {
      * @param type The type of which you want to validate the hierarchy
      * @param ipsProject the project that is used as reference to find other objects
      */
-    public static Message validateTypeHierachy(IType type, IIpsProject ipsProject) throws CoreException {
+    public static Message validateTypeHierachy(IType type, IIpsProject ipsProject) {
         if (StringUtils.isEmpty(type.getSupertype())) {
             return null;
         }
@@ -123,15 +122,11 @@ public class TypeValidations {
                 result = true;
                 return false;
             }
-            try {
-                result = isNull(currentType);
-                return result;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            result = isNull(currentType);
+            return result;
         }
 
-        private boolean isNull(IType currentType) throws CoreException {
+        private boolean isNull(IType currentType) {
             return currentType.findSupertype(ipsProject) != null;
         }
 

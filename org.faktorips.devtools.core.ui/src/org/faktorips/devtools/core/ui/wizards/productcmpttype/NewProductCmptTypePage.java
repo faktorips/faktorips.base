@@ -175,7 +175,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         productCmptType.setAbstract(policyCmptType.isAbstract());
     }
 
-    private String findNextConfiguredSuperTypeQualifiedName() throws CoreException {
+    private String findNextConfiguredSuperTypeQualifiedName() {
         String superTypeQualifiedName = getSuperType();
         if (StringUtils.isBlank(superTypeQualifiedName)) {
             return null;

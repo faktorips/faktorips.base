@@ -140,10 +140,9 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return The product component type this product component is based on or <code>null</code> if
      *         the product component type can't be found.
      * 
-     * @throws CoreException if an exception occurs while searching for the type.
      */
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if any of the generations contain at least one formula. Returns
@@ -305,5 +304,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * <code>null</code> if formulaName is <code>null</code>.
      */
     public IFormula getFormula(String formulaName);
+
+    /**
+     * Returns <code>true</code> if this object represents a product template.
+     * 
+     * @return <code>true</code> if this is a template, <code>false</code> if not
+     */
+    public boolean isTemplate();
 
 }

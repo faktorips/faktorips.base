@@ -10,9 +10,7 @@
 
 package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -43,8 +41,9 @@ import org.faktorips.devtools.core.ui.LocalizedLabelProvider;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
+import org.faktorips.devtools.core.ui.binding.ViewerRefreshBinding;
 import org.faktorips.devtools.core.ui.controller.fields.StructuredViewerField;
-import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdapter;
 
 /**
@@ -56,7 +55,7 @@ import org.faktorips.devtools.core.ui.workbenchadapters.ProductCmptWorkbenchAdap
 public class TypeSelectionComposite extends Composite {
 
     private final UIToolkit toolkit;
-    private final ResourceManager resourManager;
+    private final ResourceManager resourceManager;
     private Label title;
     private TableViewer listViewer;
     private StructuredViewerField<IIpsObject> listViewerField;
@@ -66,6 +65,7 @@ public class TypeSelectionComposite extends Composite {
     private BindingContext bindingContext;
     private TypeSelectionFilter filter;
     private Text searchText;
+    private Collection<?> inputList;
 
     /**
      * Constructs a new type selection composite.
@@ -74,14 +74,18 @@ public class TypeSelectionComposite extends Composite {
      * @param toolkit the {@link UIToolkit} to create the internal controls
      * @param pmo a presentation model object to bind the selected type
      * @param property the property of the presentation model object
+     * @param inputList The input list for the type selection. This list instance should never
+     *            change, the content may change of course
      */
-    public TypeSelectionComposite(Composite parent, UIToolkit toolkit, PresentationModelObject pmo, String property) {
+    public TypeSelectionComposite(Composite parent, UIToolkit toolkit, BindingContext bindingContext,
+            PresentationModelObject pmo, String property, Collection<?> inputList) {
         super(parent, SWT.NONE);
         this.toolkit = toolkit;
         this.pmo = pmo;
         this.property = property;
-        this.resourManager = new LocalResourceManager(JFaceResources.getResources());
-        bindingContext = new BindingContext();
+        this.inputList = inputList;
+        this.resourceManager = new LocalResourceManager(JFaceResources.getResources());
+        this.bindingContext = bindingContext;
 
         setLayoutAndLayoutData();
 
@@ -90,8 +94,7 @@ public class TypeSelectionComposite extends Composite {
 
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                resourManager.dispose();
-                bindingContext.dispose();
+                resourceManager.dispose();
             }
         });
     }
@@ -119,7 +122,7 @@ public class TypeSelectionComposite extends Composite {
 
         toolkit.createLabel(this, Messages.TypeSelectionComposite_label_description);
 
-        listViewer = new TableViewer(this);
+        listViewer = new TableViewer(this, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 
         filter = new TypeSelectionFilter();
         listViewer.addFilter(filter);
@@ -133,7 +136,7 @@ public class TypeSelectionComposite extends Composite {
         listViewerField = new StructuredViewerField<IIpsObject>(listViewer, IIpsObject.class);
 
         description = toolkit.createMultilineText(this);
-
+        description.setEditable(false);
         bindContent();
     }
 
@@ -141,16 +144,18 @@ public class TypeSelectionComposite extends Composite {
         bindingContext.bindContent(searchText, new FilterPMO(), FilterPMO.TEXT_FOR_FILTER);
         bindingContext.bindContent(listViewerField, pmo, property);
 
-        pmo.addPropertyChangeListener(new PropertyChangeListener() {
+        listViewer.setInput(inputList);
+
+        bindingContext.add(new PropertyChangeBinding<IIpsObject>(description, pmo, property, IIpsObject.class) {
 
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if (property.equals(evt.getPropertyName())) {
-                    updateDescription((IIpsObject)evt.getNewValue());
-                }
-
+            protected void propertyChanged(IIpsObject oldValue, IIpsObject newValue) {
+                updateDescription(newValue);
             }
+
         });
+
+        bindingContext.add(ViewerRefreshBinding.refresh(listViewer, pmo));
     }
 
     public void clearValidationStatus() {
@@ -159,16 +164,6 @@ public class TypeSelectionComposite extends Composite {
 
     public void setTitle(String titleString) {
         title.setText(titleString);
-    }
-
-    public void setListInput(List<? extends IIpsObject> inputList) {
-        listViewer.setInput(inputList);
-        bindingContext.updateUI();
-        TypedSelection<IIpsObject> selection = new TypedSelection<IIpsObject>(IIpsObject.class,
-                listViewer.getSelection());
-        if (selection.isValid()) {
-            updateDescription(selection.getFirstElement());
-        }
     }
 
     public void addDoubleClickListener(IDoubleClickListener listener) {

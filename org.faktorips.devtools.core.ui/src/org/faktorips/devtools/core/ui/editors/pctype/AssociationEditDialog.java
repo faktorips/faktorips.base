@@ -178,7 +178,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             if (needToSave) {
                 try {
                     newConstrainedAssociation.getProductCmptType().getIpsSrcFile()
-                            .save(false, new NullProgressMonitor());
+                    .save(false, new NullProgressMonitor());
                 } catch (CoreException e) {
                     IpsPlugin.log(e);
                 }
@@ -189,7 +189,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
     private void needToSaveOldMatchingAssociation(IProductCmptTypeAssociation newConstrainedAssociation) {
         if ((!pmoAssociation.matchingExplicitly || !oldMatchingAssociation.equals(newConstrainedAssociation))
                 && association.getPolicyCmptType().getQualifiedName()
-                        .equals(oldMatchingAssociation.getMatchingAssociationSource())
+                .equals(oldMatchingAssociation.getMatchingAssociationSource())
                 && association.getName().equals(oldMatchingAssociation.getMatchingAssociationName())) {
 
             boolean needToSave = !oldMatchingAssociation.getProductCmptType().getIpsSrcFile().isDirty();
@@ -292,7 +292,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             getToolkit().createFormLabel(workArea, Messages.AssociationEditDialog_targetRolePluralLabel);
             final Text targetRolePluralText = getToolkit().createText(workArea);
             getBindingContext()
-                    .bindContent(targetRolePluralText, association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
+            .bindContent(targetRolePluralText, association, IAssociation.PROPERTY_TARGET_ROLE_PLURAL);
             targetRolePluralText.addFocusListener(new FocusAdapter() {
 
                 @Override
@@ -347,7 +347,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
 
             // bottom extensions
             extFactory
-                    .createControls(workArea, getToolkit(), association, IExtensionPropertyDefinition.POSITION_BOTTOM);
+            .createControls(workArea, getToolkit(), association, IExtensionPropertyDefinition.POSITION_BOTTOM);
             extFactory.bind(getBindingContext());
         }
 
@@ -670,11 +670,7 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
             }
             actualConfiguredAssociationSourceName = configuredAssociationSourceName;
             IProductCmptType configuredAssociationSource = null;
-            try {
-                configuredAssociationSource = ipsProject.findProductCmptType(configuredAssociationSourceName);
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
+            configuredAssociationSource = ipsProject.findProductCmptType(configuredAssociationSourceName);
             if (configuredAssociationSource == null) {
                 configuringAssociationField.setInput(new String[0]);
                 return;

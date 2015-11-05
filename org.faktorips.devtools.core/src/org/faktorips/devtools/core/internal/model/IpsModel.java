@@ -219,6 +219,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         List<IpsObjectType> types = new ArrayList<IpsObjectType>();
         types.add(IpsObjectType.PRODUCT_CMPT);
+        types.add(IpsObjectType.PRODUCT_TEMPLATE);
         types.add(IpsObjectType.TEST_CASE);
         types.add(IpsObjectType.POLICY_CMPT_TYPE);
         types.add(IpsObjectType.PRODUCT_CMPT_TYPE);

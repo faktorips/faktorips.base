@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -201,7 +200,7 @@ public class IdentifierParserTest {
         when(attribute.getName()).thenReturn(MY_ATTRIBUTE);
         when(attribute.findDatatype(ipsProject)).thenReturn(Datatype.GREGORIAN_CALENDAR);
         when(identifierFilter.isIdentifierAllowed(any(IIpsObjectPartContainer.class), any(IdentifierKind.class)))
-                .thenReturn(true);
+        .thenReturn(true);
         when(ipsProject.getReadOnlyProperties()).thenReturn(projectProperties);
         when(projectProperties.getDefaultLanguage()).thenReturn(supportetLanguage);
         when(supportetLanguage.getLocale()).thenReturn(Locale.GERMAN);
@@ -238,7 +237,7 @@ public class IdentifierParserTest {
         assertEquals(Datatype.GREGORIAN_CALENDAR, attributeNode.getDatatype());
     }
 
-    private void initProdCmptAndType() throws CoreException {
+    private void initProdCmptAndType() {
         ArrayList<IIpsSrcFile> list = new ArrayList<IIpsSrcFile>();
         list.add(productCmptIpsSrcFile);
 

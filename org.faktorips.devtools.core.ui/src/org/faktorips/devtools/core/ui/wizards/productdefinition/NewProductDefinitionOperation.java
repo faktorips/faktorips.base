@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -49,7 +50,7 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
  * @param <PMO> type of the {@link PresentationModelObject} that configures this operation
  */
 public abstract class NewProductDefinitionOperation<PMO extends NewProductDefinitionPMO> extends
-        WorkspaceModifyOperation {
+WorkspaceModifyOperation {
 
     private final PMO pmo;
 
@@ -75,7 +76,8 @@ public abstract class NewProductDefinitionOperation<PMO extends NewProductDefini
 
     @Override
     protected void execute(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        monitor.beginTask(Messages.NewProductCmptWizard_title, 5);
+        monitor.beginTask(NLS.bind(Messages.NewProductCmptWizard_title, getPmo().getIpsObjectType().getDisplayName()),
+                5);
 
         try {
             createIpsPackageFragmentIfNonExistent(monitor);
