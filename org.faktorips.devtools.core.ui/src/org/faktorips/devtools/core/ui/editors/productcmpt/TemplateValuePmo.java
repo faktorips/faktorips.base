@@ -9,35 +9,35 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.editors.productcmpt;
 
-import java.beans.PropertyChangeEvent;
-
 import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
-public class TemplateValuePmo<T extends IPropertyValue> extends PresentationModelObject {
-
-    public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
-
-    public static final String PROPERTY_TOOL_TIP_TEXT = "toolTipText"; //$NON-NLS-1$
-
-    private T propertyValue;
+public class TemplateValuePmo<T extends IPropertyValue> extends AbstractTemplateValuePmo<T> {
 
     private Function<T, String> formatter;
 
     public TemplateValuePmo(T propertyValue, Function<T, String> formatter) {
-        this.propertyValue = propertyValue;
+        super(propertyValue);
         this.formatter = formatter;
     }
 
-    public TemplateValueUiStatus getTemplateValueStatus() {
-        return TemplateValueUiStatus.mapStatus(propertyValue);
+    protected T getPropertyValue() {
+        return getTemplatedProperty();
     }
 
+    protected String formatPropertyValue(T templateProperty) {
+        return formatter.apply(templateProperty);
+    }
+
+    @Override
+    public TemplateValueUiStatus getTemplateValueStatus() {
+        return TemplateValueUiStatus.mapStatus(getTemplatedProperty());
+    }
+
+    @Override
     public String getToolTipText() {
         switch (getTemplateValueStatus()) {
             case INHERITED:
@@ -63,10 +63,6 @@ public class TemplateValuePmo<T extends IPropertyValue> extends PresentationMode
         }
     }
 
-    private boolean isUsingTemplate() {
-        return propertyValue.getPropertyValueContainer().getProductCmpt().isUsingTemplate();
-    }
-
     /**
      * @return the formatted value from the template or the empty string, if the template value
      *         cannot be found.
@@ -78,39 +74,6 @@ public class TemplateValuePmo<T extends IPropertyValue> extends PresentationMode
         } else {
             return StringUtils.EMPTY;
         }
-    }
-
-    private String formatPropertyValue(T templateProperty) {
-        return formatter.apply(templateProperty);
-    }
-
-    private IIpsProject getIpsProject() {
-        return propertyValue.getIpsProject();
-    }
-
-    /**
-     * @return the template's name. If the template cannot be found, returns the saved qualified
-     *         name.
-     */
-    protected String getTemplateName() {
-        T templateProperty = findTemplateProperty();
-        if (templateProperty != null) {
-            return templateProperty.getPropertyValueContainer().getProductCmpt().getName();
-        } else {
-            return propertyValue.getPropertyValueContainer().getTemplate();
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private T findTemplateProperty() {
-        return (T)propertyValue.findTemplateProperty(getIpsProject());
-    }
-
-    public void onClick() {
-        TemplateValueUiStatus oldValue = getTemplateValueStatus();
-        propertyValue.switchTemplateValueStatus();
-        TemplateValueUiStatus newValue = getTemplateValueStatus();
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newValue));
     }
 
 }

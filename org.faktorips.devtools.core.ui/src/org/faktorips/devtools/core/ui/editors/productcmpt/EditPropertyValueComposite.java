@@ -22,7 +22,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.CellEditor.LayoutData;
-import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -33,7 +32,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
@@ -49,7 +47,6 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
@@ -84,7 +81,7 @@ import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
  * @see EditField
  */
 public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
-Composite {
+        Composite {
 
     private final P property;
 
@@ -211,7 +208,7 @@ Composite {
     }
 
     protected boolean showTemplateButton() {
-        return getPropertyValue().isConfiguringTemplateValueStatus();
+        return getPropertyValue().isPartOfTemplateHierarchy();
     }
 
     /**
@@ -296,7 +293,7 @@ Composite {
                 this.getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
 
@@ -314,14 +311,11 @@ Composite {
 
     protected void createTemplateStatusButton(final EditField<?> editField) {
         if (showTemplateButton()) {
-            final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
-            final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
             final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
-            // set any default icon to force correct button size. Correct icon will be set when UI
-            // gets updated
-            toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
-            bindTemplateStatusButton(toolBar, toolItem, pmo);
-            listenToTemplateStatusClick(editField.getControl(), toolItem, pmo);
+            final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+            ToolItem toolItem = TemplateValueUiUtil.setUpStatusToolItem(toolBar, bindingContext, pmo);
+
+            focusOnTemplateStatusClick(editField.getControl(), toolItem);
             bindTemplateDependentEnabled(editField.getControl());
             bindProblemMarker(editField);
             toolBar.setMenu(createTemplateMenue(toolBar));
@@ -330,34 +324,11 @@ Composite {
 
     protected abstract Function<V, String> getToolTipFormatter();
 
-    private void bindTemplateStatusButton(final ToolBar toolBar, final ToolItem toolItem, final TemplateValuePmo<V> pmo) {
-        getBindingContext().add(
-                new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
-                        TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
-
-                    @Override
-                    protected void propertyChanged(TemplateValueUiStatus oldValue, TemplateValueUiStatus newValue) {
-                        toolItem.setImage(newValue.getIcon());
-                    }
-                });
-        new DefaultToolTip(toolBar) {
-
-            @Override
-            protected String getText(Event event) {
-                return pmo.getToolTipText();
-            }
-
-        };
-    }
-
-    private void listenToTemplateStatusClick(final Control control,
-            final ToolItem toolItem,
-            final TemplateValuePmo<V> pmo) {
+    private void focusOnTemplateStatusClick(final Control control, final ToolItem toolItem) {
         toolItem.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                pmo.onClick();
                 if (getToolkit().isEnabled(control) && getToolkit().isDataChangeable(control)) {
                     control.setFocus();
                 }

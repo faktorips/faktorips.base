@@ -70,15 +70,19 @@ public interface ITemplatedProperty {
     public ITemplatedProperty findTemplateProperty(IIpsProject ipsProject);
 
     /**
-     * Checks whether this property can configure the template value status or not. This is the case
-     * if its container uses a template or if the container itself is a product template. If it is a
-     * normal product component that does not use templates, the template value status should always
-     * be {@link TemplateValueStatus#DEFINED}
+     * Returns <code>true</code> if this property is part of a template hierarchy, by either acting
+     * as a template value, overwriting a value from a template or defining a new value. This is the
+     * case if its container uses a template or if the container itself is a product template.
+     * Accordingly the property has a template value status (or can "configure" its status).
+     * 
+     * If the property's parent is a regular product component that does not use templates, the
+     * template value status should always be {@link TemplateValueStatus#DEFINED}. In that case this
+     * method returns <code>false</code>.
      * 
      * @return <code>true</code> if the corresponding container is using a template or if itself is
      *         a template.
      */
-    boolean isConfiguringTemplateValueStatus();
+    boolean isPartOfTemplateHierarchy();
 
     /**
      * Get the {@link IIpsProject} of this property.

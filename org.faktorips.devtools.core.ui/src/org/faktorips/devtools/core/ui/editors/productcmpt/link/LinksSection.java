@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -27,7 +28,6 @@ import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -199,9 +199,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void buildCardinalityPanel(UIToolkit toolkit, Composite relationRootPanel) {
-        cardinalityPanel = new CardinalityPanel(relationRootPanel, toolkit);
+        cardinalityPanel = new CardinalityPanel(relationRootPanel, toolkit, generation.isPartOfTemplateHierarchy());
         cardinalityPanel.setDataChangeable(isDataChangeable());
-        cardinalityPanel.deactivate();
     }
 
     /**
@@ -364,7 +363,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         } else {
             treeViewer.getTree().setMenu(emptyMenu);
         }
-        cardinalityPanel.setEnabled(enabled);
+        cardinalityPanel.update(enabled);
     }
 
     /**
@@ -407,15 +406,15 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
-            Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-
+            TypedSelection<LinkViewItem> typedSelection = TypedSelection.createAnyCount(LinkViewItem.class,
+                    event.getSelection());
+            if (typedSelection.isValid()) {
+                cardinalityPanel.setProductCmptLinkToEdit(typedSelection.getElements());
+            } else {
+                cardinalityPanel.setProductCmptLinkToEdit(Collections.<LinkViewItem> emptyList());
+            }
             if (!isDataChangeable()) {
                 cardinalityPanel.setDataChangeable(false);
-            }
-            if (selected instanceof LinkViewItem) {
-                cardinalityPanel.setProductCmptLinkToEdit(((LinkViewItem)selected).getLink());
-            } else {
-                cardinalityPanel.setProductCmptLinkToEdit(null);
             }
         }
 

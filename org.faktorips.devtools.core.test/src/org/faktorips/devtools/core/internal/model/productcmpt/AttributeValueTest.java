@@ -460,6 +460,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     private ProductCmpt setUpMocksForTemplateInheritedCheck(TemplateValueStatus templateAttributeStatus,
             String... attributeValue) {
         ProductCmpt productCmpt = mock(ProductCmpt.class);
+        when(productCmpt.isPartOfTemplateHierarchy()).thenCallRealMethod();
         when(productCmpt.getIpsProject()).thenReturn(ipsProject);
         IProductCmpt templateContainer = mock(IProductCmpt.class);
         IAttributeValue templateAttributeValue = mock(IAttributeValue.class);

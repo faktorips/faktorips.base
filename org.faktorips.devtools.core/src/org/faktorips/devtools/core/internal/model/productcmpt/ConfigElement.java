@@ -562,8 +562,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public boolean isConfiguringTemplateValueStatus() {
-        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    public boolean isPartOfTemplateHierarchy() {
+        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
     }
 
 }

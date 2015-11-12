@@ -218,8 +218,8 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public boolean isConfiguringTemplateValueStatus() {
-        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    public boolean isPartOfTemplateHierarchy() {
+        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
     }
 
     @Override

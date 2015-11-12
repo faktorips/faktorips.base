@@ -54,14 +54,14 @@ public class TemplateValueSettingsTest {
     @Before
     public void setUp() {
         when(attrValue.getIpsProject()).thenReturn(ipsProject);
-        when(attrValue.isConfiguringTemplateValueStatus()).thenReturn(true);
+        when(attrValue.isPartOfTemplateHierarchy()).thenReturn(true);
         when(attrValue.findTemplateProperty(ipsProject)).thenReturn(templateValue);
         handler = new TemplateValueSettings(attrValue);
     }
 
     @Test
     public void testPropertiesToXml_defined() throws Exception {
-        when(attrValue.isConfiguringTemplateValueStatus()).thenReturn(true);
+        when(attrValue.isPartOfTemplateHierarchy()).thenReturn(true);
         when(attrValue.findTemplateProperty(ipsProject)).thenReturn(null);
         handler = new TemplateValueSettings(attrValue);
         handler.propertiesToXml(element);

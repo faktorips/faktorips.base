@@ -14,6 +14,13 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 public interface ITemplatedPropertyContainer {
 
     /**
+     * Returns the product component for this container. If this container is a
+     * {@link IProductCmptGeneration product component generation} the corresponding product
+     * component is returned. If this is a {@link IProductCmpt product component} it returns itself.
+     */
+    public IProductCmpt getProductCmpt();
+
+    /**
      * @return <code>true</code> if this property container is itself defined as a template or is
      *         part of a template. <code>false</code> if it is a regular product component.
      */
@@ -45,5 +52,12 @@ public interface ITemplatedPropertyContainer {
      * @return The property container that is specified as the template of this property container
      */
     public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
+
+    /**
+     * Returns <code>true</code> if properties of this container are used in a template hierarchy,
+     * <code>false</code> else. Returns <code>true</code> if this property's container is based on a
+     * template or is a template itself.
+     */
+    public boolean isPartOfTemplateHierarchy();
 
 }

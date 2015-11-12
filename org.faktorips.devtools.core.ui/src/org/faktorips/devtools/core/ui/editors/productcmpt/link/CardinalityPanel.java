@@ -10,10 +10,16 @@
 
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
-import org.eclipse.core.runtime.CoreException;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.base.Objects;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -21,21 +27,25 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
+import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateLinkPmo;
+import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiStatus;
+import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiUtil;
 
 /**
  * Panel to display cardinality. Note that this is <strong>NOT</strong> a control.
  * <p>
- * To edit a {@link IProductCmptLink} call {@link #setProductCmptLinkToEdit(IProductCmptLink)} and
- * this panel will be updated with the links values. If <code>null</code> is passed to the method,
- * this panel resets and disables itself.
+ * To edit a {@link IProductCmptLink} call {@link #setProductCmptLinkToEdit(List)} and this panel
+ * will be updated with the links values. If an empty list is passed to the method, this panel
+ * resets and disables itself.
  * 
  * 
  * @author Thorsten Guenther
@@ -52,19 +62,28 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     private Button mandatory;
     private Button other;
 
-    private BindingContext bindingContext;
     private CardinalityField minCardField;
     private CardinalityField maxCardField;
     private CardinalityField defaultCardField;
-
-    private IProductCmptLink currentLink;
+    private final MultiLinkPmo pmo = new MultiLinkPmo();
 
     private boolean dataChangeable;
+    private BindingContext bindingContext = new BindingContext();
+    private boolean showTemplateStatus;
+    private ToolBar templateStatusToolBar;
 
     /**
      * Creates a new Cardinality panel
+     * 
+     * @param showTemplateStatus whether the template status button should be displayed.
      */
-    public CardinalityPanel(Composite parent, UIToolkit toolkit) {
+    public CardinalityPanel(Composite parent, UIToolkit toolkit, boolean showTemplateStatus) {
+        this.showTemplateStatus = showTemplateStatus;
+        createUI(parent, toolkit);
+        bindFields(parent);
+    }
+
+    private void createUI(Composite parent, UIToolkit toolkit) {
         Composite kardinalityPane = toolkit.createLabelEditColumnComposite(parent);
         ((GridLayout)kardinalityPane.getLayout()).numColumns = 4;
         ((GridLayout)kardinalityPane.getLayout()).horizontalSpacing = 9;
@@ -76,11 +95,13 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         // create header
         Label headerLabel = toolkit.createLabel(kardinalityPane, Messages.RelationsSection_cardinality);
-        toolkit.setHorizontalSpan(headerLabel, 4);
+        toolkit.setHorizontalSpan(headerLabel, showTemplateStatus ? 3 : 4);
+        createToolbar(kardinalityPane);
+
         ((GridData)headerLabel.getLayoutData()).horizontalAlignment = SWT.CENTER;
 
         // create radio buttons
-        KardinalitySelectionListener listener = new KardinalitySelectionListener();
+        CardinalitySelectionListener listener = new CardinalitySelectionListener();
         optional = toolkit.createRadioButton(kardinalityPane, Messages.CardinalityPanel_labelOptional);
         optional.addSelectionListener(listener);
         optional.setLayoutData(new GridData());
@@ -120,42 +141,49 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         toolkit.getFormToolkit().paintBordersFor(parent);
     }
 
+    private void bindFields(Composite parent) {
+        minCardField = new CardinalityField(minCard);
+        maxCardField = new CardinalityField(maxCard);
+        defaultCardField = new CardinalityField(defaultCard);
+        bindingContext.bindContent(minCardField, pmo, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
+        bindingContext.bindContent(maxCardField, pmo, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
+        bindingContext.bindContent(defaultCardField, pmo, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
+
+        bindingContext.bindEnabled(minCard, pmo, MultiLinkPmo.PROPERTY_MIN_MAX_ENABLED);
+        bindingContext.bindEnabled(maxCard, pmo, MultiLinkPmo.PROPERTY_MIN_MAX_ENABLED);
+        bindingContext.bindEnabled(defaultCard, pmo, MultiLinkPmo.PROPERTY_DEFAULT_ENABLED);
+        bindingContext.bindEnabled(defaultCardLabel, pmo, MultiLinkPmo.PROPERTY_DEFAULT_ENABLED);
+
+        parent.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                bindingContext.dispose();
+            }
+        });
+    }
+
+    private void createToolbar(Composite kardinalityPane) {
+        if (showTemplateStatus) {
+            templateStatusToolBar = new ToolBar(kardinalityPane, SWT.FLAT);
+            templateStatusToolBar.setLayoutData(new GridData(GridData.BEGINNING, GridData.BEGINNING, true, false));
+            TemplateValueUiUtil.setUpStatusToolItem(templateStatusToolBar, bindingContext, pmo.getTemplateLinkPmo());
+            bindingContext.bindEnabled(templateStatusToolBar, pmo.getTemplateLinkPmo(),
+                    TemplateLinkPmo.PROPERTY_STATUS_BUTTON_ENABLED);
+        }
+    }
+
     /**
      * Configures this {@link CardinalityPanel} to change the cardinality values of the given link
      * when the user modifies the text controls. If the given {@link IProductCmptLink} is
      * <code>null</code> this panel will be deactivated.
      * 
-     * @param link the {@link IProductCmptLink} currently edited by this panel or <code>null</code>
-     *            if none.
+     * @param links the {@link IProductCmptLink} currently edited by this panel or an empty list if
+     *            none.
      */
-    public void setProductCmptLinkToEdit(IProductCmptLink link) {
-        currentLink = link;
-        if (currentLink == null) {
-            deactivate();
-        } else {
-
-            boolean cardinalityPanelEnabled;
-            try {
-                cardinalityPanelEnabled = currentLink.constrainsPolicyCmptTypeAssociation(currentLink.getIpsProject());
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-                cardinalityPanelEnabled = false;
-            }
-
-            if (!cardinalityPanelEnabled) {
-                deactivate();
-                return;
-            } else {
-                if (bindingContext != null) {
-                    bindingContext.clear();
-                } else {
-                    bindingContext = new BindingContext();
-                }
-                addFields(currentLink);
-                bindingContext.updateUI();
-                setEnabled(true);
-            }
-        }
+    public void setProductCmptLinkToEdit(List<LinkViewItem> links) {
+        pmo.setLinks(links);
+        refresh();
     }
 
     /**
@@ -163,34 +191,25 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * controls. The panel then displays no data.
      */
     public void deactivate() {
-        setEnabled(false);
-        removeFields();
+        setRadioButtonEnabled(false);
+        setDefaultEnabled(false);
+        setMinMaxEnabled(false);
         mandatory.setSelection(false);
         optional.setSelection(false);
         other.setSelection(false);
         minCard.setText(""); //$NON-NLS-1$
         maxCard.setText(""); //$NON-NLS-1$
         defaultCard.setText(""); //$NON-NLS-1$
-    }
-
-    private void removeFields() {
-        if (bindingContext != null) {
-            bindingContext.clear();
+        if (showTemplateStatus) {
+            templateStatusToolBar.setEnabled(false);
         }
     }
 
-    private void addFields(IProductCmptLink link) {
-        minCardField = new CardinalityField(getMinCardinalityTextControl());
-        maxCardField = new CardinalityField(getMaxCardinalityTextControl());
-        defaultCardField = new CardinalityField(getDefaultCardinalityTextControl());
-        bindingContext.bindContent(minCardField, link, IProductCmptLink.PROPERTY_MIN_CARDINALITY);
-        bindingContext.bindContent(maxCardField, link, IProductCmptLink.PROPERTY_MAX_CARDINALITY);
-        bindingContext.bindContent(defaultCardField, link, IProductCmptLink.PROPERTY_DEFAULT_CARDINALITY);
-    }
-
     public void refresh() {
-        if (bindingContext != null) {
-            bindingContext.updateUI();
+        if (!pmo.constrainsPolicyCmptTypeAssociation()) {
+            deactivate();
+        } else {
+            update(true);
         }
     }
 
@@ -200,72 +219,42 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * ProdCmptLink is selected in the {@link LinksSection}s tree, thus this panel is disabled
      * completely.
      */
-    public void setEnabled(boolean enabled) {
+    public void update(boolean enabled) {
+        update(false, enabled);
+    }
 
-        boolean doEnable = enabled & isDataChangeable();
+    private void update(boolean forceOther, boolean enabled) {
+        if (!pmo.isEmpty()) {
+            boolean doEnable = enabled & isDataChangeable();
+            setRadioButtonState(RadioButtonState.getStateOf(forceOther, pmo), doEnable);
+        }
+    }
 
+    private void setRadioButtonState(RadioButtonState state, boolean doEnable) {
+        mandatory.setSelection(state == RadioButtonState.MANDATORY);
+        optional.setSelection(state == RadioButtonState.OPTIONAL);
+        other.setSelection(state == RadioButtonState.OTHER);
+        setDefaultEnabled(state != RadioButtonState.MANDATORY && doEnable);
+        setMinMaxEnabled(state == RadioButtonState.OTHER && doEnable);
+        setRadioButtonEnabled(doEnable);
+        bindingContext.updateUI();
+    }
+
+    private void setRadioButtonEnabled(boolean doEnable) {
         mandatory.setEnabled(doEnable);
         optional.setEnabled(doEnable);
         other.setEnabled(doEnable);
-
-        minCard.setEnabled(false);
-        maxCard.setEnabled(false);
-        defaultCard.setEnabled(false);
-        minMaxCardLabel.setEnabled(false);
-        defaultCardLabel.setEnabled(false);
-
-        String min = minCard.getText();
-        String max = maxCard.getText();
-        String def = defaultCard.getText();
-
-        if (min.equals("1") && max.equals("1") && def.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            mandatory.setSelection(true);
-            optional.setSelection(false);
-            other.setSelection(false);
-        } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$
-            optional.setSelection(true);
-            mandatory.setSelection(false);
-            other.setSelection(false);
-            defaultCard.setEnabled(doEnable);
-            defaultCardLabel.setEnabled(doEnable);
-        } else {
-            other.setSelection(true);
-            mandatory.setSelection(false);
-            optional.setSelection(false);
-
-            minCard.setEnabled(doEnable);
-            maxCard.setEnabled(doEnable);
-            minMaxCardLabel.setEnabled(doEnable);
-            defaultCard.setEnabled(doEnable);
-            defaultCardLabel.setEnabled(doEnable);
-        }
     }
 
-    protected void setFieldValue(CardinalityField field, Integer integer, boolean triggerValueChanged) {
-        if (field != null) {
-            field.setValue(integer, triggerValueChanged);
-        }
+    private void setDefaultEnabled(boolean doEnable) {
+        defaultCard.setEnabled(doEnable);
+        defaultCardLabel.setEnabled(doEnable);
     }
 
-    /**
-     * Returns the Text control which displays the min cardinality
-     */
-    private Text getMinCardinalityTextControl() {
-        return minCard;
-    }
-
-    /**
-     * Returns the Text control which displays the max cardinality
-     */
-    private Text getMaxCardinalityTextControl() {
-        return maxCard;
-    }
-
-    /**
-     * Returns the control which displays the default cardinality
-     */
-    private Text getDefaultCardinalityTextControl() {
-        return defaultCard;
+    private void setMinMaxEnabled(boolean doEnable) {
+        minCard.setEnabled(doEnable);
+        maxCard.setEnabled(doEnable);
+        minMaxCardLabel.setEnabled(doEnable);
     }
 
     @Override
@@ -276,7 +265,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
     @Override
     public void setDataChangeable(boolean changeable) {
         dataChangeable = changeable;
-        setEnabled(changeable);
+        update(changeable);
     }
 
     /**
@@ -285,45 +274,196 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
      * @author Thorsten Guenther
      * @author Stefan Widmaier
      */
-    private class KardinalitySelectionListener implements SelectionListener {
+    private class CardinalitySelectionListener extends SelectionAdapter {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
-
-            boolean otherSelected = e.getSource() == other;
-            boolean optionalSelected = e.getSource() == optional;
-            minCard.setEnabled(otherSelected);
-            maxCard.setEnabled(otherSelected);
-            minMaxCardLabel.setEnabled(otherSelected);
-            defaultCard.setEnabled(otherSelected | optionalSelected);
-            defaultCardLabel.setEnabled(otherSelected | optionalSelected);
-
-            /*
-             * Setting the cardinality values using their fields causes an inconsistent GUI state
-             * and incorrect model data. This is due to the fact that edit fields update the model
-             * asynchronously (see EventBroadcaster). Following calls of setValue on other fields
-             * might be "too early" as the Text controls will also be updated by triggered
-             * modelChangeEvents that then write possibly incorrect or outdated data to the GUI.
-             * 
-             * Calling the model-setters directly forces synchronous processing and works around
-             * those problems.
-             */
             if (e.getSource() == optional) {
-                currentLink.setMinCardinality(0);
-                currentLink.setMaxCardinality(1);
+                pmo.setMinCardinality(0);
+                pmo.setMaxCardinality(1);
             } else if (e.getSource() == mandatory) {
-                currentLink.setDefaultCardinality(1);
-                currentLink.setMinCardinality(1);
-                currentLink.setMaxCardinality(1);
+                pmo.setMinCardinality(1);
+                pmo.setMaxCardinality(1);
+                pmo.setDefaultCardinality(1);
             }
-
-        }
-
-        @Override
-        public void widgetDefaultSelected(SelectionEvent e) {
-            widgetSelected(e);
+            update(e.getSource() == other, true);
         }
 
     }
 
+    public static class MultiLinkPmo extends PresentationModelObject {
+
+        public static final String PROPERTY_DEFAULT_ENABLED = "defaultEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_MIN_MAX_ENABLED = "minMaxEnabled"; //$NON-NLS-1$
+        public static final String PROPERTY_RADIO_BUTTONS_ENABLED = "radioButtonsEnabled"; //$NON-NLS-1$
+
+        /**
+         * Must never change, thus final. UI is bound to this pmo.
+         */
+        private final TemplateLinkPmo templatePmo = new TemplateLinkPmo();
+        private List<LinkViewItem> links = Collections.emptyList();
+
+        public List<LinkViewItem> getLinks() {
+            return links;
+        }
+
+        public TemplateLinkPmo getTemplateLinkPmo() {
+            return templatePmo;
+        }
+
+        public void setLinks(List<LinkViewItem> links) {
+            this.links = links;
+            updateTemplatePmo(links);
+            notifyListeners();
+        }
+
+        private void updateTemplatePmo(List<LinkViewItem> links2) {
+            if (links2.size() == 1) {
+                templatePmo.setLink(links.get(0).getLink());
+            } else {
+                templatePmo.setLink(null);
+            }
+        }
+
+        public boolean constrainsPolicyCmptTypeAssociation() {
+            if (getLinks().isEmpty()) {
+                return false;
+            }
+            for (LinkViewItem link : getLinks()) {
+                IProductCmptLink productCmptLink = link.getLink();
+                if (!productCmptLink.constrainsPolicyCmptTypeAssociation(productCmptLink.getIpsProject())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public boolean isEmpty() {
+            return getLinks().isEmpty();
+        }
+
+        public boolean isMandatory() {
+            return Objects.equal(getMinCardinality(), 1) && Objects.equal(getMaxCardinality(), 1)
+                    && Objects.equal(getDefaultCardinality(), 1);
+        }
+
+        public boolean isOptional() {
+            return Objects.equal(getMinCardinality(), 0) && Objects.equal(getMaxCardinality(), 1);
+        }
+
+        public Integer getMinCardinality() {
+            if (isEmpty()) {
+                return null;
+            }
+            Integer result = getLinks().get(0).getLink().getMinCardinality();
+            for (LinkViewItem linkViewItem : getLinks()) {
+                if (!result.equals(linkViewItem.getLink().getMinCardinality())) {
+                    return null;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Sets the minimum number of target instances required in this relation.
+         */
+        public void setMinCardinality(Integer newValue) {
+            for (LinkViewItem linkViewItem : getLinks()) {
+                linkViewItem.getLink().setMinCardinality(newValue);
+            }
+        }
+
+        /**
+         * returns the default number of target instances in this relation.
+         */
+        public Integer getDefaultCardinality() {
+            if (isEmpty()) {
+                return null;
+            }
+            Integer result = getLinks().get(0).getLink().getDefaultCardinality();
+            for (LinkViewItem linkViewItem : getLinks()) {
+                if (!result.equals(linkViewItem.getLink().getDefaultCardinality())) {
+                    return null;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Sets the default number of target instances in this relation.
+         */
+        public void setDefaultCardinality(Integer newValue) {
+            for (LinkViewItem linkViewItem : getLinks()) {
+                linkViewItem.getLink().setDefaultCardinality(newValue);
+            }
+        }
+
+        /**
+         * Returns the maximum number of target instances allowed in this relation. If the number is
+         * not limited CARDINALITY_MANY is returned.
+         */
+        public Integer getMaxCardinality() {
+            if (isEmpty()) {
+                return null;
+            }
+            Integer result = getLinks().get(0).getLink().getMaxCardinality();
+            for (LinkViewItem linkViewItem : getLinks()) {
+                if (!result.equals(linkViewItem.getLink().getMaxCardinality())) {
+                    return null;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * Sets the maximum number of target instances allowed in this relation. An unlimited number
+         * is represented by CARDINALITY_MANY.
+         */
+        public void setMaxCardinality(Integer newValue) {
+            for (LinkViewItem linkViewItem : getLinks()) {
+                linkViewItem.getLink().setMaxCardinality(newValue);
+            }
+        }
+
+        public boolean isDefaultEnabled() {
+            return isAllowInput() && !isMandatory();
+        }
+
+        public boolean isMinMaxEnabled() {
+            return isAllowInput() && isOther();
+        }
+
+        private boolean isOther() {
+            return !isOptional() && !isMandatory();
+        }
+
+        private boolean isAllowInput() {
+            return !isEmpty() && isTemplateStatusAllowingInput();
+        }
+
+        private boolean isTemplateStatusAllowingInput() {
+            TemplateValueUiStatus templateValueStatus = getTemplateLinkPmo().getTemplateValueStatus();
+            return templateValueStatus != TemplateValueUiStatus.INHERITED
+                    && templateValueStatus != TemplateValueUiStatus.UNDEFINED;
+        }
+    }
+
+    private enum RadioButtonState {
+        MANDATORY,
+        OPTIONAL,
+        OTHER;
+
+        public static RadioButtonState getStateOf(boolean forceOther, MultiLinkPmo links) {
+            if (forceOther) {
+                return OTHER;
+            } else if (links.isMandatory()) {
+                return MANDATORY;
+            } else if (links.isOptional()) {
+                return OPTIONAL;
+            } else {
+                return OTHER;
+            }
+        }
+
+    }
 }

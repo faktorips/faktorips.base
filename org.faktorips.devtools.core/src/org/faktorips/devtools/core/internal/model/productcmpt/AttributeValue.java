@@ -228,8 +228,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public boolean isConfiguringTemplateValueStatus() {
-        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    public boolean isPartOfTemplateHierarchy() {
+        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
     }
 
     @Override

@@ -44,7 +44,7 @@ public class TemplateValueSettings {
     }
 
     public TemplateValueStatus getStatus() {
-        if (parent.isConfiguringTemplateValueStatus()) {
+        if (parent.isPartOfTemplateHierarchy()) {
             return status;
         } else {
             return TemplateValueStatus.DEFINED;

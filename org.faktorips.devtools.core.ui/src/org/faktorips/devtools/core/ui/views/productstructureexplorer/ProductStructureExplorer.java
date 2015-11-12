@@ -532,11 +532,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             IProductCmptLink currentLink = productCmptReference.getLink();
             boolean canChangeCardinality = false;
             if (currentLink != null) {
-                try {
-                    canChangeCardinality = currentLink.constrainsPolicyCmptTypeAssociation(currentLink.getIpsProject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                canChangeCardinality = currentLink.constrainsPolicyCmptTypeAssociation(currentLink.getIpsProject());
             }
             if (canChangeCardinality && currentLink != null) {
                 MenuManager cardinalitiesSub = new MenuManager(Messages.ProductStructureExplorer_setCardinalities,

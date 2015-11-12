@@ -41,9 +41,9 @@ public class TemplateValuePmoTest {
 
     @Before
     public void setUp() {
-        when(value.getPropertyValueContainer()).thenReturn(container);
+        when(value.getTemplatedPropertyContainer()).thenReturn(container);
         when(container.getTemplate()).thenReturn("qualified.TemplateName");
-        when(templateValue.getPropertyValueContainer()).thenReturn(templateContainer);
+        when(templateValue.getTemplatedPropertyContainer()).thenReturn(templateContainer);
         when(templateContainer.getProductCmpt()).thenReturn(templateContainer);
         when(templateContainer.getName()).thenReturn("TemplateName");
 

@@ -64,6 +64,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return getProductCmptLinkContainer().getProductCmpt();
     }
 
+    /**
+     * @deprecated use {@link #getProductCmptLinkContainer()} instead
+     */
     @Override
     @Deprecated
     public IProductCmptGeneration getProductCmptGeneration() {
@@ -371,17 +374,21 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) {
         if (isDeleted()) {
             return false;
         }
-        IProductCmptTypeAssociation association = findAssociation(ipsProject);
-        if (association == null) {
-            return false;
+        try {
+            IProductCmptTypeAssociation assoc = findAssociation(ipsProject);
+            if (assoc == null) {
+                return false;
+            }
+            IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = assoc
+                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
+            return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
-        IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
-                .findMatchingPolicyCmptTypeAssociation(ipsProject);
-        return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
 
     }
 
@@ -405,9 +412,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         ArgumentCheck.notNull(locale);
 
         String caption = null;
-        IAssociation association = findAssociation(getIpsProject());
-        if (association != null) {
-            caption = association.getLabelValue(locale);
+        IAssociation assoc = findAssociation(getIpsProject());
+        if (assoc != null) {
+            caption = assoc.getLabelValue(locale);
         }
         return caption;
     }
@@ -417,9 +424,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         ArgumentCheck.notNull(locale);
 
         String pluralCaption = null;
-        IAssociation association = findAssociation(getIpsProject());
-        if (association != null) {
-            pluralCaption = association.getPluralLabelValue(locale);
+        IAssociation assoc = findAssociation(getIpsProject());
+        if (assoc != null) {
+            pluralCaption = assoc.getPluralLabelValue(locale);
         }
         return pluralCaption;
     }
@@ -489,7 +496,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public boolean isConfiguringTemplateValueStatus() {
+    public boolean isPartOfTemplateHierarchy() {
         return getProductCmptLinkContainer().isProductTemplate() || getProductCmptLinkContainer().isUsingTemplate();
     }
 

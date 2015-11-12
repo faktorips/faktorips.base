@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -24,7 +25,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -1329,5 +1329,27 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt template = newProductTemplate(ipsProject, "template");
         product.setTemplate(template.getQualifiedName());
         assertThat(product.findTemplate(ipsProject), is(template));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreException {
+        IProductCmpt product = newProductCmpt(ipsProject, "product");
+        product.setTemplate(null);
+
+        assertThat(product.isPartOfTemplateHierarchy(), is(false));
+
+        product.setTemplate("someTemplate");
+        assertThat(product.isPartOfTemplateHierarchy(), is(true));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_template() throws CoreException {
+        IProductCmpt product = newProductTemplate(ipsProject, "product");
+        product.setTemplate(null);
+
+        assertThat(product.isPartOfTemplateHierarchy(), is(true));
+
+        product.setTemplate("parentTemplate");
+        assertThat(product.isPartOfTemplateHierarchy(), is(true));
     }
 }

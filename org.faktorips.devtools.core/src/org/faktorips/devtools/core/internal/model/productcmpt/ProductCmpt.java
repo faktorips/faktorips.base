@@ -838,4 +838,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         return getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
     }
 
+    @Override
+    public boolean isPartOfTemplateHierarchy() {
+        return isProductTemplate() || isUsingTemplate();
+    }
+
 }

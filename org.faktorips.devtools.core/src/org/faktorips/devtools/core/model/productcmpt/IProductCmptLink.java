@@ -211,7 +211,7 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITe
      * 
      * @see IProductCmptTypeAssociation#constrainsPolicyCmptTypeAssociation(IIpsProject)
      */
-    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Returns whether this relation is mandatory. A Relation is mandatory if both minimum and
