@@ -42,6 +42,10 @@ public class Messages extends NLS {
     public static String DeltaType_propertiesWithTypeMismatch;
     public static String DeltaType_ValueSetMismatches;
 
+    public static String ProductCmptValidations_error_inconsistentTemplateType;
+
+    public static String ProductCmptValidations_error_invalidTemplate;
+
     public static String ProductCmptValidations_typeDoesNotExist;
     public static String ProductCmptValidations_typeIsAbstract;
 

@@ -49,6 +49,10 @@ public class ProductCmptViewItem extends IpsSrcFileViewItem {
         }
     }
 
+    public String getTemplateName() {
+        return getProductCmpt().getTemplate();
+    }
+
     public ProductCmptViewItem getParent() {
         return parent;
     }
@@ -72,7 +76,7 @@ public class ProductCmptViewItem extends IpsSrcFileViewItem {
 
     @Override
     public String toString() {
-        return getIpsSrcFile().getName();
+        return getIpsSrcFile().getName() + ", template: " + getTemplateName(); //$NON-NLS-1$
     }
 
 }

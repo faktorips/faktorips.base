@@ -532,6 +532,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("MotorProduct", productCmpt.getProductCmptType());
         assertEquals("MotorProductId", productCmpt.getRuntimeId());
+        assertEquals("MyLittleTemplate", productCmpt.getTemplate());
         assertEquals(2, productCmpt.getNumOfGenerations());
         IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, gen.getNumOfConfigElements());
@@ -547,6 +548,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testToXml() throws CoreException {
         productCmpt.setProductCmptType("MotorProduct");
         productCmpt.setRuntimeId("MotorProductId");
+        productCmpt.setTemplate("MeinTemplate");
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
         IConfigElement ce1 = gen1.newConfigElement();
         ce1.setValue("0.15");
@@ -557,6 +559,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         assertEquals("MotorProduct", copy.getProductCmptType());
         assertEquals("MotorProductId", copy.getRuntimeId());
+        assertEquals("MeinTemplate", productCmpt.getTemplate());
         assertEquals(2, copy.getNumOfGenerations());
         IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, genCopy.getConfigElements().length);
@@ -1201,7 +1204,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsTemplate_notTemplate() throws Exception {
+    public void testIsTemplate_noTemplate() throws Exception {
         ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
 
         assertFalse(product.isTemplate());
@@ -1213,6 +1216,23 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         assertThat(template, instanceOf(IProductCmpt.class));
         assertTrue(((IProductCmpt)template).isTemplate());
+    }
+
+    @Test
+    public void testIsUsingExistingTemplate_missingTemplate() throws Exception {
+        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
+        product.setTemplate("Template");
+
+        assertFalse(product.isUsingExistingTemplate(ipsProject));
+    }
+
+    @Test
+    public void testIsUsingExistingTemplate_existingTemplate() throws Exception {
+        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
+        newProductTemplate(ipsProject, "Template");
+        product.setTemplate("Template");
+
+        assertTrue(product.isUsingExistingTemplate(ipsProject));
     }
 
 }

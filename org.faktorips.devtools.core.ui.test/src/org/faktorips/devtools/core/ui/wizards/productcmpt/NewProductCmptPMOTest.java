@@ -324,7 +324,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         when(ipsSrcFile3.getPropertyValue(IType.PROPERTY_SUPERTYPE)).thenReturn("findSuperType");
 
         when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
-                .thenReturn(ipsSrcFile1);
+        .thenReturn(ipsSrcFile1);
 
         // refresh the list
         pmo.setIpsProject(ipsProject);
@@ -385,7 +385,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         when(ipsSrcFile3.getPropertyValue(IType.PROPERTY_SUPERTYPE)).thenReturn("findSuperType");
 
         when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
-                .thenReturn(ipsSrcFile1);
+        .thenReturn(ipsSrcFile1);
 
         // refresh the list
         pmo.setIpsProject(ipsProject);

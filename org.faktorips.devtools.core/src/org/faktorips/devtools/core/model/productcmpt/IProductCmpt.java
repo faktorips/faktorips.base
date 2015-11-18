@@ -40,6 +40,8 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
+    public static final String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
+
     public static final String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
 
     /**
@@ -59,6 +61,17 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * on is inconsistent.
      */
     public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates if the specified template could not be found
+     */
+    public static final String MSGCODE_INVALID_TEMPLATE = MSGCODE_PREFIX + "InvalidTemplate"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates if the template's type is inconsistent to this
+     * product's type
+     */
+    public static final String MSGCODE_INCONSISTENT_TEMPLATE_TYPE = MSGCODE_PREFIX + "InconsistTemplateType"; //$NON-NLS-1$
 
     /**
      * Validation message code that indicates if the product component has invalid generations. This
@@ -311,5 +324,57 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return <code>true</code> if this is a template, <code>false</code> if not
      */
     public boolean isTemplate();
+
+    /**
+     * Returns <code>true</code> if this product component is using a template. This is the case if
+     * {@link #getTemplate()} returns a non-null value. That does not mean that the referenced
+     * template is a valid template and could be found. Use
+     * {@link #isUsingExistingTemplate(IIpsProject)} to verify that there is realy a template with the
+     * given name.
+     * 
+     * @return <code>true</code> if there is a template specified by this product component
+     */
+    boolean isUsingTemplate();
+
+    /**
+     * Returns <code>true</code> if this product component is using a template. This is the case if
+     * {@link #getTemplate()} returns a valid qualified name and hence
+     * {@link #findTemplate(IIpsProject)} returns a non-null template object.
+     * 
+     * @param ipsProject The project to search the template
+     * @return <code>true</code> if there is a valid template that is used by this product component
+     */
+    boolean isUsingExistingTemplate(IIpsProject ipsProject);
+
+    /**
+     * Returns the template of this product component if it use a template. Returns
+     * <code>null</code> if this product component does not use a template
+     * 
+     * @return The name of the referenced template
+     */
+    public String getTemplate();
+
+    /**
+     * Set the name of the template that should be used by this product component. Set
+     * <code>null</code> to disable the template and tell the product component to specify every
+     * value by its own.
+     * 
+     * @param template The name of the template that should be used by this product component or
+     *            <code>null</code> to not use any template.
+     */
+    public void setTemplate(String template);
+
+    /**
+     * Returns the template object that is used by this product component if this product component
+     * has specified a template. Returns <code>null</code> if no template is specified or the
+     * specified template was not found.
+     * 
+     * @see #getTemplate()
+     * @see #setTemplate(String)
+     * 
+     * @param ipsProject The project that should be used to search for the template
+     * @return The product component that is specified as the template of this product component
+     */
+    IProductCmpt findTemplate(IIpsProject ipsProject);
 
 }

@@ -141,8 +141,9 @@ public class IpsSrcFileCollection {
             return srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
         } else if (srcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE_TYPE)) {
             return srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
+        } else {
+            return null;
         }
-        return null;
     }
 
     private class CollectionItem {
