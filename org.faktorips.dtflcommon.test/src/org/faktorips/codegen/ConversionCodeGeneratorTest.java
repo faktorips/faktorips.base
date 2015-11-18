@@ -37,7 +37,6 @@ public class ConversionCodeGeneratorTest {
         assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.INTEGER));
         assertTrue(codeGenerator.canConvert(Datatype.BOOLEAN, Datatype.PRIMITIVE_BOOLEAN));
         assertTrue(codeGenerator.canConvert(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN));
-        assertTrue(codeGenerator.canConvert(Datatype.DECIMAL, Datatype.INTEGER));
         assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.BIG_DECIMAL));
         assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.DECIMAL));
         assertTrue(codeGenerator.canConvert(Datatype.INTEGER, Datatype.PRIMITIVE_INT));
@@ -91,9 +90,6 @@ public class ConversionCodeGeneratorTest {
 
         assertNotNull(codeGenerator.getConversionCode(Datatype.PRIMITIVE_BOOLEAN, Datatype.BOOLEAN,
                 new JavaCodeFragment("true")));
-
-        assertNotNull(codeGenerator.getConversionCode(Datatype.DECIMAL, Datatype.INTEGER, new JavaCodeFragment(
-                "Decimal.valueOf(2.3)")));
 
         assertNull(codeGenerator.getConversionCode(AnyDatatype.INSTANCE, Datatype.STRING, new JavaCodeFragment(
                 "FromValue")));

@@ -61,6 +61,15 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
     }
 
     @Test
+    public void testOperation_double_minus_double_plus_double() throws Exception {
+        compiler.setConversionCodeGenerator(ConversionCodeGenerator.getDefault());
+        compiler.registerDefaults();
+
+        execAndTestSuccessfull("a - b + c", Decimal.valueOf(0.4), new String[] { "a", "b", "c" }, new Datatype[] {
+            Datatype.DOUBLE, Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { 0.2, 0.3, 0.5 }, Datatype.DECIMAL);
+    }
+
+    @Test
     public void testFunctionResolvingSuccessfull() throws Exception {
         compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("ROUND(2.34; 1)", Decimal.valueOf("2.3"), Datatype.DECIMAL);

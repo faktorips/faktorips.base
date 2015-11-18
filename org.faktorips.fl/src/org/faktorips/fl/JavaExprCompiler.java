@@ -106,12 +106,12 @@ public class JavaExprCompiler extends ExprCompiler<JavaCodeFragment> {
 
         // add operation
         register(new AddIntInt());
+        register(new AddDecimalDecimal());
+        register(new AddMoneyMoney());
         register(new AddDecimalInt());
         register(new AddIntDecimal());
         register(new AddDecimalInteger());
         register(new AddIntegerDecimal());
-        register(new AddDecimalDecimal());
-        register(new AddMoneyMoney());
         register(new AddStringString());
 
         // subtract operation

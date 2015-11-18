@@ -17,7 +17,6 @@ import org.faktorips.codegen.conversion.BigDecimalToDecimalCg;
 import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
 import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
 import org.faktorips.codegen.conversion.DecimalToDoubleCg;
-import org.faktorips.codegen.conversion.DecimalToIntegerCg;
 import org.faktorips.codegen.conversion.DoubleToDecimalCg;
 import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateCg;
 import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateTimeCg;
@@ -70,7 +69,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
     public static final ConversionCodeGenerator<JavaCodeFragment> getDefault() {
         ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
         ccg.add(new BooleanToPrimitiveBooleanCg());
-        ccg.add(new DecimalToIntegerCg());
         ccg.add(new IntegerToBigDecimalCg());
         ccg.add(new IntegerToDecimalCg());
         ccg.add(new IntegerToPrimitiveIntCg());
