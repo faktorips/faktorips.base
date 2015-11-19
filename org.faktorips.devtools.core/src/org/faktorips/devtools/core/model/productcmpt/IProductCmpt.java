@@ -87,6 +87,18 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
 
     /**
+     * Validation message code to indicate that the template hierarchy for this template contains a
+     * cycle.
+     */
+    public static final String MSGCODE_TEMPLATE_CYCLE = MSGCODE_PREFIX + "TemplateCycle"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a template has the same type as its parent template.
+     */
+    public static final String MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE = MSGCODE_PREFIX
+            + "MultipleTemplatesWithSameType"; //$NON-NLS-1$
+
+    /**
      * Returns the product component's generation at the specified index.
      * 
      * @throws IndexOutOfBoundsException if the index is out of bounds.

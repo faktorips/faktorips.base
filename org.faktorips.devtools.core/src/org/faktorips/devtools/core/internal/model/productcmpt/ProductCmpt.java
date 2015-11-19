@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -64,6 +65,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -187,8 +189,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public void setTemplateName(String newTemplate) {
         String oldTemplate = template;
-        template = newTemplate;
-        valueChanged(oldTemplate, newTemplate);
+        this.template = newTemplate;
+        valueChanged(oldTemplate, template);
     }
 
     @Override
@@ -217,11 +219,16 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return;
         }
         validateName(list, ipsProject);
-        if (!isProductTemplate()) {
+        if (isProductTemplate()) {
+            TemplateValidations.validateTemplateCycle(this, list, ipsProject);
+            TemplateValidations.validateTemplateTypeDiffersFromParentTemplate(this, list, ipsProject);
+        } else {
             validateRuntimeId(list, ipsProject);
         }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
+        ProductCmptValidations.validateTemplate(type, getTemplateName(), new ObjectProperty(this,
+                PROPERTY_TEMPLATE_NAME), list, ipsProject);
     }
 
     private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {

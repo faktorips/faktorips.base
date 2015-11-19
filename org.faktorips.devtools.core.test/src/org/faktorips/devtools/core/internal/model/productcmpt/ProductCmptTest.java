@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -215,6 +217,104 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         type.setAbstract(true);
         list = productTemplate.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
+    }
+
+    @Test
+    public void testValidate_TemplateType() throws CoreException {
+        IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
+        IProductCmptType subType = newProductCmptType(baseType, "subType");
+
+        IProductCmpt baseComp = newProductCmpt(baseType, "baseComp");
+        IProductCmpt subComp = newProductCmpt(subType, "subComp");
+
+        IProductCmpt baseTemplate = newProductTemplate(baseType, "baseTemplate");
+        IProductCmpt subTemplate = newProductTemplate(subType, "subTemplate");
+
+        // No template
+        MessageList list = baseComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        // Non existing template
+        baseComp.setTemplateName("noSuchTemplate");
+        list = baseComp.validate(ipsProject);
+        assertThat(list, hasMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        // Consistent type hierarchy
+        baseComp.setTemplateName(baseTemplate.getQualifiedName());
+        list = baseComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        subComp.setTemplateName(baseTemplate.getQualifiedName());
+        list = subComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        subComp.setTemplateName(subTemplate.getQualifiedName());
+        list = subComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        // Inconsistent type hierarchy
+        baseComp.setTemplateName(subTemplate.getQualifiedName());
+        list = baseComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+    }
+
+    @Test
+    public void testValidate_ProductTemplate_TemplateCycle() throws Exception {
+        IProductCmptType type = newProductCmptType(ipsProject, "type");
+        ProductCmpt template1 = newProductTemplate(type, "template1");
+        ProductCmpt template2 = newProductTemplate(type, "template2");
+        ProductCmpt template3 = newProductTemplate(type, "template3");
+
+        // Template has no template hierarchy
+        MessageList list = template1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
+
+        // Template hierarchy without a cycle
+        template1.setTemplateName(template2.getQualifiedName());
+        template2.setTemplateName(template3.getQualifiedName());
+        list = template1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
+
+        // Template hierarchy with a cycle
+        template3.setTemplateName(template1.getQualifiedName());
+        list = template1.validate(ipsProject);
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
+    }
+
+    @Test
+    public void testValidate_ProductTemplate_TemplateTypeShouldBeUniqueInTemplateHierarchy() throws Exception {
+        IProductCmptType type = newProductCmptType(ipsProject, "type");
+        IProductCmptType subType = newProductCmptType(type, "subType");
+
+        ProductCmpt template = newProductTemplate(type, "template");
+        ProductCmpt subTemplate1 = newProductTemplate(subType, "subTemplate1");
+        ProductCmpt subTemplate2 = newProductTemplate(subType, "subTemplate2");
+
+        // Template has no template hierarchy
+        MessageList list = template.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+
+        // Template hierarchy with unique types
+        subTemplate1.setTemplateName(template.getQualifiedName());
+        list = template.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+        list = subTemplate1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+
+        // Template hierarchy contains duplicate types
+        subTemplate2.setTemplateName(subTemplate1.getQualifiedName());
+        list = template.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+        list = subTemplate1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+        list = subTemplate2.validate(ipsProject);
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
     }
 
     @Test
@@ -1204,19 +1304,19 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-            public void testIsProductTemplate_noTemplate() throws Exception {
-                ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
-        
-                assertFalse(product.isProductTemplate());
-            }
+    public void testIsProductTemplate_noTemplate() throws Exception {
+        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
+
+        assertFalse(product.isProductTemplate());
+    }
 
     @Test
-            public void testIsProductTemplate_isTemplate() throws Exception {
-                IIpsObject template = newIpsObject(ipsProject, IpsObjectType.PRODUCT_TEMPLATE, "AnyProdCmpt");
-        
-                assertThat(template, instanceOf(IProductCmpt.class));
-                assertTrue(((IProductCmpt)template).isProductTemplate());
-            }
+    public void testIsProductTemplate_isTemplate() throws Exception {
+        IIpsObject template = newIpsObject(ipsProject, IpsObjectType.PRODUCT_TEMPLATE, "AnyProdCmpt");
+
+        assertThat(template, instanceOf(IProductCmpt.class));
+        assertTrue(((IProductCmpt)template).isProductTemplate());
+    }
 
     @Test
     public void testIsUsingExistingTemplate_missingTemplate() throws Exception {

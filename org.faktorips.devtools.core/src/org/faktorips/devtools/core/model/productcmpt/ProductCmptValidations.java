@@ -92,13 +92,7 @@ public class ProductCmptValidations {
         if (StringUtils.isNotEmpty(templateName)) {
             IProductCmpt template = ipsProject.findProductTemplate(templateName);
             if (template != null) {
-                IProductCmptType templateCmptType = findProductCmptType(template.getProductCmptType(), ipsProject);
-                if (templateCmptType != null) {
-                    if (!isSubtypeOrSame(productCmptType, templateCmptType, ipsProject)) {
-                        list.newError(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE,
-                                Messages.ProductCmptValidations_error_inconsistentTemplateType, templateObjectProperty);
-                    }
-                }
+                validateTemplateType(productCmptType, templateObjectProperty, list, ipsProject, template);
             } else {
                 list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE,
                         NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName),
@@ -107,6 +101,20 @@ public class ProductCmptValidations {
             return template;
         } else {
             return null;
+        }
+    }
+
+    private static void validateTemplateType(IProductCmptType productCmptType,
+            ObjectProperty templateObjectProperty,
+            MessageList list,
+            IIpsProject ipsProject,
+            IProductCmpt template) {
+        IProductCmptType templateCmptType = findProductCmptType(template.getProductCmptType(), ipsProject);
+        if (templateCmptType != null) {
+            if (!isSubtypeOrSame(productCmptType, templateCmptType, ipsProject)) {
+                list.newError(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE,
+                        Messages.ProductCmptValidations_error_inconsistentTemplateType, templateObjectProperty);
+            }
         }
     }
 

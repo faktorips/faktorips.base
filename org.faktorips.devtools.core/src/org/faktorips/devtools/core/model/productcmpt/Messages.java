@@ -53,4 +53,7 @@ public class Messages extends NLS {
 
     public static String DeltaType_invalidGenerations;
 
+    public static String TemplateValidations_error_templateCycle;
+    public static String TemplateValidations_warning_mutlipleTemplatesWithSameType;
+
 }
