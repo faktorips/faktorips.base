@@ -909,6 +909,22 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     protected ProductCmpt newProductCmpt(IProductCmptType type, String qualifiedName) throws CoreException {
         IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
                 IpsObjectType.PRODUCT_CMPT, qualifiedName);
+        return setupProductCmpt(productCmpt, type);
+    }
+
+    /**
+     * Creates a new product template that is based on the given product component type and has one
+     * generation with it's valid from date set 2012-07-18, 00:00:00. The product template is stored
+     * in the same package fragment root as the type. If the qualifiedName includes a package name,
+     * the package is created if it does not already exists.
+     */
+    protected ProductCmpt newProductTemplate(IProductCmptType type, String qualifiedName) throws CoreException {
+        IProductCmpt productCmpt = (IProductCmpt)newIpsObject(type.getIpsPackageFragment().getRoot(),
+                IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
+        return setupProductCmpt(productCmpt, type);
+    }
+
+    private ProductCmpt setupProductCmpt(IProductCmpt productCmpt, IProductCmptType type) throws CoreException {
         productCmpt.setProductCmptType(type.getQualifiedName());
         productCmpt.newGeneration(new GregorianCalendar(2012, 06, 18, 0, 0, 0));
         productCmpt.getIpsSrcFile().save(true, null);
@@ -929,6 +945,14 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
      */
     protected ProductCmpt newProductCmpt(IIpsProject project, String qualifiedName) throws CoreException {
         return (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_CMPT, qualifiedName);
+    }
+
+    /**
+     * Creates a new product template in the project's first package fragment root. If the
+     * qualifiedName includes a package name, the package is created if it does not already exists.
+     */
+    protected ProductCmpt newProductTemplate(IIpsProject project, String qualifiedName) throws CoreException {
+        return (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
     }
 
     /**

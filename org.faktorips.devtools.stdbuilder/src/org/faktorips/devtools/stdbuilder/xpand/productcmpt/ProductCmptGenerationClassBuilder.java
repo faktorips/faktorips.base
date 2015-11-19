@@ -53,7 +53,7 @@ public class ProductCmptGenerationClassBuilder extends ProductClassBuilder<XProd
      * time or not. If the {@link IIpsSrcFile} does not exists we assume it was changing over time
      * to delete previously created java files.
      */
-    private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) throws CoreException {
+    private boolean isChangingOverTime(IIpsSrcFile ipsSrcFile) {
         return !ipsSrcFile.exists()
                 || Boolean.valueOf(ipsSrcFile.getPropertyValue(IProductCmptType.PROPERTY_CHANGING_OVER_TIME));
     }

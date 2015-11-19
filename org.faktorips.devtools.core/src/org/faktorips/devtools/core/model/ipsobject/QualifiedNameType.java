@@ -172,7 +172,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
 
     @Override
     public String toString() {
-        return type + ": " + qualifiedName; //$NON-NLS-1$
+        return type.getDisplayName() + ": " + qualifiedName; //$NON-NLS-1$
     }
 
     /**
@@ -190,7 +190,7 @@ public class QualifiedNameType implements Serializable, Comparable<QualifiedName
         if (type == null) {
             throw new IllegalStateException(
                     "Unable to deserialize this qualified name type because the IpsObjectType could not be resolved: " //$NON-NLS-1$
-                            + type);
+                    + type);
         }
         calculateHashCode();
     }

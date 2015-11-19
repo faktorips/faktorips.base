@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -64,7 +63,7 @@ public class XProductCmptGenerationClassTest {
     private XProductCmptGenerationClass xProductCmptGenerationClass;
 
     @Before
-    public void initMocks() throws CoreException {
+    public void initMocks() {
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getQualifiedName()).thenReturn("ProductCmptType");
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);

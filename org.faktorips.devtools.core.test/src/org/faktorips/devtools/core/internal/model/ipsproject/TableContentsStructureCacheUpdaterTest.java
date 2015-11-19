@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -78,7 +77,7 @@ public class TableContentsStructureCacheUpdaterTest {
     private TableContentsStructureCacheUpdater tableContentUpdaterC;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         when(ipsProjectBase.getIpsModel()).thenReturn(ipsModel);
         when(ipsProjectA.getIpsModel()).thenReturn(ipsModel);
         when(ipsProjectB.getIpsModel()).thenReturn(ipsModel);

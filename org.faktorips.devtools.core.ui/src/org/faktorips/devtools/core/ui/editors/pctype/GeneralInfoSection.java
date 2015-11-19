@@ -59,16 +59,11 @@ public class GeneralInfoSection extends IpsSection {
 
             @Override
             public void linkActivated(HyperlinkEvent event) {
-                try {
-                    IPolicyCmptType supertype = (IPolicyCmptType)policyCmptType.findSupertype(policyCmptType
-                            .getIpsProject());
-                    if (supertype != null) {
-                        IpsUIPlugin.getDefault().openEditor(supertype);
-                    }
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
+                IPolicyCmptType supertype = (IPolicyCmptType)policyCmptType.findSupertype(policyCmptType
+                        .getIpsProject());
+                if (supertype != null) {
+                    IpsUIPlugin.getDefault().openEditor(supertype);
                 }
-
             }
 
         });

@@ -227,7 +227,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         return usedMarkerIds;
     }
 
-    private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateBusinessFunctions(MessageList list, IIpsProject ipsProject) {
         for (int i = 0; i < functions.size(); i++) {
             String function = functions.get(i);
             if (StringUtils.isNotEmpty(function)) {

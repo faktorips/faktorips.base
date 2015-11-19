@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.ipsproject;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -20,6 +21,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -2356,6 +2358,39 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
 
         assertTrue(markerEnums.isEmpty());
+    }
+
+    @Test
+    public void testFindAllProductTemplates_NoTemplateExists() throws CoreException {
+        IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
+        IProductCmptType subType = newProductCmptType(baseType, "subType");
+
+        assertThat(ipsProject.findAllProductTemplates(baseType, true).isEmpty(), is(true));
+        assertThat(ipsProject.findAllProductTemplates(baseType, false).isEmpty(), is(true));
+        assertThat(ipsProject.findAllProductTemplates(subType, true).isEmpty(), is(true));
+        assertThat(ipsProject.findAllProductTemplates(subType, false).isEmpty(), is(true));
+    }
+
+    @Test
+    public void testFindAllProductTemplates_TemplatesExist() throws CoreException {
+        IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
+        IProductCmptType subType = newProductCmptType(baseType, "subType");
+        IIpsSrcFile baseTemplate = newProductTemplate(baseType, "baseTemplate").getIpsSrcFile();
+        IIpsSrcFile subTemplate = newProductTemplate(subType, "subTemplate").getIpsSrcFile();
+
+        assertThat(ipsProject.findAllProductTemplates(baseType, true), hasItems(baseTemplate, subTemplate));
+        assertThat(ipsProject.findAllProductTemplates(baseType, false), hasItem(baseTemplate));
+        assertThat(ipsProject.findAllProductTemplates(subType, true), hasItems(subTemplate));
+        assertThat(ipsProject.findAllProductTemplates(subType, false), hasItems(subTemplate));
+    }
+
+    @Test
+    public void testFindAllProductTemplates_TemplateExistsInReferencedProject() throws CoreException {
+        makeIpsProjectDependOnBaseProjectIndirect(true);
+
+        IProductCmptType type = newProductCmptType(baseProject, "type");
+        IIpsSrcFile template = newProductTemplate(type, "template").getIpsSrcFile();
+        assertThat(ipsProject.findAllProductTemplates(type, false), hasItem(template));
     }
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {

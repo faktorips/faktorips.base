@@ -100,18 +100,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (TRACE) {
             logMethodStarted("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
-        try {
-            checkMissingType();
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        checkMissingType();
         super.checkForInconsistenciesToModel();
         if (TRACE) {
             logMethodFinished("checkForInconsistenciesToModel"); //$NON-NLS-1$
         }
     }
 
-    private void checkMissingType() throws CoreException {
+    private void checkMissingType() {
         // open the select template dialog if the template is missing and the data is changeable
         if (getProductCmpt().findProductCmptType(getIpsProject()) == null && super.computeDataChangeableState()
                 && !IpsPlugin.getDefault().isTestMode()
@@ -135,7 +131,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             return NLS.bind(Messages.ProductCmptEditor_msgFileOutOfSync, filename);
         }
         String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getProductCmpt());
-        return localizedCaption + ": " + getProductCmpt().getName(); //$NON-NLS-1$
+        String name = getProductCmpt().getName();
+        if (getProductCmpt().isTemplate()) {
+            return NLS.bind(Messages.ProductCmptEditor_templateTitle, localizedCaption, name);
+        } else {
+            return NLS.bind(Messages.ProductCmptEditor_productCmptTitle, localizedCaption, name);
+        }
     }
 
     @Override
@@ -182,12 +183,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         if (!super.computeDataChangeableState()) {
             return false;
         }
-        try {
-            return getProductCmpt().findProductCmptType(getIpsProject()) != null;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return false;
-        }
+        return getProductCmpt().findProductCmptType(getIpsProject()) != null;
     }
 
     /**

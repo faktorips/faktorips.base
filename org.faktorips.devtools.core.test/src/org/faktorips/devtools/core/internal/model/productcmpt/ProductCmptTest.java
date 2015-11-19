@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.TableStructure
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.IIpsElement;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -202,6 +204,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_ProductTemplate_TypeMayBeAbstract() throws Exception {
+        IProductCmptType type = newProductCmptType(ipsProject, "Product");
+        ProductCmpt productTemplate = newProductTemplate(ipsProject, "MyTemplate");
+        productTemplate.setProductCmptType(type.getQualifiedName());
+
+        MessageList list = productTemplate.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
+
+        type.setAbstract(true);
+        list = productTemplate.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_ABSTRACT_PRODUCT_CMPT_TYPE));
+    }
+
+    @Test
     public void testValidate_InconsitencyInTypeHierarch() throws Exception {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
@@ -273,6 +289,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         MessageList validationMessages = product1.validate(ipsProject);
         assertNotNull(validationMessages.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+    }
+
+    @Test
+    public void testValidate_DuplicateRuntimeIdIgnoresTemplate() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "ProductType");
+        ProductCmpt product = newProductCmpt(type, "Product1");
+        ProductCmpt template = newProductTemplate(type, "Product2");
+        product.setRuntimeId("Product");
+        template.setRuntimeId("Product");
+
+        MessageList validationMessages = product.validate(ipsProject);
+        MessageList validationMessages2 = template.validate(ipsProject);
+
+        assertNull(validationMessages.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+        assertNull(validationMessages2.getMessageByCode(IIpsProject.MSGCODE_RUNTIME_ID_COLLISION));
+
     }
 
     @Test
@@ -1167,4 +1199,20 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         assertTrue(productCmpt.allowGenerations());
     }
+
+    @Test
+    public void testIsTemplate_notTemplate() throws Exception {
+        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
+
+        assertFalse(product.isTemplate());
+    }
+
+    @Test
+    public void testIsTemplate_isTemplate() throws Exception {
+        IIpsObject template = newIpsObject(ipsProject, IpsObjectType.PRODUCT_TEMPLATE, "AnyProdCmpt");
+
+        assertThat(template, instanceOf(IProductCmpt.class));
+        assertTrue(((IProductCmpt)template).isTemplate());
+    }
+
 }

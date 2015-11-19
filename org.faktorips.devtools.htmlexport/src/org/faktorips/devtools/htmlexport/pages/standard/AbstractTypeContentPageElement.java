@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -159,7 +158,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
 
         TreeNodePageElement baseElement = new TreeNodePageElement(new TreeNodePageElement(new PageElementUtils(
                 getContext()).createLinkPageElement(getContext(), superTypes.get(0), TargetType.CONTENT, superTypes
-                .get(0).getQualifiedName(), true), getContext()), getContext());
+                        .get(0).getQualifiedName(), true), getContext()), getContext());
         TreeNodePageElement element = baseElement;
 
         for (int i = 1; i < superTypes.size(); i++) {
@@ -196,14 +195,7 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
         super.addStructureData();
 
         IType to;
-        try {
-            to = getDocumentedIpsObject().findSupertype(getDocumentedIpsObject().getIpsProject());
-        } catch (CoreException e) {
-            IpsStatus status = new IpsStatus(IStatus.WARNING,
-                    "Error finding Supertype of " + getDocumentedIpsObject().getQualifiedName(), e); //$NON-NLS-1$
-            getContext().addStatus(status);
-            return;
-        }
+        to = getDocumentedIpsObject().findSupertype(getDocumentedIpsObject().getIpsProject());
         if (to == null) {
             return;
         }
@@ -212,9 +204,9 @@ public abstract class AbstractTypeContentPageElement<T extends IType> extends Ab
                 WrapperType.BLOCK,
                 getContext(),
                 new IPageElement[] {
-                        new TextPageElement(getContext().getMessage(
-                                HtmlExportMessages.AbstractTypeContentPageElement_extends)
-                                + " ", getContext()), new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
+                    new TextPageElement(getContext().getMessage(
+                            HtmlExportMessages.AbstractTypeContentPageElement_extends)
+                            + " ", getContext()), new PageElementUtils(getContext()).createLinkPageElement(getContext(), to, TargetType.CONTENT, getContext().getLabel(to), true) })); //$NON-NLS-1$
     }
 
     /**

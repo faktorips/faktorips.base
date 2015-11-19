@@ -28,7 +28,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -118,7 +117,7 @@ public class XProductClassTest {
     }
 
     @Before
-    public void createTypes() throws CoreException {
+    public void createTypes() {
         when(type.getIpsProject()).thenReturn(ipsProject);
         when(superType.getIpsProject()).thenReturn(ipsProject);
         when(superSuperType.getIpsProject()).thenReturn(ipsProject);

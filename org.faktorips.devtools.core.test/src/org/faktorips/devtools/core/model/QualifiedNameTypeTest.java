@@ -145,7 +145,7 @@ public class QualifiedNameTypeTest {
     @Test
     public void testToString() {
         QualifiedNameType type1 = new QualifiedNameType("test", IpsObjectType.POLICY_CMPT_TYPE);
-        assertEquals(type1.toString(), "PolicyCmptType: test");
+        assertEquals(type1.toString(), IpsObjectType.POLICY_CMPT_TYPE.getDisplayName() + ": test");
     }
 
 }

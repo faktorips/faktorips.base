@@ -259,13 +259,8 @@ public class EnumContentPage extends AbstractIpsObjectNewWizardPage implements V
      * <tt>IEnumContent</tt> to be created.
      */
     public IEnumType getEnumType() {
-        try {
-            IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
-            return (IEnumType)root.getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, enumTypeField.getText());
-        } catch (CoreException e) {
-            // Page controls are currently invalid, return null.
-            return null;
-        }
+        IIpsPackageFragmentRoot root = getIpsPackageFragmentRoot();
+        return (IEnumType)root.getIpsProject().findIpsObject(IpsObjectType.ENUM_TYPE, enumTypeField.getText());
     }
 
     /**

@@ -17,7 +17,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -101,7 +100,7 @@ public class ComponentPropertiesSectionTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsValidFromEnabled_typeCanNotBeFound() throws CoreException {
+    public void testIsValidFromEnabled_typeCanNotBeFound() {
         productCmpt = spy(productCmpt);
         when(productCmpt.findProductCmptType(ipsProject)).thenReturn(null);
         ComponentPropertiesPMO pmo = new ComponentPropertiesSection.ComponentPropertiesPMO(productCmpt);

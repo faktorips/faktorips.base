@@ -15,9 +15,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -80,13 +78,9 @@ public abstract class XType extends XClass {
 
     public XType getSupertype() {
         IType superType;
-        try {
-            superType = getType().findSupertype(getIpsProject());
-            if (superType == null) {
-                throw new NullPointerException("Found no supertype for " + getName());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        superType = getType().findSupertype(getIpsProject());
+        if (superType == null) {
+            throw new NullPointerException("Found no supertype for " + getName());
         }
         XType xSuperType = getModelNode(superType, getClass());
         return xSuperType;
@@ -101,17 +95,13 @@ public abstract class XType extends XClass {
     }
 
     public boolean hasNonAbstractSupertype() {
-        try {
-            IType superType = getType().findSupertype(getIpsProject());
-            if (superType == null) {
-                return false;
-            } else {
-                NonAbstractSupertypeFinder finder = new NonAbstractSupertypeFinder(getIpsProject());
-                finder.start(superType);
-                return finder.hasNonAbstractSupertype();
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IType superType = getType().findSupertype(getIpsProject());
+        if (superType == null) {
+            return false;
+        } else {
+            NonAbstractSupertypeFinder finder = new NonAbstractSupertypeFinder(getIpsProject());
+            finder.start(superType);
+            return finder.hasNonAbstractSupertype();
         }
     }
 

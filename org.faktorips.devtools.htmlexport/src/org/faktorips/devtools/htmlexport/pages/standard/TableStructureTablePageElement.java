@@ -12,9 +12,6 @@ package org.faktorips.devtools.htmlexport.pages.standard;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -33,7 +30,7 @@ import org.faktorips.devtools.htmlexport.pages.elements.types.AbstractIpsObjectP
  * a table representing the table structures of the given productCmptType
  */
 public class TableStructureTablePageElement extends
-        AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
+AbstractIpsObjectPartsContainerTablePageElement<ITableStructureUsage> {
 
     private static final String IS_FALSE = "-"; //$NON-NLS-1$
     private static final String IS_TRUE = "X"; //$NON-NLS-1$
@@ -80,13 +77,7 @@ public class TableStructureTablePageElement extends
             ITableStructureUsage tableStructureUsage,
             String tableStructure) {
         IIpsObject ipsObject;
-        try {
-            ipsObject = tableStructureUsage.getIpsProject()
-                    .findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableStructure);
-        } catch (CoreException e) {
-            getContext().addStatus(new IpsStatus(IStatus.ERROR, "Could not find TableStructure " + tableStructure, e)); //$NON-NLS-1$
-            return;
-        }
+        ipsObject = tableStructureUsage.getIpsProject().findIpsObject(IpsObjectType.TABLE_STRUCTURE, tableStructure);
         IPageElement link = new PageElementUtils(getContext()).createLinkPageElement(getContext(), ipsObject,
                 TargetType.CONTENT, tableStructure, true);
         links.add(link);
@@ -103,7 +94,7 @@ public class TableStructureTablePageElement extends
         addHeadlineAndColumnLayout(
                 headline,
                 IpsObjectType.TABLE_CONTENTS.getDisplayName()
-                        + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory),
+                + getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_mandatory),
                 Style.CENTER);
         addHeadlineAndColumnLayout(headline,
                 getContext().getMessage(HtmlExportMessages.ProductCmptTypeContentPageElement_changeableInAdjustment),

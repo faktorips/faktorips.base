@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IAdaptable;
@@ -152,8 +153,13 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * @param settings the dialog settings for this dialog
      */
     protected void loadDialogSettings(IDialogSettings settings) {
-        boolean openEditor = settings.getBoolean(NewProductDefinitionPMO.PROPERTY_OPEN_EDITOR);
-        getPmo().setOpenEditor(openEditor);
+        String openEditorSetting = settings.get(NewProductDefinitionPMO.PROPERTY_OPEN_EDITOR);
+        if (StringUtils.isNotEmpty(openEditorSetting)) {
+            boolean openEditor = Boolean.parseBoolean(openEditorSetting);
+            getPmo().setOpenEditor(openEditor);
+        } else {
+            getPmo().setOpenEditor(true);
+        }
     }
 
     /**

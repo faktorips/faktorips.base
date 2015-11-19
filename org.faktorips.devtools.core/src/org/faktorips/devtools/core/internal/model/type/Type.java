@@ -80,7 +80,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IType findSupertype(IIpsProject ipsProject) throws CoreException {
+    public IType findSupertype(IIpsProject ipsProject) {
         return (IType)ipsProject.findIpsObject(getIpsObjectType(), supertype);
     }
 
@@ -90,7 +90,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public boolean hasExistingSupertype(IIpsProject ipsProject) throws CoreException {
+    public boolean hasExistingSupertype(IIpsProject ipsProject) {
         return findSupertype(ipsProject) != null;
     }
 
@@ -102,7 +102,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) throws CoreException {
+    public boolean isSubtypeOf(IType supertypeCandidate, IIpsProject ipsProject) {
         if (supertypeCandidate == null) {
             return false;
         }
@@ -119,7 +119,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) throws CoreException {
+    public boolean isSubtypeOrSameType(IType candidate, IIpsProject project) {
         if (equals(candidate)) {
             return true;
         }
@@ -401,7 +401,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) throws CoreException {
+    public List<IAttribute> findOverrideAttributeCandidates(IIpsProject ipsProject) {
         IType foundSupertype = findSupertype(ipsProject);
 
         if (foundSupertype == null) {
@@ -462,7 +462,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public ITypeHierarchy getSupertypeHierarchy() throws CoreException {
+    public ITypeHierarchy getSupertypeHierarchy() {
         return TypeHierarchy.getSupertypeHierarchy(this);
     }
 

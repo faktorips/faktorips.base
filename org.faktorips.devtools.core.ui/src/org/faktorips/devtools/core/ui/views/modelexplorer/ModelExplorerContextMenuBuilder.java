@@ -252,7 +252,10 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
             // Product side elements
             if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
-                newMenu.add(new NewProductComponentAction(workbenchWindow));
+                newMenu.add(new NewProductComponentAction(workbenchWindow, false));
+            }
+            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_TEMPLATE)) {
+                newMenu.add(new NewProductComponentAction(workbenchWindow, true));
             }
             if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT)) {
                 newMenu.add(new NewEnumContentAction(workbenchWindow));

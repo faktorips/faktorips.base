@@ -39,7 +39,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
 
     private String name = StringUtils.EMPTY;
 
-    private List<ITableStructure> structuresList = new ArrayList<ITableStructure>();
+    private final List<ITableStructure> structuresList = new ArrayList<ITableStructure>();
 
     private ITableContentUsage addToTableUsage;
 
@@ -94,7 +94,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
     }
 
     private void updateStructuresList(IIpsProject ipsProject) {
-        structuresList = new ArrayList<ITableStructure>();
+        structuresList.clear();
         if (ipsProject == null) {
             return;
         }
@@ -118,7 +118,7 @@ public class NewTableContentsPMO extends NewProductDefinitionPMO {
             IIpsProject ipsProject = tableUsage.getIpsProject();
             ITableStructureUsage tableStructureUsage = tableUsage.findTableStructureUsage(ipsProject);
             String[] tableStructures = tableStructureUsage.getTableStructures();
-            structuresList = new ArrayList<ITableStructure>();
+            structuresList.clear();
             for (String structureName : tableStructures) {
                 QualifiedNameType qNameType = new QualifiedNameType(structureName, IpsObjectType.TABLE_STRUCTURE);
                 IIpsSrcFile tableStructureFile = ipsProject.findIpsSrcFile(qNameType);

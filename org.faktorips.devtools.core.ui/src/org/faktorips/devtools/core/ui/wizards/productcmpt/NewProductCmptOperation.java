@@ -19,7 +19,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -32,7 +31,7 @@ import org.faktorips.devtools.core.util.XmlUtil;
 import org.w3c.dom.Element;
 
 /**
- * Operation that is intended to be used by {@link NewProductCmptWizard} to create the new
+ * Operation that is intended to be used by {@link NewProductWizard} to create the new
  * {@link IIpsSrcFile}.
  */
 public class NewProductCmptOperation extends NewProductDefinitionOperation<NewProductCmptPMO> {
@@ -59,7 +58,7 @@ public class NewProductCmptOperation extends NewProductDefinitionOperation<NewPr
 
     private IIpsSrcFile copyIpsSrcFile(IProgressMonitor monitor) throws CoreException {
         IIpsPackageFragment targetPackageFragment = getPmo().getIpsPackage();
-        String fileName = IpsObjectType.PRODUCT_CMPT.getFileName(getPmo().getName());
+        String fileName = getPmo().getCopyProductCmpt().getIpsObjectType().getFileName(getPmo().getName());
         // @formatter:off
         return targetPackageFragment.createIpsFile(
                 fileName,

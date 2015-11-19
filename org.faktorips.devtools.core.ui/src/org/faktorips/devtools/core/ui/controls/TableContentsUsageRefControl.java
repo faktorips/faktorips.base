@@ -154,13 +154,9 @@ public class TableContentsUsageRefControl extends TextAndSecondControlComposite 
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)object;
             for (String structure : tableStructures) {
                 String tableStructure;
-                try {
-                    tableStructure = ipsSrcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
-                    if (tableStructure != null && tableStructure.equals(structure)) {
-                        return true;
-                    }
-                } catch (CoreException e) {
-                    return false;
+                tableStructure = ipsSrcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
+                if (tableStructure != null && tableStructure.equals(structure)) {
+                    return true;
                 }
             }
             return false;

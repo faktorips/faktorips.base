@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.ui.wizards.productdefinition.TypeSelectionCom
 import org.faktorips.util.message.MessageList;
 
 /**
- * The second page of the {@link NewProductCmptWizard}. In this page you could select the concrete
+ * The second page of the {@link NewProductWizard}. In this page you could select the concrete
  * {@link IProductCmptType} and specify the name, version id and runtime id of the new product
  * component.
  * <p>
@@ -55,8 +55,6 @@ public class ProductCmptPage extends WizardPage {
 
     private BindingContext bindingContext;
 
-    private TypeSelectionComposite typeSelectionComposite;
-
     private ProductCmptPageUiUpdater uiUpdater;
 
     private Text nameText;
@@ -68,6 +66,10 @@ public class ProductCmptPage extends WizardPage {
     private Label versionIdLabel;
 
     private DateControlField<GregorianCalendar> effectiveDateField;
+
+    private TypeAndTemplateSelectionComposite typeAndTemplateSelectionComposite;
+
+    private TypeSelectionComposite typeAndDescriptionSelectionComposite;
 
     public ProductCmptPage(NewProductCmptPMO pmo) {
         super(Messages.ProductCmptPage_name);
@@ -83,9 +85,12 @@ public class ProductCmptPage extends WizardPage {
         GridLayout layout = (GridLayout)composite.getLayout();
         layout.verticalSpacing = 10;
 
-        typeSelectionComposite = new TypeSelectionComposite(composite, toolkit, pmo,
-                NewProductCmptPMO.PROPERTY_SELECTED_TYPE);
-        typeSelectionComposite.setTitle(Messages.ProductCmptPage_label_selectType);
+        typeAndTemplateSelectionComposite = new TypeAndTemplateSelectionComposite(composite, toolkit, pmo);
+        typeAndTemplateSelectionComposite.setTitle(Messages.ProductCmptPage_label_selectTypeAndTemplate);
+
+        typeAndDescriptionSelectionComposite = new TypeSelectionComposite(composite, toolkit, bindingContext, pmo,
+                NewProductCmptPMO.PROPERTY_SELECTED_TYPE, pmo.getSubtypes());
+        typeAndDescriptionSelectionComposite.setTitle(Messages.ProductCmptPage_label_selectType);
 
         toolkit.createHorizonzalLine(composite);
 
@@ -105,7 +110,7 @@ public class ProductCmptPage extends WizardPage {
                 .getChangesOverTimeNamingConvention();
         versionIdLabel = toolkit.createLabel(dateComposite,
                 changesOverTimeNamingConvention.getVersionConceptNameSingular()
-                        + Messages.ProductCmptPage_label_versionSuffix);
+                + Messages.ProductCmptPage_label_versionSuffix);
         versionIdText = toolkit.createText(dateComposite);
 
         toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_runtimeId);
@@ -134,6 +139,11 @@ public class ProductCmptPage extends WizardPage {
                 effectiveDateField.getControl());
         bindingContext.bindVisible(versionIdText, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true,
                 effectiveDateField.getControl());
+
+        bindingContext.bindVisible(typeAndTemplateSelectionComposite, pmo, NewProductCmptPMO.PROPERTY_SHOW_TEMPLATES,
+                true);
+        bindingContext.bindVisible(typeAndDescriptionSelectionComposite, pmo,
+                NewProductCmptPMO.PROPERTY_SHOW_DESCRIPTION, true);
     }
 
     @Override
@@ -202,13 +212,12 @@ public class ProductCmptPage extends WizardPage {
         }
 
         public void updateSelectedBaseType() {
-            getPage().typeSelectionComposite.setListInput(getPmo().getSubtypes());
             IProductCmptType selectedBaseType = getPmo().getSelectedBaseType();
             if (selectedBaseType != null) {
                 getPage().setTitle(
-                        NLS.bind(pmo.isCopyMode() ? Messages.ProductCmptPage_copyTitle
-                                : Messages.ProductCmptPage_title, IpsPlugin.getMultiLanguageSupport()
-                                .getLocalizedLabel(selectedBaseType)));
+                        NLS.bind(
+                                pmo.isCopyMode() ? Messages.ProductCmptPage_copyTitle : Messages.ProductCmptPage_title,
+                                        IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(selectedBaseType)));
             } else {
                 getPage().setTitle(StringUtils.EMPTY);
             }

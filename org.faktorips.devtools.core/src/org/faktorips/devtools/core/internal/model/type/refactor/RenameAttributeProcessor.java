@@ -122,7 +122,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * Updates all references to the {@link IPolicyCmptTypeAttribute} in overwriting attributes of
      * the sub type hierarchy.
      */
-    private void updateSubHierarchyAttributes() throws CoreException {
+    private void updateSubHierarchyAttributes() {
         for (IIpsSrcFile ipsSrcFile : typeSrcFiles) {
             IType cmptType = (IType)ipsSrcFile.getIpsObject();
 
@@ -183,7 +183,7 @@ public final class RenameAttributeProcessor extends IpsRenameProcessor {
      * <p>
      * Only applicable to <tt>IProductCmptTypeAttribute</tt>s.
      */
-    private void updateProductCmptAttributeValueReferences() throws CoreException {
+    private void updateProductCmptAttributeValueReferences() {
         for (IIpsSrcFile ipsSrcFile : productCmptSrcFiles) {
             IProductCmpt productCmpt = (IProductCmpt)ipsSrcFile.getIpsObject();
 

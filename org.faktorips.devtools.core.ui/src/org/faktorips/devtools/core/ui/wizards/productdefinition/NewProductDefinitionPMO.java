@@ -43,7 +43,7 @@ public abstract class NewProductDefinitionPMO extends PresentationModelObject {
 
     private IIpsPackageFragment ipsPackage;
 
-    private boolean openEditor;
+    private boolean openEditor = true;
 
     private GregorianCalendar effectiveDate;
 

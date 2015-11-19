@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.internal.DeferredStructuredContentProvider;
 
 public abstract class AbstractModelStructureContentProvider extends DeferredStructuredContentProvider implements
-ITreeContentProvider {
+        ITreeContentProvider {
 
     /**
      * Provides information about the currently shown {@link IType}s. It will be set by the
@@ -430,12 +430,7 @@ ITreeContentProvider {
                     }
                 }
             }
-            try {
-                return isAssociated(type.findSupertype(project), projectSpecificITypes, allComponentITypes, project,
-                        types);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return isAssociated(type.findSupertype(project), projectSpecificITypes, allComponentITypes, project, types);
         }
     }
 

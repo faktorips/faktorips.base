@@ -31,6 +31,7 @@ public class Messages extends NLS {
     public static String IpsObjectType_nameProductClass;
     public static String IpsObjectType_nameTableStructure;
     public static String IpsObjectType_nameProductComponent;
+    public static String IpsObjectType_nameProductTemplate;
     public static String IpsObjectType_nameTableContents;
     public static String IpsObjectType_nameTestCaseType;
     public static String IpsObjectType_nameTestCase;
@@ -41,6 +42,7 @@ public class Messages extends NLS {
     public static String IpsObjectType_nameProductClassPlural;
     public static String IpsObjectType_nameTableStructurePlural;
     public static String IpsObjectType_nameProductComponentPlural;
+    public static String IpsObjectType_nameProductTemplatePlural;
     public static String IpsObjectType_nameTableContentsPlural;
     public static String IpsObjectType_nameTestCaseTypePlural;
     public static String IpsObjectType_nameTestCasePlural;

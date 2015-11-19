@@ -219,7 +219,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * <p>
      * This is a convenience method for subclasses.
      */
-    protected final IIpsObject findIpsObject(IpsObjectType type) throws CoreException {
+    protected final IIpsObject findIpsObject(IpsObjectType type) {
         for (IIpsProject project : getIpsProjects()) {
             IIpsObject object = project.findIpsObject(type, getText());
             if (object != null) {

@@ -383,9 +383,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder
-                .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
-                        Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
-                        PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
+        .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
+                PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
     private void validateDuplicateDefaultsForTableStructureUsages(MessageList list, IIpsProject ipsProject) {
@@ -617,15 +617,10 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             }
 
             // Sort supertypes towards the beginning
-            try {
-                if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            } catch (CoreException e) {
-                // Consider elements equal if it the subtype relationship cannot be determined
-                return 0;
+            if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
+                return 1;
+            } else {
+                return -1;
             }
         }
 

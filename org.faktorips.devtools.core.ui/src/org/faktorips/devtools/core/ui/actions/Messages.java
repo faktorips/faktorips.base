@@ -79,8 +79,6 @@ public class Messages extends NLS {
     public static String NewResourceNameValidator_suggestedNamePrefixSimple;
     public static String NewResourceNameValidator_suggestedNamePrefixComplex;
 
-    public static String NewProductComponentAction_name;
-
     public static String IpsRefactoringAction_refactoringCurrentlyNotApplicable;
     public static String RenameAction_name;
 

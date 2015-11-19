@@ -54,7 +54,7 @@ public class ProductCmptValidations {
                     IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
             return null;
         }
-        if (type.isAbstract()) {
+        if (!productCmpt.isTemplate() && type.isAbstract()) {
             String text = NLS.bind(
                     org.faktorips.devtools.core.model.productcmpt.Messages.ProductCmptValidations_typeIsAbstract,
                     productCmptTypeName);

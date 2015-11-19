@@ -28,7 +28,7 @@ public class NewProductCmptHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        NewProductComponentAction newProductComponentAction = new NewProductComponentAction(window);
+        NewProductComponentAction newProductComponentAction = new NewProductComponentAction(window, false);
         newProductComponentAction.run();
         return null;
     }

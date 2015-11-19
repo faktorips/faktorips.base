@@ -270,10 +270,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
-     * @throws CoreException if an error occurs while searching for the supertype.
      */
-    public IProductCmptType findSuperProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findSuperProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns all non-derived associations from this type and its super types.

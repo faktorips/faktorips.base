@@ -356,11 +356,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
                 public void run() {
                     ITypeHierarchy hierarchyTree = (ITypeHierarchy)treeViewer.getInput();
                     if (hierarchyTree != null) {
-                        try {
-                            isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTree);
-                        } catch (CoreException e) {
-                            IpsPlugin.log(e);
-                        }
+                        isNodeOfHierarchy(changedIpsSrcFiles, hierarchyTree);
                     }
                 }
             });
@@ -371,8 +367,7 @@ public class IpsHierarchyView extends AbstractShowInSupportingViewPart implement
     /**
      * Test if changed object is part of the hierarchy
      */
-    protected void isNodeOfHierarchy(Set<IIpsSrcFile> ipsSrcFiles, ITypeHierarchy hierarchyTreeViewer)
-            throws CoreException {
+    protected void isNodeOfHierarchy(Set<IIpsSrcFile> ipsSrcFiles, ITypeHierarchy hierarchyTreeViewer) {
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
             String qName = ipsSrcFile.getQualifiedNameType().getName();
             if (hierarchyTreeViewer.isSelectedType(qName) && !ipsSrcFile.exists()) {

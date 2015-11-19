@@ -195,13 +195,9 @@ public class ComponentPropertiesSection extends IpsSection {
                         // if the property changed while the editor is open
                         return;
                     }
-                    try {
-                        IProductCmptType productCmptType = product.findProductCmptType(product.getIpsProject());
-                        if (productCmptType != null) {
-                            IpsUIPlugin.getDefault().openEditor(productCmptType);
-                        }
-                    } catch (CoreException e) {
-                        throw new RuntimeException(e);
+                    IProductCmptType productCmptType = product.findProductCmptType(product.getIpsProject());
+                    if (productCmptType != null) {
+                        IpsUIPlugin.getDefault().openEditor(productCmptType);
                     }
                 }
             });

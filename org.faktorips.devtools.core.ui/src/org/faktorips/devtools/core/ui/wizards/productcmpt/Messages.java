@@ -43,10 +43,12 @@ public class Messages extends NLS {
     public static String ProductCmptPage_label_versionSuffix;
     public static String ProductCmptPage_label_runtimeId;
     public static String ProductCmptPage_label_selectType;
+    public static String ProductCmptPage_label_selectTypeAndTemplate;
     public static String ProductCmptPage_msg_fullName;
     public static String ProductCmptPage_name;
     public static String ProductCmptPage_title;
     public static String ProductCmptPage_copyTitle;
+    public static String TypeSelectionPage_checkboxTemplate;
     public static String TypeSelectionPage_label_project;
     public static String TypeSelectionPage_label_type;
     public static String TypeSelectionPage_name;

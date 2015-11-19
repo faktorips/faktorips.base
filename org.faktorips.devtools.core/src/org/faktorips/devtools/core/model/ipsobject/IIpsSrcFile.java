@@ -103,9 +103,8 @@ public interface IIpsSrcFile extends IIpsElement {
      * the first XML node) and returns the value of the given property, the IPS object is not
      * completely read until {@link #getIpsObject()} method is called.
      * 
-     * @throws CoreException if the file can't be read or it's contents can't be parsed.
      */
-    public String getPropertyValue(String name) throws CoreException;
+    public String getPropertyValue(String name);
 
     /**
      * Returns the IpsObjectType that is contain in this IpsSrcFile.
