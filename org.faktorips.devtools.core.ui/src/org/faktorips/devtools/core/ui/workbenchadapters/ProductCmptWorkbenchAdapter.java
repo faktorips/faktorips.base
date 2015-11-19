@@ -99,7 +99,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
     protected ImageDescriptor getImageDescriptor(IIpsObject ipsObject) {
         if (ipsObject instanceof IProductCmpt) {
             IProductCmpt productCmpt = (IProductCmpt)ipsObject;
-            if (productCmpt.isTemplate()) {
+            if (productCmpt.isProductTemplate()) {
                 return productTemplateIcon;
             } else {
                 return getProductCmptImageDescriptor(productCmpt.findProductCmptType(ipsObject.getIpsProject()));

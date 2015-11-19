@@ -28,6 +28,10 @@ import org.faktorips.util.message.ObjectProperty;
  */
 public class ProductCmptValidations {
 
+    private ProductCmptValidations() {
+        // avoid public constructor for utility class
+    }
+
     /**
      * Checks if the product component type exists and is not abstract.
      * 
@@ -54,7 +58,7 @@ public class ProductCmptValidations {
                     IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
             return null;
         }
-        if (!productCmpt.isTemplate() && type.isAbstract()) {
+        if (!productCmpt.isProductTemplate() && type.isAbstract()) {
             String text = NLS.bind(
                     org.faktorips.devtools.core.model.productcmpt.Messages.ProductCmptValidations_typeIsAbstract,
                     productCmptTypeName);

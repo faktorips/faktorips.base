@@ -11,12 +11,14 @@
 package org.faktorips.devtools.core.ui.controls;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -28,6 +30,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     private boolean includeCmptsForSubtypes = true;
     private IProductCmpt[] toExclude = new IProductCmpt[0];
     private IProductCmptType productCmptType;
+    private boolean searchTemplates;
 
     public ProductCmptRefControl(IIpsProject project, Composite parent, UIToolkit toolkit) {
         this(Arrays.asList(project), parent, toolkit);
@@ -54,8 +57,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
 
         Set<IIpsSrcFile> ipsSrcFiles = new LinkedHashSet<IIpsSrcFile>();
         for (IIpsProject ipsProject : getIpsProjects()) {
-            ipsSrcFiles.addAll(Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType,
-                    includeCmptsForSubtypes)));
+            ipsSrcFiles.addAll(findIpsSrcFiles(ipsProject));
         }
 
         if (ipsSrcFiles.isEmpty()) {
@@ -69,6 +71,18 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         return ipsSrcFiles.toArray(new IIpsSrcFile[ipsSrcFiles.size()]);
     }
 
+    private Collection<? extends IIpsSrcFile> findIpsSrcFiles(IIpsProject ipsProject) {
+        try {
+            if (searchTemplates) {
+                return ipsProject.findAllProductTemplates(productCmptType, includeCmptsForSubtypes);
+            } else {
+                return Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes));
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
+    }
+
     /**
      * Set all product components to exclude from result.
      * 
@@ -80,5 +94,15 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
         } else {
             toExclude = cmpts;
         }
+    }
+
+    /**
+     * Configures this ref-control to search for either product components or templates.
+     * 
+     * @param searchTemplates <code>true</code> to search for product templates instead of product
+     *            components. <code>false</code> to search for product components only (default).
+     */
+    public void setSearchTemplates(boolean searchTemplates) {
+        this.searchTemplates = searchTemplates;
     }
 }

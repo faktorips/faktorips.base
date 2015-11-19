@@ -36,6 +36,8 @@ public class Messages extends NLS {
 
     public static String ComponentPropertiesSection_labelValidFrom;
 
+    public static String ComponentPropertiesSection_TemplateName;
+
     public static String ConfigElementEditComposite_valueSet;
 
     public static String ConfigElementEditComposite_defaultValue;
@@ -80,7 +82,7 @@ public class Messages extends NLS {
 
     public static String RelationEditDialog_cardinalityMax;
 
-    public static String ProductAttributesSection_template;
+    public static String ProductAttributesSection_type;
 
     public static String ProductCmptEditor_productCmptTitle;
 
@@ -120,7 +122,7 @@ public class Messages extends NLS {
 
     public static String SetTemplateDialog_msgTemplateDoesNotExist;
 
-    public static String ProductCmptEditor_msgTemplateNotFound;
+    public static String ProductCmptEditor_msgTypeNotFound;
 
     public static String GenerationEditDialog_titleChangeValidFromDate;
 

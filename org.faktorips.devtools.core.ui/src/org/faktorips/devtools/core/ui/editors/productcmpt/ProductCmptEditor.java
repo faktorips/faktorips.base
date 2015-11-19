@@ -108,13 +108,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     }
 
     private void checkMissingType() {
-        // open the select template dialog if the template is missing and the data is changeable
+        // open the select type dialog if the type is missing and the data is changeable
         if (getProductCmpt().findProductCmptType(getIpsProject()) == null && super.computeDataChangeableState()
                 && !IpsPlugin.getDefault().isTestMode()
                 && !getSettings().getBoolean(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE)) {
-            String msg = NLS
-                    .bind(Messages.ProductCmptEditor_msgTemplateNotFound, getProductCmpt().getProductCmptType());
-            SetTemplateDialog d = new SetTemplateDialog(getProductCmpt(), getSite().getShell(), msg);
+            String msg = NLS.bind(Messages.ProductCmptEditor_msgTypeNotFound, getProductCmpt().getProductCmptType());
+            SetProductCmptTypeDialog d = new SetProductCmptTypeDialog(getProductCmpt(), getSite().getShell(), msg);
             int rc = d.open();
             if (rc == Window.CANCEL) {
                 getSettings().put(getIpsSrcFile(), SETTING_WORK_WITH_MISSING_TYPE, true);
@@ -132,7 +131,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
         }
         String localizedCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getProductCmpt());
         String name = getProductCmpt().getName();
-        if (getProductCmpt().isTemplate()) {
+        if (getProductCmpt().isProductTemplate()) {
             return NLS.bind(Messages.ProductCmptEditor_templateTitle, localizedCaption, name);
         } else {
             return NLS.bind(Messages.ProductCmptEditor_productCmptTitle, localizedCaption, name);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- Test data for ProductCmptTest.java -->
-<ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId" template="MyLittleTemplate">
+<ProductCmpt productCmptType="MotorProduct" runtimeId="MotorProductId" templateName="MyLittleTemplate">
 	<Generation validFrom="2004-01-01">
 		<ConfigElement type="productAttribute" pcTypeAttribute="rate"
 			value="1.5">
