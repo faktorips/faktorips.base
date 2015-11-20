@@ -125,7 +125,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+		    «overrideAnnotationIf((generatePublishedInterfaces && !genInterface()) || constrain)-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
 		    	{
