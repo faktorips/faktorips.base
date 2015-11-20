@@ -108,10 +108,10 @@ public class ComponentPropertiesSection extends IpsSection {
 
         // Initialize the individual rows of the section
         initProductCmptTypeRow(toolkit);
+        initTemplateRow(toolkit);
         initRuntimeIdRow(toolkit);
         initValidFromRow(toolkit);
         initValidToRow(toolkit);
-        initTemplateRow(toolkit);
 
         bind();
 
@@ -221,11 +221,11 @@ public class ComponentPropertiesSection extends IpsSection {
             }
         });
 
-        templateControl = new ProductCmptRefControl(product.getIpsProject(), rootPane, toolkit);
+        templateControl = new ProductCmptRefControl(product.getIpsProject(), rootPane, toolkit, true);
+        templateControl.setProductCmptType(product.findProductCmptType(product.getIpsProject()), true);
         templateControl.setSearchTemplates(true);
         templateControl.setProductCmptsToExclude(new IProductCmpt[] { product });
-
-        editControls.add(templateControl.getTextControl());
+        toolkit.setDataChangeable(templateControl.getTextControl(), false);
     }
 
     private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {

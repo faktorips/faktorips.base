@@ -41,6 +41,15 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
                 Messages.ProductCmptRefControl_description);
     }
 
+    public ProductCmptRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, boolean allowEmptyRef) {
+        this(Arrays.asList(project), parent, toolkit, allowEmptyRef);
+    }
+
+    public ProductCmptRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit, boolean allowEmptyRef) {
+        super(projects, parent, toolkit, Messages.ProductCmptRefControl_title,
+                Messages.ProductCmptRefControl_description, allowEmptyRef);
+    }
+
     /**
      * @param productCmptType The product component type for which product components should be
      *            selectable.
@@ -74,7 +83,7 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
     private Collection<? extends IIpsSrcFile> findIpsSrcFiles(IIpsProject ipsProject) {
         try {
             if (searchTemplates) {
-                return ipsProject.findAllProductTemplates(productCmptType, includeCmptsForSubtypes);
+                return ipsProject.findCompatibleProductTemplates(productCmptType);
             } else {
                 return Arrays.asList(ipsProject.findAllProductCmptSrcFiles(productCmptType, includeCmptsForSubtypes));
             }
@@ -104,5 +113,6 @@ public class ProductCmptRefControl extends IpsObjectRefControl {
      */
     public void setSearchTemplates(boolean searchTemplates) {
         this.searchTemplates = searchTemplates;
+
     }
 }
