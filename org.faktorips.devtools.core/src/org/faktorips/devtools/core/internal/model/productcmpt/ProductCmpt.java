@@ -306,9 +306,13 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             IDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
                     new QualifiedNameType(productCmptType, IpsObjectType.PRODUCT_CMPT_TYPE));
             dependencySet.add(dependency);
-            dependencySet.add(IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                    new QualifiedNameType(template, IpsObjectType.PRODUCT_CMPT)));
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
+        }
+        if (isUsingTemplate()) {
+            IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                    new QualifiedNameType(template, IpsObjectType.PRODUCT_CMPT));
+            dependencySet.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_TEMPLATE_NAME);
         }
 
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencySet, details);
