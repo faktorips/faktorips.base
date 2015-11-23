@@ -15,8 +15,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -302,7 +302,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             return;
         }
         List<IIpsSrcFile> templateSrcFiles;
-        Map<String, ProductCmptViewItem> viewItemNames = new HashMap<String, ProductCmptViewItem>();
+        Map<String, ProductCmptViewItem> viewItemNames = new LinkedHashMap<String, ProductCmptViewItem>();
         if (selectedBaseType != null && selectedType == null) {
             templateSrcFiles = getIpsProject().findAllProductTemplates(selectedBaseType, true);
         } else if (selectedType != null) {
@@ -507,6 +507,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
         initializeNameForProductCmptCopy();
         initializeTypeAndBaseTypeForProductCmptCopy(productCmptToCopy);
+        initializeTemplateForProductCmptCopy(productCmptToCopy);
     }
 
     private void initializeNameForProductCmptCopy() {
@@ -523,6 +524,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         baseTypeVisitor.start(productCmptType);
         setSelectedBaseType(baseTypeVisitor.selectedBaseType);
 
+    }
+
+    private void initializeTemplateForProductCmptCopy(IProductCmpt productCmptToCopy) {
+        IProductCmpt templateOfCopy = productCmptToCopy.findTemplate(productCmptToCopy.getIpsProject());
+        if (templateOfCopy != null) {
+            ProductCmptViewItem templateViewItem = new ProductCmptViewItem(templateOfCopy.getIpsSrcFile());
+            setSelectedTemplate(templateViewItem);
+        }
     }
 
     /**
