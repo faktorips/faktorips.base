@@ -315,7 +315,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             ProductCmptViewItem viewItem = new ProductCmptViewItem(ipsSrcFile);
             viewItemNames.put(viewItem.getName(), viewItem);
         }
-        templates.addAll(viewItemNames.values());
+        for (ProductCmptViewItem cmptViewItem : viewItemNames.values()) {
+            ProductCmptViewItem refTemplate = viewItemNames.get(cmptViewItem.getTemplateName());
+            if (refTemplate != null) {
+                refTemplate.addChild(cmptViewItem);
+            } else {
+                templates.add(cmptViewItem);
+            }
+        }
         if (selectedTemplate != NULL_TEMPLATE && !containsSelectedTemplate()) {
             setSelectedTemplate(NULL_TEMPLATE);
         }
