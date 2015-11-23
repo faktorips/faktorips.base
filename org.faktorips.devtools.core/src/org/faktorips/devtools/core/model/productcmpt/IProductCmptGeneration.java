@@ -24,7 +24,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
-        IProductCmptLinkContainer {
+IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -104,10 +104,10 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * @param ipsProject The IPS project which search path is used to search the type.
      * 
      * @return The product component type this product component generation is based on or
-     *         <code>null</code> if the product component type can't be found.
+     *         {@code null} if the product component type can't be found.
      * 
      * @throws CoreException if an exception occurs while searching for the type.
-     * @throws NullPointerException if ipsProject is <code>null</code>.
+     * @throws NullPointerException if ipsProject is {@code null}.
      */
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
@@ -124,9 +124,9 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IAttributeValue[] getAttributeValues();
 
     /**
-     * Returns the attribute value for the given attribute name. Returns <code>null</code> if this
-     * container has no value for the given attribute. Returns <code>null</code> if attribute is
-     * <code>null</code>.
+     * Returns the attribute value for the given attribute name. Returns {@code null} if this
+     * container has no value for the given attribute. Returns {@code null} if attribute is
+     * {@code null}.
      */
     public IAttributeValue getAttributeValue(String attribute);
 
@@ -137,8 +137,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Creates a new attribute value for the given product component attribute and sets the value to
-     * the default value defined in the attribute. If attribute is <code>null</code> the value is
-     * still created but no reference to the attribute is set.
+     * the default value defined in the attribute. If attribute is {@code null} the value is still
+     * created but no reference to the attribute is set.
      */
     public IAttributeValue newAttributeValue(IProductCmptTypeAttribute attribute);
 
@@ -157,7 +157,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Returns the configuration element that corresponds to the attribute with the given name.
-     * Returns <code>null</code> if no such element exists.
+     * Returns {@code null} if no such element exists.
      */
     public IConfigElement getConfigElement(String attributeName);
 
@@ -167,9 +167,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IConfigElement newConfigElement();
 
     /**
-     * Creates a new configuration element for the given attribute. If attribute is
-     * <code>null</code> no reference to an attribute is set, but the new config element is still
-     * created.
+     * Creates a new configuration element for the given attribute. If attribute is {@code null} no
+     * reference to an attribute is set, but the new config element is still created.
      */
     public IConfigElement newConfigElement(IPolicyCmptTypeAttribute attribute);
 
@@ -239,8 +238,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IFormula[] getFormulas();
 
     /**
-     * Returns the formula with given name or <code>null</code> if no such formula is found. Returns
-     * <code>null</code> if formulaName is <code>null</code>.
+     * Returns the formula with given name or {@code null} if no such formula is found. Returns
+     * {@code null</code> if formulaName is <code>null}.
      */
     public IFormula getFormula(String formulaName);
 
@@ -250,8 +249,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
     public IFormula newFormula();
 
     /**
-     * Creates a new formula based on the given signature. If signature is <code>null</code> the
-     * formula is still created, but no reference to a signature is set.
+     * Creates a new formula based on the given signature. If signature is {@code null} the formula
+     * is still created, but no reference to a signature is set.
      */
     public IFormula newFormula(IProductCmptTypeMethod signature);
 
@@ -263,7 +262,7 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Returns the validation with the given name if defined in this generation. Returns <null> no
-     * validation rule with the given name can be found or if the given name is <code>null</code>.
+     * validation rule with the given name can be found or if the given name is {@code null}.
      */
     public IValidationRuleConfig getValidationRuleConfig(String validationRuleName);
 
@@ -275,8 +274,8 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
 
     /**
      * Creates a new validation rule that configures the given {@link IValidationRule}. If signature
-     * is <code>null</code> the validation rule configuration is still created, but no reference to
-     * an {@link IValidationRule} is set.
+     * is {@code null} the validation rule configuration is still created, but no reference to an
+     * {@link IValidationRule} is set.
      */
     public IValidationRuleConfig newValidationRuleConfig(IValidationRule ruleToBeConfigured);
 
@@ -285,5 +284,12 @@ public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyV
      * component and this product component generation.
      */
     public <T extends IPropertyValue> List<T> getPropertyValuesIncludingProductCmpt(Class<T> type);
+
+    /**
+     * Returns {@code true} if this generation belongs to a product template.
+     * 
+     * @return {@code true} if this generation belongs to a product template {@code false} if not
+     */
+    public boolean isProductTemplateGeneration();
 
 }
