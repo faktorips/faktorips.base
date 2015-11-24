@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -771,4 +772,19 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertFalse(propertyValuesGen.contains(valueA2));
     }
 
+    @Test
+    public void testIsTemplate_default() {
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isProductTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsTemplate_true() throws CoreException {
+        IProductCmpt template = newProductTemplate(ipsProject, "Template");
+        template.newGeneration();
+        IProductCmptGeneration gen = template.getProductCmptGeneration(0);
+
+        assertThat(gen.isProductTemplate(), is(true));
+    }
 }

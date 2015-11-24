@@ -286,10 +286,17 @@ IProductCmptLinkContainer {
     public <T extends IPropertyValue> List<T> getPropertyValuesIncludingProductCmpt(Class<T> type);
 
     /**
-     * Returns {@code true} if this generation belongs to a product template.
+     * Returns the generation of the template that is used by this generation if this generation's
+     * product component has specified a template. Returns {@code null} if no template is specified
+     * or the specified template was not found.
      * 
-     * @return {@code true} if this generation belongs to a product template {@code false} if not
+     * @see IProductCmpt#getTemplate()
+     * @see IProductCmpt#setTemplate(String)
+     * 
+     * @param ipsProject The project that should be used to search for the template
+     * @return The generation of the specified template of this generation
      */
-    public boolean isProductTemplateGeneration();
+    @Override
+    IProductCmptGeneration findTemplate(IIpsProject ipsProject);
 
 }

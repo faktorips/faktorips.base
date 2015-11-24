@@ -10,9 +10,13 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -29,6 +33,7 @@ import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateStatus;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -38,6 +43,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -253,4 +259,41 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertEquals(1, messageList.size());
         assertEquals(IAttributeValue.MSGCODE_HIDDEN_ATTRIBUTE, messageList.getMessage(0).getCode());
     }
+
+    @Test
+    public void setTemplateStatus() {
+        attrValue.setTemplateStatus(TemplateStatus.UNDEFINED);
+        assertThat(attrValue.getTemplateStatus(), is(TemplateStatus.UNDEFINED));
+    }
+
+    @Test
+    public void getTemplateStatus_defaultValue() {
+        assertThat(attrValue.getTemplateStatus(), is(TemplateStatus.DEFINED));
+    }
+
+    @Test
+    public void validateTemplateStatus_excludedNotAllowedForProductCmpt() throws CoreException {
+        attrValue.setTemplateStatus(TemplateStatus.UNDEFINED);
+
+        assertThat(attrValue.validate(ipsProject), hasMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
+    }
+
+    @Test
+    @Ignore
+    public void validateTemplateStatus_inheritedOnlyIfInheritablePropertyExists() throws CoreException {
+        ProductCmpt template = newProductTemplate(ipsProject, "Template");
+        template.newGeneration();
+        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
+        IAttributeValue templateAV = templateGen.newAttributeValue(attribute);
+        templateAV.setTemplateStatus(TemplateStatus.DEFINED);
+
+        productCmpt.setTemplate("Template");
+        attrValue.setTemplateStatus(TemplateStatus.INHERITED);
+
+        assertThat(attrValue.validate(ipsProject), lacksMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
+
+        productCmpt.setTemplate("invalid template");
+        assertThat(attrValue.validate(ipsProject), hasMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
+    }
+
 }

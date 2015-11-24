@@ -61,13 +61,13 @@ public class TypeValidations {
                 return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_EXISTS, NLS.bind(
                         Messages.Type_msgOtherTypeWithSameQNameInSameProject, otherIpsObjectType.getDisplayName()),
                         Message.ERROR, thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
-                : new ObjectProperty[0]);
+                                : new ObjectProperty[0]);
             }
             return new Message(IType.MSGCODE_OTHER_TYPE_WITH_SAME_NAME_IN_DEPENDENT_PROJECT_EXISTS, NLS.bind(
                     Messages.Type_msgOtherTypeWithSameQNameInDependentProject,
                     new Object[] { otherIpsObjectType.getId(), file.getIpsProject() }), Message.WARNING,
                     thisType != null ? new ObjectProperty[] { new ObjectProperty(thisType, null) }
-            : new ObjectProperty[0]);
+                            : new ObjectProperty[0]);
 
         }
         return null;
@@ -127,7 +127,7 @@ public class TypeValidations {
         }
 
         private boolean isNull(IType currentType) {
-            return currentType.findSupertype(ipsProject) != null;
+            return currentType.findSupertype(getIpsProject()) != null;
         }
 
     }

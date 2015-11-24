@@ -120,7 +120,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
         IProductCmpt newProductCmpt = (IProductCmpt)newSrcFile.getIpsObject();
         assertEquals("testRuntimeId", newProductCmpt.getRuntimeId());
         assertEquals("TestProductCmptType", newProductCmpt.getProductCmptType());
-        assertEquals("template", newProductCmpt.getTemplateName());
+        assertEquals("template", newProductCmpt.getTemplate());
     }
 
     @Test

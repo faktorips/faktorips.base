@@ -183,7 +183,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
             }
         } else if (selected instanceof IProductCmptGeneration) {
             IProductCmptGeneration gen = (IProductCmptGeneration)selected;
-            if (gen.isProductTemplateGeneration()) {
+            if (gen.isProductTemplate()) {
                 addProductTemplateActions(manager);
             } else {
                 addProductComponentActions(manager);

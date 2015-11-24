@@ -131,13 +131,13 @@ public class XDetailToMasterDerivedUnionAssociation extends XDerivedUnionAssocia
                     if (asso != detailToMasterDU && asso.isCompositionDetailToMaster()) {
                         if (asso.isSharedAssociation()) {
                             IPolicyCmptTypeAssociation sharedAssociationHost = asso
-                                    .findSharedAssociationHost(ipsProject);
+                                    .findSharedAssociationHost(getIpsProject());
                             if (sharedAssociationHost.equals(detailToMasterDU)) {
                                 foundSubset = true;
                                 return false;
                             }
                         } else {
-                            IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(ipsProject);
+                            IPolicyCmptTypeAssociation masterToDetail = asso.findInverseAssociation(getIpsProject());
                             if (!masterToDetail.isDerivedUnion()
                                     && masterToDetail.getSubsettedDerivedUnion().equals(
                                             detailToMasterDU.getInverseAssociation())) {

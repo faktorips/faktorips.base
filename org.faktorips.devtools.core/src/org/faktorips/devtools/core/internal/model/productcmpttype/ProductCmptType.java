@@ -827,7 +827,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
                 if (!matchingPolicyCmptTypeAssociations.getPolicyCmptType().isConfigurableByProductCmptType()) {
                     IpsObjectDependency dependency = IpsObjectDependency.createReferenceDependency(
                             getQualifiedNameType(), matchingPolicyCmptTypeAssociations.getPolicyCmptType()
-                            .getQualifiedNameType());
+                                    .getQualifiedNameType());
                     dependencies.add(dependency);
                 }
             }
@@ -1388,7 +1388,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
             IPolicyCmptType policyCmptType;
             try {
-                policyCmptType = currentType.findPolicyCmptType(ipsProject);
+                policyCmptType = currentType.findPolicyCmptType(getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }
@@ -1548,7 +1548,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         @Override
         protected IType getMatchingType(IType currentType) {
             try {
-                return ((IProductCmptType)currentType).findPolicyCmptType(ipsProject);
+                return ((IProductCmptType)currentType).findPolicyCmptType(getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

@@ -173,7 +173,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public boolean isUsingTemplate() {
-        return StringUtils.isNotEmpty(getTemplateName());
+        return StringUtils.isNotEmpty(getTemplate());
     }
 
     @Override
@@ -182,12 +182,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public String getTemplateName() {
+    public String getTemplate() {
         return template;
     }
 
     @Override
-    public void setTemplateName(String newTemplate) {
+    public void setTemplate(String newTemplate) {
         String oldTemplate = template;
         this.template = newTemplate;
         valueChanged(oldTemplate, template);
@@ -227,7 +227,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
-        ProductCmptValidations.validateTemplate(type, getTemplateName(), new ObjectProperty(this,
+        ProductCmptValidations.validateTemplate(type, getTemplate(), new ObjectProperty(this,
                 PROPERTY_TEMPLATE_NAME), list, ipsProject);
     }
 
@@ -491,6 +491,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         return propertyValueCollection.getPropertyValue(propertyName);
+    }
+
+    @Override
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
+        return propertyValueCollection.getPropertyValue(type, propertyName);
     }
 
     @Override

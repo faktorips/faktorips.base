@@ -9,10 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.model.productcmpt;
 
-import java.util.Set;
-
-import com.google.common.collect.Sets;
-
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -39,8 +35,9 @@ public class TemplateValidations {
         if (template == null || !template.isProductTemplate()) {
             return;
         }
-        TemplateCycleDetectionVisitor visitor = new TemplateCycleDetectionVisitor();
-        if (visitor.detectCylce(template, ipsProject)) {
+        TemplateCycleDetectionVisitor visitor = new TemplateCycleDetectionVisitor(ipsProject);
+        visitor.start(template);
+        if (visitor.cycleDetected()) {
             String text = NLS.bind(Messages.TemplateValidations_error_templateCycle, template);
             ObjectProperty templateProperty = new ObjectProperty(template, IProductCmpt.PROPERTY_TEMPLATE_NAME);
             list.newError(IProductCmpt.MSGCODE_TEMPLATE_CYCLE, text, templateProperty);
@@ -121,27 +118,15 @@ public class TemplateValidations {
     }
 
     /** Visitor that detects a cycle in a template's template hierarchy. */
-    private static class TemplateCycleDetectionVisitor {
+    private static class TemplateCycleDetectionVisitor extends TemplateHierarchyVisitor {
 
-        public boolean detectCylce(IProductCmpt template, IIpsProject ipsProject) {
-            Set<IProductCmpt> visitedTemplates = Sets.newHashSet();
-            return detectCycle(template, visitedTemplates, ipsProject);
+        public TemplateCycleDetectionVisitor(IIpsProject ipsProject) {
+            super(ipsProject);
         }
 
-        private boolean detectCycle(IProductCmpt template, Set<IProductCmpt> visitedTemplates, IIpsProject ipsProject) {
-            if (template == null) {
-                return false;
-            }
-
-            IProductCmpt templatesTemplate = template.findTemplate(ipsProject);
-            if (templatesTemplate == null) {
-                return false;
-            } else if (visitedTemplates.contains(templatesTemplate)) {
-                return true;
-            } else {
-                visitedTemplates.add(template);
-                return detectCycle(templatesTemplate, visitedTemplates, ipsProject);
-            }
+        @Override
+        protected boolean visit(IPropertyValueContainer currentType) {
+            return true;
         }
 
     }

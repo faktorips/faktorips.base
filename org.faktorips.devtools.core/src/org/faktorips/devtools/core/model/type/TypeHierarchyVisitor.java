@@ -37,7 +37,7 @@ public abstract class TypeHierarchyVisitor<T extends IType> extends HierarchyVis
      * Returns the types visited by the visitor in the order they were visited.
      */
     public IType[] getVisitedTypes() {
-        return visitedTypes.toArray(new IType[visitedTypes.size()]);
+        return getVisitedTypesAsSet().toArray(new IType[getVisitedTypesAsSet().size()]);
     }
 
     @Override

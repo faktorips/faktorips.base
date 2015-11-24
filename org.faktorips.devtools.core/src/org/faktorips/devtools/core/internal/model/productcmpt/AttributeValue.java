@@ -50,8 +50,10 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     private IValueHolder<?> valueHolder;
 
+    private TemplateStatusHandler templateStatusHandler = new TemplateStatusHandler();
+
     public AttributeValue(IPropertyValueContainer parent, String id) {
-        this(parent, id, ""); //$NON-NLS-1$ 
+        this(parent, id, ""); //$NON-NLS-1$
     }
 
     public AttributeValue(IPropertyValueContainer parent, String id, String attribute) {
@@ -168,11 +170,30 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public IAttributeValue findTemplateProperty(IIpsProject ipsProject) {
+        TemplatePropertyFinder<IAttributeValue> templateFinder = new TemplatePropertyFinder<IAttributeValue>(this,
+                IAttributeValue.class, ipsProject);
+        templateFinder.start(getPropertyValueContainer());
+        return templateFinder.getPropertyValue();
+    }
+
+    @Override
+    public TemplateStatus getTemplateStatus() {
+        return templateStatusHandler.getTemplateStatus();
+    }
+
+    @Override
+    public void setTemplateStatus(TemplateStatus status) {
+        templateStatusHandler.setTemplateStatus(status);
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
         Element valueEl = XmlUtil.getFirstElement(element, ValueToXmlHelper.XML_TAG_VALUE);
         valueHolder = AbstractValueHolder.initValueHolder(this, valueEl);
+        templateStatusHandler.initPropertiesFromXml(element);
     }
 
     @Override
@@ -184,6 +205,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             Element valueElement = valueHolder.toXml(ownerDocument);
             element.appendChild(valueElement);
         }
+        templateStatusHandler.propertiesToXml(element);
     }
 
     @Override
@@ -213,6 +235,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         MessageList validateValue = valueHolder.validate(ipsProject);
         list.add(validateValue);
         attrIsHiddenMismatch(attr, list);
+        list.add(templateStatusHandler.validate(this, ipsProject));
     }
 
     /**
