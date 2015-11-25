@@ -227,8 +227,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
-        ProductCmptValidations.validateTemplate(type, getTemplate(), new ObjectProperty(this,
-                PROPERTY_TEMPLATE_NAME), list, ipsProject);
+        ProductCmptValidations.validateTemplate(type, getTemplate(), new ObjectProperty(this, PROPERTY_TEMPLATE_NAME),
+                list, ipsProject);
     }
 
     private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {

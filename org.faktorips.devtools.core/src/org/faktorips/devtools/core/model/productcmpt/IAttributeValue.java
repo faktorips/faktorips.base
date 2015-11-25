@@ -11,7 +11,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.TemplateStatusHandler;
+import org.faktorips.devtools.core.internal.model.productcmpt.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 
@@ -32,7 +32,7 @@ public interface IAttributeValue extends IPropertyValue {
 
     public static final String PROPERTY_VALUE_HOLDER = "valueHolder"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TEMPLATE_STATUS = "templateStatus"; //$NON-NLS-1$
+    public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -76,7 +76,7 @@ public interface IAttributeValue extends IPropertyValue {
     /**
      * Validation message code to indicate that this property value's template status is invalid.
      * 
-     * @see TemplateStatusHandler
+     * @see TemplateValueSettings
      */
     public static final String MSGCODE_INVALID_TEMPLATE_STATUS = MSGCODE_PREFIX + "InvalidTemplateStatus"; //$NON-NLS-1$
 
@@ -136,13 +136,15 @@ public interface IAttributeValue extends IPropertyValue {
     public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the current template state of this property value, that specifies whether the value
-     * is inherited from a template or it is defined in this object.
+     * Returns the current template status of this property value. It specifies whether a value is
+     * is defined in this object or inherited from a template.
      * 
      * @return this property value's template status (e.g. whether it is inherited from a parent
      *         template or not).
+     * 
+     * @see TemplateValueStatus
      */
-    public TemplateStatus getTemplateStatus();
+    public TemplateValueStatus getTemplateValueStatus();
 
     /**
      * Sets this property value's template status (e.g. whether it is inherited from a parent
@@ -150,12 +152,31 @@ public interface IAttributeValue extends IPropertyValue {
      * 
      * @param status the new template status
      */
-    public void setTemplateStatus(TemplateStatus status);
+    public void setTemplateValueStatus(TemplateValueStatus status);
+
+    /**
+     * Finds the property value in the template hierarchy (parent or grand*-parent template) that
+     * has the status {@link TemplateValueStatus#DEFINED} and thus is used as a template value for
+     * this property value.
+     * 
+     * If there is no template or no parent template defines such a property value, this method
+     * returns <code>null</code>.
+     * 
+     * Note: This method does <em>not</em> find the property value that provides the actual value.
+     * Instead it finds the closest template value. E.g. in case this property value overrides a
+     * value from its template, this method still finds the template property value (even though the
+     * value is overridden).
+     * 
+     * @param ipsProject The {@link IIpsProject} used to search the template hierarchy
+     * @return the property that should be used as template or <code>null</code> if there is no such
+     *         property.
+     */
+    public IAttributeValue findTemplateProperty(IIpsProject ipsProject);
 
     /**
      * Defines the status of a property value with regard to the template hierarchy it is used in.
      */
-    public enum TemplateStatus {
+    public enum TemplateValueStatus {
 
         /**
          * Indicates that a property's value is explicitly defined. Regarding a template hierarchy
@@ -167,12 +188,7 @@ public interface IAttributeValue extends IPropertyValue {
          * Indicates that no property value is defined explicitly, instead the value from the parent
          * template is used or "inherited".
          */
-        INHERITED("inherited") { //$NON-NLS-1$
-            @Override
-            public boolean isInherited() {
-                return true;
-            }
-        },
+        INHERITED("inherited"), //$NON-NLS-1$
 
         /**
          * For template property values only. Indicates that the property will not be used by this
@@ -180,21 +196,21 @@ public interface IAttributeValue extends IPropertyValue {
          * templates or product components can no longer inherit said value and must define it
          * explicitly.
          */
-        UNDEFINED("excluded"); //$NON-NLS-1$
+        UNDEFINED("undefined"); //$NON-NLS-1$
 
         private String xmlValue;
 
-        private TemplateStatus(String xmlValue) {
+        private TemplateValueStatus(String xmlValue) {
             this.xmlValue = xmlValue;
         }
 
-        public static TemplateStatus valueOfXml(String stringValue, TemplateStatus fallbackStatus) {
-            if (TemplateStatus.DEFINED.xmlValue.equals(stringValue)) {
-                return TemplateStatus.DEFINED;
-            } else if (TemplateStatus.INHERITED.xmlValue.equals(stringValue)) {
-                return TemplateStatus.INHERITED;
-            } else if (TemplateStatus.UNDEFINED.xmlValue.equals(stringValue)) {
-                return TemplateStatus.UNDEFINED;
+        public static TemplateValueStatus valueOfXml(String stringValue, TemplateValueStatus fallbackStatus) {
+            if (TemplateValueStatus.DEFINED.xmlValue.equals(stringValue)) {
+                return TemplateValueStatus.DEFINED;
+            } else if (TemplateValueStatus.INHERITED.xmlValue.equals(stringValue)) {
+                return TemplateValueStatus.INHERITED;
+            } else if (TemplateValueStatus.UNDEFINED.xmlValue.equals(stringValue)) {
+                return TemplateValueStatus.UNDEFINED;
             } else {
                 return fallbackStatus;
             }
@@ -204,20 +220,5 @@ public interface IAttributeValue extends IPropertyValue {
             return xmlValue;
         }
 
-        public boolean isInherited() {
-            return false;
-        }
-
     }
-
-    /**
-     * Finds the property value in the template hierarchy that has the status
-     * {@link TemplateStatus#DEFINED} and is used as a template value. If there is no template or no
-     * property value with the appropriate status this method returns <code>null</code>.
-     * 
-     * @param ipsProject The {@link IIpsProject} used to search the template hierarchy
-     * @return the property that should be used as template or <code>null</code> if there is no such
-     *         property.
-     */
-    public IAttributeValue findTemplateProperty(IIpsProject ipsProject);
 }

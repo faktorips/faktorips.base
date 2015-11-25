@@ -33,7 +33,7 @@ import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateStatus;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -43,7 +43,6 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -157,6 +156,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attrValue.initFromXml(el);
         assertEquals("rate", attrValue.getAttribute());
         assertEquals("42", attrValue.getPropertyValue());
+        assertEquals(TemplateValueStatus.INHERITED, attrValue.getTemplateValueStatus());
     }
 
     @Test
@@ -164,12 +164,14 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         Document doc = newDocument();
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "42"));
         attrValue.setAttribute("rate");
+        attrValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         Element el = attrValue.toXml(doc);
 
         IAttributeValue copy = generation.newAttributeValue();
         copy.initFromXml(el);
         assertEquals("rate", copy.getAttribute());
         assertEquals("42", copy.getPropertyValue());
+        assertEquals(TemplateValueStatus.INHERITED, copy.getTemplateValueStatus());
     }
 
     @Test
@@ -262,33 +264,31 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void setTemplateStatus() {
-        attrValue.setTemplateStatus(TemplateStatus.UNDEFINED);
-        assertThat(attrValue.getTemplateStatus(), is(TemplateStatus.UNDEFINED));
+        attrValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertThat(attrValue.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
     }
 
     @Test
     public void getTemplateStatus_defaultValue() {
-        assertThat(attrValue.getTemplateStatus(), is(TemplateStatus.DEFINED));
+        assertThat(attrValue.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
     public void validateTemplateStatus_excludedNotAllowedForProductCmpt() throws CoreException {
-        attrValue.setTemplateStatus(TemplateStatus.UNDEFINED);
+        attrValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         assertThat(attrValue.validate(ipsProject), hasMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
     }
 
     @Test
-    @Ignore
     public void validateTemplateStatus_inheritedOnlyIfInheritablePropertyExists() throws CoreException {
-        ProductCmpt template = newProductTemplate(ipsProject, "Template");
-        template.newGeneration();
+        ProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IAttributeValue templateAV = templateGen.newAttributeValue(attribute);
-        templateAV.setTemplateStatus(TemplateStatus.DEFINED);
+        templateAV.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        productCmpt.setTemplate("Template");
-        attrValue.setTemplateStatus(TemplateStatus.INHERITED);
+        productCmpt.setTemplate(template.getQualifiedName());
+        attrValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         assertThat(attrValue.validate(ipsProject), lacksMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
 

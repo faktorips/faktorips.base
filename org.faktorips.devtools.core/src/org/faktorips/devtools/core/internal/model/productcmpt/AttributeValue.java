@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +51,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     private IValueHolder<?> valueHolder;
 
-    private TemplateStatusHandler templateStatusHandler = new TemplateStatusHandler();
+    private TemplateValueSettings templateValueSettings = new TemplateValueSettings();
 
     public AttributeValue(IPropertyValueContainer parent, String id) {
         this(parent, id, ""); //$NON-NLS-1$
@@ -178,22 +179,12 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public TemplateStatus getTemplateStatus() {
-        return templateStatusHandler.getTemplateStatus();
-    }
-
-    @Override
-    public void setTemplateStatus(TemplateStatus status) {
-        templateStatusHandler.setTemplateStatus(status);
-    }
-
-    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
         Element valueEl = XmlUtil.getFirstElement(element, ValueToXmlHelper.XML_TAG_VALUE);
         valueHolder = AbstractValueHolder.initValueHolder(this, valueEl);
-        templateStatusHandler.initPropertiesFromXml(element);
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
@@ -205,7 +196,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             Element valueElement = valueHolder.toXml(ownerDocument);
             element.appendChild(valueElement);
         }
-        templateStatusHandler.propertiesToXml(element);
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
@@ -235,7 +226,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         MessageList validateValue = valueHolder.validate(ipsProject);
         list.add(validateValue);
         attrIsHiddenMismatch(attr, list);
-        list.add(templateStatusHandler.validate(this, ipsProject));
+        list.add(templateValueSettings.validate(this, ipsProject));
     }
 
     /**
@@ -281,4 +272,15 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
 
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getTemplateStatus();
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        TemplateValueStatus oldValue = templateValueSettings.getTemplateStatus();
+        templateValueSettings.setTemplateStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
+    }
 }

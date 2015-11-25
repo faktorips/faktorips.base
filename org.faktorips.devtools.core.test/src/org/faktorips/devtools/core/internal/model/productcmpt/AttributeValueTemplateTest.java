@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateStatus;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Before;
@@ -95,26 +95,26 @@ public class AttributeValueTemplateTest extends AbstractIpsPluginTest {
         superTemplate.newPropertyValue(attrZ);
 
         superA = superTemplate.getAttributeValue("a");
-        superA.setTemplateStatus(TemplateStatus.DEFINED);
+        superA.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         superA.setValueHolder(new SingleValueHolder(superA, "5"));
 
         superB = superTemplate.getAttributeValue("b");
-        superB.setTemplateStatus(TemplateStatus.UNDEFINED);
+        superB.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         superC = superTemplate.getAttributeValue("c");
-        superC.setTemplateStatus(TemplateStatus.DEFINED);
+        superC.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         superC.setValueHolder(new SingleValueHolder(superC, "42"));
 
         superX = superTemplate.getAttributeValue("x");
-        superX.setTemplateStatus(TemplateStatus.DEFINED);
+        superX.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         superX.setValueHolder(new SingleValueHolder(superX, "23"));
 
         superY = superTemplate.getAttributeValue("y");
-        superY.setTemplateStatus(TemplateStatus.DEFINED);
+        superY.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         superY.setValueHolder(new SingleValueHolder(superY, "13"));
 
         superZ = superTemplate.getAttributeValue("z");
-        superZ.setTemplateStatus(TemplateStatus.DEFINED);
+        superZ.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         superZ.setValueHolder(new SingleValueHolder(superZ, "8"));
     }
 
@@ -127,24 +127,24 @@ public class AttributeValueTemplateTest extends AbstractIpsPluginTest {
         regularTemplate.newPropertyValue(attrZ);
 
         regularA = regularTemplate.getAttributeValue("a");
-        regularA.setTemplateStatus(TemplateStatus.UNDEFINED);
+        regularA.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         regularB = regularTemplate.getAttributeValue("b");
-        regularB.setTemplateStatus(TemplateStatus.DEFINED);
+        regularB.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         regularB.setValueHolder(new SingleValueHolder(regularB, "6"));
 
         regularC = regularTemplate.getAttributeValue("c");
-        regularC.setTemplateStatus(TemplateStatus.DEFINED);
+        regularC.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         regularC.setValueHolder(new SingleValueHolder(regularC, "42"));
 
         regularX = regularTemplate.getAttributeValue("x");
-        regularX.setTemplateStatus(TemplateStatus.INHERITED);
+        regularX.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         regularY = regularTemplate.getAttributeValue("y");
-        regularY.setTemplateStatus(TemplateStatus.UNDEFINED);
+        regularY.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         regularZ = regularTemplate.getAttributeValue("z");
-        regularZ.setTemplateStatus(TemplateStatus.DEFINED);
+        regularZ.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         regularZ.setValueHolder(new SingleValueHolder(regularZ, "6"));
     }
 
@@ -157,24 +157,24 @@ public class AttributeValueTemplateTest extends AbstractIpsPluginTest {
         productCmpt.newPropertyValue(attrZ);
 
         prodCmptA = productCmpt.getAttributeValue("a");
-        prodCmptA.setTemplateStatus(TemplateStatus.INHERITED);
+        prodCmptA.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         prodCmptB = productCmpt.getAttributeValue("b");
-        prodCmptB.setTemplateStatus(TemplateStatus.INHERITED);
+        prodCmptB.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         prodCmptC = productCmpt.getAttributeValue("c");
-        prodCmptC.setTemplateStatus(TemplateStatus.INHERITED);
+        prodCmptC.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         prodCmptX = productCmpt.getAttributeValue("x");
-        prodCmptX.setTemplateStatus(TemplateStatus.UNDEFINED);
+        prodCmptX.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         prodCmptX.setValueHolder(new SingleValueHolder(prodCmptX, "15"));
 
         prodCmptY = productCmpt.getAttributeValue("y");
-        prodCmptY.setTemplateStatus(TemplateStatus.UNDEFINED);
+        prodCmptY.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         prodCmptY.setValueHolder(new SingleValueHolder(prodCmptY, "20"));
 
         prodCmptZ = productCmpt.getAttributeValue("z");
-        prodCmptZ.setTemplateStatus(TemplateStatus.INHERITED);
+        prodCmptZ.setTemplateValueStatus(TemplateValueStatus.INHERITED);
     }
 
     @Test

@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateStatus;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class TemplatePropertyFinderTest {
     public void testVisit_inheritedPropertyValue() {
         when(attrValue.getPropertyValueContainer()).thenReturn(container);
         when(parentContainer.getPropertyValue(anyString(), eq(IAttributeValue.class))).thenReturn(parentValue);
-        when(parentValue.getTemplateStatus()).thenReturn(TemplateStatus.INHERITED);
+        when(parentValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
 
         boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
 
@@ -86,7 +86,7 @@ public class TemplatePropertyFinderTest {
     public void testVisit_definedPropertyValue() {
         when(attrValue.getPropertyValueContainer()).thenReturn(container);
         when(parentContainer.getPropertyValue(anyString(), eq(IAttributeValue.class))).thenReturn(parentValue);
-        when(parentValue.getTemplateStatus()).thenReturn(TemplateStatus.DEFINED);
+        when(parentValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
 
         boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
 
@@ -98,7 +98,7 @@ public class TemplatePropertyFinderTest {
     public void testVisit_undefinedPropertyValue() {
         when(attrValue.getPropertyValueContainer()).thenReturn(container);
         when(parentContainer.getPropertyValue(anyString(), eq(IAttributeValue.class))).thenReturn(parentValue);
-        when(parentValue.getTemplateStatus()).thenReturn(TemplateStatus.UNDEFINED);
+        when(parentValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
 
         boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
 

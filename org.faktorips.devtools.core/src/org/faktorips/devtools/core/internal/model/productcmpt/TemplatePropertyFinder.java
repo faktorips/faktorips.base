@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateStatus;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.TemplateHierarchyVisitor;
@@ -47,18 +47,18 @@ public class TemplatePropertyFinder<T extends IPropertyValue> extends TemplateHi
     }
 
     private boolean isDefined(T currentValue) {
-        return getTemplateStatus(currentValue) == TemplateStatus.DEFINED;
+        return getTemplateStatus(currentValue) == TemplateValueStatus.DEFINED;
     }
 
     private boolean isInherited(T currentValue) {
-        return getTemplateStatus(currentValue).isInherited();
+        return getTemplateStatus(currentValue) == TemplateValueStatus.INHERITED;
     }
 
-    private TemplateStatus getTemplateStatus(T value) {
+    private TemplateValueStatus getTemplateStatus(T value) {
         if (!(value instanceof IAttributeValue)) {
             throw new CoreRuntimeException("PropertyTemplateFinder can currently only find attribute values"); //$NON-NLS-1$
         }
-        return ((IAttributeValue)value).getTemplateStatus();
+        return ((IAttributeValue)value).getTemplateValueStatus();
     }
 
     public T getPropertyValue() {

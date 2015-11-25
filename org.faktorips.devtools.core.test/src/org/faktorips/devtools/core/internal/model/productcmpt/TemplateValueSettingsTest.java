@@ -15,7 +15,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateStatus;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -26,54 +26,54 @@ import org.w3c.dom.Element;
  * @see AttributeValue for validation tests
  */
 @RunWith(MockitoJUnitRunner.class)
-public class TemplateStatusHandlerTest {
+public class TemplateValueSettingsTest {
     @Mock
     private Element element;
 
-    private TemplateStatusHandler handler = new TemplateStatusHandler();
+    private TemplateValueSettings handler = new TemplateValueSettings();
 
     @Test
     public void testPropertiesToXml_default() throws Exception {
         handler.propertiesToXml(element);
 
-        verify(element).setAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS, "defined");
+        verify(element).setAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, "defined");
     }
 
     @Test
     public void testPropertiesToXml_excluded() throws Exception {
-        handler.setTemplateStatus(TemplateStatus.UNDEFINED);
+        handler.setTemplateStatus(TemplateValueStatus.UNDEFINED);
 
         handler.propertiesToXml(element);
 
-        verify(element).setAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS, "excluded");
+        verify(element).setAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, "undefined");
     }
 
     @Test
     public void testInitPropertiesFromXml_default() throws Exception {
-        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS)).thenReturn(false);
+        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(false);
 
         handler.initPropertiesFromXml(element);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateStatus.DEFINED));
+        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
     public void testInitPropertiesFromXml() throws Exception {
-        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS)).thenReturn(true);
-        when(element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS)).thenReturn("inherited");
+        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(true);
+        when(element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn("inherited");
 
         handler.initPropertiesFromXml(element);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateStatus.INHERITED));
+        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.INHERITED));
     }
 
     @Test
     public void testInitPropertiesFromXml_illegalString() throws Exception {
-        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS)).thenReturn(true);
-        when(element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_STATUS)).thenReturn("illegalValue");
+        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(true);
+        when(element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn("illegalValue");
 
         handler.initPropertiesFromXml(element);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateStatus.DEFINED));
+        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
     }
 }
