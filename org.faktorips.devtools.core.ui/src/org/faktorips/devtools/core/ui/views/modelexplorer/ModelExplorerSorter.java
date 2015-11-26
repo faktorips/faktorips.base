@@ -51,6 +51,7 @@ public class ModelExplorerSorter extends ViewerSorter {
         TYPE_TO_CATEGORY.put(IpsObjectType.BUSINESS_FUNCTION, ModelExplorerCategory.CAT_BUSINESS_FUNCTION);
         TYPE_TO_CATEGORY.put(IpsObjectType.TABLE_STRUCTURE, ModelExplorerCategory.CAT_TABLE_STRUCTURE);
         TYPE_TO_CATEGORY.put(IpsObjectType.TEST_CASE_TYPE, ModelExplorerCategory.CAT_TEST_CASE_TYPE);
+        TYPE_TO_CATEGORY.put(IpsObjectType.PRODUCT_TEMPLATE, ModelExplorerCategory.CAT_PRODUCT_CMPT);
         TYPE_TO_CATEGORY.put(IpsObjectType.PRODUCT_CMPT, ModelExplorerCategory.CAT_PRODUCT_CMPT);
         TYPE_TO_CATEGORY.put(IpsObjectType.ENUM_CONTENT, ModelExplorerCategory.CAT_ENUM_CONTENT);
         TYPE_TO_CATEGORY.put(IpsObjectType.TABLE_CONTENTS, ModelExplorerCategory.CAT_TABLE_CONTENTS);

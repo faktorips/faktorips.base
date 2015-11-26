@@ -108,7 +108,7 @@ public class ProductSearchQuery extends AbstractIpsSearchQuery<ProductSearchPres
 
     @Override
     protected List<IpsObjectType> getAllowedIpsObjectTypes() {
-        return Collections.singletonList(IpsObjectType.PRODUCT_CMPT);
+        return Arrays.asList(IpsObjectType.PRODUCT_CMPT, IpsObjectType.PRODUCT_TEMPLATE);
     }
 
     @Override
