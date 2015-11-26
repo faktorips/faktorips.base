@@ -614,6 +614,10 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return runtimeId;
     }
 
+    public boolean hasRuntimeId() {
+        return !isTemplate();
+    }
+
     public boolean isTemplate() {
         return template;
     }

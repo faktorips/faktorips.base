@@ -74,6 +74,11 @@ public class ComponentPropertiesSection extends IpsSection {
 
     private ProductCmptType2RefControl productCmptTypeControl;
 
+    /**
+     * Control to edit the runtime id. Will be {@code null} for product templates (as they do not
+     * have a runtime id). If the control exists it is enabled/disabled depending on the preferences
+     * (see {@link #updateRuntimeIdEnableState()}.
+     */
     private TextButtonControl runtimeIdControl;
 
     private EditField<GregorianCalendar> validFromField;
@@ -124,8 +129,12 @@ public class ComponentPropertiesSection extends IpsSection {
     private void bind() {
         getBindingContext().bindContent(new IpsObjectField(productCmptTypeControl), product,
                 IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        getBindingContext().bindContent(new TextButtonField(runtimeIdControl), product,
-                IProductCmpt.PROPERTY_RUNTIME_ID);
+
+        // Templates do not have a runtime id
+        if (!product.isProductTemplate()) {
+            getBindingContext().bindContent(new TextButtonField(runtimeIdControl), product,
+                    IProductCmpt.PROPERTY_RUNTIME_ID);
+        }
 
         getBindingContext().bindContent(validFromField, componentPropertiesPMO,
                 ComponentPropertiesPMO.PROPERTY_VALID_FROM);
@@ -165,6 +174,10 @@ public class ComponentPropertiesSection extends IpsSection {
      * {@link IProductCmpt}.
      */
     private void initRuntimeIdRow(UIToolkit toolkit) {
+        // Templates do not have a runtime id
+        if (product.isProductTemplate()) {
+            return;
+        }
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
         runtimeIdControl = new RuntimeIdControl(rootPane, toolkit);
         editControls.add(runtimeIdControl.getTextControl());
