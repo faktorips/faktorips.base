@@ -320,7 +320,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         if (isUsingTemplate()) {
             IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                    new QualifiedNameType(template, IpsObjectType.PRODUCT_CMPT));
+                    new QualifiedNameType(template, IpsObjectType.PRODUCT_TEMPLATE));
             dependencySet.add(dependency);
             addDetails(details, dependency, this, PROPERTY_TEMPLATE_NAME);
         }
@@ -346,7 +346,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
