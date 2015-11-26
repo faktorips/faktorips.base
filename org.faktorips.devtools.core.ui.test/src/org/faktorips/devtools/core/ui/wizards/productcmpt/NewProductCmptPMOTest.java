@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -190,8 +189,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         assertThat(pmo.isCopyValidMode(), is(true));
         assertThat(pmo.getSelectedBaseType(), is(baseType));
         assertThat(pmo.getSelectedType(), is(concreteType));
-        assertThat(pmo.getSelectedTemplate(), is(notNullValue()));
-        assertThat(pmo.getSelectedTemplate().getProductCmpt(), is(template));
+        assertThat(pmo.getSelectedTemplateAsProductCmpt(), is(template));
         assertThat(pmo.getCopyProductCmpt(), is(productCmptToCopy));
     }
 
@@ -333,7 +331,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         when(ipsSrcFile3.getPropertyValue(IType.PROPERTY_SUPERTYPE)).thenReturn("findSuperType");
 
         when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
-                .thenReturn(ipsSrcFile1);
+        .thenReturn(ipsSrcFile1);
 
         // refresh the list
         pmo.setIpsProject(ipsProject);

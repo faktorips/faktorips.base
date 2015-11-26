@@ -245,6 +245,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return selectedTemplate;
     }
 
+    public IProductCmpt getSelectedTemplateAsProductCmpt() {
+        if (selectedTemplate == null) {
+            return null;
+        } else {
+            return selectedTemplate.getProductCmpt();
+        }
+    }
+
     public void setSelectedTemplate(ProductCmptViewItem selectedTemplate) {
         IIpsSrcFileViewItem oldTemplate = this.selectedTemplate;
         this.selectedTemplate = selectedTemplate;
