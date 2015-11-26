@@ -287,7 +287,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         Element element = generation.toXml(newDocument());
 
-        IProductCmptGeneration copy = new ProductCmptGeneration();
+        IProductCmptGeneration copy = (IProductCmptGeneration)productCmpt.newGeneration();
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
         assertEquals(3, copy.getNumOfLinks());
@@ -781,10 +781,26 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsTemplate_true() throws CoreException {
-        IProductCmpt template = newProductTemplate(ipsProject, "Template");
-        template.newGeneration();
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration gen = template.getProductCmptGeneration(0);
 
         assertThat(gen.isProductTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsUsingTemplate() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isUsingTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsUsingTemplate_noTemplate() {
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isUsingTemplate(), is(false));
     }
 }

@@ -21,6 +21,7 @@ import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -176,6 +177,11 @@ public class Formula extends Expression implements IFormula {
             return formulaSignature.isFormulaMandatory();
         }
         return true;
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus status) {
+        // TODO Auto-generated method stub
     }
 
 }

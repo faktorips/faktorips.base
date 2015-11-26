@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.AttributeType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -335,8 +336,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         setValueSetType(newValueSetType);
         EnumValueSet newValueSet = (EnumValueSet)valueSet;
         ValueDatatype newValueSetDatatype = newValueSet.findValueDatatype(getIpsProject());
-        if (Datatype.BOOLEAN.equals(newValueSetDatatype)
-                || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSetDatatype)) {
+        if (Datatype.BOOLEAN.equals(newValueSetDatatype) || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSetDatatype)) {
             newValueSet.addValue(Boolean.TRUE.toString());
             newValueSet.addValue(Boolean.FALSE.toString());
             if (!newValueSetDatatype.isPrimitive()) {
@@ -462,6 +462,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     public String getLastResortCaption() {
         return StringUtils.capitalize(pcTypeAttribute);
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus status) {
+        // TODO Auto-generated method stub
     }
 
 }

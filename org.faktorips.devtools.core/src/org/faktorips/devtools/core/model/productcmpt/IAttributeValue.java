@@ -147,14 +147,6 @@ public interface IAttributeValue extends IPropertyValue {
     public TemplateValueStatus getTemplateValueStatus();
 
     /**
-     * Sets this property value's template status (e.g. whether it is inherited from a parent
-     * template or not).
-     * 
-     * @param status the new template status
-     */
-    public void setTemplateValueStatus(TemplateValueStatus status);
-
-    /**
      * Finds the property value in the template hierarchy (parent or grand*-parent template) that
      * has the status {@link TemplateValueStatus#DEFINED} and thus is used as a template value for
      * this property value.

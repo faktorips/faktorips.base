@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -144,5 +145,11 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     @Override
     public String getPropertyValue() {
         return Boolean.toString(isActive());
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus status) {
+        // TODO Auto-generated method stub
+
     }
 }

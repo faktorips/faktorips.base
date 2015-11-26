@@ -18,6 +18,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -225,6 +226,12 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     @Override
     public String getLastResortCaption() {
         return StringUtils.capitalize(structureUsage);
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus status) {
+        // TODO Auto-generated method stub
+
     }
 
 }

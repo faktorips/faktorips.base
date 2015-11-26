@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -61,5 +62,13 @@ public interface IPropertyValue extends IIpsObjectPart {
      * @return The container this value belongs to
      */
     public IPropertyValueContainer getPropertyValueContainer();
+
+    /**
+     * Sets this property value's template status (e.g. whether it is inherited from a parent
+     * template or not).
+     * 
+     * @param status the new template status
+     */
+    public void setTemplateValueStatus(TemplateValueStatus status);
 
 }

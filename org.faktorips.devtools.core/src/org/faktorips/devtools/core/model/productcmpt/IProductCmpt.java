@@ -340,16 +340,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     /**
      * Returns <code>true</code> if this product component is using a template. This is the case if
-     * {@link #getTemplate()} returns a non-null value. That does not mean that the referenced
-     * template actually exists. Use {@link #isUsingExistingTemplate(IIpsProject)} to verify that
-     * the referenced template exists.
-     * 
-     * @return <code>true</code> if there is a template specified by this product component
-     */
-    boolean isUsingTemplate();
-
-    /**
-     * Returns <code>true</code> if this product component is using a template. This is the case if
      * {@link #getTemplate()} returns a valid qualified name and hence
      * {@link #findTemplate(IIpsProject)} returns a non-null template object.
      * 
