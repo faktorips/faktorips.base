@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.refactor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -334,18 +335,19 @@ public abstract class IpsRefactoringProcessor extends RefactoringProcessor {
      * Searches for all {@link IIpsSrcFile}s in the object path of all {@link IIpsProject}s
      * referencing the {@link IIpsProject} that contains the {@link IIpsElement} to be refactored.
      * 
-     * @param ipsObjectType Only {@link IIpsSrcFile}s with this {@link IpsObjectType} are searched
+     * @param ipsObjectType Only {@link IIpsSrcFile IpsSrcFiles} with one of these
+     *            {@link IpsObjectType types} are searched
      * 
      * @throws CoreException If an error occurs while searching for the source files
      * @throws NullPointerException If the parameter is null
      */
-    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType ipsObjectType) throws CoreException {
+    protected final Set<IIpsSrcFile> findReferencingIpsSrcFiles(IpsObjectType... ipsObjectType) throws CoreException {
         ArgumentCheck.notNull(ipsObjectType);
 
         Set<IIpsSrcFile> collectedSrcFiles = new HashSet<IIpsSrcFile>(25);
         IIpsProject[] ipsProjects = getIpsProject().findReferencingProjectLeavesOrSelf();
         for (IIpsProject ipsProject : ipsProjects) {
-            IIpsSrcFile[] srcFiles = ipsProject.findIpsSrcFiles(ipsObjectType);
+            List<IIpsSrcFile> srcFiles = ipsProject.findAllIpsSrcFiles(ipsObjectType);
             for (IIpsSrcFile ipsSrcFile : srcFiles) {
                 collectedSrcFiles.add(ipsSrcFile);
             }

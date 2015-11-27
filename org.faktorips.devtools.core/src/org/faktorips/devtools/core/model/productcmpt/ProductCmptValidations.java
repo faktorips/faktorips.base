@@ -77,26 +77,28 @@ public class ProductCmptValidations {
      * the product component type of its template.</li>
      * </ul>
      * 
-     * @param productCmptType The product component type of the product component that should be
-     *            validated
-     * @param templateName The name of the template that is referenced by the product component
-     * @param list The message list to add the potential error message
+     * @param productCmpt The product component to validate
+     * @param productCmptType The type of the product component
+     * @param list The message list to add potential error messages to
      * @param ipsProject The project that should be used to search for other objects
      * @return The template of the product component if it was found
      */
-    public static final IProductCmpt validateTemplate(IProductCmptType productCmptType,
-            String templateName,
-            ObjectProperty templateObjectProperty,
+    public static final IProductCmpt validateTemplate(IProductCmpt productCmpt,
+            IProductCmptType productCmptType,
             MessageList list,
             IIpsProject ipsProject) {
+        String templateName = productCmpt.getTemplate();
+
         if (StringUtils.isNotEmpty(templateName)) {
             IProductCmpt template = ipsProject.findProductTemplate(templateName);
             if (template != null) {
-                validateTemplateType(productCmptType, templateObjectProperty, list, ipsProject, template);
+                ObjectProperty typeProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
+                validateTemplateType(productCmptType, list, ipsProject, template, typeProperty, templateProperty);
             } else {
-                list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE,
-                        NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName),
-                        templateObjectProperty);
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
+                String text = NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
+                list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE, text, templateProperty);
             }
             return template;
         } else {
@@ -105,15 +107,15 @@ public class ProductCmptValidations {
     }
 
     private static void validateTemplateType(IProductCmptType productCmptType,
-            ObjectProperty templateObjectProperty,
             MessageList list,
             IIpsProject ipsProject,
-            IProductCmpt template) {
+            IProductCmpt template,
+            ObjectProperty... invalidProperties) {
         IProductCmptType templateCmptType = findProductCmptType(template.getProductCmptType(), ipsProject);
         if (templateCmptType != null) {
             if (!isSubtypeOrSame(productCmptType, templateCmptType, ipsProject)) {
                 list.newError(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE,
-                        Messages.ProductCmptValidations_error_inconsistentTemplateType, templateObjectProperty);
+                        Messages.ProductCmptValidations_error_inconsistentTemplateType, invalidProperties);
             }
         }
     }

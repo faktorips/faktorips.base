@@ -161,9 +161,9 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
         if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
             messageList
-            .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                            Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
-                            Message.WARNING));
+                    .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                    Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
+                    Message.WARNING));
         }
         return messageList;
     }
@@ -174,7 +174,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         }
         IProductCmptType templateType = getPmo().getSelectedType();
         String templateName = getPmo().getName();
-        IProductCmpt parentTemplate = getPmo().getSelectedTemplate().getProductCmpt();
+        IProductCmpt parentTemplate = getPmo().getSelectedTemplateAsProductCmpt();
         IIpsProject ipsProject = getPmo().getIpsProject();
         TemplateValidations.validateTemplateTypeDiffersFromParentTemplate(templateType, templateName, parentTemplate,
                 list, ipsProject);
@@ -190,7 +190,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
                 if (!getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
                     result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
                             Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
-                            .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
+                                    .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
                 }
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);

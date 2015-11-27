@@ -245,6 +245,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return selectedTemplate;
     }
 
+    public IProductCmpt getSelectedTemplateAsProductCmpt() {
+        if (selectedTemplate == null) {
+            return null;
+        } else {
+            return selectedTemplate.getProductCmpt();
+        }
+    }
+
     public void setSelectedTemplate(ProductCmptViewItem selectedTemplate) {
         IIpsSrcFileViewItem oldTemplate = this.selectedTemplate;
         this.selectedTemplate = selectedTemplate;
@@ -604,6 +612,10 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      */
     public String getRuntimeId() {
         return runtimeId;
+    }
+
+    public boolean hasRuntimeId() {
+        return !isTemplate();
     }
 
     public boolean isTemplate() {

@@ -113,9 +113,11 @@ public class ProductCmptPage extends WizardPage {
                 + Messages.ProductCmptPage_label_versionSuffix);
         versionIdText = toolkit.createText(dateComposite);
 
-        toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_runtimeId);
-        runtimeId = toolkit.createText(nameAndIdComposite);
-        runtimeId.setEnabled(pmo.isCanEditRuntimeId());
+        if (pmo.hasRuntimeId()) {
+            toolkit.createLabel(nameAndIdComposite, Messages.ProductCmptPage_label_runtimeId);
+            runtimeId = toolkit.createText(nameAndIdComposite);
+            runtimeId.setEnabled(pmo.isCanEditRuntimeId());
+        }
 
         setControl(composite);
 
@@ -133,7 +135,10 @@ public class ProductCmptPage extends WizardPage {
         bindingContext.bindContent(nameText, pmo, NewProductCmptPMO.PROPERTY_KIND_ID);
         bindingContext.bindContent(effectiveDateField, pmo, NewProductCmptPMO.PROPERTY_EFFECTIVE_DATE);
         bindingContext.bindContent(versionIdText, pmo, NewProductCmptPMO.PROPERTY_VERSION_ID);
-        bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
+
+        if (pmo.hasRuntimeId()) {
+            bindingContext.bindContent(runtimeId, pmo, NewProductCmptPMO.PROPERTY_RUNTIME_ID);
+        }
 
         bindingContext.bindVisible(versionIdLabel, pmo, NewProductCmptPMO.PROPERTY_NEED_VERSION_ID, true,
                 effectiveDateField.getControl());

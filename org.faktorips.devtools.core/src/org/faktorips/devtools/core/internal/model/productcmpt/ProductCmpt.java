@@ -65,7 +65,6 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -195,6 +194,9 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IProductCmpt findTemplate(IIpsProject ipsProject) {
+        if (StringUtils.isEmpty(template)) {
+            return null;
+        }
         return ipsProject.findProductTemplate(template);
     }
 
@@ -227,8 +229,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
-        ProductCmptValidations.validateTemplate(type, getTemplate(), new ObjectProperty(this, PROPERTY_TEMPLATE), list,
-                ipsProject);
+        ProductCmptValidations.validateTemplate(this, type, list, ipsProject);
     }
 
     private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {
@@ -317,7 +318,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         }
         if (isUsingTemplate()) {
             IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
-                    new QualifiedNameType(template, IpsObjectType.PRODUCT_CMPT));
+                    new QualifiedNameType(template, IpsObjectType.PRODUCT_TEMPLATE));
             dependencySet.add(dependency);
             addDetails(details, dependency, this, PROPERTY_TEMPLATE);
         }
@@ -343,7 +344,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }
