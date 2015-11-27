@@ -24,7 +24,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
@@ -97,13 +96,11 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     protected void createEditField(ValueDatatype datatype, List<EditField<?>> editFields) {
         EditField<?> editField;
-
-        if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
+        IValueHolder<?> valueHolder = getPropertyValue().getValueHolder();
+        if (valueHolder.isMultiValue()) {
             editField = createMultiValueField(datatype);
-        } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
-            editField = createSingleValueField(datatype);
         } else {
-            throw new RuntimeException("Illegal value holder instance in attribute " + getProperty().getName()); //$NON-NLS-1$
+            editField = createSingleValueField(datatype, valueHolder);
         }
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
@@ -125,21 +122,20 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         return editField;
     }
 
-    private EditField<?> createSingleValueField(ValueDatatype datatype) {
+    private EditField<?> createSingleValueField(ValueDatatype datatype, IValueHolder<?> valueHolder) {
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
-        SingleValueHolder singleValueHolder = (SingleValueHolder)getPropertyValue().getValueHolder();
 
-        if (singleValueHolder.getValueType() == ValueType.STRING) {
-            return createSimpleField(datatype, valueSet);
-        } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+        if (valueHolder.getValueType() == ValueType.STRING) {
+            return createSimpleField(datatype, valueSet, valueHolder);
+        } else if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
             return createInternationalStringField();
         } else {
             throw new RuntimeException("Illegal value type in attribute " + getProperty().getName()); //$NON-NLS-1$
         }
     }
 
-    private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet) {
-        ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
+    private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet, IValueHolder<?> valueHolder) {
+        ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue(), valueHolder);
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<?> editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet,
                 getPropertyValue().getIpsProject());
@@ -224,26 +220,28 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
         public static final String PROPERTY_STRING_VALUE = "stringValue"; //$NON-NLS-1$
 
-        public ValueHolderPmo(IAttributeValue attributeValue) {
+        private final IValueHolder<?> valueHolder;
+
+        public ValueHolderPmo(IAttributeValue attributeValue, IValueHolder<?> valueHolder) {
             super(attributeValue);
+            this.valueHolder = valueHolder;
         }
 
         public String getStringValue() {
-            return ((SingleValueHolder)getValueHolder()).getValue().getContentAsString();
+            return valueHolder.getStringValue();
         }
 
-        public IValueHolder<?> getValueHolder() {
-            return getIpsObjectPartContainer().getValueHolder();
-        }
-
-        @Override
-        public IAttributeValue getIpsObjectPartContainer() {
-            return (IAttributeValue)super.getIpsObjectPartContainer();
-        }
-
+        /**
+         * Direct set is only supported for {@link SingleValueHolder}
+         */
         public void setStringValue(String value) {
-            ((SingleValueHolder)getValueHolder()).setValue(ValueFactory.createStringValue(value));
-            notifyListeners();
+            if (valueHolder instanceof SingleValueHolder) {
+                SingleValueHolder singleValueHolder = (SingleValueHolder)valueHolder;
+                singleValueHolder.setValue(ValueFactory.createStringValue(value));
+                notifyListeners();
+            } else {
+                throw new IllegalStateException("Set string value is only supported for single value holders."); //$NON-NLS-1$
+            }
         }
     }
 

@@ -244,7 +244,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
-        if (attr.isMultiValueAttribute() != (valueHolder instanceof MultiValueHolder)) {
+        if (attr.isMultiValueAttribute() != (getValueHolder().isMultiValue())) {
             String text;
             String hint = Messages.AttributeValue_msg_validateValueHolder_hint;
             if (attr.isMultiValueAttribute()) {
@@ -255,7 +255,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             list.add(new Message(MSGCODE_INVALID_VALUE_HOLDER, text, Message.ERROR, this, PROPERTY_VALUE_HOLDER));
         }
         if (getTemplateValueStatus() != TemplateValueStatus.UNDEFINED) {
-            list.add(valueHolder.validate(ipsProject));
+            list.add(getValueHolder().validate(ipsProject));
             attrIsHiddenMismatch(attr, list);
         }
         list.add(templateValueSettings.validate(this, ipsProject));

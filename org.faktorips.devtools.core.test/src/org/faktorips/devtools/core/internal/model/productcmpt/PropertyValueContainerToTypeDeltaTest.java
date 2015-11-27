@@ -54,6 +54,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -83,7 +84,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
     @Mock
     private SingleValueHolder singleValueHolder;
 
-    @Mock
+    @Mock(answer = Answers.CALLS_REAL_METHODS)
     private MultiValueHolder multiValueHolder;
 
     @Override

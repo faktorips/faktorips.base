@@ -74,13 +74,14 @@ public class MultiValueHolderTest {
         ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
         SingleValueHolder singleValueHolder = mock(SingleValueHolder.class);
         values.add(singleValueHolder);
-        when(singleValueHolder.validate(project)).thenReturn(new MessageList());
+        when(singleValueHolder.validate(project, attributeValue)).thenReturn(new MessageList());
         multiValueHolder = new MultiValueHolder(attributeValue, values);
 
         MessageList messageList = multiValueHolder.validate(project);
         assertTrue(messageList.isEmpty());
 
-        when(singleValueHolder.validate(project)).thenReturn(new MessageList(Message.newError("abc", "123")));
+        when(singleValueHolder.validate(project, attributeValue)).thenReturn(
+                new MessageList(Message.newError("abc", "123")));
 
         messageList = multiValueHolder.validate(project);
         assertEquals(2, messageList.size());
@@ -105,10 +106,10 @@ public class MultiValueHolderTest {
 
         ArrayList<SingleValueHolder> values = new ArrayList<SingleValueHolder>();
         SingleValueHolder singleValueHolder1 = mock(SingleValueHolder.class);
-        when(singleValueHolder1.validate(project)).thenReturn(new MessageList());
+        when(singleValueHolder1.validate(project, attributeValue)).thenReturn(new MessageList());
 
         SingleValueHolder singleValueHolder2 = mock(SingleValueHolder.class);
-        when(singleValueHolder2.validate(project)).thenReturn(new MessageList());
+        when(singleValueHolder2.validate(project, attributeValue)).thenReturn(new MessageList());
 
         values.add(singleValueHolder1);
         values.add(singleValueHolder2);
@@ -117,14 +118,16 @@ public class MultiValueHolderTest {
         MessageList messageList = multiValueHolder.validate(project);
         assertTrue(messageList.isEmpty());
 
-        when(singleValueHolder1.validate(project)).thenReturn(new MessageList(Message.newError("abc", "123")));
+        when(singleValueHolder1.validate(project, attributeValue)).thenReturn(
+                new MessageList(Message.newError("abc", "123")));
 
         messageList = multiValueHolder.validate(project);
         assertEquals(2, messageList.size());
         assertNotNull(messageList.getMessageByCode("abc"));
         assertNotNull(messageList.getMessageByCode(MultiValueHolder.MSGCODE_CONTAINS_INVALID_VALUE));
 
-        when(singleValueHolder2.validate(project)).thenReturn(new MessageList(Message.newError("abc2", "1234")));
+        when(singleValueHolder2.validate(project, attributeValue)).thenReturn(
+                new MessageList(Message.newError("abc2", "1234")));
 
         messageList = multiValueHolder.validate(project);
         assertEquals(3, messageList.size());

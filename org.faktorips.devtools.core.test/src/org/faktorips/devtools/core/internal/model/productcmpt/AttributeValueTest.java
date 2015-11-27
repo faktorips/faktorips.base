@@ -164,6 +164,18 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXml_TemplateValueStatusIsRead() {
+        attrValue.setAttribute("rate");
+        attrValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        Element el = attrValue.toXml(newDocument());
+
+        AttributeValue fromXml = new AttributeValue(generation, "id");
+        fromXml.initFromXml(el);
+        assertThat(fromXml.getAttribute(), is("rate"));
+        assertThat(fromXml.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+    }
+
+    @Test
     public void testToXml() {
         Document doc = newDocument();
         attrValue.setValueHolder(new SingleValueHolder(attrValue, "42"));

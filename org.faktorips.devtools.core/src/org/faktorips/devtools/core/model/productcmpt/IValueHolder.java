@@ -10,12 +10,15 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.AbstractValueHolder;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.util.message.MessageList;
 
 /**
  * This is the public interface for all value holders as they are used by {@link IAttributeValue}.
@@ -93,4 +96,22 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * kind of {@link IValue}.
      */
     ValueType getValueType();
+
+    /**
+     * Basically there are two different kinds of value holder: multi value holder and single value
+     * holder. This method returns <code>true</code> if this value holder is a multi value holder.
+     * It does not say anything about the concrete implementation so do not use for instance-of
+     * check!
+     * 
+     * @return Returns <code>true</code> if the value holder has multiple values
+     */
+    public boolean isMultiValue();
+
+    /**
+     * Validates the value holder and uses the given parent instead of {@link #getParent()}.
+     * <p>
+     * This is needed to validate a value holder from a template in product component based on that
+     * template, too.
+     */
+    public MessageList validate(IIpsProject ipsProject, IIpsObjectPart parent) throws CoreException;
 }

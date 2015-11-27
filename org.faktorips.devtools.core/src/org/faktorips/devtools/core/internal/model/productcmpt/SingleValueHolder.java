@@ -13,12 +13,15 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.Observable;
 import java.util.Observer;
 
+import com.google.common.base.Preconditions;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -149,16 +152,30 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     }
 
     @Override
+    public boolean isMultiValue() {
+        return false;
+    }
+
+    @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        return validate(ipsProject, getParent());
+    }
+
+    @Override
+    public MessageList validate(IIpsProject ipsProject, IIpsObjectPart parentForValidation) throws CoreException {
+        Preconditions.checkArgument(parentForValidation instanceof IAttributeValue);
+
         MessageList list = new MessageList();
-        IProductCmptTypeAttribute attribute = getParent().findAttribute(getParent().getIpsProject());
+        IAttributeValue parent = (IAttributeValue)parentForValidation;
+
+        IProductCmptTypeAttribute attribute = parent.findAttribute(parent.getIpsProject());
         ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
-                new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
+                new ObjectProperty(parent, IAttributeValue.PROPERTY_VALUE_HOLDER),
                 new ObjectProperty(this, PROPERTY_VALUE) };
         if (attribute == null || getValue() == null) {
             return list;
         }
-        getValue().validate(attribute.findDatatype(getParent().getIpsProject()), getParent().getIpsProject(), list,
+        getValue().validate(attribute.findDatatype(parent.getIpsProject()), parent.getIpsProject(), list,
                 invalidObjectProperties);
         if (!list.isEmpty()) {
             return list;
@@ -166,7 +183,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
 
         if (getValueType().equals(ValueType.STRING)) {
             if (attribute.isMultilingual()) {
-                String text = NLS.bind(Messages.AttributeValue_MultiLingual, getParent().getAttribute());
+                String text = NLS.bind(Messages.AttributeValue_MultiLingual, parent.getAttribute());
                 list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, text, Message.ERROR,
                         invalidObjectProperties));
             }
@@ -176,15 +193,14 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
                     text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, getFormattedValue(), attribute
                             .getValueSet().toShortString());
                 } else {
-                    text = NLS
-                            .bind(Messages.AttributeValue_ValueNotAllowed, getFormattedValue(), getParent().getName());
+                    text = NLS.bind(Messages.AttributeValue_ValueNotAllowed, getFormattedValue(), parent.getName());
                 }
                 list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR,
                         invalidObjectProperties));
             }
         } else if (getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
             if (!attribute.isMultilingual()) {
-                String text = NLS.bind(Messages.AttributeValue_NotMultiLingual, getParent().getAttribute());
+                String text = NLS.bind(Messages.AttributeValue_NotMultiLingual, parent.getAttribute());
                 list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, text, Message.ERROR,
                         invalidObjectProperties));
             }
