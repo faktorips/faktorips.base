@@ -130,7 +130,7 @@ public class DefaultIpsProjectNamingConventions implements IIpsProjectNamingConv
             result.add(ml);
             return result;
         }
-        if (IpsObjectType.PRODUCT_CMPT.equals(type)) {
+        if (IpsObjectType.PRODUCT_CMPT.equals(type) || IpsObjectType.PRODUCT_TEMPLATE.equals(type)) {
             MessageList ml = validateNameForProductCmpt(name, qualifiedCheck);
             result.add(ml);
             return result;

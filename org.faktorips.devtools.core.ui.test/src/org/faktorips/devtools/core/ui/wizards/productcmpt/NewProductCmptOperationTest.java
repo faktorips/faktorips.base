@@ -89,6 +89,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
         pmo.setIpsProject(ipsProject);
         pmo.setIpsPackage(targetIpsPackageFragment);
         pmo.setCopyProductCmpt(productCmpt);
+        // Template deliberately left undefined
 
         NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
         operation.run(monitor);
@@ -102,6 +103,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
             InterruptedException {
 
         IProductCmptType productCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
+        IProductCmpt template = newProductTemplate(ipsProject, "template");
         createProductCmptTypeAttribute(productCmptType, "testAttribute", Datatype.STRING, "");
 
         NewProductCmptPMO pmo = new NewProductCmptPMO();
@@ -109,6 +111,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
         pmo.setIpsPackage(getDefaultIpsPackageFragment());
         pmo.setRuntimeId("testRuntimeId");
         pmo.setSelectedType(productCmptType);
+        pmo.setSelectedTemplate(new ProductCmptViewItem(template.getIpsSrcFile()));
 
         NewProductCmptOperation operation = new NewProductCmptOperation(pmo);
         operation.run(monitor);
@@ -117,6 +120,7 @@ public class NewProductCmptOperationTest extends AbstractIpsPluginTest {
         IProductCmpt newProductCmpt = (IProductCmpt)newSrcFile.getIpsObject();
         assertEquals("testRuntimeId", newProductCmpt.getRuntimeId());
         assertEquals("TestProductCmptType", newProductCmpt.getProductCmptType());
+        assertEquals("template", newProductCmpt.getTemplateName());
     }
 
     @Test

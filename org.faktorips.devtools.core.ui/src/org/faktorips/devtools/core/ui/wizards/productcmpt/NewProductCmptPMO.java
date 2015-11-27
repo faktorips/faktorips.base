@@ -15,8 +15,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -245,6 +245,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         return selectedTemplate;
     }
 
+    public IProductCmpt getSelectedTemplateAsProductCmpt() {
+        if (selectedTemplate == null) {
+            return null;
+        } else {
+            return selectedTemplate.getProductCmpt();
+        }
+    }
+
     public void setSelectedTemplate(ProductCmptViewItem selectedTemplate) {
         IIpsSrcFileViewItem oldTemplate = this.selectedTemplate;
         this.selectedTemplate = selectedTemplate;
@@ -302,7 +310,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             return;
         }
         List<IIpsSrcFile> templateSrcFiles;
-        Map<String, ProductCmptViewItem> viewItemNames = new HashMap<String, ProductCmptViewItem>();
+        Map<String, ProductCmptViewItem> viewItemNames = new LinkedHashMap<String, ProductCmptViewItem>();
         if (selectedBaseType != null && selectedType == null) {
             templateSrcFiles = getIpsProject().findAllProductTemplates(selectedBaseType, true);
         } else if (selectedType != null) {
@@ -315,7 +323,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             ProductCmptViewItem viewItem = new ProductCmptViewItem(ipsSrcFile);
             viewItemNames.put(viewItem.getName(), viewItem);
         }
-        templates.addAll(viewItemNames.values());
+        for (ProductCmptViewItem cmptViewItem : viewItemNames.values()) {
+            ProductCmptViewItem refTemplate = viewItemNames.get(cmptViewItem.getTemplateName());
+            if (refTemplate != null) {
+                refTemplate.addChild(cmptViewItem);
+            } else {
+                templates.add(cmptViewItem);
+            }
+        }
         if (selectedTemplate != NULL_TEMPLATE && !containsSelectedTemplate()) {
             setSelectedTemplate(NULL_TEMPLATE);
         }
@@ -500,6 +515,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
         initializeNameForProductCmptCopy();
         initializeTypeAndBaseTypeForProductCmptCopy(productCmptToCopy);
+        initializeTemplateForProductCmptCopy(productCmptToCopy);
     }
 
     private void initializeNameForProductCmptCopy() {
@@ -516,6 +532,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         baseTypeVisitor.start(productCmptType);
         setSelectedBaseType(baseTypeVisitor.selectedBaseType);
 
+    }
+
+    private void initializeTemplateForProductCmptCopy(IProductCmpt productCmptToCopy) {
+        IProductCmpt templateOfCopy = productCmptToCopy.findTemplate(productCmptToCopy.getIpsProject());
+        if (templateOfCopy != null) {
+            ProductCmptViewItem templateViewItem = new ProductCmptViewItem(templateOfCopy.getIpsSrcFile());
+            setSelectedTemplate(templateViewItem);
+        }
     }
 
     /**
@@ -588,6 +612,10 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      */
     public String getRuntimeId() {
         return runtimeId;
+    }
+
+    public boolean hasRuntimeId() {
+        return !isTemplate();
     }
 
     public boolean isTemplate() {

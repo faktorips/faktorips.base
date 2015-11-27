@@ -42,7 +42,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
     }
 
     /**
-     * Creates a new Dependency between the specified source and target objects and defines if it is
+     * Creates a new dependency between the specified source and target objects and defines if it is
      * a transitive dependency.
      */
     public static final IpsObjectDependency create(QualifiedNameType source,
@@ -53,16 +53,16 @@ public class IpsObjectDependency implements IDependency, Serializable {
     }
 
     /**
-     * Creates a new Dependency instance indicating an instance of dependency between the specified
-     * source and target objects. A Dependency instance indicates that the source is sub type of the
-     * target and hence the source depends on the target.
+     * Creates a new dependency indicating a sub type dependency between the specified source and
+     * target objects. Such a dependency indicates that the source is sub type of the target and
+     * hence the source depends on the target.
      */
     public static final IpsObjectDependency createSubtypeDependency(QualifiedNameType source, QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.SUBTYPE);
     }
 
     /**
-     * Creates a new Dependency instance indicating a configuration dependency of type
+     * Creates a new dependency indicating a configuration dependency of type
      * {@link DependencyType#CONFIGUREDBY}. The source needs to be a policy component type, the
      * target is a product component type.
      */
@@ -72,7 +72,7 @@ public class IpsObjectDependency implements IDependency, Serializable {
     }
 
     /**
-     * Creates a new Dependency instance indicating a configuration dependency of type
+     * Creates a new dependency indicating a configuration dependency of type
      * {@link DependencyType#CONFIGURES}. The source needs to be a product component type, the
      * target is a policy component type.
      */
@@ -82,19 +82,18 @@ public class IpsObjectDependency implements IDependency, Serializable {
     }
 
     /**
-     * Creates a new Dependency instance indicating referencing dependency between the specified
-     * source and target objects. A Dependency instance indicates that the source references the
-     * target and hence the source depends on the target.
+     * Creates a new dependency indicating referencing dependency between the specified source and
+     * target objects. Such a dependency indicates that the source references the target and hence
+     * the source depends on the target.
      */
     public static final IpsObjectDependency createReferenceDependency(QualifiedNameType source, QualifiedNameType target) {
         return new IpsObjectDependency(source, target, DependencyType.REFERENCE);
     }
 
     /**
-     * Creates a new Dependency instance indicating special referencing dependency of the kind
-     * composition master to detail between the specified source and target objects. A Dependency
-     * instance indicates that the source references the target and hence the source depends on the
-     * target.
+     * Creates a new dependency indicating special referencing dependency of the kind composition
+     * master to detail between the specified source and target objects. Such a dependency indicates
+     * that the source references the target and hence the source depends on the target.
      */
     public static final IpsObjectDependency createCompostionMasterDetailDependency(QualifiedNameType source,
             QualifiedNameType target) {
@@ -102,9 +101,14 @@ public class IpsObjectDependency implements IDependency, Serializable {
     }
 
     /**
-     * Creates a new Dependency instance indicating an instance of dependency between the specified
-     * source and target objects. A Dependency instance indicates that the source is an instance of
+     * Creates a new dependency indicating an instance of dependency between the specified source
+     * and target objects. Such a dependency indicates that the source is "kind of an instance" of
      * the target and hence the source depends on the target.
+     * <p>
+     * Note that the term "instance of" is used rather loosely here and does not necessarily mean
+     * that source is a Java instance of target, e.g. a product component can have an instance of
+     * dependency to its product template although technically it is an instance of it product
+     * component type (and not of its template).
      */
     public static final IpsObjectDependency createInstanceOfDependency(QualifiedNameType source,
             QualifiedNameType target) {

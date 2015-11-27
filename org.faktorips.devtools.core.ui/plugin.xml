@@ -2172,6 +2172,11 @@
                      operator="and">
                   <adapt
                         type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                     <not>
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
+                        </test>
+                     </not>
                   </adapt>
                </iterate>
             </with>
@@ -2207,6 +2212,11 @@
                      operator="and">
                   <adapt
                         type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+                     <not>
+                        <test
+                              property="org.faktorips.devtools.core.ui.commands.ProductCmptTester.isProductTemplate">
+                        </test>
+                     </not>
                   </adapt>
                </iterate>
             </with>
@@ -2375,7 +2385,7 @@
             class="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             id="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
             namespace="org.faktorips.devtools.core.ui.commands.ProductCmptTester"
-            properties="allowGenerations"
+            properties="allowGenerations,isProductTemplate"
             type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
       </propertyTester>
    </extension>

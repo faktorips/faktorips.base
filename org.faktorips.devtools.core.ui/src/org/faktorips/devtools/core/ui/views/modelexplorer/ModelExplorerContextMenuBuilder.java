@@ -174,10 +174,20 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         manager.add(new Separator("copy")); //$NON-NLS-1$
         // Add copy actions depending on selected ips object type
-        if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
-            manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
-            manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
-            manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
+        if (selected instanceof IProductCmpt) {
+            IProductCmpt cmpt = (IProductCmpt)selected;
+            if (cmpt.isProductTemplate()) {
+                addProductTemplateActions(manager);
+            } else {
+                addProductComponentActions(manager);
+            }
+        } else if (selected instanceof IProductCmptGeneration) {
+            IProductCmptGeneration gen = (IProductCmptGeneration)selected;
+            if (gen.isProductTemplateGeneration()) {
+                addProductTemplateActions(manager);
+            } else {
+                addProductComponentActions(manager);
+            }
         } else if (selected instanceof ITestCase) {
             manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
         } else if (selected instanceof ITableContents) {
@@ -212,6 +222,16 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         manager.add(new Separator("properties")); //$NON-NLS-1$
         createPropertiesActions(manager, selected);
+    }
+
+    private void addProductComponentActions(IMenuManager manager) {
+        manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
+        manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
+        manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
+    }
+
+    private void addProductTemplateActions(IMenuManager manager) {
+        manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
     }
 
     protected void createNewMenu(IMenuManager manager, Object selected) {

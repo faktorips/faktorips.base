@@ -29,6 +29,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -43,6 +45,7 @@ import org.faktorips.devtools.core.ui.controller.fields.DateControlField;
 import org.faktorips.devtools.core.ui.controller.fields.IpsObjectField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
 import org.faktorips.devtools.core.ui.controls.DateControl;
+import org.faktorips.devtools.core.ui.controls.ProductCmptRefControl;
 import org.faktorips.devtools.core.ui.controls.ProductCmptType2RefControl;
 import org.faktorips.devtools.core.ui.controls.TextButtonControl;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -71,11 +74,18 @@ public class ComponentPropertiesSection extends IpsSection {
 
     private ProductCmptType2RefControl productCmptTypeControl;
 
+    /**
+     * Control to edit the runtime id. Will be {@code null} for product templates (as they do not
+     * have a runtime id). If the control exists it is enabled/disabled depending on the preferences
+     * (see {@link #updateRuntimeIdEnableState()}.
+     */
     private TextButtonControl runtimeIdControl;
 
     private EditField<GregorianCalendar> validFromField;
 
     private EditField<GregorianCalendar> validToField;
+
+    private ProductCmptRefControl templateControl;
 
     private final ProductCmptEditor editor;
 
@@ -103,6 +113,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
         // Initialize the individual rows of the section
         initProductCmptTypeRow(toolkit);
+        initTemplateRow(toolkit);
         initRuntimeIdRow(toolkit);
         initValidFromRow(toolkit);
         initValidToRow(toolkit);
@@ -118,8 +129,12 @@ public class ComponentPropertiesSection extends IpsSection {
     private void bind() {
         getBindingContext().bindContent(new IpsObjectField(productCmptTypeControl), product,
                 IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-        getBindingContext().bindContent(new TextButtonField(runtimeIdControl), product,
-                IProductCmpt.PROPERTY_RUNTIME_ID);
+
+        // Templates do not have a runtime id
+        if (!product.isProductTemplate()) {
+            getBindingContext().bindContent(new TextButtonField(runtimeIdControl), product,
+                    IProductCmpt.PROPERTY_RUNTIME_ID);
+        }
 
         getBindingContext().bindContent(validFromField, componentPropertiesPMO,
                 ComponentPropertiesPMO.PROPERTY_VALID_FROM);
@@ -127,6 +142,9 @@ public class ComponentPropertiesSection extends IpsSection {
                 ComponentPropertiesPMO.PROPERTY_VALID_FROM_ENABLED);
 
         getBindingContext().bindContent(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
+
+        getBindingContext().bindContent(new IpsObjectField(templateControl), product,
+                IProductCmpt.PROPERTY_TEMPLATE_NAME);
     }
 
     /**
@@ -156,6 +174,10 @@ public class ComponentPropertiesSection extends IpsSection {
      * {@link IProductCmpt}.
      */
     private void initRuntimeIdRow(UIToolkit toolkit) {
+        // Templates do not have a runtime id
+        if (product.isProductTemplate()) {
+            return;
+        }
         toolkit.createLabel(rootPane, Messages.ProductAttributesSection_labelRuntimeId);
         runtimeIdControl = new RuntimeIdControl(rootPane, toolkit);
         editControls.add(runtimeIdControl.getTextControl());
@@ -186,28 +208,54 @@ public class ComponentPropertiesSection extends IpsSection {
      * {@link IProductCmpt} is based on.
      */
     private void initProductCmptTypeRow(UIToolkit toolkit) {
-        if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-            Hyperlink link = toolkit.createHyperlink(rootPane, Messages.ProductAttributesSection_template);
-            link.addHyperlinkListener(new HyperlinkAdapter() {
-                @Override
-                public void linkActivated(HyperlinkEvent event) {
-                    if (!IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
-                        // if the property changed while the editor is open
-                        return;
-                    }
-                    IProductCmptType productCmptType = product.findProductCmptType(product.getIpsProject());
-                    if (productCmptType != null) {
-                        IpsUIPlugin.getDefault().openEditor(productCmptType);
-                    }
+        createLabelOrHyperlink(toolkit, Messages.ProductAttributesSection_type, new IpsObjectFinder() {
+
+            @Override
+            public IIpsObject findIpsObject() {
+                try {
+                    return product.findPolicyCmptType(product.getIpsProject());
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
                 }
-            });
-        } else {
-            toolkit.createLabel(rootPane, Messages.ProductAttributesSection_template);
-        }
+            }
+        });
 
         productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
         toolkit.setDataChangeable(productCmptTypeControl.getTextControl(), false);
         productCmptTypeControl.getTextControl().addModifyListener(new MyModifyListener());
+    }
+
+    private void initTemplateRow(UIToolkit toolkit) {
+        createLabelOrHyperlink(toolkit, Messages.ComponentPropertiesSection_TemplateName, new IpsObjectFinder() {
+
+            @Override
+            public IIpsObject findIpsObject() {
+                return product.findTemplate(product.getIpsProject());
+            }
+        });
+
+        templateControl = new ProductCmptRefControl(product.getIpsProject(), rootPane, toolkit, true);
+        templateControl.setProductCmptType(product.findProductCmptType(product.getIpsProject()), true);
+        templateControl.setSearchTemplates(true);
+        templateControl.setProductCmptsToExclude(new IProductCmpt[] { product });
+        toolkit.setDataChangeable(templateControl.getTextControl(), false);
+    }
+
+    private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {
+        if (IpsPlugin.getDefault().getIpsPreferences().canNavigateToModelOrSourceCode()) {
+            Hyperlink link = toolkit.createHyperlink(rootPane, labelText);
+            link.addHyperlinkListener(new HyperlinkAdapter() {
+                @Override
+                public void linkActivated(HyperlinkEvent event) {
+                    IIpsObject ipsObject = ipsObjectFinder.findIpsObject();
+                    if (ipsObject != null) {
+                        IpsUIPlugin.getDefault().openEditor(ipsObject);
+                    }
+                }
+            });
+        } else {
+            toolkit.createLabel(rootPane, labelText);
+        }
     }
 
     private void initLayout(Composite client) {
@@ -336,6 +384,20 @@ public class ComponentPropertiesSection extends IpsSection {
         public boolean isValidFromEnabled() {
             return !productCmptTypeChangingOverTime;
         }
+
+    }
+
+    /**
+     * Finds an IpsElement to be opened in an editor. Intended to be used in hyperlinks for
+     * navigating to the model. Introduced for lack of a Java 8 Producer&lt;IIpsObject&gt;
+     * 
+     * .
+     */
+    private interface IpsObjectFinder {
+        /**
+         * Finds an IpsObject to open.
+         */
+        public IIpsObject findIpsObject();
 
     }
 

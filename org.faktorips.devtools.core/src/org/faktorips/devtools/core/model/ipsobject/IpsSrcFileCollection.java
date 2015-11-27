@@ -133,7 +133,8 @@ public class IpsSrcFileCollection {
      * @return the meta class name of the internal source file
      */
     private String getMetaClassName(IIpsSrcFile srcFile) {
-        if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+        if (srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)
+                || srcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE)) {
             return srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
         } else if (srcFile.getIpsObjectType().equals(IpsObjectType.ENUM_CONTENT)) {
             return srcFile.getPropertyValue(IEnumContent.PROPERTY_ENUM_TYPE);
@@ -141,8 +142,9 @@ public class IpsSrcFileCollection {
             return srcFile.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE);
         } else if (srcFile.getIpsObjectType().equals(IpsObjectType.TEST_CASE_TYPE)) {
             return srcFile.getPropertyValue(ITestCase.PROPERTY_TEST_CASE_TYPE);
+        } else {
+            return null;
         }
-        return null;
     }
 
     private class CollectionItem {

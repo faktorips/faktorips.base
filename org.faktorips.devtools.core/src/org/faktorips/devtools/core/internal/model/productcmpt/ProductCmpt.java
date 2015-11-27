@@ -55,6 +55,7 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.ProductCmptValidations;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValidations;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -86,6 +87,8 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     private String productCmptType = ""; //$NON-NLS-1$
 
     private String runtimeId = ""; //$NON-NLS-1$
+
+    private String template = null;
 
     public ProductCmpt(IIpsSrcFile file) {
         super(file);
@@ -168,6 +171,36 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
+    public boolean isUsingTemplate() {
+        return StringUtils.isNotEmpty(getTemplateName());
+    }
+
+    @Override
+    public boolean isUsingExistingTemplate(IIpsProject ipsProject) {
+        return isUsingTemplate() && findTemplate(ipsProject) != null;
+    }
+
+    @Override
+    public String getTemplateName() {
+        return template;
+    }
+
+    @Override
+    public void setTemplateName(String newTemplate) {
+        String oldTemplate = template;
+        this.template = newTemplate;
+        valueChanged(oldTemplate, template);
+    }
+
+    @Override
+    public IProductCmpt findTemplate(IIpsProject ipsProject) {
+        if (StringUtils.isEmpty(template)) {
+            return null;
+        }
+        return ipsProject.findProductTemplate(template);
+    }
+
+    @Override
     protected IpsObjectGeneration createNewGeneration(String id) {
         return new ProductCmptGeneration(this, id);
     }
@@ -188,11 +221,15 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             return;
         }
         validateName(list, ipsProject);
-        if (!isTemplate()) {
+        if (isProductTemplate()) {
+            TemplateValidations.validateTemplateCycle(this, list, ipsProject);
+            TemplateValidations.validateTemplateTypeDiffersFromParentTemplate(this, list, ipsProject);
+        } else {
             validateRuntimeId(list, ipsProject);
         }
         validateLinks(list, ipsProject, type);
         validateDifferencesToModel(list, ipsProject);
+        ProductCmptValidations.validateTemplate(this, type, list, ipsProject);
     }
 
     private boolean validateTypeHierarchy(MessageList list, IIpsProject ipsProject, IProductCmptType type) {
@@ -279,6 +316,12 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
             dependencySet.add(dependency);
             addDetails(details, dependency, this, PROPERTY_PRODUCT_CMPT_TYPE);
         }
+        if (isUsingTemplate()) {
+            IpsObjectDependency dependency = IpsObjectDependency.createInstanceOfDependency(getQualifiedNameType(),
+                    new QualifiedNameType(template, IpsObjectType.PRODUCT_TEMPLATE));
+            dependencySet.add(dependency);
+            addDetails(details, dependency, this, PROPERTY_TEMPLATE_NAME);
+        }
 
         linkCollection.addRelatedProductCmptQualifiedNameTypes(dependencySet, details);
         IIpsObjectGeneration[] generations = getGenerationsOrderedByValidDate();
@@ -336,6 +379,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_PRODUCT_CMPT_TYPE, productCmptType);
         element.setAttribute(PROPERTY_RUNTIME_ID, runtimeId);
+        element.setAttribute(PROPERTY_TEMPLATE_NAME, template);
     }
 
     @Override
@@ -343,6 +387,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         super.initPropertiesFromXml(element, id);
         productCmptType = element.getAttribute(PROPERTY_PRODUCT_CMPT_TYPE);
         runtimeId = element.getAttribute(PROPERTY_RUNTIME_ID);
+        template = element.getAttribute(PROPERTY_TEMPLATE_NAME);
     }
 
     /**
@@ -771,7 +816,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public boolean isTemplate() {
+    public boolean isProductTemplate() {
         return getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
     }
 

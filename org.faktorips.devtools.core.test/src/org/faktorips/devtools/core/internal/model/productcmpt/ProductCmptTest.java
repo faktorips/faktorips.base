@@ -10,7 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -151,7 +155,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testDependsOn() throws Exception {
+    public void testDependsOn() throws CoreException {
         IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
         association.setChangingOverTime(false);
         association.setTargetRoleSingular("testAsso");
@@ -167,7 +171,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptTypeIsMissing() throws Exception {
+    public void testValidate_ProductCmptTypeIsMissing() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
 
@@ -191,7 +195,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductCmptTypeIsNotAbstract() throws Exception {
+    public void testValidate_ProductCmptTypeIsNotAbstract() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         productCmpt.setProductCmptType(type.getQualifiedName());
 
@@ -204,7 +208,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductTemplate_TypeMayBeAbstract() throws Exception {
+    public void testValidate_ProductTemplate_TypeMayBeAbstract() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         ProductCmpt productTemplate = newProductTemplate(ipsProject, "MyTemplate");
         productTemplate.setProductCmptType(type.getQualifiedName());
@@ -218,7 +222,105 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_InconsitencyInTypeHierarch() throws Exception {
+    public void testValidate_TemplateType() throws CoreException {
+        IProductCmptType baseType = newProductCmptType(ipsProject, "baseType");
+        IProductCmptType subType = newProductCmptType(baseType, "subType");
+
+        IProductCmpt baseComp = newProductCmpt(baseType, "baseComp");
+        IProductCmpt subComp = newProductCmpt(subType, "subComp");
+
+        IProductCmpt baseTemplate = newProductTemplate(baseType, "baseTemplate");
+        IProductCmpt subTemplate = newProductTemplate(subType, "subTemplate");
+
+        // No template
+        MessageList list = baseComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        // Non existing template
+        baseComp.setTemplateName("noSuchTemplate");
+        list = baseComp.validate(ipsProject);
+        assertThat(list, hasMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        // Consistent type hierarchy
+        baseComp.setTemplateName(baseTemplate.getQualifiedName());
+        list = baseComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        subComp.setTemplateName(baseTemplate.getQualifiedName());
+        list = subComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        subComp.setTemplateName(subTemplate.getQualifiedName());
+        list = subComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+
+        // Inconsistent type hierarchy
+        baseComp.setTemplateName(subTemplate.getQualifiedName());
+        list = baseComp.validate(ipsProject);
+        assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
+        assertThat(list, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
+    }
+
+    @Test
+    public void testValidate_ProductTemplate_TemplateCycle() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "type");
+        ProductCmpt template1 = newProductTemplate(type, "template1");
+        ProductCmpt template2 = newProductTemplate(type, "template2");
+        ProductCmpt template3 = newProductTemplate(type, "template3");
+
+        // Template has no template hierarchy
+        MessageList list = template1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
+
+        // Template hierarchy without a cycle
+        template1.setTemplateName(template2.getQualifiedName());
+        template2.setTemplateName(template3.getQualifiedName());
+        list = template1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
+
+        // Template hierarchy with a cycle
+        template3.setTemplateName(template1.getQualifiedName());
+        list = template1.validate(ipsProject);
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
+    }
+
+    @Test
+    public void testValidate_ProductTemplate_TemplateTypeShouldBeUniqueInTemplateHierarchy() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "type");
+        IProductCmptType subType = newProductCmptType(type, "subType");
+
+        ProductCmpt template = newProductTemplate(type, "template");
+        ProductCmpt subTemplate1 = newProductTemplate(subType, "subTemplate1");
+        ProductCmpt subTemplate2 = newProductTemplate(subType, "subTemplate2");
+
+        // Template has no template hierarchy
+        MessageList list = template.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+
+        // Template hierarchy with unique types
+        subTemplate1.setTemplateName(template.getQualifiedName());
+        list = template.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+        list = subTemplate1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+
+        // Template hierarchy contains duplicate types
+        subTemplate2.setTemplateName(subTemplate1.getQualifiedName());
+        list = template.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+        list = subTemplate1.validate(ipsProject);
+        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+        list = subTemplate2.validate(ipsProject);
+        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
+    }
+
+    @Test
+    public void testValidate_InconsitencyInTypeHierarch() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
 
@@ -532,6 +634,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("MotorProduct", productCmpt.getProductCmptType());
         assertEquals("MotorProductId", productCmpt.getRuntimeId());
+        assertEquals("MyLittleTemplate", productCmpt.getTemplateName());
         assertEquals(2, productCmpt.getNumOfGenerations());
         IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, gen.getNumOfConfigElements());
@@ -547,6 +650,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testToXml() throws CoreException {
         productCmpt.setProductCmptType("MotorProduct");
         productCmpt.setRuntimeId("MotorProductId");
+        productCmpt.setTemplateName("MeinTemplate");
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
         IConfigElement ce1 = gen1.newConfigElement();
         ce1.setValue("0.15");
@@ -557,6 +661,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         assertEquals("MotorProduct", copy.getProductCmptType());
         assertEquals("MotorProductId", copy.getRuntimeId());
+        assertEquals("MeinTemplate", productCmpt.getTemplateName());
         assertEquals(2, copy.getNumOfGenerations());
         IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, genCopy.getConfigElements().length);
@@ -686,7 +791,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferencesToModel_productCmptTypeAttribute() throws Exception {
+    public void testContainsDifferencesToModel_productCmptTypeAttribute() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
         newAttribute.setChangingOverTime(false);
@@ -717,7 +822,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFixDifferencesToModel_productCmptTypeAttribute() throws Exception {
+    public void testFixDifferencesToModel_productCmptTypeAttribute() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
         newAttribute.setChangingOverTime(false);
@@ -763,7 +868,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testComputeDeltaToModel_AttributeValues() throws Exception {
+    public void testComputeDeltaToModel_AttributeValues() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeAttribute newAttribute = newProductCmptType.newProductCmptTypeAttribute("testAttr");
         newAttribute.setChangingOverTime(false);
@@ -795,7 +900,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferencesToModel_productCmptTypeTableContent() throws Exception {
+    public void testContainsDifferencesToModel_productCmptTypeTableContent() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("TSU");
@@ -809,7 +914,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFixDifferencesToModel_productCmptTypeTableContent() throws Exception {
+    public void testFixDifferencesToModel_productCmptTypeTableContent() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("TSU");
@@ -824,7 +929,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testComputeDeltaToModel_productCmptTypeTableContent() throws Exception {
+    public void testComputeDeltaToModel_productCmptTypeTableContent() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         ITableStructureUsage tableStructureUsage = newProductCmptType.newTableStructureUsage();
         tableStructureUsage.setRoleName("TSU");
@@ -910,7 +1015,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testNewPropertyValue() throws Exception {
+    public void testNewPropertyValue() {
         assertEquals(0,
                 productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
                         .size());
@@ -1027,7 +1132,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetLinksIncludingGenerations() throws Exception {
+    public void testGetLinksIncludingGenerations() {
         IProductCmptGeneration generation1 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
                 2010, 0, 1));
         IProductCmptGeneration generation2 = (IProductCmptGeneration)productCmpt.newGeneration(new GregorianCalendar(
@@ -1045,7 +1150,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTableContentUsages() throws Exception {
+    public void testGetTableContentUsages() {
         ITableContentUsage contentUsagePC = (ITableContentUsage)productCmpt.newPropertyValue(new TableStructureUsage(
                 mock(IProductCmptType.class), ""));
         assertNotNull(contentUsagePC);
@@ -1065,7 +1170,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testAddDependenciesFromFormulaExpressions() throws Exception {
+    public void testAddDependenciesFromFormulaExpressions() throws CoreException {
         ProductCmpt productCmptSpy = spy(productCmpt);
         IDependency dependency = mock(IDependency.class);
         ExpressionDependencyDetail dependencyDetail1 = mock(ExpressionDependencyDetail.class);
@@ -1092,7 +1197,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testContainsDifferencesToModel_productCmptTypeFormula() throws Exception {
+    public void testContainsDifferencesToModel_productCmptTypeFormula() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
         newFormulaSignature.setChangingOverTime(false);
@@ -1105,7 +1210,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFixDifferencesToModel_productCmptTypeFormula() throws Exception {
+    public void testFixDifferencesToModel_productCmptTypeFormula() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
         newFormulaSignature.setChangingOverTime(false);
@@ -1119,7 +1224,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testComputeDeltaToModel_productCmptTypeFormula() throws Exception {
+    public void testComputeDeltaToModel_productCmptTypeFormula() throws CoreException {
         ProductCmptType newProductCmptType = newProductCmptType(ipsProject, "TestProductCmptType");
         IProductCmptTypeMethod newFormulaSignature = newProductCmptType.newFormulaSignature("newFormula");
         newFormulaSignature.setChangingOverTime(false);
@@ -1201,18 +1306,52 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsTemplate_notTemplate() throws Exception {
+    public void testIsProductTemplate_noTemplate() throws CoreException {
         ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
 
-        assertFalse(product.isTemplate());
+        assertFalse(product.isProductTemplate());
     }
 
     @Test
-    public void testIsTemplate_isTemplate() throws Exception {
+    public void testIsProductTemplate_isTemplate() throws CoreException {
         IIpsObject template = newIpsObject(ipsProject, IpsObjectType.PRODUCT_TEMPLATE, "AnyProdCmpt");
 
         assertThat(template, instanceOf(IProductCmpt.class));
-        assertTrue(((IProductCmpt)template).isTemplate());
+        assertTrue(((IProductCmpt)template).isProductTemplate());
     }
 
+    @Test
+    public void testIsUsingExistingTemplate_missingTemplate() throws CoreException {
+        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
+        product.setTemplateName("Template");
+
+        assertFalse(product.isUsingExistingTemplate(ipsProject));
+    }
+
+    @Test
+    public void testIsUsingExistingTemplate_existingTemplate() throws CoreException {
+        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
+        newProductTemplate(ipsProject, "Template");
+        product.setTemplateName("Template");
+
+        assertTrue(product.isUsingExistingTemplate(ipsProject));
+    }
+
+    @Test
+    public void testFindTemplate() throws CoreException {
+        IProductCmpt product = newProductCmpt(ipsProject, "product");
+        product.setTemplateName(null);
+        assertThat(product.findTemplate(ipsProject), is(nullValue()));
+
+        product.setTemplateName("");
+        assertThat(product.findTemplate(ipsProject), is(nullValue()));
+
+        product.setTemplateName("noSuchTemplateExists");
+        assertThat(product.findTemplate(ipsProject), is(nullValue()));
+
+        IProductCmpt template = newProductTemplate(ipsProject, "template");
+        product.setTemplateName(template.getQualifiedName());
+        assertThat(product.findTemplate(ipsProject), is(template));
+
+    }
 }

@@ -26,7 +26,7 @@ import org.faktorips.devtools.core.ui.editors.EditDialog;
 /**
  * A dialog to edit the product component type (template) of a product compnent.
  */
-public class SetTemplateDialog extends EditDialog {
+public class SetProductCmptTypeDialog extends EditDialog {
 
     private IProductCmpt productCmpt;
     private ProductCmptType2RefControl template;
@@ -38,7 +38,7 @@ public class SetTemplateDialog extends EditDialog {
      * @param parentShell The shell to be used as parent for the dialog
      * @param message The message to be displayed to the user if no error message is set.
      */
-    public SetTemplateDialog(IProductCmpt cmpt, Shell parentShell, String message) {
+    public SetProductCmptTypeDialog(IProductCmpt cmpt, Shell parentShell, String message) {
         super(parentShell, Messages.SetTemplateDialog_titleNewTemplate, false);
         this.message = message;
         this.productCmpt = cmpt;

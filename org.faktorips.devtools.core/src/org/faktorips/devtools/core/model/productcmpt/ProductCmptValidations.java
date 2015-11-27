@@ -10,12 +10,13 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.util.message.ObjectProperty;
 
 /**
  * A class that contains validations of the model class <code>IProductCmpt</code> that are also used
@@ -26,6 +27,10 @@ import org.faktorips.util.message.MessageList;
  * @since 2.3
  */
 public class ProductCmptValidations {
+
+    private ProductCmptValidations() {
+        // avoid public constructor for utility class
+    }
 
     /**
      * Checks if the product component type exists and is not abstract.
@@ -38,14 +43,13 @@ public class ProductCmptValidations {
      * 
      * @return The product component type if it exists and is not abstract.
      * 
-     * @throws CoreException if an error occurs while searching.
      */
     /* Tests can be found in ProductCmptTest */
     public static final IProductCmptType validateProductCmptType(IProductCmpt productCmpt,
             String productCmptTypeName,
             MessageList list,
-            IIpsProject ipsProject) throws CoreException {
-        IProductCmptType type = ipsProject.findProductCmptType(productCmptTypeName);
+            IIpsProject ipsProject) {
+        IProductCmptType type = findProductCmptType(productCmptTypeName, ipsProject);
         if (type == null) {
             String text = NLS.bind(
                     org.faktorips.devtools.core.model.productcmpt.Messages.ProductCmptValidations_typeDoesNotExist,
@@ -54,7 +58,7 @@ public class ProductCmptValidations {
                     IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE));
             return null;
         }
-        if (!productCmpt.isTemplate() && type.isAbstract()) {
+        if (!productCmpt.isProductTemplate() && type.isAbstract()) {
             String text = NLS.bind(
                     org.faktorips.devtools.core.model.productcmpt.Messages.ProductCmptValidations_typeIsAbstract,
                     productCmptTypeName);
@@ -65,4 +69,64 @@ public class ProductCmptValidations {
         return type;
     }
 
+    /**
+     * Validates that the template of a product component:
+     * <ul>
+     * <li>First validates that the template exists if the template name is not empty</li>
+     * <li>Second validates that the product component type of a product component is covariant to
+     * the product component type of its template.</li>
+     * </ul>
+     * 
+     * @param productCmpt The product component to validate
+     * @param productCmptType The type of the product component
+     * @param list The message list to add potential error messages to
+     * @param ipsProject The project that should be used to search for other objects
+     * @return The template of the product component if it was found
+     */
+    public static final IProductCmpt validateTemplate(IProductCmpt productCmpt,
+            IProductCmptType productCmptType,
+            MessageList list,
+            IIpsProject ipsProject) {
+        String templateName = productCmpt.getTemplateName();
+
+        if (StringUtils.isNotEmpty(templateName)) {
+            IProductCmpt template = ipsProject.findProductTemplate(templateName);
+            if (template != null) {
+                ObjectProperty typeProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE_NAME);
+                validateTemplateType(productCmptType, list, ipsProject, template, typeProperty, templateProperty);
+            } else {
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE_NAME);
+                String text = NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
+                list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE, text, templateProperty);
+            }
+            return template;
+        } else {
+            return null;
+        }
+    }
+
+    private static void validateTemplateType(IProductCmptType productCmptType,
+            MessageList list,
+            IIpsProject ipsProject,
+            IProductCmpt template,
+            ObjectProperty... invalidProperties) {
+        IProductCmptType templateCmptType = findProductCmptType(template.getProductCmptType(), ipsProject);
+        if (templateCmptType != null) {
+            if (!isSubtypeOrSame(productCmptType, templateCmptType, ipsProject)) {
+                list.newError(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE,
+                        Messages.ProductCmptValidations_error_inconsistentTemplateType, invalidProperties);
+            }
+        }
+    }
+
+    private static boolean isSubtypeOrSame(IProductCmptType productCmptType,
+            IProductCmptType templateCmptType,
+            IIpsProject ipsProject) {
+        return productCmptType.isSubtypeOrSameType(templateCmptType, ipsProject);
+    }
+
+    private static IProductCmptType findProductCmptType(String productCmptTypeName, IIpsProject ipsProject) {
+        return ipsProject.findProductCmptType(productCmptTypeName);
+    }
 }

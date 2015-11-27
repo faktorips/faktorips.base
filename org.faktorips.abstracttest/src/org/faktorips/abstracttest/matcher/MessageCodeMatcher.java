@@ -1,0 +1,51 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.abstracttest.matcher;
+
+import org.faktorips.util.message.MessageList;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+
+/**
+ * Checks whether a {@link MessageList} contains a message with a certain message code.
+ */
+public class MessageCodeMatcher extends BaseMatcher<MessageList> {
+    private final String msgCode;
+    private boolean expectMessage;
+
+    /**
+     * @param msgCode the expected message code
+     * @param expectMessage whether a message is expected. <code>true</code> if a message is
+     *            expected, <code>false</code> if no message with the given message code is expected
+     *            (negates result).
+     */
+    MessageCodeMatcher(String msgCode, boolean expectMessage) {
+        this.msgCode = msgCode;
+        this.expectMessage = expectMessage;
+    }
+
+    @Override
+    public void describeTo(Description description) {
+        if (expectMessage) {
+            description.appendText("a messageList containing messages with code: " + msgCode);
+        } else {
+            description.appendText("a messageList without message code: " + msgCode);
+        }
+    }
+
+    @Override
+    public boolean matches(Object item) {
+        if (!(item instanceof MessageList)) {
+            return false;
+        }
+        MessageList list = (MessageList)item;
+        return list.getMessageByCode(msgCode) != null == expectMessage;
+    }
+}

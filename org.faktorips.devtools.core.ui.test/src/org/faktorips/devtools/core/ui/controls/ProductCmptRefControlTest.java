@@ -10,8 +10,10 @@
 
 package org.faktorips.devtools.core.ui.controls;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -127,4 +129,35 @@ public class ProductCmptRefControlTest extends AbstractIpsPluginTest {
 
         assertEquals(2, list.size());
     }
+
+    @Test
+    public void testTemplates() throws CoreException {
+        IIpsProject project = newIpsProject("BaseProject");
+
+        IProductCmptType productCmptType = newProductCmptType(project, "ProductType");
+        IProductCmptType otherType = newProductCmptType(project, "OtherProductType");
+
+        ProductCmpt template = newProductTemplate(project, "Template1");
+        ProductCmpt template2 = newProductTemplate(project, "Template2");
+        ProductCmpt template3 = newProductTemplate(project, "Template3");
+        template.setProductCmptType(productCmptType.getQualifiedName());
+        template2.setProductCmptType(productCmptType.getQualifiedName());
+        template3.setProductCmptType(otherType.getQualifiedName());
+
+        ProductCmpt productCmpt = newProductCmpt(project, "Product");
+        productCmpt.setProductCmptType(productCmptType.getQualifiedName());
+        productCmpt.newGeneration();
+
+        ProductCmptRefControl productCmptRefControl = new ProductCmptRefControl(project, new Shell(), new UIToolkit(
+                null));
+        productCmptRefControl.setProductCmptType(productCmptType, true);
+        productCmptRefControl.setSearchTemplates(true);
+
+        List<IIpsSrcFile> list = Arrays.asList(productCmptRefControl.getIpsSrcFiles());
+        assertThat(list.size(), is(2));
+        assertTrue(list.contains(template.getIpsSrcFile()));
+        assertTrue(list.contains(template2.getIpsSrcFile()));
+
+    }
+
 }

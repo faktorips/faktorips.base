@@ -82,7 +82,8 @@ class ProductSearchQueryConditionMatcher {
     }
 
     private boolean isProductCmpt(IIpsSrcFile srcFile) {
-        return IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType());
+        return IpsObjectType.PRODUCT_CMPT.equals(srcFile.getIpsObjectType())
+                || IpsObjectType.PRODUCT_TEMPLATE.equals(srcFile.getIpsObjectType());
     }
 
     private void processProdCmpt(IIpsSrcFile srcFile, Set<IProductPartsContainer> productPartsContainers) {

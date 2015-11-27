@@ -17,7 +17,7 @@ Require-Bundle: org.faktorips.devtools.core,
  org.mockito.mockito-all;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.faktorips.abstracttest,org.faktorips.abstracttest.
- builder,org.faktorips.abstracttest.test
+ builder,org.faktorips.abstracttest.test,org.faktorips.abstracttest.matcher
 Import-Package: org.apache.commons.lang;version="2.6.0",
  org.junit;version="4.5.0",
  org.junit.matchers;version="4.5.0",
