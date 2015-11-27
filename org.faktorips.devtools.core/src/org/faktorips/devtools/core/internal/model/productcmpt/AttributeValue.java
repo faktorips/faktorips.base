@@ -17,10 +17,12 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
@@ -125,7 +127,37 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public IValueHolder<?> getValueHolder() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateValueHolder();
+        }
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return getUndefinedValueHolder();
+        }
         return valueHolder;
+    }
+
+    private IValueHolder<?> findTemplateValueHolder() {
+        IAttributeValue templateAttribute = findTemplateProperty(getIpsProject());
+        if (templateAttribute == null || templateAttribute.getValueHolder() == null) {
+            // Template should have an attribute value but does not. Use the "last known" value
+            // holder as a more or less helpful fallback while some validation hopefully addresses
+            // the missing attribute value in the template...
+            return valueHolder;
+        }
+        return DelegatingValueHolder.of(this, templateAttribute.getValueHolder());
+    }
+
+    private IValueHolder<?> getUndefinedValueHolder() {
+        try {
+            IProductCmptTypeAttribute typeAttribute = findAttribute(getIpsProject());
+            if (typeAttribute == null) {
+                return new SingleValueHolder(this);
+            } else {
+                return AttributeValueType.getTypeFor(typeAttribute).newHolderInstance(this);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -156,8 +188,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String getPropertyValue() {
-        if (valueHolder != null) {
-            return valueHolder.getStringValue();
+        if (getValueHolder() != null) {
+            return getValueHolder().getStringValue();
         } else {
             return null;
         }
@@ -223,8 +255,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
         Document ownerDocument = element.getOwnerDocument();
-        if (valueHolder != null) {
-            Element valueElement = valueHolder.toXml(ownerDocument);
+        if (getValueHolder() != null) {
+            Element valueElement = getValueHolder().toXml(ownerDocument);
             element.appendChild(valueElement);
         }
         templateValueSettings.propertiesToXml(element);
@@ -303,4 +335,5 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String toString() {
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
+
 }

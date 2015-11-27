@@ -16,6 +16,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,12 +53,12 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     @Override
     @Deprecated
     public boolean isValid() throws CoreException {
-        return delegate.isValid();
+        return isValid(getIpsProject());
     }
 
     @Override
     public boolean isValid(IIpsProject ipsProject) throws CoreException {
-        return delegate.isValid(ipsProject);
+        return getValidationResultSeverity(ipsProject) != Message.ERROR;
     }
 
     /**
@@ -68,12 +69,12 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     @Override
     @Deprecated
     public int getValidationResultSeverity() throws CoreException {
-        return delegate.getValidationResultSeverity();
+        return getValidationResultSeverity(getIpsProject());
     }
 
     @Override
     public int getValidationResultSeverity(IIpsProject ipsProject) throws CoreException {
-        return delegate.getValidationResultSeverity(ipsProject);
+        return validate(ipsProject).getSeverity();
     }
 
     @Override
@@ -88,7 +89,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
 
     @Override
     public IIpsProject getIpsProject() {
-        return delegate.getIpsProject();
+        return parent.getIpsProject();
     }
 
     @Override
