@@ -96,9 +96,9 @@ public class ProductCmptValidations {
                 ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE_NAME);
                 validateTemplateType(productCmptType, list, ipsProject, template, typeProperty, templateProperty);
             } else {
-                ObjectProperty typeProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE_NAME);
                 String text = NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
-                list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE, text, typeProperty);
+                list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE, text, templateProperty);
             }
             return template;
         } else {
