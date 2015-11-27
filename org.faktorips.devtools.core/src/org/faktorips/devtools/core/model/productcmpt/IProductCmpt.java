@@ -40,7 +40,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TEMPLATE_NAME = "templateName"; //$NON-NLS-1$
+    public static final String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
 

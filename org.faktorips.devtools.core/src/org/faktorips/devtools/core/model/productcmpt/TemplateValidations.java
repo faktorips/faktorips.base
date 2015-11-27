@@ -39,7 +39,7 @@ public class TemplateValidations {
         visitor.start(template);
         if (visitor.cycleDetected()) {
             String text = NLS.bind(Messages.TemplateValidations_error_templateCycle, template);
-            ObjectProperty templateProperty = new ObjectProperty(template, IProductCmpt.PROPERTY_TEMPLATE_NAME);
+            ObjectProperty templateProperty = new ObjectProperty(template, IProductCmpt.PROPERTY_TEMPLATE);
             list.newError(IProductCmpt.MSGCODE_TEMPLATE_CYCLE, text, templateProperty);
         }
     }
@@ -67,7 +67,7 @@ public class TemplateValidations {
 
         String text = NLS.bind(Messages.TemplateValidations_warning_mutlipleTemplatesWithSameType, template.getName());
         Message warning = Message.newWarning(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE, text, template,
-                IProductCmpt.PROPERTY_TEMPLATE_NAME);
+                IProductCmpt.PROPERTY_TEMPLATE);
         validateTemplateTypeDiffers(template.findProductCmptType(ipsProject), parentTemplate, warning, list, ipsProject);
     }
 

@@ -135,7 +135,7 @@ public class ComponentPropertiesSection extends IpsSection {
         getBindingContext().bindContent(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
         getBindingContext().bindContent(new IpsObjectField(templateControl), product,
-                IProductCmpt.PROPERTY_TEMPLATE_NAME);
+                IProductCmpt.PROPERTY_TEMPLATE);
     }
 
     /**
