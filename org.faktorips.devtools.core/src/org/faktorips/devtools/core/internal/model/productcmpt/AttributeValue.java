@@ -25,6 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -193,6 +194,22 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public boolean isAllowedTemplateValueStatus(TemplateValueStatus checkTemplateValueStatus) {
+        if (checkTemplateValueStatus == TemplateValueStatus.UNDEFINED) {
+            return getPropertyValueContainer().isProductTemplate();
+        } else if (checkTemplateValueStatus == TemplateValueStatus.INHERITED) {
+            return findTemplateProperty(getIpsProject()) != null;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
@@ -285,5 +302,4 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String toString() {
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
-
 }

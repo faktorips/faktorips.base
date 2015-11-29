@@ -26,7 +26,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Layout;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -45,13 +47,11 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * composite. To change these settings, subclasses are allowed to override {@link #setLayout()} and
  * {@link #setLayoutData()}.
  * <p>
- * The methods {@link #getFirstControlHeight()} and {@link #getFirstControlMarginHeight()} are
- * intended to enable clients of this class to change the position of other UI elements. For
- * example, if a composite of this kind is used in a 2-column layout where the left column features
- * a label representing the property value's caption, it might be necessary to change the vertical
- * position of the label. The height of the first control is computed automatically, subclasses must
- * override {@link #getFirstControlMarginHeight()} if the first control they create features a
- * <em>margin-height</em> other than 0.
+ * The method {@link #getFirstControlHeight()} is intended to enable clients of this class to change
+ * the position of other UI elements. For example, if a composite of this kind is used in a 2-column
+ * layout where the left column features a label representing the property value's caption, it might
+ * be necessary to change the vertical position of the label. The height of the first control is
+ * computed automatically, subclasses may override this method.
  * <p>
  * Finally, the method {@link #createEditFields(List)} must be implemented to create the edit fields
  * of the composite.
@@ -145,17 +145,6 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     /**
-     * Returns the margin-height of the first control contained in this composite.
-     * <p>
-     * <strong>Subclassing:</strong><br>
-     * The default implementation always returns 0. Subclasses should override this method if the
-     * first control they create features a margin-height other than 0.
-     */
-    protected int getFirstControlMarginHeight() {
-        return 0;
-    }
-
-    /**
      * Creates this composite and must be called by subclasses directly after subclass-specific
      * attributes have been initialized by the subclass constructor.
      * <p>
@@ -165,6 +154,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      */
     protected final void initControls() {
         setLayout();
+        updateLayoutForTemplateButton();
         setLayoutData();
 
         try {
@@ -195,6 +185,23 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         clientLayout.marginLeft = 8;
         clientLayout.horizontalSpacing = 0;
         setLayout(clientLayout);
+    }
+
+    protected void updateLayoutForTemplateButton() {
+        if (showTemplateButton()) {
+            ((GridLayout)getLayout()).numColumns++;
+        }
+    }
+
+    protected boolean showTemplateButton() {
+        // TODO instance-of-abfrage entfernen, wenn Templates für alle PropertyValues geht
+        if (getPropertyValue() instanceof IAttributeValue) {
+            IPropertyValueContainer propertyValueContainer = getPropertyValue().getPropertyValueContainer();
+            return propertyValueContainer.isProductTemplate()
+                    || propertyValueContainer.getProductCmpt().isUsingTemplate();
+        } else {
+            return false;
+        }
     }
 
     /**

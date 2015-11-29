@@ -252,7 +252,6 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -269,13 +268,6 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             return false;
         }
         SingleValueHolder other = (SingleValueHolder)obj;
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
         if (value == null) {
             if (other.value != null) {
                 return false;

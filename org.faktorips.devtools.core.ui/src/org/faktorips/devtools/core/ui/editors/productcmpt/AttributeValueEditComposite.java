@@ -14,9 +14,14 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
@@ -36,6 +41,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.LocalizedStringEditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -77,71 +83,111 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     @Override
     protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
         createValueEditField(editFields);
+        if (showTemplateButton()) {
+            createTemplateStatusButton();
+        }
         createControlForExtensionProperty();
     }
 
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
         ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
                 getPropertyValue().getIpsProject());
-        EditField<?> editField = createEditField(datatype);
-        registerAndBindEditField(editFields, editField);
+        createEditField(datatype, editFields);
     }
 
-    protected EditField<?> createEditField(ValueDatatype datatype) {
-        EditField<?> editField = null;
-        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
+    protected void createEditField(ValueDatatype datatype, List<EditField<?>> editFields) {
+        EditField<?> editField;
 
         if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
-            MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
-                    getPropertyValue(), datatype);
-            editField = new TextButtonField(control);
-            ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
-                    .createWrapperFor(getPropertyValue());
-            getBindingContext().bindContent(editField, wrapper,
-                    ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
+            editField = createMultiValueField(datatype);
         } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
-            SingleValueHolder singleValueHolder = (SingleValueHolder)getPropertyValue().getValueHolder();
-            if (singleValueHolder.getValueType() == ValueType.STRING) {
-                ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
-
-                ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                        datatype);
-                editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
-                        .getIpsProject());
-                getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
-            } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-                final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(
-                        getPropertyValue().getIpsProject());
-                MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
-                        localizationLocale);
-                InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
-                        getPropertyValue());
-                InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
-                editField = new LocalizedStringEditField(control.getTextControl());
-                getBindingContext().bindContent(editField, valueHolderPMO,
-                        MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
-            }
+            editField = createSingleValueField(datatype);
+        } else {
+            throw new RuntimeException("Illegal value holder instance in attribute " + getProperty().getName()); //$NON-NLS-1$
         }
-        if (editField != null) {
-            /*
-             * SW 4.6.2014: old code set horizontal span to 2, for whatever reason. A potential enum
-             * button, however, requires a second column, so that line was deleted.
-             */
-            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
-            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
-            return editField;
-        }
-        throw new RuntimeException("Illegal value holder instance in attribute " + getProperty().getName()); //$NON-NLS-1$
-    }
-
-    protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<?> editField) {
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
         editFields.add(editField);
         addChangingOverTimeDecorationIfRequired(editField);
     }
 
+    private EditField<?> createMultiValueField(ValueDatatype datatype) {
+        EditField<?> editField;
+        MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
+                getPropertyValue(), datatype);
+        editField = new TextButtonField(control);
+        ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
+                .createWrapperFor(getPropertyValue());
+        getBindingContext().bindContent(editField, wrapper,
+                ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
+        return editField;
+    }
+
+    private EditField<?> createSingleValueField(ValueDatatype datatype) {
+        IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
+        SingleValueHolder singleValueHolder = (SingleValueHolder)getPropertyValue().getValueHolder();
+
+        if (singleValueHolder.getValueType() == ValueType.STRING) {
+            return createSimpleField(datatype, valueSet);
+        } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+            return createInternationalStringField();
+        } else {
+            throw new RuntimeException("Illegal value type in attribute " + getProperty().getName()); //$NON-NLS-1$
+        }
+    }
+
+    private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet) {
+        ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
+        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+        EditField<?> editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet,
+                getPropertyValue().getIpsProject());
+        getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
+        return editField;
+    }
+
+    private EditField<?> createInternationalStringField() {
+        final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(
+                getPropertyValue().getIpsProject());
+        MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
+                localizationLocale);
+        InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
+                getPropertyValue());
+        InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
+        LocalizedStringEditField editField = new LocalizedStringEditField(control.getTextControl());
+        getBindingContext().bindContent(editField, valueHolderPMO,
+                MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
+        return editField;
+    }
+
+    protected void createTemplateStatusButton() {
+        final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+        final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
+
+        final TemplateValuePmo pmo = new TemplateValuePmo(getPropertyValue());
+        toolItem.setImage(pmo.getTemplateValueStatus().getIcon());
+        getBindingContext().add(
+                new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
+                        TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
+
+                    @Override
+                    protected void propertyChanged(TemplateValueUiStatus oldValue, TemplateValueUiStatus newValue) {
+                        toolItem.setImage(newValue.getIcon());
+                    }
+                });
+
+        toolItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                pmo.onClick();
+            }
+
+        });
+    }
+
     private void createControlForExtensionProperty() {
         extProContFact
-                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());
@@ -235,4 +281,5 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
 
     }
+
 }

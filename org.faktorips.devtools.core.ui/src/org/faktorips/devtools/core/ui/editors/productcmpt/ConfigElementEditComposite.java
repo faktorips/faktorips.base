@@ -108,15 +108,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         return datatype;
     }
 
-    private boolean isRangeValueEditFieldsRequired() {
-        IPolicyCmptTypeAttribute property = getProperty();
-        if (property == null) {
-            return getPropertyValue().getValueSet().isRange();
-        } else {
-            return property.getValueSet().isRange() && getPropertyValue().getValueSet().isRange();
-        }
-    }
-
     private boolean isBooleanDatatype() {
         String datatype = getProperty() == null ? null : getProperty().getDatatype();
         return datatype != null ? datatype.equals(Datatype.PRIMITIVE_BOOLEAN.getQualifiedName())
@@ -167,11 +158,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         for (EditField<?> editField : editFields) {
             addChangingOverTimeDecorationIfRequired(editField);
         }
-    }
-
-    @Override
-    protected int getFirstControlMarginHeight() {
-        return isRangeValueEditFieldsRequired() ? 4 : 0;
     }
 
     public void setEnumValueSetProvider(IEnumValueSetProvider enumValueSetProvider) {

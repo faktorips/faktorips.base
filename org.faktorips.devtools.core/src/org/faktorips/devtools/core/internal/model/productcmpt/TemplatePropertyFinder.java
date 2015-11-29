@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.TemplateHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 
 public class TemplatePropertyFinder<T extends IPropertyValue> extends TemplateHierarchyVisitor {
 

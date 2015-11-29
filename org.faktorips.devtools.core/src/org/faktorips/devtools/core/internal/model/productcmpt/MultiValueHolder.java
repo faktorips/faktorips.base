@@ -268,7 +268,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
         result = prime * result + ((values == null) ? 0 : values.hashCode());
         return result;
     }
@@ -285,13 +284,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
             return false;
         }
         MultiValueHolder other = (MultiValueHolder)obj;
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
         if (values == null) {
             if (other.values != null) {
                 return false;

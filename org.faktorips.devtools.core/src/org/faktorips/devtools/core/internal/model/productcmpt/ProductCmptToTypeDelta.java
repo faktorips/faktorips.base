@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.InvalidGenerationsDeltaEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesComposite;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;

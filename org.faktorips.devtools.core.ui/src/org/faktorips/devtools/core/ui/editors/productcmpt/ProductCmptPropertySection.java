@@ -221,7 +221,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
              */
             ((GridData)label.getLayoutData()).verticalAlignment = SWT.TOP;
             int topOfControlToLabelPixels = editComposite.getFirstControlHeight()
-                    - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + editComposite.getFirstControlMarginHeight();
+                    - label.computeSize(SWT.DEFAULT, SWT.DEFAULT).y;
             ((GridData)label.getLayoutData()).verticalIndent = ((GridLayout)editComposite.getLayout()).marginHeight
                     + topOfControlToLabelPixels / 2;
         }

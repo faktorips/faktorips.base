@@ -19,7 +19,10 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -33,9 +36,10 @@ import org.faktorips.devtools.core.model.IValidationMsgCodesForInvalidValues;
 import org.faktorips.devtools.core.model.ipsobject.ILabel;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
@@ -49,6 +53,7 @@ import org.w3c.dom.Element;
 
 public class AttributeValueTest extends AbstractIpsPluginTest {
 
+    private static final String ATTRIBUTE_NAME = "attributeName";
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
     private IProductCmptTypeAttribute attribute;
@@ -294,6 +299,55 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
         productCmpt.setTemplate("invalid template");
         assertThat(attrValue.validate(ipsProject), hasMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
+    }
+
+    @Test
+    public void testIsAllowedTemplateValueStatus_checkUndefined() throws Exception {
+        IPropertyValueContainer propertyValueContainer = mock(IPropertyValueContainer.class);
+        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
+
+        when(propertyValueContainer.isProductTemplate()).thenReturn(true);
+        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.UNDEFINED), is(true));
+
+        when(propertyValueContainer.isProductTemplate()).thenReturn(false);
+        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.UNDEFINED), is(false));
+    }
+
+    @Test
+    public void testIsAllowedTemplateValueStatus_checkInherited() throws Exception {
+        ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED);
+        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
+        new PropertyDescriptor(IAttributeValue.PROPERTY_ATTRIBUTE, AttributeValue.class).getWriteMethod().invoke(
+                attributeValue, ATTRIBUTE_NAME);
+        attributeValue.setAttribute(ATTRIBUTE_NAME);
+        when(propertyValueContainer.isProductTemplate()).thenReturn(true);
+
+        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.INHERITED), is(true));
+    }
+
+    @Test
+    public void testIsAllowedTemplateValueStatus_checkInherited_notAllowed() throws Exception {
+        ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.UNDEFINED);
+        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
+        new PropertyDescriptor(IAttributeValue.PROPERTY_ATTRIBUTE, AttributeValue.class).getWriteMethod().invoke(
+                attributeValue, ATTRIBUTE_NAME);
+        attributeValue.setAttribute(ATTRIBUTE_NAME);
+        when(propertyValueContainer.isProductTemplate()).thenReturn(true);
+
+        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.INHERITED), is(false));
+    }
+
+    private ProductCmpt setUpMocksForTemplateInheritedCheck(TemplateValueStatus templateAttributeStatus) {
+        ProductCmpt propertyValueContainer = mock(ProductCmpt.class);
+        when(propertyValueContainer.getIpsProject()).thenReturn(ipsProject);
+        IProductCmpt templateContainer = mock(IProductCmpt.class);
+        IAttributeValue templateAttributeValue = mock(IAttributeValue.class);
+        when(propertyValueContainer.findTemplate(ipsProject)).thenReturn(templateContainer);
+        when(templateContainer.getPropertyValue(ATTRIBUTE_NAME, IAttributeValue.class)).thenReturn(
+                templateAttributeValue);
+        when(templateAttributeValue.getTemplateValueStatus()).thenReturn(templateAttributeStatus);
+        when(propertyValueContainer.getIpsObject()).thenReturn(propertyValueContainer);
+        return propertyValueContainer;
     }
 
 }

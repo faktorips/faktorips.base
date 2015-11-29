@@ -194,10 +194,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     @Override
     public IProductCmpt findTemplate(IIpsProject ipsProject) {
-        if (StringUtils.isEmpty(template)) {
+        if (isUsingTemplate()) {
+            return ipsProject.findProductTemplate(template);
+        } else {
             return null;
         }
-        return ipsProject.findProductTemplate(template);
     }
 
     @Override
@@ -344,7 +345,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+                            IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }

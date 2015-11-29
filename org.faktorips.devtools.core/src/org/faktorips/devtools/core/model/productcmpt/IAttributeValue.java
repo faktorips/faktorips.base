@@ -166,51 +166,17 @@ public interface IAttributeValue extends IPropertyValue {
     public IAttributeValue findTemplateProperty(IIpsProject ipsProject);
 
     /**
-     * Defines the status of a property value with regard to the template hierarchy it is used in.
+     * Sets the next valid template value status. The template value status order is defined in
+     * {@link TemplateValueStatus}.
+     * 
      */
-    public enum TemplateValueStatus {
+    public void switchTemplateValueStatus();
 
-        /**
-         * Indicates that a property's value is explicitly defined. Regarding a template hierarchy
-         * it might define a new value or overwrite a value from a parent template.
-         */
-        DEFINED("defined"), //$NON-NLS-1$
-
-        /**
-         * Indicates that no property value is defined explicitly, instead the value from the parent
-         * template is used or "inherited".
-         */
-        INHERITED("inherited"), //$NON-NLS-1$
-
-        /**
-         * For template property values only. Indicates that the property will not be used by this
-         * template (and its children). The property is regarded as "undefined". Thus child
-         * templates or product components can no longer inherit said value and must define it
-         * explicitly.
-         */
-        UNDEFINED("undefined"); //$NON-NLS-1$
-
-        private String xmlValue;
-
-        private TemplateValueStatus(String xmlValue) {
-            this.xmlValue = xmlValue;
-        }
-
-        public static TemplateValueStatus valueOfXml(String stringValue, TemplateValueStatus fallbackStatus) {
-            if (TemplateValueStatus.DEFINED.xmlValue.equals(stringValue)) {
-                return TemplateValueStatus.DEFINED;
-            } else if (TemplateValueStatus.INHERITED.xmlValue.equals(stringValue)) {
-                return TemplateValueStatus.INHERITED;
-            } else if (TemplateValueStatus.UNDEFINED.xmlValue.equals(stringValue)) {
-                return TemplateValueStatus.UNDEFINED;
-            } else {
-                return fallbackStatus;
-            }
-        }
-
-        public String getXmlValue() {
-            return xmlValue;
-        }
-
-    }
+    /**
+     * Checks whether a specified {@link TemplateValueStatus} is allowed.
+     * 
+     * @param checkTemplateValueStatus the template status that should be checked
+     * @return <code>true</code> if the status is valid, <code>false</code> if not
+     */
+    public boolean isAllowedTemplateValueStatus(TemplateValueStatus checkTemplateValueStatus);
 }
