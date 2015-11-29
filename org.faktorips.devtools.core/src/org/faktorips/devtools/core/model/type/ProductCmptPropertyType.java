@@ -23,7 +23,6 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -65,7 +64,7 @@ public enum ProductCmptPropertyType {
     PRODUCT_CMPT_TYPE_ATTRIBUTE("productCmptTypeAttribute", Messages.ProductCmptPropertyType_productAttribute) { //$NON-NLS-1$
 
         @Override
-        protected IAttributeValue createPropertyValueInternal(IPropertyValueContainer container,
+        public IAttributeValue createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
 
@@ -114,7 +113,7 @@ public enum ProductCmptPropertyType {
     TABLE_STRUCTURE_USAGE("tableStructureUsage", Messages.ProductCmptPropertyType_tableUsage) { //$NON-NLS-1$
 
         @Override
-        protected ITableContentUsage createPropertyValueInternal(IPropertyValueContainer container,
+        public ITableContentUsage createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
 
@@ -151,7 +150,7 @@ public enum ProductCmptPropertyType {
     FORMULA_SIGNATURE_DEFINITION("formulaSignatureDefinition", Messages.ProductCmptPropertyType_fomula) { //$NON-NLS-1$
 
         @Override
-        protected IFormula createPropertyValueInternal(IPropertyValueContainer container,
+        public IFormula createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
 
@@ -187,7 +186,7 @@ public enum ProductCmptPropertyType {
     POLICY_CMPT_TYPE_ATTRIBUTE("policyCmptTypeAttribute", Messages.ProductCmptPropertyType_defaultValueAndValueSet) { //$NON-NLS-1$
 
         @Override
-        protected IConfigElement createPropertyValueInternal(IPropertyValueContainer container,
+        public IConfigElement createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
 
@@ -237,7 +236,7 @@ public enum ProductCmptPropertyType {
     VALIDATION_RULE("validationRule", Messages.ProductCmptPropertyType_ValidationRule) { //$NON-NLS-1$
 
         @Override
-        protected IValidationRuleConfig createPropertyValueInternal(IPropertyValueContainer container,
+        public IValidationRuleConfig createPropertyValue(IPropertyValueContainer container,
                 IProductCmptProperty property,
                 String partId) {
 
@@ -296,26 +295,12 @@ public enum ProductCmptPropertyType {
      * If you have the concrete class of the {@link IPropertyValue} you want to create, use the
      * typesafe method
      * {@link #createPropertyValue(IPropertyValueContainer, IProductCmptProperty, String, Class)}
-     * <p>
-     * Property values created by this method use {@link TemplateValueStatus#DEFINED} as a default.
-     * If the given property value container uses a template, newly created property values use
-     * {@link TemplateValueStatus#INHERITED} instead.
      * 
      * @param container The {@link IPropertyValueContainer} the new part is created for
      * @param property The {@link IProductCmptProperty} a new value is created for
      * @param partId The new parts's id
      */
-    public IPropertyValue createPropertyValue(IPropertyValueContainer container,
-            IProductCmptProperty property,
-            String partId) {
-        IPropertyValue propertyValue = createPropertyValueInternal(container, property, partId);
-        if (container.isUsingTemplate()) {
-            propertyValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        }
-        return propertyValue;
-    }
-
-    protected abstract IPropertyValue createPropertyValueInternal(IPropertyValueContainer container,
+    public abstract IPropertyValue createPropertyValue(IPropertyValueContainer container,
             IProductCmptProperty property,
             String partId);
 
@@ -385,10 +370,6 @@ public enum ProductCmptPropertyType {
      * type to be created by setting the correct type parameter. If the parameter is not null, the
      * concrete type is obtained from this parameter and the caller has to ensure that the given
      * type is the same as the type obtained from the {@link IProductCmptProperty}'s type.
-     * <p>
-     * Property values created by this method use {@link TemplateValueStatus#DEFINED} as a default.
-     * If the given property value container uses a template, newly created property values use
-     * {@link TemplateValueStatus#INHERITED} instead.
      * 
      * @param container The container that is used as parent object, the created element is
      *            <strong>not</strong> added to it

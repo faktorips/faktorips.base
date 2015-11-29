@@ -61,6 +61,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
+        templateValueSettings.initialize(parent);
     }
 
     @Override
@@ -179,6 +180,19 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getTemplateStatus();
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        TemplateValueStatus oldValue = templateValueSettings.getTemplateStatus();
+        templateValueSettings.setTemplateStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, oldValue,
+                newStatus));
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
@@ -272,15 +286,4 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
 
-    @Override
-    public TemplateValueStatus getTemplateValueStatus() {
-        return templateValueSettings.getTemplateStatus();
-    }
-
-    @Override
-    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
-        TemplateValueStatus oldValue = templateValueSettings.getTemplateStatus();
-        templateValueSettings.setTemplateStatus(newStatus);
-        objectHasChanged(new PropertyChangeEvent(this, IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
-    }
 }

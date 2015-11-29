@@ -13,6 +13,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 
@@ -23,6 +24,12 @@ import org.w3c.dom.Element;
 public class TemplateValueSettings {
 
     private TemplateValueStatus status = TemplateValueStatus.DEFINED;
+
+    public void initialize(IPropertyValueContainer parentContainer) {
+        if (parentContainer.isUsingTemplate()) {
+            status = TemplateValueStatus.INHERITED;
+        }
+    }
 
     public void setTemplateStatus(TemplateValueStatus status) {
         this.status = status;

@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -29,6 +30,9 @@ import org.w3c.dom.Element;
 public class TemplateValueSettingsTest {
     @Mock
     private Element element;
+
+    @Mock
+    IPropertyValueContainer container;
 
     private TemplateValueSettings handler = new TemplateValueSettings();
 
@@ -76,4 +80,23 @@ public class TemplateValueSettingsTest {
 
         assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
     }
+
+    @Test
+    public void testInitialize_default() {
+        when(container.isUsingTemplate()).thenReturn(false);
+
+        handler.initialize(container);
+
+        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
+    }
+
+    @Test
+    public void testInitialize_usingTemplate() {
+        when(container.isUsingTemplate()).thenReturn(true);
+
+        handler.initialize(container);
+
+        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.INHERITED));
+    }
+
 }
