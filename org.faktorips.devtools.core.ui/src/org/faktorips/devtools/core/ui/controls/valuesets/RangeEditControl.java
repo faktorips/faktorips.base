@@ -53,7 +53,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
 
         setLayout();
         Composite workArea = createWorkArea(uiToolkit, this);
-        createTextControls(uiToolkit, workArea, valueDatatype, range, range.getIpsProject());
+        createTextControls(uiToolkit, workArea, valueDatatype, range.getIpsProject());
         this.uiController = uiController;
         connectToModel();
     }
@@ -91,13 +91,12 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
     private void createTextControls(UIToolkit toolkit,
             Composite workArea,
             ValueDatatype valueDatatype,
-            IValueSet valueSet,
             IIpsProject ipsProject) {
         ValueDatatypeControlFactory ctrlFactory = IpsUIPlugin.getDefault()
                 .getValueDatatypeControlFactory(valueDatatype);
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelMinimum);
-        lowerfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        lowerfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, null, ipsProject);
         /**
          * Configure the layout of the parent instead of the text control itself.
          * {@link ValueDatatypeControlFactory control factories} now create composites around all
@@ -107,12 +106,12 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
                 .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);
-        upperfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        upperfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, null, ipsProject);
         upperfield.getControl().getParent()
                 .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);
-        stepfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
+        stepfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, null, ipsProject);
         stepfield.getControl().getParent()
                 .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
