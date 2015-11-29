@@ -181,11 +181,6 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         IValidationRule validationRule = attribute.findValueSetRule(ipsProject);
         ruleModel.setValidationRule(validationRule);
         ruleMarkerPMO = ValidationRuleMarkerPMO.createFor(ipsProject, validationRule);
-        try {
-            currentDatatype = attribute.findDatatype(ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
         currentAttributeType = attribute.getAttributeType();
         extFactory = new ExtensionPropertyControlFactory(attribute);
     }
@@ -597,12 +592,11 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         defaultEditFieldPlaceholder.setLayout(getToolkit().createNoMarginGridLayout(1, true));
         defaultEditFieldPlaceholder.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        createDefaultValueEditField(defaultEditFieldPlaceholder);
-
         List<ValueSetType> valueSetTypes = attribute.getAllowedValueSetTypes(attribute.getIpsProject());
         valueSetSpecificationControl = new ValueSetSpecificationControl(pageControl, getToolkit(), getBindingContext(),
                 attribute, valueSetTypes, ValueSetControlEditMode.ALL_KIND_OF_SETS);
-        updateAllowedValueSetTypes();
+
+        updateDefaultAndValueSet();
 
         Object layoutData = valueSetSpecificationControl.getLayoutData();
         if (layoutData instanceof GridData) {
@@ -684,26 +678,29 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 }
             }
 
-            ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
-
-            boolean enabled = newDatatype != null;
-            setEnableValueFieldAndValueSetControl(enabled);
-            if (newDatatype == null || newDatatype.equals(currentDatatype)) {
-                return;
-            }
-            currentDatatype = newDatatype;
-            if (defaultValueField != null) {
-                getBindingContext().removeBindings(defaultValueField.getControl());
-            }
-            if (defaultEditFieldPlaceholder != null && !defaultEditFieldPlaceholder.isDisposed()) {
-                disposeChildrenOf(defaultEditFieldPlaceholder);
-                createDefaultValueEditField(defaultEditFieldPlaceholder);
-            }
-            updateAllowedValueSetTypes();
+            updateDefaultAndValueSet();
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
 
+    }
+
+    private void updateDefaultAndValueSet() throws CoreException {
+        ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
+        boolean enabled = newDatatype != null;
+        if (currentDatatype != null && currentDatatype.equals(newDatatype)) {
+            return;
+        }
+        currentDatatype = newDatatype;
+        if (defaultValueField != null) {
+            getBindingContext().removeBindings(defaultValueField.getControl());
+        }
+        if (defaultEditFieldPlaceholder != null && !defaultEditFieldPlaceholder.isDisposed()) {
+            disposeChildrenOf(defaultEditFieldPlaceholder);
+            createDefaultValueEditField(defaultEditFieldPlaceholder);
+        }
+        updateAllowedValueSetTypes();
+        enableValueFieldAndValueSetControl(enabled);
     }
 
     private void disposeChildrenOf(Composite composite) {
@@ -712,7 +709,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         }
     }
 
-    private void setEnableValueFieldAndValueSetControl(boolean enabled) {
+    private void enableValueFieldAndValueSetControl(boolean enabled) {
         if (defaultValueField != null) {
             defaultValueField.getControl().setEnabled(enabled);
         }

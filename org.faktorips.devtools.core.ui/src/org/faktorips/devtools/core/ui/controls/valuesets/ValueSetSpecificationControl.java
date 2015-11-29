@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -176,7 +177,6 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         if (!editMode.canDefineAbstractSets() && valueSet.isAbstract() && !valueSet.isUnrestricted()) {
             valueSet.setAbstract(false);
         }
-        updateUI();
     }
 
     private Control showControlForValueSet() {
@@ -396,13 +396,21 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
      */
     @Override
     public void setDataChangeable(boolean changeable) {
-        dataChangeable = changeable;
-        toolkit.setDataChangeable(valueSetTypesCombo, changeable);
+        dataChangeable = changeable && findDatatype() != null;
+        toolkit.setDataChangeable(valueSetTypesCombo, dataChangeable);
         if (valueSetEditControl != null) {
-            toolkit.setDataChangeable(valueSetEditControl.getComposite(), changeable);
+            toolkit.setDataChangeable(valueSetEditControl.getComposite(), dataChangeable);
         }
         updateConcreteValueSetCheckboxDataChangeableState();
-        toolkit.setDataChangeable(containsNullCheckbox, changeable);
+        toolkit.setDataChangeable(containsNullCheckbox, dataChangeable);
+    }
+
+    private ValueDatatype findDatatype() {
+        try {
+            return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private void updateConcreteValueSetCheckboxDataChangeableState() {
