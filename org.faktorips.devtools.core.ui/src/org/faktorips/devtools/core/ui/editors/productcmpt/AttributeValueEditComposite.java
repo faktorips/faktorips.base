@@ -107,6 +107,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(),
+                IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
         editFields.add(editField);
         addChangingOverTimeDecorationIfRequired(editField);
     }
@@ -187,7 +189,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     private void createControlForExtensionProperty() {
         extProContFact
-        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());
