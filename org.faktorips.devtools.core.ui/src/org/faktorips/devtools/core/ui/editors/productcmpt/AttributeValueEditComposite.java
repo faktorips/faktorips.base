@@ -19,6 +19,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -29,6 +30,7 @@ import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
@@ -82,9 +84,6 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     @Override
     protected void createEditFields(List<EditField<?>> editFields) throws CoreException {
         createValueEditField(editFields);
-        if (showTemplateButton()) {
-            createTemplateStatusButton();
-        }
         createControlForExtensionProperty();
     }
 
@@ -107,14 +106,16 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         getBindingContext().bindProblemMarker(editField, getPropertyValue(),
                 IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
         editFields.add(editField);
+        if (showTemplateButton()) {
+            createTemplateStatusButton(editField.getControl());
+        }
         addChangingOverTimeDecorationIfRequired(editField);
     }
 
     private EditField<?> createMultiValueField(ValueDatatype datatype) {
-        EditField<?> editField;
         MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
                 getPropertyValue(), datatype);
-        editField = new TextButtonField(control);
+        EditField<?> editField = new TextButtonField(control);
         ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
                 .createWrapperFor(getPropertyValue());
         getBindingContext().bindContent(editField, wrapper,
@@ -151,18 +152,22 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
                 getPropertyValue());
         InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
-        LocalizedStringEditField editField = new LocalizedStringEditField(control.getTextControl());
+        LocalizedStringEditField editField = new LocalizedStringEditField(control);
         getBindingContext().bindContent(editField, valueHolderPMO,
                 MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
         return editField;
     }
 
-    protected void createTemplateStatusButton() {
+    protected void createTemplateStatusButton(final Control control) {
         final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
         final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
-
         final TemplateValuePmo pmo = new TemplateValuePmo(getPropertyValue());
-        toolItem.setImage(pmo.getTemplateValueStatus().getIcon());
+        bindTemplateStatusButton(toolBar, toolItem, pmo);
+        listenToTemplateStatusClick(control, toolItem, pmo);
+        bindTemplateDependentEnabled(control);
+    }
+
+    private void bindTemplateStatusButton(final ToolBar toolBar, final ToolItem toolItem, final TemplateValuePmo pmo) {
         getBindingContext().add(
                 new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
                         TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
@@ -172,20 +177,34 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                         toolItem.setImage(newValue.getIcon());
                     }
                 });
+    }
 
+    private void listenToTemplateStatusClick(final Control control, final ToolItem toolItem, final TemplateValuePmo pmo) {
         toolItem.addSelectionListener(new SelectionAdapter() {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
                 pmo.onClick();
+                if (getToolkit().isEnabled(control) && getToolkit().isDataChangeable(control)) {
+                    control.setFocus();
+                }
             }
 
         });
     }
 
+    private void bindTemplateDependentEnabled(Control control) {
+        Control controlToEnable = control;
+        if (control.getParent() != this) {
+            controlToEnable = control.getParent();
+        }
+        getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
+                IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
+    }
+
     private void createControlForExtensionProperty() {
         extProContFact
-                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());

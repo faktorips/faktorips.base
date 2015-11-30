@@ -15,24 +15,28 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.controller.EditField;
+import org.faktorips.devtools.core.ui.controls.InternationalStringControl;
 import org.faktorips.values.LocalizedString;
 
 /**
  * {@link EditField} for editing multilingual strings. The text edited by the text control will
  * always return a {@link LocalizedString} in the locale given to this class.
  */
-public class LocalizedStringEditField extends AbstractTextField<LocalizedString> {
+public class LocalizedStringEditField extends AbstractTextButtonField<LocalizedString> {
 
     private Locale localeOfEditField;
 
-    public LocalizedStringEditField(Text control) {
+    public LocalizedStringEditField(InternationalStringControl control) {
         super(control);
+    }
+
+    private Text getTextControl() {
+        return getControl().getTextControl();
     }
 
     @Override
     public LocalizedString parseContent() {
-        String text = StringValueEditField.prepareObjectForGet(getTextControl().getText(),
-                supportsNullStringRepresentation());
+        String text = getTextControl().getText();
         return new LocalizedString(localeOfEditField, text);
     }
 
@@ -43,32 +47,12 @@ public class LocalizedStringEditField extends AbstractTextField<LocalizedString>
             return;
         }
         localeOfEditField = newValue.getLocale();
-        setText(StringValueEditField.prepareObjectForSet(newValue.getValue(), supportsNullStringRepresentation()));
+        setText(newValue.getValue());
     }
 
     @Override
     public boolean supportsNullStringRepresentation() {
         return false;
-    }
-
-    @Override
-    public String getText() {
-        return getTextControl().getText();
-    }
-
-    @Override
-    public void setText(String newText) {
-        getTextControl().setText(newText);
-    }
-
-    @Override
-    public void insertText(String text) {
-        getTextControl().insert(text);
-    }
-
-    @Override
-    public void selectAll() {
-        getTextControl().selectAll();
     }
 
 }

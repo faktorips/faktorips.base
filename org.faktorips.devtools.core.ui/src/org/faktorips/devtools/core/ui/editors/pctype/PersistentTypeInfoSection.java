@@ -181,7 +181,7 @@ public class PersistentTypeInfoSection extends IpsSection {
                         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                             IPersistentTypeInfo persistenceTypeInfo = ipsObject.getPersistenceTypeInfo();
                             if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                                uiToolkit.setDataChangeable(tableNameText, false);
+                                uiToolkit.setEnabled(tableNameText, false);
                                 return;
                             }
 
@@ -198,14 +198,14 @@ public class PersistentTypeInfoSection extends IpsSection {
                                     } else {
                                         tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
                                     }
-                                    uiToolkit.setDataChangeable(tableNameText, false);
+                                    uiToolkit.setEnabled(tableNameText, false);
                                 } catch (CoreException e) {
                                     IpsPlugin.logAndShowErrorDialog(e);
                                 }
                             } else {
                                 getBindingContext().bindContent(tableNameText, persistenceTypeInfo,
                                         IPersistentTypeInfo.PROPERTY_TABLE_NAME);
-                                uiToolkit.setDataChangeable(tableNameText, true);
+                                uiToolkit.setEnabled(tableNameText, true);
                             }
                         }
                     });

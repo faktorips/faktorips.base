@@ -12,33 +12,42 @@ package org.faktorips.devtools.core.ui.binding;
 
 import java.lang.reflect.InvocationTargetException;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.ui.UIToolkit;
 
 /**
- * Binding between the enable property of a SWT control and a boolean property of an abitrary
+ * Binding between the enable property of a SWT control and a boolean property of an arbitrary
  * object, usually a domain model object or presentation model object.
  * 
  * @author Jan Ortmann
  */
 public class EnableBinding extends ControlPropertyBinding {
 
-    private Object expectedValue;
+    private Predicate<Object> enabledFunction;
 
-    public EnableBinding(Control control, Object object, String property, Object expectedValue) {
+    private UIToolkit uiToolkit = new UIToolkit(null);
+
+    public EnableBinding(Control control, Object object, String property, final Object expectedValue) {
+        this(control, object, property, Predicates.equalTo(expectedValue));
+    }
+
+    public EnableBinding(Control control, Object object, String property, Predicate<Object> enabledFunction) {
         super(control, object, property, null);
-        this.expectedValue = expectedValue;
+        this.enabledFunction = enabledFunction;
     }
 
     /**
      * This method updates the enabled state of the control referenced by {@link #getControl()}. The
-     * disabled state of a control should be overcontrol an the data changeable state that may be
+     * disabled state of a control should be overwritten and the data changeable state that may be
      * already set by {@link UIToolkit#setDataChangeable(Control, boolean)}. But the data changeable
-     * state should not be overcontrolled by an enabled state. This behaviour is important because
-     * some controls have different behaviour in read-onlny and disabled state. For example a
+     * state should not be over controlled by an enabled state. This behavior is important because
+     * some controls have different behavior in read-only and disabled state. For example a
      * {@link Text} control is set by {@link Text#setEditable(boolean)} to read-only state but
-     * {@link Text#setEnabled(boolean)} in disabled state. That leads to following logik:
+     * {@link Text#setEnabled(boolean)} in disabled state. That leads to following logic:
      * <ul>
      * <li>Control is read-only, enabled-binding set enabled: control stays read-only</li>
      * <li>Control is read-write, enabled-binding set enabled: control stays enabled</li>
@@ -50,9 +59,9 @@ public class EnableBinding extends ControlPropertyBinding {
     public void updateUiIfNotDisposed(String nameOfChangedProperty) {
         try {
             Object value = getProperty().getReadMethod().invoke(getObject(), new Object[0]);
-            boolean enabled = value != null && value.equals(expectedValue);
+            boolean enabled = value != null && enabledFunction.apply(value);
             if (isDataChangeable() || !enabled) {
-                getControl().setEnabled(enabled);
+                uiToolkit.setEnabled(getControl(), enabled);
             }
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
@@ -62,7 +71,7 @@ public class EnableBinding extends ControlPropertyBinding {
     }
 
     private boolean isDataChangeable() {
-        return UIToolkit.isDataChangeable(getControl());
+        return uiToolkit.isDataChangeable(getControl());
     }
 
 }
