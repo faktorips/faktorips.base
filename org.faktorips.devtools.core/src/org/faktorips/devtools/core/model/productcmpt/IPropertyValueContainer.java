@@ -122,15 +122,12 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
     public boolean isProductTemplate();
 
     /**
-     * Returns the template object that is used by this property value container if this property
-     * value container has specified a template. Returns {@code null} if no template is specified or
-     * the specified template was not found.
+     * Returns the name of the template of this property value container. Returns <code>null</code>
+     * if this container does not use a template.
      * 
-     * @param ipsProject The project that should be used to search for the template
-     * @return The property value container that is specified as the template of this property value
-     *         container
+     * @return The qualified name of the referenced template
      */
-    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
+    public String getTemplate();
 
     /**
      * Returns <code>true</code> if this container is using a template. This is the case if
@@ -141,6 +138,17 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
      * 
      * @return <code>true</code> if there is a template specified by this product component
      */
-    boolean isUsingTemplate();
+    public boolean isUsingTemplate();
+
+    /**
+     * Returns the template object that is used by this property value container if this property
+     * value container has specified a template. Returns {@code null} if no template is specified or
+     * the specified template was not found.
+     * 
+     * @param ipsProject The project that should be used to search for the template
+     * @return The property value container that is specified as the template of this property value
+     *         container
+     */
+    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
 
 }

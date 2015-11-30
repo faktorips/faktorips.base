@@ -41,6 +41,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
@@ -116,10 +117,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
                 getPropertyValue(), datatype);
         EditField<?> editField = new TextButtonField(control);
-        ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
-                .createWrapperFor(getPropertyValue());
-        getBindingContext().bindContent(editField, wrapper,
-                ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
+        AttributeValueFormatter formatter = AttributeValueFormatter.createFormatterFor(getPropertyValue());
+        getBindingContext().bindContent(editField, formatter, AttributeValueFormatter.PROPERTY_FORMATTED_VALUE);
         return editField;
     }
 
@@ -177,6 +176,23 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                         toolItem.setImage(newValue.getIcon());
                     }
                 });
+        getBindingContext().add(
+                new ControlPropertyBinding(toolBar, pmo, TemplateValuePmo.PROPERTY_TOOL_TIP_TEXT, String.class) {
+
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (isStatusOrTooltipChange(nameOfChangedProperty)) {
+                            String tooltip = (String)readProperty();
+                            toolItem.setToolTipText(tooltip);
+                        }
+                    }
+
+                    private boolean isStatusOrTooltipChange(String nameOfChangedProperty) {
+                        return nameOfChangedProperty == null
+                                || TemplateValuePmo.PROPERTY_TOOL_TIP_TEXT.equals(nameOfChangedProperty)
+                                || TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS.equals(nameOfChangedProperty);
+                    }
+                });
     }
 
     private void listenToTemplateStatusClick(final Control control, final ToolItem toolItem, final TemplateValuePmo pmo) {
@@ -204,7 +220,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     private void createControlForExtensionProperty() {
         extProContFact
-        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());

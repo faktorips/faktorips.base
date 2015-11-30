@@ -33,11 +33,11 @@ import org.faktorips.devtools.core.ui.controller.fields.FormattingTextField;
 import org.faktorips.values.LocalizedString;
 
 /**
- * A Wrapper for an {@link IAttributeValue}. Provides a {@link #getFormattedValue()} method. In case
- * of a single-value attribute {@link #getFormattedValue()} returns the attribute's value as a
- * string formatted depending on the datatype and the locale. In case of a multi-value attribute a
- * list of formatted values is be returned. e.g. a list of the ISO dates "2012-04-01" and
- * "2012-04-02" will be displayed as "[01.04.2012 | 02.04.2012]" in the German locale.
+ * Can format the value of an {@link IAttributeValue}. Provides a {@link #getFormattedValue()}
+ * method. In case of a single-value attribute {@link #getFormattedValue()} returns the attribute's
+ * value as a string formatted depending on the datatype and the locale. In case of a multi-value
+ * attribute a list of formatted values is be returned. e.g. a list of the ISO dates "2012-04-01"
+ * and "2012-04-02" will be displayed as "[01.04.2012 | 02.04.2012]" in the German locale.
  * <p/>
  * Warning: this wrapper can only be used to display human readable values <em>not</em> to edit
  * them. If you want to edit a formatted value use {@link FormattingTextField}.
@@ -46,7 +46,7 @@ import org.faktorips.values.LocalizedString;
  * 
  * @author Stefan Widmaier
  */
-public class ValueHolderToFormattedStringWrapper {
+public class AttributeValueFormatter {
 
     public static final String PROPERTY_FORMATTED_VALUE = "formattedValue"; //$NON-NLS-1$
 
@@ -55,12 +55,26 @@ public class ValueHolderToFormattedStringWrapper {
     private final IAttributeValue attrValue;
     private final ValueDatatype datatype;
 
-    public ValueHolderToFormattedStringWrapper(IAttributeValue attrValue, ValueDatatype datatype) {
+    public AttributeValueFormatter(IAttributeValue attrValue, ValueDatatype datatype) {
         this.attrValue = attrValue;
         this.datatype = datatype;
     }
 
-    public static ValueHolderToFormattedStringWrapper createWrapperFor(IAttributeValue attrValue) {
+    /**
+     * Utility method. Shorthand for
+     * 
+     * <pre>
+     * AttributValueFormatter#createFormatterFor(IAttributeValue)#getFormattedValue()
+     * </pre>
+     * 
+     * @param attrValue the attribute value to format
+     * @return the formatted value
+     */
+    public static String format(IAttributeValue attrValue) {
+        return createFormatterFor(attrValue).getFormattedValue();
+    }
+
+    public static AttributeValueFormatter createFormatterFor(IAttributeValue attrValue) {
         IProductCmptTypeAttribute pctAttribute;
         try {
             pctAttribute = attrValue.findAttribute(attrValue.getIpsProject());
@@ -70,7 +84,7 @@ public class ValueHolderToFormattedStringWrapper {
             } else {
                 datatype = pctAttribute.findDatatype(attrValue.getIpsProject());
             }
-            return new ValueHolderToFormattedStringWrapper(attrValue, datatype);
+            return new AttributeValueFormatter(attrValue, datatype);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

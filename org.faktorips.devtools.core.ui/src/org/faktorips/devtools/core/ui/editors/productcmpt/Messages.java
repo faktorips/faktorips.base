@@ -228,4 +228,18 @@ public class Messages extends NLS {
 
     public static String ProductCmptPropertySection_NoContentToDisplay;
 
+    public static String TemplateValuePmo_Status_Inherited;
+
+    public static String TemplateValuePmo_Status_NewlyDefined;
+
+    public static String TemplateValuePmo_Status_NewlyDefined_withoutParentTemplate;
+
+    public static String TemplateValuePmo_Status_Override;
+
+    public static String TemplateValuePmo_Status_OverrideEqual;
+
+    public static String TemplateValuePmo_Status_Undefined;
+
+    public static String TemplateValuePmo_Status_Undefined_WithoutParentTemplate;
+
 }

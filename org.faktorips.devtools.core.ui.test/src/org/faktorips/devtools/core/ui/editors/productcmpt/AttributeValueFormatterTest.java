@@ -30,7 +30,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ValueHolderToFormattedStringWrapperTest {
+public class AttributeValueFormatterTest {
     private Locale formerLocale;
 
     @Before
@@ -49,71 +49,66 @@ public class ValueHolderToFormattedStringWrapperTest {
     }
 
     @Test
-    public void returnFormattedValueIfSingleValue_Date() {
+    public void testGetFormattedValue_SingleValueDate() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         doReturn(new SingleValueHolder(attrValue, "2012-04-02")).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
-                ValueDatatype.GREGORIAN_CALENDAR);
-        assertEquals("02.04.2012", wrapper.getFormattedValue());
+        AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.GREGORIAN_CALENDAR);
+        assertEquals("02.04.2012", formatter.getFormattedValue());
     }
 
     @Test
-    public void returnFormattedValueIfSingleValue_Decimal() {
+    public void testGetFormattedValue_SingleValueDecimal() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         doReturn(new SingleValueHolder(attrValue, "1.23456")).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
-                ValueDatatype.DECIMAL);
-        assertEquals("1,23456", wrapper.getFormattedValue());
+        AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.DECIMAL);
+        assertEquals("1,23456", formatter.getFormattedValue());
     }
 
     @Test
-    public void returnFormattedValueIfMultiValue_Date() {
+    public void testGetFormattedValue_MultiValueDate() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
         holderList.add(new SingleValueHolder(attrValue, "2012-04-02"));
         holderList.add(new SingleValueHolder(attrValue, "1999-01-31"));
         doReturn(new MultiValueHolder(attrValue, holderList)).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
-                ValueDatatype.GREGORIAN_CALENDAR);
-        assertEquals("02.04.2012 | 31.01.1999", wrapper.getFormattedValue());
+        AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.GREGORIAN_CALENDAR);
+        assertEquals("02.04.2012 | 31.01.1999", formatter.getFormattedValue());
     }
 
     @Test
-    public void returnFormattedValueIfMultiValue_Decimal() {
+    public void testGetFormattedValue_MultiValueDecimal() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
         List<SingleValueHolder> holderList = new ArrayList<SingleValueHolder>();
         holderList.add(new SingleValueHolder(attrValue, "1.23456"));
         holderList.add(new SingleValueHolder(attrValue, "23.42"));
         doReturn(new MultiValueHolder(attrValue, holderList)).when(attrValue).getValueHolder();
 
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
-                ValueDatatype.DECIMAL);
-        assertEquals("1,23456 | 23,42", wrapper.getFormattedValue());
+        AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.DECIMAL);
+        assertEquals("1,23456 | 23,42", formatter.getFormattedValue());
     }
 
     @Test
-    public void returnEmptyBracketsOnEmptyList() {
+    public void testConvertToString_EmptyBracketsOnEmptyList() {
         IAttributeValue attrValue = mock(IAttributeValue.class);
-        ValueHolderToFormattedStringWrapper wrapper = new ValueHolderToFormattedStringWrapper(attrValue,
-                ValueDatatype.DECIMAL);
-        String convertedString = wrapper.convertToString(new ArrayList<String>());
+        AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.DECIMAL);
+        String convertedString = formatter.convertToString(new ArrayList<String>());
         assertEquals(StringUtils.EMPTY, convertedString);
     }
 
     @Test
     public void testConvertToString() throws Exception {
         IAttributeValue attrValue = mock(IAttributeValue.class);
-        ValueHolderToFormattedStringWrapper valueHolderToFormattedStringWrapper = new ValueHolderToFormattedStringWrapper(
-                attrValue, ValueDatatype.STRING);
-        assertEquals("", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("")));
-        assertEquals("a", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("a")));
-        assertEquals("a | b | c", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("a", "b", "c")));
-        assertEquals(" | b | c", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("", "b", "c")));
-        assertEquals("a | b | ", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("a", "b", "")));
-        assertEquals(" | b | ", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("", "b", "")));
-        assertEquals(" |  | ", valueHolderToFormattedStringWrapper.convertToString(Arrays.asList("", "", "")));
+        AttributeValueFormatter formatter = new AttributeValueFormatter(attrValue, ValueDatatype.STRING);
+        assertEquals("", formatter.convertToString(Arrays.asList("")));
+        assertEquals("a", formatter.convertToString(Arrays.asList("a")));
+        assertEquals("a | b | c", formatter.convertToString(Arrays.asList("a", "b", "c")));
+        assertEquals(" | b | c", formatter.convertToString(Arrays.asList("", "b", "c")));
+        assertEquals("a | b | ", formatter.convertToString(Arrays.asList("a", "b", "")));
+        assertEquals(" | b | ", formatter.convertToString(Arrays.asList("", "b", "")));
+        assertEquals(" |  | ", formatter.convertToString(Arrays.asList("", "", "")));
     }
+
 }
