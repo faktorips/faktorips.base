@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -303,7 +302,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsAllowedTemplateValueStatus_checkUndefined() throws Exception {
-        IPropertyValueContainer propertyValueContainer = mock(IPropertyValueContainer.class);
+        ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED);
         AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
 
         when(propertyValueContainer.isProductTemplate()).thenReturn(true);

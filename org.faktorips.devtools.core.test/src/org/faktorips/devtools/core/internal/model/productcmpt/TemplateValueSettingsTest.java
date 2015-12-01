@@ -11,12 +11,14 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -32,9 +34,16 @@ public class TemplateValueSettingsTest {
     private Element element;
 
     @Mock
-    IPropertyValueContainer container;
+    private IAttributeValue attrValue;
+    @Mock
+    private IAttributeValue templateValue;
 
     private TemplateValueSettings handler = new TemplateValueSettings();
+
+    @Before
+    public void setUp() {
+        when(attrValue.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
+    }
 
     @Test
     public void testPropertiesToXml_default() throws Exception {
@@ -82,19 +91,19 @@ public class TemplateValueSettingsTest {
     }
 
     @Test
-    public void testInitialize_default() {
-        when(container.isUsingTemplate()).thenReturn(false);
+    public void testInitialize_noTemplateValue() {
+        when(attrValue.findTemplateProperty(any(IIpsProject.class))).thenReturn(null);
 
-        handler.initialize(container);
+        handler.initialize(attrValue);
 
         assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
-    public void testInitialize_usingTemplate() {
-        when(container.isUsingTemplate()).thenReturn(true);
+    public void testInitialize_definedTemplateValue() {
+        when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
 
-        handler.initialize(container);
+        handler.initialize(attrValue);
 
         assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.INHERITED));
     }

@@ -62,7 +62,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
-        templateValueSettings.initialize(parent);
+        templateValueSettings.initialize(this);
     }
 
     @Override
