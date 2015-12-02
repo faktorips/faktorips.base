@@ -17,13 +17,11 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.ui.controller.fields.CheckboxField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.editors.IpsPartEditDialog2;
-import org.faktorips.devtools.core.ui.editors.pctype.ContentsChangeListenerForWidget;
 import org.faktorips.devtools.core.ui.editors.pctype.Messages;
 import org.faktorips.devtools.core.ui.editors.pctype.RuleFunctionsControl;
 import org.faktorips.devtools.core.ui.editors.pctype.ValidatedAttributesControl;
@@ -73,27 +71,6 @@ public class RuleEditDialog extends IpsPartEditDialog2 {
             markerPage.setText(Messages.ValidationRuleMarkerUI_TabName_Markers);
             markerPage.setControl(createMarkersPage(folder));
         }
-
-        /*
-         * the update cycle for changes to model objects is extended so that the gui will be updated
-         * due to model changes. The update cycle gui -> model -> gui is currently not implemented
-         * in a super class but should be considered in the future. It is necessary here because
-         * changes made to the model within the RuleFunctionsControl need to be communicated to the
-         * gui so that other controls can adjust their current state.
-         */
-        final ContentsChangeListenerForWidget listener = new ContentsChangeListenerForWidget() {
-            @Override
-            public void contentsChangedAndWidgetIsNotDisposed(ContentChangeEvent event) {
-                if (!event.getIpsSrcFile().exists()) {
-                    return;
-                }
-                if (event.isAffected(rule)) {
-                    getBindingContext().updateUI();
-                }
-            }
-        };
-        listener.setWidget(parent);
-        // rule.getIpsModel().addChangeListener(listener);
 
         bindFields();
         return folder;

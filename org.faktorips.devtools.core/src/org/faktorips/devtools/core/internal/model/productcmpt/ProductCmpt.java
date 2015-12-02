@@ -189,7 +189,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     public void setTemplate(String newTemplate) {
         String oldTemplate = template;
         this.template = newTemplate;
-        valueChanged(oldTemplate, template);
+        valueChanged(oldTemplate, template, IProductCmpt.PROPERTY_TEMPLATE);
     }
 
     @Override
@@ -345,7 +345,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }

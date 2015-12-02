@@ -37,7 +37,7 @@ public class ContentChangeEvent {
 
     private final IIpsSrcFile ipsSrcFile;
 
-    private final IIpsObjectPart part;
+    private final IIpsObjectPartContainer part;
 
     private final List<IIpsObjectPart> movedParts;
 
@@ -53,7 +53,7 @@ public class ContentChangeEvent {
         movedParts = null;
     }
 
-    private ContentChangeEvent(IIpsObjectPart part, int eventType) {
+    private ContentChangeEvent(IIpsObjectPartContainer part, int eventType) {
         ArgumentCheck.notNull(part);
         this.part = part;
         ipsSrcFile = part.getIpsObject().getIpsSrcFile();
@@ -78,7 +78,7 @@ public class ContentChangeEvent {
         propertyChangeEvent = new PropertyChangeEvent(ipsSrcFile, null, null, null);
     }
 
-    private ContentChangeEvent(IIpsObjectPart part, PropertyChangeEvent propertyChangeEvent) {
+    private ContentChangeEvent(IIpsObjectPartContainer part, PropertyChangeEvent propertyChangeEvent) {
         ArgumentCheck.notNull(part);
         this.part = part;
         ipsSrcFile = part.getIpsSrcFile();
@@ -91,15 +91,15 @@ public class ContentChangeEvent {
         return new ContentChangeEvent(part, TYPE_PART_ADDED);
     }
 
-    public static final ContentChangeEvent newPartRemovedEvent(IIpsObjectPart part) {
+    public static final ContentChangeEvent newPartRemovedEvent(IIpsObjectPartContainer part) {
         return new ContentChangeEvent(part, TYPE_PART_REMOVED);
     }
 
-    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPart part) {
+    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPartContainer part) {
         return new ContentChangeEvent(part, TYPE_PROPERTY_CHANGED);
     }
 
-    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPart part,
+    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPartContainer part,
             PropertyChangeEvent propertyChangeEvent) {
         ArgumentCheck.notNull(propertyChangeEvent);
         return new ContentChangeEvent(part, propertyChangeEvent);
@@ -154,7 +154,7 @@ public class ContentChangeEvent {
      * Returns the part that was either changed, added, or removed. Returns <code>null</code> if
      * this information is not available.
      */
-    public IIpsObjectPart getPart() {
+    public IIpsObjectPartContainer getPart() {
         return part;
     }
 
@@ -209,7 +209,7 @@ public class ContentChangeEvent {
                 && (type == TYPE_WHOLE_CONTENT_CHANGED);
     }
 
-    private boolean isChildOf(IIpsObjectPart potentialChild, IIpsObjectPartContainer potentialParent) {
+    private boolean isChildOf(IIpsObjectPartContainer potentialChild, IIpsObjectPartContainer potentialParent) {
         if (potentialChild == null) {
             return false;
         }
