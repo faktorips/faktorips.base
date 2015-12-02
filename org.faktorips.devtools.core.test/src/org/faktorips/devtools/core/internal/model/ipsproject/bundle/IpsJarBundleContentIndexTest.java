@@ -26,7 +26,6 @@ import java.util.jar.JarFile;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.faktorips.devtools.core.internal.model.ipsproject.bundle.IpsJarBundleContentIndex;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.junit.Before;

@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>org.faktorips</groupId>
 		<artifactId>org.faktorips.build</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<!-- These are all modules that are included in the Faktor-IPS build -->
@@ -27,36 +27,6 @@
 		<module>tests</module>
 		<module>sites</module>
 	</modules>
-
-	<repositories>
-		<repository>
-			<id>third_party</id>
-			<layout>p2</layout>
-			<url>https://drone.faktorzehn.de/p2/thirdparty-1.0/</url>
-		</repository>
-		<repository>
-			<id>galileo</id>
-			<layout>p2</layout>
-			<url>https://update.faktorzehn.org/p2repositories/helios/</url>
-		</repository>
-		<repository>
-			<id>xpand</id>
-			<layout>p2</layout>
-			<url>https://update.faktorzehn.org/p2repositories/modeling/m2t/xpand</url>
-		</repository>
-		<repository>
-			<id>emf</id>
-			<layout>p2</layout>
-			<url>https://update.faktorzehn.org/p2repositories/modeling/emf/</url>
-		</repository>
-		<repository>
-			<id>emft-mwe</id>
-			<layout>p2</layout>
-			<url>https://update.faktorzehn.org/p2repositories/modeling/emft/mwe/</url>
-		</repository>
-	</repositories>
-
-	
 
 	<scm>
 		<connection>scm:git:ssh://${git.user}@projekte.faktorzehn.de/projekte/faktorips/faktorips.base.git</connection>
