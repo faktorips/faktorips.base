@@ -214,7 +214,16 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public TemplateValueStatus getTemplateValueStatus() {
-        return templateValueSettings.getTemplateStatus();
+        if (isConfiguringTemplateValueStatus()) {
+            return templateValueSettings.getTemplateStatus();
+        } else {
+            return TemplateValueStatus.DEFINED;
+        }
+    }
+
+    @Override
+    public boolean isConfiguringTemplateValueStatus() {
+        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
     }
 
     @Override

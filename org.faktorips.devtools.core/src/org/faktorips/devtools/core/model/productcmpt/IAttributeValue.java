@@ -179,4 +179,16 @@ public interface IAttributeValue extends IPropertyValue {
      * @return <code>true</code> if the status is valid, <code>false</code> if not
      */
     public boolean isAllowedTemplateValueStatus(TemplateValueStatus checkTemplateValueStatus);
+
+    /**
+     * Checks whether this property value can configure the template value status or not. This is
+     * the case if its container uses a template or if the container itself is a product template.
+     * If it is a normal product component that does not use templates, the template value status
+     * should always be {@link TemplateValueStatus#DEFINED}
+     * 
+     * @return <code>true</code> if the corresponding container is using a template or if itself is
+     *         a template.
+     */
+    boolean isConfiguringTemplateValueStatus();
+
 }

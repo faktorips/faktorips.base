@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -196,9 +195,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     protected boolean showTemplateButton() {
         // TODO instance-of-abfrage entfernen, wenn Templates für alle PropertyValues geht
         if (getPropertyValue() instanceof IAttributeValue) {
-            IPropertyValueContainer propertyValueContainer = getPropertyValue().getPropertyValueContainer();
-            return propertyValueContainer.isProductTemplate()
-                    || propertyValueContainer.getProductCmpt().isUsingTemplate();
+            return ((IAttributeValue)getPropertyValue()).isConfiguringTemplateValueStatus();
         } else {
             return false;
         }

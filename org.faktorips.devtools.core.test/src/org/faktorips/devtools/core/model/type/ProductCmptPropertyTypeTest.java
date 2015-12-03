@@ -79,7 +79,7 @@ public class ProductCmptPropertyTypeTest {
     }
 
     @Test
-    public void createMultiValueAttributeWithDefaultValue() {
+    public void testCreatePropertyValue_MultiValueAttributeWithDefaultValue() {
         when(pctAttr.getDefaultValue()).thenReturn("defaultValue123");
         IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
                 .createPropertyValue(prodCmpt, pctAttr, "partID");
@@ -90,7 +90,7 @@ public class ProductCmptPropertyTypeTest {
     }
 
     @Test
-    public void creatEmptyMultiValueAttributeIfDefaultValueIsNull() {
+    public void testCreatePropertyValue_EmptyMultiValueAttributeIfDefaultValueIsNull() {
         when(pctAttr.getDefaultValue()).thenReturn(null);
         IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
                 .createPropertyValue(prodCmpt, pctAttr, "partID");
@@ -100,8 +100,9 @@ public class ProductCmptPropertyTypeTest {
     }
 
     @Test
-    public void creatPropertyValue_inheritedWhenUsingTemplate() {
+    public void testCreatePropertyValue_TemplateValueStatusShouldBeInheritedWhenUsingTemplate() {
         when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        when(prodCmpt.isUsingTemplate()).thenReturn(true);
         when(prodCmpt.findTemplate(ipsProject)).thenReturn(templateCmpt);
         when(templateCmpt.getPropertyValue(pctAttr2.getPropertyName(), IAttributeValue.class))
                 .thenReturn(templateValue);
@@ -112,7 +113,7 @@ public class ProductCmptPropertyTypeTest {
     }
 
     @Test
-    public void creatPropertyValue_definedWhenNotUsingTemplate() {
+    public void testCreatePropertyValue_TemplateValueStatusShouldBeDefinedWhenNotUsingTemplate() {
         IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
                 .createPropertyValue(prodCmpt, pctAttr2, "partID");
 

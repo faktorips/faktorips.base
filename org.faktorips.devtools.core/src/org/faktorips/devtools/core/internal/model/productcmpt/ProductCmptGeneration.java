@@ -647,4 +647,5 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     public boolean isUsingTemplate() {
         return getProductCmpt().isUsingTemplate();
     }
+
 }

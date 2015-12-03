@@ -167,6 +167,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml_TemplateValueStatusIsRead() {
+        productCmpt.setTemplate("anyTemplate");
         attributeValue.setAttribute("rate");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         Element el = attributeValue.toXml(newDocument());
@@ -304,25 +305,28 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void setTemplateStatus() {
+    public void testSetTemplateStatus() {
+        productCmpt.setTemplate("anyTemplate");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+
         assertThat(attributeValue.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
     }
 
     @Test
-    public void getTemplateStatus_defaultValue() {
+    public void testGetTemplateStatus_defaultValue() {
         assertThat(attributeValue.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
-    public void validateTemplateStatus_excludedNotAllowedForProductCmpt() throws CoreException {
+    public void testValidate_TemplateStatus_excludedNotAllowedForProductCmpt() throws CoreException {
+        productCmpt.setTemplate("anyTemplate");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
         assertThat(attributeValue.validate(ipsProject), hasMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
     }
 
     @Test
-    public void validateTemplateStatus_inheritedOnlyIfInheritablePropertyExists() throws CoreException {
+    public void testValidate_TemplateStatus_inheritedOnlyIfInheritablePropertyExists() throws CoreException {
         ProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
         IAttributeValue templateAV = templateGen.newAttributeValue(attribute);
