@@ -228,10 +228,19 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            copyValueHolder();
+        }
         TemplateValueStatus oldValue = templateValueSettings.getTemplateStatus();
         templateValueSettings.setTemplateStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, oldValue,
                 newStatus));
+    }
+
+    private void copyValueHolder() {
+        IValueHolder<?> valueHolderToCopy = getValueHolder();
+        Element element = valueHolderToCopy.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        valueHolder = AbstractValueHolder.initValueHolder(this, element);
     }
 
     @Override

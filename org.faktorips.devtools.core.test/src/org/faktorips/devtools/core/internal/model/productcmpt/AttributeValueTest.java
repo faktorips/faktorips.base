@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,9 +39,11 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
@@ -361,6 +364,27 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testSetTemplateValueStatus_DefinedShouldCopyValueHolder() {
+        String inheritedValue = "inherited value";
+        ProductCmpt productCmpt = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED, inheritedValue);
+        AttributeValue attributeValue = new AttributeValue(productCmpt, "id");
+        attributeValue.setAttribute(ATTRIBUTE_NAME);
+        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "defined value");
+        attributeValue.setValueHolder(valueHolder);
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        assertThat(attributeValue.getValueHolder().getStringValue(), is(inheritedValue));
+
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        assertThat(attributeValue.getValueHolder().getStringValue(), is(inheritedValue));
+
+        // Copied value holder has to be writable
+        SingleValueHolder copiedValueHolder = (SingleValueHolder)attributeValue.getValueHolder();
+        copiedValueHolder.setValue(new StringValue("new defined value"));
+        assertThat(attributeValue.getValueHolder().getStringValue(), is("new defined value"));
+    }
+
+    @Test
     public void testGetValueHolder_UndefinedSingleValue() {
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         assertThat(attributeValue.getValueHolder(), is(instanceOf(SingleValueHolder.class)));
@@ -428,7 +452,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testIsAllowedTemplateValueStatus_checkUndefined() throws Exception {
         ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED);
-        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
+        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "id");
 
         when(propertyValueContainer.isProductTemplate()).thenReturn(true);
         assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.UNDEFINED), is(true));
@@ -440,9 +464,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testIsAllowedTemplateValueStatus_checkInherited() throws Exception {
         ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED);
-        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
-        new PropertyDescriptor(IAttributeValue.PROPERTY_ATTRIBUTE, AttributeValue.class).getWriteMethod().invoke(
-                attributeValue, ATTRIBUTE_NAME);
+        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "id");
         attributeValue.setAttribute(ATTRIBUTE_NAME);
         when(propertyValueContainer.isProductTemplate()).thenReturn(true);
 
@@ -452,7 +474,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     @Test
     public void testIsAllowedTemplateValueStatus_checkInherited_notAllowed() throws Exception {
         ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.UNDEFINED);
-        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "asd");
+        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "id");
         new PropertyDescriptor(IAttributeValue.PROPERTY_ATTRIBUTE, AttributeValue.class).getWriteMethod().invoke(
                 attributeValue, ATTRIBUTE_NAME);
         attributeValue.setAttribute(ATTRIBUTE_NAME);
@@ -461,17 +483,30 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.INHERITED), is(false));
     }
 
-    private ProductCmpt setUpMocksForTemplateInheritedCheck(TemplateValueStatus templateAttributeStatus) {
-        ProductCmpt propertyValueContainer = mock(ProductCmpt.class);
-        when(propertyValueContainer.getIpsProject()).thenReturn(ipsProject);
+    /**
+     * Mocks a product component, a corresponding template and a attribute value in the template
+     * called {@link #ATTRIBUTE_NAME}. If you want to set a value in the template attribute value.
+     * The property {@link #attributeValue} is an optional parameter and you should only provide
+     * maximum one value (only the first value will be taken)
+     */
+    private ProductCmpt setUpMocksForTemplateInheritedCheck(TemplateValueStatus templateAttributeStatus,
+            String... attributeValue) {
+        ProductCmpt productCmpt = mock(ProductCmpt.class);
+        when(productCmpt.getIpsProject()).thenReturn(ipsProject);
         IProductCmpt templateContainer = mock(IProductCmpt.class);
         IAttributeValue templateAttributeValue = mock(IAttributeValue.class);
-        when(propertyValueContainer.findTemplate(ipsProject)).thenReturn(templateContainer);
+        when(productCmpt.findTemplate(ipsProject)).thenReturn(templateContainer);
+        when(productCmpt.isUsingTemplate()).thenReturn(true);
         when(templateContainer.getPropertyValue(ATTRIBUTE_NAME, IAttributeValue.class)).thenReturn(
                 templateAttributeValue);
         when(templateAttributeValue.getTemplateValueStatus()).thenReturn(templateAttributeStatus);
-        when(propertyValueContainer.getIpsObject()).thenReturn(propertyValueContainer);
-        return propertyValueContainer;
+        if (attributeValue.length > 0) {
+            IValueHolder<?> valueHolder = new SingleValueHolder(templateAttributeValue,
+                    ValueFactory.createStringValue(attributeValue[0]));
+            doReturn(valueHolder).when(templateAttributeValue).getValueHolder();
+        }
+        when(productCmpt.getIpsObject()).thenReturn(productCmpt);
+        return productCmpt;
     }
 
 }
