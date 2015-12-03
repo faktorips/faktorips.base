@@ -126,7 +126,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
 
         if (valueHolder.getValueType() == ValueType.STRING) {
-            return createSimpleField(datatype, valueSet, valueHolder);
+            return createSimpleField(datatype, valueSet);
         } else if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
             return createInternationalStringField();
         } else {
@@ -134,8 +134,8 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
     }
 
-    private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet, IValueHolder<?> valueHolder) {
-        ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue(), valueHolder);
+    private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet) {
+        ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<?> editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet,
                 getPropertyValue().getIpsProject());
@@ -161,6 +161,9 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
         final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
         final TemplateValuePmo pmo = new TemplateValuePmo(getPropertyValue());
+        // set any default icon to force correct button size. Correct icon will be set when UI gets
+        // updated
+        toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
         bindTemplateStatusButton(toolBar, toolItem, pmo);
         listenToTemplateStatusClick(control, toolItem, pmo);
         bindTemplateDependentEnabled(control);
@@ -226,6 +229,15 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         extProContFact.bind(getBindingContext());
     }
 
+    public static IValue<?> getSingleValue(IAttributeValue attributeValue) {
+        IValueHolder<?> valueHolder = attributeValue.getValueHolder();
+        if (valueHolder.getValue() instanceof IValue) {
+            return (IValue<?>)valueHolder.getValue();
+        }
+        throw new IllegalStateException(
+                "Value " + valueHolder.getValue() + " of ValueHolder " + valueHolder + " is no single value."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    }
+
     private static class MyMultilingualValueAttributeHandler extends InternationalStringDialogHandler {
 
         private final IAttributeValue attributeValue;
@@ -255,29 +267,33 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
         public static final String PROPERTY_STRING_VALUE = "stringValue"; //$NON-NLS-1$
 
-        private final IValueHolder<?> valueHolder;
-
-        public ValueHolderPmo(IAttributeValue attributeValue, IValueHolder<?> valueHolder) {
+        public ValueHolderPmo(IAttributeValue attributeValue) {
             super(attributeValue);
-            this.valueHolder = valueHolder;
         }
 
         public String getStringValue() {
-            return valueHolder.getStringValue();
+            return getSingleValue(getIpsObjectPartContainer()).getContentAsString();
         }
 
-        /**
-         * Direct set is only supported for {@link SingleValueHolder}
-         */
+        public IValueHolder<?> getValueHolder() {
+            return getIpsObjectPartContainer().getValueHolder();
+        }
+
+        @Override
+        public IAttributeValue getIpsObjectPartContainer() {
+            return (IAttributeValue)super.getIpsObjectPartContainer();
+        }
+
         public void setStringValue(String value) {
-            if (valueHolder instanceof SingleValueHolder) {
-                SingleValueHolder singleValueHolder = (SingleValueHolder)valueHolder;
+            if (getValueHolder() instanceof SingleValueHolder) {
+                SingleValueHolder singleValueHolder = (SingleValueHolder)getValueHolder();
                 singleValueHolder.setValue(ValueFactory.createStringValue(value));
                 notifyListeners();
             } else {
                 throw new IllegalStateException("Set string value is only supported for single value holders."); //$NON-NLS-1$
             }
         }
+
     }
 
     public static class MultilingualValueHolderPmo extends IpsObjectPartPmo {
@@ -296,18 +312,14 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             return (IAttributeValue)super.getIpsObjectPartContainer();
         }
 
-        public SingleValueHolder getSingleValueHolder() {
-            return (SingleValueHolder)getIpsObjectPartContainer().getValueHolder();
-        }
-
         public LocalizedString getLocalizedStringValue() {
-            IValue<?> value = getSingleValueHolder().getValue();
+            IValue<?> value = getSingleValue(getIpsObjectPartContainer());
             return value == null || value.getContent() == null ? null : ((IInternationalString)value.getContent())
                     .get(locale);
         }
 
         public void setLocalizedStringValue(LocalizedString newValue) {
-            IValue<?> value = getSingleValueHolder().getValue();
+            IValue<?> value = getSingleValue(getIpsObjectPartContainer());
             if (value != null) {
                 IInternationalString currentString = (IInternationalString)value.getContent();
                 currentString.add(newValue);
