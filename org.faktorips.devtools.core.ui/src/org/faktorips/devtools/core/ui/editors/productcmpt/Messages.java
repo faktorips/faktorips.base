@@ -26,6 +26,10 @@ public class Messages extends NLS {
 
     public static String AttributeValueEditComposite_attributeNotChangingOverTimeDescription;
 
+    public static String AttributeValueEditComposite_MenuItem_findUsagesAndVariations;
+
+    public static String AttributeValueEditComposite_MenuItem_openTemplate;
+
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
     public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;

@@ -14,12 +14,18 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener2;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -28,6 +34,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
@@ -167,6 +174,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         bindTemplateStatusButton(toolBar, toolItem, pmo);
         listenToTemplateStatusClick(control, toolItem, pmo);
         bindTemplateDependentEnabled(control);
+        toolBar.setMenu(createTemplateMenue(toolBar));
     }
 
     private void bindTemplateStatusButton(final ToolBar toolBar, final ToolItem toolItem, final TemplateValuePmo pmo) {
@@ -208,8 +216,49 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
                     control.setFocus();
                 }
             }
+        });
+    }
+
+    private Menu createTemplateMenue(ToolBar toolBar) {
+        MenuManager menuManager = new MenuManager();
+        initDynamicMenue(menuManager);
+        // TODO FIPS-4483 Command per extension, analog LinksSection einbinden
+        return menuManager.createContextMenu(toolBar);
+    }
+
+    private void initDynamicMenue(MenuManager menuManager) {
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener2() {
+
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                addOpenTemplateAction(manager);
+            }
+
+            @Override
+            public void menuAboutToHide(IMenuManager manager) {
+                // nothing to do
+            }
 
         });
+    }
+
+    private void addOpenTemplateAction(IMenuManager manager) {
+        final IAttributeValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+        if (templateValue != null) {
+            String text = getOpenTemplateText(templateValue);
+            IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
+            manager.add(openTemplateAction);
+        }
+    }
+
+    private String getOpenTemplateText(final IAttributeValue templateValue) {
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                .getPropertyValueContainer().getProductCmpt().getName());
+    }
+
+    private IIpsProject getIpsProject() {
+        return getPropertyValue().getIpsProject();
     }
 
     private void bindTemplateDependentEnabled(Control control) {
@@ -223,7 +272,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     private void createControlForExtensionProperty() {
         extProContFact
-                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());

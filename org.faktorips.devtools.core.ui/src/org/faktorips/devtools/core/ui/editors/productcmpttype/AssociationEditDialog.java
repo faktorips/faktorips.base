@@ -247,8 +247,9 @@ public class AssociationEditDialog extends IpsPartEditDialog2 {
         getBindingContext().bindEnabled(unionText, pmoAssociation, PmoAssociation.PROPERTY_SUBSET);
         DerivedUnionCompletionProcessor completionProcessor = new DerivedUnionCompletionProcessor(association);
         completionProcessor.setComputeProposalForEmptyPrefix(true);
-        ContentAssistHandler
-                .createHandlerForText(unionText, CompletionUtil.createContentAssistant(completionProcessor));
+        @SuppressWarnings({ "deprecation", "unused" })
+        ContentAssistHandler createHandlerForText = ContentAssistHandler.createHandlerForText(unionText,
+                CompletionUtil.createContentAssistant(completionProcessor));
     }
 
     @Override
