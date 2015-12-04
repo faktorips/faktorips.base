@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import com.google.common.base.Function;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Composite;
@@ -36,7 +38,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see IValidationRuleConfig
  */
 public class ValidationRuleConfigEditComposite extends
-        EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
+EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -47,10 +49,11 @@ public class ValidationRuleConfigEditComposite extends
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        createActiveEditField(editFields);
+        Checkbox checkbox = createActiveEditField(editFields);
+        createTemplateStatusButton(checkbox);
     }
 
-    private void createActiveEditField(List<EditField<?>> editFields) {
+    private Checkbox createActiveEditField(List<EditField<?>> editFields) {
         Checkbox checkbox = getToolkit().createCheckbox(this);
         checkbox.setChecked(getPropertyValue().isActive());
         checkbox.setText(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
@@ -58,6 +61,7 @@ public class ValidationRuleConfigEditComposite extends
         CheckboxField editField = new CheckboxField(checkbox);
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IValidationRuleConfig.PROPERTY_ACTIVE);
+        return checkbox;
     }
 
     private String getValidationRuleDescription() {
@@ -71,4 +75,23 @@ public class ValidationRuleConfigEditComposite extends
         }
         return StringUtils.EMPTY;
     }
+
+    @Override
+    protected Function<IValidationRuleConfig, String> getToolTipFormatter() {
+        return new Function<IValidationRuleConfig, String>() {
+
+            @Override
+            public String apply(IValidationRuleConfig ruleConfig) {
+                if (ruleConfig == null) {
+                    return StringUtils.EMPTY;
+                }
+                if (ruleConfig.isActive()) {
+                    return Messages.ValidationRuleConfigEditComposite_activated;
+                } else {
+                    return Messages.ValidationRuleConfigEditComposite_deactivated;
+                }
+            }
+        };
+    }
+
 }

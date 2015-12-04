@@ -12,6 +12,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import com.google.common.base.Function;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -30,7 +33,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -42,6 +45,7 @@ public class TableContentUsageEditComposite extends
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
         TextButtonField tcuField = createTableContentEditField(editFields);
+        createTemplateStatusButton(tcuField.getControl());
         addMovingChangingOverTimeDecorationIfRequired(tcuField);
     }
 
@@ -55,4 +59,16 @@ public class TableContentUsageEditComposite extends
         getBindingContext().bindContent(editField, getPropertyValue(), ITableContentUsage.PROPERTY_TABLE_CONTENT);
         return editField;
     }
+
+    @Override
+    protected Function<ITableContentUsage, String> getToolTipFormatter() {
+        return new Function<ITableContentUsage, String>() {
+
+            @Override
+            public String apply(ITableContentUsage tableContentUsage) {
+                return tableContentUsage != null ? tableContentUsage.getTableContentName() : StringUtils.EMPTY;
+            }
+        };
+    }
+
 }

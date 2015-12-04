@@ -12,6 +12,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import com.google.common.base.Function;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
@@ -51,10 +54,11 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        createExpressionEditField(editFields);
+        FormulaEditControl control = createExpressionEditField(editFields);
+        createTemplateStatusButton(control);
     }
 
-    private void createExpressionEditField(List<EditField<?>> editFields) {
+    private FormulaEditControl createExpressionEditField(List<EditField<?>> editFields) {
         FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), getPropertyValue(),
                 getShell(), getProductCmptPropertySection());
         KeyStroke keyStroke = null;
@@ -75,6 +79,18 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
         addChangingOverTimeDecorationIfRequired(editField);
+        return formulaEditControl;
+    }
+
+    @Override
+    protected Function<IFormula, String> getToolTipFormatter() {
+        return new Function<IFormula, String>() {
+
+            @Override
+            public String apply(IFormula formula) {
+                return formula != null ? StringUtils.abbreviateMiddle(formula.getExpression(), "[...]", 50) : StringUtils.EMPTY; //$NON-NLS-1$
+            }
+        };
     }
 
     @Override

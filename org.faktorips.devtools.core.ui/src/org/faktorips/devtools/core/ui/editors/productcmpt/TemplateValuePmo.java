@@ -16,29 +16,26 @@ import com.google.common.base.Function;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
-public class TemplateValuePmo extends PresentationModelObject {
+public class TemplateValuePmo<T extends IPropertyValue> extends PresentationModelObject {
 
     public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
 
     public static final String PROPERTY_TOOL_TIP_TEXT = "toolTipText"; //$NON-NLS-1$
 
-    private IAttributeValue attributeValue;
+    private T propertyValue;
 
-    public TemplateValuePmo(IAttributeValue attributeValue) {
-        this.attributeValue = attributeValue;
+    private Function<T, String> formatter;
+
+    public TemplateValuePmo(T propertyValue, Function<T, String> formatter) {
+        this.propertyValue = propertyValue;
+        this.formatter = formatter;
     }
 
     public TemplateValueUiStatus getTemplateValueStatus() {
-        return TemplateValueUiStatus.mapStatus(attributeValue, new Function<IAttributeValue, Object>() {
-
-            @Override
-            public Object apply(IAttributeValue value) {
-                return value != null ? value.getValueHolder() : null;
-            }
-        });
+        return TemplateValueUiStatus.mapStatus(propertyValue);
     }
 
     public String getToolTipText() {
@@ -67,7 +64,7 @@ public class TemplateValuePmo extends PresentationModelObject {
     }
 
     private boolean isUsingTemplate() {
-        return attributeValue.getPropertyValueContainer().getProductCmpt().isUsingTemplate();
+        return propertyValue.getPropertyValueContainer().getProductCmpt().isUsingTemplate();
     }
 
     /**
@@ -75,16 +72,20 @@ public class TemplateValuePmo extends PresentationModelObject {
      *         cannot be found.
      */
     protected String getTemplateValue() {
-        IAttributeValue templateProperty = findTemplateProperty();
+        T templateProperty = findTemplateProperty();
         if (templateProperty != null) {
-            return AttributeValueFormatter.format(templateProperty);
+            return formatPropertyValue(templateProperty);
         } else {
             return StringUtils.EMPTY;
         }
     }
 
+    private String formatPropertyValue(T templateProperty) {
+        return formatter.apply(templateProperty);
+    }
+
     private IIpsProject getIpsProject() {
-        return attributeValue.getIpsProject();
+        return propertyValue.getIpsProject();
     }
 
     /**
@@ -92,21 +93,22 @@ public class TemplateValuePmo extends PresentationModelObject {
      *         name.
      */
     protected String getTemplateName() {
-        IAttributeValue templateProperty = findTemplateProperty();
+        T templateProperty = findTemplateProperty();
         if (templateProperty != null) {
             return templateProperty.getPropertyValueContainer().getProductCmpt().getName();
         } else {
-            return attributeValue.getPropertyValueContainer().getTemplate();
+            return propertyValue.getPropertyValueContainer().getTemplate();
         }
     }
 
-    private IAttributeValue findTemplateProperty() {
-        return attributeValue.findTemplateProperty(getIpsProject());
+    @SuppressWarnings("unchecked")
+    private T findTemplateProperty() {
+        return (T)propertyValue.findTemplateProperty(getIpsProject());
     }
 
     public void onClick() {
         TemplateValueUiStatus oldValue = getTemplateValueStatus();
-        attributeValue.switchTemplateValueStatus();
+        propertyValue.switchTemplateValueStatus();
         TemplateValueUiStatus newValue = getTemplateValueStatus();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newValue));
     }

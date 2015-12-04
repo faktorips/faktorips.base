@@ -13,32 +13,21 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.common.base.Function;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener2;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
@@ -49,9 +38,7 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
-import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.LocalizedStringEditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -165,118 +152,23 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         return editField;
     }
 
-    protected void createTemplateStatusButton(final Control control) {
-        final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
-        final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
-        final TemplateValuePmo pmo = new TemplateValuePmo(getPropertyValue());
-        // set any default icon to force correct button size. Correct icon will be set when UI gets
-        // updated
-        toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
-        bindTemplateStatusButton(toolBar, toolItem, pmo);
-        listenToTemplateStatusClick(control, toolItem, pmo);
-        bindTemplateDependentEnabled(control);
-        toolBar.setMenu(createTemplateMenue(toolBar));
-    }
-
-    private void bindTemplateStatusButton(final ToolBar toolBar, final ToolItem toolItem, final TemplateValuePmo pmo) {
-        getBindingContext().add(
-                new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
-                        TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
-
-                    @Override
-                    protected void propertyChanged(TemplateValueUiStatus oldValue, TemplateValueUiStatus newValue) {
-                        toolItem.setImage(newValue.getIcon());
-                    }
-                });
-        getBindingContext().add(
-                new ControlPropertyBinding(toolBar, pmo, TemplateValuePmo.PROPERTY_TOOL_TIP_TEXT, String.class) {
-
-                    @Override
-                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
-                        if (isStatusOrTooltipChange(nameOfChangedProperty)) {
-                            String tooltip = (String)readProperty();
-                            toolItem.setToolTipText(tooltip);
-                        }
-                    }
-
-                    private boolean isStatusOrTooltipChange(String nameOfChangedProperty) {
-                        return nameOfChangedProperty == null
-                                || TemplateValuePmo.PROPERTY_TOOL_TIP_TEXT.equals(nameOfChangedProperty)
-                                || TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS.equals(nameOfChangedProperty);
-                    }
-                });
-    }
-
-    private void listenToTemplateStatusClick(final Control control, final ToolItem toolItem, final TemplateValuePmo pmo) {
-        toolItem.addSelectionListener(new SelectionAdapter() {
-
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                pmo.onClick();
-                if (getToolkit().isEnabled(control) && getToolkit().isDataChangeable(control)) {
-                    control.setFocus();
-                }
-            }
-        });
-    }
-
-    private Menu createTemplateMenue(ToolBar toolBar) {
-        MenuManager menuManager = new MenuManager();
-        initDynamicMenue(menuManager);
-        // TODO FIPS-4483 Command per extension, analog LinksSection einbinden
-        return menuManager.createContextMenu(toolBar);
-    }
-
-    private void initDynamicMenue(MenuManager menuManager) {
-        menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener2() {
-
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                addOpenTemplateAction(manager);
-            }
-
-            @Override
-            public void menuAboutToHide(IMenuManager manager) {
-                // nothing to do
-            }
-
-        });
-    }
-
-    private void addOpenTemplateAction(IMenuManager manager) {
-        final IAttributeValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
-        if (templateValue != null) {
-            String text = getOpenTemplateText(templateValue);
-            IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
-            manager.add(openTemplateAction);
-        }
-    }
-
-    private String getOpenTemplateText(final IAttributeValue templateValue) {
-        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
-                .getPropertyValueContainer().getProductCmpt().getName());
-    }
-
-    private IIpsProject getIpsProject() {
-        return getPropertyValue().getIpsProject();
-    }
-
-    private void bindTemplateDependentEnabled(Control control) {
-        Control controlToEnable = control;
-        if (control.getParent() != this) {
-            controlToEnable = control.getParent();
-        }
-        getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
-                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
-    }
-
     private void createControlForExtensionProperty() {
         extProContFact
                 .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());
+    }
+
+    @Override
+    protected Function<IAttributeValue, String> getToolTipFormatter() {
+        return new Function<IAttributeValue, String>() {
+
+            @Override
+            public String apply(IAttributeValue attributeValue) {
+                return attributeValue != null ? AttributeValueFormatter.format(attributeValue) : StringUtils.EMPTY;
+            }
+        };
     }
 
     public static IValue<?> getSingleValue(IAttributeValue attributeValue) {

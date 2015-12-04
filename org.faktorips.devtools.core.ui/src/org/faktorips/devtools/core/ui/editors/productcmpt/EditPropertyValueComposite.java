@@ -13,27 +13,43 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Function;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener2;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.CellEditor.LayoutData;
+import org.eclipse.jface.window.DefaultToolTip;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.OverlayIcons;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
@@ -193,12 +209,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     protected boolean showTemplateButton() {
-        // TODO instance-of-abfrage entfernen, wenn Templates für alle PropertyValues geht
-        if (getPropertyValue() instanceof IAttributeValue) {
-            return ((IAttributeValue)getPropertyValue()).isConfiguringTemplateValueStatus();
-        } else {
-            return false;
-        }
+        return getPropertyValue().isConfiguringTemplateValueStatus();
     }
 
     /**
@@ -297,6 +308,107 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             editField.getControl().addFocusListener(
                     new MoveDecorationFocusListener(controlDecoration, pixelsToLeftUponControlFocus));
         }
+    }
+
+    protected void createTemplateStatusButton(final Control control) {
+        final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+        final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
+        final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
+        // set any default icon to force correct button size. Correct icon will be set when UI gets
+        // updated
+        toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
+        bindTemplateStatusButton(toolBar, toolItem, pmo);
+        listenToTemplateStatusClick(control, toolItem, pmo);
+        bindTemplateDependentEnabled(control);
+        toolBar.setMenu(createTemplateMenue(toolBar));
+    }
+
+    protected abstract Function<V, String> getToolTipFormatter();
+
+    private void bindTemplateStatusButton(final ToolBar toolBar, final ToolItem toolItem, final TemplateValuePmo<V> pmo) {
+        getBindingContext().add(
+                new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
+                        TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
+
+                    @Override
+                    protected void propertyChanged(TemplateValueUiStatus oldValue, TemplateValueUiStatus newValue) {
+                        toolItem.setImage(newValue.getIcon());
+                    }
+                });
+        new DefaultToolTip(toolBar) {
+
+            @Override
+            protected String getText(Event event) {
+                return pmo.getToolTipText();
+            }
+
+        };
+    }
+
+    private void listenToTemplateStatusClick(final Control control,
+            final ToolItem toolItem,
+            final TemplateValuePmo<V> pmo) {
+        toolItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                pmo.onClick();
+                if (getToolkit().isEnabled(control) && getToolkit().isDataChangeable(control)) {
+                    control.setFocus();
+                }
+            }
+        });
+    }
+
+    private Menu createTemplateMenue(ToolBar toolBar) {
+        MenuManager menuManager = new MenuManager();
+        initDynamicMenue(menuManager);
+        // TODO FIPS-4483 Command per extension, analog LinksSection einbinden
+        return menuManager.createContextMenu(toolBar);
+    }
+
+    private void initDynamicMenue(MenuManager menuManager) {
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener2() {
+
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                addOpenTemplateAction(manager);
+            }
+
+            @Override
+            public void menuAboutToHide(IMenuManager manager) {
+                // nothing to do
+            }
+
+        });
+    }
+
+    private void addOpenTemplateAction(IMenuManager manager) {
+        final IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+        if (templateValue != null) {
+            String text = getOpenTemplateText(templateValue);
+            IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
+            manager.add(openTemplateAction);
+        }
+    }
+
+    private String getOpenTemplateText(final IPropertyValue templateValue) {
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                .getPropertyValueContainer().getProductCmpt().getName());
+    }
+
+    private IIpsProject getIpsProject() {
+        return getPropertyValue().getIpsProject();
+    }
+
+    private void bindTemplateDependentEnabled(Control control) {
+        Control controlToEnable = control;
+        if (control.getParent() != this) {
+            controlToEnable = control.getParent();
+        }
+        getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
+                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
     }
 
     private static class MoveDecorationFocusListener implements FocusListener {

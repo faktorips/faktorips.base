@@ -228,6 +228,10 @@ public class Messages extends NLS {
 
     public static String LinksSection_filterEmptyAssociations;
 
+    public static String ValidationRuleConfigEditComposite_activated;
+
+    public static String ValidationRuleConfigEditComposite_deactivated;
+
     public static String ValidationRuleSection_DefaultTitle;
 
     public static String ProductCmptPropertySection_NoContentToDisplay;
