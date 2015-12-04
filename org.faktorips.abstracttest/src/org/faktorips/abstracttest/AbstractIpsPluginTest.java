@@ -382,8 +382,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
         properties
-        .setMinRequiredVersionNumber(
-                "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                .setMinRequiredVersionNumber(
+                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(properties);
     }
 
@@ -424,7 +424,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
-        }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+                }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
     protected void setAutoBuild(boolean autoBuild) throws CoreException {
@@ -950,9 +950,12 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
     /**
      * Creates a new product template in the project's first package fragment root. If the
      * qualifiedName includes a package name, the package is created if it does not already exists.
+     * <p>
+     * Note that this method does neither set the type nor creates any generations for the template.
      */
     protected ProductCmpt newProductTemplate(IIpsProject project, String qualifiedName) throws CoreException {
-        return (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
+        ProductCmpt template = (ProductCmpt)newIpsObject(project, IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
+        return template;
     }
 
     /**

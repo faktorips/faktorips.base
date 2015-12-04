@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.google.common.base.Predicate;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -433,6 +435,23 @@ public class BindingContext {
     }
 
     /**
+     * Binds the control's enabled property to the given part container's property. Uses a
+     * {@link Predicate} to check whether the control should be enabled or disabled
+     * 
+     * @param control The control which enabled property is bound
+     * @param object The object the control is bound to
+     * @param property The name of the object's property the control is bound to.
+     * @param enabledPredicate A predicate that gets the property from the object and returns
+     *            <code>true</code> if the control should be enabled.
+     * 
+     * @throws IllegalArgumentException if the object's property is not of type boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public void bindEnabled(Control control, Object object, String property, Predicate<Object> enabledPredicate) {
+        add(new EnableBinding(control, object, property, enabledPredicate));
+    }
+
+    /**
      * Binds the control's visible property to the given part container's property.
      * 
      * @param excludeWhenInvisible if true, the {@link org.eclipse.swt.layout.GridData#exclude
@@ -709,7 +728,7 @@ public class BindingContext {
                     binding.updateUI(propertyName);
                 }
             } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
+                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding, e)); //$NON-NLS-1$
             }
         }
     }

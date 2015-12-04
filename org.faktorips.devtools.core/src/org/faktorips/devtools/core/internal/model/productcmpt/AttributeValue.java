@@ -10,20 +10,24 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -50,14 +54,17 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     private IValueHolder<?> valueHolder;
 
+    private TemplateValueSettings templateValueSettings = new TemplateValueSettings();
+
     public AttributeValue(IPropertyValueContainer parent, String id) {
-        this(parent, id, ""); //$NON-NLS-1$ 
+        this(parent, id, ""); //$NON-NLS-1$
     }
 
     public AttributeValue(IPropertyValueContainer parent, String id, String attribute) {
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
+        templateValueSettings.initialize(this);
     }
 
     @Override
@@ -120,7 +127,37 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public IValueHolder<?> getValueHolder() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateValueHolder();
+        }
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return getUndefinedValueHolder();
+        }
         return valueHolder;
+    }
+
+    private IValueHolder<?> findTemplateValueHolder() {
+        IAttributeValue templateAttribute = findTemplateProperty(getIpsProject());
+        if (templateAttribute == null || templateAttribute.getValueHolder() == null) {
+            // Template should have an attribute value but does not. Use the "last known" value
+            // holder as a more or less helpful fallback while some validation hopefully addresses
+            // the missing attribute value in the template...
+            return valueHolder;
+        }
+        return DelegatingValueHolder.of(this, templateAttribute.getValueHolder());
+    }
+
+    private IValueHolder<?> getUndefinedValueHolder() {
+        try {
+            IProductCmptTypeAttribute typeAttribute = findAttribute(getIpsProject());
+            if (typeAttribute == null) {
+                return new SingleValueHolder(this);
+            } else {
+                return AttributeValueType.getTypeFor(typeAttribute).newHolderInstance(this);
+            }
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     @Override
@@ -151,8 +188,8 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public String getPropertyValue() {
-        if (valueHolder != null) {
-            return valueHolder.getStringValue();
+        if (getValueHolder() != null) {
+            return getValueHolder().getStringValue();
         } else {
             return null;
         }
@@ -168,11 +205,67 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public IAttributeValue findTemplateProperty(IIpsProject ipsProject) {
+        TemplatePropertyFinder<IAttributeValue> templateFinder = new TemplatePropertyFinder<IAttributeValue>(this,
+                IAttributeValue.class, ipsProject);
+        templateFinder.start(getPropertyValueContainer());
+        return templateFinder.getPropertyValue();
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        if (isConfiguringTemplateValueStatus()) {
+            return templateValueSettings.getTemplateStatus();
+        } else {
+            return TemplateValueStatus.DEFINED;
+        }
+    }
+
+    @Override
+    public boolean isConfiguringTemplateValueStatus() {
+        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            copyValueHolder();
+        }
+        TemplateValueStatus oldValue = templateValueSettings.getTemplateStatus();
+        templateValueSettings.setTemplateStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, oldValue,
+                newStatus));
+    }
+
+    private void copyValueHolder() {
+        IValueHolder<?> valueHolderToCopy = getValueHolder();
+        Element element = valueHolderToCopy.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        valueHolder = AbstractValueHolder.initValueHolder(this, element);
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public boolean isAllowedTemplateValueStatus(TemplateValueStatus checkTemplateValueStatus) {
+        if (checkTemplateValueStatus == TemplateValueStatus.UNDEFINED) {
+            return getPropertyValueContainer().isProductTemplate();
+        } else if (checkTemplateValueStatus == TemplateValueStatus.INHERITED) {
+            return findTemplateProperty(getIpsProject()) != null;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
     protected void initPropertiesFromXml(Element element, String id) {
         super.initPropertiesFromXml(element, id);
         attribute = element.getAttribute(PROPERTY_ATTRIBUTE);
         Element valueEl = XmlUtil.getFirstElement(element, ValueToXmlHelper.XML_TAG_VALUE);
         valueHolder = AbstractValueHolder.initValueHolder(this, valueEl);
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
@@ -180,10 +273,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_ATTRIBUTE, attribute);
         Document ownerDocument = element.getOwnerDocument();
-        if (valueHolder != null) {
-            Element valueElement = valueHolder.toXml(ownerDocument);
+        if (getValueHolder() != null) {
+            Element valueElement = getValueHolder().toXml(ownerDocument);
             element.appendChild(valueElement);
         }
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
@@ -200,7 +294,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             list.add(new Message(MSGCODE_UNKNWON_ATTRIBUTE, text, Message.ERROR, this, PROPERTY_ATTRIBUTE));
             return;
         }
-        if (attr.isMultiValueAttribute() != (valueHolder instanceof MultiValueHolder)) {
+        if (attr.isMultiValueAttribute() != (getValueHolder().isMultiValue())) {
             String text;
             String hint = Messages.AttributeValue_msg_validateValueHolder_hint;
             if (attr.isMultiValueAttribute()) {
@@ -210,9 +304,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
             }
             list.add(new Message(MSGCODE_INVALID_VALUE_HOLDER, text, Message.ERROR, this, PROPERTY_VALUE_HOLDER));
         }
-        MessageList validateValue = valueHolder.validate(ipsProject);
-        list.add(validateValue);
-        attrIsHiddenMismatch(attr, list);
+        if (getTemplateValueStatus() != TemplateValueStatus.UNDEFINED) {
+            list.add(getValueHolder().validate(ipsProject));
+            attrIsHiddenMismatch(attr, list);
+        }
+        list.add(templateValueSettings.validate(this, ipsProject));
     }
 
     /**

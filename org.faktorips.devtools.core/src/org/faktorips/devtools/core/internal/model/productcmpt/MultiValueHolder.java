@@ -18,6 +18,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -148,6 +149,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        return validate(ipsProject, getParent());
+    }
+
+    @Override
+    public MessageList validate(IIpsProject ipsProject, IIpsObjectPart parentForValidation) throws CoreException {
         MessageList messageList = new MessageList();
         if (values == null) {
             return messageList;
@@ -158,16 +164,16 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
                     Messages.MultiValueHolder_DuplicateValueMessageText, duplicateValueHolder, PROPERTY_VALUE));
         }
         for (SingleValueHolder valueHolder : values) {
-            messageList.add(valueHolder.validate(ipsProject));
+            messageList.add(valueHolder.validate(ipsProject, parentForValidation));
         }
         if (messageList.containsErrorMsg()) {
             ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
                     new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
                     new ObjectProperty(this, PROPERTY_VALUE) };
             messageList
-                    .add(new Message(MSGCODE_CONTAINS_INVALID_VALUE,
-                            Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, Message.ERROR,
-                            invalidObjectProperties));
+            .add(new Message(MSGCODE_CONTAINS_INVALID_VALUE,
+                    Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, Message.ERROR,
+                    invalidObjectProperties));
         }
         return messageList;
     }
@@ -239,6 +245,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         }
     }
 
+    @Override
+    public boolean isMultiValue() {
+        return true;
+    }
+
     private ValueType getValueTypeForNoEntries() {
         try {
             IProductCmptTypeAttribute attribute = getParent().findAttribute(getIpsProject());
@@ -268,7 +279,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
         result = prime * result + ((values == null) ? 0 : values.hashCode());
         return result;
     }
@@ -285,13 +295,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
             return false;
         }
         MultiValueHolder other = (MultiValueHolder)obj;
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
         if (values == null) {
             if (other.values != null) {
                 return false;

@@ -141,7 +141,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
-        if (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)) {
+        if (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)
+                || event.isPropertyAffected(IProductCmpt.PROPERTY_TEMPLATE)) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.syncExec(new Runnable() {
 

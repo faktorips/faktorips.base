@@ -161,6 +161,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
+        return propertyValueCollection.getPropertyValue(type, propertyName);
+    }
+
+    @Override
     public <T extends IPropertyValue> List<T> getPropertyValues(Class<T> type) {
         return propertyValueCollection.getPropertyValues(type);
     }
@@ -625,7 +630,27 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public boolean isProductTemplateGeneration() {
-        return getProductCmpt() != null && getProductCmpt().isProductTemplate();
+    public boolean isProductTemplate() {
+        return getProductCmpt().isProductTemplate();
     }
+
+    @Override
+    public IProductCmptGeneration findTemplate(IIpsProject ipsProject) {
+        IProductCmpt template = getProductCmpt().findTemplate(ipsProject);
+        if (template == null) {
+            return null;
+        }
+        return template.getGenerationEffectiveOn(getValidFrom());
+    }
+
+    @Override
+    public boolean isUsingTemplate() {
+        return getProductCmpt().isUsingTemplate();
+    }
+
+    @Override
+    public String getTemplate() {
+        return getProductCmpt().getTemplate();
+    }
+
 }

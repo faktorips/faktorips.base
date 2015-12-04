@@ -274,6 +274,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         if (getProductCmpt().allowGenerations()) {
             createGotoPreviousNextGenerationAction(toolbarManager);
         }
+        if (getProductCmpt().isUsingTemplate()) {
+            createOpenTemplateAction(toolbarManager);
+        }
         Action openModelDescription = createOpenModelDescriptionAction();
         toolbarManager.add(openModelDescription);
         getManagedForm().getForm().updateToolBar();
@@ -302,6 +305,14 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
                 return getGenerationPropertiesPage().getActiveGeneration().getNextByValidDate();
             }
         };
+    }
+
+    private void createOpenTemplateAction(IToolBarManager toolbarManager) {
+        IProductCmpt template = getProductCmpt().findTemplate(getProductCmpt().getIpsProject());
+        if (template != null) {
+            String caption = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, template.getName());
+            toolbarManager.add(new SimpleOpenIpsObjectPartAction(template, caption));
+        }
     }
 
     private Action createOpenModelDescriptionAction() {

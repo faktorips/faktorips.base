@@ -178,7 +178,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         // Create the product component to copy
         IProductCmpt productCmptToCopy = newProductCmpt(concreteType, "ProductToCopy");
-        productCmptToCopy.setTemplateName(template.getQualifiedName());
+        productCmptToCopy.setTemplate(template.getQualifiedName());
 
         // Configure PMO to copy product component
         pmo.setIpsProject(ipsProject);

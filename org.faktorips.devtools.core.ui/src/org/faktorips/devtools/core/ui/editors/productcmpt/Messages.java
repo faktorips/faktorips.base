@@ -26,6 +26,10 @@ public class Messages extends NLS {
 
     public static String AttributeValueEditComposite_attributeNotChangingOverTimeDescription;
 
+    public static String AttributeValueEditComposite_MenuItem_findUsagesAndVariations;
+
+    public static String AttributeValueEditComposite_MenuItem_openTemplate;
+
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
     public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;
@@ -227,5 +231,19 @@ public class Messages extends NLS {
     public static String ValidationRuleSection_DefaultTitle;
 
     public static String ProductCmptPropertySection_NoContentToDisplay;
+
+    public static String TemplateValuePmo_Status_Inherited;
+
+    public static String TemplateValuePmo_Status_NewlyDefined;
+
+    public static String TemplateValuePmo_Status_NewlyDefined_withoutParentTemplate;
+
+    public static String TemplateValuePmo_Status_Override;
+
+    public static String TemplateValuePmo_Status_OverrideEqual;
+
+    public static String TemplateValuePmo_Status_Undefined;
+
+    public static String TemplateValuePmo_Status_Undefined_WithoutParentTemplate;
 
 }

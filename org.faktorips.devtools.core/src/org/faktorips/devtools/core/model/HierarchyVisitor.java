@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -33,8 +34,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public abstract class HierarchyVisitor<T> {
 
-    protected IIpsProject ipsProject;
-    protected List<T> visitedTypes;
+    private final IIpsProject ipsProject;
+    private LinkedHashSet<T> visitedTypes;
     private boolean cycleDetected;
 
     /**
@@ -60,7 +61,11 @@ public abstract class HierarchyVisitor<T> {
      * Returns the types visited by the visitor in the order they were visited.
      */
     public List<T> getVisited() {
-        return Collections.unmodifiableList(visitedTypes);
+        return Collections.unmodifiableList(new ArrayList<T>(visitedTypes));
+    }
+
+    public boolean isAlreadyVisited(T object) {
+        return getVisited().contains(object);
     }
 
     /**
@@ -70,7 +75,7 @@ public abstract class HierarchyVisitor<T> {
      */
     public void start(T basetype) {
         cycleDetected = false;
-        visitedTypes = new ArrayList<T>();
+        visitedTypes = new LinkedHashSet<T>();
         if (basetype == null) {
             return;
         }
@@ -78,7 +83,7 @@ public abstract class HierarchyVisitor<T> {
     }
 
     private void visitInternal(T currentType) {
-        if (visitedTypes.contains(currentType)) {
+        if (isAlreadyVisited(currentType)) {
             cycleDetected = true;
             return;
         }
@@ -91,6 +96,14 @@ public abstract class HierarchyVisitor<T> {
         if (supertype != null) {
             visitInternal(supertype);
         }
+    }
+
+    protected IIpsProject getIpsProject() {
+        return ipsProject;
+    }
+
+    protected LinkedHashSet<T> getVisitedTypesAsSet() {
+        return visitedTypes;
     }
 
     protected abstract T findSupertype(T currentType, IIpsProject ipsProject);

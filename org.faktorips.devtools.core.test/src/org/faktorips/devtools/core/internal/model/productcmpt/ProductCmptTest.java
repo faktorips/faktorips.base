@@ -14,6 +14,7 @@ import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -238,29 +240,29 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
 
         // Non existing template
-        baseComp.setTemplateName("noSuchTemplate");
+        baseComp.setTemplate("noSuchTemplate");
         list = baseComp.validate(ipsProject);
         assertThat(list, hasMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
 
         // Consistent type hierarchy
-        baseComp.setTemplateName(baseTemplate.getQualifiedName());
+        baseComp.setTemplate(baseTemplate.getQualifiedName());
         list = baseComp.validate(ipsProject);
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
 
-        subComp.setTemplateName(baseTemplate.getQualifiedName());
+        subComp.setTemplate(baseTemplate.getQualifiedName());
         list = subComp.validate(ipsProject);
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
 
-        subComp.setTemplateName(subTemplate.getQualifiedName());
+        subComp.setTemplate(subTemplate.getQualifiedName());
         list = subComp.validate(ipsProject);
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
 
         // Inconsistent type hierarchy
-        baseComp.setTemplateName(subTemplate.getQualifiedName());
+        baseComp.setTemplate(subTemplate.getQualifiedName());
         list = baseComp.validate(ipsProject);
         assertThat(list, lacksMessageCode(IProductCmpt.MSGCODE_INVALID_TEMPLATE));
         assertThat(list, hasMessageCode(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE));
@@ -278,13 +280,13 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
 
         // Template hierarchy without a cycle
-        template1.setTemplateName(template2.getQualifiedName());
-        template2.setTemplateName(template3.getQualifiedName());
+        template1.setTemplate(template2.getQualifiedName());
+        template2.setTemplate(template3.getQualifiedName());
         list = template1.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
 
         // Template hierarchy with a cycle
-        template3.setTemplateName(template1.getQualifiedName());
+        template3.setTemplate(template1.getQualifiedName());
         list = template1.validate(ipsProject);
         assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_TEMPLATE_CYCLE));
     }
@@ -303,14 +305,14 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
 
         // Template hierarchy with unique types
-        subTemplate1.setTemplateName(template.getQualifiedName());
+        subTemplate1.setTemplate(template.getQualifiedName());
         list = template.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
         list = subTemplate1.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
 
         // Template hierarchy contains duplicate types
-        subTemplate2.setTemplateName(subTemplate1.getQualifiedName());
+        subTemplate2.setTemplate(subTemplate1.getQualifiedName());
         list = template.validate(ipsProject);
         assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
         list = subTemplate1.validate(ipsProject);
@@ -634,7 +636,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         productCmpt.initFromXml(getTestDocument().getDocumentElement());
         assertEquals("MotorProduct", productCmpt.getProductCmptType());
         assertEquals("MotorProductId", productCmpt.getRuntimeId());
-        assertEquals("MyLittleTemplate", productCmpt.getTemplateName());
+        assertEquals("MyLittleTemplate", productCmpt.getTemplate());
         assertEquals(2, productCmpt.getNumOfGenerations());
         IProductCmptGeneration gen = (IProductCmptGeneration)productCmpt.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, gen.getNumOfConfigElements());
@@ -650,7 +652,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testToXml() throws CoreException {
         productCmpt.setProductCmptType("MotorProduct");
         productCmpt.setRuntimeId("MotorProductId");
-        productCmpt.setTemplateName("MeinTemplate");
+        productCmpt.setTemplate("MeinTemplate");
         IProductCmptGeneration gen1 = (IProductCmptGeneration)productCmpt.newGeneration();
         IConfigElement ce1 = gen1.newConfigElement();
         ce1.setValue("0.15");
@@ -661,7 +663,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         copy.initFromXml(element);
         assertEquals("MotorProduct", copy.getProductCmptType());
         assertEquals("MotorProductId", copy.getRuntimeId());
-        assertEquals("MeinTemplate", productCmpt.getTemplateName());
+        assertEquals("MeinTemplate", productCmpt.getTemplate());
         assertEquals(2, copy.getNumOfGenerations());
         IProductCmptGeneration genCopy = (IProductCmptGeneration)copy.getGenerationsOrderedByValidDate()[0];
         assertEquals(1, genCopy.getConfigElements().length);
@@ -1323,7 +1325,7 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     @Test
     public void testIsUsingExistingTemplate_missingTemplate() throws CoreException {
         ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
-        product.setTemplateName("Template");
+        product.setTemplate("Template");
 
         assertFalse(product.isUsingExistingTemplate(ipsProject));
     }
@@ -1332,26 +1334,34 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     public void testIsUsingExistingTemplate_existingTemplate() throws CoreException {
         ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
         newProductTemplate(ipsProject, "Template");
-        product.setTemplateName("Template");
+        product.setTemplate("Template");
 
         assertTrue(product.isUsingExistingTemplate(ipsProject));
     }
 
     @Test
+    public void testPropertyTemplate() throws Exception {
+        PropertyDescriptor propertyDescriptor = new PropertyDescriptor(IProductCmpt.PROPERTY_TEMPLATE,
+                ProductCmpt.class);
+
+        assertThat(propertyDescriptor.getReadMethod(), is(not(nullValue())));
+        assertThat(propertyDescriptor.getWriteMethod(), is(not(nullValue())));
+    }
+
+    @Test
     public void testFindTemplate() throws CoreException {
         IProductCmpt product = newProductCmpt(ipsProject, "product");
-        product.setTemplateName(null);
+        product.setTemplate(null);
         assertThat(product.findTemplate(ipsProject), is(nullValue()));
 
-        product.setTemplateName("");
+        product.setTemplate("");
         assertThat(product.findTemplate(ipsProject), is(nullValue()));
 
-        product.setTemplateName("noSuchTemplateExists");
+        product.setTemplate("noSuchTemplateExists");
         assertThat(product.findTemplate(ipsProject), is(nullValue()));
 
         IProductCmpt template = newProductTemplate(ipsProject, "template");
-        product.setTemplateName(template.getQualifiedName());
+        product.setTemplate(template.getQualifiedName());
         assertThat(product.findTemplate(ipsProject), is(template));
-
     }
 }

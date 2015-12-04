@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -70,9 +69,10 @@ public final class RenameValidationRuleProcessor extends IpsRenameProcessor {
     private void updateValidationRuleInGenerations() {
         List<IProductCmptGeneration> productCmptGenerations = getProductCmptGenerations();
         for (IProductCmptGeneration productCmptGeneration : productCmptGenerations) {
-            IPropertyValue propertyValue = productCmptGeneration.getPropertyValue(getOriginalName());
+            IValidationRuleConfig propertyValue = productCmptGeneration.getPropertyValue(getOriginalName(),
+                    IValidationRuleConfig.class);
             if (propertyValue != null) {
-                IValidationRuleConfig validationRuleConfig = (IValidationRuleConfig)propertyValue;
+                IValidationRuleConfig validationRuleConfig = propertyValue;
                 validationRuleConfig.setValidationRuleName(getNewName());
             }
         }

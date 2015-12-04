@@ -675,12 +675,12 @@ public abstract class Association extends TypePart implements IAssociation {
                     continue;
                 }
                 try {
-                    IType derivedUnionTarget = association.findTarget(ipsProject);
+                    IType derivedUnionTarget = association.findTarget(getIpsProject());
                     if (derivedUnionTarget == null) {
                         continue;
                     }
 
-                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, ipsProject)) {
+                    if (targetType.isSubtypeOrSameType(derivedUnionTarget, getIpsProject())) {
                         candidates.add(association);
                     }
                 } catch (CoreException e) {

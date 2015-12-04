@@ -40,7 +40,7 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
 
-    public static final String PROPERTY_TEMPLATE_NAME = "templateName"; //$NON-NLS-1$
+    public static final String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
 
@@ -335,36 +335,8 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * 
      * @return <code>true</code> if this is a template, <code>false</code> if not
      */
+    @Override
     public boolean isProductTemplate();
-
-    /**
-     * Returns <code>true</code> if this product component is using a template. This is the case if
-     * {@link #getTemplateName()} returns a non-null value. That does not mean that the referenced
-     * template is a valid template and could be found. Use
-     * {@link #isUsingExistingTemplate(IIpsProject)} to verify that there is realy a template with
-     * the given name.
-     * 
-     * @return <code>true</code> if there is a template specified by this product component
-     */
-    boolean isUsingTemplate();
-
-    /**
-     * Returns <code>true</code> if this product component is using a template. This is the case if
-     * {@link #getTemplateName()} returns a valid qualified name and hence
-     * {@link #findTemplate(IIpsProject)} returns a non-null template object.
-     * 
-     * @param ipsProject The project to search the template
-     * @return <code>true</code> if there is a valid template that is used by this product component
-     */
-    boolean isUsingExistingTemplate(IIpsProject ipsProject);
-
-    /**
-     * Returns the template of this product component if it use a template. Returns
-     * <code>null</code> if this product component does not use a template
-     * 
-     * @return The name of the referenced template
-     */
-    public String getTemplateName();
 
     /**
      * Set the name of the template that should be used by this product component. Set
@@ -374,19 +346,30 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @param template The name of the template that should be used by this product component or
      *            <code>null</code> to not use any template.
      */
-    public void setTemplateName(String template);
+    public void setTemplate(String template);
+
+    /**
+     * Returns <code>true</code> if this product component is using a template. This is the case if
+     * {@link #isUsingTemplate()} returns a valid qualified name and hence
+     * {@link #findTemplate(IIpsProject)} returns a non-null template object.
+     * 
+     * @param ipsProject The project to search the template
+     * @return <code>true</code> if there is a valid template that is used by this product component
+     */
+    boolean isUsingExistingTemplate(IIpsProject ipsProject);
 
     /**
      * Returns the template object that is used by this product component if this product component
      * has specified a template. Returns <code>null</code> if no template is specified or the
      * specified template was not found.
      * 
-     * @see #getTemplateName()
-     * @see #setTemplateName(String)
+     * @see #getTemplate()
+     * @see #setTemplate(String)
      * 
      * @param ipsProject The project that should be used to search for the template
      * @return The product component that is specified as the template of this product component
      */
+    @Override
     IProductCmpt findTemplate(IIpsProject ipsProject);
 
 }

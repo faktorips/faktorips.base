@@ -1,0 +1,70 @@
+/*******************************************************************************
+ * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
+ * 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
+ * restrictions as well as the possibility of alternative license terms.
+ *******************************************************************************/
+package org.faktorips.devtools.core.ui.editors.productcmpt;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
+
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
+
+@RunWith(MockitoJUnitRunner.class)
+public class TemplateValuePmoTest {
+    @Mock
+    private IAttributeValue value;
+    @Mock
+    private IAttributeValue templateValue;
+    @Mock
+    private IProductCmpt container;
+    @Mock
+    private IProductCmpt templateContainer;
+
+    private TemplateValuePmo templateValuePmo;
+
+    @Before
+    public void setUp() {
+        when(value.getPropertyValueContainer()).thenReturn(container);
+        when(container.getTemplate()).thenReturn("qualified.TemplateName");
+        when(templateValue.getPropertyValueContainer()).thenReturn(templateContainer);
+        when(templateContainer.getProductCmpt()).thenReturn(templateContainer);
+        when(templateContainer.getName()).thenReturn("TemplateName");
+
+        templateValuePmo = spy(new TemplateValuePmo(value));
+        doReturn(TemplateValueUiStatus.INHERITED).when(templateValuePmo).getTemplateValueStatus();
+    }
+
+    @Test
+    public void testGetTemplateName_inherited() {
+        when(value.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
+
+        assertThat(templateValuePmo.getTemplateName(), is("TemplateName"));
+    }
+
+    @Test
+    public void testGetTemplateName_inherited_templateNotFound() {
+        when(value.findTemplateProperty(any(IIpsProject.class))).thenReturn(null);
+
+        assertThat(templateValuePmo.getTemplateName(), is("qualified.TemplateName"));
+    }
+    /*
+     * No tests for getTemplateValue() due to static dependency to
+     * ValueHolderToFormattedStringWrapper.
+     */
+}

@@ -87,16 +87,16 @@ public class ProductCmptValidations {
             IProductCmptType productCmptType,
             MessageList list,
             IIpsProject ipsProject) {
-        String templateName = productCmpt.getTemplateName();
+        String templateName = productCmpt.getTemplate();
 
         if (StringUtils.isNotEmpty(templateName)) {
             IProductCmpt template = ipsProject.findProductTemplate(templateName);
             if (template != null) {
                 ObjectProperty typeProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE_NAME);
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
                 validateTemplateType(productCmptType, list, ipsProject, template, typeProperty, templateProperty);
             } else {
-                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE_NAME);
+                ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
                 String text = NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
                 list.newError(IProductCmpt.MSGCODE_INVALID_TEMPLATE, text, templateProperty);
             }

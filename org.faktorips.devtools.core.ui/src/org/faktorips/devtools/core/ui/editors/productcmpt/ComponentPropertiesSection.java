@@ -143,8 +143,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
         getBindingContext().bindContent(validToField, product, IProductCmpt.PROPERTY_VALID_TO);
 
-        getBindingContext().bindContent(new IpsObjectField(templateControl), product,
-                IProductCmpt.PROPERTY_TEMPLATE_NAME);
+        getBindingContext().bindContent(new IpsObjectField(templateControl), product, IProductCmpt.PROPERTY_TEMPLATE);
     }
 
     /**
@@ -221,7 +220,7 @@ public class ComponentPropertiesSection extends IpsSection {
         });
 
         productCmptTypeControl = new ProductCmptType2RefControl(product.getIpsProject(), rootPane, toolkit, true);
-        toolkit.setDataChangeable(productCmptTypeControl.getTextControl(), false);
+        toolkit.setEnabled(productCmptTypeControl.getTextControl(), false);
         productCmptTypeControl.getTextControl().addModifyListener(new MyModifyListener());
     }
 
@@ -238,7 +237,7 @@ public class ComponentPropertiesSection extends IpsSection {
         templateControl.setProductCmptType(product.findProductCmptType(product.getIpsProject()), true);
         templateControl.setSearchTemplates(true);
         templateControl.setProductCmptsToExclude(new IProductCmpt[] { product });
-        toolkit.setDataChangeable(templateControl.getTextControl(), false);
+        toolkit.setEnabled(templateControl.getTextControl(), false);
     }
 
     private void createLabelOrHyperlink(UIToolkit toolkit, String labelText, final IpsObjectFinder ipsObjectFinder) {

@@ -65,7 +65,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -102,6 +102,7 @@ import org.faktorips.devtools.core.ui.views.TreeViewerDoubleclickListener;
  */
 public class ProductStructureExplorer extends AbstractShowInSupportingViewPart implements ContentsChangeListener,
         IIpsSrcFilesChangeListener {
+
     /**
      * The ID of this view extension
      */
@@ -796,7 +797,7 @@ public class ProductStructureExplorer extends AbstractShowInSupportingViewPart i
             return;
         }
         int type = event.getEventType();
-        IIpsObjectPart part = event.getPart();
+        IIpsObjectPartContainer part = event.getPart();
 
         // refresh only for relevant changes
         if (part instanceof ITableContentUsage || part instanceof IProductCmptLink

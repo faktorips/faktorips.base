@@ -782,7 +782,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         @Override
         protected IProductCmptType getMatchingType(IType currentType) {
             try {
-                return ((IPolicyCmptType)currentType).findProductCmptType(ipsProject);
+                return ((IPolicyCmptType)currentType).findProductCmptType(getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

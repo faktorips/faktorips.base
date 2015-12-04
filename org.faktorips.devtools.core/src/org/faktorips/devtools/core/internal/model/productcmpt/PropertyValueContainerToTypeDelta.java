@@ -53,7 +53,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann
  */
 public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite implements
-        IPropertyValueContainerToTypeDelta {
+IPropertyValueContainerToTypeDelta {
 
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
@@ -187,7 +187,7 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
     }
 
     /* private */void checkForValueMismatch(IProductCmptTypeAttribute attribute, IAttributeValue value) {
-        if (attribute.isMultiValueAttribute() != (value.getValueHolder() instanceof MultiValueHolder)) {
+        if (attribute.isMultiValueAttribute() != (value.getValueHolder().isMultiValue())) {
             addEntry(new ValueHolderMismatchEntry(value, attribute));
         }
     }

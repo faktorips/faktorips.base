@@ -14,17 +14,30 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener2;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
@@ -35,7 +48,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.fields.LocalizedStringEditField;
 import org.faktorips.devtools.core.ui.controller.fields.TextButtonField;
@@ -83,68 +98,193 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
     private void createValueEditField(List<EditField<?>> editFields) throws CoreException {
         ValueDatatype datatype = getProperty() == null ? null : getProperty().findDatatype(
                 getPropertyValue().getIpsProject());
-        EditField<?> editField = createEditField(datatype);
-        registerAndBindEditField(editFields, editField);
+        createEditField(datatype, editFields);
     }
 
-    protected EditField<?> createEditField(ValueDatatype datatype) {
-        EditField<?> editField = null;
+    protected void createEditField(ValueDatatype datatype, List<EditField<?>> editFields) {
+        EditField<?> editField;
+        IValueHolder<?> valueHolder = getPropertyValue().getValueHolder();
+        if (valueHolder.isMultiValue()) {
+            editField = createMultiValueField(datatype);
+        } else {
+            editField = createSingleValueField(datatype, valueHolder);
+        }
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(),
+                IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+        editFields.add(editField);
+        if (showTemplateButton()) {
+            createTemplateStatusButton(editField.getControl());
+        }
+        addChangingOverTimeDecorationIfRequired(editField);
+    }
+
+    private EditField<?> createMultiValueField(ValueDatatype datatype) {
+        MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
+                getPropertyValue(), datatype);
+        EditField<?> editField = new TextButtonField(control);
+        AttributeValueFormatter formatter = AttributeValueFormatter.createFormatterFor(getPropertyValue());
+        getBindingContext().bindContent(editField, formatter, AttributeValueFormatter.PROPERTY_FORMATTED_VALUE);
+        return editField;
+    }
+
+    private EditField<?> createSingleValueField(ValueDatatype datatype, IValueHolder<?> valueHolder) {
         IValueSet valueSet = getProperty() == null ? null : getProperty().getValueSet();
 
-        if (getPropertyValue().getValueHolder() instanceof MultiValueHolder) {
-            MultiValueAttributeControl control = new MultiValueAttributeControl(this, getToolkit(), getProperty(),
-                    getPropertyValue(), datatype);
-            editField = new TextButtonField(control);
-            ValueHolderToFormattedStringWrapper wrapper = ValueHolderToFormattedStringWrapper
-                    .createWrapperFor(getPropertyValue());
-            getBindingContext().bindContent(editField, wrapper,
-                    ValueHolderToFormattedStringWrapper.PROPERTY_FORMATTED_VALUE);
-        } else if (getPropertyValue().getValueHolder() instanceof SingleValueHolder) {
-            SingleValueHolder singleValueHolder = (SingleValueHolder)getPropertyValue().getValueHolder();
-            if (singleValueHolder.getValueType() == ValueType.STRING) {
-                ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
-
-                ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                        datatype);
-                editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet, getPropertyValue()
-                        .getIpsProject());
-                getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
-            } else if (singleValueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
-                final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(
-                        getPropertyValue().getIpsProject());
-                MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
-                        localizationLocale);
-                InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
-                        getPropertyValue());
-                InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
-                editField = new LocalizedStringEditField(control.getTextControl());
-                getBindingContext().bindContent(editField, valueHolderPMO,
-                        MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
-            }
+        if (valueHolder.getValueType() == ValueType.STRING) {
+            return createSimpleField(datatype, valueSet);
+        } else if (valueHolder.getValueType() == ValueType.INTERNATIONAL_STRING) {
+            return createInternationalStringField();
+        } else {
+            throw new RuntimeException("Illegal value type in attribute " + getProperty().getName()); //$NON-NLS-1$
         }
-        if (editField != null) {
-            /*
-             * SW 4.6.2014: old code set horizontal span to 2, for whatever reason. A potential enum
-             * button, however, requires a second column, so that line was deleted.
-             */
-            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
-            getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
-            return editField;
-        }
-        throw new RuntimeException("Illegal value holder instance in attribute " + getProperty().getName()); //$NON-NLS-1$
     }
 
-    protected void registerAndBindEditField(List<EditField<?>> editFields, EditField<?> editField) {
-        editFields.add(editField);
-        addChangingOverTimeDecorationIfRequired(editField);
+    private EditField<?> createSimpleField(ValueDatatype datatype, IValueSet valueSet) {
+        ValueHolderPmo valueHolderPMO = new ValueHolderPmo(getPropertyValue());
+        ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
+        EditField<?> editField = controlFactory.createEditField(getToolkit(), this, datatype, valueSet,
+                getPropertyValue().getIpsProject());
+        getBindingContext().bindContent(editField, valueHolderPMO, ValueHolderPmo.PROPERTY_STRING_VALUE);
+        return editField;
+    }
+
+    private EditField<?> createInternationalStringField() {
+        final Locale localizationLocale = IpsPlugin.getMultiLanguageSupport().getLocalizationLocaleOrDefault(
+                getPropertyValue().getIpsProject());
+        MultilingualValueHolderPmo valueHolderPMO = new MultilingualValueHolderPmo(getPropertyValue(),
+                localizationLocale);
+        InternationalStringDialogHandler handler = new MyMultilingualValueAttributeHandler(getShell(),
+                getPropertyValue());
+        InternationalStringControl control = new InternationalStringControl(this, getToolkit(), handler);
+        LocalizedStringEditField editField = new LocalizedStringEditField(control);
+        getBindingContext().bindContent(editField, valueHolderPMO,
+                MultilingualValueHolderPmo.PROPERTY_LOCALIZED_STRING_VALUE);
+        return editField;
+    }
+
+    protected void createTemplateStatusButton(final Control control) {
+        final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+        final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
+        final TemplateValuePmo pmo = new TemplateValuePmo(getPropertyValue());
+        // set any default icon to force correct button size. Correct icon will be set when UI gets
+        // updated
+        toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
+        bindTemplateStatusButton(toolBar, toolItem, pmo);
+        listenToTemplateStatusClick(control, toolItem, pmo);
+        bindTemplateDependentEnabled(control);
+        toolBar.setMenu(createTemplateMenue(toolBar));
+    }
+
+    private void bindTemplateStatusButton(final ToolBar toolBar, final ToolItem toolItem, final TemplateValuePmo pmo) {
+        getBindingContext().add(
+                new PropertyChangeBinding<TemplateValueUiStatus>(toolBar, pmo,
+                        TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueUiStatus.class) {
+
+                    @Override
+                    protected void propertyChanged(TemplateValueUiStatus oldValue, TemplateValueUiStatus newValue) {
+                        toolItem.setImage(newValue.getIcon());
+                    }
+                });
+        getBindingContext().add(
+                new ControlPropertyBinding(toolBar, pmo, TemplateValuePmo.PROPERTY_TOOL_TIP_TEXT, String.class) {
+
+                    @Override
+                    public void updateUiIfNotDisposed(String nameOfChangedProperty) {
+                        if (isStatusOrTooltipChange(nameOfChangedProperty)) {
+                            String tooltip = (String)readProperty();
+                            toolItem.setToolTipText(tooltip);
+                        }
+                    }
+
+                    private boolean isStatusOrTooltipChange(String nameOfChangedProperty) {
+                        return nameOfChangedProperty == null
+                                || TemplateValuePmo.PROPERTY_TOOL_TIP_TEXT.equals(nameOfChangedProperty)
+                                || TemplateValuePmo.PROPERTY_TEMPLATE_VALUE_STATUS.equals(nameOfChangedProperty);
+                    }
+                });
+    }
+
+    private void listenToTemplateStatusClick(final Control control, final ToolItem toolItem, final TemplateValuePmo pmo) {
+        toolItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                pmo.onClick();
+                if (getToolkit().isEnabled(control) && getToolkit().isDataChangeable(control)) {
+                    control.setFocus();
+                }
+            }
+        });
+    }
+
+    private Menu createTemplateMenue(ToolBar toolBar) {
+        MenuManager menuManager = new MenuManager();
+        initDynamicMenue(menuManager);
+        // TODO FIPS-4483 Command per extension, analog LinksSection einbinden
+        return menuManager.createContextMenu(toolBar);
+    }
+
+    private void initDynamicMenue(MenuManager menuManager) {
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener2() {
+
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                addOpenTemplateAction(manager);
+            }
+
+            @Override
+            public void menuAboutToHide(IMenuManager manager) {
+                // nothing to do
+            }
+
+        });
+    }
+
+    private void addOpenTemplateAction(IMenuManager manager) {
+        final IAttributeValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+        if (templateValue != null) {
+            String text = getOpenTemplateText(templateValue);
+            IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
+            manager.add(openTemplateAction);
+        }
+    }
+
+    private String getOpenTemplateText(final IAttributeValue templateValue) {
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                .getPropertyValueContainer().getProductCmpt().getName());
+    }
+
+    private IIpsProject getIpsProject() {
+        return getPropertyValue().getIpsProject();
+    }
+
+    private void bindTemplateDependentEnabled(Control control) {
+        Control controlToEnable = control;
+        if (control.getParent() != this) {
+            controlToEnable = control.getParent();
+        }
+        getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
+                IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
     }
 
     private void createControlForExtensionProperty() {
         extProContFact
-                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());
+    }
+
+    public static IValue<?> getSingleValue(IAttributeValue attributeValue) {
+        IValueHolder<?> valueHolder = attributeValue.getValueHolder();
+        if (valueHolder.getValue() instanceof IValue) {
+            return (IValue<?>)valueHolder.getValue();
+        }
+        throw new IllegalStateException(
+                "Value " + valueHolder.getValue() + " of ValueHolder " + valueHolder + " is no single value."); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 
     private static class MyMultilingualValueAttributeHandler extends InternationalStringDialogHandler {
@@ -181,7 +321,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
 
         public String getStringValue() {
-            return ((SingleValueHolder)getValueHolder()).getValue().getContentAsString();
+            return getSingleValue(getIpsObjectPartContainer()).getContentAsString();
         }
 
         public IValueHolder<?> getValueHolder() {
@@ -194,9 +334,15 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
 
         public void setStringValue(String value) {
-            ((SingleValueHolder)getValueHolder()).setValue(ValueFactory.createStringValue(value));
-            notifyListeners();
+            if (getValueHolder() instanceof SingleValueHolder) {
+                SingleValueHolder singleValueHolder = (SingleValueHolder)getValueHolder();
+                singleValueHolder.setValue(ValueFactory.createStringValue(value));
+                notifyListeners();
+            } else {
+                throw new IllegalStateException("Set string value is only supported for single value holders."); //$NON-NLS-1$
+            }
         }
+
     }
 
     public static class MultilingualValueHolderPmo extends IpsObjectPartPmo {
@@ -215,18 +361,14 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             return (IAttributeValue)super.getIpsObjectPartContainer();
         }
 
-        public SingleValueHolder getSingleValueHolder() {
-            return (SingleValueHolder)getIpsObjectPartContainer().getValueHolder();
-        }
-
         public LocalizedString getLocalizedStringValue() {
-            IValue<?> value = getSingleValueHolder().getValue();
+            IValue<?> value = getSingleValue(getIpsObjectPartContainer());
             return value == null || value.getContent() == null ? null : ((IInternationalString)value.getContent())
                     .get(locale);
         }
 
         public void setLocalizedStringValue(LocalizedString newValue) {
-            IValue<?> value = getSingleValueHolder().getValue();
+            IValue<?> value = getSingleValue(getIpsObjectPartContainer());
             if (value != null) {
                 IInternationalString currentString = (IInternationalString)value.getContent();
                 currentString.add(newValue);
@@ -235,4 +377,5 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
 
     }
+
 }

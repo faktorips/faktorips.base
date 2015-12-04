@@ -739,7 +739,7 @@ public abstract class Type extends BaseIpsObject implements IType {
                 }
                 IMethod overridingMethod;
                 try {
-                    overridingMethod = method.findOverridingMethod(Type.this, ipsProject);
+                    overridingMethod = method.findOverridingMethod(Type.this, getIpsProject());
                 } catch (CoreException e) {
                     throw new CoreRuntimeException(e);
                 }
@@ -903,7 +903,7 @@ public abstract class Type extends BaseIpsObject implements IType {
         protected List<IAssociation> getAssociations(IType currentType) {
             try {
                 return ((Type)currentType).findAssociationsForTargetAndAssociationTypeInternal(associationTarget,
-                        associationType, ipsProject);
+                        associationType, getIpsProject());
             } catch (CoreException e) {
                 throw new CoreRuntimeException(e);
             }

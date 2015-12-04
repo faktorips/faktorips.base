@@ -160,7 +160,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             @Override
             protected boolean visit(IProductCmptType currentType) {
                 try {
-                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
+                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false, getIpsProject())) {
                         /*
                          * First, check whether the property has been overwritten by a subtype - in
                          * this case we do not add the property to the category.
@@ -187,7 +187,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                             continue;
                         }
 
-                        if (findIsContainingProperty(property, currentType, ipsProject)
+                        if (findIsContainingProperty(property, currentType, getIpsProject())
                                 && !properties.contains(property)) {
                             properties.add(property);
                         }
@@ -383,9 +383,9 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                 ipsProject);
         duplicateFinder.start(getProductCmptType());
         duplicateFinder
-        .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
-                Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
-                PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
+                .addValidationMessageIfDuplicateFound(list, MSGCODE_DUPLICATE_DEFAULTS_FOR_VALIDATION_RULES,
+                        Messages.ProductCmptCategory_DuplicateDefaultsForValidationRules,
+                        PROPERTY_DEFAULT_FOR_VALIDATION_RULES);
     }
 
     private void validateDuplicateDefaultsForTableStructureUsages(MessageList list, IIpsProject ipsProject) {

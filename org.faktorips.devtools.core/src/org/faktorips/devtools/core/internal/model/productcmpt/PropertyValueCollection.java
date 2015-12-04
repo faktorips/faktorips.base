@@ -89,7 +89,7 @@ public class PropertyValueCollection {
      *         given Property name is <code>null</code> or if no property with the indicated name
      *         could be found.
      */
-    public IPropertyValue getPropertyValue(String propertyName) {
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName) {
         List<IPropertyValue> allValues = getAllPropertyValues();
         return getPropertyValueFromList(allValues, propertyName);
     }
@@ -102,13 +102,16 @@ public class PropertyValueCollection {
      * @param propertyName the name of the property
      * @return the first element with the given name in the list.
      */
-    private static IPropertyValue getPropertyValueFromList(List<? extends IPropertyValue> valueList, String propertyName) {
+    private static <T extends IPropertyValue> T getPropertyValueFromList(List<IPropertyValue> valueList,
+            String propertyName) {
         if (propertyName == null || valueList == null) {
             return null;
         }
         for (IPropertyValue value : valueList) {
             if (propertyName.equals(value.getPropertyName())) {
-                return value;
+                @SuppressWarnings("unchecked")
+                T castedValue = (T)value;
+                return castedValue;
             }
         }
         return null;

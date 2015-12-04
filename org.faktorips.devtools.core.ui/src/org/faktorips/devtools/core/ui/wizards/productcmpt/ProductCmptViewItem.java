@@ -50,7 +50,7 @@ public class ProductCmptViewItem extends IpsSrcFileViewItem {
     }
 
     public String getTemplateName() {
-        return getProductCmpt().getTemplateName();
+        return getProductCmpt().getTemplate();
     }
 
     public ProductCmptViewItem getParent() {

@@ -52,6 +52,16 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
     public IPropertyValue getPropertyValue(String propertyName);
 
     /**
+     * Returns the property value for the given property name and type or {@code null} if no value
+     * is defined for this container. In this case
+     * {@link IFixDifferencesToModelSupport#computeDeltaToModel(IIpsProject)} returns a delta
+     * containing an entry for the missing property value.
+     * <p>
+     * Returns {@code null} if propertyName is {@code null}.
+     */
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type);
+
+    /**
      * Returns all property values for the given type. Returns an empty array if type is
      * <code>null</code> or no property values were found for the given type.
      */
@@ -104,5 +114,41 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
      * @throws CoreException in case of getting a core exception while searching the model
      */
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+
+    /**
+     * @return <code>true</code> if this property value container is itself defined as a template or
+     *         is part of a template. <code>false</code> if it is a regular product component.
+     */
+    public boolean isProductTemplate();
+
+    /**
+     * Returns the name of the template of this property value container. Returns <code>null</code>
+     * if this container does not use a template.
+     * 
+     * @return The qualified name of the referenced template
+     */
+    public String getTemplate();
+
+    /**
+     * Returns <code>true</code> if this container is using a template. This is the case if
+     * {@link IProductCmpt#getTemplate()} returns a non-empty value. That does not mean that the
+     * referenced template actually exists. Use
+     * {@link IProductCmpt#isUsingExistingTemplate(IIpsProject)} to verify that the referenced
+     * template exists.
+     * 
+     * @return <code>true</code> if there is a template specified by this product component
+     */
+    public boolean isUsingTemplate();
+
+    /**
+     * Returns the template object that is used by this property value container if this property
+     * value container has specified a template. Returns {@code null} if no template is specified or
+     * the specified template was not found.
+     * 
+     * @param ipsProject The project that should be used to search for the template
+     * @return The property value container that is specified as the template of this property value
+     *         container
+     */
+    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
 
 }

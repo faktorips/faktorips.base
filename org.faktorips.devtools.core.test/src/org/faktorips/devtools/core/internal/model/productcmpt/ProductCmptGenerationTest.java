@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -286,7 +287,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         Element element = generation.toXml(newDocument());
 
-        IProductCmptGeneration copy = new ProductCmptGeneration();
+        IProductCmptGeneration copy = (IProductCmptGeneration)productCmpt.newGeneration();
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
         assertEquals(3, copy.getNumOfLinks());
@@ -771,4 +772,35 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertFalse(propertyValuesGen.contains(valueA2));
     }
 
+    @Test
+    public void testIsTemplate_default() {
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isProductTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsTemplate_true() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration gen = template.getProductCmptGeneration(0);
+
+        assertThat(gen.isProductTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsUsingTemplate() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isUsingTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsUsingTemplate_noTemplate() {
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isUsingTemplate(), is(false));
+    }
 }

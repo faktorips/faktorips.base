@@ -62,4 +62,12 @@ public interface IPropertyValue extends IIpsObjectPart {
      */
     public IPropertyValueContainer getPropertyValueContainer();
 
+    /**
+     * Sets this property value's template status (e.g. whether it is inherited from a parent
+     * template or not).
+     * 
+     * @param status the new template status
+     */
+    public void setTemplateValueStatus(TemplateValueStatus status);
+
 }
