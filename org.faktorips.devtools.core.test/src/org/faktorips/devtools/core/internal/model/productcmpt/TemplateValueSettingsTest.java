@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,74 +39,78 @@ public class TemplateValueSettingsTest {
     @Mock
     private IAttributeValue templateValue;
 
-    private TemplateValueSettings handler = new TemplateValueSettings();
+    private TemplateValueSettings handler;
 
     @Before
     public void setUp() {
+        when(attrValue.isConfiguringTemplateValueStatus()).thenReturn(true);
         when(attrValue.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
+        handler = new TemplateValueSettings(attrValue);
     }
 
     @Test
-    public void testPropertiesToXml_default() throws Exception {
+    public void testPropertiesToXml_defined() throws Exception {
+        when(attrValue.isConfiguringTemplateValueStatus()).thenReturn(true);
+        when(attrValue.findTemplateProperty(any(IIpsProject.class))).thenReturn(null);
+        handler = new TemplateValueSettings(attrValue);
         handler.propertiesToXml(element);
 
-        verify(element).setAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, "defined");
+        verify(element).setAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, "defined");
     }
 
     @Test
     public void testPropertiesToXml_excluded() throws Exception {
-        handler.setTemplateStatus(TemplateValueStatus.UNDEFINED);
+        handler.setStatus(TemplateValueStatus.UNDEFINED);
 
         handler.propertiesToXml(element);
 
-        verify(element).setAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, "undefined");
+        verify(element).setAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, "undefined");
     }
 
     @Test
     public void testInitPropertiesFromXml_default() throws Exception {
-        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(false);
+        when(element.hasAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(false);
 
         handler.initPropertiesFromXml(element);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
+        assertThat(handler.getStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
     public void testInitPropertiesFromXml() throws Exception {
-        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(true);
-        when(element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn("inherited");
+        when(element.hasAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(true);
+        when(element.getAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn("inherited");
 
         handler.initPropertiesFromXml(element);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.INHERITED));
+        assertThat(handler.getStatus(), is(TemplateValueStatus.INHERITED));
     }
 
     @Test
     public void testInitPropertiesFromXml_illegalString() throws Exception {
-        when(element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(true);
-        when(element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn("illegalValue");
+        when(element.hasAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn(true);
+        when(element.getAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS)).thenReturn("illegalValue");
 
         handler.initPropertiesFromXml(element);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
+        assertThat(handler.getStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
-    public void testInitialize_noTemplateValue() {
+    public void testTemplateValueSettings_noTemplateValue() {
         when(attrValue.findTemplateProperty(any(IIpsProject.class))).thenReturn(null);
 
-        handler.initialize(attrValue);
+        handler = new TemplateValueSettings(attrValue);
 
-        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.DEFINED));
+        assertThat(handler.getStatus(), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
     public void testInitialize_definedTemplateValue() {
         when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
+        handler = new TemplateValueSettings(attrValue);
 
-        handler.initialize(attrValue);
-
-        assertThat(handler.getTemplateStatus(), is(TemplateValueStatus.INHERITED));
+        assertThat(handler.getStatus(), is(TemplateValueStatus.INHERITED));
     }
 
 }

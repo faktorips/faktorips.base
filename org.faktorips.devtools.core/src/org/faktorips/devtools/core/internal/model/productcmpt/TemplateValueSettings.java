@@ -9,9 +9,12 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.devtools.core.model.productcmpt.IPropertyValue.MSGCODE_INVALID_TEMPLATE_STATUS;
+import static org.faktorips.devtools.core.model.productcmpt.IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS;
+
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -22,61 +25,65 @@ import org.w3c.dom.Element;
  */
 public class TemplateValueSettings {
 
+    private final IPropertyValue parent;
     private TemplateValueStatus status = TemplateValueStatus.DEFINED;
 
-    public void initialize(IAttributeValue attributeValue) {
-        IAttributeValue templateProperty = attributeValue.findTemplateProperty(attributeValue.getIpsProject());
-        if (templateProperty != null) {
+    public TemplateValueSettings(IPropertyValue parent) {
+        this.parent = parent;
+        IPropertyValue templateValue = parent.findTemplateProperty(parent.getIpsProject());
+        if (templateValue != null) {
             status = TemplateValueStatus.INHERITED;
         }
     }
 
-    public void setTemplateStatus(TemplateValueStatus status) {
+    public void setStatus(TemplateValueStatus status) {
         this.status = status;
     }
 
-    public TemplateValueStatus getTemplateStatus() {
-        return status;
+    public TemplateValueStatus getStatus() {
+        if (parent.isConfiguringTemplateValueStatus()) {
+            return status;
+        } else {
+            return TemplateValueStatus.DEFINED;
+        }
     }
 
     /**
      * Validates the template status of the given property value.
      * 
-     * @param propertyValue the property value to validate
+     * @param value the property value to validate
      * @param ipsProject the IPS project to use for validating
      * @return a message list containing all appropriate validation messages regarding the template
      *         status of the given property value.
      */
-    public MessageList validate(IAttributeValue propertyValue, IIpsProject ipsProject) {
+    public MessageList validate(IPropertyValue value, IIpsProject ipsProject) {
         MessageList messageList = new MessageList();
-        if (isUndefinedInProductCmpt(propertyValue)) {
+        if (isUndefinedInProductCmpt(value)) {
             String message = NLS.bind(Messages.TemplateStatusHandler_Msg_ExcludeNotAllowedInProductCmpt,
-                    TemplateValueStatus.UNDEFINED, propertyValue);
-            messageList.newError(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS, message, propertyValue,
-                    IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+                    TemplateValueStatus.UNDEFINED, value);
+            messageList.newError(MSGCODE_INVALID_TEMPLATE_STATUS, message, value, PROPERTY_TEMPLATE_VALUE_STATUS);
         }
-        if (noInheritableValueFound(propertyValue, ipsProject)) {
+        if (noInheritableValueFound(value, ipsProject)) {
             String message = NLS.bind(Messages.TemplateStatusHandler_Msg_noInheritableValueFound,
-                    propertyValue.getPropertyName());
-            messageList.newError(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS, message, propertyValue,
-                    IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+                    value.getPropertyName());
+            messageList.newError(MSGCODE_INVALID_TEMPLATE_STATUS, message, value, PROPERTY_TEMPLATE_VALUE_STATUS);
         }
         return messageList;
     }
 
-    private boolean isUndefinedInProductCmpt(IAttributeValue propertyValue) {
+    private boolean isUndefinedInProductCmpt(IPropertyValue propertyValue) {
         return propertyValue.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED
                 && !propertyValue.getPropertyValueContainer().isProductTemplate();
     }
 
-    private boolean noInheritableValueFound(IAttributeValue propertyValue, IIpsProject ipsProject) {
+    private boolean noInheritableValueFound(IPropertyValue propertyValue, IIpsProject ipsProject) {
         return propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED
                 && propertyValue.findTemplateProperty(ipsProject) == null;
     }
 
     public void initPropertiesFromXml(Element element) {
-        if (element.hasAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS)) {
-            String statusString = element.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+        if (element.hasAttribute(PROPERTY_TEMPLATE_VALUE_STATUS)) {
+            String statusString = element.getAttribute(PROPERTY_TEMPLATE_VALUE_STATUS);
             status = TemplateValueStatus.valueOfXml(statusString, TemplateValueStatus.DEFINED);
         } else {
             status = TemplateValueStatus.DEFINED;
@@ -84,6 +91,7 @@ public class TemplateValueSettings {
     }
 
     public void propertiesToXml(Element element) {
-        element.setAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, status.getXmlValue());
+        element.setAttribute(PROPERTY_TEMPLATE_VALUE_STATUS, status.getXmlValue());
     }
+
 }

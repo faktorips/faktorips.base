@@ -11,10 +11,11 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.EnumSet;
-
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -27,58 +28,95 @@ public class TemplateValueStatusTest {
     private IAttributeValue attributeValue;
 
     @Test
-    public void testGetNextStatus__INHERITED_DEFINED() throws Exception {
-        assertNextStatus(TemplateValueStatus.INHERITED, TemplateValueStatus.DEFINED);
-        assertNextStatusAllowAll(TemplateValueStatus.INHERITED, TemplateValueStatus.DEFINED);
+    public void testGetNextStatus_INHERITED() throws Exception {
+        makeProductCmpt(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.INHERITED), is(TemplateValueStatus.DEFINED));
+        assertThat(nextNextStatus(TemplateValueStatus.INHERITED), is(TemplateValueStatus.DEFINED));
+
+        addTemplateValue(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.INHERITED), is(TemplateValueStatus.DEFINED));
+        assertThat(nextNextStatus(TemplateValueStatus.INHERITED), is(TemplateValueStatus.INHERITED));
+
+        makeTemplate(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.INHERITED), is(TemplateValueStatus.DEFINED));
+        assertThat(nextNextStatus(TemplateValueStatus.INHERITED), is(TemplateValueStatus.UNDEFINED));
     }
 
     @Test
-    public void testGetNextStatus__INHERITED_UNDEFINED() throws Exception {
-        assertNextStatus(TemplateValueStatus.INHERITED, TemplateValueStatus.UNDEFINED);
+    public void testGetNextStatus_DEFINED() throws Exception {
+        makeProductCmpt(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.DEFINED), is(TemplateValueStatus.DEFINED));
+        assertThat(nextNextStatus(TemplateValueStatus.DEFINED), is(TemplateValueStatus.DEFINED));
+
+        addTemplateValue(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.DEFINED), is(TemplateValueStatus.INHERITED));
+        assertThat(nextNextStatus(TemplateValueStatus.DEFINED), is(TemplateValueStatus.DEFINED));
+
+        makeTemplate(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.DEFINED), is(TemplateValueStatus.UNDEFINED));
+        assertThat(nextNextStatus(TemplateValueStatus.DEFINED), is(TemplateValueStatus.INHERITED));
     }
 
     @Test
-    public void testGetNextStatus__DEFINED_UNDEFINED() throws Exception {
-        assertNextStatus(TemplateValueStatus.DEFINED, TemplateValueStatus.UNDEFINED);
-        assertNextStatusAllowAll(TemplateValueStatus.DEFINED, TemplateValueStatus.UNDEFINED);
+    public void testGetNextStatus_UNDEFINED() throws Exception {
+        makeProductCmpt(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.UNDEFINED), is(TemplateValueStatus.DEFINED));
+        assertThat(nextNextStatus(TemplateValueStatus.UNDEFINED), is(TemplateValueStatus.DEFINED));
+
+        addTemplateValue(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.UNDEFINED), is(TemplateValueStatus.INHERITED));
+        assertThat(nextNextStatus(TemplateValueStatus.UNDEFINED), is(TemplateValueStatus.DEFINED));
+
+        makeTemplate(attributeValue);
+        assertThat(nextStatus(TemplateValueStatus.UNDEFINED), is(TemplateValueStatus.INHERITED));
+        assertThat(nextNextStatus(TemplateValueStatus.UNDEFINED), is(TemplateValueStatus.DEFINED));
     }
 
     @Test
-    public void testGetNextStatus__DEFINED_INHERITED() throws Exception {
-        assertNextStatus(TemplateValueStatus.DEFINED, TemplateValueStatus.INHERITED);
+    public void testIsAllowedStatus_UNDEFINED() throws Exception {
+        makeProductCmpt(attributeValue);
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(attributeValue), is(false));
+
+        makeTemplate(attributeValue);
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(attributeValue), is(true));
     }
 
     @Test
-    public void testGetNextStatus__UNDEFINED_INHERITED() throws Exception {
-        assertNextStatus(TemplateValueStatus.UNDEFINED, TemplateValueStatus.INHERITED);
-        assertNextStatusAllowAll(TemplateValueStatus.UNDEFINED, TemplateValueStatus.INHERITED);
+    public void testIsAllowedStatus_INHERITED() throws Exception {
+        assertThat(TemplateValueStatus.INHERITED.isAllowedStatus(attributeValue), is(false));
+
+        addTemplateValue(attributeValue);
+        assertThat(TemplateValueStatus.INHERITED.isAllowedStatus(attributeValue), is(true));
     }
 
     @Test
-    public void testGetNextStatus__UNDEFINED_DEFINED() throws Exception {
-        assertNextStatus(TemplateValueStatus.UNDEFINED, TemplateValueStatus.DEFINED);
+    public void testIsAllowedStatus_DEFINED() throws Exception {
+        assertThat(TemplateValueStatus.DEFINED.isAllowedStatus(attributeValue), is(true));
     }
 
-    private void assertNextStatus(TemplateValueStatus initialStatus, TemplateValueStatus nextStatus) {
-        testStartExpectedAllowed(initialStatus, nextStatus, false);
+    private void addTemplateValue(IAttributeValue value) {
+        IAttributeValue templateValue = mock(IAttributeValue.class);
+        when(value.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
     }
 
-    private void assertNextStatusAllowAll(TemplateValueStatus initialStatus, TemplateValueStatus nextStatus) {
-        testStartExpectedAllowed(initialStatus, nextStatus, true);
+    private void makeTemplate(IAttributeValue value) {
+        IPropertyValueContainer container = mock(IPropertyValueContainer.class);
+        when(container.isProductTemplate()).thenReturn(true);
+        when(value.getPropertyValueContainer()).thenReturn(container);
     }
 
-    private void testStartExpectedAllowed(TemplateValueStatus start, TemplateValueStatus expected, boolean allAllowed) {
-        EnumSet<TemplateValueStatus> allowed;
-        if (allAllowed) {
-            allowed = EnumSet.allOf(TemplateValueStatus.class);
-        } else {
-            allowed = EnumSet.of(start, expected);
-        }
-        for (TemplateValueStatus templateValueStatus : allowed) {
-            when(attributeValue.isAllowedTemplateValueStatus(templateValueStatus)).thenReturn(true);
-        }
-        TemplateValueStatus nextStatus = start.getNextStatus(attributeValue);
-        assertThat(nextStatus, is(expected));
+    private void makeProductCmpt(IAttributeValue value) {
+        IPropertyValueContainer container = mock(IPropertyValueContainer.class);
+        when(container.isProductTemplate()).thenReturn(false);
+        when(value.getPropertyValueContainer()).thenReturn(container);
+    }
+
+    private TemplateValueStatus nextStatus(TemplateValueStatus start) {
+        return start.getNextStatus(attributeValue);
+    }
+
+    private TemplateValueStatus nextNextStatus(TemplateValueStatus start) {
+        return start.getNextStatus(attributeValue).getNextStatus(attributeValue);
     }
 
 }

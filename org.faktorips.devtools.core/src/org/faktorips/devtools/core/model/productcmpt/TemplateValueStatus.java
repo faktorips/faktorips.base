@@ -21,20 +21,35 @@ public enum TemplateValueStatus {
      * Indicates that no property value is defined explicitly, instead the value from the parent
      * template is used or "inherited".
      */
-    INHERITED("inherited"), //$NON-NLS-1$
+    INHERITED("inherited") { //$NON-NLS-1$
+        @Override
+        public boolean isAllowedStatus(IPropertyValue value) {
+            return value.findTemplateProperty(value.getIpsProject()) != null;
+        }
+    },
 
     /**
      * Indicates that a property's value is explicitly defined. Regarding a template hierarchy it
      * might define a new value or overwrite a value from a parent template.
      */
-    DEFINED("defined"), //$NON-NLS-1$
+    DEFINED("defined") { //$NON-NLS-1$
+        @Override
+        public boolean isAllowedStatus(IPropertyValue value) {
+            return true;
+        }
+    },
 
     /**
      * For template property values only. Indicates that the property will not be used by this
      * template (and its children). The property is regarded as "undefined". Thus child templates or
      * product components can no longer inherit said value and must define it explicitly.
      */
-    UNDEFINED("undefined"); //$NON-NLS-1$
+    UNDEFINED("undefined") { //$NON-NLS-1$
+        @Override
+        public boolean isAllowedStatus(IPropertyValue value) {
+            return value.getPropertyValueContainer().isProductTemplate();
+        }
+    };
 
     private static final List<TemplateValueStatus> VALUES = Arrays.asList(TemplateValueStatus.values());
 
@@ -57,14 +72,17 @@ public enum TemplateValueStatus {
         return xmlValue;
     }
 
-    public TemplateValueStatus getNextStatus(IAttributeValue attributeValue) {
+    public TemplateValueStatus getNextStatus(IPropertyValue value) {
         int index = (VALUES.indexOf(this) + 1) % VALUES.size();
         TemplateValueStatus nextStatus = VALUES.get(index);
-        if (attributeValue.isAllowedTemplateValueStatus(nextStatus)) {
+        if (nextStatus.isAllowedStatus(value)) {
             return nextStatus;
         } else {
-            return nextStatus.getNextStatus(attributeValue);
+            return nextStatus.getNextStatus(value);
         }
     }
+
+    /** Returns whether or not the status is allowed for the given {@code IPropertyValue}. */
+    public abstract boolean isAllowedStatus(IPropertyValue value);
 
 }

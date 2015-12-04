@@ -54,7 +54,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     private IValueHolder<?> valueHolder;
 
-    private TemplateValueSettings templateValueSettings = new TemplateValueSettings();
+    private final TemplateValueSettings templateValueSettings;
 
     public AttributeValue(IPropertyValueContainer parent, String id) {
         this(parent, id, ""); //$NON-NLS-1$
@@ -64,7 +64,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         super(parent, id);
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
-        templateValueSettings.initialize(this);
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -206,19 +206,12 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public IAttributeValue findTemplateProperty(IIpsProject ipsProject) {
-        TemplatePropertyFinder<IAttributeValue> templateFinder = new TemplatePropertyFinder<IAttributeValue>(this,
-                IAttributeValue.class, ipsProject);
-        templateFinder.start(getPropertyValueContainer());
-        return templateFinder.getPropertyValue();
+        return TemplatePropertyFinder.findTemplatePropertyValue(this, IAttributeValue.class);
     }
 
     @Override
     public TemplateValueStatus getTemplateValueStatus() {
-        if (isConfiguringTemplateValueStatus()) {
-            return templateValueSettings.getTemplateStatus();
-        } else {
-            return TemplateValueStatus.DEFINED;
-        }
+        return templateValueSettings.getStatus();
     }
 
     @Override
@@ -231,10 +224,9 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         if (newStatus == TemplateValueStatus.DEFINED) {
             copyValueHolder();
         }
-        TemplateValueStatus oldValue = templateValueSettings.getTemplateStatus();
-        templateValueSettings.setTemplateStatus(newStatus);
-        objectHasChanged(new PropertyChangeEvent(this, IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, oldValue,
-                newStatus));
+        TemplateValueStatus oldValue = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
     }
 
     private void copyValueHolder() {
@@ -246,17 +238,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     public void switchTemplateValueStatus() {
         setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
-    }
-
-    @Override
-    public boolean isAllowedTemplateValueStatus(TemplateValueStatus checkTemplateValueStatus) {
-        if (checkTemplateValueStatus == TemplateValueStatus.UNDEFINED) {
-            return getPropertyValueContainer().isProductTemplate();
-        } else if (checkTemplateValueStatus == TemplateValueStatus.INHERITED) {
-            return findTemplateProperty(getIpsProject()) != null;
-        } else {
-            return true;
-        }
     }
 
     @Override

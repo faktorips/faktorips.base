@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -41,12 +43,15 @@ import org.w3c.dom.Element;
  */
 public class Formula extends Expression implements IFormula {
 
+    private final TemplateValueSettings templateValueSettings;
+
     public Formula(IPropertyValueContainer parent, String id) {
-        super(parent, id);
+        this(parent, id, ""); //$NON-NLS-1$
     }
 
     public Formula(IPropertyValueContainer parent, String id, String formulaSignature) {
         super(parent, id, formulaSignature);
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -180,8 +185,52 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
-    public void setTemplateValueStatus(TemplateValueStatus status) {
-        // TODO Auto-generated method stub
+    protected void initPropertiesFromXml(Element element, String id) {
+        super.initPropertiesFromXml(element, id);
+        templateValueSettings.initPropertiesFromXml(element);
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        templateValueSettings.propertiesToXml(element);
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
+        super.validateThis(list, ipsProject);
+        list.add(templateValueSettings.validate(this, ipsProject));
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // Copy current expression from template (if present)
+            setExpression(getExpression());
+        }
+        TemplateValueStatus oldStatus = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldStatus, newStatus));
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public IFormula findTemplateProperty(IIpsProject ipsProject) {
+        return TemplatePropertyFinder.findTemplatePropertyValue(this, IFormula.class);
+    }
+
+    @Override
+    public boolean isConfiguringTemplateValueStatus() {
+        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
     }
 
 }

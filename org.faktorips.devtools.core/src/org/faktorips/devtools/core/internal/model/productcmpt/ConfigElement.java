@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -61,6 +62,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private String value = ""; //$NON-NLS-1$
 
+    private final TemplateValueSettings templateValueSettings;
+
     public ConfigElement(IPropertyValueContainer parent, String id) {
         this(parent, id, ""); //$NON-NLS-1$
     }
@@ -69,6 +72,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         super(parent, id);
         this.pcTypeAttribute = pcTypeAttribute;
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -164,6 +168,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
             validateValueAndValueSet(list, ipsProject, attribute);
         }
+        list.add(templateValueSettings.validate(this, ipsProject));
     }
 
     private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject)
@@ -377,6 +382,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
         pcTypeAttribute = element.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
         name = pcTypeAttribute;
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
@@ -384,6 +390,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         super.propertiesToXml(element);
         element.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, pcTypeAttribute);
         ValueToXmlHelper.addValueToElement(value, element, ValueToXmlHelper.XML_TAG_VALUE);
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
@@ -465,8 +472,35 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public void setTemplateValueStatus(TemplateValueStatus status) {
-        // TODO Auto-generated method stub
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // Copy value/value set from template (if present)
+            this.value = getValue();
+            this.valueSet = getValueSet();
+        }
+        TemplateValueStatus oldValue = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public IConfigElement findTemplateProperty(IIpsProject ipsProject) {
+        return TemplatePropertyFinder.findTemplatePropertyValue(this, IConfigElement.class);
+    }
+
+    @Override
+    public boolean isConfiguringTemplateValueStatus() {
+        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
     }
 
 }

@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -112,7 +113,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
         getBindingContext().bindProblemMarker(editField, getPropertyValue(),
-                IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS);
         editFields.add(editField);
         if (showTemplateButton()) {
             createTemplateStatusButton(editField.getControl());
@@ -267,12 +268,12 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
             controlToEnable = control.getParent();
         }
         getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
-                IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
+                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
     }
 
     private void createControlForExtensionProperty() {
         extProContFact
-        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());
