@@ -135,8 +135,12 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     @Override
     public void setExpression(String newExpression) {
         String oldExpr = expression;
-        expression = newExpression;
+        setExpressionInternal(newExpression);
         valueChanged(oldExpr, newExpression);
+    }
+
+    void setExpressionInternal(String newExpression) {
+        expression = newExpression;
     }
 
     @Override
@@ -258,8 +262,8 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_FORMULA_SIGNATURE_NAME, formulaSignature);
-        ValueToXmlHelper.addValueToElement(expression == null ? StringUtils.EMPTY : expression.trim(), element,
-                TAG_NAME_FOR_EXPRESSION);
+        ValueToXmlHelper.addValueToElement(getExpression() == null ? StringUtils.EMPTY : getExpression().trim(),
+                element, TAG_NAME_FOR_EXPRESSION);
     }
 
     @Override

@@ -53,7 +53,25 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     @Override
     public boolean isActive() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateActiveState();
+        }
+
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return false;
+        }
+
         return isActive;
+    }
+
+    private boolean findTemplateActiveState() {
+        IValidationRuleConfig template = findTemplateProperty(getIpsProject());
+        if (template == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return isActive;
+        }
+        return template.isActive();
     }
 
     @Override
@@ -73,7 +91,7 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(TAG_NAME_RULE_NAME, validationRuleName);
-        element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive));
+        element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive()));
         templateValueSettings.propertiesToXml(element);
     }
 

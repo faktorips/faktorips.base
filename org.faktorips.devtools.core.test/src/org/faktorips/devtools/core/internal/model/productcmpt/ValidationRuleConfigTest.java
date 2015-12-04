@@ -9,7 +9,11 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,9 +26,9 @@ import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
@@ -70,7 +74,7 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testInitFromXmlInactive() {
+    public void testInitFromXml_InactiveRule() {
         ruleConfig.setActive(false);
         Element el = ruleConfig.toXml(newDocument());
         ruleConfig.initFromXml(el);
@@ -81,12 +85,40 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
     @Test
     public void testFindVRule() throws CoreException {
         IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
-        Assert.assertNotNull(rule);
-        Assert.assertEquals(this.rule, rule);
+        assertNotNull(rule);
+        assertEquals(this.rule, rule);
     }
 
     @Test
-    public void testFindInexistentVRule() throws CoreException {
+    public void testToXml() {
+        ruleConfig.setActive(false);
+        ruleConfig.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        Element el = ruleConfig.toXml(newDocument());
+        IValidationRuleConfig copy = generation.newValidationRuleConfig(rule);
+        copy.initFromXml(el);
+        assertThat(copy.isActive(), is(false));
+        assertThat(copy.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+    }
+
+    @Test
+    public void testToXml_InheritedValue() throws CoreException {
+        IValidationRuleConfig templateRuleConfig = addTemplateRuleConfig();
+        assertThat(ruleConfig.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+
+        templateRuleConfig.setActive(false);
+        ruleConfig.setActive(true);
+
+        Element el = ruleConfig.toXml(newDocument());
+
+        IValidationRuleConfig copy = generation.newValidationRuleConfig(rule);
+        copy.initFromXml(el);
+        assertThat(copy.isActive(), is(false));
+        assertThat(copy.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+    }
+
+    @Test
+    public void testFindValidationRule_InexistentRule() throws CoreException {
         IValidationRule rule = mock(IValidationRule.class);
         when(rule.getPropertyName()).thenReturn("newRule");
         when(rule.isActivatedByDefault()).thenReturn(false);
@@ -94,14 +126,14 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
 
         IValidationRuleConfig config = generation.newValidationRuleConfig(rule);
         IValidationRule foundRule = config.findValidationRule(ipsProject);
-        Assert.assertNull(foundRule);
+        assertNull(foundRule);
     }
 
     @Test
     public void testFindInexistentPcTypeOnFindVRule() throws CoreException {
         productCmptType.setPolicyCmptType("inexistentPCType");
         IValidationRule rule = ruleConfig.findValidationRule(ipsProject);
-        Assert.assertNull(rule);
+        assertNull(rule);
     }
 
     @Test
@@ -117,8 +149,49 @@ public class ValidationRuleConfigTest extends AbstractIpsPluginTest {
         IValidationRuleConfig ruleConfig = subGen.newValidationRuleConfig(rule);
 
         IValidationRule foundRule = ruleConfig.findValidationRule(ipsProject);
-        Assert.assertNotNull(foundRule);
-        Assert.assertEquals(this.rule, foundRule);
+        assertNotNull(foundRule);
+        assertEquals(this.rule, foundRule);
+    }
+
+    @Test
+    public void testIsActive_DefinedValue() {
+        assertThat(ruleConfig.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+
+        ruleConfig.setActive(false);
+        assertThat(ruleConfig.isActive(), is(false));
+
+        ruleConfig.setActive(true);
+        assertThat(ruleConfig.isActive(), is(true));
+    }
+
+    @Test
+    public void testIsActive_InheritedValue() throws CoreException {
+        IValidationRuleConfig templateRuleConfig = addTemplateRuleConfig();
+        assertThat(ruleConfig.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+
+        ruleConfig.setActive(true);
+        templateRuleConfig.setActive(false);
+
+        assertThat(ruleConfig.isActive(), is(false));
+    }
+
+    @Test
+    public void testIsActive_InheritedValueButTemplateIsMissing() {
+        productCmpt.setTemplate("This isnt' the template you're looking for");
+        ruleConfig.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        ruleConfig.setActive(true);
+
+        assertThat(ruleConfig.isActive(), is(true));
+    }
+
+    private IValidationRuleConfig addTemplateRuleConfig() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
+        IValidationRuleConfig templateRuleConfig = templateGen.newValidationRuleConfig(rule);
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        ruleConfig.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        return templateRuleConfig;
     }
 
 }

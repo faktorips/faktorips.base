@@ -89,6 +89,29 @@ public class Formula extends Expression implements IFormula {
         return getExpression();
     }
 
+    @Override
+    public String getExpression() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateExpression();
+        }
+
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return ""; //$NON-NLS-1$
+        }
+
+        return super.getExpression();
+    }
+
+    private String findTemplateExpression() {
+        IFormula templateFormula = findTemplateProperty(getIpsProject());
+        if (templateFormula == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return super.getExpression();
+        }
+        return templateFormula.getExpression();
+    }
+
     /**
      * Returns the generation this formula belongs to.
      * 
@@ -206,7 +229,7 @@ public class Formula extends Expression implements IFormula {
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy current expression from template (if present)
-            setExpression(getExpression());
+            setExpressionInternal(getExpression());
         }
         TemplateValueStatus oldStatus = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);

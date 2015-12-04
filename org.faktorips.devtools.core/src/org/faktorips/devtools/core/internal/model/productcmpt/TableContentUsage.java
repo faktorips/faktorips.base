@@ -150,7 +150,25 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public String getTableContentName() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateTableContentName();
+        }
+
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return ""; //$NON-NLS-1$
+        }
+
         return tableContentName;
+    }
+
+    private String findTemplateTableContentName() {
+        ITableContentUsage templateContentUsage = findTemplateProperty(getIpsProject());
+        if (templateContentUsage == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return tableContentName;
+        }
+        return templateContentUsage.getTableContentName();
     }
 
     @Override
@@ -207,7 +225,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(PROPERTY_STRUCTURE_USAGE, structureUsage);
-        ValueToXmlHelper.addValueToElement(tableContentName, element, "TableContentName"); //$NON-NLS-1$
+        ValueToXmlHelper.addValueToElement(getTableContentName(), element, "TableContentName"); //$NON-NLS-1$
         templateValueSettings.propertiesToXml(element);
     }
 

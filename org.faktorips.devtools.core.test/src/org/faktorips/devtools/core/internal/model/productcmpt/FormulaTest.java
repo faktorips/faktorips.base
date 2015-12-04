@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -18,18 +19,22 @@ import static org.junit.matchers.JUnitMatchers.hasItems;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Element;
 
 public class FormulaTest extends AbstractIpsPluginTest {
 
@@ -38,7 +43,6 @@ public class FormulaTest extends AbstractIpsPluginTest {
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IIpsProject ipsProject;
-    private Formula formula;
 
     @Override
     @Before
@@ -54,7 +58,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetTableContentUsages_ProductCmptGeneration() throws Exception {
-        formula = new Formula(generation, "formula");
+        Formula formula = new Formula(generation, "formula");
         assertEquals(0, formula.getTableContentUsages().length);
 
         ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
@@ -75,7 +79,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetTableContentUsages_ProductCmpt() throws Exception {
-        formula = new Formula(productCmpt, "formula");
+        Formula formula = new Formula(productCmpt, "formula");
         assertEquals(0, formula.getTableContentUsages().length);
 
         ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
@@ -99,7 +103,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         IAttribute changingAttr = productCmptType.newProductCmptTypeAttribute("test1");
         IProductCmptTypeAttribute staticAttr = productCmptType.newProductCmptTypeAttribute("test2");
         staticAttr.setChangingOverTime(false);
-        formula = new Formula(generation, "formula");
+        Formula formula = new Formula(generation, "formula");
 
         List<IAttribute> matchingProductCmptTypeAttributes = formula.findMatchingProductCmptTypeAttributes();
 
@@ -112,7 +116,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         productCmptType.newProductCmptTypeAttribute("test1");
         IProductCmptTypeAttribute staticAttr = productCmptType.newProductCmptTypeAttribute("test2");
         staticAttr.setChangingOverTime(false);
-        formula = new Formula(productCmpt, "formula");
+        Formula formula = new Formula(productCmpt, "formula");
 
         List<IAttribute> matchingProductCmptTypeAttributes = formula.findMatchingProductCmptTypeAttributes();
 
@@ -120,4 +124,73 @@ public class FormulaTest extends AbstractIpsPluginTest {
         assertEquals(1, matchingProductCmptTypeAttributes.size());
     }
 
+    @Test
+    public void testToXml() {
+        Formula formula = new Formula(generation, "formula");
+        assertThat(formula.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+
+        formula.setExpression("expression");
+
+        Element el = formula.toXml(newDocument());
+        Formula copy = new Formula(generation, "copy");
+        copy.initFromXml(el);
+        assertThat(copy.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+        assertThat(copy.getExpression(), is("expression"));
+    }
+
+    @Test
+    public void testToXml_InheritedValue() throws CoreException {
+        IFormula templateFormula = addTemplateFormula();
+        IFormula formula = new Formula(generation, "formula");
+        formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        formula.setExpression("expression");
+        templateFormula.setExpression("templateExpression");
+
+        Element el = formula.toXml(newDocument());
+
+        Formula copy = new Formula(generation, "copy");
+        copy.initFromXml(el);
+        assertThat(copy.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+        assertThat(copy.getExpression(), is("templateExpression"));
+    }
+
+    @Test
+    public void testGetExpression_DefinedValue() {
+        Formula formula = new Formula(generation, "formula");
+        assertThat(formula.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+
+        formula.setExpression("expression");
+        assertThat(formula.getExpression(), is("expression"));
+    }
+
+    @Test
+    public void testGetExpression_InheritedValue() throws CoreException {
+        IFormula templateFormula = addTemplateFormula();
+        IFormula formula = new Formula(generation, "formula");
+        formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        formula.setExpression("expression");
+        templateFormula.setExpression("templateExpression");
+
+        assertThat(formula.getExpression(), is("templateExpression"));
+    }
+
+    @Test
+    public void testGetExpression_InheritedValueButTemplateIsMissing() {
+        Formula formula = new Formula(generation, "formula");
+        productCmpt.setTemplate("There is no spoon");
+        formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        formula.setExpression("expression");
+
+        assertThat(formula.getExpression(), is("expression"));
+    }
+
+    private IFormula addTemplateFormula() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
+        IFormula templateFormula = templateGen.newFormula();
+        productCmpt.setTemplate(template.getQualifiedName());
+        return templateFormula;
+    }
 }
