@@ -89,6 +89,11 @@ public class Formula extends Expression implements IFormula {
         return getExpression();
     }
 
+    /**
+     * Returns the formula expression. Note that this overrides the method
+     * {@link Expression#getExpression()} and returns the formula from this formula's template if
+     * applicable.
+     */
     @Override
     public String getExpression() {
         if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
@@ -200,6 +205,9 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     public boolean isFormulaMandatory() {
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return false;
+        }
         IProductCmptTypeMethod formulaSignature = findFormulaSignature(getIpsProject());
         if (formulaSignature != null) {
             return formulaSignature.isFormulaMandatory();

@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -201,5 +202,11 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     @Override
     public boolean isConfiguringTemplateValueStatus() {
         return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+        list.add(templateValueSettings.validate(this, ipsProject));
     }
 }

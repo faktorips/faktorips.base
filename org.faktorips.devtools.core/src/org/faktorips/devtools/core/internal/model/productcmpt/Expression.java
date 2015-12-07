@@ -127,6 +127,10 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
         return null;
     }
 
+    /**
+     * Returns the formula expression. Note that this method is overridden in the {@link Formula}
+     * subclass to return the formula expression from a template if applicable.
+     */
     @Override
     public String getExpression() {
         return expression;
@@ -280,7 +284,11 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             list.add(new Message(MSGCODE_SIGNATURE_CANT_BE_FOUND, text, Message.ERROR, this, PROPERTY_EXPRESSION));
             return;
         }
-        if (StringUtils.isEmpty(getExpression())) {
+        // Do not use expression field as the actual expression may be defined in a template. Using
+        // getExpression returns the expression from the template if applicable
+        String expressionToValidate = getExpression();
+
+        if (StringUtils.isEmpty(expressionToValidate)) {
             if (!isFormulaMandatory()) {
                 return;
             }
@@ -299,7 +307,7 @@ public abstract class Expression extends BaseIpsObjectPart implements IExpressio
             return;
         }
         JavaExprCompiler compiler = newExprCompiler(ipsProject);
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = compiler.compile(expressionToValidate);
         validateCompilationResult(list, result);
         if (list.containsErrorMsg()) {
             return;

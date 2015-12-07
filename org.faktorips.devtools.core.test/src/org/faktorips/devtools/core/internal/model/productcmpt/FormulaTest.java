@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -23,6 +25,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.IExpression;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -30,19 +33,25 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IAttribute;
+import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
 public class FormulaTest extends AbstractIpsPluginTest {
 
+    private static final String FORMULA_NAME = "formula";
+    private static final String FORMULA_ID = "formulaId";
+
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IIpsProject ipsProject;
+    private IProductCmptTypeMethod signature;
 
     @Override
     @Before
@@ -54,11 +63,12 @@ public class FormulaTest extends AbstractIpsPluginTest {
         productCmptType = policyCmptType.findProductCmptType(ipsProject);
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
+        signature = productCmptType.newFormulaSignature(FORMULA_NAME);
     }
 
     @Test
     public void testGetTableContentUsages_ProductCmptGeneration() throws Exception {
-        Formula formula = new Formula(generation, "formula");
+        Formula formula = new Formula(generation, FORMULA_ID);
         assertEquals(0, formula.getTableContentUsages().length);
 
         ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
@@ -79,7 +89,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetTableContentUsages_ProductCmpt() throws Exception {
-        Formula formula = new Formula(productCmpt, "formula");
+        Formula formula = new Formula(productCmpt, FORMULA_ID);
         assertEquals(0, formula.getTableContentUsages().length);
 
         ITableStructureUsage structureUsageGen = productCmptType.newTableStructureUsage();
@@ -103,7 +113,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
         IAttribute changingAttr = productCmptType.newProductCmptTypeAttribute("test1");
         IProductCmptTypeAttribute staticAttr = productCmptType.newProductCmptTypeAttribute("test2");
         staticAttr.setChangingOverTime(false);
-        Formula formula = new Formula(generation, "formula");
+        Formula formula = new Formula(generation, FORMULA_ID);
 
         List<IAttribute> matchingProductCmptTypeAttributes = formula.findMatchingProductCmptTypeAttributes();
 
@@ -126,7 +136,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        Formula formula = new Formula(generation, "formula");
+        IFormula formula = generation.newFormula(signature);
         assertThat(formula.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
 
         formula.setExpression("expression");
@@ -140,8 +150,8 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml_InheritedValue() throws CoreException {
-        IFormula templateFormula = addTemplateFormula();
-        IFormula formula = new Formula(generation, "formula");
+        IFormula templateFormula = createTemplateFormula();
+        IFormula formula = generation.newFormula(signature);
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         formula.setExpression("expression");
@@ -157,7 +167,7 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetExpression_DefinedValue() {
-        Formula formula = new Formula(generation, "formula");
+        IFormula formula = generation.newFormula(signature);
         assertThat(formula.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
 
         formula.setExpression("expression");
@@ -165,9 +175,34 @@ public class FormulaTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testValidate_EmptyExpressionShouldBeAllowedForAnUndefinedValue() throws CoreException {
+        IFormula templateFormula = createTemplateFormula();
+        templateFormula.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        templateFormula.setExpression("");
+
+        MessageList messages = templateFormula.validate(ipsProject);
+        assertThat(messages, lacksMessageCode(IExpression.MSGCODE_EXPRESSION_IS_EMPTY));
+    }
+
+    @Test
+    public void testValidate_EmptyExpressionShouldNotBeAllowedForAnInheritedValue() throws CoreException {
+        IFormula formula = generation.newFormula(signature);
+        formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        formula.setExpression("");
+
+        IFormula templateFormula = createTemplateFormula();
+        templateFormula.setExpression("");
+
+        assertThat(formula.getExpression(), is(""));
+
+        MessageList messages = formula.validate(ipsProject);
+        assertThat(messages, hasMessageCode(IExpression.MSGCODE_EXPRESSION_IS_EMPTY));
+    }
+
+    @Test
     public void testGetExpression_InheritedValue() throws CoreException {
-        IFormula templateFormula = addTemplateFormula();
-        IFormula formula = new Formula(generation, "formula");
+        IFormula templateFormula = createTemplateFormula();
+        IFormula formula = generation.newFormula(signature);
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         formula.setExpression("expression");
@@ -178,18 +213,19 @@ public class FormulaTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetExpression_InheritedValueButTemplateIsMissing() {
-        Formula formula = new Formula(generation, "formula");
+        IFormula formula = generation.newFormula(signature);
         productCmpt.setTemplate("There is no spoon");
+
         formula.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         formula.setExpression("expression");
 
         assertThat(formula.getExpression(), is("expression"));
     }
 
-    private IFormula addTemplateFormula() throws CoreException {
+    private IFormula createTemplateFormula() throws CoreException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
-        IFormula templateFormula = templateGen.newFormula();
+        IFormula templateFormula = templateGen.newFormula(signature);
         productCmpt.setTemplate(template.getQualifiedName());
         return templateFormula;
     }
