@@ -24,6 +24,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -348,7 +349,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             // helpful fallback while some validation hopefully addresses the missing template...
             return valueSet;
         }
-        return templateConfigElement.getValueSet();
+        return new DelegatingValueSet((ValueSet)templateConfigElement.getValueSet(), this);
     }
 
     @Override

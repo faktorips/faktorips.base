@@ -54,15 +54,28 @@ public class DatatypeUtil {
         if (datatype1 == null || datatype2 == null) {
             return false;
         } else if (datatype1.equals(datatype2)) {
-                return true;
+            return true;
+        } else {
+            if (datatype1 instanceof EnumTypeDatatypeAdapter) {
+                EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)datatype1;
+                return enumTypeDatatypeAdapter.isCovariant(datatype2);
             } else {
-                if (datatype1 instanceof EnumTypeDatatypeAdapter) {
-                    EnumTypeDatatypeAdapter enumTypeDatatypeAdapter = (EnumTypeDatatypeAdapter)datatype1;
-                    return enumTypeDatatypeAdapter.isCovariant(datatype2);
-                } else {
-                    return false;
-                }
+                return false;
             }
+        }
+    }
+
+    public static boolean isNullValue(ValueDatatype datatype, String value) {
+        return value == null || datatype.isNull(value);
+    }
+
+    public static boolean isNonNull(ValueDatatype datatype, String... values) {
+        for (String value : values) {
+            if (isNullValue(datatype, value)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

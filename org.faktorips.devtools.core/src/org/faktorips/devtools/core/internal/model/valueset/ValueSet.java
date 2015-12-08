@@ -18,9 +18,6 @@ import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.message.Message;
-import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -60,9 +57,6 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * @param type The type for the new valueset.
      * @param parent The parent this valueset belongs to. Must implement IValueDatatypeProvider.
      * @param partId The id this valueset is known by the parent.
-     * 
-     * @throws IllegalArgumentException if the parent does not implement the interface
-     *             <code>IValueDatatypeProvider</code>.
      */
     protected ValueSet(ValueSetType type, IValueSetOwner parent, String partId) {
         super(parent, partId);
@@ -141,7 +135,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
-        return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
+        return getValueSetOwner().findValueDatatype(ipsProject);
     }
 
     @Override
@@ -228,52 +222,13 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
     }
 
     /**
-     * Creates a new message with severity ERROR and adds the new message to the given message list.
-     * 
-     * @param list The message list to add the new message to
-     * @param id The message code
-     * @param text The message text
-     * @param invalidObject The object this message is for. Can be null if no relation to an object
-     *            exists.
-     * @param invalidProperty The name of the property the message is created for. Can be null.
-     */
-    protected void addMsg(MessageList list, String id, String text, Object invalidObject, String invalidProperty) {
-        addMsg(list, Message.ERROR, id, text, invalidObject, invalidProperty);
-    }
-
-    /**
-     * Creates a new message with severity ERROR and adds the new message to the given message list.
-     * 
-     * @param list The message list to add the new message to
-     * @param id The message code
-     * @param text The message text
-     * @param invalidObject The object this message is for. Can be null if no relation to an object
-     *            exists.
-     * @param invalidProperty The name of the property the message is created for. Can be null.
-     */
-    protected void addMsg(MessageList list,
-            int severity,
-            String id,
-            String text,
-            Object invalidObject,
-            String invalidProperty) {
-        ObjectProperty parentObjectProperty = new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET);
-        ObjectProperty invalidObjectProperty = new ObjectProperty(invalidObject != null ? invalidObject : this,
-                invalidProperty);
-        Message msg = new Message(id, text, severity, parentObjectProperty, invalidObjectProperty);
-        list.add(msg);
-    }
-
-    protected boolean isNullValue(String value, ValueDatatype datatype) {
-        return value == null || datatype.isNull(value);
-    }
-
-    /**
      * Returns <code>true</code> if the {@link ValueDatatype} is null or not a primitive datatype.
      */
     protected boolean isContainingNullAllowed(IIpsProject ipsProject) {
         ValueDatatype dataType = findValueDatatype(ipsProject);
         return dataType == null || !dataType.isPrimitive();
     }
+
+    protected abstract AbstractValueSetValidator<?> createValidator(IValueSetOwner owner, ValueDatatype datatype);
 
 }
