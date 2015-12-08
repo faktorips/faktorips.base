@@ -311,17 +311,19 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     protected void createTemplateStatusButton(final EditField<?> editField) {
-        final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
-        final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
-        final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
-        // set any default icon to force correct button size. Correct icon will be set when UI gets
-        // updated
-        toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
-        bindTemplateStatusButton(toolBar, toolItem, pmo);
-        listenToTemplateStatusClick(editField.getControl(), toolItem, pmo);
-        bindTemplateDependentEnabled(editField.getControl());
-        bindProblemMarker(editField);
-        toolBar.setMenu(createTemplateMenue(toolBar));
+        if (showTemplateButton()) {
+            final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+            final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
+            final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
+            // set any default icon to force correct button size. Correct icon will be set when UI
+            // gets updated
+            toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
+            bindTemplateStatusButton(toolBar, toolItem, pmo);
+            listenToTemplateStatusClick(editField.getControl(), toolItem, pmo);
+            bindTemplateDependentEnabled(editField.getControl());
+            bindProblemMarker(editField);
+            toolBar.setMenu(createTemplateMenue(toolBar));
+        }
     }
 
     protected abstract Function<V, String> getToolTipFormatter();
