@@ -92,7 +92,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public String getPropertyValue() {
-        return tableContentName;
+        return getTableContentName();
     }
 
     /**
@@ -173,7 +173,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public ITableContents findTableContents(IIpsProject ipsProject) throws CoreException {
-        return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, tableContentName);
+        return (ITableContents)ipsProject.findIpsObject(IpsObjectType.TABLE_CONTENTS, getTableContentName());
     }
 
     @Override
