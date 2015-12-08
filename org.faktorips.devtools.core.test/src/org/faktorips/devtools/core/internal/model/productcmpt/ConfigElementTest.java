@@ -27,6 +27,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathException;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -679,6 +683,55 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testInitFromXml_InheritedValuesAreRead() throws CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("valueTest");
+        attr.setValueSetType(ValueSetType.RANGE);
+        attr.setDatatype("Decimal");
+
+        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
+
+        // Set Range [10 ... 20 / 1] and value 10 in template
+        templateConfigElement.setValueSetType(ValueSetType.RANGE);
+        templateConfigElement.setValue("10");
+        IRangeValueSet templateConfigElementRange = (IRangeValueSet)templateConfigElement.getValueSet();
+        templateConfigElementRange.setLowerBound("10");
+        templateConfigElementRange.setUpperBound("20");
+        templateConfigElementRange.setStep("1");
+
+        // Set Range [100 ... 200 / 10] and value 100 in config element
+        configElement.setValue("100");
+        configElement.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet configElementRange = (IRangeValueSet)configElement.getValueSet();
+        configElementRange.setLowerBound("100");
+        configElementRange.setUpperBound("200");
+        configElementRange.setStep("10");
+
+        // Let config element inherit from template and thus use template's value/value set
+        configElement.setPolicyCmptTypeAttribute(attr.getName());
+        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        // Precondition: inheriting from template should work
+        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+        assertThat(configElement.getValue(), is("10"));
+
+        Element xmlElement = configElement.toXml(getTestDocument());
+
+        // Do not use template anymore. Values read from XML should now be the defined values
+        productCmpt.setTemplate("");
+        IConfigElement newConfigElement = generation.newConfigElement();
+        newConfigElement.initFromXml(xmlElement);
+
+        assertThat(newConfigElement.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+        assertThat(newConfigElement.getValue(), is("10"));
+        assertThat(newConfigElement.getValueSet(), is(instanceOf(IRangeValueSet.class)));
+        IRangeValueSet newRange = (IRangeValueSet)newConfigElement.getValueSet();
+        assertThat(newRange.getLowerBound(), is("10"));
+        assertThat(newRange.getUpperBound(), is("20"));
+        assertThat(newRange.getStep(), is("1"));
+    }
+
+    @Test
     public void testToXmlDocument() {
         IConfigElement cfgElement = generation.newConfigElement();
         cfgElement.setValue("value");
@@ -715,6 +768,49 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         newCfgElement.initFromXml(xmlElement);
 
         assertNull(newCfgElement.getValue());
+    }
+
+    @Test
+    public void testToXmlDocument_ShouldPersistInheritedTemplateValues() throws XPathException, CoreException {
+
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setName("valueTest");
+        attr.setValueSetType(ValueSetType.RANGE);
+        attr.setDatatype("Decimal");
+
+        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
+
+        // Set Range [10 ... 20 / 1] and value 10 in template
+        templateConfigElement.setValueSetType(ValueSetType.RANGE);
+        templateConfigElement.setValue("10");
+        IRangeValueSet templateValueSet = (IRangeValueSet)templateConfigElement.getValueSet();
+        templateValueSet.setLowerBound("10");
+        templateValueSet.setUpperBound("20");
+        templateValueSet.setStep("1");
+
+        // Set Range [100 ... 200 / 10] and value 100 in config element
+        configElement.setValue("100");
+        configElement.setValueSetType(ValueSetType.RANGE);
+        IRangeValueSet configElementValueSet = (IRangeValueSet)configElement.getValueSet();
+        configElementValueSet.setLowerBound("100");
+        configElementValueSet.setUpperBound("200");
+        configElementValueSet.setStep("10");
+
+        // Let config element inherit from template and thus use template's value/value set
+        configElement.setPolicyCmptTypeAttribute(attr.getName());
+        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        // Precondition: inheriting from template should work
+        assertThat(configElement.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+        assertThat(configElement.getValue(), is("10"));
+
+        // Assert that template values are persisted, not the values set in the config element
+        Element xmlElement = configElement.toXml(getTestDocument());
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        assertThat(xpath.evaluate("ValueSet/Range/LowerBound", xmlElement), is("10"));
+        assertThat(xpath.evaluate("ValueSet/Range/UpperBound", xmlElement), is("20"));
+        assertThat(xpath.evaluate("ValueSet/Range/Step", xmlElement), is("1"));
+        assertThat(xpath.evaluate("Value", xmlElement), is("10"));
     }
 
     @Test

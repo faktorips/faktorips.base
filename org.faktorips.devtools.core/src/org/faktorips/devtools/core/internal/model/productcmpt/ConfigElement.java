@@ -432,14 +432,14 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, pcTypeAttribute);
-        ValueToXmlHelper.addValueToElement(value, element, ValueToXmlHelper.XML_TAG_VALUE);
+        ValueToXmlHelper.addValueToElement(getValue(), element, ValueToXmlHelper.XML_TAG_VALUE);
         templateValueSettings.propertiesToXml(element);
     }
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        if (valueSet != null) {
-            return new IIpsElement[] { valueSet };
+        if (getValueSet() != null) {
+            return new IIpsElement[] { getValueSet() };
         }
         return new IIpsElement[0];
     }
