@@ -23,7 +23,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -39,6 +38,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -216,7 +216,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         Element el = attributeValue.toXml(doc);
 
         // Make sure that the inherited value is persisted correctly
-        String templateValueStatus = el.getAttribute(IAttributeValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+        String templateValueStatus = el.getAttribute(IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS);
         assertThat(templateValueStatus, is("inherited"));
 
         Node valueElement = el.getElementsByTagName("Value").item(0);
@@ -447,40 +447,6 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         assertThat((SingleValueHolder)attributeValue.getValueHolder(), is(valueHolder));
-    }
-
-    @Test
-    public void testIsAllowedTemplateValueStatus_checkUndefined() throws Exception {
-        ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED);
-        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "id");
-
-        when(propertyValueContainer.isProductTemplate()).thenReturn(true);
-        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.UNDEFINED), is(true));
-
-        when(propertyValueContainer.isProductTemplate()).thenReturn(false);
-        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.UNDEFINED), is(false));
-    }
-
-    @Test
-    public void testIsAllowedTemplateValueStatus_checkInherited() throws Exception {
-        ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED);
-        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "id");
-        attributeValue.setAttribute(ATTRIBUTE_NAME);
-        when(propertyValueContainer.isProductTemplate()).thenReturn(true);
-
-        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.INHERITED), is(true));
-    }
-
-    @Test
-    public void testIsAllowedTemplateValueStatus_checkInherited_notAllowed() throws Exception {
-        ProductCmpt propertyValueContainer = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.UNDEFINED);
-        AttributeValue attributeValue = new AttributeValue(propertyValueContainer, "id");
-        new PropertyDescriptor(IAttributeValue.PROPERTY_ATTRIBUTE, AttributeValue.class).getWriteMethod().invoke(
-                attributeValue, ATTRIBUTE_NAME);
-        attributeValue.setAttribute(ATTRIBUTE_NAME);
-        when(propertyValueContainer.isProductTemplate()).thenReturn(true);
-
-        assertThat(attributeValue.isAllowedTemplateValueStatus(TemplateValueStatus.INHERITED), is(false));
     }
 
     /**

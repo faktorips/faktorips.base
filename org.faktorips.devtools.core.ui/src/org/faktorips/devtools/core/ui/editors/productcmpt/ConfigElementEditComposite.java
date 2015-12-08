@@ -12,6 +12,9 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import com.google.common.base.Function;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -165,5 +168,16 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         if (valueSetControl != null) {
             valueSetControl.setEnumValueSetProvider(enumValueSetProvider);
         }
+    }
+
+    @Override
+    protected Function<IConfigElement, String> getToolTipFormatter() {
+        return new Function<IConfigElement, String>() {
+
+            @Override
+            public String apply(IConfigElement configElement) {
+                return configElement != null ? configElement.getPropertyValue() : StringUtils.EMPTY;
+            }
+        };
     }
 }

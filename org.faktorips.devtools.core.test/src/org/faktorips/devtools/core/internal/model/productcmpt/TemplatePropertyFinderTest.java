@@ -19,7 +19,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.junit.Before;
@@ -38,71 +38,71 @@ public class TemplatePropertyFinderTest {
     @Mock
     private IPropertyValueContainer parentContainer;
     @Mock
-    private IAttributeValue attrValue;
+    private IPropertyValue propertyValue;
     @Mock
-    private IAttributeValue parentValue;
-    private TemplatePropertyFinder<IAttributeValue> templatePropertyFinder;
+    private IPropertyValue parentValue;
+
+    private TemplatePropertyFinder<IPropertyValue> finder;
 
     @Before
-    public void setUP() {
-        templatePropertyFinder = new TemplatePropertyFinder<IAttributeValue>(attrValue, IAttributeValue.class,
-                ipsProject);
-        when(attrValue.getPropertyName()).thenReturn("someProperty");
+    public void setUp() {
+        finder = new TemplatePropertyFinder<IPropertyValue>(propertyValue, IPropertyValue.class, ipsProject);
+        when(propertyValue.getPropertyName()).thenReturn("someProperty");
     }
 
     @Test
     public void testVisit_ignoreOriginalPropertyValue() {
-        when(attrValue.getPropertyValueContainer()).thenReturn(container);
+        when(propertyValue.getPropertyValueContainer()).thenReturn(container);
 
-        boolean continueVisiting = templatePropertyFinder.visit(container);
+        boolean continueVisiting = finder.visit(container);
 
         assertTrue(continueVisiting);
-        assertThat(templatePropertyFinder.getPropertyValue(), is(nullValue()));
+        assertThat(finder.getPropertyValue(), is(nullValue()));
     }
 
     @Test
     public void testVisit_noPropertyValue() {
-        when(attrValue.getPropertyValueContainer()).thenReturn(container);
+        when(propertyValue.getPropertyValueContainer()).thenReturn(container);
 
-        boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
+        boolean continueVisiting = finder.visit(parentContainer);
 
         assertTrue(continueVisiting);
-        assertThat(templatePropertyFinder.getPropertyValue(), is(nullValue()));
+        assertThat(finder.getPropertyValue(), is(nullValue()));
     }
 
     @Test
     public void testVisit_inheritedPropertyValue() {
-        when(attrValue.getPropertyValueContainer()).thenReturn(container);
-        when(parentContainer.getPropertyValue(anyString(), eq(IAttributeValue.class))).thenReturn(parentValue);
+        when(propertyValue.getPropertyValueContainer()).thenReturn(container);
+        when(parentContainer.getPropertyValue(anyString(), eq(IPropertyValue.class))).thenReturn(parentValue);
         when(parentValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.INHERITED);
 
-        boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
+        boolean continueVisiting = finder.visit(parentContainer);
 
         assertTrue(continueVisiting);
-        assertThat(templatePropertyFinder.getPropertyValue(), is(nullValue()));
+        assertThat(finder.getPropertyValue(), is(nullValue()));
     }
 
     @Test
     public void testVisit_definedPropertyValue() {
-        when(attrValue.getPropertyValueContainer()).thenReturn(container);
-        when(parentContainer.getPropertyValue(anyString(), eq(IAttributeValue.class))).thenReturn(parentValue);
+        when(propertyValue.getPropertyValueContainer()).thenReturn(container);
+        when(parentContainer.getPropertyValue(anyString(), eq(IPropertyValue.class))).thenReturn(parentValue);
         when(parentValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
 
-        boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
+        boolean continueVisiting = finder.visit(parentContainer);
 
         assertFalse(continueVisiting);
-        assertThat(templatePropertyFinder.getPropertyValue(), is(parentValue));
+        assertThat(finder.getPropertyValue(), is(parentValue));
     }
 
     @Test
     public void testVisit_undefinedPropertyValue() {
-        when(attrValue.getPropertyValueContainer()).thenReturn(container);
-        when(parentContainer.getPropertyValue(anyString(), eq(IAttributeValue.class))).thenReturn(parentValue);
+        when(propertyValue.getPropertyValueContainer()).thenReturn(container);
+        when(parentContainer.getPropertyValue(anyString(), eq(IPropertyValue.class))).thenReturn(parentValue);
         when(parentValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
 
-        boolean continueVisiting = templatePropertyFinder.visit(parentContainer);
+        boolean continueVisiting = finder.visit(parentContainer);
 
         assertFalse(continueVisiting);
-        assertThat(templatePropertyFinder.getPropertyValue(), is(nullValue()));
+        assertThat(finder.getPropertyValue(), is(nullValue()));
     }
 }

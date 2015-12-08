@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,7 @@ public class TemplateValuePmoTest {
     @Mock
     private IProductCmpt templateContainer;
 
-    private TemplateValuePmo templateValuePmo;
+    private TemplateValuePmo<IPropertyValue> templateValuePmo;
 
     @Before
     public void setUp() {
@@ -46,7 +47,7 @@ public class TemplateValuePmoTest {
         when(templateContainer.getProductCmpt()).thenReturn(templateContainer);
         when(templateContainer.getName()).thenReturn("TemplateName");
 
-        templateValuePmo = spy(new TemplateValuePmo(value));
+        templateValuePmo = spy(new TemplateValuePmo<IPropertyValue>(value, null));
         doReturn(TemplateValueUiStatus.INHERITED).when(templateValuePmo).getTemplateValueStatus();
     }
 

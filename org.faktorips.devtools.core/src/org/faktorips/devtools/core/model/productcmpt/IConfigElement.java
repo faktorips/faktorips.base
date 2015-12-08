@@ -203,4 +203,12 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
 
     void setValueSet(IValueSet source);
 
+    /**
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code IConfigElement}.
+     * 
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
+     */
+    @Override
+    public IConfigElement findTemplateProperty(IIpsProject ipsProject);
 }

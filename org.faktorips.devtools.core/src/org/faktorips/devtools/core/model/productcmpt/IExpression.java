@@ -141,8 +141,8 @@ public interface IExpression extends IIpsObjectPart, IDescribedElement {
     List<IAttribute> findMatchingProductCmptTypeAttributes();
 
     /**
-     * Returns <code>true</code> if the {@link IExpression} is mandatory or <code>false</code> is
-     * ist not.
+     * Returns <code>true</code> if the {@link IExpression} is mandatory or <code>false</code> if it
+     * is not.
      */
     boolean isFormulaMandatory();
 

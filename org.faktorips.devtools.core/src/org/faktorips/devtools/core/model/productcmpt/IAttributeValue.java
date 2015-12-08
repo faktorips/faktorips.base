@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 
@@ -31,8 +30,6 @@ public interface IAttributeValue extends IPropertyValue {
     public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     public static final String PROPERTY_VALUE_HOLDER = "valueHolder"; //$NON-NLS-1$
-
-    public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
 
     /**
      * Prefix for all message codes of this class.
@@ -72,13 +69,6 @@ public interface IAttributeValue extends IPropertyValue {
      * value
      */
     public static final String MSGCODE_HIDDEN_ATTRIBUTE = MSGCODE_PREFIX + "HiddenAttribute"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that this property value's template status is invalid.
-     * 
-     * @see TemplateValueSettings
-     */
-    public static final String MSGCODE_INVALID_TEMPLATE_STATUS = MSGCODE_PREFIX + "InvalidTemplateStatus"; //$NON-NLS-1$
 
     /**
      * Returns the attribute's value.
@@ -136,59 +126,12 @@ public interface IAttributeValue extends IPropertyValue {
     public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the current template status of this property value. It specifies whether a value is
-     * is defined in this object or inherited from a template.
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code IAttributeValue}.
      * 
-     * @return this property value's template status (e.g. whether it is inherited from a parent
-     *         template or not).
-     * 
-     * @see TemplateValueStatus
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
      */
-    public TemplateValueStatus getTemplateValueStatus();
-
-    /**
-     * Finds the property value in the template hierarchy (parent or grand*-parent template) that
-     * has the status {@link TemplateValueStatus#DEFINED} and thus is used as a template value for
-     * this property value.
-     * 
-     * If there is no template or no parent template defines such a property value, this method
-     * returns <code>null</code>.
-     * 
-     * Note: This method does <em>not</em> find the property value that provides the actual value.
-     * Instead it finds the closest template value. E.g. in case this property value overrides a
-     * value from its template, this method still finds the template property value (even though the
-     * value is overridden).
-     * 
-     * @param ipsProject The {@link IIpsProject} used to search the template hierarchy
-     * @return the property that should be used as template or <code>null</code> if there is no such
-     *         property.
-     */
+    @Override
     public IAttributeValue findTemplateProperty(IIpsProject ipsProject);
-
-    /**
-     * Sets the next valid template value status. The template value status order is defined in
-     * {@link TemplateValueStatus}.
-     * 
-     */
-    public void switchTemplateValueStatus();
-
-    /**
-     * Checks whether a specified {@link TemplateValueStatus} is allowed.
-     * 
-     * @param checkTemplateValueStatus the template status that should be checked
-     * @return <code>true</code> if the status is valid, <code>false</code> if not
-     */
-    public boolean isAllowedTemplateValueStatus(TemplateValueStatus checkTemplateValueStatus);
-
-    /**
-     * Checks whether this property value can configure the template value status or not. This is
-     * the case if its container uses a template or if the container itself is a product template.
-     * If it is a normal product component that does not use templates, the template value status
-     * should always be {@link TemplateValueStatus#DEFINED}
-     * 
-     * @return <code>true</code> if the corresponding container is using a template or if itself is
-     *         a template.
-     */
-    boolean isConfiguringTemplateValueStatus();
 
 }

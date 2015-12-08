@@ -1,18 +1,17 @@
 /*******************************************************************************
  * Copyright (c) Faktor Zehn AG. <http://www.faktorzehn.org>
  * 
- * This source code is available under the terms of the AGPL Affero General Public License version 
- * 3. 
- *  
- * Please see LICENSE.txt for full license terms, including the additional permissions and 
+ * This source code is available under the terms of the AGPL Affero General Public License version
+ * 3.
+ * 
+ * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
- *******************************************************************************/package org.faktorips.devtools.core.ui.editors.productcmpt;
-
-import com.google.common.base.Function;
+ *******************************************************************************/
+package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.graphics.Image;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -38,26 +37,25 @@ public enum TemplateValueUiStatus {
         return IpsUIPlugin.getImageHandling().getSharedImage(icon, true);
     }
 
-    public static TemplateValueUiStatus mapStatus(IAttributeValue propertyValue,
-            Function<IAttributeValue, Object> valueFunction) {
+    public static <T extends IPropertyValue> TemplateValueUiStatus mapStatus(T propertyValue) {
         TemplateValueStatus templateStatus = propertyValue.getTemplateValueStatus();
         if (templateStatus == TemplateValueStatus.INHERITED) {
             return INHERITED;
         } else if (templateStatus == TemplateValueStatus.UNDEFINED) {
             return UNDEFINED;
         } else {
-            return mapDefinedStatus(propertyValue, valueFunction);
+            return mapDefinedStatus(propertyValue);
         }
     }
 
-    private static TemplateValueUiStatus mapDefinedStatus(IAttributeValue propertyValue,
-            Function<IAttributeValue, Object> valueFunction) {
-        IAttributeValue templateProperty = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
+    private static <T extends IPropertyValue> TemplateValueUiStatus mapDefinedStatus(T propertyValue) {
+        @SuppressWarnings("unchecked")
+        T templateProperty = (T)propertyValue.findTemplateProperty(propertyValue.getIpsProject());
         if (templateProperty == null) {
             return NEWLY_DEFINED;
         } else {
-            Object value = valueFunction.apply(propertyValue);
-            Object templateValue = valueFunction.apply(templateProperty);
+            String value = propertyValue.getPropertyValue();
+            String templateValue = templateProperty.getPropertyValue();
             if (ObjectUtils.equals(value, templateValue)) {
                 return OVERWRITE_EQUAL;
             } else {

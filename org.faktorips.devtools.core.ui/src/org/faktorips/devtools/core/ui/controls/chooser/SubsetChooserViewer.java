@@ -272,8 +272,7 @@ public class SubsetChooserViewer {
         @Override
         public Object[] getElements(Object inputElement) {
             if (inputElement instanceof AbstractSubsetChooserModel) {
-                AbstractSubsetChooserModel model = (AbstractSubsetChooserModel)inputElement;
-                return listAccessor.getList(model).toArray();
+                return listAccessor.getList((AbstractSubsetChooserModel)inputElement).toArray();
             }
             return new Object[0];
         }

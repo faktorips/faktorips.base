@@ -9,9 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.TemplateHierarchyVisitor;
@@ -46,22 +44,22 @@ public class TemplatePropertyFinder<T extends IPropertyValue> extends TemplateHi
         return false;
     }
 
-    private boolean isDefined(T currentValue) {
-        return getTemplateStatus(currentValue) == TemplateValueStatus.DEFINED;
+    private boolean isDefined(T value) {
+        return value.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
     }
 
-    private boolean isInherited(T currentValue) {
-        return getTemplateStatus(currentValue) == TemplateValueStatus.INHERITED;
-    }
-
-    private TemplateValueStatus getTemplateStatus(T value) {
-        if (!(value instanceof IAttributeValue)) {
-            throw new CoreRuntimeException("PropertyTemplateFinder can currently only find attribute values"); //$NON-NLS-1$
-        }
-        return ((IAttributeValue)value).getTemplateValueStatus();
+    private boolean isInherited(T value) {
+        return value.getTemplateValueStatus() == TemplateValueStatus.INHERITED;
     }
 
     public T getPropertyValue() {
         return resultingPropertyValue;
+    }
+
+    public static <U extends IPropertyValue> U findTemplatePropertyValue(U originalValue, Class<U> propertyType) {
+        TemplatePropertyFinder<U> finder = new TemplatePropertyFinder<U>(originalValue, propertyType,
+                originalValue.getIpsProject());
+        finder.start(originalValue.getPropertyValueContainer());
+        return finder.getPropertyValue();
     }
 }

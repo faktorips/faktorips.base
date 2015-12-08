@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,9 +39,12 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     private String validationRuleName;
 
+    private final TemplateValueSettings templateValueSettings;
+
     public ValidationRuleConfig(IPropertyValueContainer parent, String id, String ruleName) {
         super(parent, id);
         this.validationRuleName = ruleName;
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -49,7 +54,25 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     @Override
     public boolean isActive() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateActiveState();
+        }
+
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return false;
+        }
+
         return isActive;
+    }
+
+    private boolean findTemplateActiveState() {
+        IValidationRuleConfig template = findTemplateProperty(getIpsProject());
+        if (template == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return isActive;
+        }
+        return template.isActive();
     }
 
     @Override
@@ -62,13 +85,15 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
         super.initPropertiesFromXml(element, id);
         validationRuleName = element.getAttribute(TAG_NAME_RULE_NAME);
         isActive = Boolean.valueOf(element.getAttribute(TAG_NAME_ACTIVE));
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(TAG_NAME_RULE_NAME, validationRuleName);
-        element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive));
+        element.setAttribute(TAG_NAME_ACTIVE, Boolean.toString(isActive()));
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
@@ -148,8 +173,40 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public void setTemplateValueStatus(TemplateValueStatus status) {
-        // TODO Auto-generated method stub
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // Copy current active state from template (if present)
+            this.isActive = isActive();
+        }
+        TemplateValueStatus oldStatus = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldStatus, newStatus));
 
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public IValidationRuleConfig findTemplateProperty(IIpsProject ipsProject) {
+        return TemplatePropertyFinder.findTemplatePropertyValue(this, IValidationRuleConfig.class);
+    }
+
+    @Override
+    public boolean isConfiguringTemplateValueStatus() {
+        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
+        super.validateThis(list, ipsProject);
+        list.add(templateValueSettings.validate(this, ipsProject));
     }
 }
