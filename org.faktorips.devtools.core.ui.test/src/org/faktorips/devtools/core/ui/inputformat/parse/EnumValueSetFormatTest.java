@@ -81,7 +81,7 @@ public class EnumValueSetFormatTest {
     public void testParseInternalNewEnumValueSet() throws Exception {
         IValueSet valueSet = enumVSFormat.parse("test | test2");
         enumValueSet.addValue("test | test1");
-        EnumValueSet enumVS = (EnumValueSet)valueSet;
+        IEnumValueSet enumVS = (IEnumValueSet)valueSet;
 
         assertNotNull(valueSet);
         assertTrue(valueSet instanceof EnumValueSet);
@@ -95,7 +95,7 @@ public class EnumValueSetFormatTest {
     public void testParseInternalOldEnumValueSet() throws Exception {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        EnumValueSet enumVS = (EnumValueSet)enumVSFormat.parse("test | test1");
+        IEnumValueSet enumVS = (IEnumValueSet)enumVSFormat.parse("test | test1");
 
         assertNotNull(enumVSFormat.parse("test | test1"));
         assertTrue(enumVSFormat.parse("test | test1") instanceof EnumValueSet);
@@ -110,7 +110,7 @@ public class EnumValueSetFormatTest {
     public void testParseInternal_ReturnValueBlankIfTextBlank() throws Exception {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        EnumValueSet enumVS = (EnumValueSet)enumVSFormat.parse("");
+        IEnumValueSet enumVS = (IEnumValueSet)enumVSFormat.parse("");
 
         assertNotNull(enumVSFormat.parse(""));
         assertTrue(enumVSFormat.parse("") instanceof EnumValueSet);
@@ -125,7 +125,7 @@ public class EnumValueSetFormatTest {
                 IntegerNumberFormat.newInstance(null));
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        EnumValueSet enumVS = (EnumValueSet)enumVSFormat.parse("");
+        IEnumValueSet enumVS = (IEnumValueSet)enumVSFormat.parse("");
 
         assertNotNull(enumVSFormat.parse(""));
         assertTrue(enumVSFormat.parse("") instanceof EnumValueSet);
@@ -137,7 +137,8 @@ public class EnumValueSetFormatTest {
     public void testParseInternal_ReturnValueNullIfTextNullPresentation() throws Exception {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        EnumValueSet enumVS = (EnumValueSet)enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        IEnumValueSet enumVS = (IEnumValueSet)enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences()
+                .getNullPresentation());
 
         assertNotNull(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
         assertTrue(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);
@@ -150,7 +151,8 @@ public class EnumValueSetFormatTest {
     public void testParseInternal_() throws Exception {
         enumValueSet.addValue("test");
         enumValueSet.addValue("test1");
-        EnumValueSet enumVS = (EnumValueSet)enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation());
+        IEnumValueSet enumVS = (IEnumValueSet)enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences()
+                .getNullPresentation());
 
         assertNotNull(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()));
         assertTrue(enumVSFormat.parse(IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()) instanceof EnumValueSet);

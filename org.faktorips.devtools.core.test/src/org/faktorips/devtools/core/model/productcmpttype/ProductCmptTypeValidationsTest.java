@@ -15,7 +15,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.util.message.Message;
@@ -46,7 +45,7 @@ public class ProductCmptTypeValidationsTest {
     private IIpsProject ipsProject;
 
     @Before
-    public void setUpIpsProject() throws CoreException {
+    public void setUpIpsProject() {
         when(ipsProject.findPolicyCmptType(superPolicyCmptType)).thenReturn(foundSuperPolicyCmptType);
     }
 

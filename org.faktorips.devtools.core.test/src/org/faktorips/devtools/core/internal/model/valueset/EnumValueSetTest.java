@@ -119,7 +119,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("5");
         set.addValue("1");
 
-        EnumValueSet copy = (EnumValueSet)set.copy(generation.newConfigElement(), "1");
+        IEnumValueSet copy = (IEnumValueSet)set.copy(generation.newConfigElement(), "1");
         assertEquals(3, copy.size());
         assertEquals(0, copy.getPositions("10").get(0).intValue());
         assertEquals(1, copy.getPositions("5").get(0).intValue());

@@ -135,7 +135,7 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
         IUnrestrictedValueSet unrestricted = new UnrestrictedValueSet(ce, "1");
         unrestricted.setContainsNull(false);
 
-        IUnrestrictedValueSet unrestricted2 = (UnrestrictedValueSet)unrestricted.copy(ce, "2");
+        IUnrestrictedValueSet unrestricted2 = (IUnrestrictedValueSet)unrestricted.copy(ce, "2");
         assertFalse(unrestricted2.isContainsNull());
     }
 

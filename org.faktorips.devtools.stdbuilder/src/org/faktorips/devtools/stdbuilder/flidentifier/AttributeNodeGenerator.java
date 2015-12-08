@@ -11,7 +11,6 @@
 package org.faktorips.devtools.stdbuilder.flidentifier;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
@@ -19,7 +18,6 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
 import org.faktorips.devtools.core.builder.flidentifier.ast.AttributeNode;
 import org.faktorips.devtools.core.builder.flidentifier.ast.IdentifierNode;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -110,15 +108,11 @@ public class AttributeNodeGenerator extends StdBuilderIdentifierNodeGenerator {
     }
 
     private String getDatatypeClassname(IAttribute attribute) {
-        try {
-            ValueDatatype datatype = attribute.findDatatype(getIpsProject());
-            if (datatype.isPrimitive()) {
-                datatype = datatype.getWrapperType();
-            }
-            return getJavaClassName(datatype);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        ValueDatatype datatype = attribute.findDatatype(getIpsProject());
+        if (datatype.isPrimitive()) {
+            datatype = datatype.getWrapperType();
         }
+        return getJavaClassName(datatype);
     }
 
     private Datatype getBasicDatatype(CompilationResult<JavaCodeFragment> contextCompilationResult) {

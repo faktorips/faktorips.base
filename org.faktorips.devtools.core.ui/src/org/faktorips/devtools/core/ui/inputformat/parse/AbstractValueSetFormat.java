@@ -100,11 +100,7 @@ public abstract class AbstractValueSetFormat extends AbstractInputFormat<IValueS
     protected abstract String getNullPresentationInValueSet();
 
     private ValueDatatype getValueDatatype() {
-        try {
-            return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return valueSetOwner.findValueDatatype(valueSetOwner.getIpsProject());
     }
 
     protected String parseValue(String value) {

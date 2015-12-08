@@ -24,7 +24,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -139,7 +138,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) {
         IPolicyCmptType pcType = getPropertyValueContainer().findPolicyCmptType(ipsProject);
         if (pcType == null) {
             return null;
@@ -148,7 +147,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
         if (a != null) {
             return a.findDatatype(ipsProject);
@@ -171,8 +170,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         list.add(templateValueSettings.validate(this, ipsProject));
     }
 
-    private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject) {
 
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
@@ -339,12 +337,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return (IEnumValueSet)valueSet;
         }
         setValueSetType(newValueSetType);
-        EnumValueSet newValueSet = (EnumValueSet)valueSet;
-        ValueDatatype newValueSetDatatype = newValueSet.findValueDatatype(getIpsProject());
-        if (Datatype.BOOLEAN.equals(newValueSetDatatype) || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSetDatatype)) {
+        IEnumValueSet newValueSet = (IEnumValueSet)valueSet;
+        ValueDatatype valueSetDatatype = findValueDatatype(getIpsProject());
+        if (Datatype.BOOLEAN.equals(valueSetDatatype) || Datatype.PRIMITIVE_BOOLEAN.equals(valueSetDatatype)) {
             newValueSet.addValue(Boolean.TRUE.toString());
             newValueSet.addValue(Boolean.FALSE.toString());
-            if (!newValueSetDatatype.isPrimitive()) {
+            if (!valueSetDatatype.isPrimitive()) {
                 newValueSet.addValue(null);
             }
         }
@@ -440,13 +438,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     public ValueDatatype getValueDatatype() {
-        try {
-            return findValueDatatype(getIpsProject());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-
-        return null;
+        return findValueDatatype(getIpsProject());
     }
 
     @Override

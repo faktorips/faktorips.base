@@ -16,7 +16,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.classtypes.IntegerDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -42,7 +41,7 @@ public class AllowanceSearchOperatorTest {
     private IProductCmptGeneration productCmptGeneration;
 
     @Test
-    public void testInteger() throws CoreException {
+    public void testInteger() {
 
         String argument = "10000";
 

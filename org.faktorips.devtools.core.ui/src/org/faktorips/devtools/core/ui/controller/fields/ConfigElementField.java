@@ -49,19 +49,14 @@ public class ConfigElementField extends FormattingTextField<IValueSet> {
 
     private void initContentAssistent() {
         if (isContentAssistAvailable()) {
-            try {
-                ValueDatatype valueDatatype = configElement.findValueDatatype(getIpsProject());
-                IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype,
-                        getIpsProject());
-                AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement,
-                        valueDatatype, inputFormat);
-                ContentProposalAdapter contentProposalAdapter = new UIToolkit(null).attachContentProposalAdapter(
-                        getTextControl(), proposalProvider, ContentProposalAdapter.PROPOSAL_IGNORE, null);
-                ContentProposalListener contentProposalListener = new ContentProposalListener(contentProposalAdapter);
-                contentProposalAdapter.addContentProposalListener(contentProposalListener);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            ValueDatatype valueDatatype = configElement.findValueDatatype(getIpsProject());
+            IInputFormat<String> inputFormat = IpsUIPlugin.getDefault().getInputFormat(valueDatatype, getIpsProject());
+            AbstractProposalProvider proposalProvider = new ConfigElementProposalProvider(configElement, valueDatatype,
+                    inputFormat);
+            ContentProposalAdapter contentProposalAdapter = new UIToolkit(null).attachContentProposalAdapter(
+                    getTextControl(), proposalProvider, ContentProposalAdapter.PROPOSAL_IGNORE, null);
+            ContentProposalListener contentProposalListener = new ContentProposalListener(contentProposalAdapter);
+            contentProposalAdapter.addContentProposalListener(contentProposalListener);
         }
     }
 

@@ -81,17 +81,12 @@ public class IdentifierNodeFactory {
      * @return The new {@link AttributeNode} or an {@link InvalidIdentifierNode}.
      */
     public IdentifierNode createAttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes) {
-        try {
-            AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, ipsProject,
-                    textRegion);
-            if (attributeNode.getDatatype() == null) {
-                return createInvalidNoDatatype(attribute.getDatatype());
-            }
-            return attributeNode;
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return createInvalidDatatypeError(attribute.getDatatype());
+        AttributeNode attributeNode = new AttributeNode(attribute, defaultValueAccess, listOfTypes, ipsProject,
+                textRegion);
+        if (attributeNode.getDatatype() == null) {
+            return createInvalidNoDatatype(attribute.getDatatype());
         }
+        return attributeNode;
     }
 
     private IdentifierNode createInvalidNoDatatype(String datatypeName) {
@@ -133,16 +128,11 @@ public class IdentifierNodeFactory {
      * @return The new {@link AssociationNode} or an {@link InvalidIdentifierNode}.
      */
     public IdentifierNode createQualifierNode(IProductCmpt productCmpt, String qualifier, boolean listOfTypes) {
-        try {
-            if (checkProductCmpt(productCmpt)) {
-                return createInvalidQualifierMessage(qualifier);
-            }
-            IPolicyCmptType targetType = productCmpt.findPolicyCmptType(ipsProject);
-            return new QualifierNode(productCmpt, targetType, listOfTypes, textRegion);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return createInvalidAssociationTargetNode(productCmpt.getProductCmptType());
+        if (checkProductCmpt(productCmpt)) {
+            return createInvalidQualifierMessage(qualifier);
         }
+        IPolicyCmptType targetType = productCmpt.findPolicyCmptType(ipsProject);
+        return new QualifierNode(productCmpt, targetType, listOfTypes, textRegion);
     }
 
     private InvalidIdentifierNode createInvalidQualifierMessage(String qualifier) {

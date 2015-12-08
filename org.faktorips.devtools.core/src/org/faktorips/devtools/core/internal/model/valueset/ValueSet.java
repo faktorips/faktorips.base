@@ -11,9 +11,7 @@
 package org.faktorips.devtools.core.internal.model.valueset;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -143,11 +141,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
      */
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
-        try {
-            return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return ((IValueSetOwner)getParent()).findValueDatatype(ipsProject);
     }
 
     @Override

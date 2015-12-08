@@ -106,7 +106,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         }
     }
 
-    private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) throws CoreException {
+    private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) {
         ValueDatatype datatype = null;
         if (attribute != null) {
             datatype = attribute.findDatatype(getIpsProject());

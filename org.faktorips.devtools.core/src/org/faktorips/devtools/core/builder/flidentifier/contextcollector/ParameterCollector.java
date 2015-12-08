@@ -13,10 +13,8 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -36,31 +34,26 @@ public class ParameterCollector extends AbstractProductCmptCollector {
 
     @Override
     protected Set<IProductCmpt> getContextProductCmpts() {
-        try {
-            Datatype datatype = getNode().getDatatype();
-            if (datatype instanceof IPolicyCmptType) {
-                IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
-                IProductCmptGeneration productCmptGeneration = getOriginGeneration();
-                if (isMatchingPolicyCmptType(productCmptGeneration, policyCmptType)) {
-                    return new LinkedHashSet<IProductCmpt>(Arrays.asList(productCmptGeneration.getProductCmpt()));
-                }
+        Datatype datatype = getNode().getDatatype();
+        if (datatype instanceof IPolicyCmptType) {
+            IPolicyCmptType policyCmptType = (IPolicyCmptType)datatype;
+            IProductCmptGeneration productCmptGeneration = getOriginGeneration();
+            if (isMatchingPolicyCmptType(productCmptGeneration, policyCmptType)) {
+                return new LinkedHashSet<IProductCmpt>(Arrays.asList(productCmptGeneration.getProductCmpt()));
             }
-            // Do not return an empty list, see java doc of getContextProductCmpts()
-            return null;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
+        // Do not return an empty list, see java doc of getContextProductCmpts()
+        return null;
     }
 
     private boolean isMatchingPolicyCmptType(IProductCmptGeneration productCmptGeneration,
-            IPolicyCmptType policyCmptType) throws CoreException {
+            IPolicyCmptType policyCmptType) {
         IPolicyCmptType matchingPolicyCmptType = getMatchingPolicyCmptType(productCmptGeneration);
         return matchingPolicyCmptType != null
                 && matchingPolicyCmptType.isSubtypeOrSameType(policyCmptType, getIpsProject());
     }
 
-    private IPolicyCmptType getMatchingPolicyCmptType(IProductCmptGeneration productCmptGeneration)
-            throws CoreException {
+    private IPolicyCmptType getMatchingPolicyCmptType(IProductCmptGeneration productCmptGeneration) {
         if (productCmptGeneration != null) {
             return productCmptGeneration.findPolicyCmptType(getIpsProject());
         }

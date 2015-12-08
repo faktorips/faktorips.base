@@ -206,9 +206,8 @@ public interface IType extends IIpsObject, Datatype, ILabeledElement, IVersionCo
      *            necessarily the project this type is part of.
      * 
      * @throws NullPointerException If <tt>project</tt> is <code>null</code>.
-     * @throws CoreException If an error occurs while searching.
      */
-    public IAttribute findAttribute(String name, IIpsProject ipsProject) throws CoreException;
+    public IAttribute findAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.

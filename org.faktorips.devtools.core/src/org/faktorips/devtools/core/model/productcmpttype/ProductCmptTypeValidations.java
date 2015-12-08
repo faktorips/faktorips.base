@@ -91,7 +91,7 @@ public class ProductCmptTypeValidations {
         Message message = null;
         ObjectProperty[] invalidObjectProperties = productCmptType == null ? new ObjectProperty[0]
                 : new ObjectProperty[] { new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_SUPERTYPE),
-                        new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE) };
+                new ObjectProperty(productCmptType, IProductCmptType.PROPERTY_POLICY_CMPT_TYPE) };
 
         if (superProductCmptType == null) {
             IPolicyCmptType foundSuperPolicyCmptType = ipsProject.findPolicyCmptType(superPolicyCmptType);
@@ -146,7 +146,7 @@ public class ProductCmptTypeValidations {
             String superPolicyCmptType,
             String policyCmptTypeOfProductSupertype,
             IProductCmptType superProductCmptType,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
         if (isPCTypeConfiguredByConsistentProductCmptType(policyCmptType, superPolicyCmptType,
                 policyCmptTypeOfProductSupertype)) {
             return true;

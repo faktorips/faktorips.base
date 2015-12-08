@@ -17,8 +17,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -119,12 +117,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
     }
 
     public ValueDatatype getValueDatatype() {
-        try {
-            return findDatatype(getIpsProject());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-            return null;
-        }
+        return findDatatype(getIpsProject());
     }
 
     @Override
@@ -287,7 +280,7 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
         validateChangingOverTimeFlag(result);
     }
 
-    private void validateAbstractDatatype(MessageList result, IIpsProject ipsProject) throws CoreException {
+    private void validateAbstractDatatype(MessageList result, IIpsProject ipsProject) {
         if (!getType().isAbstract()) {
             new AttributeAbstractDatatypeValidator(this, ipsProject).validateNotAbstractDatatype(result);
         }
@@ -295,14 +288,10 @@ public class ProductCmptTypeAttribute extends Attribute implements IProductCmptT
 
     @Override
     protected void validateOverwrittenDatatype(IAttribute superAttr, MessageList result) {
-        try {
-            if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
-                result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE, NLS.bind(
-                        Messages.ProductCmptTypeAttribute_error_incompatibleDatatypes, getName()), Message.ERROR, this,
-                        PROPERTY_DATATYPE));
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (!DatatypeUtil.isCovariant(findDatatype(getIpsProject()), superAttr.findDatatype(getIpsProject()))) {
+            result.add(new Message(MSGCODE_OVERWRITTEN_ATTRIBUTE_HAS_INCOMPATIBLE_DATATYPE, NLS.bind(
+                    Messages.ProductCmptTypeAttribute_error_incompatibleDatatypes, getName()), Message.ERROR, this,
+                    PROPERTY_DATATYPE));
         }
     }
 

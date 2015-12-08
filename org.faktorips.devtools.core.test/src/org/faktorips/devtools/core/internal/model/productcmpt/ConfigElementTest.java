@@ -31,7 +31,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
@@ -471,7 +470,7 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertEquals("4", ((IRangeValueSet)newCfgElement.getValueSet()).getStep());
 
         cfgElement.setValueSetType(ValueSetType.ENUM);
-        EnumValueSet enumValueSet = (EnumValueSet)cfgElement.getValueSet();
+        IEnumValueSet enumValueSet = (IEnumValueSet)cfgElement.getValueSet();
         enumValueSet.addValue("one");
         enumValueSet.addValue("two");
         enumValueSet.addValue("three");

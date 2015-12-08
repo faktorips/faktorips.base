@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsPreferences;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -211,11 +210,7 @@ public class ComponentPropertiesSection extends IpsSection {
 
             @Override
             public IIpsObject findIpsObject() {
-                try {
-                    return product.findPolicyCmptType(product.getIpsProject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                return product.findPolicyCmptType(product.getIpsProject());
             }
         });
 

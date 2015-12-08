@@ -111,9 +111,8 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
      * @param ipsProject The {@link IIpsProject} used as base project to search
      * @return the {@link IPolicyCmptType} or null if no one was found or this container does not
      *         configure a {@link IPolicyCmptType}
-     * @throws CoreException in case of getting a core exception while searching the model
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * @return <code>true</code> if this property value container is itself defined as a template or

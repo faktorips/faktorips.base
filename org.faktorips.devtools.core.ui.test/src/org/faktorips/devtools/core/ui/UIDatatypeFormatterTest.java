@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Locale;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -207,7 +206,7 @@ public class UIDatatypeFormatterTest {
     }
 
     @Test
-    public void testFormatRangeValueSet_noStep() throws CoreException {
+    public void testFormatRangeValueSet_noStep() {
         RangeValueSet rangeValueSet = mockRangeValueSet();
         Mockito.when(rangeValueSet.getLowerBound()).thenReturn("1");
         Mockito.when(rangeValueSet.getUpperBound()).thenReturn("10");
@@ -219,7 +218,7 @@ public class UIDatatypeFormatterTest {
         assertEquals("[1 ... 10]", formatString);
     }
 
-    private RangeValueSet mockRangeValueSet() throws CoreException {
+    private RangeValueSet mockRangeValueSet() {
         RangeValueSet rangeValueSet = mock(RangeValueSet.class);
         IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
         when(rangeValueSet.getValueSetOwner()).thenReturn(valueSetOwner);

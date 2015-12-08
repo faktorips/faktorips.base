@@ -15,7 +15,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -104,17 +103,17 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
          * text controls to be able to add additional controls later on (e.g. enum drop down button)
          */
         lowerfield.getControl().getParent()
-                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createLabel(workArea, Messages.RangeEditControl_labelMaximum);
         upperfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
         upperfield.getControl().getParent()
-                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         toolkit.createFormLabel(workArea, Messages.RangeEditControl_labelStep);
         stepfield = ctrlFactory.createEditField(uiToolkit, workArea, valueDatatype, valueSet, ipsProject);
         stepfield.getControl().getParent()
-                .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
+        .setLayoutData(new GridData(GridData.VERTICAL_ALIGN_CENTER | GridData.FILL_HORIZONTAL));
 
         if (toolkit.getFormToolkit() != null) {
             toolkit.getFormToolkit().paintBordersFor(workArea);
@@ -165,7 +164,7 @@ public class RangeEditControl extends ControlComposite implements IDataChangeabl
      */
     @Override
     public void setValueSet(IValueSet valueSet, ValueDatatype valueDatatype) {
-        range = (RangeValueSet)valueSet;
+        range = (IRangeValueSet)valueSet;
         uiController.removeBindings(upperfield.getControl());
         uiController.removeBindings(lowerfield.getControl());
         uiController.removeBindings(stepfield.getControl());

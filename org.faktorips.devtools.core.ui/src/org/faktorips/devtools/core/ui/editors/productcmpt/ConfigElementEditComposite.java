@@ -15,14 +15,12 @@ import java.util.List;
 import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
@@ -105,13 +103,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     private ValueDatatype findDatatypeForDefaultValueEditField() {
         ValueDatatype datatype = null;
-        try {
-            datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
-        } catch (CoreException e) {
-            // Exception while searching for datatype, log exception and use String as default
-            IpsPlugin.log(e);
-            datatype = Datatype.STRING;
-        }
+        datatype = getProperty().findDatatype(getPropertyValue().getIpsProject());
         return datatype;
     }
 

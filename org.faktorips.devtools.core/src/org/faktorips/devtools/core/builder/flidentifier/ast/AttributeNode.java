@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.builder.flidentifier.ast;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -36,7 +35,7 @@ public class AttributeNode extends IdentifierNode {
     private final IIpsProject ipsProject;
 
     AttributeNode(IAttribute attribute, boolean defaultValueAccess, boolean listOfTypes, IIpsProject ipsProject,
-            TextRegion textRegion) throws CoreException {
+            TextRegion textRegion) {
         super(attribute.findDatatype(ipsProject), listOfTypes, textRegion);
         this.attribute = attribute;
         this.defaultValueAccess = defaultValueAccess;

@@ -181,11 +181,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         IValidationRule validationRule = attribute.findValueSetRule(ipsProject);
         ruleModel.setValidationRule(validationRule);
         ruleMarkerPMO = ValidationRuleMarkerPMO.createFor(ipsProject, validationRule);
-        try {
-            currentDatatype = attribute.findDatatype(ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        currentDatatype = attribute.findDatatype(ipsProject);
         currentAttributeType = attribute.getAttributeType();
         extFactory = new ExtensionPropertyControlFactory(attribute);
     }
@@ -986,34 +982,30 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private void enableOrDisableDatatypeDependingControls() {
-        try {
-            ValueDatatype datatype = attribute.findDatatype(ipsProject);
+        ValueDatatype datatype = attribute.findDatatype(ipsProject);
 
-            boolean hasDecimalPlaces = PersistenceUtil.isSupportingDecimalPlaces(datatype);
-            boolean hasLength = PersistenceUtil.isSupportingLenght(datatype);
-            boolean needsTemporalType = PersistenceUtil.isSupportingTemporalType(datatype);
-            boolean canBeNullable = true;
-            boolean canBeUnique = true;
+        boolean hasDecimalPlaces = PersistenceUtil.isSupportingDecimalPlaces(datatype);
+        boolean hasLength = PersistenceUtil.isSupportingLenght(datatype);
+        boolean needsTemporalType = PersistenceUtil.isSupportingTemporalType(datatype);
+        boolean canBeNullable = true;
+        boolean canBeUnique = true;
 
-            // if a column definition is given, then all properties are specified using the sql
-            // definition
-            if (StringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
-                hasDecimalPlaces = false;
-                hasLength = false;
-                needsTemporalType = false;
-                canBeNullable = false;
-                canBeUnique = false;
-            }
-
-            getToolkit().setDataChangeable(nullableCheckbox, canBeNullable);
-            getToolkit().setDataChangeable(uniqueCheckbox, canBeUnique);
-            getToolkit().setDataChangeable(precisionField.getControl(), hasDecimalPlaces);
-            getToolkit().setDataChangeable(scaleField.getControl(), hasDecimalPlaces);
-            getToolkit().setDataChangeable(sizeField.getControl(), hasLength);
-            getToolkit().setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        // if a column definition is given, then all properties are specified using the sql
+        // definition
+        if (StringUtils.isNotEmpty(sqlColumnDefinition.getText())) {
+            hasDecimalPlaces = false;
+            hasLength = false;
+            needsTemporalType = false;
+            canBeNullable = false;
+            canBeUnique = false;
         }
+
+        getToolkit().setDataChangeable(nullableCheckbox, canBeNullable);
+        getToolkit().setDataChangeable(uniqueCheckbox, canBeUnique);
+        getToolkit().setDataChangeable(precisionField.getControl(), hasDecimalPlaces);
+        getToolkit().setDataChangeable(scaleField.getControl(), hasDecimalPlaces);
+        getToolkit().setDataChangeable(sizeField.getControl(), hasLength);
+        getToolkit().setDataChangeable(temporalMappingField.getControl(), needsTemporalType);
     }
 
     @Override

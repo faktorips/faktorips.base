@@ -91,11 +91,7 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
 
     public ValueDatatype getDatatype(IPolicyCmptTypeAttribute attribute) {
         ValueDatatype valueDatatype;
-        try {
-            valueDatatype = attribute.findDatatype(attribute.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        valueDatatype = attribute.findDatatype(attribute.getIpsProject());
         return valueDatatype;
     }
 

@@ -97,7 +97,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         addAbstractField(nameComposite, toolkit);
     }
 
-    private IPolicyCmptType getPolicyCmptType() throws CoreException {
+    private IPolicyCmptType getPolicyCmptType() {
         String pcTypeQualifiedName = pcTypeField.getText();
         if (getIpsProject() != null) {
             IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);

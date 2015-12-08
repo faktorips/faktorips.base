@@ -43,11 +43,7 @@ public class PolicyAttributeConditionType extends AbstractAttributeConditionType
         List<IIpsElement> policyCmptTypeAttributes = new ArrayList<IIpsElement>();
 
         IPolicyCmptType policyCmptType;
-        try {
-            policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        policyCmptType = productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
         if (policyCmptType == null) {
             return Collections.emptyList();
         }

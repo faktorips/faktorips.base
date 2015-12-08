@@ -143,11 +143,9 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return The policy component type this product component configures or <code>null</code> if
      *         the policy component type can't be found or this product component does not configure
      *         a product component.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
      */
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the product component type this product component is based on.

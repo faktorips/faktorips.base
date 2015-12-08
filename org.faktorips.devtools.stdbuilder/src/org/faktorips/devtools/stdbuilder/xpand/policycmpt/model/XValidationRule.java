@@ -15,10 +15,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -93,13 +91,9 @@ public class XValidationRule extends AbstractGeneratorModelNode {
         List<String> result = new ArrayList<String>();
         String[] attributes = getValidationRule().getValidatedAttributes();
         for (String attributeName : attributes) {
-            try {
-                IAttribute attr = getValidationRule().getType().findAttribute(attributeName, getIpsProject());
-                XPolicyAttribute xPolicyAttribute = getModelNode(attr, XPolicyAttribute.class);
-                result.add(xPolicyAttribute.getConstantNamePropertyName());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IAttribute attr = getValidationRule().getType().findAttribute(attributeName, getIpsProject());
+            XPolicyAttribute xPolicyAttribute = getModelNode(attr, XPolicyAttribute.class);
+            result.add(xPolicyAttribute.getConstantNamePropertyName());
         }
         return result;
     }
