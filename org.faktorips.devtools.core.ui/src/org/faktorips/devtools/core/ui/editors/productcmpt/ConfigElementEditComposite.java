@@ -73,17 +73,22 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
+        EditField<?> valueSetEditField;
         if (isBooleanDatatype()) {
-            createValueSetEditFieldForBoolean(editFields);
+            valueSetEditField = createValueSetEditFieldForBoolean();
         } else {
-            createValueSetField(editFields);
+            valueSetEditField = createValueSetField();
         }
-        createDefaultValueEditField(editFields);
+        editFields.add(valueSetEditField);
+        createTemplateStatusButton(valueSetEditField);
+        EditField<String> defaultValueEditField = createDefaultValueEditField();
+        createTemplateStatusButton(defaultValueEditField);
+        editFields.add(defaultValueEditField);
         createEditFieldsForExtensionProperties();
         addOverlaysToEditFields(editFields);
     }
 
-    private EditField<String> createDefaultValueEditField(List<EditField<?>> editFields) {
+    private EditField<String> createDefaultValueEditField() {
         createLabel(Messages.ConfigElementEditComposite_defaultValue);
 
         ValueDatatype datatype = getProperty() == null ? null : findDatatypeForDefaultValueEditField();
@@ -94,7 +99,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         ValueDatatypeControlFactory controlFactory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(datatype);
         EditField<String> editField = controlFactory.createEditField(getToolkit(), this, datatype, getPropertyValue()
                 .getValueSet(), getPropertyValue().getIpsProject());
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE);
         return editField;
     }
@@ -117,18 +121,19 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
                 || datatype.equals(Datatype.BOOLEAN.getQualifiedName()) : false;
     }
 
-    private void createValueSetEditFieldForBoolean(List<EditField<?>> editFields) {
+    private BooleanValueSetField createValueSetEditFieldForBoolean() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
         booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
-        editFields.add(field);
 
         getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+
+        return field;
     }
 
-    private void createValueSetField(List<EditField<?>> editFields) {
+    private ConfigElementField createValueSetField() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
         valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
@@ -137,8 +142,9 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
 
         ConfigElementField editField = new ConfigElementField(getPropertyValue(), valueSetControl);
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
+
+        return editField;
     }
 
     /**

@@ -500,10 +500,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public boolean isConfiguringTemplateValueStatus() {
-        // TODO
-        // return getPropertyValueContainer().isProductTemplate() ||
-        // getPropertyValueContainer().isUsingTemplate();
-        return false;
+        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
     }
 
 }
