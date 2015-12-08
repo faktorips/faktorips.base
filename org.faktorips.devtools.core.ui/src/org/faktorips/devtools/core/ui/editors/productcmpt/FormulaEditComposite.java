@@ -54,11 +54,12 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        FormulaEditControl control = createExpressionEditField(editFields);
-        createTemplateStatusButton(control);
+        EditField<?> editField = createExpressionEditField();
+        createTemplateStatusButton(editField);
+        editFields.add(editField);
     }
 
-    private FormulaEditControl createExpressionEditField(List<EditField<?>> editFields) {
+    private TextButtonField createExpressionEditField() {
         FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), getPropertyValue(),
                 getShell(), getProductCmptPropertySection());
         KeyStroke keyStroke = null;
@@ -76,10 +77,9 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         contentProposalAdapter.addContentProposalListener(contentProposalListener);
 
         TextButtonField editField = new TextButtonField(formulaEditControl);
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
         addChangingOverTimeDecorationIfRequired(editField);
-        return formulaEditControl;
+        return editField;
     }
 
     @Override

@@ -44,18 +44,18 @@ EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        TextButtonField tcuField = createTableContentEditField(editFields);
-        createTemplateStatusButton(tcuField.getControl());
+        TextButtonField tcuField = createTableContentEditField();
+        createTemplateStatusButton(tcuField);
         addMovingChangingOverTimeDecorationIfRequired(tcuField);
+        editFields.add(tcuField);
     }
 
-    private TextButtonField createTableContentEditField(List<EditField<?>> editFields) {
+    private TextButtonField createTableContentEditField() {
         TableContentsUsageRefControl tcuControl = new TableContentsUsageRefControl(getPropertyValue().getIpsProject(),
                 this, getToolkit(), getPropertyValue());
 
         TextButtonField editField = new TextButtonField(tcuControl);
         editField.setSupportsNullStringRepresentation(false);
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), ITableContentUsage.PROPERTY_TABLE_CONTENT);
         return editField;
     }

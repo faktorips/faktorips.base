@@ -310,7 +310,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         }
     }
 
-    protected void createTemplateStatusButton(final Control control) {
+    protected void createTemplateStatusButton(final EditField<?> editField) {
         final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
         final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
         final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
@@ -318,8 +318,9 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         // updated
         toolItem.setImage(TemplateValueUiStatus.OVERWRITE_EQUAL.getIcon());
         bindTemplateStatusButton(toolBar, toolItem, pmo);
-        listenToTemplateStatusClick(control, toolItem, pmo);
-        bindTemplateDependentEnabled(control);
+        listenToTemplateStatusClick(editField.getControl(), toolItem, pmo);
+        bindTemplateDependentEnabled(editField.getControl());
+        bindProblemMarker(editField);
         toolBar.setMenu(createTemplateMenue(toolBar));
     }
 
@@ -409,6 +410,11 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         }
         getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
                 IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
+    }
+
+    private void bindProblemMarker(EditField<?> editField) {
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(),
+                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS);
     }
 
     private static class MoveDecorationFocusListener implements FocusListener {

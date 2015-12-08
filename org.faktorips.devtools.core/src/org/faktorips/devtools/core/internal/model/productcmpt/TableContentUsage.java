@@ -179,6 +179,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     @Override
     protected void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
+        String tableContentNameToValidate = getTableContentName();
         IProductCmptType type = getProductCmptType(ipsProject);
         if (type == null) {
             list.add(new Message(MSGCODE_NO_TYPE, Messages.TableContentUsage_msgNoType, Message.WARNING, this));
@@ -191,26 +192,32 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
             list.add(new Message(MSGCODE_UNKNOWN_STRUCTURE_USAGE, text, Message.ERROR, this, PROPERTY_STRUCTURE_USAGE));
             return;
         }
-
+        list.add(templateValueSettings.validate(this, ipsProject));
         ITableContents content = null;
-        if (tableContentName != null) {
+        if (tableContentNameToValidate != null) {
             content = findTableContents(ipsProject);
         }
         if (content == null) {
-            if (StringUtils.isNotEmpty(tableContentName) || (tsu.isMandatoryTableContent())) {
-                String text = NLS.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentName);
+            if (!isNullContentAllowed(tsu)) {
+                String text = NLS.bind(Messages.TableContentUsage_msgUnknownTableContent, tableContentNameToValidate);
                 list.add(new Message(MSGCODE_UNKNOWN_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
             }
             return;
         }
         String usedStructure = content.getTableStructure();
         if (!tsu.isUsed(usedStructure)) {
-            String[] params = { tableContentName, usedStructure, structureUsage };
+            String[] params = { tableContentNameToValidate, usedStructure, structureUsage };
             String text = NLS.bind(Messages.TableContentUsage_msgInvalidTableContent, params);
             list.add(new Message(MSGCODE_INVALID_TABLE_CONTENT, text, Message.ERROR, this, PROPERTY_TABLE_CONTENT));
         }
+    }
 
-        list.add(templateValueSettings.validate(this, ipsProject));
+    private boolean isNullContentAllowed(ITableStructureUsage tsu) {
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return true;
+        } else {
+            return StringUtils.isEmpty(getTableContentName()) && !tsu.isMandatoryTableContent();
+        }
     }
 
     @Override

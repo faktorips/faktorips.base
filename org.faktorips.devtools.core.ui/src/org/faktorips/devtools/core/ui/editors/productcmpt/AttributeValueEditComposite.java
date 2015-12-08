@@ -26,7 +26,6 @@ import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsobject.IExtensionPropertyDefinition;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
@@ -99,11 +98,9 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
         }
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_ATTRIBUTE);
         getBindingContext().bindProblemMarker(editField, getPropertyValue(), IAttributeValue.PROPERTY_VALUE_HOLDER);
-        getBindingContext().bindProblemMarker(editField, getPropertyValue(),
-                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS);
         editFields.add(editField);
         if (showTemplateButton()) {
-            createTemplateStatusButton(editField.getControl());
+            createTemplateStatusButton(editField);
         }
         addChangingOverTimeDecorationIfRequired(editField);
     }

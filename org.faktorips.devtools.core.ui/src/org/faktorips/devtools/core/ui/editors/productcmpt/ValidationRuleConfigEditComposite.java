@@ -49,19 +49,19 @@ EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        Checkbox checkbox = createActiveEditField(editFields);
-        createTemplateStatusButton(checkbox);
+        EditField<?> editField = createActiveEditField();
+        createTemplateStatusButton(editField);
+        editFields.add(editField);
     }
 
-    private Checkbox createActiveEditField(List<EditField<?>> editFields) {
+    private CheckboxField createActiveEditField() {
         Checkbox checkbox = getToolkit().createCheckbox(this);
         checkbox.setChecked(getPropertyValue().isActive());
         checkbox.setText(IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getPropertyValue()));
         checkbox.setToolTipText(getValidationRuleDescription());
         CheckboxField editField = new CheckboxField(checkbox);
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IValidationRuleConfig.PROPERTY_ACTIVE);
-        return checkbox;
+        return editField;
     }
 
     private String getValidationRuleDescription() {
