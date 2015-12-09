@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.faktorips.util.message.Message;
@@ -27,10 +28,10 @@ import org.w3c.dom.Element;
  */
 public class DelegatingValueHolder<T> implements IValueHolder<T> {
 
-    private final IIpsObjectPart parent;
-    private final IValueHolder<T> delegate;
+    private final IAttributeValue parent;
+    private final AbstractValueHolder<T> delegate;
 
-    public DelegatingValueHolder(IIpsObjectPart parent, IValueHolder<T> delegate) {
+    public DelegatingValueHolder(IAttributeValue parent, AbstractValueHolder<T> delegate) {
         this.parent = Preconditions.checkNotNull(parent);
         this.delegate = Preconditions.checkNotNull(delegate);
     }
@@ -79,12 +80,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
 
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
-        return validate(ipsProject, parent);
-    }
-
-    @Override
-    public MessageList validate(IIpsProject ipsProject, IIpsObjectPart parentForValidation) throws CoreException {
-        return delegate.validate(ipsProject, parentForValidation);
+        return delegate.newValidator(parent, ipsProject).validate();
     }
 
     @Override
@@ -178,8 +174,10 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
      * @return a new {@code DelegatingValueHolder} with the given parent that delegates read-access
      *         to the given value holder
      */
-    public static <U> DelegatingValueHolder<U> of(IIpsObjectPart parent, IValueHolder<U> delegate) {
-        return new DelegatingValueHolder<U>(parent, delegate);
+    public static <U> DelegatingValueHolder<U> of(IAttributeValue parent, IValueHolder<U> delegate) {
+        Preconditions
+                .checkArgument(delegate instanceof AbstractValueHolder, "Can only delegate to AbstractValueHolder"); //$NON-NLS-1$
+        return new DelegatingValueHolder<U>(parent, (AbstractValueHolder<U>)delegate);
     }
 
 }

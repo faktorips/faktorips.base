@@ -11,14 +11,12 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -27,9 +25,7 @@ import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -106,6 +102,9 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     @Override
     public List<SingleValueHolder> getValue() {
+        if (values == null) {
+            return Collections.emptyList();
+        }
         return new ArrayList<SingleValueHolder>(values);
     }
 
@@ -149,46 +148,7 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
      */
     @Override
     public MessageList validate(IIpsProject ipsProject) throws CoreException {
-        return validate(ipsProject, getParent());
-    }
-
-    @Override
-    public MessageList validate(IIpsProject ipsProject, IIpsObjectPart parentForValidation) throws CoreException {
-        MessageList messageList = new MessageList();
-        if (values == null) {
-            return messageList;
-        }
-        Set<SingleValueHolder> duplicateValueHolders = getDuplicateValueHolders();
-        for (SingleValueHolder duplicateValueHolder : duplicateValueHolders) {
-            messageList.add(Message.newError(MSGCODE_CONTAINS_DUPLICATE_VALUE,
-                    Messages.MultiValueHolder_DuplicateValueMessageText, duplicateValueHolder, PROPERTY_VALUE));
-        }
-        for (SingleValueHolder valueHolder : values) {
-            messageList.add(valueHolder.validate(ipsProject, parentForValidation));
-        }
-        if (messageList.containsErrorMsg()) {
-            ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
-                    new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
-                    new ObjectProperty(this, PROPERTY_VALUE) };
-            messageList
-            .add(new Message(MSGCODE_CONTAINS_INVALID_VALUE,
-                    Messages.MultiValueHolder_AtLeastOneInvalidValueMessageText, Message.ERROR,
-                    invalidObjectProperties));
-        }
-        return messageList;
-    }
-
-    private Set<SingleValueHolder> getDuplicateValueHolders() {
-        Set<SingleValueHolder> duplicates = new HashSet<SingleValueHolder>();
-        Set<SingleValueHolder> processedValues = new HashSet<SingleValueHolder>();
-        for (SingleValueHolder element : values) {
-            if (processedValues.contains(element)) {
-                duplicates.add(element);
-            } else {
-                processedValues.add(element);
-            }
-        }
-        return duplicates;
+        return new MultiValueHolderValidator(this, getParent(), ipsProject).validate();
     }
 
     @Override
@@ -273,6 +233,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         } else {
             return ValueType.STRING;
         }
+    }
+
+    @Override
+    protected MultiValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
+        return new MultiValueHolderValidator(this, parent, ipsProject);
     }
 
     @Override
