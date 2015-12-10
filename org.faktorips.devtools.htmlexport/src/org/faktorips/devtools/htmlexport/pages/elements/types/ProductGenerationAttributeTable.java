@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -248,8 +247,8 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + COLON_SEPARATOR
                 + getContext().getDatatypeFormatter().formatValue(
-                        ((ValueSet)valueSet).findValueDatatype(getContext().getIpsProject()), defaultValue),
-                TextType.BLOCK, getContext()));
+                        valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue), TextType.BLOCK,
+                getContext()));
 
         if (valueSet.isEnum()) {
             pageElement.addPageElements(createEnumValueSetCell((IEnumValueSet)valueSet));
@@ -265,7 +264,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         StringBuilder builder = new StringBuilder();
         builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
         builder.append(COLON_SEPARATOR);
-        ValueDatatype valueDatatype = rangeValueSet.getValueSetOwner().findValueDatatype(getContext().getIpsProject());
+        ValueDatatype valueDatatype = rangeValueSet.findValueDatatype(getContext().getIpsProject());
         builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getLowerBound()));
         builder.append(COMMA_SEPARATOR);
         builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getUpperBound()));
@@ -290,7 +289,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 builder.append(COMMA_SEPARATOR);
             }
             builder.append(getContext().getDatatypeFormatter().formatValue(
-                    enumValueSet.getValueSetOwner().findValueDatatype(getContext().getIpsProject()), enumValue));
+                    enumValueSet.findValueDatatype(getContext().getIpsProject()), enumValue));
 
         }
         TextPageElement textPageElement = new TextPageElement(getContext().getMessage(

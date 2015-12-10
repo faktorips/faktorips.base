@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -218,5 +219,13 @@ public interface IValueSet extends IIpsObjectPart {
      * </ul>
      */
     public boolean isDetailedSpecificationOf(IValueSet valueSet);
+
+    /**
+     * Returns the datatype used by this value set
+     * 
+     * @param ipsProject The ips project to search for the datatype
+     * @return The datatype that is used by this value set
+     */
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
 }

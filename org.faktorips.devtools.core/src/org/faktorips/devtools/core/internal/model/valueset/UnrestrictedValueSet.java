@@ -108,7 +108,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     public boolean containsValueSet(IValueSet subset) {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
-        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
 
         if (!DatatypeUtil.isCovariant(subDatatype, datatype)) {
             return false;

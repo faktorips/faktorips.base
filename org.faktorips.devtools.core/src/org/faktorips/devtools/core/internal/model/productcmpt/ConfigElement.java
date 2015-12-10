@@ -514,11 +514,15 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy value/value set from template (if present)
             this.value = getValue();
-            this.valueSet = getValueSet();
+            copyValueSet();
         }
         TemplateValueStatus oldValue = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
+    }
+
+    private void copyValueSet() {
+        this.valueSet = getValueSet().copy(this, getNextPartId());
     }
 
     @Override

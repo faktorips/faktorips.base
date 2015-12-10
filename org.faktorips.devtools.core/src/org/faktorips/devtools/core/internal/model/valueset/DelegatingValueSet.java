@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.EnumDatatype;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -35,7 +36,7 @@ import org.w3c.dom.Element;
  * Every writing call leads to an {@link IllegalStateException}
  */
 public class DelegatingValueSet extends AtomicIpsObjectPart implements IEnumValueSet, IRangeValueSet,
-        IUnrestrictedValueSet {
+IUnrestrictedValueSet {
 
     private final ValueSet delegate;
 
@@ -151,7 +152,7 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IEnumValu
 
     @Override
     public IValueSet copy(IValueSetOwner newParent, String id) {
-        throw new IllegalStateException("DelegateValueSets cannot copied"); //$NON-NLS-1$
+        return delegate.copy(newParent, id);
     }
 
     @Override
@@ -296,7 +297,12 @@ public class DelegatingValueSet extends AtomicIpsObjectPart implements IEnumValu
     @Override
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException {
         EnumValueSetValidator validator = getEnumDelegate().createValidator(getValueSetOwner(),
-                getValueSetOwner().findValueDatatype(ipsProject));
+                findValueDatatype(ipsProject));
         return validator.validateValue(index);
+    }
+
+    @Override
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
+        return delegate.findValueDatatype(ipsProject);
     }
 }

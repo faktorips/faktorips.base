@@ -134,6 +134,7 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
      * Returns the data type this value set is based on or <code>null</code>, if the data type is
      * not provided by the parent or the data type provided is not a <code>ValueDatatype</code>.
      */
+    @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         return getValueSetOwner().findValueDatatype(ipsProject);
     }

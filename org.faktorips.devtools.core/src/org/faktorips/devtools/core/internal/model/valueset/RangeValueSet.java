@@ -200,7 +200,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     public boolean containsValueSet(IValueSet subset) {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
-        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
         if (!ObjectUtils.equals(datatype, subDatatype)) {
             return false;
         }

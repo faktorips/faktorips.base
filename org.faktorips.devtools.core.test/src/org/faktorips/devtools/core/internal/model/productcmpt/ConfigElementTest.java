@@ -41,6 +41,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
+import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.enums.IEnumAttribute;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
@@ -862,6 +863,21 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         assertNotNull(messages.getMessageByCode(ValueSetNullIncompatibleValidator.MSGCODE_INCOMPATIBLE_VALUESET));
     }
 
+    @Test
+    public void testSetTemplateValueStatus() throws Exception {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute("attrName");
+        IConfigElement templateConfigElement = createTemplateConfigElement(attr);
+        templateConfigElement.setValueSet(new UnrestrictedValueSet(templateConfigElement, "123"));
+        configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        configElement.setPolicyCmptTypeAttribute(attr.getName());
+
+        assertThat(configElement.getValueSet(), is(DelegatingValueSet.class));
+
+        configElement.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        assertThat(configElement.getValueSet(), is(UnrestrictedValueSet.class));
+    }
+
     private IConfigElement createTemplateConfigElement() throws CoreException {
         IProductCmpt template = newProductTemplate(productCmptType, "Template");
         IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
@@ -870,10 +886,10 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         return templateConfigElement;
     }
 
-    private IConfigElement createTemplateConfigElement(IPolicyCmptTypeAttribute policyCmotTypeAttribute)
+    private IConfigElement createTemplateConfigElement(IPolicyCmptTypeAttribute policyCmptTypeAttribute)
             throws CoreException {
         IConfigElement templateConfigElement = createTemplateConfigElement();
-        templateConfigElement.setPolicyCmptTypeAttribute(policyCmotTypeAttribute.getName());
+        templateConfigElement.setPolicyCmptTypeAttribute(policyCmptTypeAttribute.getName());
         return templateConfigElement;
     }
 

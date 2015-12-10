@@ -85,9 +85,11 @@ public class DelegatingValueSetTest {
         delegatingValueSet.setAbstract(true);
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void testCopy() throws Exception {
-        delegatingValueSet.copy(parent, "asdf");
+        when(delegate.copy(parent, ANY_VALUE)).thenReturn(source);
+
+        assertThat(delegatingValueSet.copy(parent, ANY_VALUE), is(source));
     }
 
     @Test(expected = IllegalStateException.class)
@@ -391,7 +393,7 @@ public class DelegatingValueSetTest {
         EnumValueSet enumDelegate = mock(EnumValueSet.class);
         EnumValueSetValidator enumValidator = mock(EnumValueSetValidator.class);
         delegatingValueSet = new DelegatingValueSet(enumDelegate, parent);
-        when(parent.findValueDatatype(ipsProject)).thenReturn(enumDatatype);
+        when(delegatingValueSet.findValueDatatype(ipsProject)).thenReturn(enumDatatype);
         doReturn(enumValidator).when(enumDelegate).createValidator(parent, enumDatatype);
         when(enumValidator.validateValue(0)).thenReturn(MESSAGE_LIST);
 

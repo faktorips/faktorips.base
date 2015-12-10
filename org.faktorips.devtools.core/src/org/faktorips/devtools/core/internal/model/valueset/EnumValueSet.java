@@ -184,7 +184,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype, IIpsProject contextProject) {
-        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
         return ObjectUtils.equals(datatype, subDatatype);
     }
 
