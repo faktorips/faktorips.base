@@ -36,7 +36,7 @@ import org.faktorips.devtools.core.ui.controls.ControlComposite;
 public class BooleanValueSetControl extends ControlComposite implements IDataChangeableReadWriteAccess {
 
     /** true if the value set can be edited, false if it read-only. */
-    private boolean dataChangeable;
+    private boolean dataChangeable = true;
 
     /**
      * Provider for source and target enum value set.
@@ -49,6 +49,8 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
 
     private final IPolicyCmptTypeAttribute attribute;
 
+    private UIToolkit toolkit;
+
     /**
      * Creates a new control to show and edit the value set owned by the {@link IConfigElement}.
      * 
@@ -59,14 +61,15 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
     public BooleanValueSetControl(Composite parent, UIToolkit toolkit, IPolicyCmptTypeAttribute attribute,
             IConfigElement configElement) {
         super(parent, SWT.NONE);
+        this.toolkit = toolkit;
         this.attribute = attribute;
 
         setEnumValueSetProvider(new DefaultEnumValueSetProvider(configElement));
-        initControls(toolkit);
+        initControls();
 
     }
 
-    private void initControls(UIToolkit toolkit) {
+    private void initControls() {
         UIDatatypeFormatter datatypeFormatter = IpsUIPlugin.getDefault().getDatatypeFormatter();
         ValueDatatype valueDatatype = getDatatype(attribute);
         int components = 2;
@@ -110,7 +113,7 @@ public class BooleanValueSetControl extends ControlComposite implements IDataCha
     }
 
     private void updateEnabledState(Checkbox checkbox, String valueId) {
-        checkbox.setEnabled(dataChangeable && isCheckedOrValueAvailable(checkbox, valueId));
+        toolkit.setDataChangeable(checkbox, dataChangeable && isCheckedOrValueAvailable(checkbox, valueId));
     }
 
     /**

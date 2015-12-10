@@ -61,7 +61,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     private boolean dirty;
 
     /** true if the value set can be edited, false if it read-only. */
-    private boolean dataChangeable;
+    private boolean dataChangeable = true;
 
     /**
      * Provider for source and target enum value set.

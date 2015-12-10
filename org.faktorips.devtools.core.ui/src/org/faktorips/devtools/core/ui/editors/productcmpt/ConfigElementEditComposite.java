@@ -117,7 +117,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         BooleanValueSetControl booleanValueSetControl = new BooleanValueSetControl(this, getToolkit(), getProperty(),
                 getPropertyValue());
-        booleanValueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         BooleanValueSetField field = new BooleanValueSetField(getPropertyValue(), booleanValueSetControl);
 
         getBindingContext().bindContent(field, getPropertyValue(), IConfigElement.PROPERTY_VALUE_SET);
@@ -128,7 +127,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
     private ConfigElementField createValueSetField() {
         createLabel(Messages.ConfigElementEditComposite_valueSet);
         valueSetControl = new AnyValueSetControl(this, getToolkit(), getPropertyValue(), getShell());
-        valueSetControl.setDataChangeable(getProductCmptPropertySection().isDataChangeable());
         valueSetControl.setText(IpsUIPlugin.getDefault().getDatatypeFormatter()
                 .formatValueSet(getPropertyValue().getValueSet()));
         ((GridData)valueSetControl.getLayoutData()).widthHint = UIToolkit.DEFAULT_WIDTH;
