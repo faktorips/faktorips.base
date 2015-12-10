@@ -29,7 +29,7 @@ import java.util.Set;
  * {@link #get(Object)} on it (with any key) simply returns the {@link EmptySearchStructure} itself.
  * In other words an {@link EmptySearchStructure} is a kind of null-Object.
  * <p>
- * Example: given a nested structure Map -> Tree -> Tree and the call
+ * Example: given a nested structure Map → Tree → Tree and the call
  * <code>get(x).get(y).get(z)</code> on it. If <code>get(x)</code> on the map yields no result an
  * {@link EmptySearchStructure} is returned. Nevertheless the following <code>get(y).get(z)</code>
  * can be called without checking for <code>null</code>. The empty result is returned on every

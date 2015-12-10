@@ -275,7 +275,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * Creates an XML {@link Element} that represents this product component's data.
-     * <p/>
+     * <p>
      * Throws an {@link UnsupportedOperationException} if the support for toXml
      * ("Generate toXml Support") is not activated in the FIPS standard builder.
      * 
@@ -288,7 +288,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * Creates an XML {@link Element} that represents this product component's data.
-     * <p/>
+     * <p>
      * Throws an {@link UnsupportedOperationException} if the support for toXml
      * ("Generate toXml Support") is not activated in the FIPS standard builder.
      * 
@@ -335,7 +335,7 @@ public abstract class ProductComponent extends RuntimeObject implements IProduct
 
     /**
      * Subclasses override this method to write their properties into the given XML element.
-     * <p/>
+     * <p>
      * The standard implementation throws an {@link UnsupportedOperationException} if the support
      * for toXml ("Generate toXml Support") is not activated in the FIPS standard builder. Generated
      * classes override but do <em>NOT</em> call super.

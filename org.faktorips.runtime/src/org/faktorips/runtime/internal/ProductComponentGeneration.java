@@ -311,7 +311,7 @@ IXmlPersistenceSupport {
 
     /**
      * Creates an XML {@link Element} that represents this product component generation's data.
-     * <p/>
+     * <p>
      * Throws an {@link UnsupportedOperationException} if the support for toXml
      * ("Generate toXml Support") is not activated in the FIPS standard builder.
      * 
@@ -385,7 +385,7 @@ IXmlPersistenceSupport {
 
     /**
      * Subclasses override this method to write their properties into the given XML element.
-     * <p/>
+     * <p>
      * The standard implementation throws an {@link UnsupportedOperationException} if the support
      * for toXml ("Generate toXml Support") is not activated in the FIPS standard builder. Generated
      * classes override but do <em>NOT</em> call super.

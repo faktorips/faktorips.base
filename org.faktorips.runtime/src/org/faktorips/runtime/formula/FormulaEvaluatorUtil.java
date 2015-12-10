@@ -41,7 +41,7 @@ public class FormulaEvaluatorUtil {
      * list.
      * 
      * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
-     * @param modelObjects a list of model objects of type <T>
+     * @param modelObjects a list of model objects of type T
      * @param id the runtime ID this method searches
      * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
      * @return the (first) {@link IConfigurableModelObject} in the list that is configured by a
@@ -67,7 +67,7 @@ public class FormulaEvaluatorUtil {
      * the list.
      * 
      * @param <T> the type of {@link IModelObject} returned by this method and expected in the list
-     * @param modelObjects a list of model objects of type <T>
+     * @param modelObjects a list of model objects of type T
      * @param id the runtime ID this method searches
      * @see FormulaEvaluatorUtil#getModelObjectById(IModelObject, String)
      * @return the all {@link IConfigurableModelObject} in the list that is configured by a
@@ -94,7 +94,7 @@ public class FormulaEvaluatorUtil {
      * {@link IProductComponent} with the given ID, {@code null} otherwise.
      * 
      * @param <T> the type of {@link IModelObject} returned and expected by this method
-     * @param modelObject a model object of type <T>
+     * @param modelObject a model object of type T
      * @param id the runtime ID this method searches
      * @see FormulaEvaluatorUtil#getModelObjectById(List, String)
      * @return the {@link IModelObject} if it is a {@link IConfigurableModelObject} configured by a

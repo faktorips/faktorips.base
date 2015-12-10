@@ -567,8 +567,8 @@ public class Message implements Serializable {
      * {@link Message}.
      * <p>
      * To use the builder simply create an instance by calling the
-     * {@link #Message(String, Severity)} or by calling one of the static creation methods like
-     * {@link Message#error(String)}, {@link Message#warning(String)} or
+     * {@link Message#Message(String, Severity)} or by calling one of the static creation methods
+     * like {@link Message#error(String)}, {@link Message#warning(String)} or
      * {@link Message#info(String)}. Afterwards add needed information to the builder for example
      * call {@link #invalidObjectWithProperties(Object object, String... properties)} to provide
      * some invalid object properties. When the builder has every information that is needed to

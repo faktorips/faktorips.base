@@ -20,7 +20,7 @@ import org.w3c.dom.Element;
 
 /**
  * Class that represents a link/relation between product components.
- * <p/>
+ * <p>
  * As of FIPS 3.2 the cardinalities standard OPTIONAL, OBLIGATORY and FULL_RANGE are provided by the
  * {@link CardinalityRange} class.
  * 

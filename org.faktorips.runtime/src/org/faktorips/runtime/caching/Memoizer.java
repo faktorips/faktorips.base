@@ -126,7 +126,7 @@ public class Memoizer<K, V> implements IComputable<K, V> {
 
     /**
      * Coerce an unchecked Throwable to a RuntimeException
-     * <p/>
+     * <p>
      * If the Throwable is an Error, throw it; if it is a RuntimeException return it, otherwise
      * throw IllegalStateException
      */
