@@ -110,8 +110,8 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
      * {@link #XML_ATTRIBUTE_VALUE_TYPE} is already set with the type returned by {@link #getType()}
      * .
      * 
-     * @param valueEl The XML element with the name {@link ValueToXmlHelper#XML_TAG_VALUE}
-     *            holding the value.
+     * @param valueEl The XML element with the name {@link ValueToXmlHelper#XML_TAG_VALUE} holding
+     *            the value.
      * @param doc The owner document to create additional XML elements
      */
     protected abstract void contentToXml(Element valueEl, Document doc);
@@ -145,5 +145,14 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
     public String toString() {
         return "ValueHolder: " + getStringValue(); //$NON-NLS-1$
     }
+
+    /**
+     * Creates a new validator to validate this value holder.
+     * 
+     * @param parentForValidation the parent that the validator assumes that this value holder is a
+     *            part of when validating the value holder
+     * @param ipsProject the IPS project to use
+     */
+    protected abstract IValueHolderValidator newValidator(IAttributeValue parentForValidation, IIpsProject ipsProject);
 
 }

@@ -104,7 +104,7 @@ public class UIToolkit {
      * adjusted as well.
      */
     public void setDataChangeable(Control c, boolean changeable) {
-        if (c == null) {
+        if (c == null || !isMarkedAsEnabled(c)) {
             return;
         }
         if (c instanceof IDataChangeableReadWriteAccess) {
@@ -185,7 +185,7 @@ public class UIToolkit {
      * Setting the enabled state of a control and all its child controls recursively. In contrast to
      * normal SWT enabled state, we do not set Text controls to enabled=false because we'd like to
      * select and copy text also in disabled text controls.
-     *
+     * 
      * @param c The control that should be set to enabled or disabled
      * @param enabled <code>true</code> to mark the control as enabled, <code>false</code> to
      *            disable.
@@ -233,7 +233,15 @@ public class UIToolkit {
 
     public boolean isEnabled(Control c) {
         if (c != null && !c.isDisposed()) {
-            return c.isEnabled() && BooleanUtils.isNotFalse((Boolean)c.getData(ENABLED));
+            return c.isEnabled() && isMarkedAsEnabled(c);
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isMarkedAsEnabled(Control c) {
+        if (c != null && !c.isDisposed()) {
+            return BooleanUtils.isNotFalse((Boolean)c.getData(ENABLED));
         } else {
             return false;
         }

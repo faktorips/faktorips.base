@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.search.product.conditions.types;
 
 import java.util.Collection;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -28,12 +27,7 @@ public abstract class AbstractAttributeConditionType extends AbstractConditionTy
     @Override
     public ValueDatatype getValueDatatype(IIpsElement elementPart) {
         IAttribute attribute = (IAttribute)elementPart;
-        try {
-            return attribute.findDatatype(attribute.getIpsProject());
-        } catch (CoreException e) {
-            // TODO Exception Handling
-            throw new RuntimeException(e);
-        }
+        return attribute.findDatatype(attribute.getIpsProject());
     }
 
     @Override

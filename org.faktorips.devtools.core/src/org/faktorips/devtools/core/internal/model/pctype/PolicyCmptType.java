@@ -233,8 +233,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException {
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject) {
         return (IPolicyCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
@@ -330,7 +329,7 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
         validateDuplicateRulesNames(list);
     }
 
-    private void validateProductSide(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateProductSide(MessageList list, IIpsProject ipsProject) {
         if (isConfigurableByProductCmptType()) {
             if (StringUtils.isEmpty(productCmptType)) {
                 String text = Messages.PolicyCmptType_msg_ProductCmptTypeNameMissing;

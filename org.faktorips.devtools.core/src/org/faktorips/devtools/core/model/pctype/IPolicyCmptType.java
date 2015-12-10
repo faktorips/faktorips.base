@@ -218,10 +218,8 @@ public interface IPolicyCmptType extends IType {
      * one attribute with the name exist, the first attribute with the name is returned. Returns
      * <code>null</code> if no attribute with the given name is found.
      * 
-     * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException;
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.

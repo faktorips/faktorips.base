@@ -10,9 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -119,7 +122,7 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         set.addValue("5");
         set.addValue("1");
 
-        EnumValueSet copy = (EnumValueSet)set.copy(generation.newConfigElement(), "1");
+        IEnumValueSet copy = (IEnumValueSet)set.copy(generation.newConfigElement(), "1");
         assertEquals(3, copy.size());
         assertEquals(0, copy.getPositions("10").get(0).intValue());
         assertEquals(1, copy.getPositions("5").get(0).intValue());
@@ -693,12 +696,9 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
 
         ((IProductCmptGeneration)ce.getPropertyValueContainer()).getProductCmpt().setProductCmptType("unkown");
         list = set2.validate(ipsProject);
-        assertEquals(2, list.size());
-        MessageList messages = list.getMessagesFor(set2, IEnumValueSet.PROPERTY_VALUES);
-        for (int i = 0; i < messages.size(); i++) {
-            assertEquals(Message.WARNING, messages.getMessage(i).getSeverity());
-            assertEquals(IValueSet.MSGCODE_UNKNOWN_DATATYPE, messages.getMessage(i).getCode());
-        }
+        assertEquals(1, list.size());
+        assertThat(list, hasMessageCode(IValueSet.MSGCODE_UNKNOWN_DATATYPE));
+        assertThat(list.getMessageByCode(IValueSet.MSGCODE_UNKNOWN_DATATYPE).getSeverity(), is(Message.WARNING));
     }
 
     @Test

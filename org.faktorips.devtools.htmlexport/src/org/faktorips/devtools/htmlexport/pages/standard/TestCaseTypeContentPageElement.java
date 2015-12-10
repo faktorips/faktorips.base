@@ -280,15 +280,8 @@ public class TestCaseTypeContentPageElement extends AbstractIpsObjectContentPage
                 return;
             }
 
-            IPolicyCmptType policyCmptType;
-            try {
-                policyCmptType = getContext().getIpsProject().findPolicyCmptType(correspondingPolicyCmptType);
-            } catch (CoreException e) {
-                attributeData.add(new TextPageElement("-", getContext())); //$NON-NLS-1$
-                attributeData.add(new TextPageElement(attribute.getDatatype(), getContext()));
-                throw e;
-            }
-
+            IPolicyCmptType policyCmptType = getContext().getIpsProject().findPolicyCmptType(
+                    correspondingPolicyCmptType);
             attributeData.add(new PageElementUtils(getContext()).createLinkPageElement(getContext(), policyCmptType,
                     TargetType.CONTENT, correspondingPolicyCmptType, true));
             if (policyCmptType != null) {

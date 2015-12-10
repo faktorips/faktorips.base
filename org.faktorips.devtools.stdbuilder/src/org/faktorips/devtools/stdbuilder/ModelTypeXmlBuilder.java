@@ -38,9 +38,6 @@ import org.faktorips.devtools.core.model.type.AssociationType;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.devtools.stdbuilder.xpand.model.XType;
@@ -352,16 +349,17 @@ public class ModelTypeXmlBuilder extends AbstractXmlFileBuilder {
         if (attribute instanceof IProductCmptTypeAttribute) {
             valueSet = ((IProductCmptTypeAttribute)attribute).getValueSet();
         }
-        if (valueSet instanceof IUnrestrictedValueSet) {
+        if (valueSet == null) {
+            return null;
+        } else if (valueSet.isUnrestricted()) {
             return "AllValues";
-        }
-        if (valueSet instanceof IRangeValueSet) {
+        } else if (valueSet.isRange()) {
             return "Range";
-        }
-        if (valueSet instanceof IEnumValueSet) {
+        } else if (valueSet.isEnum()) {
             return "Enum";
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override

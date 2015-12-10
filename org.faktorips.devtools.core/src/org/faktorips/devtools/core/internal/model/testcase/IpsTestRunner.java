@@ -114,7 +114,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /** Shared instance of the test runner */
-    private static IpsTestRunner ipsTestRunner;
+    private static IpsTestRunner ipsTestRunner = new IpsTestRunner();
 
     private int port;
     private IIpsProject ipsProject;
@@ -166,9 +166,6 @@ public class IpsTestRunner implements IIpsTestRunner {
      * Returns the shared instance.
      */
     public static IpsTestRunner getDefault() {
-        if (ipsTestRunner == null) {
-            ipsTestRunner = new IpsTestRunner();
-        }
         return ipsTestRunner;
     }
 

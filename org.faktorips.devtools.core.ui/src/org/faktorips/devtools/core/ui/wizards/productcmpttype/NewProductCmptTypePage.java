@@ -87,7 +87,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         addAbstractField(nameComposite, toolkit);
     }
 
-    private IPolicyCmptType getPolicyCmptType() throws CoreException {
+    private IPolicyCmptType getPolicyCmptType() {
         String pcTypeQualifiedName = policyCmptTypeField.getText();
         if (getIpsProject() != null) {
             IPolicyCmptType policyCmptType = getIpsProject().findPolicyCmptType(pcTypeQualifiedName);
@@ -147,8 +147,7 @@ public class NewProductCmptTypePage extends NewTypePage {
         associatePolicyCmptType(modifiedIpsObjects, productCmptType);
     }
 
-    private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType)
-            throws CoreException {
+    private void associatePolicyCmptType(Set<IIpsObject> modifiedIpsObjects, IProductCmptType productCmptType) {
 
         String policyCmptTypeQualifiedName = policyCmptTypeField.getValue();
         if (StringUtils.isEmpty(policyCmptTypeQualifiedName)) {

@@ -22,7 +22,6 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -253,7 +252,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setValueSetType(ValueSetType.RANGE);
         attribute.setCategory("foo");
         attribute.setChangingOverTime(false);
-        RangeValueSet set = (RangeValueSet)attribute.getValueSet();
+        IRangeValueSet set = (IRangeValueSet)attribute.getValueSet();
         set.setLowerBound("unten");
         set.setUpperBound("oben");
         set.setStep("step");
@@ -282,7 +281,7 @@ public class PolicyCmptTypeAttributeTest extends AbstractIpsPluginTest {
         attribute.setAttributeType(AttributeType.CONSTANT);
         attribute.setDefaultValue("18");
         attribute.setValueSetType(ValueSetType.ENUM);
-        EnumValueSet set2 = (EnumValueSet)attribute.getValueSet();
+        IEnumValueSet set2 = (IEnumValueSet)attribute.getValueSet();
         set2.addValue("a");
         set2.addValue("b");
         set2.addValue("x");

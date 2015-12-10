@@ -10,9 +10,11 @@
 
 package org.faktorips.devtools.core.ui.inputformat;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -20,7 +22,9 @@ import java.util.Arrays;
 
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.ConfigElement;
+import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -61,6 +65,10 @@ public class AnyValueSetFormatTest {
 
     private EnumValueSet enumValueSet;
 
+    private RangeValueSet rangeValueSet;
+
+    private UnrestrictedValueSet unrestrictedValueSet;
+
     private AnyValueSetFormat format;
 
     @Before
@@ -73,6 +81,8 @@ public class AnyValueSetFormatTest {
         when(configElement.getIpsObject()).thenReturn(ipsObject);
         when(uiPlugin.getInputFormat(datatype, ipsProject)).thenReturn(cachedInputFormat);
         format = new AnyValueSetFormat(configElement, uiPlugin);
+        rangeValueSet = new RangeValueSet(configElement, "ID");
+        unrestrictedValueSet = new UnrestrictedValueSet(configElement, "ID");
     }
 
     @Test
@@ -126,6 +136,33 @@ public class AnyValueSetFormatTest {
         IValueSet parseInternal = format.parseInternal("|aabc|");
 
         assertEquals(parseInternal, enumValueSet);
+    }
+
+    @Test
+    public void testFormatInternal_delegateEnum() throws Exception {
+        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(enumValueSet, configElement);
+
+        String formattedValue = format.formatInternal(delegatingValueSet);
+
+        assertThat(formattedValue, is("{}"));
+    }
+
+    @Test
+    public void testFormatInternal_delegateRange() throws Exception {
+        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(rangeValueSet, configElement);
+
+        String formattedValue = format.formatInternal(delegatingValueSet);
+
+        assertThat(formattedValue, is("[* ... *]"));
+    }
+
+    @Test
+    public void testFormatInternal_delegateUnrestricted() throws Exception {
+        DelegatingValueSet delegatingValueSet = new DelegatingValueSet(unrestrictedValueSet, configElement);
+
+        String formattedValue = format.formatInternal(delegatingValueSet);
+
+        assertThat(formattedValue, is(unrestrictedValueSet.toShortString()));
     }
 
 }

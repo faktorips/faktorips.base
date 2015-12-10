@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.ast.ParameterNode;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -66,7 +65,7 @@ public class ParameterCollectorTest {
     private IIpsProject ipsProject;
 
     @Before
-    public void setUpFinderAndFormula() throws CoreException {
+    public void setUpFinderAndFormula() {
         when(finder.getExpression()).thenReturn(formula);
         when(finder.getIpsProject()).thenReturn(ipsProject);
         when(formula.getPropertyValueContainer()).thenReturn(generation);

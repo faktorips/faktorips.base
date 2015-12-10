@@ -45,9 +45,9 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
     }
 
     @Override
-    public String formatInternal(IValueSet value) {
-        if (value instanceof IEnumValueSet) {
-            return formatEnumValueSet((IEnumValueSet)value);
+    public String formatInternal(IValueSet valueSet) {
+        if (valueSet.isEnum()) {
+            return formatEnumValueSet((IEnumValueSet)valueSet);
         } else {
             return StringUtils.EMPTY;
         }
@@ -90,7 +90,7 @@ public class EnumValueSetFormat extends AbstractValueSetFormat {
     }
 
     private boolean isEqualContent(List<String> parsedValues) {
-        return getValueSet() instanceof IEnumValueSet && getValuesAsList().equals(parsedValues);
+        return getValueSet().isEnum() && getValuesAsList().equals(parsedValues);
     }
 
     private List<String> getValuesAsList() {

@@ -95,11 +95,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
         initialName = attribute.getName();
         ipsProject = attribute.getIpsProject();
 
-        try {
-            currentDatatype = productCmptTypeAttribute.findDatatype(ipsProject);
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
+        currentDatatype = productCmptTypeAttribute.findDatatype(ipsProject);
 
         currentValueSetType = productCmptTypeAttribute.getValueSet().getValueSetType();
         extFactory = new ExtensionPropertyControlFactory(attribute);
@@ -177,7 +173,7 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                 workArea,
                 NLS.bind(Messages.AttributeEditDialog_changeOverTimeCheckbox, IpsPlugin.getDefault()
                         .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()),
-                SWT.CHECK);
+                        SWT.CHECK);
         getBindingContext().bindContent(changeOverTimeCheckbox, attribute,
                 IProductCmptTypeAttribute.PROPERTY_CHANGING_OVER_TIME);
 
@@ -303,22 +299,22 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
                         .findOverwrittenAttribute(ipsProject);
                 if (overwrittenAttribute != null) {
                     IpsPlugin
-                            .getDefault()
-                            .getIpsModel()
-                            .executeModificationsWithSingleEvent(
-                                    new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
+                    .getDefault()
+                    .getIpsModel()
+                    .executeModificationsWithSingleEvent(
+                            new SingleEventModification<Object>(attribute.getIpsSrcFile()) {
 
-                                        @Override
-                                        protected boolean execute() throws CoreException {
-                                            attribute.setDatatype(overwrittenAttribute.getDatatype());
-                                            attribute.setModifier(overwrittenAttribute.getModifier());
-                                            attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
-                                            attribute.setMultiValueAttribute(overwrittenAttribute
-                                                    .isMultiValueAttribute());
-                                            attribute.setCategory(overwrittenAttribute.getCategory());
-                                            return true;
-                                        }
-                                    });
+                                @Override
+                                protected boolean execute() throws CoreException {
+                                    attribute.setDatatype(overwrittenAttribute.getDatatype());
+                                    attribute.setModifier(overwrittenAttribute.getModifier());
+                                    attribute.setValueSetCopy(overwrittenAttribute.getValueSet());
+                                    attribute.setMultiValueAttribute(overwrittenAttribute
+                                            .isMultiValueAttribute());
+                                    attribute.setCategory(overwrittenAttribute.getCategory());
+                                    return true;
+                                }
+                            });
                 }
             }
             ValueDatatype newDatatype = attribute.findDatatype(ipsProject);
@@ -416,13 +412,9 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
          */
         public boolean isEnabledDefaultAndValueset() {
             boolean enabled = true;
-            try {
-                ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(
-                        getIpsObjectPartContainer().getIpsProject());
-                enabled = newDatatype != null && !this.getIpsObjectPartContainer().isMultilingual();
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            ValueDatatype newDatatype = this.getIpsObjectPartContainer().findDatatype(
+                    getIpsObjectPartContainer().getIpsProject());
+            enabled = newDatatype != null && !this.getIpsObjectPartContainer().isMultilingual();
             return enabled;
         }
     }

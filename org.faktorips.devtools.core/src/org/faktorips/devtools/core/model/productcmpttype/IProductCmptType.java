@@ -259,9 +259,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the type.
      */
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Returns the type's supertype if the type is based on a supertype and the supertype can be

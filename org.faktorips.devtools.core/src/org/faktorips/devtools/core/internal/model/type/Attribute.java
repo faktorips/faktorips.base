@@ -80,7 +80,7 @@ public abstract class Attribute extends TypePart implements IAttribute {
     }
 
     @Override
-    public ValueDatatype findDatatype(IIpsProject project) throws CoreException {
+    public ValueDatatype findDatatype(IIpsProject project) {
         return project.findValueDatatype(datatype);
     }
 

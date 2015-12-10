@@ -78,11 +78,7 @@ public class PolicyCmptClassBuilder extends TypeBuilder<XPolicyCmptClass> {
         } else if (ipsObject instanceof IProductCmptType) {
             IProductCmptType productCmptType = (IProductCmptType)ipsObject;
             if (productCmptType.isConfigurationForPolicyCmptType()) {
-                try {
-                    return productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                return productCmptType.findPolicyCmptType(productCmptType.getIpsProject());
             }
         }
         return null;

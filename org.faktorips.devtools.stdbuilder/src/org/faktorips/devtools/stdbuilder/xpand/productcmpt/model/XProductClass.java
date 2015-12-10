@@ -272,12 +272,7 @@ public abstract class XProductClass extends XType {
     }
 
     public XPolicyCmptClass getPolicyCmptClass() {
-        IPolicyCmptType policyCmptType;
-        try {
-            policyCmptType = getType().findPolicyCmptType(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IPolicyCmptType policyCmptType = getType().findPolicyCmptType(getIpsProject());
         if (policyCmptType == null) {
             throw new NullPointerException("No policy found for " + getName());
         }

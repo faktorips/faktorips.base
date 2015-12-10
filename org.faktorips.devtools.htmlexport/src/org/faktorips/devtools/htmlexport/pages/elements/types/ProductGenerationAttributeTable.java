@@ -18,10 +18,8 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.RangeValueSet;
-import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
@@ -41,6 +39,8 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
+import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.htmlexport.context.DocumentationContext;
 import org.faktorips.devtools.htmlexport.context.messages.HtmlExportMessages;
@@ -209,12 +209,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
 
     private IPolicyCmptType getPolicyCmptType() {
         IPolicyCmptType policyCmptType = null;
-        try {
-            policyCmptType = productCmptType.findPolicyCmptType(getContext().getIpsProject());
-        } catch (CoreException e) {
-            getContext().addStatus(new IpsStatus(IStatus.ERROR, "Error finding PolicyCmptType of ProductCmptType " //$NON-NLS-1$
-                    + productCmptType.getQualifiedName(), e));
-        }
+        policyCmptType = productCmptType.findPolicyCmptType(getContext().getIpsProject());
         return policyCmptType;
     }
 
@@ -252,31 +247,29 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
                 "ProductGenerationAttributeTable_defaultValue") //$NON-NLS-1$
                 + COLON_SEPARATOR
                 + getContext().getDatatypeFormatter().formatValue(
-                        ((ValueSet)valueSet).findValueDatatype(getContext().getIpsProject()), defaultValue),
-                TextType.BLOCK, getContext()));
+                        valueSet.findValueDatatype(getContext().getIpsProject()), defaultValue), TextType.BLOCK,
+                getContext()));
 
         if (valueSet.isEnum()) {
-            pageElement.addPageElements(createEnumValueSetCell((EnumValueSet)valueSet));
+            pageElement.addPageElements(createEnumValueSetCell((IEnumValueSet)valueSet));
         } else if (valueSet.isUnrestricted()) {
             pageElement.addPageElements(createUnrestrictedEnumValueCell());
         } else if (valueSet.isRange()) {
-            pageElement.addPageElements(createRangeValueSetCell((RangeValueSet)valueSet));
+            pageElement.addPageElements(createRangeValueSetCell((IRangeValueSet)valueSet));
         }
         return pageElement;
     }
 
-    private TextPageElement createRangeValueSetCell(RangeValueSet rangeValueSet) {
+    private TextPageElement createRangeValueSetCell(IRangeValueSet rangeValueSet) {
         StringBuilder builder = new StringBuilder();
         builder.append(getContext().getMessage(HtmlExportMessages.ProductGenerationAttributeTable_minMaxStep));
         builder.append(COLON_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(
-                rangeValueSet.findValueDatatype(getContext().getIpsProject()), rangeValueSet.getLowerBound()));
+        ValueDatatype valueDatatype = rangeValueSet.findValueDatatype(getContext().getIpsProject());
+        builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getLowerBound()));
         builder.append(COMMA_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(
-                rangeValueSet.findValueDatatype(getContext().getIpsProject()), rangeValueSet.getUpperBound()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getUpperBound()));
         builder.append(COMMA_SEPARATOR);
-        builder.append(getContext().getDatatypeFormatter().formatValue(
-                rangeValueSet.findValueDatatype(getContext().getIpsProject()), rangeValueSet.getStep()));
+        builder.append(getContext().getDatatypeFormatter().formatValue(valueDatatype, rangeValueSet.getStep()));
 
         TextPageElement textPageElement = new TextPageElement(builder.toString(), TextType.BLOCK, getContext());
         return textPageElement;
@@ -288,7 +281,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         return textPageElement;
     }
 
-    private TextPageElement createEnumValueSetCell(EnumValueSet enumValueSet) {
+    private TextPageElement createEnumValueSetCell(IEnumValueSet enumValueSet) {
         StringBuilder builder = new StringBuilder();
 
         for (String enumValue : enumValueSet.getValues()) {

@@ -164,7 +164,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     @Override
-    public IAttribute findAttribute(String name, IIpsProject project) throws CoreException {
+    public IAttribute findAttribute(String name, IIpsProject project) {
         AttributeFinder finder = new AttributeFinder(project, name);
         finder.start(this);
         return finder.attribute;
@@ -806,7 +806,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     protected abstract static class AbstractAssociationFinder<T extends IAssociation> extends
-            TypeHierarchyVisitor<IType> {
+    TypeHierarchyVisitor<IType> {
 
         private List<T> associationsFound = new ArrayList<T>();
         private final boolean superTypeFirst;

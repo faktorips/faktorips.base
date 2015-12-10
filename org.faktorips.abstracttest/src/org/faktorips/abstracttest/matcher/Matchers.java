@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.abstracttest.matcher;
 
+import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.hamcrest.Matcher;
 
@@ -29,4 +30,9 @@ public class Matchers {
     public static Matcher<MessageList> isEmpty() {
         return new EmptyMessageListMatcher();
     }
+
+    public static Matcher<Message> hasInvalidObject(Object invalidObject) {
+        return new MessageInvalidObjectMatcher(invalidObject);
+    }
+
 }

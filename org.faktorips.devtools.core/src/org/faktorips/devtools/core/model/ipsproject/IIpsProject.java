@@ -478,9 +478,8 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns <code>null</code> if no such type is found. Returns <code>null</code> if the
      * qualified name is <code>null</code>.
      * 
-     * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(String qualifiedName);
 
     /**
      * Returns the first product component type with the given qualified name found on the path.

@@ -15,11 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.builder.IPersistenceProvider;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.pctype.IPersistentAttributeInfo;
@@ -95,11 +93,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
     }
 
     private ValueDatatype getDatatype(IPolicyCmptTypeAttribute attribute) {
-        try {
-            return attribute.findDatatype(attribute.getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return attribute.findDatatype(attribute.getIpsProject());
     }
 
     private void addDatatypeDendingJpaAttributes(List<String> attributesToAppend,
@@ -116,7 +110,7 @@ public class PolicyCmptImplClassAttributeFieldJpaAnnGen extends AbstractJpaAnnot
 
     /**
      * <code>
-     * Converter(name = "gender", converterClass = example.Gender) 
+     * Converter(name = "gender", converterClass = example.Gender)
      * Convert("gender")
      * <code>
      */

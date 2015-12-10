@@ -32,7 +32,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -113,7 +112,7 @@ public class EnumValueSetEditControl extends EditTableControl implements IValueS
 
     @Override
     protected void initModelObject(Object modelObject) {
-        valueSet = (EnumValueSet)modelObject;
+        valueSet = (IEnumValueSet)modelObject;
     }
 
     public IEnumValueSet getEnumValueSet() {

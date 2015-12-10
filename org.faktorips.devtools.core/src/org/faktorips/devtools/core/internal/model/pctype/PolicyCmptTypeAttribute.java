@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ChangingOverTimePropertyValidator;
 import org.faktorips.devtools.core.internal.model.type.Attribute;
@@ -441,14 +440,10 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
     }
 
     public ValueDatatype getValueDatatype() {
-        try {
-            // TODO v2 - signature getValueDatatype() is wrong
-            Datatype type = findDatatype(getIpsProject());
-            if (type != null) {
-                return (ValueDatatype)type;
-            }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
+        // TODO v2 - signature getValueDatatype() is wrong
+        Datatype type = findDatatype(getIpsProject());
+        if (type != null) {
+            return (ValueDatatype)type;
         }
         return null;
     }

@@ -109,7 +109,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testContainsValueSet() throws Exception {
-        UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
+        IUnrestrictedValueSet allValues = (IUnrestrictedValueSet)ce.getValueSet();
 
         assertTrue(allValues.containsValueSet(allValues));
         assertTrue(allValues.containsValueSet(new UnrestrictedValueSet(ce, "99")));
@@ -118,7 +118,7 @@ public class AllValuesValueSetTest extends AbstractIpsPluginTest {
 
     @Test
     public void testIsContainsNull() throws Exception {
-        UnrestrictedValueSet allValues = (UnrestrictedValueSet)ce.getValueSet();
+        IUnrestrictedValueSet allValues = (IUnrestrictedValueSet)ce.getValueSet();
 
         // test with non-primitive datatype
         assertTrue(allValues.isContainsNull());

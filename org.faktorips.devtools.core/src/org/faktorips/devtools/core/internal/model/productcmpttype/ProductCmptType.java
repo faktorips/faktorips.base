@@ -223,7 +223,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) {
         if (!configurationForPolicyCmptType) {
             return null;
         }
@@ -1387,11 +1387,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
             collectFormulaSignatureDefinitions(currentType);
 
             IPolicyCmptType policyCmptType;
-            try {
-                policyCmptType = currentType.findPolicyCmptType(getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            policyCmptType = currentType.findPolicyCmptType(getIpsProject());
             if (policyCmptType == null || visitedPolicyCmptTypes.contains(policyCmptType)) {
                 return searchSupertypeHierarchy;
             }
@@ -1547,11 +1543,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
         @Override
         protected IType getMatchingType(IType currentType) {
-            try {
-                return ((IProductCmptType)currentType).findPolicyCmptType(getIpsProject());
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            return ((IProductCmptType)currentType).findPolicyCmptType(getIpsProject());
         }
 
         @Override

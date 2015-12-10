@@ -759,7 +759,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
 
     @Test
     public void testFindProductCmptProperty_ByReferenceSameIdInPolicyTypeAndProductType() throws CoreException,
-    SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
+            SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException {
 
         IPolicyCmptTypeAttribute policyAttribute = policyCmptType.newPolicyCmptTypeAttribute("policyAttribute");
         policyAttribute.setName("policyAttribute");
@@ -924,7 +924,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testFindPolicyCmptType() throws CoreException {
+    public void testFindPolicyCmptType() {
         productCmptType.setConfigurationForPolicyCmptType(true);
         productCmptType.setPolicyCmptType("");
         assertNull(productCmptType.findPolicyCmptType(ipsProject));
@@ -1230,7 +1230,7 @@ public class ProductCmptTypeTest extends AbstractDependencyTest {
         IProductCmptProperty property2 = productCmptType.newProductCmptTypeAttribute("p2");
         IProductCmptProperty property3 = productCmptType.newProductCmptTypeAttribute("p3");
         productCmptType
-        .movePropertyReferences(new int[] { 2, 1 }, Arrays.asList(property1, property2, property3), true);
+                .movePropertyReferences(new int[] { 2, 1 }, Arrays.asList(property1, property2, property3), true);
 
         // Make reference obsolete by deleting the property
         property2.delete();

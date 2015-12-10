@@ -270,7 +270,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
         return (PolicyCmptType)getIpsObject();
     }
 
-    private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) throws CoreException {
+    private void validateValidatedAttribute(MessageList list, IIpsProject ipsProject) {
         List<IAttribute> attributes = getPolicyCmptType().getSupertypeHierarchy().getAllAttributes(getPolicyCmptType());
         Set<String> attributeNames = new HashSet<String>(attributes.size());
         for (IAttribute attribute : attributes) {
@@ -299,7 +299,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
                     String text = Messages.ValidationRule_msgDuplicateEntries;
                     list.add(new Message("", text, Message.WARNING, //$NON-NLS-1$
                             new ObjectProperty[] { new ObjectProperty(this, "validatedAttributes", i), //$NON-NLS-1$
-                                    new ObjectProperty(this, "validatedAttributes", r) })); //$NON-NLS-1$
+                            new ObjectProperty(this, "validatedAttributes", r) })); //$NON-NLS-1$
                 }
             }
         }

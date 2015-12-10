@@ -130,7 +130,7 @@ public abstract class AbstractDatatypeHelper implements DatatypeHelper {
      * Java 5 code sample
      * 
      * <pre>
-     *  (EnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
+     *  (IEnumValueSet)new DefaultEnumValueSet&lt;GeneratedGender&gt;(
      *      true, 
      *      GeneratedGender.getGeneratedGender(null),
      *      GeneratedGender.getGeneratedGender(new Integer(1)), 

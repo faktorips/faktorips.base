@@ -481,15 +481,11 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         }
 
         public ValueDatatype getValueDatatype() {
-            try {
-                ValueDatatype datatype = getValueSetOwner().findValueDatatype(getIpsProject());
-                if (datatype == null) {
-                    return Datatype.STRING;
-                }
-                return datatype;
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
+            ValueDatatype datatype = getValueSetOwner().findValueDatatype(getIpsProject());
+            if (datatype == null) {
+                return Datatype.STRING;
             }
+            return datatype;
         }
 
         @Override

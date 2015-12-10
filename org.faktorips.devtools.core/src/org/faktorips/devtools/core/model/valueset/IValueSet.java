@@ -11,6 +11,8 @@
 package org.faktorips.devtools.core.model.valueset;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.datatype.ValueDatatype;
+import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -159,16 +161,31 @@ public interface IValueSet extends IIpsObjectPart {
     /**
      * Returns <code>true</code> if the value set is unrestricted. It contains all values defined by
      * an underlying data type.
+     * 
+     * Prefer this method over instance-of check. If this method returns <code>true</code> the
+     * object could safely be casted to {@link IUnrestrictedValueSet}. But if the object is an
+     * instance of {@link IUnrestrictedValueSet} it does not mean that it is really an unrestricted
+     * value set e.g. in case of {@link DelegatingValueSet}
      */
     public boolean isUnrestricted();
 
     /**
      * Returns <code>true</code> if the value set is a range, otherwise <code>false</code>.
+     * 
+     * Prefer this method over instance-of check. If this method returns <code>true</code> the
+     * object could safely be casted to {@link IRangeValueSet}. But if the object is an instance of
+     * {@link IRangeValueSet} it does not mean that it is really a range e.g. in case of
+     * {@link DelegatingValueSet}
      */
     public boolean isRange();
 
     /**
      * Returns <code>true</code> if the value set is an enumeration, otherwise <code>false</code>.
+     * 
+     * Prefer this method over instance-of check. If this method returns <code>true</code> the
+     * object could safely be casted to {@link IEnumValueSet}. But if the object is an instance of
+     * {@link IEnumValueSet} it does not mean that it is really an enum e.g. in case of
+     * {@link DelegatingValueSet}
      */
     public boolean isEnum();
 
@@ -202,5 +219,13 @@ public interface IValueSet extends IIpsObjectPart {
      * </ul>
      */
     public boolean isDetailedSpecificationOf(IValueSet valueSet);
+
+    /**
+     * Returns the datatype used by this value set
+     * 
+     * @param ipsProject The ips project to search for the datatype
+     * @return The datatype that is used by this value set
+     */
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
 }
