@@ -167,6 +167,7 @@ public class UIDatatypeFormatterTest {
 
     private void assertEnumValuesetFormatting(String[] enumValues, String expectedFormat) throws Exception {
         IEnumValueSet enumValueSet = Mockito.mock(IEnumValueSet.class);
+        when(enumValueSet.isEnum()).thenReturn(true);
         when(enumValueSet.getValues()).thenReturn(enumValues);
         IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
         when(enumValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
@@ -220,6 +221,7 @@ public class UIDatatypeFormatterTest {
 
     private RangeValueSet mockRangeValueSet() {
         RangeValueSet rangeValueSet = mock(RangeValueSet.class);
+        when(rangeValueSet.isRange()).thenReturn(true);
         IValueSetOwner valueSetOwner = mock(IValueSetOwner.class);
         when(rangeValueSet.getValueSetOwner()).thenReturn(valueSetOwner);
         when(valueSetOwner.findValueDatatype(ipsProject)).thenReturn(Datatype.INTEGER);

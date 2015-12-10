@@ -165,7 +165,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
 
-        if (!(subset instanceof EnumValueSet)) {
+        if (!(subset.isEnum())) {
             return false;
         }
         if (!datatypesCompatible(subset, datatype, contextProject)) {

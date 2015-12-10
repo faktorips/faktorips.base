@@ -290,7 +290,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
         List<ObjectProperty> invalidObjectProperties = new ArrayList<ObjectProperty>();
         invalidObjectProperties.add(new ObjectProperty(this, IConfigElement.PROPERTY_VALUE_SET));
-        if (valueSetToValidate instanceof IRangeValueSet) {
+        if (valueSetToValidate.isRange()) {
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_LOWERBOUND));
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_UPPERBOUND));
             invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_STEP));

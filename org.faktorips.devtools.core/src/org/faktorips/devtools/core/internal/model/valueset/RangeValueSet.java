@@ -216,7 +216,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
             if (!isValid(contextProject)) {
                 return false;
             }
-            if (!(subset instanceof RangeValueSet) || !subset.isValid(contextProject)) {
+            if (!(subset.isRange()) || !subset.isValid(contextProject)) {
                 return false;
             }
         } catch (CoreException e) {

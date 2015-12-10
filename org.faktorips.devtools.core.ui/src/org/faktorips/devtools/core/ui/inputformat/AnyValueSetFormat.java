@@ -16,9 +16,6 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.events.VerifyEvent;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
-import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
-import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -53,11 +50,11 @@ public class AnyValueSetFormat extends AbstractInputFormat<IValueSet> {
 
     @Override
     protected String formatInternal(IValueSet valueSet) {
-        if (valueSet instanceof IEnumValueSet) {
+        if (valueSet.isEnum()) {
             return enumValueSetFormat.formatInternal(valueSet);
-        } else if (valueSet instanceof IRangeValueSet) {
+        } else if (valueSet.isRange()) {
             return rangeValueSetFormat.formatInternal(valueSet);
-        } else if (valueSet instanceof IUnrestrictedValueSet) {
+        } else if (valueSet.isUnrestricted()) {
             return unrestrictedValueSetFormat.formatInternal(valueSet);
         }
         return StringUtils.EMPTY;
