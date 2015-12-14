@@ -100,5 +100,6 @@ Export-Package: org.faktorips.devtools.core,
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.collections;version="3.2.1",
+ org.apache.commons.collections.comparators;version="3.2.1",
  org.apache.commons.collections.map;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]"

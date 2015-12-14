@@ -495,8 +495,7 @@ public class PolicyCmptTypeAttribute extends Attribute implements IPolicyCmptTyp
 
     @Override
     public boolean isPropertyFor(IPropertyValue propertyValue) {
-        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                && getPropertyName().equals(propertyValue.getPropertyName());
+        return getProductCmptPropertyType().isMatchingPropertyValue(getPropertyName(), propertyValue);
     }
 
     @Override

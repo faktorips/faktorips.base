@@ -53,6 +53,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -232,23 +233,23 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement ce3 = generation.newConfigElement();
         IConfigElement ce4 = generation.newConfigElement();
 
-        List<? extends IPropertyValue> values = generation
-                .getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass());
+        List<? extends IPropertyValue> values = generation.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE
+                .getInterfaceClass());
         assertEquals(1, values.size());
         assertEquals(value1, values.get(0));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueClass());
+        values = generation.getPropertyValues(PropertyValueType.FORMULA.getInterfaceClass());
         assertEquals(2, values.size());
         assertEquals(formula1, values.get(0));
         assertEquals(formula2, values.get(1));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass());
+        values = generation.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass());
         assertEquals(3, values.size());
         assertEquals(tcu1, values.get(0));
         assertEquals(tcu2, values.get(1));
         assertEquals(tcu3, values.get(2));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.getValueClass());
+        values = generation.getPropertyValues(PropertyValueType.CONFIG_ELEMENT.getInterfaceClass());
         assertEquals(4, values.size());
         assertEquals(ce1, values.get(0));
         assertEquals(ce2, values.get(1));
@@ -570,7 +571,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
-            Exception {
+    Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
@@ -591,7 +592,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
         ipsProject.getProperties()
-                .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+        .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));

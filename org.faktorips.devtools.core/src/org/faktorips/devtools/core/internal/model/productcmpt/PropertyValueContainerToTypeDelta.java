@@ -53,7 +53,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann
  */
 public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite implements
-IPropertyValueContainerToTypeDelta {
+        IPropertyValueContainerToTypeDelta {
 
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
@@ -140,7 +140,8 @@ IPropertyValueContainerToTypeDelta {
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
             ProductCmptPropertyType propertyType) {
 
-        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueClass());
+        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueType()
+                .getInterfaceClass());
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {

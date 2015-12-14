@@ -576,8 +576,7 @@ public class ValidationRule extends TypePart implements IValidationRule {
 
     @Override
     public boolean isPropertyFor(IPropertyValue propertyValue) {
-        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                && getPropertyName().equals(propertyValue.getPropertyName());
+        return getProductCmptPropertyType().isMatchingPropertyValue(getPropertyName(), propertyValue);
     }
 
     @Override

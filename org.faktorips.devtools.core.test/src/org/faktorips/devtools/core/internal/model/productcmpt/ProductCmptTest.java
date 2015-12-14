@@ -77,6 +77,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
@@ -84,7 +85,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.type.IType;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
@@ -1018,39 +1018,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
     @Test
     public void testNewPropertyValue() {
-        assertEquals(0,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(0, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValue(attr1);
-        assertEquals(1,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValue(attr2);
-        assertEquals(2,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
 
         productCmpt.newPropertyValue(new ValidationRule(mock(IPolicyCmptType.class), ""));
-        assertEquals(2,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValue(new PolicyCmptTypeAttribute(policyCmptType, "pcTypeAttribute"));
-        assertEquals(2,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValue(new TableStructureUsage(mock(IProductCmptType.class), ""));
-        assertEquals(1, productCmpt.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
-                .size());
-        assertEquals(2,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass()).size());
+        assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
         productCmpt.newPropertyValue(new ProductCmptTypeMethod(productCmptType, "BaseMethod"));
-        assertEquals(2,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
-        assertEquals(1,
-                productCmpt.getPropertyValues(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueClass())
-                        .size());
+        assertEquals(2, productCmpt.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
+        assertEquals(1, productCmpt.getPropertyValues(PropertyValueType.FORMULA.getInterfaceClass()).size());
     }
 
     @Test
