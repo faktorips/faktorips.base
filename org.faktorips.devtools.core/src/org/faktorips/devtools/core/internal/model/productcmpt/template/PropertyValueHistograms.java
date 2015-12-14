@@ -63,4 +63,8 @@ public class PropertyValueHistograms {
         return propertyValueHistorgram.get(propertyName);
     }
 
+    public int size() {
+        return propertyValueHistorgram.size();
+    }
+
 }

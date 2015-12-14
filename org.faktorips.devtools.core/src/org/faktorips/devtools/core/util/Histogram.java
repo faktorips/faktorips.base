@@ -98,7 +98,7 @@ public class Histogram<V, E> {
      * how often the value occurs. The map is sorted so that values occurring more often come first.
      */
     public SortedMap<V, Integer> getAbsoluteDistribution() {
-        TreeMap<V, Integer> sortedDistribution = Maps.newTreeMap(new DistributionComparator());
+        TreeMap<V, Integer> sortedDistribution = Maps.newTreeMap(new DistributionComparator<V>(valueToElements));
         sortedDistribution.putAll(transformToOccurenceCountMap(valueToElements));
         return Collections.unmodifiableSortedMap(sortedDistribution);
     }
@@ -116,8 +116,24 @@ public class Histogram<V, E> {
         return Collections.unmodifiableSortedMap(relativeDistribution);
     }
 
+    /**
+     * Returns the elements in this histogram that have the given value.
+     * 
+     * @param value a value
+     * @return the elements in this histogram that have the given value. The set is empty if no
+     *         elements in this histogram have the given value.
+     */
     public Set<E> getElements(V value) {
         return Collections.unmodifiableSet(valueToElements.get(value));
+    }
+
+    /**
+     * Returns {@code true} when this histogram contains no elements/values.
+     * 
+     * @return {@code true} when this histogram contains no elements/values.
+     */
+    public boolean isEmtpy() {
+        return valueToElements.isEmpty();
     }
 
     /**
@@ -181,7 +197,15 @@ public class Histogram<V, E> {
      * than e2 and thus is sorted before e2. In other words this comparator implements the inverse
      * natural order of the occurrence count of values.
      */
-    private class DistributionComparator implements Comparator<V> {
+    private static class DistributionComparator<V> implements Comparator<V>, Serializable {
+
+        private static final long serialVersionUID = 1L;
+
+        private final TreeMultimap<V, ?> valueToElements;
+
+        public DistributionComparator(TreeMultimap<V, ?> valueToElements) {
+            this.valueToElements = valueToElements;
+        }
 
         @Override
         public int compare(V value1, V value2) {

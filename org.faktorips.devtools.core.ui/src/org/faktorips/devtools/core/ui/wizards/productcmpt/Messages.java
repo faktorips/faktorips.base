@@ -24,6 +24,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String InferTemplateOperation_progress_inferringTemplate;
+    public static String InferTemplateOperation_progress_save;
     public static String NewProductCmptWizard_title;
     public static String NewProductCmptWizard_copyTitle;
     public static String NewProductTemplateWizard_NoCommonType_message;

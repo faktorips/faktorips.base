@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.util;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItems;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -176,7 +177,34 @@ public class HistogramTest {
 
     }
 
+    @Test
+    public void testGetElements() {
+        Element a1 = new Element("A");
+        Element a2 = new Element("A");
+        Element b = new Element("B");
+
+        List<Element> elements = Lists.newArrayList(a1, a2, b);
+
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+        assertThat(histogram.getElements("A").size(), is(2));
+        assertThat(histogram.getElements("A"), hasItems(a1, a2));
+        assertThat(histogram.getElements("B").size(), is(1));
+        assertThat(histogram.getElements("B"), hasItems(b));
+
+        assertThat(histogram.getElements(null).size(), is(0));
+        assertThat(histogram.getElements("").size(), is(0));
+        assertThat(histogram.getElements("C").size(), is(0));
+    }
+
+    @Test
+    public void testIsEmtpy() {
+        assertThat(new Histogram<String, Element>(VALUE_FUNCTION, EMPTY).isEmtpy(), is(true));
+        assertThat(new Histogram<String, Element>(VALUE_FUNCTION, element("A")).isEmtpy(), is(false));
+
+    }
+
     private static Element element(String s) {
         return new Element(s);
     }
+
 }
