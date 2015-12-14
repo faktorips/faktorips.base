@@ -10,6 +10,9 @@
 
 package org.faktorips.devtools.core.ui.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
@@ -48,7 +51,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
     protected IContributionItem[] getContributionItems() {
         IChangesOverTimeNamingConvention changesOverTimeNamingConvention = IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention();
-        IContributionItem[] contributionItems = new IContributionItem[3];
+        List<IContributionItem> contributionItems = new ArrayList<IContributionItem>();
 
         CommandContributionItemParameter createNewVersionParameter = new CommandContributionItemParameter(
                 serviceLocator, null, COMMAND_CREATE_NEW_VERSION, SWT.PUSH);
@@ -57,7 +60,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
         createNewVersionParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("NewVersionWizard.gif"); //$NON-NLS-1$
         CommandContributionItem createNewVersionItem = new CommandContributionItem(createNewVersionParameter);
         createNewVersionItem.setVisible(createNewVersionItem.isEnabled());
-        contributionItems[0] = createNewVersionItem;
+        contributionItems.add(createNewVersionItem);
 
         CommandContributionItemParameter createNewGenerationParameter = new CommandContributionItemParameter(
                 serviceLocator, null, COMMAND_CREATE_NEW_GENERATION, SWT.PUSH);
@@ -67,7 +70,7 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
                 "NewProductCmptGeneration.gif"); //$NON-NLS-1$
         CommandContributionItem createNewGenerationItem = new CommandContributionItem(createNewGenerationParameter);
         createNewGenerationItem.setVisible(createNewGenerationItem.isEnabled());
-        contributionItems[1] = createNewGenerationItem;
+        contributionItems.add(createNewGenerationItem);
 
         CommandContributionItemParameter copyProductParameter = new CommandContributionItemParameter(serviceLocator,
                 null, COMMAND_DEEP_COPY_PRODUCT, SWT.PUSH);
@@ -75,8 +78,10 @@ public class CreateNewProductMenu extends CompoundContributionItem implements IW
         copyProductParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor("DeepCopyWizard.gif"); //$NON-NLS-1$
         CommandContributionItem copyProductItem = new CommandContributionItem(copyProductParameter);
         copyProductItem.setVisible(copyProductItem.isEnabled());
-        contributionItems[2] = copyProductItem;
+        contributionItems.add(copyProductItem);
 
-        return contributionItems;
+        contributionItems.add(InferTemplateHandler.createContributionItem(serviceLocator));
+
+        return contributionItems.toArray(new IContributionItem[contributionItems.size()]);
     }
 }

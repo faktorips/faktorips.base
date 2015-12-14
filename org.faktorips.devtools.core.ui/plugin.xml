@@ -356,6 +356,12 @@
             name="%org.faktorips.devtools.actions.OpenNewProductCmptWizardAction.label"
             defaultHandler="org.faktorips.devtools.core.ui.commands.NewProductCmptHandler">
       </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.productcreate"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.InferTemplateHandler"
+            id="org.faktorips.devtools.core.ui.command.inferTemplate"
+            name="Infer Product Template">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
