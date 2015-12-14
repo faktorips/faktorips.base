@@ -112,7 +112,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public String getPropertyValue() {
-        return getValue();
+        return getValueSet().toShortString();
     }
 
     @Override
@@ -130,24 +130,26 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public String getValue() {
-        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
-            return findTemplateValue();
-        }
-        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
-            return ""; //$NON-NLS-1$
-        }
+        // TODO FIPS-4556 at the moment only value set is inherited from template
+        // if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+        // return findTemplateValue();
+        // }
+        // if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+        //            return ""; //$NON-NLS-1$
+        // }
         return value;
     }
 
-    private String findTemplateValue() {
-        IConfigElement templateConfigElement = findTemplateProperty(getIpsProject());
-        if (templateConfigElement == null) {
-            // Template should exist but does not. Use the "last known" value as a more or less
-            // helpful fallback while some validation hopefully addresses the missing template...
-            return value;
-        }
-        return templateConfigElement.getValue();
-    }
+    // TODO FIPS-4556
+    // private String findTemplateValue() {
+    // IConfigElement templateConfigElement = findTemplateProperty(getIpsProject());
+    // if (templateConfigElement == null) {
+    // // Template should exist but does not. Use the "last known" value as a more or less
+    // // helpful fallback while some validation hopefully addresses the missing template...
+    // return value;
+    // }
+    // return templateConfigElement.getValue();
+    // }
 
     @Override
     public void setValue(String newValue) {
@@ -515,7 +517,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy value/value set from template (if present)
-            this.value = getValue();
+            // TODO FIPS-4556 at the moment only value set is inherited from template
+            // this.value = getValue();
             copyValueSet();
         }
         TemplateValueStatus oldValue = templateValueSettings.getStatus();
