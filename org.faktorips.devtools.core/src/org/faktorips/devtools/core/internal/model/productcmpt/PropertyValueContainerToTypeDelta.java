@@ -111,7 +111,7 @@ IPropertyValueContainerToTypeDelta {
      */
     protected abstract void createAdditionalEntriesAndChildren() throws CoreException;
 
-    private void createEntriesForProperties() throws CoreException {
+    private void createEntriesForProperties() {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
             Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .findProductCmptPropertyMap(propertyType, getIpsProject());
@@ -138,7 +138,7 @@ IPropertyValueContainerToTypeDelta {
     }
 
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
-            ProductCmptPropertyType propertyType) throws CoreException {
+            ProductCmptPropertyType propertyType) {
 
         List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueClass());
         for (IPropertyValue value : values) {

@@ -106,13 +106,7 @@ public class ProductGenerationAttributeTable extends AbstractStandardTablePageEl
         }
 
         List<IValidationRule> validationRules;
-        try {
-            validationRules = policyCmptType.findAllValidationRules(getContext().getIpsProject());
-        } catch (CoreException e) {
-            getContext().addStatus(new IpsStatus(IStatus.WARNING, "Error finding ValidationsRules of PolicyCmptType " //$NON-NLS-1$
-                    + policyCmptType.getQualifiedName(), e));
-            return;
-        }
+        validationRules = policyCmptType.findAllValidationRules(getContext().getIpsProject());
 
         List<IValidationRule> productConfigurableValidationRules = new ArrayList<IValidationRule>();
 

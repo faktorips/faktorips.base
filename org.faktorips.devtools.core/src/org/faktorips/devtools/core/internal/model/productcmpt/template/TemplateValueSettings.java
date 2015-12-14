@@ -7,15 +7,16 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.productcmpt;
+package org.faktorips.devtools.core.internal.model.productcmpt.template;
 
 import static org.faktorips.devtools.core.model.productcmpt.IPropertyValue.MSGCODE_INVALID_TEMPLATE_STATUS;
 import static org.faktorips.devtools.core.model.productcmpt.IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS;
 
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.internal.model.productcmpt.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
 

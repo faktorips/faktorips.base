@@ -619,14 +619,14 @@ public class PolicyCmptType extends Type implements IPolicyCmptType {
     }
 
     @Override
-    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject) throws CoreException {
+    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject) {
         AllValidationRulesFinder finder = new AllValidationRulesFinder(ipsProject, true);
         finder.start(this);
         return finder.getValidationRules();
     }
 
     @Override
-    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) throws CoreException {
+    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) {
         ValidationRuleForNameFinder finder = new ValidationRuleForNameFinder(ruleName, ipsProject);
         finder.start(this);
         return finder.getValidationRule();

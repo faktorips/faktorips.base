@@ -256,21 +256,19 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) {
         return findProductCmptProperties(true, ipsProject);
     }
 
     @Override
-    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
-            throws CoreException {
-
+    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject) {
         return findProductCmptProperties(null, searchSupertypeHierarchy, ipsProject);
     }
 
     @Override
     public List<IProductCmptProperty> findProductCmptProperties(ProductCmptPropertyType propertyType,
             boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         ProductCmptPropertyCollector collector = new ProductCmptPropertyCollector(propertyType,
                 searchSupertypeHierarchy, ipsProject);
@@ -279,8 +277,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptProperty findProductCmptProperty(String propertyName, IIpsProject ipsProject)
-            throws CoreException {
+    public IProductCmptProperty findProductCmptProperty(String propertyName, IIpsProject ipsProject) {
         for (ProductCmptPropertyType type : ProductCmptPropertyType.values()) {
             IProductCmptProperty property = findProductCmptProperty(type, propertyName, ipsProject);
             if (property != null) {
@@ -293,7 +290,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     @Override
     public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
             String propName,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
 
         if (ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE == type) {
             return findProductCmptTypeAttribute(propName, ipsProject);
@@ -309,7 +306,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
 
     private IProductCmptProperty findProductCmptPropertyInPolicy(ProductCmptPropertyType type,
             String propName,
-            IIpsProject ipsProject) throws CoreException {
+            IIpsProject ipsProject) {
         IPolicyCmptType foundPolicyCmptType = findPolicyCmptType(ipsProject);
         if (foundPolicyCmptType == null) {
             return null;
@@ -371,9 +368,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException {
-
+    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject) {
         return (IProductCmptTypeAttribute)findAttribute(name, ipsProject);
     }
 
@@ -447,7 +442,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) throws CoreException {
+    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) {
         TableStructureUsageFinder finder = new TableStructureUsageFinder(project, roleName);
         finder.start(this);
         return finder.tsu;
@@ -514,7 +509,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException {
+    public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) {
         ArrayList<IProductCmptTypeMethod> overloadedMethods = new ArrayList<IProductCmptTypeMethod>();
         for (IProductCmptTypeMethod method : methods) {
             if (method.isFormulaSignatureDefinition() && method.isOverloadsFormula()) {
@@ -552,7 +547,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
     }
 
     @Override
-    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) {
         FormulaSignatureFinder finder = new FormulaSignatureFinder(ipsProject, formulaName, true);
         finder.start(this);
         return (IProductCmptTypeMethod)(finder.getMethods().size() != 0 ? finder.getMethods().get(0) : null);
@@ -622,9 +617,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         }
     }
 
-    private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject)
-            throws CoreException {
-
+    private void validateIfAnOverrideOfOverloadedFormulaExists(MessageList msgList, IIpsProject ipsProject) {
         ArrayList<IProductCmptTypeMethod> overloadedSupertypeFormulaSignatures = new ArrayList<IProductCmptTypeMethod>();
         List<IProductCmptTypeMethod> formulaSignatures = getFormulaSignatures();
         for (IProductCmptTypeMethod formulaSignature : formulaSignatures) {
@@ -1243,7 +1236,7 @@ public class ProductCmptType extends Type implements IProductCmptType {
         return counter.categoriesFound > 1;
     }
 
-    private void createProductCmptPropertyReferencesForNotReferencedProperties() throws CoreException {
+    private void createProductCmptPropertyReferencesForNotReferencedProperties() {
         for (IProductCmptProperty property : findProductCmptProperties(false, getIpsProject())) {
             if (getReferencedPropertyIndex(property) == -1) {
                 newProductCmptPropertyReference(property);

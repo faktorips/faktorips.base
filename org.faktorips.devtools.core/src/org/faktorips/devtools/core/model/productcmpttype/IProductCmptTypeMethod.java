@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.productcmpttype;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.method.IBaseMethod;
 import org.faktorips.devtools.core.model.method.IFormulaMethod;
@@ -117,10 +116,8 @@ public interface IProductCmptTypeMethod extends IMethod, IFormulaMethod, IProduc
      * Looks in the supertype hierarchy if a formula method can be found with the same formula name
      * than this one and returns the first that is found. If none can be found <code>null</code>
      * will be returned.
-     * 
-     * @throws CoreException if an exception occurs during finding the method
      */
-    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject);
 
     /**
      * Sets if this formula method overloads a formula method in the supertype hierarchy. If so, the

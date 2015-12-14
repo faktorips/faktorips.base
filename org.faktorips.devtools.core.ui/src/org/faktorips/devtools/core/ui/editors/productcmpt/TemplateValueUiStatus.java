@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public enum TemplateValueUiStatus {

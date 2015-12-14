@@ -85,7 +85,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) {
         if (!isOverloadsFormula()) {
             return null;
         }
