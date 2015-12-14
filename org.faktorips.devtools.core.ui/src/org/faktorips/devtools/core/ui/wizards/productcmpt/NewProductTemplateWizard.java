@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 public class NewProductTemplateWizard extends NewProductWizard {
@@ -24,6 +25,13 @@ public class NewProductTemplateWizard extends NewProductWizard {
     @Override
     protected String getDialogId() {
         return PRODUCT_TEMPLATE_WIZARD_ID;
+    }
+
+    /**
+     * Configures this wizard to have only one selectable product component type.
+     */
+    public void setSingleProcutCmptType(IProductCmptType productCmptType) {
+        getPmo().setSingleProductCmptType(productCmptType);
     }
 
 }
