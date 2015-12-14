@@ -20,19 +20,46 @@ import com.google.common.collect.Lists;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.type.IType;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CommonTypeFinderTest extends AbstractIpsPluginTest {
 
-    @Test
-    public void testFindCommonType_NoTypes() throws CoreException {
-        IIpsProject project = newIpsProject();
+    private IIpsProject ipsProject;
+    private CommonTypeFinder finder;
 
-        CommonTypeFinder<IType> finder = CommonTypeFinder.in(project);
+    @Override
+    @Before
+    public void setUp() throws CoreException {
+        ipsProject = newIpsProject();
+        finder = new CommonTypeFinder();
+    }
+
+    @Test
+    public void testFindCommonType_NoTypes() {
         assertThat(finder.findCommonType(null), is(nullValue()));
-        assertThat(finder.findCommonType(new ArrayList<IType>()), is(nullValue()));
+        assertThat(finder.findCommonType(new ArrayList<IProductCmpt>()), is(nullValue()));
+    }
+
+    /**
+     * Scenario type hierarchy:
+     * 
+     * <pre>
+     * a | b
+     * </pre>
+     */
+    @Test
+    public void testCommonTypeOf() throws CoreException {
+        IProductCmptType a = newProductCmptType(ipsProject, "a");
+        IProductCmptType b = newProductCmptType(a, "b");
+        IProductCmpt cmptA = newProductCmpt(a, "cmptA");
+        IProductCmpt cmptB = newProductCmpt(b, "cmptB");
+
+        assertThat(CommonTypeFinder.commonTypeOf(Lists.newArrayList(cmptB, cmptB)), is(b));
+        assertThat(CommonTypeFinder.commonTypeOf(Lists.newArrayList(cmptA, cmptB)), is(a));
+        assertThat(CommonTypeFinder.commonTypeOf(Lists.newArrayList(cmptB, cmptA)), is(a));
     }
 
     /**
@@ -50,24 +77,27 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindCommonType_CommonSuperType() throws CoreException {
-        IIpsProject project = newIpsProject();
-        IProductCmptType a = newProductCmptType(project, "a");
-        IProductCmptType b = newProductCmptType(a, "b");
-        IProductCmptType c = newProductCmptType(b, "c");
-        IProductCmptType d = newProductCmptType(b, "d");
-        IProductCmptType e = newProductCmptType(d, "e");
-        a.setAbstract(true);
-        b.setAbstract(true);
+        IProductCmptType aType = newProductCmptType(ipsProject, "aType");
+        IProductCmptType bType = newProductCmptType(aType, "bType");
+        IProductCmptType cType = newProductCmptType(bType, "cType");
+        IProductCmptType dType = newProductCmptType(bType, "dType");
+        IProductCmptType eType = newProductCmptType(dType, "eType");
+        aType.setAbstract(true);
+        bType.setAbstract(true);
+        IProductCmpt a = newProductCmpt(aType, "a");
+        IProductCmpt b = newProductCmpt(bType, "b");
+        IProductCmpt c = newProductCmpt(cType, "c");
+        IProductCmpt d = newProductCmpt(dType, "d");
+        IProductCmpt e = newProductCmpt(eType, "e");
 
-        CommonTypeFinder<IProductCmptType> finder = CommonTypeFinder.in(project);
-        assertThat(finder.findCommonType(Lists.newArrayList(a)), is(a));
-        assertThat(finder.findCommonType(Lists.newArrayList(e)), is(e));
-        assertThat(finder.findCommonType(Lists.newArrayList(e, e)), is(e));
-        assertThat(finder.findCommonType(Lists.newArrayList(d, e)), is(d));
-        assertThat(finder.findCommonType(Lists.newArrayList(c, d, e)), is(b));
-        assertThat(finder.findCommonType(Lists.newArrayList(e, d, c)), is(b));
-        assertThat(finder.findCommonType(Lists.newArrayList(b, d, e)), is(b));
-        assertThat(finder.findCommonType(Lists.newArrayList(a, b, c)), is(a));
+        assertThat(finder.findCommonType(Lists.newArrayList(a)), is(aType));
+        assertThat(finder.findCommonType(Lists.newArrayList(e)), is(eType));
+        assertThat(finder.findCommonType(Lists.newArrayList(e, e)), is(eType));
+        assertThat(finder.findCommonType(Lists.newArrayList(d, e)), is(dType));
+        assertThat(finder.findCommonType(Lists.newArrayList(c, d, e)), is(bType));
+        assertThat(finder.findCommonType(Lists.newArrayList(e, d, c)), is(bType));
+        assertThat(finder.findCommonType(Lists.newArrayList(b, d, e)), is(bType));
+        assertThat(finder.findCommonType(Lists.newArrayList(a, b, c)), is(aType));
     }
 
     /**
@@ -81,13 +111,15 @@ public class CommonTypeFinderTest extends AbstractIpsPluginTest {
      */
     @Test
     public void testFindCommonType_NoCommonSuperType() throws CoreException {
-        IIpsProject project = newIpsProject();
-        IProductCmptType a = newProductCmptType(project, "a");
-        IProductCmptType b = newProductCmptType(a, "b");
-        IProductCmptType x = newProductCmptType(project, "x");
-        IProductCmptType y = newProductCmptType(x, "y");
+        IProductCmptType aType = newProductCmptType(ipsProject, "aType");
+        IProductCmptType bType = newProductCmptType(aType, "bType");
+        IProductCmptType xType = newProductCmptType(ipsProject, "xType");
+        IProductCmptType yType = newProductCmptType(xType, "yType");
+        IProductCmpt a = newProductCmpt(aType, "a");
+        IProductCmpt b = newProductCmpt(bType, "b");
+        IProductCmpt x = newProductCmpt(xType, "x");
+        IProductCmpt y = newProductCmpt(yType, "y");
 
-        CommonTypeFinder<IProductCmptType> finder = CommonTypeFinder.in(project);
         assertThat(finder.findCommonType(Lists.newArrayList(b, y)), is(nullValue()));
         assertThat(finder.findCommonType(Lists.newArrayList(a, b, x)), is(nullValue()));
         assertThat(finder.findCommonType(Lists.newArrayList(y, x, a)), is(nullValue()));

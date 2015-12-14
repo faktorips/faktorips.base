@@ -508,14 +508,18 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      *             {@link #setIpsProject(IIpsProject)}
      */
     public void setCopyProductCmpt(IProductCmpt productCmptToCopy) {
-        if (getIpsProject() == null) {
-            throw new IllegalStateException("IPS Project must be set before setting the product to be copied."); //$NON-NLS-1$
-        }
+        checkIpsProject();
         copyProductCmpt = productCmptToCopy;
 
         initializeNameForProductCmptCopy();
         initializeTypeAndBaseTypeForProductCmptCopy(productCmptToCopy);
         initializeTemplateForProductCmptCopy(productCmptToCopy);
+    }
+
+    private void checkIpsProject() {
+        if (getIpsProject() == null) {
+            throw new IllegalStateException("IPS Project must be set before setting the product to be copied."); //$NON-NLS-1$
+        }
     }
 
     private void initializeNameForProductCmptCopy() {
@@ -536,6 +540,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
     }
 
     public void setSingleProductCmptType(IProductCmptType productCmptType) {
+        checkIpsProject();
         singleTypeSelection = productCmptType != null;
         setSelectedType(productCmptType);
         SelectedBaseTypeVisitor baseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(), getIpsProject());

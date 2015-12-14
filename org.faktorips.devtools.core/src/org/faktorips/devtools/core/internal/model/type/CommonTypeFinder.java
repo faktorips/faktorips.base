@@ -14,49 +14,38 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.google.common.base.Preconditions;
-
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 
 /**
- * A finder class used to find the most specific common type for a collection of types.
+ * A finder class used to find the most specific common type for a collection of product components.
  * 
- * @param <T> the type this finder finds
  */
-public class CommonTypeFinder<T extends IType> {
-
-    private final IIpsProject ipsProject;
+public class CommonTypeFinder {
 
     /**
-     * Returns a new finder that finds that uses the given IPS project to search types in.
+     * Returns the most specific type that is common to all given product components. Returns
+     * {@code null} if no product components are given or the given product components do not have a
+     * common type.
      * 
-     * @param ipsProject the IPS project to search types in
+     * @param cmpts the product components to find the most specific common type
+     * @return the most specific type that is common to all given product components; {@code null}
+     *         if no product components are given or the given product components do not have a
+     *         common type.
      */
-    public CommonTypeFinder(IIpsProject ipsProject) {
-        super();
-        this.ipsProject = Preconditions.checkNotNull(ipsProject);
-    }
-
-    /**
-     * Returns the most specific type that is common to all given types. Returns {@code null} if no
-     * types are given or the given types do not have a common type.
-     * 
-     * @param types the types to find the most specific common type in
-     * @return the most specific type that is common to all given type; {@code null} if no types are
-     *         given or the given types do not have a common type.
-     */
-    public T findCommonType(Collection<T> types) {
-        if (types == null || types.isEmpty()) {
+    public IProductCmptType findCommonType(Collection<IProductCmpt> cmpts) {
+        if (cmpts == null || cmpts.isEmpty()) {
             return null;
         }
 
-        Iterator<T> typesIterator = types.iterator();
-        LinkedHashSet<T> candidates = createTypeHierarchy(typesIterator.next());
-        while (typesIterator.hasNext()) {
-            T type = typesIterator.next();
-            T matchingCandidate = findMostSpecificType(candidates, type);
+        Iterator<IProductCmpt> cmptsIterator = cmpts.iterator();
+        LinkedHashSet<IProductCmptType> candidates = createTypeHierarchy(cmptsIterator.next());
+        while (cmptsIterator.hasNext()) {
+            IProductCmpt nextCmpt = cmptsIterator.next();
+            IProductCmptType matchingCandidate = findMostSpecificType(candidates, nextCmpt);
             if (matchingCandidate == null) {
                 return null;
             }
@@ -79,8 +68,8 @@ public class CommonTypeFinder<T extends IType> {
      * @param t the type whose sub types should be removed
      * @return the given set without the sub types where
      */
-    private LinkedHashSet<T> removeSubtypes(LinkedHashSet<T> types, T t) {
-        Iterator<T> iterator = types.iterator();
+    private LinkedHashSet<IProductCmptType> removeSubtypes(LinkedHashSet<IProductCmptType> types, IProductCmptType t) {
+        Iterator<IProductCmptType> iterator = types.iterator();
         while (iterator.hasNext() && !iterator.next().equals(t)) {
             iterator.remove();
         }
@@ -88,55 +77,76 @@ public class CommonTypeFinder<T extends IType> {
     }
 
     /**
-     * Returns the given type if it contained in the set or the given type's or most specific super
-     * type contained in the set. If the set contains neither the given type nor one of its super
-     * types, {@code null} is returned.
+     * Returns the type of the given product component if it is contained in the set of candidates
+     * or the most specific super type contained in the set. If the set contains neither the type of
+     * the given product component nor one of its super types, {@code null} is returned.
      * 
-     * @param types a set of types
-     * @param t the type whose matching type is searched
+     * @param candidateTypes the potential common type candidates
+     * @param cmpt the product component whose matching type is searched
      * @return the given type if it contained in the set; the given type's or most specific super
      *         type contained in the set; {@code null} if the set contains neither the given type
      *         nor one of its super types
      */
-    private T findMostSpecificType(Set<T> types, T t) {
-        if (t == null) {
-            return null;
-        }
-        if (types.contains(t)) {
-            return t;
-        }
-        @SuppressWarnings("unchecked")
-        T supertype = (T)t.findSupertype(ipsProject);
-        return findMostSpecificType(types, supertype);
+    private IProductCmptType findMostSpecificType(Set<IProductCmptType> candidateTypes, IProductCmpt cmpt) {
+        CommonTypeVisitor<IProductCmptType> typeHierarchyVisitor = new CommonTypeVisitor<IProductCmptType>(
+                cmpt.getIpsProject(), candidateTypes);
+        typeHierarchyVisitor.start(cmpt.findProductCmptType(cmpt.getIpsProject()));
+        return typeHierarchyVisitor.getCommonType();
     }
 
     /**
      * Creates a set containing the "upward" type hierarchy starting with the given type. The
      * elements in the set are iterated from the given type to its super-types.
      * 
-     * @param t a type
+     * @param cmpt a product component
      * @return a {@code LinkedHashSet} containing the "upward" type hierarchy starting with the
      *         given type. The elements in the set are iterated in from the given type to its
      *         super-types
      */
-    private LinkedHashSet<T> createTypeHierarchy(T t) {
-        TypeHierarchyVisitor<T> superTypeFinder = new TypeHierarchyFinder(ipsProject);
-        superTypeFinder.start(t);
-        return new LinkedHashSet<T>(superTypeFinder.getVisited());
+    private LinkedHashSet<IProductCmptType> createTypeHierarchy(IProductCmpt cmpt) {
+        TypeHierarchyVisitor<IProductCmptType> superTypeFinder = new TypeHierarchyFinder<IProductCmptType>(
+                cmpt.getIpsProject());
+        superTypeFinder.start(cmpt.findProductCmptType(cmpt.getIpsProject()));
+        return new LinkedHashSet<IProductCmptType>(superTypeFinder.getVisited());
     }
 
     /**
-     * Creates a new finder that searches for types in the given IPS project.
+     * Determines the type of the given product components and finds the common type using
+     * {@link #findCommonType(Collection)}. Product components without type are ignored.
      * 
-     * @param ipsProject the IPS project to search types in
-     * @return a new finder that searches for types in the given IPS project.
+     * @return the common type of the specified list of product components.
      */
-    public static <U extends IType> CommonTypeFinder<U> in(IIpsProject ipsProject) {
-        return new CommonTypeFinder<U>(ipsProject);
+    public static IProductCmptType commonTypeOf(Collection<IProductCmpt> prodctCmpts) {
+        return new CommonTypeFinder().findCommonType(prodctCmpts);
+    }
+
+    private static class CommonTypeVisitor<T extends IType> extends TypeHierarchyVisitor<T> {
+
+        private final Set<T> candidateTypes;
+
+        private T commonType = null;
+
+        private CommonTypeVisitor(IIpsProject ipsProject, Set<T> candidateTypes) {
+            super(ipsProject);
+            this.candidateTypes = candidateTypes;
+        }
+
+        public T getCommonType() {
+            return commonType;
+        }
+
+        @Override
+        protected boolean visit(T currentType) {
+            boolean isCommonType = candidateTypes.contains(currentType);
+            if (isCommonType) {
+                commonType = currentType;
+            }
+            return !isCommonType;
+        }
     }
 
     /** A {@link TypeHierarchyVisitor} that collects the entire hierarchy upwards from a given type. */
-    private class TypeHierarchyFinder extends TypeHierarchyVisitor<T> {
+    private static class TypeHierarchyFinder<T extends IType> extends TypeHierarchyVisitor<T> {
 
         public TypeHierarchyFinder(IIpsProject ipsProject) {
             super(ipsProject);

@@ -9,8 +9,16 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.faktorips.devtools.core.internal.model.type.CommonTypeFinder;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class NewProductTemplateWizard extends NewProductWizard {
 
@@ -32,6 +40,28 @@ public class NewProductTemplateWizard extends NewProductWizard {
      */
     public void setSingleProcutCmptType(IProductCmptType productCmptType) {
         getPmo().setSingleProductCmptType(productCmptType);
+    }
+
+    public static void openInferTemplateWizard(IWorkbenchWindow window, ISelection selection) {
+        TypedSelection<IProductCmpt> typedSelection = TypedSelection.<IProductCmpt> createAnyCount(
+                IProductCmpt.class, selection);
+        if (typedSelection.isValid()) {
+            IProductCmptType commonType = CommonTypeFinder.commonTypeOf(typedSelection.getElements());
+            if (commonType == null) {
+                MessageDialog.openWarning(window.getShell(), Messages.NewProductTemplateWizard_NoCommonType_title,
+                        Messages.NewProductTemplateWizard_NoCommonType_message);
+            } else {
+                open(window, (StructuredSelection)selection, commonType);
+            }
+        }
+    }
+
+    private static void open(IWorkbenchWindow window, StructuredSelection selection, IProductCmptType commonType) {
+        NewProductTemplateWizard wizard = new NewProductTemplateWizard();
+        wizard.init(window.getWorkbench(), selection);
+        wizard.setSingleProcutCmptType(commonType);
+        WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
+        dialog.open();
     }
 
 }

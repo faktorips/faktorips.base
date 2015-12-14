@@ -13,8 +13,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -31,10 +29,7 @@ public class InferTemplateHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        NewProductTemplateWizard wizard = new NewProductTemplateWizard();
-        wizard.init(window.getWorkbench(), (IStructuredSelection)HandlerUtil.getCurrentSelection(event));
-        WizardDialog dialog = new WizardDialog(window.getShell(), wizard);
-        dialog.open();
+        NewProductTemplateWizard.openInferTemplateWizard(window, HandlerUtil.getCurrentSelection(event));
         return null;
     }
 
