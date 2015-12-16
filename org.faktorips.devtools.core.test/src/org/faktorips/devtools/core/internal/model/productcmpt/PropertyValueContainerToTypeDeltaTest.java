@@ -36,6 +36,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -44,6 +45,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -343,8 +345,9 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
 
         IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
         delta.fixAllDifferencesToModel();
-        assertNotNull(productCmpt.getFirstGeneration().getConfigElement("a1"));
-        range = (IRangeValueSet)productCmpt.getFirstGeneration().getConfigElement("a1").getValueSet();
+        IConfigElement configElement = productCmpt.getFirstGeneration().getConfigElement("a1");
+        assertNotNull(configElement);
+        range = (IRangeValueSet)configElement.getValueSet();
         assertEquals("1", range.getLowerBound());
         assertEquals("10", range.getUpperBound());
 
@@ -362,7 +365,7 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         assertEquals(DeltaType.VALUE_SET_MISMATCH, entry.getDeltaType());
         assertEquals(PropertyValueType.CONFIG_ELEMENT, entry.getPropertyType());
         delta.fixAllDifferencesToModel();
-        IValueSet valueSet = productCmpt.getFirstGeneration().getConfigElement("a1").getValueSet();
+        IValueSet valueSet = configElement.getValueSet();
         assertTrue(valueSet.isEnum());
 
         // now the enum in the config element is not a subset of the enum in the attribute
@@ -376,6 +379,22 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         attr.setValueSetType(ValueSetType.UNRESTRICTED);
         delta = productCmpt.computeDeltaToModel(ipsProject);
         assertTrue(delta.isEmpty());
+    }
+
+    @Test
+    public void testValueSetTypeMismatch_UndefinedConfigElement() throws CoreException {
+        IPolicyCmptTypeAttribute attr = policyCmptType.newPolicyCmptTypeAttribute();
+        attr.setProductRelevant(true);
+        attr.setName("a1");
+        productCmpt.fixAllDifferencesToModel(ipsProject);
+        productCmpt.setTemplate("anyTemplate");
+        IConfigElement configElement = productCmpt.getFirstGeneration().getConfigElement("a1");
+        attr.setValueSetType(ValueSetType.RANGE);
+        configElement.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        IPropertyValueContainerToTypeDelta genDelta = (IPropertyValueContainerToTypeDelta)delta.getChildren().get(0);
+        assertEquals(0, genDelta.getEntries().length);
     }
 
     @Test
