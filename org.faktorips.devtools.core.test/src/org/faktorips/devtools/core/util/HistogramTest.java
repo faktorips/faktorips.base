@@ -17,6 +17,7 @@ import static org.junit.matchers.JUnitMatchers.hasItems;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedMap;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -69,6 +70,15 @@ public class HistogramTest {
     }
 
     @Test
+    public void testGetAbsoluteDistribution_EqualCount() {
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, element("A"),
+                element("B"));
+        assertThat(histogram.getAbsoluteDistribution().size(), is(2));
+        assertThat(histogram.getAbsoluteDistribution().get("A"), is(1));
+        assertThat(histogram.getAbsoluteDistribution().get("B"), is(1));
+    }
+
+    @Test
     public void testGetAbsoluteDistribution() {
         List<Element> elements = Lists.newArrayList();
         elements.add(element("A"));
@@ -115,6 +125,15 @@ public class HistogramTest {
     }
 
     @Test
+    public void testGetRelativeDistribution_EqualValues() {
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, element("A"),
+                element("B"));
+        assertThat(histogram.getRelativeDistribution().size(), is(2));
+        assertThat(histogram.getRelativeDistribution().get("A"), is(Decimal.valueOf(0.5)));
+        assertThat(histogram.getRelativeDistribution().get("B"), is(Decimal.valueOf(0.5)));
+    }
+
+    @Test
     public void testGetRelativeDistribution() {
         List<Element> elements = Lists.newArrayList();
         elements.add(element("A"));
@@ -156,24 +175,25 @@ public class HistogramTest {
 
         Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, stringLengthComparator,
                 elements);
-        assertThat(histogram.getAbsoluteDistribution().size(), is(3));
+        SortedMap<String, Integer> absoluteDistribution = histogram.getAbsoluteDistribution();
+        assertThat(absoluteDistribution.size(), is(3));
 
         // Values with the same length have to occur in the distribution
-        assertThat(histogram.getAbsoluteDistribution().get("A"), is(3));
-        assertThat(histogram.getAbsoluteDistribution().get("3"), is(3));
-        assertThat(histogram.getAbsoluteDistribution().get("2"), is(3));
-        assertThat(histogram.getAbsoluteDistribution().get("1"), is(3));
+        assertThat(absoluteDistribution.get("A"), is(3));
+        assertThat(absoluteDistribution.get("3"), is(3));
+        assertThat(absoluteDistribution.get("2"), is(3));
+        assertThat(absoluteDistribution.get("1"), is(3));
 
-        assertThat(histogram.getAbsoluteDistribution().get("AA"), is(2));
-        assertThat(histogram.getAbsoluteDistribution().get("11"), is(2));
-        assertThat(histogram.getAbsoluteDistribution().get("22"), is(2));
+        assertThat(absoluteDistribution.get("AA"), is(2));
+        assertThat(absoluteDistribution.get("11"), is(2));
+        assertThat(absoluteDistribution.get("22"), is(2));
 
-        assertThat(histogram.getAbsoluteDistribution().get("AAA"), is(1));
-        assertThat(histogram.getAbsoluteDistribution().get("333"), is(1));
+        assertThat(absoluteDistribution.get("AAA"), is(1));
+        assertThat(absoluteDistribution.get("333"), is(1));
 
         // Values with other lengths must not occur
-        assertThat(histogram.getAbsoluteDistribution().get(""), is(nullValue()));
-        assertThat(histogram.getAbsoluteDistribution().get("1234"), is(nullValue()));
+        assertThat(absoluteDistribution.get(""), is(nullValue()));
+        assertThat(absoluteDistribution.get("1234"), is(nullValue()));
 
     }
 

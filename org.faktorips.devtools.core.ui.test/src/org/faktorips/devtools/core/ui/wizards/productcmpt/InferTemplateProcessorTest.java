@@ -254,6 +254,7 @@ public class InferTemplateProcessorTest {
         if (type.equals(IAttributeValue.class)) {
             return new Function<IPropertyValue, Object>() {
 
+                @SuppressWarnings("unchecked")
                 @Override
                 public Object apply(IPropertyValue propertyValue) {
                     String propertyName = propertyValue.getPropertyName();
@@ -262,7 +263,9 @@ public class InferTemplateProcessorTest {
                     if (propertyName.endsWith("0")) {
                         return singleValue;
                     } else {
-                        return mock(SingleValueHolder.class);
+                        SingleValueHolder valueMock = mock(SingleValueHolder.class);
+                        when(valueMock.compareTo(any(IValueHolder.class))).thenReturn(1);
+                        return valueMock;
                     }
                 }
             };

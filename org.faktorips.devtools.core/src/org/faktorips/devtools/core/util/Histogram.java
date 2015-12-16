@@ -55,6 +55,8 @@ public class Histogram<V, E> {
     /** Total number of elements in this histogram. */
     private final int totalCount;
 
+    private Comparator<? super V> valueComparator;
+
     /**
      * Creates a new histogram of the given elements. Equality of elements' values is determined
      * using the values' equals method.
@@ -86,6 +88,7 @@ public class Histogram<V, E> {
     public Histogram(Function<E, V> elementToValueFunction, Comparator<? super V> valueComparator,
             Collection<E> elements) {
         super();
+        this.valueComparator = valueComparator;
         this.totalCount = elements.size();
         this.elementToValueFunction = elementToValueFunction;
         this.valueToElements = TreeMultimap.create(valueComparator, new SameInstanceComparator<E>());
@@ -98,7 +101,8 @@ public class Histogram<V, E> {
      * how often the value occurs. The map is sorted so that values occurring more often come first.
      */
     public SortedMap<V, Integer> getAbsoluteDistribution() {
-        TreeMap<V, Integer> sortedDistribution = Maps.newTreeMap(new DistributionComparator<V>(valueToElements));
+        TreeMap<V, Integer> sortedDistribution = Maps.newTreeMap(new DistributionComparator<V>(valueToElements,
+                valueComparator));
         sortedDistribution.putAll(transformToOccurenceCountMap(valueToElements));
         return Collections.unmodifiableSortedMap(sortedDistribution);
     }
@@ -179,16 +183,22 @@ public class Histogram<V, E> {
         }
     }
 
-    private static int compareIdentityHashcode(Object o1, Object o2) {
-        int idCompare = IntegerUtils.compare(System.identityHashCode(o1), System.identityHashCode(o2));
-        if (idCompare == 0) {
-            // Fallback for (hopefully extremely) rare cases where objects are not equal but
-            // do have the same identity hash code. Return a value != 0 to prevent different
-            // objects overwriting each other in the distribution map. TreeMap probably
-            // won't find the entries, but hey, at least we tried...
-            return 1;
+    private static int compareAnyObjects(Object o1, Object o2) {
+        if (o1 instanceof Comparable && o2 instanceof Comparable) {
+            Comparable<?> c1 = (Comparable<?>)o1;
+            Comparable<?> c2 = (Comparable<?>)o2;
+            return ObjectUtils.compare(c1, c2);
+        } else {
+            int idCompare = IntegerUtils.compare(System.identityHashCode(o1), System.identityHashCode(o2));
+            if (idCompare == 0) {
+                // Fallback for (hopefully extremely) rare cases where objects are not equal but
+                // do have the same identity hash code. Return a value != 0 to prevent different
+                // objects overwriting each other in the distribution map. TreeMap probably
+                // won't find the entries, but hey, at least we tried...
+                return 1;
+            }
+            return idCompare;
         }
-        return idCompare;
     }
 
     /**
@@ -203,16 +213,23 @@ public class Histogram<V, E> {
 
         private final TreeMultimap<V, ?> valueToElements;
 
-        public DistributionComparator(TreeMultimap<V, ?> valueToElements) {
+        private Comparator<? super V> valueComparator;
+
+        public DistributionComparator(TreeMultimap<V, ?> valueToElements, Comparator<? super V> valueComparator) {
             this.valueToElements = valueToElements;
+            this.valueComparator = valueComparator;
         }
 
         @Override
         public int compare(V value1, V value2) {
-            Integer occurences1 = valueToElements.get(value1).size();
-            Integer occurences2 = valueToElements.get(value2).size();
-            // reverse natural order
-            return ObjectUtils.compare(occurences2, occurences1);
+            int occurences1 = valueToElements.get(value1).size();
+            int occurences2 = valueToElements.get(value2).size();
+            if (occurences1 == occurences2) {
+                return valueComparator.compare(value1, value2);
+            } else {
+                // reverse natural order
+                return IntegerUtils.compare(occurences2, occurences1);
+            }
         }
 
     }
@@ -234,7 +251,7 @@ public class Histogram<V, E> {
             if (o1 == o2) {
                 return 0;
             } else {
-                return compareIdentityHashcode(o1, o2);
+                return compareAnyObjects(o1, o2);
             }
         }
     }
@@ -256,7 +273,7 @@ public class Histogram<V, E> {
             if (ObjectUtils.equals(o1, o2)) {
                 return 0;
             } else {
-                return compareIdentityHashcode(o1, o2);
+                return compareAnyObjects(o1, o2);
             }
         }
     }
