@@ -234,6 +234,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private void addProductTemplateActions(IMenuManager manager) {
         manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
+        manager.add(InferTemplateHandler.createContributionItem(viewSite));
     }
 
     protected void createNewMenu(IMenuManager manager, final Object selected) {
