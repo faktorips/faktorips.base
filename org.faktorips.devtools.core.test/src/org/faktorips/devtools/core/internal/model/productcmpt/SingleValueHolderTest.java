@@ -10,20 +10,27 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class SingleValueHolderTest {
+
+    private IAttributeValue attributeValue;
 
     @Test
     public void testGetValueType() {
-        IAttributeValue attributeValue = mock(IAttributeValue.class);
 
         SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, "abc");
         assertEquals(ValueType.STRING, singleValueHolder.getValueType());
@@ -34,4 +41,92 @@ public class SingleValueHolderTest {
         singleValueHolder = new SingleValueHolder(attributeValue, new InternationalStringValue());
         assertEquals(ValueType.INTERNATIONAL_STRING, singleValueHolder.getValueType());
     }
+
+    @Test
+    public void testCompareTo_null() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, (IValue<?>)null);
+
+        assertTrue(v1.compareTo(null) < 0);
+    }
+
+    @Test
+    public void testCompareTo_null_eq_null() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, (IValue<?>)null);
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, (IValue<?>)null);
+
+        assertThat(v1.compareTo(v2), is(0));
+    }
+
+    @Test
+    public void testCompareTo_nullContent_eq_nullContent() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, (String)null);
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, (String)null);
+
+        assertThat(v1.compareTo(v2), is(0));
+        assertThat(v2.compareTo(v1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_null_lt_any() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, (IValue<?>)null);
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, "asd");
+
+        assertTrue(v1.compareTo(v2) < 0);
+        assertTrue(v2.compareTo(v1) > 0);
+    }
+
+    @Test
+    public void testCompareTo_nullContent_lt_any() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, (String)null);
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, "asd");
+
+        assertTrue(v1.compareTo(v2) < 0);
+        assertTrue(v2.compareTo(v1) > 0);
+    }
+
+    @Test
+    public void testCompareTo_any_lt_null() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, "asd");
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, (IValue<?>)null);
+
+        assertTrue(v1.compareTo(v2) > 0);
+        assertTrue(v2.compareTo(v1) < 0);
+    }
+
+    @Test
+    public void testCompareTo_any_lt_nullContent() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, "asd");
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, (String)null);
+
+        assertTrue(v1.compareTo(v2) > 0);
+        assertTrue(v2.compareTo(v1) < 0);
+    }
+
+    @Test
+    public void testCompareTo_eq() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, "asd");
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, "asd");
+
+        assertTrue(v1.compareTo(v2) == 0);
+        assertTrue(v2.compareTo(v1) == 0);
+    }
+
+    @Test
+    public void testCompareTo_lt() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, "asd");
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, "asx");
+
+        assertTrue(v1.compareTo(v2) < 0);
+        assertTrue(v2.compareTo(v1) > 0);
+    }
+
+    @Test
+    public void testCompareTo_gt() throws Exception {
+        SingleValueHolder v1 = new SingleValueHolder(attributeValue, "asx");
+        SingleValueHolder v2 = new SingleValueHolder(attributeValue, "asd");
+
+        assertTrue(v1.compareTo(v2) > 0);
+        assertTrue(v2.compareTo(v1) < 0);
+    }
+
 }

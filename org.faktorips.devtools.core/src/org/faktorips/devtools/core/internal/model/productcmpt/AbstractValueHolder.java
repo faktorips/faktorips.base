@@ -15,7 +15,6 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
@@ -39,14 +38,14 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
      */
     public static final String XML_ATTRIBUTE_VALUE_TYPE = "valueType"; //$NON-NLS-1$
 
-    private final IIpsObjectPart parent;
+    private final IAttributeValue parent;
 
-    public AbstractValueHolder(IIpsObjectPart parent) {
+    public AbstractValueHolder(IAttributeValue parent) {
         this.parent = parent;
     }
 
     @Override
-    public IIpsObjectPart getParent() {
+    public IAttributeValue getParent() {
         return parent;
     }
 
@@ -139,6 +138,12 @@ public abstract class AbstractValueHolder<T> implements IValueHolder<T> {
         IValueHolder<?> newValueInstance = attributeValueType.newHolderInstance(attributeValue);
         newValueInstance.initFromXml(valueEl);
         return newValueInstance;
+    }
+
+    @Override
+    public IValueHolder<?> copy(IAttributeValue parent) {
+        Element element = toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
+        return AbstractValueHolder.initValueHolder(parent, element);
     }
 
     @Override

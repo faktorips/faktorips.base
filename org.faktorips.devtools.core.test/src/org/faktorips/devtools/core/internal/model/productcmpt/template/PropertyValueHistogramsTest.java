@@ -31,6 +31,19 @@ public class PropertyValueHistogramsTest {
     private static final List<String> propertyNames = Arrays.asList("p1", "p2", "p3", "p4", "p5");
 
     @Test
+    public void testCreateForSingleValue() throws Exception {
+        List<IProductCmpt> list = Arrays.asList(mockProductCmpt());
+
+        PropertyValueHistograms valueHistograms = PropertyValueHistograms.createFor(list);
+
+        for (String name : propertyNames) {
+            Histogram<Object, IPropertyValue> histogram = valueHistograms.get(name);
+            assertThat(histogram.getAbsoluteDistribution().get(name + "value"), is(1));
+            assertThat(histogram.getRelativeDistribution().get(name + "value"), is(Decimal.valueOf(1)));
+        }
+    }
+
+    @Test
     public void testCreateFor() throws Exception {
         List<IProductCmpt> list = Arrays.asList(mockProductCmpt(), mockProductCmpt(), mockProductCmpt());
 

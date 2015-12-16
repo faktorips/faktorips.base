@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
  * @author frank
  * @since 3.9
  */
-public interface IValue<T> {
+public interface IValue<T> extends Comparable<IValue<T>> {
 
     /**
      * Returns the saved content

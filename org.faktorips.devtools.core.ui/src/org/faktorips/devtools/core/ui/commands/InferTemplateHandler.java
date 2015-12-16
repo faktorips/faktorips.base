@@ -20,7 +20,7 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.services.IServiceLocator;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductTemplateWizard;
+import org.faktorips.devtools.core.ui.wizards.productcmpt.InferTemplateWizard;
 
 public class InferTemplateHandler extends AbstractHandler {
 
@@ -29,7 +29,7 @@ public class InferTemplateHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        NewProductTemplateWizard.openInferTemplateWizard(window, HandlerUtil.getCurrentSelection(event));
+        InferTemplateWizard.open(window, HandlerUtil.getCurrentSelection(event));
         return null;
     }
 

@@ -32,13 +32,13 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
     public static final String PROPERTY_VALUE = "value"; //$NON-NLS-1$
 
     /**
-     * Returning the {@link IIpsObjectPart} of which this value holder is a child of. Every value
-     * holder need to have a parent {@link IIpsObjectPart}. If anything within the value holder
+     * Returning the {@link IAttributeValue} of which this value holder is a child of. Every value
+     * holder need to have a parent {@link IAttributeValue}. If anything within the value holder
      * changes, the change event is propagated to this part.
      * 
      * @return The parent {@link IIpsObjectPart}
      */
-    public IIpsObjectPart getParent();
+    public IAttributeValue getParent();
 
     /**
      * Returning a string representation of the value.
@@ -103,5 +103,13 @@ public interface IValueHolder<T> extends XmlSupport, Validatable, Comparable<IVa
      * @return Returns <code>true</code> if the value holder has multiple values
      */
     public boolean isMultiValue();
+
+    /**
+     * Creates a new {@link IValueHolder} by copying this value holder. The new value holder gets
+     * the specified parent.
+     * 
+     * @return A new value holder with the same content as this value holder
+     */
+    public IValueHolder<?> copy(IAttributeValue parent);
 
 }

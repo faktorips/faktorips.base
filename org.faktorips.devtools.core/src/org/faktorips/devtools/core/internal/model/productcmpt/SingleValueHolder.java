@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
@@ -113,11 +114,6 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     }
 
     @Override
-    public IAttributeValue getParent() {
-        return (IAttributeValue)super.getParent();
-    }
-
-    @Override
     protected AttributeValueType getType() {
         return AttributeValueType.SINGLE_VALUE;
     }
@@ -197,10 +193,13 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
 
     @Override
     public int compareTo(IValueHolder<IValue<?>> o) {
-        if (value.equals(o.getValue())) {
+        if (o == null) {
+            return -1;
+        }
+        if (this.equals(o)) {
             return 0;
         }
-        return value.getContentAsString().compareTo(o.getValue().getContentAsString());
+        return ObjectUtils.compare(value, o.getValue());
     }
 
     @Override
@@ -223,14 +222,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             return false;
         }
         SingleValueHolder other = (SingleValueHolder)obj;
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        return ObjectUtils.equals(value, other.value);
     }
 
     /**

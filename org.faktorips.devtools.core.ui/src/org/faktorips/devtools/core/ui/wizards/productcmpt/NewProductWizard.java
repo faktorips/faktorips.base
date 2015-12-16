@@ -44,8 +44,8 @@ public abstract class NewProductWizard extends NewProductDefinitionWizard {
     /**
      * Creating a the new wizard.
      */
-    public NewProductWizard(boolean template) {
-        super(new NewProductCmptPMO(template));
+    public NewProductWizard(NewProductCmptPMO pmo) {
+        super(pmo);
         setWindowTitle(NLS.bind(Messages.NewProductCmptWizard_title, getPmo().getIpsObjectType().getDisplayName()));
         typeSelectionPage = new TypeSelectionPage(getPmo());
         productCmptPage = new ProductCmptPage(getPmo());
@@ -59,7 +59,13 @@ public abstract class NewProductWizard extends NewProductDefinitionWizard {
 
     @Override
     protected NewProductDefinitionOperation<? extends NewProductDefinitionPMO> getOperation() {
-        return new NewProductCmptOperation(getPmo());
+        if (getPmo().isCopyMode()) {
+            return new CopyProductCmptOperation(getPmo());
+        } else if (getPmo().isAddToMode()) {
+            return new AddNewProductCmptOperation(getPmo());
+        } else {
+            return new NewProductCmptOperation(getPmo());
+        }
     }
 
     @Override

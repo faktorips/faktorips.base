@@ -189,7 +189,7 @@ public class TypedSelection<T> {
      * 
      * @return the contents of this selection
      */
-    public final Collection<T> getElements() {
+    public final List<T> getElements() {
         failIfNotValid();
 
         return Collections.unmodifiableList(elements);
@@ -204,6 +204,10 @@ public class TypedSelection<T> {
         failIfNotValid();
 
         return elements.size();
+    }
+
+    public IStructuredSelection asStructuredSelection() {
+        return new StructuredSelection(getElements());
     }
 
     /** {@inheritDoc} */

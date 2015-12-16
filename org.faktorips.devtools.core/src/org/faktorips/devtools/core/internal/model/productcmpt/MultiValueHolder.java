@@ -82,11 +82,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         values = defaultValue;
     }
 
-    @Override
-    public IAttributeValue getParent() {
-        return (IAttributeValue)super.getParent();
-    }
-
     /**
      * Returns {@link AttributeValueType#MULTI_VALUE}
      */

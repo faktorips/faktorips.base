@@ -16,7 +16,7 @@ public class NewProductCmptWizard extends NewProductWizard {
     public static final String PRODUCT_CMPT_WIZARD_ID = "newProductCmptWizard"; //$NON-NLS-1$
 
     public NewProductCmptWizard() {
-        super(false);
+        super(new NewProductCmptPMO(false));
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/NewProductCmptWizard.png")); //$NON-NLS-1$
     }

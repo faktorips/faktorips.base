@@ -11,6 +11,8 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -21,6 +23,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,10 +32,12 @@ import com.google.common.base.Function;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.PropertyValueHistograms;
+import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
@@ -44,16 +49,25 @@ import org.faktorips.devtools.core.util.Histogram;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class InferTemplateOperationTest {
+public class InferTemplateProcessorTest {
 
-    private static final IValueHolder<?> SINGLE_VALUE = mock(SingleValueHolder.class);
+    private static final String TEMPLATE_NAME = "templateName";
 
-    private static final IValueSet VALUE_SET = mock(IValueSet.class);
+    @Mock
+    private IValueHolder<?> singleValue;
+
+    @Mock
+    private IValueHolder<?> singleValueCopy;
+
+    @Mock
+    private IValueSet valueSet;
+
+    @Mock
+    private IValueSet valueSetCopy;
 
     @Mock
     private PropertyValueHistograms histograms;
@@ -73,8 +87,18 @@ public class InferTemplateOperationTest {
     @Mock
     private IIpsSrcFile productDirtySrcFile;
 
-    @InjectMocks
-    private InferTemplateOperation inferTemplateOperation;
+    @Mock
+    private IProductCmpt templateProduct;
+
+    @Mock
+    private IProductCmpt productCmpt1;
+
+    @Mock
+    private IProductCmpt productCmpt2;
+
+    private List<IProductCmpt> productCmpts;
+
+    private InferTemplateProcessor inferTemplateOperation;
 
     private List<IPropertyValue> attributeValues;
 
@@ -90,11 +114,20 @@ public class InferTemplateOperationTest {
 
     @Before
     public void setUp() {
+        productCmpts = Arrays.asList(productCmpt1, productCmpt2);
+        when(productCmpt1.getIpsSrcFile()).thenReturn(productSrcFile);
+        inferTemplateOperation = new InferTemplateProcessor(templateGeneration, productCmpts, histograms);
+
+        when(templateGeneration.getProductCmpt()).thenReturn(templateProduct);
+        when(templateProduct.getQualifiedName()).thenReturn(TEMPLATE_NAME);
+
+        when(productCmpt2.getIpsSrcFile()).thenReturn(productDirtySrcFile);
         when(productDirtySrcFile.isDirty()).thenReturn(true);
         when(templateGeneration.getIpsSrcFile()).thenReturn(templateSrcFile);
         attributeValues = mockPropertyValueInTemplates(IAttributeValue.class);
         propertyValues = mockHistograms(IAttributeValue.class, attributeValues);
         configElements = mockPropertyValueInTemplates(IConfigElement.class);
+        setUpConfigElements();
         propertyValues.addAll(mockHistograms(IConfigElement.class, configElements));
         templateTableUsages = mockPropertyValueInTemplates(ITableContentUsage.class);
         propertyValues.addAll(mockHistograms(ITableContentUsage.class, templateTableUsages));
@@ -102,6 +135,17 @@ public class InferTemplateOperationTest {
         propertyValues.addAll(mockHistograms(IFormula.class, templateFormulas));
         ruleConfigs = mockPropertyValueInTemplates(IValidationRuleConfig.class);
         propertyValues.addAll(mockHistograms(IValidationRuleConfig.class, ruleConfigs));
+
+        doReturn(singleValueCopy).when(singleValue).copy(any(IAttributeValue.class));
+    }
+
+    private void setUpConfigElements() {
+        IIpsModel ipsModel = mock(IIpsModel.class);
+        for (IPropertyValue propertyValue : configElements) {
+            when(ipsModel.getNextPartId(propertyValue)).thenReturn(UUID.randomUUID().toString());
+            when(propertyValue.getIpsModel()).thenReturn(ipsModel);
+            when(valueSet.copy(eq((IConfigElement)propertyValue), anyString())).thenReturn(valueSetCopy);
+        }
     }
 
     private List<IPropertyValue> mockPropertyValueInTemplates(Class<? extends IPropertyValue> propValueClass) {
@@ -149,8 +193,8 @@ public class InferTemplateOperationTest {
     }
 
     @Test
-    public void testUpdatePropertyValues_SrcFileSaved() throws Exception {
-        inferTemplateOperation.updatePropertyValues();
+    public void testInferTemplate_SrcFileSaved() throws Exception {
+        inferTemplateOperation.run(monitor);
 
         verify(templateSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
         verify(productSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
@@ -159,14 +203,14 @@ public class InferTemplateOperationTest {
     }
 
     @Test
-    public void testUpdatePropertyValues_TemplateValueUpdate() throws Exception {
-        inferTemplateOperation.updatePropertyValues();
+    public void testInferTemplate_TemplateValueUpdate() throws Exception {
+        inferTemplateOperation.run(monitor);
 
-        verify((IAttributeValue)attributeValues.get(0)).setValueHolder(SINGLE_VALUE);
+        verify((IAttributeValue)attributeValues.get(0)).setValueHolder(singleValueCopy);
         verify(attributeValues.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         verify(attributeValues.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        verify((IConfigElement)configElements.get(0)).setValueSet(VALUE_SET);
+        verify((IConfigElement)configElements.get(0)).setValueSet(valueSetCopy);
         verify(configElements.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         verify(configElements.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
@@ -185,8 +229,8 @@ public class InferTemplateOperationTest {
     }
 
     @Test
-    public void testUpdatePropertyValues_InheritedUpdate() throws Exception {
-        inferTemplateOperation.updatePropertyValues();
+    public void testInferTemplate_InheritedUpdate() throws Exception {
+        inferTemplateOperation.run(monitor);
 
         for (IPropertyValue propertyValue : propertyValues) {
             if (propertyValue.getPropertyName().endsWith("0")) {
@@ -196,6 +240,14 @@ public class InferTemplateOperationTest {
                 verifyZeroInteractions(propertyValue);
             }
         }
+    }
+
+    @Test
+    public void testInferTemplate_UpdateProductCmpts() throws Exception {
+        inferTemplateOperation.run(monitor);
+
+        verify(productCmpt1).setTemplate(TEMPLATE_NAME);
+        verify(productCmpt2).setTemplate(TEMPLATE_NAME);
     }
 
     private Function<IPropertyValue, Object> getValueFunction(Class<? extends IPropertyValue> type) {
@@ -208,7 +260,7 @@ public class InferTemplateOperationTest {
                     // all first properties have the same value
                     // all other properties have unique values
                     if (propertyName.endsWith("0")) {
-                        return SINGLE_VALUE;
+                        return singleValue;
                     } else {
                         return mock(SingleValueHolder.class);
                     }
@@ -223,7 +275,7 @@ public class InferTemplateOperationTest {
                     // all first properties have the same value
                     // all other properties have unique values
                     if (propertyName.endsWith("0")) {
-                        return VALUE_SET;
+                        return valueSet;
                     } else {
                         return mock(IValueSet.class);
                     }

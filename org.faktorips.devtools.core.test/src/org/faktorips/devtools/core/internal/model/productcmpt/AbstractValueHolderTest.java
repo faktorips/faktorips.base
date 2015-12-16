@@ -25,8 +25,8 @@ import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class AbstractValueHolderTest {
     private SingletonMockHelper singletonMockHelper;
     private IIpsSrcFile mockIpsSrcFile;
     private IpsSrcFileContent mockContent;
-    private IIpsObjectPart parentMock;
+    private IAttributeValue parentMock;
 
     @Before
     public void setUp() {
@@ -53,7 +53,7 @@ public class AbstractValueHolderTest {
         mockContent = mock(IpsSrcFileContent.class);
         when(mockModel.getIpsSrcFileContent(mockIpsSrcFile)).thenReturn(mockContent);
 
-        parentMock = mock(IIpsObjectPart.class);
+        parentMock = mock(IAttributeValue.class);
         when(parentMock.getIpsSrcFile()).thenReturn(mockIpsSrcFile);
 
         IpsObject mockObject = mock(IpsObject.class);
