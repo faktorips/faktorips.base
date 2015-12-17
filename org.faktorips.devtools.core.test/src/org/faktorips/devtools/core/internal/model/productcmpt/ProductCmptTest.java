@@ -1306,23 +1306,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testIsUsingExistingTemplate_missingTemplate() throws CoreException {
-        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
-        product.setTemplate("Template");
-
-        assertFalse(product.isUsingExistingTemplate(ipsProject));
-    }
-
-    @Test
-    public void testIsUsingExistingTemplate_existingTemplate() throws CoreException {
-        ProductCmpt product = newProductCmpt(ipsProject, "AnyProdCmpt");
-        newProductTemplate(ipsProject, "Template");
-        product.setTemplate("Template");
-
-        assertTrue(product.isUsingExistingTemplate(ipsProject));
-    }
-
-    @Test
     public void testPropertyTemplate() throws Exception {
         PropertyDescriptor propertyDescriptor = new PropertyDescriptor(IProductCmpt.PROPERTY_TEMPLATE,
                 ProductCmpt.class);

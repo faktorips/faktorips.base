@@ -342,6 +342,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
                 lacksMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
 
         productCmpt.setTemplate("invalid template");
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         assertThat(attributeValue.validate(ipsProject), hasMessageCode(IAttributeValue.MSGCODE_INVALID_TEMPLATE_STATUS));
     }
 

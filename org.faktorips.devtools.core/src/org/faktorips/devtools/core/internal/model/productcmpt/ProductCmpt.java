@@ -20,14 +20,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectGeneration;
 import org.faktorips.devtools.core.internal.model.ipsobject.TimedIpsObject;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.RemoveTemplateOperation;
 import org.faktorips.devtools.core.internal.model.productcmpt.treestructure.ProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
@@ -176,20 +179,29 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     @Override
-    public boolean isUsingExistingTemplate(IIpsProject ipsProject) {
-        return isUsingTemplate() && findTemplate(ipsProject) != null;
-    }
-
-    @Override
     public String getTemplate() {
         return template;
     }
 
     @Override
     public void setTemplate(String newTemplate) {
+        if (ObjectUtils.notEqual(newTemplate, template)) {
+            resetTemplateStatus();
+        }
         String oldTemplate = template;
         this.template = newTemplate;
         valueChanged(oldTemplate, template, IProductCmpt.PROPERTY_TEMPLATE);
+    }
+
+    @Override
+    public void resetTemplateStatus() {
+        if (isUsingTemplate()) {
+            try {
+                getEnclosingResource().getWorkspace().run(new RemoveTemplateOperation(this), new NullProgressMonitor());
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+            }
+        }
     }
 
     @Override
@@ -345,7 +357,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }

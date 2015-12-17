@@ -50,7 +50,7 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
  * @param <PMO> type of the {@link PresentationModelObject} that configures this operation
  */
 public abstract class NewProductDefinitionOperation<PMO extends NewProductDefinitionPMO> extends
-WorkspaceModifyOperation {
+        WorkspaceModifyOperation {
 
     private final PMO pmo;
 
