@@ -19,7 +19,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.util.Histogram;
@@ -28,7 +30,8 @@ import org.junit.Test;
 
 public class PropertyValueHistogramsTest {
 
-    private static final List<String> propertyNames = Arrays.asList("p1", "p2", "p3", "p4", "p5");
+    private static final List<String> CMPT_PROPERTIES = Arrays.asList("p1", "p2", "p3", "p4", "p5");
+    private static final List<String> GEN_PROPERTIES = Arrays.asList("g1", "g2", "g3", "g4", "g5");
 
     @Test
     public void testCreateForSingleValue() throws Exception {
@@ -36,7 +39,7 @@ public class PropertyValueHistogramsTest {
 
         PropertyValueHistograms valueHistograms = PropertyValueHistograms.createFor(list);
 
-        for (String name : propertyNames) {
+        for (String name : CMPT_PROPERTIES) {
             Histogram<Object, IPropertyValue> histogram = valueHistograms.get(name);
             assertThat(histogram.getAbsoluteDistribution().get(name + "value"), is(1));
             assertThat(histogram.getRelativeDistribution().get(name + "value"), is(Decimal.valueOf(1)));
@@ -49,15 +52,48 @@ public class PropertyValueHistogramsTest {
 
         PropertyValueHistograms valueHistograms = PropertyValueHistograms.createFor(list);
 
-        for (String name : propertyNames) {
+        for (String name : CMPT_PROPERTIES) {
             Histogram<Object, IPropertyValue> histogram = valueHistograms.get(name);
             assertThat(histogram.getAbsoluteDistribution().get(name + "value"), is(3));
             assertThat(histogram.getRelativeDistribution().get(name + "value"), is(Decimal.valueOf(1)));
         }
     }
 
+    @Test
+    public void testCreateFor_Generation() throws Exception {
+        List<IProductCmpt> list = Arrays.asList(mockProductCmptWithGenerationProperties());
+
+        PropertyValueHistograms valueHistograms = PropertyValueHistograms.createFor(list);
+
+        for (String name : CMPT_PROPERTIES) {
+            Histogram<Object, IPropertyValue> histogram = valueHistograms.get(name);
+            assertThat(histogram.getAbsoluteDistribution().get(name + "value"), is(1));
+            assertThat(histogram.getRelativeDistribution().get(name + "value"), is(Decimal.valueOf(1)));
+        }
+        for (String name : GEN_PROPERTIES) {
+            Histogram<Object, IPropertyValue> histogram = valueHistograms.get(name);
+            assertThat(histogram.getAbsoluteDistribution().get(name + "value"), is(1));
+            assertThat(histogram.getRelativeDistribution().get(name + "value"), is(Decimal.valueOf(1)));
+        }
+    }
+
     private IProductCmpt mockProductCmpt() {
         IProductCmpt productCmpt = mock(IProductCmpt.class);
+        addMockedProperties(productCmpt, CMPT_PROPERTIES);
+        IProductCmptGeneration productCmptGeneration = mock(IProductCmptGeneration.class);
+        when(productCmpt.getLatestProductCmptGeneration()).thenReturn(productCmptGeneration);
+        return productCmpt;
+    }
+
+    private IProductCmpt mockProductCmptWithGenerationProperties() {
+        IProductCmpt productCmpt = mockProductCmpt();
+        IProductCmptGeneration productCmptGeneration = mock(IProductCmptGeneration.class);
+        addMockedProperties(productCmptGeneration, GEN_PROPERTIES);
+        when(productCmpt.getLatestProductCmptGeneration()).thenReturn(productCmptGeneration);
+        return productCmpt;
+    }
+
+    private void addMockedProperties(IPropertyValueContainer mockedContainer, List<String> propertyNames) {
         List<IPropertyValue> values = new ArrayList<IPropertyValue>();
         for (String name : propertyNames) {
             ITableContentUsage propertyValue = mock(ITableContentUsage.class);
@@ -66,8 +102,6 @@ public class PropertyValueHistogramsTest {
             when(propertyValue.getTableContentName()).thenReturn(name + "value");
             values.add(propertyValue);
         }
-        when(productCmpt.getAllPropertyValues()).thenReturn(values);
-        return productCmpt;
+        when(mockedContainer.getAllPropertyValues()).thenReturn(values);
     }
-
 }

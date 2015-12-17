@@ -19,7 +19,9 @@ import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Multimap;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.util.Histogram;
 
@@ -51,12 +53,19 @@ public class PropertyValueHistograms {
     public static PropertyValueHistograms createFor(List<IProductCmpt> cmpts) {
         Multimap<String, IPropertyValue> propertyToValues = LinkedListMultimap.create();
         for (IProductCmpt productCmpt : cmpts) {
-            List<IPropertyValue> allPropertyValues = productCmpt.getAllPropertyValues();
-            for (IPropertyValue propertyValue : allPropertyValues) {
-                propertyToValues.put(propertyValue.getPropertyName(), propertyValue);
-            }
+            addAllPropertyValues(propertyToValues, productCmpt);
+            IProductCmptGeneration productCmptGeneration = productCmpt.getLatestProductCmptGeneration();
+            addAllPropertyValues(propertyToValues, productCmptGeneration);
+
         }
         return new PropertyValueHistograms(propertyToValues);
+    }
+
+    private static void addAllPropertyValues(Multimap<String, IPropertyValue> propertyToValues,
+            IPropertyValueContainer propertyValueContainer) {
+        for (IPropertyValue propertyValue : propertyValueContainer.getAllPropertyValues()) {
+            propertyToValues.put(propertyValue.getPropertyName(), propertyValue);
+        }
     }
 
     public Histogram<Object, IPropertyValue> get(String propertyName) {
