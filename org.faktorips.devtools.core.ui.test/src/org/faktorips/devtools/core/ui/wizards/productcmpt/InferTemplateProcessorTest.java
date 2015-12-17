@@ -18,7 +18,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
@@ -98,7 +97,7 @@ public class InferTemplateProcessorTest {
 
     private List<IProductCmpt> productCmpts;
 
-    private InferTemplateProcessor inferTemplateOperation;
+    private InferTemplateProcessor inferTemplateProcessor;
 
     private List<IPropertyValue> attributeValues;
 
@@ -116,7 +115,7 @@ public class InferTemplateProcessorTest {
     public void setUp() {
         productCmpts = Arrays.asList(productCmpt1, productCmpt2);
         when(productCmpt1.getIpsSrcFile()).thenReturn(productSrcFile);
-        inferTemplateOperation = new InferTemplateProcessor(templateGeneration, productCmpts, histograms);
+        inferTemplateProcessor = new InferTemplateProcessor(templateGeneration, productCmpts, histograms);
 
         when(templateGeneration.getProductCmpt()).thenReturn(templateProduct);
         when(templateProduct.getQualifiedName()).thenReturn(TEMPLATE_NAME);
@@ -194,7 +193,7 @@ public class InferTemplateProcessorTest {
 
     @Test
     public void testInferTemplate_SrcFileSaved() throws Exception {
-        inferTemplateOperation.run(monitor);
+        inferTemplateProcessor.run(monitor);
 
         verify(templateSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
         verify(productSrcFile).save(anyBoolean(), any(IProgressMonitor.class));
@@ -204,7 +203,7 @@ public class InferTemplateProcessorTest {
 
     @Test
     public void testInferTemplate_TemplateValueUpdate() throws Exception {
-        inferTemplateOperation.run(monitor);
+        inferTemplateProcessor.run(monitor);
 
         verify((IAttributeValue)attributeValues.get(0)).setValueHolder(singleValueCopy);
         verify(attributeValues.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
@@ -222,29 +221,31 @@ public class InferTemplateProcessorTest {
         verify(templateFormulas.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         verify(templateFormulas.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
+        /*
+         * VRules are either activated or deactivated, there is no null-case.
+         */
         verify((IValidationRuleConfig)ruleConfigs.get(0)).setActive(true);
-        verify(ruleConfigs.get(1)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-        verify(ruleConfigs.get(2)).setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-
+        verify((IValidationRuleConfig)ruleConfigs.get(1)).setActive(false);
+        verify((IValidationRuleConfig)ruleConfigs.get(2)).setActive(false);
     }
 
     @Test
     public void testInferTemplate_InheritedUpdate() throws Exception {
-        inferTemplateOperation.run(monitor);
+        inferTemplateProcessor.run(monitor);
 
         for (IPropertyValue propertyValue : propertyValues) {
-            if (propertyValue.getPropertyName().endsWith("0")) {
+            if (propertyValue.getPropertyName().endsWith("0") || propertyValue instanceof IValidationRuleConfig) {
                 verify(propertyValue).setTemplateValueStatus(TemplateValueStatus.INHERITED);
             } else {
                 verify(propertyValue, atLeastOnce()).getPropertyName();
-                verifyZeroInteractions(propertyValue);
+                verifyNoMoreInteractions(propertyValue);
             }
         }
     }
 
     @Test
     public void testInferTemplate_UpdateProductCmpts() throws Exception {
-        inferTemplateOperation.run(monitor);
+        inferTemplateProcessor.run(monitor);
 
         verify(productCmpt1).setTemplate(TEMPLATE_NAME);
         verify(productCmpt2).setTemplate(TEMPLATE_NAME);
@@ -296,7 +297,7 @@ public class InferTemplateProcessorTest {
                     if (propertyName.endsWith("0")) {
                         return true;
                     } else {
-                        return null;
+                        return false;
                     }
                 }
             };

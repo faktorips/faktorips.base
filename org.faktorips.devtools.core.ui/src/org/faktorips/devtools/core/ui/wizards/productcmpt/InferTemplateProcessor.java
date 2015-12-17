@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.wizards.productcmpt;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 
 import com.google.common.base.Preconditions;
 
@@ -39,6 +38,7 @@ import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.core.util.Histogram.BestValue;
 import org.faktorips.values.Decimal;
 
 public class InferTemplateProcessor implements IWorkspaceRunnable {
@@ -143,35 +143,40 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
             Setter<P, V> setter) {
         List<P> propertyValues = templateGeneration.getPropertyValuesIncludingProductCmpt(propertyValueClass);
         for (P propertyValue : propertyValues) {
-            Object bestValue = getBestValue(propertyValue.getPropertyName());
-            if (bestValue == null) {
-                propertyValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
-            } else {
-                Preconditions.checkState(valueClass.isInstance(bestValue));
-                V value = valueClass.cast(bestValue);
+            BestValue<?> bestValue = getBestValueFor(propertyValue);
+            if (bestValue.isPresent()) {
+                V value = getValueAndCastTo(bestValue, valueClass);
                 setter.set(value, propertyValue);
                 updateOriginPropertyValues(propertyValue.getPropertyName(), value);
+            } else {
+                propertyValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
             }
             monitor.worked(1);
         }
     }
 
     /**
-     * Returns the value from the histograms with the given name if it has a relative distribution
-     * of at least {@link #RELATIVE_THRESHOLD}. If there is no histogram for the given name or the
-     * best value in the histogram does not occur often enough {@code null} is returned.
+     * @param bestValue the best value to retrieve the value from
+     * @param valueClass the value class to cast the value to
+     * @return the casted value. May be <code>null</code>.
+     * @throws IllegalStateException if the value is non-null and not instance of the value class.
      */
-    private Object getBestValue(String name) {
-        Histogram<Object, IPropertyValue> histogram = histograms.get(name);
-        if (histogram == null || histogram.isEmtpy()) {
-            return null;
-        }
-        SortedMap<Object, Decimal> relativeDistribution = histogram.getRelativeDistribution();
-        Object candidateValue = relativeDistribution.firstKey();
-        if (relativeDistribution.get(candidateValue).greaterThanOrEqual(RELATIVE_THRESHOLD)) {
-            return candidateValue;
-        }
-        return null;
+    public <T> T getValueAndCastTo(BestValue<?> bestValue, Class<T> valueClass) {
+        Object rawValue = bestValue.getValue();
+        Preconditions.checkState(rawValue == null || valueClass.isInstance(rawValue));
+        T castedValue = valueClass.cast(rawValue);
+        return castedValue;
+    }
+
+    /**
+     * Returns the best value from the histograms with the given name. Never returns
+     * <code>null</code>. Instead returns a {@link BestValue} object representing a missing value
+     * instead.
+     */
+    private <P extends IPropertyValue> BestValue<Object> getBestValueFor(P propertyValue) {
+        Histogram<Object, IPropertyValue> histogram = histograms.get(propertyValue.getPropertyName());
+        BestValue<Object> bestValue = histogram.getBestValueExceeding(RELATIVE_THRESHOLD);
+        return bestValue;
     }
 
     private void updateOriginPropertyValues(String propertyName, Object value) {

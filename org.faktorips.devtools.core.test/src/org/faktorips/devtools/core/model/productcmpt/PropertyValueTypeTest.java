@@ -96,6 +96,14 @@ public class PropertyValueTypeTest {
     }
 
     @Test
+    public void testGetValueComparator_nullValues() throws Exception {
+        Comparator<Object> valueComparator = PropertyValueType.ATTRIBUTE_VALUE.getValueComparator();
+        assertTrue(valueComparator.compare(null, "abx") < 0);
+        assertTrue(valueComparator.compare("abc", null) > 0);
+        assertTrue(valueComparator.compare(null, null) == 0);
+    }
+
+    @Test
     public void testGetValueFunction_attributeValue() throws Exception {
         IValueHolder<?> value = mock(IValueHolder.class);
         doReturn(value).when(attributeValue).getValueHolder();

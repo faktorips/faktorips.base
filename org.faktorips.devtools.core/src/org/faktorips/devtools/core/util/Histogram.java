@@ -202,6 +202,22 @@ public class Histogram<V, E> {
     }
 
     /**
+     * @param threshold the relative occurrence at which a value is used.
+     * @return the best value (regarding the relative distribution) whose occurrence exceeds the
+     *         threshold. Never returns <code>null</code>. Returns a {@link BestValue} with
+     *         {@link BestValue#isPresent()} <code>false</code> if there is no best value.
+     */
+    public BestValue<V> getBestValueExceeding(Decimal threshold) {
+        SortedMap<V, Decimal> relativeDistribution = getRelativeDistribution();
+        V candidateValue = relativeDistribution.firstKey();
+        if (relativeDistribution.get(candidateValue).greaterThanOrEqual(threshold)) {
+            return new BestValue<V>(candidateValue);
+        } else {
+            return BestValue.<V> missingValue();
+        }
+    }
+
+    /**
      * Comparator that compares values by their occurrence count in
      * {@link Histogram#valueToElements} so that a value e1 occurring more often than e2 is less
      * than e2 and thus is sorted before e2. In other words this comparator implements the inverse
@@ -276,6 +292,44 @@ public class Histogram<V, E> {
                 return compareAnyObjects(o1, o2);
             }
         }
+    }
+
+    /**
+     * BestValue represents the best value from a value distribution in a {@link Histogram}. It may
+     * represent a missing value, {@link #isPresent()} returns <code>false</code> in that case. Its
+     * value may be <code>null</code> (while {@link #isPresent()} returns <code>true</code>), thus
+     * <code>null</code> is a valid value. This distinguishes BestValue from Optional.
+     */
+    public static class BestValue<V> {
+
+        private final V value;
+        private final boolean isPresent;
+
+        public BestValue(V value) {
+            this.value = value;
+            isPresent = true;
+        }
+
+        public BestValue() {
+            this.value = null;
+            isPresent = false;
+        }
+
+        public boolean isPresent() {
+            return isPresent;
+        }
+
+        /**
+         * @return the value or <code>null</code> if <code>null</code> is the best value found.
+         */
+        public V getValue() {
+            return value;
+        }
+
+        public static <V> BestValue<V> missingValue() {
+            return new BestValue<V>();
+        }
+
     }
 
 }
