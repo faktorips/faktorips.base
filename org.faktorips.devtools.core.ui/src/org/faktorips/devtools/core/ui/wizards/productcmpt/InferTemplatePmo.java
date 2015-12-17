@@ -27,7 +27,7 @@ public class InferTemplatePmo extends NewProductCmptPMO {
         return productCmptsToInferTemplate;
     }
 
-    public void setProductCmptsToInferTemplate(List<IProductCmpt> selectedProductCmpts) {
+    public void setProductCmptsToInferTemplateFrom(List<IProductCmpt> selectedProductCmpts) {
         this.productCmptsToInferTemplate = selectedProductCmpts;
         IProductCmptType commonTypeOf = CommonTypeFinder.commonTypeOf(selectedProductCmpts);
         setSingleProductCmptType(commonTypeOf);
