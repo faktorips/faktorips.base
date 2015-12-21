@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionOperation;
 import org.faktorips.devtools.core.ui.wizards.productdefinition.NewProductDefinitionPMO;
+import org.faktorips.util.ArgumentCheck;
 
 public class InferTemplateWizard extends NewProductWizard {
 
@@ -74,6 +75,7 @@ public class InferTemplateWizard extends NewProductWizard {
     }
 
     private void open(IWorkbenchWindow window, TypedSelection<IProductCmpt> typedSelection) {
+        ArgumentCheck.atLeast(typedSelection.getElements(), 1);
         init(window.getWorkbench(), typedSelection.asStructuredSelection());
         getPmo().setProductCmptsToInferTemplateFrom(typedSelection.getElements());
         if (getPmo().isSingleTypeSelection()) {

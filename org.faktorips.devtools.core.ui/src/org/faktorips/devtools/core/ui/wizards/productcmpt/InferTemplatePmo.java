@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import org.faktorips.devtools.core.internal.model.type.CommonTypeFinder;
@@ -19,8 +21,16 @@ public class InferTemplatePmo extends NewProductCmptPMO {
 
     private List<IProductCmpt> productCmptsToInferTemplate;
 
+    private final NewProductCmptValidator validator;
+
     public InferTemplatePmo() {
         super(true);
+        validator = new InferTemplateValidator(this);
+    }
+
+    @Override
+    protected NewProductCmptValidator getValidator() {
+        return validator;
     }
 
     public List<IProductCmpt> getProductCmptsToInferTemplate() {
@@ -31,6 +41,22 @@ public class InferTemplatePmo extends NewProductCmptPMO {
         this.productCmptsToInferTemplate = selectedProductCmpts;
         IProductCmptType commonTypeOf = CommonTypeFinder.commonTypeOf(selectedProductCmpts);
         setSingleProductCmptType(commonTypeOf);
+        setEffectiveDate(getEarliestValidFrom());
+    }
+
+    public GregorianCalendar getEarliestValidFrom() {
+        if (productCmptsToInferTemplate.isEmpty()) {
+            return null;
+        }
+        Iterator<IProductCmpt> iterator = productCmptsToInferTemplate.iterator();
+        GregorianCalendar firstValidFrom = iterator.next().getValidFrom();
+        while (iterator.hasNext()) {
+            IProductCmpt productCmpt = iterator.next();
+            if (productCmpt.getValidFrom().before(firstValidFrom)) {
+                firstValidFrom = productCmpt.getValidFrom();
+            }
+        }
+        return firstValidFrom;
     }
 
 }
