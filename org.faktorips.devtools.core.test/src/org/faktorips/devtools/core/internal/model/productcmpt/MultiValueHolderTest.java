@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -125,6 +126,42 @@ public class MultiValueHolderTest {
         multiValueHolder.setValue(Lists.newArrayList(valueHolder1, valueHolder2));
         assertThat(multiValueHolder.getValue().size(), is(2));
         assertThat(multiValueHolder.getValue(), hasItems(valueHolder1, valueHolder2));
+    }
+
+    @Test
+    public void testCompareTo() {
+        IAttributeValue attribute = mock(AttributeValue.class);
+        SingleValueHolder a = new SingleValueHolder(attribute, "a");
+        SingleValueHolder b = new SingleValueHolder(attribute, "b");
+        SingleValueHolder c = new SingleValueHolder(attribute, "c");
+        SingleValueHolder d = new SingleValueHolder(attribute, "d");
+
+        MultiValueHolder empty = new MultiValueHolder(attribute, new ArrayList<SingleValueHolder>());
+
+        MultiValueHolder abc1 = new MultiValueHolder(attribute, Lists.newArrayList(a, b, c));
+        MultiValueHolder abc2 = new MultiValueHolder(attribute, Lists.newArrayList(a, b, c));
+
+        MultiValueHolder cba = new MultiValueHolder(attribute, Lists.newArrayList(c, b, a));
+        MultiValueHolder abcd = new MultiValueHolder(attribute, Lists.newArrayList(a, b, c, d));
+
+        assertThat(empty.compareTo(empty), is(0));
+        assertThat(empty.compareTo(null), is(not(0)));
+        assertThat(empty.compareTo(abc1), is(not(0)));
+        assertThat(empty.compareTo(abc2), is(not(0)));
+        assertThat(empty.compareTo(abcd), is(not(0)));
+        assertThat(empty.compareTo(cba), is(not(0)));
+
+        assertThat(abc1.compareTo(abc1), is(0));
+        assertThat(abc1.compareTo(abc2), is(0));
+        assertThat(abc2.compareTo(abc1), is(0));
+
+        assertThat(abc1.compareTo(null), is(not(0)));
+        assertThat(abc1.compareTo(empty), is(not(0)));
+        assertThat(abc1.compareTo(cba), is(not(0)));
+        assertThat(cba.compareTo(abc1), is(not(0)));
+        assertThat(abc1.compareTo(abcd), is(not(0)));
+        assertThat(abcd.compareTo(abc1), is(not(0)));
+
     }
 
 }
