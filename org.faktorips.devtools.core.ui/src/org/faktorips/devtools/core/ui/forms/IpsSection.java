@@ -163,6 +163,10 @@ public abstract class IpsSection extends Composite implements IDataChangeableRea
         }
 
         createToolBar();
+        /*
+         * Required due to FIPS-4600
+         */
+        getBindingContext().updateUI();
     }
 
     private void createToolBar() {
