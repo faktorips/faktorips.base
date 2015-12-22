@@ -7,11 +7,14 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.model.productcmpt;
+package org.faktorips.devtools.core.model.productcmpt.template;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.Messages;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;

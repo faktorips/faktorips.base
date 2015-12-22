@@ -131,9 +131,7 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
     /**
      * Returns <code>true</code> if this container is using a template. This is the case if
      * {@link IProductCmpt#getTemplate()} returns a non-empty value. That does not mean that the
-     * referenced template actually exists. Use
-     * {@link IProductCmpt#isUsingExistingTemplate(IIpsProject)} to verify that the referenced
-     * template exists.
+     * referenced template actually exists.
      * 
      * @return <code>true</code> if there is a template specified by this product component
      */

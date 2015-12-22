@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import com.google.common.base.Preconditions;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
@@ -120,7 +119,7 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     }
 
     @Override
-    public IIpsObjectPart getParent() {
+    public IAttributeValue getParent() {
         return parent;
     }
 
@@ -162,6 +161,11 @@ public class DelegatingValueHolder<T> implements IValueHolder<T> {
     /** Returns the value holder that read-access is delegated to. */
     public IValueHolder<T> getDelegate() {
         return delegate;
+    }
+
+    @Override
+    public IValueHolder<?> copy(IAttributeValue parent) {
+        return delegate.copy(parent);
     }
 
     /**

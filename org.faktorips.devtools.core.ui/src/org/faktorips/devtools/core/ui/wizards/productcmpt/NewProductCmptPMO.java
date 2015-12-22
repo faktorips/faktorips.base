@@ -89,7 +89,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private IProductCmpt copyProductCmpt;
 
-    private boolean copyValidProductCmpt;
+    private boolean singleTypeSelection = false;
 
     private final List<IProductCmptType> subtypes = new ArrayList<IProductCmptType>();
 
@@ -266,7 +266,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     public void updateSubtypeList() {
         subtypes.clear();
-        if (isCopyValidMode()) {
+        if (isSingleTypeSelection()) {
             subtypes.add(selectedType);
             return;
         }
@@ -306,7 +306,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     public void updateTemplatesList() {
         templates.clear();
-        if (isCopyValidMode()) {
+        if (isSingleTypeSelection()) {
             return;
         }
         List<IIpsSrcFile> templateSrcFiles;
@@ -508,14 +508,18 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      *             {@link #setIpsProject(IIpsProject)}
      */
     public void setCopyProductCmpt(IProductCmpt productCmptToCopy) {
-        if (getIpsProject() == null) {
-            throw new IllegalStateException("IPS Project must be set before setting the product to be copied."); //$NON-NLS-1$
-        }
+        checkIpsProject();
         copyProductCmpt = productCmptToCopy;
 
         initializeNameForProductCmptCopy();
         initializeTypeAndBaseTypeForProductCmptCopy(productCmptToCopy);
         initializeTemplateForProductCmptCopy(productCmptToCopy);
+    }
+
+    private void checkIpsProject() {
+        if (getIpsProject() == null) {
+            throw new IllegalStateException("IPS Project must be set before setting the product to be copied."); //$NON-NLS-1$
+        }
     }
 
     private void initializeNameForProductCmptCopy() {
@@ -524,14 +528,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
 
     private void initializeTypeAndBaseTypeForProductCmptCopy(IProductCmpt productCmptToCopy) {
         IProductCmptType productCmptType = productCmptToCopy.findProductCmptType(productCmptToCopy.getIpsProject());
-        copyValidProductCmpt = productCmptType != null;
-        setSelectedType(productCmptType);
-
-        SelectedBaseTypeVisitor baseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(),
-                productCmptToCopy.getIpsProject());
-        baseTypeVisitor.start(productCmptType);
-        setSelectedBaseType(baseTypeVisitor.selectedBaseType);
-
+        setSingleProductCmptType(productCmptType);
     }
 
     private void initializeTemplateForProductCmptCopy(IProductCmpt productCmptToCopy) {
@@ -540,6 +537,15 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
             ProductCmptViewItem templateViewItem = new ProductCmptViewItem(templateOfCopy.getIpsSrcFile());
             setSelectedTemplate(templateViewItem);
         }
+    }
+
+    public void setSingleProductCmptType(IProductCmptType productCmptType) {
+        checkIpsProject();
+        singleTypeSelection = productCmptType != null;
+        setSelectedType(productCmptType);
+        SelectedBaseTypeVisitor baseTypeVisitor = new SelectedBaseTypeVisitor(getBaseTypes(), getIpsProject());
+        baseTypeVisitor.start(productCmptType);
+        setSelectedBaseType(baseTypeVisitor.selectedBaseType);
     }
 
     /**
@@ -581,8 +587,8 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      * <li>in copy mode and
      * <li>the product component type of the product component to be copied can be found
      */
-    public boolean isCopyValidMode() {
-        return isCopyMode() && copyValidProductCmpt;
+    public boolean isSingleTypeSelection() {
+        return singleTypeSelection;
     }
 
     /**
@@ -595,7 +601,7 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
      * component being copied can be found
      */
     public boolean isFirstPageNeeded() {
-        return !isAddToMode() && !isCopyValidMode();
+        return !isAddToMode() && !isSingleTypeSelection();
     }
 
     /**

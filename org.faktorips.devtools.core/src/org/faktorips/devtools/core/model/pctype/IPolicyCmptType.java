@@ -271,17 +271,15 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns all {@link IValidationRule}s defined by this type and its super-types.
      * 
-     * @throws CoreException if an error occurs while searching
      */
-    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject) throws CoreException;
+    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject);
 
     /**
      * Returns the {@link IValidationRule} with the given name, or <code>null</code> if no such rule
      * is defined by this type and its super-types.
      * 
-     * @throws CoreException if an error occurs while searching
      */
-    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) throws CoreException;
+    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject);
 
     /**
      * Creates a new validation rule and returns it.

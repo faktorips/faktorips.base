@@ -343,8 +343,8 @@ public class AttributeEditDialog extends IpsPartEditDialog2 {
     }
 
     private boolean isOverwriteEvent(ContentChangeEvent event) {
-        return event.getPropertyChangeEvent() != null && attribute.equals(event.getPart()) && attribute.isOverwrite()
-                && IAttribute.PROPERTY_OVERWRITES.equals(event.getPropertyChangeEvent().getPropertyName());
+        return event.isAffected(attribute) && attribute.isOverwrite()
+                && event.isPropertyAffected(IAttribute.PROPERTY_OVERWRITES);
     }
 
     private void updateValueSetTypes() throws CoreException {

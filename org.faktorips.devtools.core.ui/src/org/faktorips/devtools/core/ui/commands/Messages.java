@@ -14,6 +14,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.commands.messages"; //$NON-NLS-1$
+    public static String InferTemplateHandler_label_menueItem;
+    public static String InferTemplateHandler_description_menueItem;
     public static String IpsDeleteHandler_deleteResources;
     static {
         // initialize resource bundle

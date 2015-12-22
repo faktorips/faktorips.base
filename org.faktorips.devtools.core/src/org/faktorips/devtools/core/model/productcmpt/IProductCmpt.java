@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -347,16 +348,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public void setTemplate(String template);
 
     /**
-     * Returns <code>true</code> if this product component is using a template. This is the case if
-     * {@link #isUsingTemplate()} returns a valid qualified name and hence
-     * {@link #findTemplate(IIpsProject)} returns a non-null template object.
-     * 
-     * @param ipsProject The project to search the template
-     * @return <code>true</code> if there is a valid template that is used by this product component
-     */
-    boolean isUsingExistingTemplate(IIpsProject ipsProject);
-
-    /**
      * Returns the template object that is used by this product component if this product component
      * has specified a template. Returns <code>null</code> if no template is specified or the
      * specified template was not found.
@@ -369,5 +360,13 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      */
     @Override
     IProductCmpt findTemplate(IIpsProject ipsProject);
+
+    /**
+     * Resets the {@link TemplateValueStatus} for all {@link IPropertyValue} in this product
+     * component. Resetting means that the {@link TemplateValueStatus} is set to
+     * {@link TemplateValueStatus#DEFINED} if it was {@link TemplateValueStatus#INHERITED}. The
+     * status {@link TemplateValueStatus#UNDEFINED} remains unchanged.
+     */
+    void resetTemplateStatus();
 
 }

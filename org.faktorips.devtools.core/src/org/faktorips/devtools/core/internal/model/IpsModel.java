@@ -297,7 +297,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         getWorkspace().addResourceChangeListener(
                 this,
                 IResourceChangeEvent.PRE_CLOSE | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.POST_CHANGE
-                | IResourceChangeEvent.PRE_REFRESH);
+                        | IResourceChangeEvent.PRE_REFRESH);
     }
 
     public void stopListeningToResourceChanges() {
@@ -1265,7 +1265,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public IChangesOverTimeNamingConvention[] getChangesOverTimeNamingConvention() {
         initChangesOverTimeNamingConventionIfNecessary();
         IChangesOverTimeNamingConvention[] conventions = new IChangesOverTimeNamingConvention[changesOverTimeNamingConventionMap
-                                                                                              .size()];
+                .size()];
         int i = 0;
         for (Iterator<IChangesOverTimeNamingConvention> it = changesOverTimeNamingConventionMap.values().iterator(); it
                 .hasNext();) {
@@ -1539,7 +1539,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             IResource enclosingResource = ipsSrcFile.getEnclosingResource();
             System.out.println(NLS.bind("IpsModel.getIpsSrcFileContent(): {0}, file={1}, FileModStamp={2}, Thread={3}", //$NON-NLS-1$
                     new String[] { text, "" + ipsSrcFile, "" + enclosingResource.getModificationStamp(), //$NON-NLS-1$ //$NON-NLS-2$
-                    Thread.currentThread().getName() }));
+                            Thread.currentThread().getName() }));
         }
     }
 
@@ -1778,8 +1778,8 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                     listener.modificationStatusHasChanged(event);
                     if (TRACE_MODEL_CHANGE_LISTENERS) {
                         System.out
-                        .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
-                                + listener);
+                                .println("IpsModel.notifyModificationStatusChangeListener(): Finished notifying listener: "//$NON-NLS-1$
+                                        + listener);
                     }
                     // CSOFF: IllegalCatch
                 } catch (Exception e) {
@@ -1805,21 +1805,11 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             if (previousEvent == null) {
                 newEvent = event;
             } else {
-                newEvent = mergeChangeEvent(event, previousEvent);
+                newEvent = ContentChangeEvent.mergeChangeEvents(event, previousEvent);
             }
             changedSrcFileEvents.put(event.getIpsSrcFile(), newEvent);
         }
 
-        private ContentChangeEvent mergeChangeEvent(ContentChangeEvent ce1, ContentChangeEvent ce2) {
-            if (ce1.getEventType() == ce2.getEventType()) {
-                if (ce1.getPart() != null && ce1.getPart().equals(ce2.getPart())) {
-                    // same event type and part, thus no new event type needed
-                    return ce1;
-                }
-            }
-            // different event types, return WholeContentChangedEvent
-            return ContentChangeEvent.newWholeContentChangedEvent(ce1.getIpsSrcFile());
-        }
     }
 
     private class IpsSrcFileChangeVisitor implements IResourceDeltaVisitor {

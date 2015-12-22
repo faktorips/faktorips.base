@@ -27,7 +27,8 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,8 +82,8 @@ public class ProductCmptPropertyTypeTest {
     @Test
     public void testCreatePropertyValue_MultiValueAttributeWithDefaultValue() {
         when(pctAttr.getDefaultValue()).thenReturn("defaultValue123");
-        IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
-                .createPropertyValue(prodCmpt, pctAttr, "partID");
+        IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
+                pctAttr, "partID");
 
         MultiValueHolder multiValueHolder = (MultiValueHolder)attrValue.getValueHolder();
         assertEquals(1, multiValueHolder.getValue().size());
@@ -92,8 +93,8 @@ public class ProductCmptPropertyTypeTest {
     @Test
     public void testCreatePropertyValue_EmptyMultiValueAttributeIfDefaultValueIsNull() {
         when(pctAttr.getDefaultValue()).thenReturn(null);
-        IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
-                .createPropertyValue(prodCmpt, pctAttr, "partID");
+        IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
+                pctAttr, "partID");
 
         MultiValueHolder multiValueHolder = (MultiValueHolder)attrValue.getValueHolder();
         assertTrue(multiValueHolder.getValue().isEmpty());
@@ -105,17 +106,17 @@ public class ProductCmptPropertyTypeTest {
         when(prodCmpt.isUsingTemplate()).thenReturn(true);
         when(prodCmpt.findTemplate(ipsProject)).thenReturn(templateCmpt);
         when(templateCmpt.getPropertyValue(pctAttr2.getPropertyName(), IAttributeValue.class))
-                .thenReturn(templateValue);
-        IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
-                .createPropertyValue(prodCmpt, pctAttr2, "partID");
+        .thenReturn(templateValue);
+        IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
+                pctAttr2, "partID");
 
         assertThat(attrValue.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
     }
 
     @Test
     public void testCreatePropertyValue_TemplateValueStatusShouldBeDefinedWhenNotUsingTemplate() {
-        IAttributeValue attrValue = (IAttributeValue)ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE
-                .createPropertyValue(prodCmpt, pctAttr2, "partID");
+        IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
+                pctAttr2, "partID");
 
         assertThat(attrValue.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
     }

@@ -82,11 +82,6 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
         values = defaultValue;
     }
 
-    @Override
-    public IAttributeValue getParent() {
-        return (IAttributeValue)super.getParent();
-    }
-
     /**
      * Returns {@link AttributeValueType#MULTI_VALUE}
      */
@@ -153,7 +148,10 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
 
     @Override
     public int compareTo(IValueHolder<List<SingleValueHolder>> o) {
-        return 0;
+        if (o == null) {
+            return -1;
+        }
+        return getStringValue().compareTo(o.getStringValue());
     }
 
     /**

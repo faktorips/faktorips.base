@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainerToTypeDelta;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -53,7 +54,7 @@ import org.faktorips.util.ArgumentCheck;
  * @author Jan Ortmann
  */
 public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDifferencesComposite implements
-IPropertyValueContainerToTypeDelta {
+        IPropertyValueContainerToTypeDelta {
 
     private final IIpsProject ipsProject;
     private final IPropertyValueContainer propertyValueContainer;
@@ -111,7 +112,7 @@ IPropertyValueContainerToTypeDelta {
      */
     protected abstract void createAdditionalEntriesAndChildren() throws CoreException;
 
-    private void createEntriesForProperties() throws CoreException {
+    private void createEntriesForProperties() {
         for (ProductCmptPropertyType propertyType : ProductCmptPropertyType.values()) {
             Map<String, IProductCmptProperty> propertiesMap = ((ProductCmptType)productCmptType)
                     .findProductCmptPropertyMap(propertyType, getIpsProject());
@@ -138,9 +139,10 @@ IPropertyValueContainerToTypeDelta {
     }
 
     private void checkForInconsistentPropertyValues(Map<String, IProductCmptProperty> propertiesMap,
-            ProductCmptPropertyType propertyType) throws CoreException {
+            ProductCmptPropertyType propertyType) {
 
-        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueClass());
+        List<? extends IPropertyValue> values = propertyValueContainer.getPropertyValues(propertyType.getValueType()
+                .getInterfaceClass());
         for (IPropertyValue value : values) {
             IProductCmptProperty property = propertiesMap.get(value.getPropertyName());
             if (property == null) {
@@ -177,7 +179,8 @@ IPropertyValueContainerToTypeDelta {
     }
 
     private void checkForValueSetMismatch(IPolicyCmptTypeAttribute attribute, IConfigElement element) {
-        if (attribute.getValueSet().isUnrestricted()) {
+        if (attribute.getValueSet().isUnrestricted()
+                || element.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return;
         }
         if (!element.getValueSet().isSameTypeOfValueSet(attribute.getValueSet())) {

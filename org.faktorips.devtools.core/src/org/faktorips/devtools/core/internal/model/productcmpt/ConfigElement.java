@@ -24,6 +24,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
@@ -36,7 +38,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -104,13 +107,23 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.CONFIG_ELEMENT;
+    }
+
+    @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
+        return getProductCmptPropertyType();
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override
     public String getPropertyValue() {
-        return getValue();
+        return getValueSet().toShortString();
     }
 
     @Override
@@ -128,24 +141,26 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public String getValue() {
-        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
-            return findTemplateValue();
-        }
-        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
-            return ""; //$NON-NLS-1$
-        }
+        // TODO FIPS-4556 at the moment only value set is inherited from template
+        // if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+        // return findTemplateValue();
+        // }
+        // if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+        //            return ""; //$NON-NLS-1$
+        // }
         return value;
     }
 
-    private String findTemplateValue() {
-        IConfigElement templateConfigElement = findTemplateProperty(getIpsProject());
-        if (templateConfigElement == null) {
-            // Template should exist but does not. Use the "last known" value as a more or less
-            // helpful fallback while some validation hopefully addresses the missing template...
-            return value;
-        }
-        return templateConfigElement.getValue();
-    }
+    // TODO FIPS-4556
+    // private String findTemplateValue() {
+    // IConfigElement templateConfigElement = findTemplateProperty(getIpsProject());
+    // if (templateConfigElement == null) {
+    // // Template should exist but does not. Use the "last known" value as a more or less
+    // // helpful fallback while some validation hopefully addresses the missing template...
+    // return value;
+    // }
+    // return templateConfigElement.getValue();
+    // }
 
     @Override
     public void setValue(String newValue) {
@@ -513,7 +528,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy value/value set from template (if present)
-            this.value = getValue();
+            // TODO FIPS-4556 at the moment only value set is inherited from template
+            // this.value = getValue();
             copyValueSet();
         }
         TemplateValueStatus oldValue = templateValueSettings.getStatus();

@@ -11,9 +11,10 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.TemplateValueSettings;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
@@ -56,13 +57,36 @@ public interface IPropertyValue extends IIpsObjectPart {
     public IProductCmptProperty findProperty(IIpsProject ipsProject) throws CoreException;
 
     /**
+     * Returns the type of the property value.
+     * 
+     * See {@link PropertyValueType} for safe casts to a specific model element.
+     * 
+     * @see #getProductCmptPropertyType()
+     */
+    public PropertyValueType getPropertyValueType();
+
+    /**
      * Returns the type of the product definition property.
      * <p>
      * See {@link ProductCmptPropertyType} for safe casts to a specific model element.
      * 
      * @see ProductCmptPropertyType
+     * @see #getPropertyValueType()
+     * 
+     * @deprecated since 3.16 there is a difference between {@link PropertyValueType} and
+     *             {@link ProductCmptPropertyType}. Use {@link #getPropertyValueType()} or
+     *             {@link #getProductCmptPropertyType()} which is a direct reference to
+     *             {@link PropertyValueType#getCorrespondingPropertyType()}.
      */
+    @Deprecated
     public ProductCmptPropertyType getPropertyType();
+
+    /**
+     * Returns the type of the product definition property.
+     * 
+     * @see #getPropertyValueType()
+     */
+    public ProductCmptPropertyType getProductCmptPropertyType();
 
     /**
      * Returns the value.

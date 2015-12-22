@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTyp
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 
@@ -89,9 +89,9 @@ public class DeltaLabelProvider extends LabelProvider {
         return descriptor;
     }
 
-    private Image getBaseImage(ProductCmptPropertyType propertyType) {
+    private Image getBaseImage(PropertyValueType propertyType) {
         return propertyType == null ? null : IpsUIPlugin.getImageHandling().getDefaultImage(
-                propertyType.getValueImplementationClass());
+                propertyType.getImplementationClass());
     }
 
     private ImageDescriptor getImageDescriptorForDeltaEntry(IDeltaEntry deltaEntry) {

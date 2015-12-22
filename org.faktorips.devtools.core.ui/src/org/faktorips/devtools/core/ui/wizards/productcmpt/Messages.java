@@ -24,8 +24,15 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String InferTemplateOperation_progress_inferringTemplate;
+    public static String InferTemplateOperation_progress_save;
+    public static String InferTemplateValidator_error_invalidValidFrom;
     public static String NewProductCmptWizard_title;
     public static String NewProductCmptWizard_copyTitle;
+    public static String NewProductTemplateWizard_NoCommonType_message;
+    public static String NewProductTemplateWizard_NoCommonType_title;
+    public static String NewProductTemplateWizard_Precondition_TemplateDefined_message;
+    public static String NewProductTemplateWizard_Precondition_TemplateDefined_title;
     public static String NewProdutCmptValidator_msg_emptyKindId;
     public static String NewProdutCmptValidator_msg_emptyVersionId;
     public static String NewProdutCmptValidator_msg_invalidAddToGeneration;

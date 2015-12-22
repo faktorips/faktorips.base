@@ -17,13 +17,16 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -86,8 +89,18 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.TABLE_CONTENT_USAGE;
+    }
+
+    @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
+        return getProductCmptPropertyType();
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override

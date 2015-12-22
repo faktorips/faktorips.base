@@ -7,13 +7,13 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model.productcmpt;
+package org.faktorips.devtools.core.internal.model.productcmpt.template;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.TemplateHierarchyVisitor;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateHierarchyVisitor;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 
 public class TemplatePropertyFinder<T extends IPropertyValue> extends TemplateHierarchyVisitor {
 

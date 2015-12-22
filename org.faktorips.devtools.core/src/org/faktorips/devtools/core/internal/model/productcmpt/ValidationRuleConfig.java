@@ -15,12 +15,15 @@ import java.util.Locale;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
@@ -163,13 +166,23 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.VALIDATION_RULE;
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.VALIDATION_RULE_CONFIG;
     }
 
     @Override
     public String getPropertyValue() {
         return Boolean.toString(isActive());
+    }
+
+    @Override
+    public ProductCmptPropertyType getPropertyType() {
+        return getProductCmptPropertyType();
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override

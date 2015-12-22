@@ -20,6 +20,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
@@ -27,7 +29,8 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
-import org.faktorips.devtools.core.model.productcmpt.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
@@ -182,8 +185,18 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.ATTRIBUTE_VALUE;
+    }
+
+    @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE;
+        return getProductCmptPropertyType();
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override
@@ -222,17 +235,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
-            copyValueHolder();
+            valueHolder = getValueHolder().copy(this);
         }
         TemplateValueStatus oldValue = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
-    }
-
-    private void copyValueHolder() {
-        IValueHolder<?> valueHolderToCopy = getValueHolder();
-        Element element = valueHolderToCopy.toXml(IpsPlugin.getDefault().getDocumentBuilder().newDocument());
-        valueHolder = AbstractValueHolder.initValueHolder(this, element);
     }
 
     @Override

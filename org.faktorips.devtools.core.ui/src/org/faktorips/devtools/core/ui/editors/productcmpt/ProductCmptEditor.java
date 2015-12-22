@@ -141,8 +141,7 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     @Override
     public void contentsChanged(ContentChangeEvent event) {
         super.contentsChanged(event);
-        if (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE)
-                || event.isPropertyAffected(IProductCmpt.PROPERTY_TEMPLATE)) {
+        if (isStructuralChangeEvent(event)) {
             Display display = IpsPlugin.getDefault().getWorkbench().getDisplay();
             display.syncExec(new Runnable() {
 
@@ -152,6 +151,12 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                 }
             });
         }
+    }
+
+    protected boolean isStructuralChangeEvent(ContentChangeEvent event) {
+        return event.isAffected(getIpsObject())
+                && (isGenerationAdded(event) || event.isPropertyAffected(ProductCmptTypeAttribute.PROPERTY_VISIBLE) || event
+                        .isPropertyAffected(IProductCmpt.PROPERTY_TEMPLATE));
     }
 
     private boolean isGenerationAdded(ContentChangeEvent event) {

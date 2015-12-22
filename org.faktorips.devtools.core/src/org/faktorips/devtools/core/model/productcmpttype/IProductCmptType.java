@@ -304,10 +304,8 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      *            necessarily the project this type is part of.
      * 
      * @throws NullPointerException if project is <code>null</code>.
-     * @throws CoreException if an error occurs while searching.
      */
-    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException;
+    public IProductCmptTypeAttribute findProductCmptTypeAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.
@@ -354,7 +352,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * 
      * @return the ITableStructureUsage for the provided name or <code>null</code> if non is found
      */
-    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project) throws CoreException;
+    public ITableStructureUsage findTableStructureUsage(String roleName, IIpsProject project);
 
     /**
      * Creates a new table usage and returns it.
@@ -429,18 +427,15 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param formulaName The formula name to search
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching.
      * @throws NullPointerException if IPS project is <code>null</code>.
      */
-    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeMethod findFormulaSignature(String formulaName, IIpsProject ipsProject);
 
     /**
      * Returns the formula signatures of formulas in the supertype hierarchy that are overloaded by
      * formulas of this type.
-     * 
-     * @throws CoreException if an error occurs while searching.
      */
-    public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptTypeMethod> findSignaturesOfOverloadedFormulas(IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties including all product component properties
@@ -448,7 +443,7 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * ipsProject)
      * 
      */
-    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject) throws CoreException;
+    public List<IProductCmptProperty> findProductCmptProperties(IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties.
@@ -456,21 +451,21 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
      */
-    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject)
-            throws CoreException;
+    public List<IProductCmptProperty> findProductCmptProperties(boolean searchSupertypeHierarchy, IIpsProject ipsProject);
 
     /**
      * Returns the type's product definition properties according to the given search parameters.
      * 
-     * @param propertyType only properties of this {@link ProductCmptPropertyType} will be included
+     * @param propertyType only properties of this {@link ProductCmptPropertyType} will be included.
      * @param searchSupertypeHierarchy flag indicating whether the supertype hierarchy shall be
      *            searched as well
      * 
-     * @throws CoreException if an error occurs during the search
+     * @see #findProductCmptProperties(IIpsProject)
+     * @see #findProductCmptProperties(boolean, IIpsProject)
      */
     public List<IProductCmptProperty> findProductCmptProperties(ProductCmptPropertyType propertyType,
             boolean searchSupertypeHierarchy,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject);
 
     /**
      * Returns the product definition property with the given name and type. If no such property is
@@ -478,13 +473,13 @@ public interface IProductCmptType extends IType, IIpsMetaClass {
      */
     public IProductCmptProperty findProductCmptProperty(ProductCmptPropertyType type,
             String propName,
-            IIpsProject ipsProject) throws CoreException;
+            IIpsProject ipsProject);
 
     /**
      * Returns the product definition property with the given name. If no such property is found in
      * the type itself, the supertype hierarchy is searched.
      */
-    public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject) throws CoreException;
+    public IProductCmptProperty findProductCmptProperty(String propName, IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if the user has configured a custom icon for enabled instances of

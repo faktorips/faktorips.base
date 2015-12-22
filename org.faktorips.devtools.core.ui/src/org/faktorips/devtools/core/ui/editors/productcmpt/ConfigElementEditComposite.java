@@ -80,7 +80,8 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
         editFields.add(valueSetEditField);
         createTemplateStatusButton(valueSetEditField);
         EditField<String> defaultValueEditField = createDefaultValueEditField();
-        createTemplateStatusButton(defaultValueEditField);
+        // TODO FIPS-4556 just fill grid cell as long we do not have templates for default values
+        getToolkit().createHorizontalSpacer(this, 0);
         editFields.add(defaultValueEditField);
         createEditFieldsForExtensionProperties();
         addOverlaysToEditFields(editFields);
@@ -172,7 +173,7 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
             @Override
             public String apply(IConfigElement configElement) {
-                return configElement != null ? configElement.getPropertyValue() : StringUtils.EMPTY;
+                return configElement != null ? configElement.getValueSet().toShortString() : StringUtils.EMPTY;
             }
         };
     }

@@ -85,7 +85,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
     }
 
     @Override
-    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeMethod findOverloadedFormulaMethod(IIpsProject ipsProject) {
         if (!isOverloadsFormula()) {
             return null;
         }
@@ -245,8 +245,7 @@ public class ProductCmptTypeMethod extends Method implements IProductCmptTypeMet
 
     @Override
     public boolean isPropertyFor(IPropertyValue propertyValue) {
-        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                && getPropertyName().equals(propertyValue.getPropertyName());
+        return getProductCmptPropertyType().isMatchingPropertyValue(getPropertyName(), propertyValue);
     }
 
     @Override

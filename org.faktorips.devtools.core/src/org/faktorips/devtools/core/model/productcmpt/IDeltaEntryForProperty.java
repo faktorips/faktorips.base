@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * Delta entry for a product definition property.
@@ -22,7 +21,7 @@ public interface IDeltaEntryForProperty extends IDeltaEntry {
     /**
      * Returns the type of the property this entry refers.
      */
-    public ProductCmptPropertyType getPropertyType();
+    public PropertyValueType getPropertyType();
 
     /**
      * Returns the name of the product definition property this entry relates.

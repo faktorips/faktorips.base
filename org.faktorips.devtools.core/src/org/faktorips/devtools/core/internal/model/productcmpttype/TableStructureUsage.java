@@ -261,7 +261,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
         validateChangingOverTime(list);
     }
 
-    private void validateRoleNameInSupertypeHierarchy(MessageList msgList) throws CoreException {
+    private void validateRoleNameInSupertypeHierarchy(MessageList msgList) {
         IProductCmptType supertype = getProductCmptType().findSuperProductCmptType(getIpsProject());
         if (supertype == null) {
             return;
@@ -317,8 +317,7 @@ public class TableStructureUsage extends TypePart implements ITableStructureUsag
 
     @Override
     public boolean isPropertyFor(IPropertyValue propertyValue) {
-        return getProductCmptPropertyType().equals(propertyValue.getPropertyType())
-                && getPropertyName().equals(propertyValue.getPropertyName());
+        return getProductCmptPropertyType().isMatchingPropertyValue(getPropertyName(), propertyValue);
     }
 
     public static class TableStructureReference extends AtomicIpsObjectPart {

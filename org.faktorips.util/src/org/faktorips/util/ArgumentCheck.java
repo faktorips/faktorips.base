@@ -10,6 +10,8 @@
 
 package org.faktorips.util;
 
+import java.util.Collection;
+
 import org.w3c.dom.Node;
 
 /**
@@ -32,7 +34,7 @@ public class ArgumentCheck {
      * 
      * @throws NullPointerException if arg is null.
      */
-    public final static void notNull(Object arg) {
+    public static final void notNull(Object arg) {
         if (arg == null) {
             throw new NullPointerException();
         }
@@ -44,7 +46,7 @@ public class ArgumentCheck {
      * 
      * @param arg the argument to check.
      */
-    public final static void notNull(Object[] arg) {
+    public static final void notNull(Object[] arg) {
         notNull((Object)arg);
         for (Object element : arg) {
             notNull(element);
@@ -58,7 +60,7 @@ public class ArgumentCheck {
      * @param arg the argument to check.
      * @param context information, in case the test fails, the context's toString()
      */
-    public final static void notNull(Object[] arg, Object context) {
+    public static final void notNull(Object[] arg, Object context) {
         notNull((Object)arg);
         for (Object element : arg) {
             notNull(element, context);
@@ -74,7 +76,7 @@ public class ArgumentCheck {
      * 
      * @throws NullPointerException if arg is null.
      */
-    public final static void notNull(Object arg, Object context) {
+    public static final void notNull(Object arg, Object context) {
         if (arg == null) {
             throw new NullPointerException("" + context);
         }
@@ -87,7 +89,7 @@ public class ArgumentCheck {
      * 
      * @throws NullPointerException if arg is null.
      */
-    public final static void isTrue(boolean arg) {
+    public static final void isTrue(boolean arg) {
         if (!arg) {
             throw new IllegalArgumentException();
         }
@@ -100,7 +102,7 @@ public class ArgumentCheck {
      * 
      * @throws NullPointerException if arg is null.
      */
-    public final static void isTrue(boolean arg, Object context) {
+    public static final void isTrue(boolean arg, Object context) {
         if (!arg) {
             throw new IllegalArgumentException(context.toString());
         }
@@ -111,7 +113,7 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if arg1.equals(arg2) returns falls.
      */
-    public final static void equals(Object arg1, Object arg2) {
+    public static final void equals(Object arg1, Object arg2) {
         if (!arg1.equals(arg2)) {
             throw new IllegalArgumentException();
         }
@@ -122,7 +124,7 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if arg1.equals(arg2) returns falls.
      */
-    public final static void equals(Object arg1, Object arg2, Object context) {
+    public static final void equals(Object arg1, Object arg2, Object context) {
         if (!arg1.equals(arg2)) {
             throw new IllegalArgumentException(context.toString());
         }
@@ -135,7 +137,7 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if arg is null.
      */
-    public final static void isInstanceOf(Object arg, Class<?> clazz) {
+    public static final void isInstanceOf(Object arg, Class<?> clazz) {
         if (!clazz.isAssignableFrom(arg.getClass())) {
             throw new IllegalArgumentException();
         }
@@ -148,7 +150,7 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if arg is null.
      */
-    public final static void isInstanceOf(Object arg, Class<?> clazz, Object context) {
+    public static final void isInstanceOf(Object arg, Class<?> clazz, Object context) {
         if (!clazz.isAssignableFrom(arg.getClass())) {
             throw new IllegalArgumentException(context.toString());
         }
@@ -162,8 +164,22 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if the array has not the given length.
      */
-    public final static void length(Object[] arg, int length) {
+    public static final void length(Object[] arg, int length) {
         if (arg.length != length) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    /**
+     * Checks if the given collection has at least the given size.
+     * 
+     * @param c the collection to check.
+     * @param size the expected array length
+     * 
+     * @throws IllegalArgumentException if the array has not the given length.
+     */
+    public static final void atLeast(Collection<?> c, int size) {
+        if (c.size() < size) {
             throw new IllegalArgumentException();
         }
     }
@@ -171,13 +187,15 @@ public class ArgumentCheck {
     /**
      * Checks if the indicated array has the indicated length.
      * 
-     * @param arg the array to check.
+     * @param a the array to check.
      * @param length the expected array length
+     * @param context an Object whose {@code toString} is used as the message for the
+     *            IllegalArgumentException if it is thrown
      * 
      * @throws IllegalArgumentException if the array has not the given length.
      */
-    public final static void length(Object[] arg, int length, Object context) {
-        if (arg.length != length) {
+    public static final void length(Object[] a, int length, Object context) {
+        if (a.length != length) {
             throw new IllegalArgumentException(context.toString());
         }
     }
@@ -187,7 +205,7 @@ public class ArgumentCheck {
      * 
      * @throws IllegalArgumentException if subclass is not a subclass of superclass.
      */
-    public final static void isSubclassOf(Class<?> subclass, Class<?> superclass) {
+    public static final void isSubclassOf(Class<?> subclass, Class<?> superclass) {
         if (!superclass.isAssignableFrom(subclass)) {
             throw new IllegalArgumentException(subclass + " is not a subclass of " + superclass);
         }
@@ -199,7 +217,7 @@ public class ArgumentCheck {
      * @throws IllegalArgumentException if the node has not the expected name.
      * @throws NullPointerException if node is <code>null</code>.
      */
-    public final static void nodeName(Node node, String name) {
+    public static final void nodeName(Node node, String name) {
         if (!node.getNodeName().equals(name)) {
             throw new IllegalArgumentException("Node has name " + node.getNodeName() + ", expected " + name + ".");
         }

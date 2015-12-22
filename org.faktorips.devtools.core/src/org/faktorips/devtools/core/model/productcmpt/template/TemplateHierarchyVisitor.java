@@ -7,10 +7,11 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.model.productcmpt;
+package org.faktorips.devtools.core.model.productcmpt.template;
 
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 
 public abstract class TemplateHierarchyVisitor extends HierarchyVisitor<IPropertyValueContainer> {
 

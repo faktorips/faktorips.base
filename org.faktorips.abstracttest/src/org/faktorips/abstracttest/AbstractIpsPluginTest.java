@@ -382,8 +382,8 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
                 Datatype.BOOLEAN.getName() });
         // @formatter:on
         properties
-                .setMinRequiredVersionNumber(
-                        "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+        .setMinRequiredVersionNumber(
+                "org.faktorips.feature", (String)Platform.getBundle("org.faktorips.devtools.core").getHeaders().get("Bundle-Version")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         ipsProject.setProperties(properties);
     }
 
@@ -424,7 +424,7 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
         engine.searchAllTypeNames(new char[] {}, SearchPattern.R_EXACT_MATCH, new char[] {},
                 SearchPattern.R_EXACT_MATCH, IJavaSearchConstants.CLASS,
                 SearchEngine.createJavaSearchScope(new IJavaElement[0]), new TypeNameRequestor() {
-                }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+        }, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
     }
 
     protected void setAutoBuild(boolean autoBuild) throws CoreException {
@@ -1482,10 +1482,9 @@ public abstract class AbstractIpsPluginTest extends XmlAbstractTestCase {
 
         assertContentChangedEvent(part.getIpsSrcFile(), ContentChangeEvent.TYPE_PROPERTY_CHANGED);
         assertEquals(part, getLastContentChangeEvent().getPart());
-        assertNotNull(getLastContentChangeEvent().getPropertyChangeEvent());
-        assertEquals(property, getLastContentChangeEvent().getPropertyChangeEvent().getPropertyName());
-        assertEquals(oldValue, getLastContentChangeEvent().getPropertyChangeEvent().getOldValue());
-        assertEquals(newValue, getLastContentChangeEvent().getPropertyChangeEvent().getNewValue());
+        assertEquals(property, getLastContentChangeEvent().getFirstPropertyChangeEvent().getPropertyName());
+        assertEquals(oldValue, getLastContentChangeEvent().getFirstPropertyChangeEvent().getOldValue());
+        assertEquals(newValue, getLastContentChangeEvent().getFirstPropertyChangeEvent().getNewValue());
     }
 
     protected final void assertSingleContentChangeEvent() {

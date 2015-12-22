@@ -28,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
@@ -72,9 +73,8 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
     }
 
     protected void assertAttributesSize(int size) {
-        assertEquals(size,
-                valueContainer.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
+        assertEquals(size, valueContainer.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass())
+                .size());
     }
 
     protected void assertSize(int size) {
@@ -114,23 +114,19 @@ public class PropertyValueCollectionTest extends AbstractIpsPluginTest {
         part4.setAttribute("AV4");
         valueContainer.addPropertyValue(part4);
         assertEquals(4, valueContainer.getAllPropertyValues().size());
-        assertEquals(4,
-                valueContainer.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE.getValueClass())
+        assertEquals(4, valueContainer.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
+        assertEquals(0, valueContainer.getPropertyValues(PropertyValueType.VALIDATION_RULE_CONFIG.getInterfaceClass())
                 .size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
+        assertEquals(0, valueContainer.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass())
                 .size());
 
         ValidationRuleConfig config = new ValidationRuleConfig(parent, "ID4", "Rule");
         valueContainer.addPropertyValue(config);
         assertEquals(5, valueContainer.getAllPropertyValues().size());
-        assertEquals(4,
-                valueContainer.getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass())
-                        .size());
-        assertEquals(1, valueContainer.getPropertyValues(ProductCmptPropertyType.VALIDATION_RULE.getValueClass())
+        assertEquals(4, valueContainer.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE.getInterfaceClass()).size());
+        assertEquals(1, valueContainer.getPropertyValues(PropertyValueType.VALIDATION_RULE_CONFIG.getInterfaceClass())
                 .size());
-        assertEquals(0, valueContainer.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass())
+        assertEquals(0, valueContainer.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass())
                 .size());
     }
 

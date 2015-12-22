@@ -33,6 +33,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -194,7 +195,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
     }
 
     private Control createLabel(IPropertyValue propertyValue, IProductCmptProperty property) {
-        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
+        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyValueType());
 
         Control label = propertyValueUI.createLabel(propertyValue, rootPane, getToolkit());
         // Use description of property as tooltip if available
@@ -207,7 +208,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
     private EditPropertyValueComposite<?, ?> createEditComposite(IPropertyValue propertyValue,
             IProductCmptProperty property) {
 
-        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyType());
+        PropertyValueUI propertyValueUI = PropertyValueUI.getValueByPropertyType(propertyValue.getPropertyValueType());
         return propertyValueUI.createEditComposite(property, propertyValue, this, rootPane, getBindingContext(),
                 getToolkit());
     }
@@ -353,17 +354,17 @@ public abstract class ProductCmptPropertySection extends IpsSection {
          * {@link ProductCmptPropertyType} or null if no {@link PropertyValueUI} exists for the
          * provided {@link ProductCmptPropertyType}.
          */
-        public static PropertyValueUI getValueByPropertyType(ProductCmptPropertyType propertyType) {
+        public static PropertyValueUI getValueByPropertyType(PropertyValueType propertyType) {
             switch (propertyType) {
-                case PRODUCT_CMPT_TYPE_ATTRIBUTE:
+                case ATTRIBUTE_VALUE:
                     return ATTRIBUTE_VALUE;
-                case VALIDATION_RULE:
+                case VALIDATION_RULE_CONFIG:
                     return VALIDATION_RULE_CONFIG;
-                case FORMULA_SIGNATURE_DEFINITION:
+                case FORMULA:
                     return FORMULA;
-                case TABLE_STRUCTURE_USAGE:
+                case TABLE_CONTENT_USAGE:
                     return TABLE_CONTENT_USAGE;
-                case POLICY_CMPT_TYPE_ATTRIBUTE:
+                case CONFIG_ELEMENT:
                     return CONFIG_ELEMENT;
             }
             return null;

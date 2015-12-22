@@ -50,7 +50,7 @@ import org.faktorips.devtools.core.ui.wizards.productcmpt.Messages;
  * @param <PMO> type of the {@link PresentationModelObject} that configures this operation
  */
 public abstract class NewProductDefinitionOperation<PMO extends NewProductDefinitionPMO> extends
-WorkspaceModifyOperation {
+        WorkspaceModifyOperation {
 
     private final PMO pmo;
 
@@ -143,9 +143,9 @@ WorkspaceModifyOperation {
     protected abstract void finishIpsSrcFile(IIpsSrcFile ipsSrcFile, IProgressMonitor monitor) throws CoreException;
 
     /**
-     * <strong>Subclassing:</strong><br>
      * This method may put the new {@link IIpsSrcFile} in context to other objects. It is called
-     * after the source file has been created and saved.
+     * after the source file has been created and saved. All touched source files including the
+     * given one needs to be saved by this operation!
      * 
      * @param ipsSrcFile the newly created source file
      * @param monitor progress monitor to show progress with
@@ -161,7 +161,7 @@ WorkspaceModifyOperation {
     /**
      * Returns the {@link PresentationModelObject} that configures this operation.
      */
-    protected final PMO getPmo() {
+    protected PMO getPmo() {
         return pmo;
     }
 

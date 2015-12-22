@@ -45,7 +45,7 @@ public class PropertyTypeMismatchEntry extends AbstractDeltaEntryForProperty {
         String desc = Messages.PropertyTypeMismatchEntry_desc;
         String label = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(property);
         return NLS.bind(desc, new Object[] { label, property.getProductCmptPropertyType().getName(),
-                value.getPropertyType().getName() });
+                value.getProductCmptPropertyType().getName() });
     }
 
     @Override

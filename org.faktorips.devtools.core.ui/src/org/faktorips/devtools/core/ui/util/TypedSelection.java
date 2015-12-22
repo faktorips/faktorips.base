@@ -19,9 +19,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -52,33 +54,170 @@ public class TypedSelection<T> {
     private String typeName = "undefined"; //$NON-NLS-1$
 
     /**
-     * Creates a validator that validates <code>false</code> for any type of selection.
+     * Creates a new instance of {@link TypedSelection}. The selection is valid if exactly one
+     * element of the given type is in the selection.
      * 
-     * @param <T> the type of the selection
-     * @return the created instance
+     * @param type the expected type of the selection (must be the same as the type parameter
+     *            <b>T</b>)
+     * @param selection the selection to validate
      */
-    public static <T> TypedSelection<T> createNullValidator() {
-        return new TypedSelection<T>();
+    public TypedSelection(final Class<T> type, final ISelection selection) {
+        this(type, selection, 1, 1);
     }
 
     /**
-     * Creates a validator that validates <code>true</code> for any type of selection.
+     * Creates a new instance of {@link TypedSelection}. The selection is valid if it exactly
+     * contains the specified number of elements.
      * 
-     * @param <T> the type of the selection
-     * @return the created instance
+     * @param type the expected type of the selection (must be the same as the type parameter
+     *            <b>T</b>)
+     * @param selection the selection to validate
+     * @param elements the number of elements that must be in the selection
      */
-    public static <T> TypedSelection<T> createTrueValidator() {
-        return new TypedSelection<T>(true);
+    public TypedSelection(final Class<T> type, final ISelection selection, final int elements) {
+        this(type, selection, elements, elements);
     }
 
     /**
-     * Creates a validator that validates <code>false</code> for any type of selection.
+     * Creates a new instance of {@link TypedSelection}. Will automatically try to adapt (@see
+     * {@link IWorkbenchAdapter}) to the specified type.
+     * <p>
+     * SW 15.12.2015: Deliberately complecting adaptation with TypedSelection's (already) multiple
+     * responsibilities (ensuring StructuredSelection, ensuring type safety, ensuring count) for
+     * sake of easier and faster implementation. CD made me do it ;-). A stream model would be the
+     * ultimate goal, so I can live with this solution until then.
      * 
-     * @param <T> the type of the selection
-     * @return the created instance
+     * @param type the expected type of the selection (must be the same as the type parameter
+     *            <b>T</b>)
+     * @param selection the selection to validate
+     * @param minElements the minimum number of elements in the selection
+     * @param maxElements the maximum number of elements in the selection
      */
-    public static <T> TypedSelection<T> createFalseValidator() {
-        return new TypedSelection<T>();
+    public TypedSelection(final Class<T> type, final ISelection selection, final int minElements, final int maxElements) {
+        ArgumentCheck.notNull(type);
+        ArgumentCheck.isTrue(minElements > 0, "minElements must be positive: " + minElements); //$NON-NLS-1$
+        ArgumentCheck.isTrue(minElements <= maxElements, "minElements <= maxElements: " + minElements + " <= " //$NON-NLS-1$ //$NON-NLS-2$
+                + maxElements);
+
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+            elements = new ArrayList<T>(structuredSelection.size());
+            boolean elementTypesValid = initElements(type, structuredSelection);
+            isValidSelection = elementTypesValid && (minElements <= elements.size())
+                    && (elements.size() <= maxElements);
+            typeName = type.getCanonicalName();
+        } else {
+            isValidSelection = false;
+        }
+    }
+
+    /**
+     * @return <code>true</code> if all elements in the structured selection match the expected
+     *         type, <code>false</code> else.
+     */
+    private boolean initElements(final Class<T> type, IStructuredSelection structuredSelection) {
+        for (Iterator<?> iterator = structuredSelection.iterator(); iterator.hasNext();) {
+            Object element = iterator.next();
+            if (type.isInstance(element)) {
+                elements.add(type.cast(element));
+            } else if (element instanceof IAdaptable) {
+                @SuppressWarnings("unchecked")
+                T adapted = (T)((IAdaptable)element).getAdapter(type);
+                if (adapted != null) {
+                    elements.add(adapted);
+                }
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void failIfNotValid() {
+        failIfNotValid(this);
+    }
+
+    /**
+     * Returns whether this selection is valid.
+     * 
+     * @return <code>true</code> if this selection is valid, <code>false</code> otherwise
+     */
+    public final boolean isValid() {
+        return isValidSelection;
+    }
+
+    /**
+     * Returns the element of this single selection.
+     * 
+     * @return the first element of this single selection.
+     */
+    public final T getElement() {
+        failIfNotValid();
+        ArgumentCheck.isTrue(elements.size() == 1,
+                "getElement should be used for single selections only, but size is " + elements.size()); //$NON-NLS-1$
+
+        return getFirstElement();
+    }
+
+    /**
+     * Returns the first element of this selection.
+     * 
+     * @return the first element of this selection.
+     */
+    public final T getFirstElement() {
+        failIfNotValid();
+
+        return elements.get(0);
+    }
+
+    /**
+     * Returns the second element of this selection.
+     * 
+     * @return the second element of this selection.
+     */
+    public final T getSecondElement() {
+        failIfNotValid();
+        ArgumentCheck.isTrue(elements.size() >= 2, "Can't extract second element of a selection of size < 2."); //$NON-NLS-1$
+
+        return elements.get(1);
+    }
+
+    /**
+     * Returns the contents of this selection as an unmodifiable list with "read-only" access.
+     * Attempts to modify this list, whether direct or via its iterator, result in an
+     * {@link UnsupportedOperationException}.
+     * 
+     * @return the contents of this selection
+     */
+    public final List<T> getElements() {
+        failIfNotValid();
+
+        return Collections.unmodifiableList(elements);
+    }
+
+    /**
+     * Returns the number of elements in this selection.
+     * 
+     * @return the number of elements in this selection.
+     */
+    public final int getElementCount() {
+        failIfNotValid();
+
+        return elements.size();
+    }
+
+    public IStructuredSelection asStructuredSelection() {
+        return new StructuredSelection(getElements());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        if (isValidSelection) {
+            return "Valid selection of " + getElementCount() + " elements of type " + typeName; //$NON-NLS-1$//$NON-NLS-2$
+        } else {
+            return "Invalid selection."; //$NON-NLS-1$
+        }
     }
 
     /**
@@ -231,163 +370,4 @@ public class TypedSelection<T> {
         ArgumentCheck.isTrue(validator.isValid(), "Selection is not valid."); //$NON-NLS-1$
     }
 
-    /**
-     * Creates a new instance of {@link TypedSelection}. The selection is valid if exactly one
-     * element of the given type is in the selection.
-     * 
-     * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
-     * @param selection the selection to validate
-     */
-    public TypedSelection(final Class<T> type, final ISelection selection) {
-        this(type, selection, 1, 1);
-    }
-
-    /**
-     * Creates a new instance of {@link TypedSelection}. The selection is valid if it exactly
-     * contains the specified number of elements.
-     * 
-     * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
-     * @param selection the selection to validate
-     * @param elements the number of elements that must be in the selection
-     */
-    public TypedSelection(final Class<T> type, final ISelection selection, final int elements) {
-        this(type, selection, elements, elements);
-    }
-
-    /**
-     * Creates a new instance of {@link TypedSelection}. The selection is never valid.
-     */
-    private TypedSelection() {
-        this(false);
-    }
-
-    /**
-     * Creates a new instance of {@link TypedSelection}. The selection is never valid.
-     * 
-     * @param isValid determines whether the selection is valid
-     */
-    private TypedSelection(final boolean isValid) {
-        isValidSelection = isValid;
-        elements = Collections.emptyList();
-    }
-
-    /**
-     * Creates a new instance of {@link TypedSelection}.
-     * 
-     * @param type the expected type of the selection (must be the same as the type parameter
-     *            <b>T</b>)
-     * @param selection the selection to validate
-     * @param minElements the minimum number of elements in the selection
-     * @param maxElements the maximum number of elements in the selection
-     */
-    public TypedSelection(final Class<T> type, final ISelection selection, final int minElements, final int maxElements) {
-        ArgumentCheck.notNull(type);
-        ArgumentCheck.isTrue(minElements > 0, "minElements must be positive: " + minElements); //$NON-NLS-1$
-        ArgumentCheck.isTrue(minElements <= maxElements, "minElements <= maxElements: " + minElements + " <= " //$NON-NLS-1$ //$NON-NLS-2$
-                + maxElements);
-
-        if (selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-
-            elements = new ArrayList<T>(structuredSelection.size());
-            boolean wrongType = false;
-            for (Iterator<?> iterator = structuredSelection.iterator(); iterator.hasNext();) {
-                Object element = iterator.next();
-                if (type.isInstance(element)) {
-                    elements.add(type.cast(element));
-                } else {
-                    wrongType = true;
-                }
-            }
-            isValidSelection = !wrongType && (minElements <= elements.size()) && (elements.size() <= maxElements);
-            typeName = type.getCanonicalName();
-        } else {
-            isValidSelection = false;
-        }
-    }
-
-    private void failIfNotValid() {
-        failIfNotValid(this);
-    }
-
-    /**
-     * Returns whether this selection is valid.
-     * 
-     * @return <code>true</code> if this selection is valid, <code>false</code> otherwise
-     */
-    public final boolean isValid() {
-        return isValidSelection;
-    }
-
-    /**
-     * Returns the element of this single selection.
-     * 
-     * @return the first element of this single selection.
-     */
-    public final T getElement() {
-        failIfNotValid();
-        ArgumentCheck.isTrue(elements.size() == 1,
-                "getElement should be used for single selections only, but size is " + elements.size()); //$NON-NLS-1$
-
-        return getFirstElement();
-    }
-
-    /**
-     * Returns the first element of this selection.
-     * 
-     * @return the first element of this selection.
-     */
-    public final T getFirstElement() {
-        failIfNotValid();
-
-        return elements.get(0);
-    }
-
-    /**
-     * Returns the second element of this selection.
-     * 
-     * @return the second element of this selection.
-     */
-    public final T getSecondElement() {
-        failIfNotValid();
-        ArgumentCheck.isTrue(elements.size() >= 2, "Can't extract second element of a selection of size < 2."); //$NON-NLS-1$
-
-        return elements.get(1);
-    }
-
-    /**
-     * Returns the contents of this selection as an unmodifiable list with "read-only" access.
-     * Attempts to modify this list, whether direct or via its iterator, result in an
-     * {@link UnsupportedOperationException}.
-     * 
-     * @return the contents of this selection
-     */
-    public final Collection<T> getElements() {
-        failIfNotValid();
-
-        return Collections.unmodifiableList(elements);
-    }
-
-    /**
-     * Returns the number of elements in this selection.
-     * 
-     * @return the number of elements in this selection.
-     */
-    public final int getElementCount() {
-        failIfNotValid();
-
-        return elements.size();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        if (isValidSelection) {
-            return "Valid selection of " + getElementCount() + " elements of type " + typeName; //$NON-NLS-1$//$NON-NLS-2$
-        } else {
-            return "Invalid selection."; //$NON-NLS-1$
-        }
-    }
 }

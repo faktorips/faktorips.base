@@ -76,6 +76,9 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
                 } else if (ipsElement instanceof IIpsPackageFragment) {
                     IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
                     initDefaults(packageFragment, null);
+                } else if (ipsElement instanceof IIpsObject) {
+                    IIpsObject ipsObject = (IIpsObject)ipsElement;
+                    initDefaults(ipsObject.getIpsPackageFragment(), ipsObject);
                 } else if (ipsElement instanceof IIpsSrcFile) {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
                     IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();

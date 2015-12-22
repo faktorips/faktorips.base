@@ -186,7 +186,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
 
         // Base product component type and product component type should be selected accordingly
         assertThat(pmo.isCopyMode(), is(true));
-        assertThat(pmo.isCopyValidMode(), is(true));
+        assertThat(pmo.isSingleTypeSelection(), is(true));
         assertThat(pmo.getSelectedBaseType(), is(baseType));
         assertThat(pmo.getSelectedType(), is(concreteType));
         assertThat(pmo.getSelectedTemplateAsProductCmpt(), is(template));
@@ -205,7 +205,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         pmo.setCopyProductCmpt(productCmptToCopy);
 
         assertTrue(pmo.isCopyMode());
-        assertFalse(pmo.isCopyValidMode());
+        assertFalse(pmo.isSingleTypeSelection());
         assertEquals(productCmptToCopy, pmo.getCopyProductCmpt());
 
         assertNull(pmo.getSelectedBaseType());
@@ -331,7 +331,7 @@ public class NewProductCmptPMOTest extends AbstractIpsPluginTest {
         when(ipsSrcFile3.getPropertyValue(IType.PROPERTY_SUPERTYPE)).thenReturn("findSuperType");
 
         when(ipsProject.findIpsSrcFile(new QualifiedNameType("findSuperType", IpsObjectType.PRODUCT_CMPT_TYPE)))
-        .thenReturn(ipsSrcFile1);
+                .thenReturn(ipsSrcFile1);
 
         // refresh the list
         pmo.setIpsProject(ipsProject);

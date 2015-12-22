@@ -7,10 +7,12 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.model.productcmpt;
+package org.faktorips.devtools.core.model.productcmpt.template;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 
 /**
  * Defines the status of a property value with regard to the template hierarchy it is used in.
