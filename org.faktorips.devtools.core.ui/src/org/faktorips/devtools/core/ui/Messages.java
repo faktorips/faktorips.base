@@ -132,4 +132,8 @@ public class Messages extends NLS {
 
     public static String LinkDropListener_selectAssociation;
 
+    public static String TemplatePropertyUsageView_DifferingValues_Label;
+
+    public static String TemplatePropertyUsageView_SameValue_label;
+
 }

@@ -1221,6 +1221,15 @@
             name="%IpsModelStructureTitle"
             restorable="true">
       </view>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageViewPart"
+            icon="icons/ModelStructure.gif"
+            id="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"
+            name="%TemplatePropertyUsageViewTitle"
+            restorable="true">
+      </view>
    </extension>
    
    <extension
