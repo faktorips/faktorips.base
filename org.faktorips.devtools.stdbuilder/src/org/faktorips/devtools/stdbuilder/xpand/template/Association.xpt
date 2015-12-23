@@ -10,7 +10,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	     «overrideAnnotationForPublishedMethodImplementation()-»
 	    public int «method(methodNameGetNumOf)»
 	    «IF genInterface()-»;«ELSE-»
 	    {

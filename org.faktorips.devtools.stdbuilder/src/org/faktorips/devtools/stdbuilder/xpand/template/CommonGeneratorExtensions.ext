@@ -20,8 +20,8 @@ overrideAnnotationForPublishedMethod(AbstractGeneratorModelNode this) :
 
 // Use this function for published methods. i.e. methods that are defined in a published interface.
 // Returns the @Override annotation if the condition is true and at the same time published interfaces are beeing generated
-overrideAnnotationForPublishedMethodAndIf(AbstractGeneratorModelNode this, boolean condition) :
-	if (condition && generatePublishedInterfaces) then "@Override";
+overrideAnnotationForPublishedMethodImplementation(AbstractGeneratorModelNode this) :
+	if (!genInterface() && generatePublishedInterfaces) then "@Override";
 
 // Use this function for published methods that require an override in a special condition. i.e. methods 
 // that are defined in a published interface (if generated) but may also be overridden in subclasses. Returns the 
@@ -36,6 +36,12 @@ overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolea
 overrideAnnotationForPublishedMethodOrIf(AbstractGeneratorModelNode this, boolean isPublished , boolean condition) :
 	if (generatePublishedInterfaces && isPublished
 		 || condition ) then "@Override";
+
+overrideAnnotationForPublishedMethodImplementationOr(AbstractGeneratorModelNode this, boolean condition) :
+	overrideAnnotationIf((generatePublishedInterfaces && !genInterface()) || condition);
+
+overrideAnnotationForConstainedAssociation(XAssociation this) :
+	overrideAnnotationForPublishedMethodImplementationOr(this, constrain);
 
 // User this function for attribute methods (e.g. getter, setter).
 // Will return the @Override annotation if the attribute overwrites an attribute in a supertype.

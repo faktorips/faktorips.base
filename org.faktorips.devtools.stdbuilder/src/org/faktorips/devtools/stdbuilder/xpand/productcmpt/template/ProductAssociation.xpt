@@ -61,7 +61,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+     «overrideAnnotationForConstainedAssociation()-»
    	«IF oneToMany-»
 	    public «List_("? extends " +targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()»;«ELSE-»
@@ -97,7 +97,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+     «overrideAnnotationForConstainedAssociation()-»
    	«IF oneToMany-»
 	    public «List_("? extends " +targetClassGenerationName)» «method(methodNameGetter, Calendar(), "effectiveDate")»
 	    «IF genInterface()»;«ELSE-»
@@ -138,7 +138,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	     «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	     «overrideAnnotationForConstainedAssociation()-»
 		public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 	    «IF genInterface()»;«ELSE-»
 		{
@@ -166,7 +166,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	 «overrideAnnotationForPublishedMethodImplementation()-»
 	«IF oneToMany-»
 	    public «Collection_(IProductComponentLink(targetInterfaceName))» «method(methodNameGetLinksFor)»
 	    «IF genInterface()»;«ELSE-»
@@ -190,7 +190,7 @@
      * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
      * @generated
      */
-     «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+     «overrideAnnotationForPublishedMethodImplementation()-»
     public «IProductComponentLink(targetInterfaceName)» «method(methodNameGetLinkFor, targetInterfaceName, "productComponent")»
     «IF genInterface()»;«ELSE-»
     {
@@ -271,7 +271,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+	     «overrideAnnotationForPublishedMethodImplementation()-»
 	    public «CardinalityRange()» «method(methodNameGetCardinalityFor, targetInterfaceName, "productCmpt")»
 	    «IF genInterface()»;«ELSE-»
 	    {

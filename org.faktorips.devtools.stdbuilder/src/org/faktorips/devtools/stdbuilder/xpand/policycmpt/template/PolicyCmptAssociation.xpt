@@ -70,7 +70,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-     	«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		 «overrideAnnotationForPublishedMethodImplementation()-»
 	    public boolean «method(methodNameContains, targetInterfaceName, "objectToTest")»
 	    «IF genInterface()-»;«ELSE-»
 	    {
@@ -92,7 +92,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	    «overrideAnnotationForConstainedAssociation()-»
 	    public «List_("? extends " + targetInterfaceName)» «method(methodNameGetter)»
 	    «IF genInterface()-»;«ELSE-»
 	    	{
@@ -108,7 +108,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
          */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	    «overrideAnnotationForConstainedAssociation()-»
 	    public «targetInterfaceName» «method(methodNameGetSingle, "int", "index")»
 		 «IF genInterface()-»;«ELSE-»
 		 	{
@@ -125,7 +125,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
-		    «overrideAnnotationIf((generatePublishedInterfaces && !genInterface()) || constrain)-»
+		    «overrideAnnotationForConstainedAssociation()-»
 		    public «targetInterfaceName» «method(methodNameGetter)»
 		    «IF genInterface()-»;«ELSE-»
 		    	{
@@ -144,7 +144,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	    «overrideAnnotationForConstainedAssociation()-»
 	     «IF oneToManyIgnoringQualifier-»
 		    public  «List_("? extends " +targetInterfaceName)» «method(methodNameGetSingle, targetProductCmptInterfaceNameBase, "qualifier")»
 		    «IF genInterface()-»;«ELSE-»
@@ -258,7 +258,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+		    «overrideAnnotationForConstainedAssociation()-»
 		    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "newObject")»
 		     «IF genInterface()-»;«ELSE-»
 		    {
@@ -323,7 +323,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-	   	«overrideAnnotationForPublishedMethodAndIf(!genInterface() || constrain)-»
+	   	«overrideAnnotationForConstainedAssociation()-»
 	    public void «method(methodNameSetOrAdd, targetInterfaceNameBase, "objectToAdd")»
 	    «IF genInterface()-»;«ELSE-»
 	    {
@@ -412,7 +412,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethodAndIf(!genInterface() || needOverrideForConstrainNewChildMethod)-»
+		«overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)-»
 	    public «targetInterfaceName» «method(methodNameNew)»
 	    «IF genInterface()-»;«ELSE-»
 	    {
@@ -427,7 +427,7 @@
 		     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		     * @generated
 		     */
-			«overrideAnnotationForPublishedMethodAndIf(!genInterface() || needOverrideForConstrainNewChildMethod)-»
+		     «overrideAnnotationForPublishedMethodImplementationOr(needOverrideForConstrainNewChildMethod)-»
 		    public «targetInterfaceName» «method(methodNameNew, targetProductCmptInterfaceNameBase, targetProductCmptVariableName)»
 		     «IF genInterface()-»;«ELSE-»
 		    {
@@ -492,7 +492,7 @@
 	     * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 	     * @generated
 	     */
-		«overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		 «overrideAnnotationForPublishedMethodImplementation()-»
 	    public void «method(methodNameRemove, targetInterfaceName, "objectToRemove")»
 	    «IF genInterface()-»;«ELSE-»
 	    {

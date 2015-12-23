@@ -170,7 +170,7 @@
 		     *
 		     * @generated
 		     */
-		    «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		    «overrideAnnotationForPublishedMethodImplementation()-»
 		    public «interfaceName» «method(methodNameGetProductComponentGeneration, Calendar(), varNameEffectiveDate)»
 		    «IF genInterface()»;«ELSE-»
 		    {

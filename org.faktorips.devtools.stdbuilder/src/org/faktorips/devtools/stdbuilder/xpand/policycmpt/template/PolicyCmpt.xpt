@@ -238,7 +238,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * 
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		 «overrideAnnotationForPublishedMethodImplementation()-»
 		 public «interfaceName» «method(methodNameGetProductCmpt)»
 		 «IF genInterface()»;«ELSE-»
 		 {
@@ -251,7 +251,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * 
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		 «overrideAnnotationForPublishedMethodImplementation()-»
 		 public void «method(methodNameSetProductCmpt, interfaceName, nameForVariable, "boolean", "initPropertiesWithConfiguratedDefaults")»
 		 «IF genInterface()»;«ELSE-»
 		 {
@@ -291,7 +291,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		 * 
 		 * @generated
 		 */
-		 «overrideAnnotationForPublishedMethodAndIf(!genInterface())-»
+		 «overrideAnnotationForPublishedMethodImplementation()-»
 		 public «interfaceName» «method(methodNameGetProductComponentGeneration)»
 		 «IF genInterface()»;«ELSE-»
 		 {
