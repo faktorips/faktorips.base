@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.DiscriminatorDatatype;
 import org.faktorips.devtools.core.model.pctype.IPersistentTypeInfo.InheritanceStrategy;
@@ -31,6 +31,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.type.IType;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.ControlPropertyBinding;
+import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.controller.fields.EnumField;
 import org.faktorips.devtools.core.ui.controls.Checkbox;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -139,7 +140,7 @@ public class PersistentTypeInfoSection extends IpsSection {
 
         Checkbox defineDiscriminatorColumn = toolkit.createCheckbox(discriminatorGroup);
         defineDiscriminatorColumn
-                .setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
+        .setText(Messages.PersistentTypeInfoSection_labelThisTypeDefinesTheDiscriminatorColumn);
 
         Composite discriminatorDefComposite = toolkit.createLabelEditColumnComposite(discriminatorGroup);
 
@@ -186,29 +187,16 @@ public class PersistentTypeInfoSection extends IpsSection {
                             }
 
                             if (persistenceTypeInfo.isUseTableDefinedInSupertype()) {
-                                getBindingContext().removeBindings(tableNameText);
-                                try {
-                                    IPolicyCmptType rootEntity = persistenceTypeInfo.findRootEntity();
-                                    IType superType = ipsObject.findSupertype(ipsObject.getIpsProject());
-                                    if (superType == null) {
-                                        tableNameText.setText(Messages.PersistentTypeInfoSection_textSupertypeNotFound);
-                                    } else if (rootEntity == null) {
-                                        tableNameText
-                                                .setText(Messages.PersistentTypeInfoSection_textRootEntityNotFound);
-                                    } else {
-                                        tableNameText.setText(rootEntity.getPersistenceTypeInfo().getTableName());
-                                    }
-                                    uiToolkit.setDataChangeable(tableNameText, false);
-                                } catch (CoreException e) {
-                                    IpsPlugin.logAndShowErrorDialog(e);
-                                }
+                                uiToolkit.setDataChangeable(tableNameText, false);
                             } else {
-                                getBindingContext().bindContent(tableNameText, persistenceTypeInfo,
-                                        IPersistentTypeInfo.PROPERTY_TABLE_NAME);
                                 uiToolkit.setDataChangeable(tableNameText, true);
                             }
                         }
                     });
+
+            getBindingContext().bindContent(tableNameText,
+                    new PersistenceTableNamePmo(ipsObject.getPersistenceTypeInfo()),
+                    IPersistentTypeInfo.PROPERTY_TABLE_NAME);
 
             getBindingContext().bindContent(defineDiscriminatorColumn, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DEFINES_DISCRIMINATOR_COLUMN);
@@ -227,6 +215,47 @@ public class PersistentTypeInfoSection extends IpsSection {
             getBindingContext().bindContent(descriminatorColumnValueText, ipsObject.getPersistenceTypeInfo(),
                     IPersistentTypeInfo.PROPERTY_DISCRIMINATOR_VALUE);
         }
+    }
+
+    public static class PersistenceTableNamePmo extends IpsObjectPartPmo {
+
+        public PersistenceTableNamePmo(IPersistentTypeInfo persistentTypeInfo) {
+            super(persistentTypeInfo);
+        }
+
+        @Override
+        public IPersistentTypeInfo getIpsObjectPartContainer() {
+            return (IPersistentTypeInfo)super.getIpsObjectPartContainer();
+        }
+
+        public IPolicyCmptType getPolicyCmptType() {
+            return (IPolicyCmptType)getIpsObjectPartContainer().getIpsObject();
+        }
+
+        public String getTableName() {
+            if (getIpsObjectPartContainer().isUseTableDefinedInSupertype()) {
+                try {
+                    IPolicyCmptType rootEntity = getIpsObjectPartContainer().findRootEntity();
+                    IType superType = getPolicyCmptType().findSupertype(getIpsProject());
+                    if (superType == null) {
+                        return Messages.PersistentTypeInfoSection_textSupertypeNotFound;
+                    } else if (rootEntity == null) {
+                        return Messages.PersistentTypeInfoSection_textRootEntityNotFound;
+                    } else {
+                        return rootEntity.getPersistenceTypeInfo().getTableName();
+                    }
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            } else {
+                return getIpsObjectPartContainer().getTableName();
+            }
+        }
+
+        public void setTableName(String tableName) {
+            getIpsObjectPartContainer().setTableName(tableName);
+        }
+
     }
 
 }
