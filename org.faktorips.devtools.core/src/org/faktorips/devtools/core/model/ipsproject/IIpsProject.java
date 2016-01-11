@@ -58,6 +58,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.util.Tree;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -950,5 +951,18 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      */
     public void clearCaches();
+
+    /**
+     * Returns the hierarchy of the given template as a tree of source files. The root of the tree
+     * is the source file of the given template, all source files of product components and
+     * templates that (directly or indirectly) reference the given template are nodes in that tree.
+     * Returns an empty tree if no template is given or the given product component is not a
+     * template.
+     * 
+     * @param template the template whose hierarchy is returned
+     * @return a tree with the hierarchy of the given template. The tree is empty if no template or
+     *         a non-template product component is given.
+     */
+    public Tree<IIpsSrcFile> findTemplateHierarchy(IProductCmpt template);
 
 }

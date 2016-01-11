@@ -107,6 +107,7 @@ import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
+import org.faktorips.devtools.core.util.Tree;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -1323,6 +1324,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
             }
         }
         return result;
+    }
+
+    @Override
+    public Tree<IIpsSrcFile> findTemplateHierarchy(IProductCmpt template) {
+        return TemplateHierarchyFinder.findTemplateHierarchyFor(template, this);
     }
 
     protected List<String> getSupertypes(IType type) {

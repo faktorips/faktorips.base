@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Maps.EntryTransformer;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.TreeMultimap;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -118,6 +119,16 @@ public class Histogram<V, E> {
         SortedMap<V, Integer> absoluteDistribution = getAbsoluteDistribution();
         SortedMap<V, Decimal> relativeDistribution = transformToRelativeDistribution(absoluteDistribution);
         return Collections.unmodifiableSortedMap(relativeDistribution);
+    }
+
+    /**
+     * Returns the distribution of values and elements with these values.
+     * 
+     * @return a multimap that contains all values in this histogram (the map's keys) and the
+     *         elements with these values (the map's values)
+     */
+    public Multimap<V, E> getDistribution() {
+        return Multimaps.unmodifiableMultimap(valueToElements);
     }
 
     /**

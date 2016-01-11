@@ -51,6 +51,64 @@ public class HistogramTest {
     private static final List<Element> EMPTY = Collections.emptyList();
 
     @Test
+    public void testDistribution_NoValues() {
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, EMPTY);
+        assertThat(histogram.getDistribution().isEmpty(), is(true));
+    }
+
+    @Test
+    public void testDistribution_SingleValue() {
+        Element a = element("A");
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, a);
+        assertThat(histogram.getDistribution().size(), is(1));
+        assertThat(histogram.getDistribution().get("A"), hasItems(a));
+        assertThat(histogram.getDistribution().get("B").isEmpty(), is(true));
+    }
+
+    @Test
+    public void testGetDistribution_SameValue() {
+        Element a1 = element("A");
+        Element a2 = element("A");
+        Element a3 = element("A");
+        List<Element> elements = Lists.newArrayList(a1, a2, a3);
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+        assertThat(histogram.getDistribution().size(), is(3));
+        assertThat(histogram.getDistribution().get("A"), hasItems(a1, a2, a3));
+        assertThat(histogram.getDistribution().get("B").isEmpty(), is(true));
+    }
+
+    @Test
+    public void testGetDistribution_NullValue() {
+        Element null1 = element(null);
+        Element null2 = element(null);
+        Element a = element("A");
+        List<Element> elements = Lists.newArrayList(null1, null2, a);
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+        assertThat(histogram.getDistribution().size(), is(3));
+        assertThat(histogram.getDistribution().get(null), hasItems(null1, null2));
+        assertThat(histogram.getDistribution().get("A"), hasItems(a));
+    }
+
+    @Test
+    public void testGetDistribution() {
+        Element a1 = element("A");
+        Element a3 = element("A");
+        Element a2 = element("A");
+        Element b1 = element("B");
+        Element b2 = element("B");
+        Element c = element("C");
+        List<Element> elements = Lists.newArrayList(a1, a2, a3, b1, b2, c);
+
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+        assertThat(histogram.getDistribution().size(), is(6));
+        assertThat(histogram.getDistribution().get("A"), hasItems(a1, a2, a3));
+        assertThat(histogram.getDistribution().get("B"), hasItems(b1, b2));
+        assertThat(histogram.getDistribution().get("C"), hasItems(c));
+
+        assertThat(histogram.getDistribution().get("D").isEmpty(), is(true));
+    }
+
+    @Test
     public void testGetAbsoluteDistribution_NoValues() {
         Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, EMPTY);
         assertThat(histogram.getAbsoluteDistribution().isEmpty(), is(true));
