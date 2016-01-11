@@ -103,7 +103,6 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
 
         setGrabVerticalSpace(false);
         initControls();
-        bindContent();
         setText(Messages.EnumTypeGeneralInfoSection_title);
         enumType.getIpsModel().addChangeListener(this);
     }
@@ -129,6 +128,7 @@ public class EnumTypeGeneralInfoSection extends IpsSection implements ContentsCh
         toolkit.createHorizontalSpacer(composite, 0);
         createEnumContentSpecificationAndBoundary(composite, toolkit);
         createExtensionControl(toolkit, composite);
+        bindContent();
     }
 
     private void createSuperclassLink(UIToolkit toolkit, Composite composite) {
