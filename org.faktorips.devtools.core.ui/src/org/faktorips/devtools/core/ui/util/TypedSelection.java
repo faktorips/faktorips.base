@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import com.google.common.base.Optional;
+
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -364,6 +366,28 @@ public class TypedSelection<T> {
         failIfNotValid(validator);
 
         return validator.getElement();
+    }
+
+    /**
+     * Returns an {@link Optional} holding the single selected element of the given type in the
+     * given selection. If the selection contains elements of the wrong type or is empty
+     * {@code Optional.absent()} is returned.
+     * <p>
+     * This is a more lenient alternative to {@link #convertSingleElement(Class, ISelection)}
+     * 
+     * @param <T> type of the selection
+     * @param selection the selection
+     * @return an {@link Optional} holding the selected element of the given type or
+     *         {@code Optional.absent()} if the selection contains elements of the wrong type or is
+     *         empty
+     */
+    public static <T> Optional<T> singleElement(final Class<T> type, final ISelection selection) {
+        TypedSelection<T> validator = create(type, selection);
+        if (validator.isValid()) {
+            return Optional.fromNullable(validator.getFirstElement());
+        }
+
+        return Optional.absent();
     }
 
     private static void failIfNotValid(final TypedSelection<?> validator) {

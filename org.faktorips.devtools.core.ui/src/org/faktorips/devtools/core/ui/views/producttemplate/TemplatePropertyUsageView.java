@@ -9,6 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import com.google.common.base.Optional;
+
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -18,11 +22,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 public class TemplatePropertyUsageView {
 
@@ -96,6 +103,12 @@ public class TemplatePropertyUsageView {
     private void setUpTrees() {
         leftTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
         leftTreeViewer.setLabelProvider(new DefaultLabelProvider());
+        leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
+
+        // TODO set up rightTreeViewer correctly, this is just so that the view works
+        rightTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
+        rightTreeViewer.setLabelProvider(new DefaultLabelProvider());
+        rightTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
     }
 
     // @Focus
@@ -148,6 +161,19 @@ public class TemplatePropertyUsageView {
             return false;
         }
 
+    }
+
+    private static class OpenProductCmptEditorListener implements IDoubleClickListener {
+
+        @Override
+        public void doubleClick(DoubleClickEvent event) {
+            Optional<IIpsObjectPartContainer> selectedElement = TypedSelection.singleElement(
+                    IIpsObjectPartContainer.class, event.getSelection());
+            if (selectedElement.isPresent()) {
+                new SimpleOpenIpsObjectPartAction(selectedElement.get(), "").run(); //$NON-NLS-1$
+            }
+
+        }
     }
 
 }
