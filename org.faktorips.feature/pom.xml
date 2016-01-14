@@ -26,6 +26,7 @@
 						<plugin id="com.google.guava" />
 						<plugin id="org.aopalliance" />
 						<plugin id="opencsv" />
+						<plugin id="commons-collections" />
 					</excludes>
 				</configuration>
 			</plugin>
