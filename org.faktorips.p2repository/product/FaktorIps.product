@@ -34,7 +34,7 @@
       <macosx icon="icons/fips_macosx.icns"/>
       <solaris/>
       <win useIco="true">
-         <ico path="/icons/alt_launcher.ico"/>
+         <ico path="/icons/fips_win.ico"/>
          <bmp/>
       </win>
    </launcher>
