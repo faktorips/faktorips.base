@@ -16,7 +16,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2;
@@ -26,10 +25,10 @@ import com.google.common.collect.Lists;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
@@ -90,14 +89,31 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return productCmptsBasedOnTemplate;
     }
 
+    @Override
+    protected void partHasChanged() {
+        // reset state to force update
+        productCmptsBasedOnTemplate = null;
+    }
+
     /**
      * Finds the template of the property value container to which the given property value belongs.
-     * The template is ensured not to be null.
+     * Returns <code>null</code> if the property value does not have a template value.
      */
     private IProductCmpt findTemplate(IPropertyValue p) {
-        IPropertyValueContainer templateValueContainer = p.getPropertyValueContainer().findTemplate(p.getIpsProject());
-        Preconditions.checkNotNull(templateValueContainer);
-        return templateValueContainer.getProductCmpt();
+        if (isDefinedTemplateProperty(p)) {
+            return (IProductCmpt)p.getIpsObject();
+        }
+        IPropertyValue templateValue = p.findTemplateProperty(p.getIpsProject());
+        if (templateValue == null) {
+            return null;
+        } else {
+            return templateValue.getPropertyValueContainer().getProductCmpt();
+        }
+    }
+
+    private boolean isDefinedTemplateProperty(IPropertyValue p) {
+        return p.getIpsObject().getIpsObjectType() == IpsObjectType.PRODUCT_TEMPLATE
+                && p.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
     }
 
     /**

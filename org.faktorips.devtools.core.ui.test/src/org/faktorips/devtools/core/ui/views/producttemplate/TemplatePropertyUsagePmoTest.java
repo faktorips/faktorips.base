@@ -49,14 +49,17 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1.setTemplate(t1.getQualifiedName());
         p2.setTemplate(t2.getQualifiedName());
 
+        IProductCmptGeneration t1Gen = (IProductCmptGeneration)t1.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration t2Gen = (IProductCmptGeneration)t2.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p1Gen = (IProductCmptGeneration)p1.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
+        IPropertyValue t1Value = t1.newPropertyValue(attribute);
         IPropertyValue t2Value = t2.newPropertyValue(attribute);
         IPropertyValue p1Value = p1.newPropertyValue(attribute);
         IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        t1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
@@ -65,9 +68,11 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(valuePmo.getInheritingProductCmpts(), hasItems(p2));
 
         // Property value of generations
+        IPropertyValue t1GenValue = t1Gen.newPropertyValue(attribute);
         IPropertyValue t2GenValue = t2Gen.newPropertyValue(attribute);
         IPropertyValue p1GenValue = p1Gen.newPropertyValue(attribute);
         IPropertyValue p2GenValue = p2Gen.newPropertyValue(attribute);
+        t1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
@@ -91,14 +96,17 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1.setTemplate(t1.getQualifiedName());
         p2.setTemplate(t2.getQualifiedName());
 
+        IProductCmptGeneration t1Gen = (IProductCmptGeneration)t1.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration t2Gen = (IProductCmptGeneration)t2.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p1Gen = (IProductCmptGeneration)p1.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
+        IPropertyValue t1Value = t1.newPropertyValue(attribute);
         IPropertyValue t2Value = t2.newPropertyValue(attribute);
         IPropertyValue p1Value = p1.newPropertyValue(attribute);
         IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        t1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -107,9 +115,11 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(valuePmo.getDefiningProductCmpts(), hasItems(p1, t2));
 
         // Property value of generations
+        IPropertyValue t1GenValue = t1Gen.newPropertyValue(attribute);
         IPropertyValue t2GenValue = t2Gen.newPropertyValue(attribute);
         IPropertyValue p1GenValue = p1Gen.newPropertyValue(attribute);
         IPropertyValue p2GenValue = p2Gen.newPropertyValue(attribute);
+        t1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
@@ -134,14 +144,17 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p2.setTemplate(t.getQualifiedName());
         p3.setTemplate(t.getQualifiedName());
 
+        IProductCmptGeneration tGen = (IProductCmptGeneration)t.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p1Gen = (IProductCmptGeneration)p1.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
         IProductCmptGeneration p3Gen = (IProductCmptGeneration)p3.newGeneration(EFFECTIVE_DATE);
 
+        ITableContentUsage tTable = tGen.newTableContentUsage(tableStructurUsage);
         ITableContentUsage p1Table = p1Gen.newTableContentUsage(tableStructurUsage);
         ITableContentUsage p2Table = p2Gen.newTableContentUsage(tableStructurUsage);
         ITableContentUsage p3Table = p3Gen.newTableContentUsage(tableStructurUsage);
 
+        tTable.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Table.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Table.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p3Table.setTemplateValueStatus(TemplateValueStatus.DEFINED);

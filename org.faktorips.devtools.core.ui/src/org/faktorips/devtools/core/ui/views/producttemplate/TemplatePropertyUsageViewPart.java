@@ -29,4 +29,10 @@ public class TemplatePropertyUsageViewPart extends ViewPart {
         productTemplateDiffView.setFocus();
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+        productTemplateDiffView.dispose();
+    }
+
 }

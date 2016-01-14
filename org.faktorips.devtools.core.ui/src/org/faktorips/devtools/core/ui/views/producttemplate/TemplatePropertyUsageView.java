@@ -9,16 +9,28 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Tree;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
+import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 public class TemplatePropertyUsageView {
+
+    private final BindingContext bindingContext = new BindingContext();
+    private TemplatePropertyUsagePmo usagePmo;
+
+    private TreeViewer leftTreeViewer;
+    private TreeViewer rightTreeViewer;
 
     /*
      * Eclipse 4 constructor. Requires additional libraries.
@@ -26,6 +38,16 @@ public class TemplatePropertyUsageView {
     // @Inject
     public TemplatePropertyUsageView(Composite parent) {
         createPartControl(parent);
+        setUpTrees();
+    }
+
+    /**
+     * Sets the property value to display template information for. Refreshes this view.
+     */
+    public void setPropertyValue(IPropertyValue propertyValue) {
+        usagePmo = new TemplatePropertyUsagePmo(propertyValue, IpsUIPlugin.getDefault().getDefaultValidityDate());
+        leftTreeViewer.setInput(usagePmo);
+        rightTreeViewer.setInput(usagePmo);
     }
 
     private void createPartControl(Composite parent) {
@@ -42,11 +64,11 @@ public class TemplatePropertyUsageView {
         rightSide.setLayout(createTreeCompositeLayout());
 
         new Label(leftSide, SWT.NONE).setText(Messages.TemplatePropertyUsageView_SameValue_label);
-        Tree leftTree = new Tree(leftSide, SWT.BORDER);
-        leftTree.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+        leftTreeViewer = new TreeViewer(leftSide, SWT.BORDER);
+        leftTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         new Label(rightSide, SWT.NONE).setText(Messages.TemplatePropertyUsageView_DifferingValues_Label);
-        Tree rightTree = new Tree(rightSide, SWT.BORDER);
-        rightTree.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+        rightTreeViewer = new TreeViewer(rightSide, SWT.BORDER);
+        rightTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
     }
 
     private GridLayout createDefaultLayout() {
@@ -62,8 +84,60 @@ public class TemplatePropertyUsageView {
         return layout;
     }
 
+    private void setUpTrees() {
+        leftTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
+        leftTreeViewer.setLabelProvider(new DefaultLabelProvider());
+    }
+
+    // @Focus
     public void setFocus() {
         // to do
     }
 
+    // @PreDestroy
+    public void dispose() {
+        // to do
+        bindingContext.dispose();
+    }
+
+    public static class ProdCmptsWithSameValueProvider implements ITreeContentProvider {
+        private TemplatePropertyUsagePmo pmo;
+
+        @Override
+        public Object[] getElements(Object inputElement) {
+            if (pmo != null) {
+                return pmo.getInheritingProductCmpts().toArray();
+            } else {
+                return new Object[0];
+            }
+        }
+
+        @Override
+        public void dispose() {
+            // nothing to do
+        }
+
+        @Override
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            if (newInput instanceof TemplatePropertyUsagePmo) {
+                pmo = (TemplatePropertyUsagePmo)newInput;
+            }
+        }
+
+        @Override
+        public Object[] getChildren(Object parentElement) {
+            return new Object[0];
+        }
+
+        @Override
+        public Object getParent(Object element) {
+            return null;
+        }
+
+        @Override
+        public boolean hasChildren(Object element) {
+            return false;
+        }
+
+    }
 }
