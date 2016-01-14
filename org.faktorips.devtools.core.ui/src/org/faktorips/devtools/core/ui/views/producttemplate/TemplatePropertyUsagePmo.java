@@ -9,6 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import static com.google.common.collect.Collections2.filter;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -18,18 +20,15 @@ import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.util.Histogram;
 import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
@@ -42,28 +41,61 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     private final GregorianCalendar effectiveDate;
 
     // lazily loaded
-    private List<IProductCmpt> productCmptsBasedOnTemplate;
+    private List<IPropertyValue> propertyValuesBasedOnTemplate;
 
-    public TemplatePropertyUsagePmo(IPropertyValue propertyValue, GregorianCalendar effectiveDate) {
+    // lazily loaded
+    private Histogram<Object, IPropertyValue> histogram;
+
+    public TemplatePropertyUsagePmo(IPropertyValue propertyValue) {
         super(propertyValue);
-        this.template = findTemplate(propertyValue);
-        this.effectiveDate = effectiveDate;
+        this.template = findTemplate();
+        this.effectiveDate = getEffectiveDate();
     }
 
-    /** Returns the product components that inherit the value from the template. */
-    public Collection<IProductCmpt> getInheritingProductCmpts() {
-        return Collections2
-                .filter(getProductCmptsBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.INHERITED));
+    /**
+     * Finds the template of the property value container to which the given property value belongs.
+     * Returns <code>null</code> if the property value does not have a template value.
+     */
+    private IProductCmpt findTemplate() {
+        if (TemplatePropertyValueUtil.isDefinedTemplatePropertyValue(getInitialPropertyValue())) {
+            return (IProductCmpt)getInitialPropertyValue().getIpsObject();
+        }
+        IPropertyValue templateValue = getInitialPropertyValue().findTemplateProperty(getIpsProject());
+        if (templateValue == null) {
+            return null;
+        } else {
+            return templateValue.getPropertyValueContainer().getProductCmpt();
+        }
     }
 
-    /** Returns all product components that define a custom value. */
-    public Collection<IProductCmpt> getDefiningProductCmpts() {
-        return Collections2.filter(getProductCmptsBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.DEFINED));
+    /**
+     * Get the effective date based on the initial property value
+     */
+    private GregorianCalendar getEffectiveDate() {
+        IPropertyValueContainer propertyValueContainer = getInitialPropertyValue().getPropertyValueContainer();
+        if (propertyValueContainer instanceof IProductCmptGeneration) {
+            return ((IProductCmptGeneration)propertyValueContainer).getValidFrom();
+        } else if (propertyValueContainer instanceof IProductCmpt) {
+            return ((IProductCmpt)propertyValueContainer).getValidFrom();
+        } else {
+            return null;
+        }
+    }
+
+    /** Returns the property value with which this PMO was initialized. */
+    private IPropertyValue getInitialPropertyValue() {
+        IPropertyValue propertyValue = (IPropertyValue)getIpsObjectPartContainer();
+        return propertyValue;
     }
 
     /** Returns the template whose property usage is displayed. */
     public IProductCmpt getTemplate() {
         return template;
+    }
+
+    /** Returns the product components that inherit the value from the template. */
+    public Collection<IPropertyValue> getInheritingPropertyValues() {
+        return filter(getPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.INHERITED));
     }
 
     /**
@@ -75,84 +107,61 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * actual values, e.g. it contains strings with table names and not {@code ITableContentUsage}
      * objects.
      */
-    public Histogram<Object, IProductCmpt> getDefinedValuesHistogram() {
-        Collection<IProductCmpt> definingProductCmpts = getDefiningProductCmpts();
-        return new Histogram<Object, IProductCmpt>(valueFunction(), valueComparator(), definingProductCmpts);
+    public Histogram<Object, IPropertyValue> getDefinedValuesHistogram() {
+        if (histogram == null) {
+            histogram = new Histogram<Object, IPropertyValue>(valueFunction(), valueComparator(),
+                    getDefiningPropertyValues());
+        }
+        return histogram;
     }
 
-    /** Returns the property value with which this PMO was initialized. */
-    private IPropertyValue getInitialPropertyValue() {
-        IPropertyValue propertyValue = (IPropertyValue)getIpsObjectPartContainer();
-        return propertyValue;
+    /** Returns all product components that define a custom value. */
+    /* private */protected Collection<IPropertyValue> getDefiningPropertyValues() {
+        return filter(getPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.DEFINED));
     }
 
     /** Returns the product components that reference this PMO's template. */
-    private List<IProductCmpt> getProductCmptsBasedOnTemplate() {
-        if (productCmptsBasedOnTemplate == null) {
-            productCmptsBasedOnTemplate = findProductCmptsBasedOnTemplate(template);
+    private List<IPropertyValue> getPropertyValuesBasedOnTemplate() {
+        if (propertyValuesBasedOnTemplate == null) {
+            propertyValuesBasedOnTemplate = findPropertyValuesBasedOnTemplate(template);
         }
-        return productCmptsBasedOnTemplate;
-    }
-
-    @Override
-    protected void partHasChanged() {
-        // reset state to force update
-        productCmptsBasedOnTemplate = null;
+        return propertyValuesBasedOnTemplate;
     }
 
     /**
-     * Finds the template of the property value container to which the given property value belongs.
-     * Returns <code>null</code> if the property value does not have a template value.
-     */
-    private IProductCmpt findTemplate(IPropertyValue p) {
-        if (TemplatePropertyValueUtil.isDefinedTemplatePropertyValue(p)) {
-            return (IProductCmpt)p.getIpsObject();
-        }
-        IPropertyValue templateValue = p.findTemplateProperty(p.getIpsProject());
-        if (templateValue == null) {
-            return null;
-        } else {
-            return templateValue.getPropertyValueContainer().getProductCmpt();
-        }
-    }
-
-    /**
-     * Find product components that are based on the given template. This list includes
+     * Find property values that are based on the given template. This list includes
      * <ul>
-     * <li>product components that use the given template</li>
-     * <li>product templates that use the given template and define a value (i.e. do not inherit the
+     * <li>property values that use the given template</li>
+     * <li>property values that use the given template and define a value (i.e. do not inherit the
      * value from the given template)</li>
-     * <li>product components and templates that use templates inheriting their values from the
-     * given template</li>
+     * <li>property values that use templates inheriting their values from the given template</li>
      * </ul>
      */
-    private List<IProductCmpt> findProductCmptsBasedOnTemplate(IProductCmpt template) {
-
+    private List<IPropertyValue> findPropertyValuesBasedOnTemplate(IProductCmpt template) {
         Tree<IIpsSrcFile> srcFileHierarchy = getIpsProject().findTemplateHierarchy(template);
         if (srcFileHierarchy.isEmpty()) {
             return Collections.emptyList();
         }
-
         Tree<IProductCmpt> productCmptHierarchy = srcFileHierarchy.transform(srcFileToProductCmpt());
-
-        return findProductCmptsBasedOnTemplate(productCmptHierarchy.getRoot());
+        return findPropertyValuesBasedOnTemplate(productCmptHierarchy.getRoot());
     }
 
-    private List<IProductCmpt> findProductCmptsBasedOnTemplate(Node<IProductCmpt> node) {
-        List<IProductCmpt> result = Lists.newArrayList();
-        result.addAll(Lists.transform(getProductNodes(node), nodeToProductCmpt()));
+    private List<IPropertyValue> findPropertyValuesBasedOnTemplate(Node<IProductCmpt> node) {
+        List<IPropertyValue> result = Lists.newArrayList();
+        result.addAll(Lists.transform(getProductNodes(node), nodeToPropertyValue()));
 
         List<Node<IProductCmpt>> templateNodes = getTemplateNodes(node);
         for (Node<IProductCmpt> templateNode : templateNodes) {
-            IProductCmpt t = templateNode.getElement();
-            if (definesValue(t)) {
-                // Include t as it defines a custom value. Product components using t do not have to
-                // be included as their value depends on t and not this PMO's template.
-                result.add(t);
+            IPropertyValue templateValue = findPropertyValue(templateNode.getElement());
+            if (definesValue(templateValue)) {
+                // Include template as it defines a custom value. Product components using the
+                // template do not have to be included as their value depends on template and not
+                // the initial template.
+                result.add(templateValue);
             } else {
-                // If t does not define a value all product components using t should be included as
-                // their values actually depend on this PMO's template.
-                result.addAll(findProductCmptsBasedOnTemplate(templateNode));
+                // If the template does not define a value all product components using the template
+                // should be included as their values actually depend on this PMO's template.
+                result.addAll(findPropertyValuesBasedOnTemplate(templateNode));
             }
         }
         return result;
@@ -169,37 +178,16 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     /** Returns this PMO's property. */
-    private IProductCmptProperty getProperty() {
-        try {
-            IPropertyValue propertyValue = getInitialPropertyValue();
-            return propertyValue.findProperty(getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+    private String getPropertyName() {
+        return getInitialPropertyValue().getPropertyName();
     }
 
     /**
-     * Returns whether or not the given product component defines a custom values (i.e. does not
+     * Returns whether or not the given property value defines a custom values (i.e. does not
      * inherit the value from its template).
      */
-    private boolean definesValue(IProductCmpt p) {
-        IPropertyValue value = findPropertyValue(p);
+    private boolean definesValue(IPropertyValue value) {
         return value != null && value.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
-    }
-
-    /**
-     * Returns the value for this PMO's property from the given product component (or its
-     * generation).
-     */
-    private IPropertyValue findPropertyValue(IProductCmpt productCmpt) {
-        IProductCmptProperty property = getProperty();
-        IPropertyValue propertyValue = productCmpt.getPropertyValue(property);
-        if (propertyValue != null) {
-            return propertyValue;
-        }
-
-        IProductCmptGeneration gen = productCmpt.getGenerationEffectiveOn(effectiveDate);
-        return gen.getPropertyValue(property);
     }
 
     /** Function to transform an IIpsSrcFile to the IProductCmpt enclosed in it. */
@@ -217,35 +205,45 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         };
     }
 
-    /** Function to transform a node to the IProductCmpt enclosed in it. */
-    private Function<Node<IProductCmpt>, IProductCmpt> nodeToProductCmpt() {
-        return new Function<Node<IProductCmpt>, IProductCmpt>() {
+    /** Function to transform a node to the IPropertyValue enclosed in it. */
+    private Function<Node<IProductCmpt>, IPropertyValue> nodeToPropertyValue() {
+        return new Function<Node<IProductCmpt>, IPropertyValue>() {
 
             @Override
-            public IProductCmpt apply(Node<IProductCmpt> node) {
+            public IPropertyValue apply(Node<IProductCmpt> node) {
                 // FindBugs does not like Preconditions.checkState...
                 if (node == null) {
                     throw new IllegalStateException();
                 }
-                return node.getElement();
+                return findPropertyValue(node.getElement());
             }
         };
+    }
+
+    /**
+     * Returns the value for this PMO's property from the given product component (or its
+     * generation).
+     */
+    private IPropertyValue findPropertyValue(IProductCmpt productCmpt) {
+        IPropertyValue propertyValue = productCmpt.getPropertyValue(getPropertyName());
+        if (propertyValue != null) {
+            return propertyValue;
+        }
+
+        IProductCmptGeneration gen = productCmpt.getGenerationEffectiveOn(effectiveDate);
+        return gen.getPropertyValue(getPropertyName());
     }
 
     /**
      * Predicate that matches an IProductCmpt whose property value (for this PMO's property) has the
      * given TemplateValueStatus.
      */
-    private Predicate<IProductCmpt> propertyValueStatus(final TemplateValueStatus t) {
-        return new Predicate<IProductCmpt>() {
+    private Predicate<IPropertyValue> propertyValueStatus(final TemplateValueStatus t) {
+        return new Predicate<IPropertyValue>() {
 
             @Override
-            public boolean apply(IProductCmpt productCmpt) {
-                if (productCmpt == null) {
-                    return false;
-                }
-                IPropertyValue propertyValue = findPropertyValue(productCmpt);
-                return propertyValue.getTemplateValueStatus() == t;
+            public boolean apply(IPropertyValue propertyValue) {
+                return propertyValue != null && propertyValue.getTemplateValueStatus() == t;
             }
 
         };
@@ -267,20 +265,17 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     /**
-     * Returns a function to obtain the value of a product components property value (for this PMO's
-     * property).
+     * Returns a function to obtain the value of a property value
      */
-    private Function<IProductCmpt, Object> valueFunction() {
-        final Function<IPropertyValue, Object> valueFunction = getInitialPropertyValue().getPropertyValueType()
-                .getValueFunction();
-        return new Function<IProductCmpt, Object>() {
+    private Function<IPropertyValue, Object> valueFunction() {
+        return getInitialPropertyValue().getPropertyValueType().getValueFunction();
+    }
 
-            @Override
-            public Object apply(IProductCmpt p) {
-                IPropertyValue propertyValue = findPropertyValue(p);
-                return valueFunction.apply(propertyValue);
-            }
-        };
+    @Override
+    protected void partHasChanged() {
+        // reset state to force update
+        propertyValuesBasedOnTemplate = null;
+        histogram = null;
     }
 
 }

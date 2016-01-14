@@ -37,7 +37,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     private static final GregorianCalendar EFFECTIVE_DATE = new GregorianCalendar(2016, Calendar.JANUARY, 1);
 
     @Test
-    public void testGetInheritingProductCmpts() throws CoreException {
+    public void testGetInheritingPropertyValues() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -66,8 +66,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo(p1Value, EFFECTIVE_DATE);
-        assertThat(valuePmo.getInheritingProductCmpts(), hasItems(p2));
+        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo(p1Value);
+        assertThat(valuePmo.getInheritingPropertyValues(), hasItems(p2Value));
 
         // Property value of generations
         IPropertyValue t1GenValue = t1Gen.newPropertyValue(attribute);
@@ -79,12 +79,12 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo(p1GenValue, EFFECTIVE_DATE);
-        assertThat(genValuePmo.getInheritingProductCmpts(), hasItems(p2));
+        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo(p1GenValue);
+        assertThat(genValuePmo.getInheritingPropertyValues(), hasItems(p2Value));
     }
 
     @Test
-    public void testGetDefiningProductCmpts() throws CoreException {
+    public void testGetDefiningPropertyValues() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -113,8 +113,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo(p1Value, EFFECTIVE_DATE);
-        assertThat(valuePmo.getDefiningProductCmpts(), hasItems(p1, t2));
+        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo(p1Value);
+        assertThat(valuePmo.getDefiningPropertyValues(), hasItems(p1Value, t2Value));
 
         // Property value of generations
         IPropertyValue t1GenValue = t1Gen.newPropertyValue(attribute);
@@ -126,8 +126,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo(p1GenValue, EFFECTIVE_DATE);
-        assertThat(genValuePmo.getDefiningProductCmpts(), hasItems(p1, t2));
+        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo(p1GenValue);
+        assertThat(genValuePmo.getDefiningPropertyValues(), hasItems(p1Value, t2Value));
     }
 
     @Test
@@ -165,11 +165,11 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p2Table.setTableContentName("Table-B");
         p3Table.setTableContentName("Table-B");
 
-        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(p1Table, EFFECTIVE_DATE);
-        Histogram<Object, IProductCmpt> histogram = pmo.getDefinedValuesHistogram();
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(p1Table);
+        Histogram<Object, IPropertyValue> histogram = pmo.getDefinedValuesHistogram();
         assertThat(histogram.getDistribution().size(), is(3));
-        assertThat(histogram.getDistribution().get("Table-A"), hasItems(p1));
-        assertThat(histogram.getDistribution().get("Table-B"), hasItems(p2, p2));
+        assertThat(histogram.getDistribution().get("Table-A"), hasItems((IPropertyValue)p1Table));
+        assertThat(histogram.getDistribution().get("Table-B"), hasItems((IPropertyValue)p2Table, p2Table));
 
     }
 
@@ -191,11 +191,11 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         templateValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         prodCmptValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo templatePmo = new TemplatePropertyUsagePmo(templateValue, EFFECTIVE_DATE);
+        TemplatePropertyUsagePmo templatePmo = new TemplatePropertyUsagePmo(templateValue);
         assertThat(templatePmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)templateValue));
         assertThat(templatePmo.getTemplate(), is(t));
 
-        TemplatePropertyUsagePmo prodCmptPmo = new TemplatePropertyUsagePmo(prodCmptValue, EFFECTIVE_DATE);
+        TemplatePropertyUsagePmo prodCmptPmo = new TemplatePropertyUsagePmo(prodCmptValue);
         assertThat(prodCmptPmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)prodCmptValue));
         assertThat(prodCmptPmo.getTemplate(), is(t));
     }
@@ -211,10 +211,10 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IPropertyValue propertyValue = prodCmpt.newPropertyValue(attribute);
         propertyValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(propertyValue, EFFECTIVE_DATE);
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(propertyValue);
         assertThat(pmo.getTemplate(), is(nullValue()));
-        assertThat(pmo.getDefiningProductCmpts().isEmpty(), is(true));
-        assertThat(pmo.getInheritingProductCmpts().isEmpty(), is(true));
+        assertThat(pmo.getDefiningPropertyValues().isEmpty(), is(true));
+        assertThat(pmo.getInheritingPropertyValues().isEmpty(), is(true));
         assertThat(pmo.getDefinedValuesHistogram().getDistribution().isEmpty(), is(true));
     }
 

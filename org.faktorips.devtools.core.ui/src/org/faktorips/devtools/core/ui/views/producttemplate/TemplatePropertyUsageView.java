@@ -18,14 +18,16 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.Messages;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
@@ -55,9 +57,9 @@ public class TemplatePropertyUsageView {
      */
     public void setPropertyValue(IPropertyValue propertyValue) {
         disposePmo();
-        usagePmo = new TemplatePropertyUsagePmo(propertyValue, IpsUIPlugin.getDefault().getDefaultValidityDate());
+        usagePmo = new TemplatePropertyUsagePmo(propertyValue);
         leftTreeViewer.setInput(usagePmo);
-        rightTreeViewer.setInput(usagePmo);
+        // rightTreeViewer.setInput(usagePmo);
     }
 
     private void disposePmo() {
@@ -102,13 +104,8 @@ public class TemplatePropertyUsageView {
 
     private void setUpTrees() {
         leftTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
-        leftTreeViewer.setLabelProvider(new DefaultLabelProvider());
         leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
-
-        // TODO set up rightTreeViewer correctly, this is just so that the view works
-        rightTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
-        rightTreeViewer.setLabelProvider(new DefaultLabelProvider());
-        rightTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
+        leftTreeViewer.setLabelProvider(new InheritedPropertyValueLabelProvider());
     }
 
     // @Focus
@@ -128,7 +125,7 @@ public class TemplatePropertyUsageView {
         @Override
         public Object[] getElements(Object inputElement) {
             if (pmo != null) {
-                return pmo.getInheritingProductCmpts().toArray();
+                return pmo.getInheritingPropertyValues().toArray();
             } else {
                 return new Object[0];
             }
@@ -174,6 +171,33 @@ public class TemplatePropertyUsageView {
             }
 
         }
+    }
+
+    private static class InheritedPropertyValueLabelProvider extends DefaultLabelProvider {
+
+        @Override
+        public String getText(Object element) {
+            if (element instanceof IPropertyValue) {
+                IPropertyValueContainer propertyValueContainer = ((IPropertyValue)element).getPropertyValueContainer();
+                if (propertyValueContainer instanceof IProductCmptGeneration) {
+                    IProductCmptGeneration generation = (IProductCmptGeneration)propertyValueContainer;
+                    return super.getText(generation.getProductCmpt()) + " (" + super.getText(generation) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                } else {
+                    return super.getText(propertyValueContainer);
+                }
+            }
+            return super.getText(element);
+        }
+
+        @Override
+        public Image getImage(Object element) {
+            if (element instanceof IPropertyValue) {
+                IPropertyValue propertyValue = (IPropertyValue)element;
+                return super.getImage(propertyValue.getPropertyValueContainer().getProductCmpt());
+            }
+            return super.getImage(element);
+        }
+
     }
 
 }
