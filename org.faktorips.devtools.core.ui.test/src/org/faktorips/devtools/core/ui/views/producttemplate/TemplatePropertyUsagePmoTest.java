@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
 
@@ -19,6 +20,7 @@ import java.util.GregorianCalendar;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -129,7 +131,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDefinedProductCmptValues() throws Exception {
+    public void testGetDefinedProductCmptValues() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
@@ -169,6 +171,51 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(histogram.getDistribution().get("Table-A"), hasItems(p1));
         assertThat(histogram.getDistribution().get("Table-B"), hasItems(p2, p2));
 
+    }
+
+    @Test
+    public void testTemplatePropertyUsagePmo_ShowsTemplateProperty() throws CoreException {
+
+        IIpsProject ipsProject = newIpsProject();
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
+
+        IProductCmpt t = newProductTemplate(productCmptType, "Template");
+        IProductCmpt p = newProductCmpt(productCmptType, "Product");
+
+        p.setTemplate(t.getQualifiedName());
+
+        IPropertyValue templateValue = t.newPropertyValue(attribute);
+        IPropertyValue prodCmptValue = p.newPropertyValue(attribute);
+
+        templateValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        prodCmptValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        TemplatePropertyUsagePmo templatePmo = new TemplatePropertyUsagePmo(templateValue, EFFECTIVE_DATE);
+        assertThat(templatePmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)templateValue));
+        assertThat(templatePmo.getTemplate(), is(t));
+
+        TemplatePropertyUsagePmo prodCmptPmo = new TemplatePropertyUsagePmo(prodCmptValue, EFFECTIVE_DATE);
+        assertThat(prodCmptPmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)prodCmptValue));
+        assertThat(prodCmptPmo.getTemplate(), is(t));
+    }
+
+    @Test
+    public void testTemplatePropertyUsagePmo_NonTemplateProperty() throws CoreException {
+
+        IIpsProject ipsProject = newIpsProject();
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
+
+        IProductCmpt prodCmpt = newProductCmpt(productCmptType, "Product");
+        IPropertyValue propertyValue = prodCmpt.newPropertyValue(attribute);
+        propertyValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(propertyValue, EFFECTIVE_DATE);
+        assertThat(pmo.getTemplate(), is(nullValue()));
+        assertThat(pmo.getDefiningProductCmpts().isEmpty(), is(true));
+        assertThat(pmo.getInheritingProductCmpts().isEmpty(), is(true));
+        assertThat(pmo.getDefinedValuesHistogram().getDistribution().isEmpty(), is(true));
     }
 
 }

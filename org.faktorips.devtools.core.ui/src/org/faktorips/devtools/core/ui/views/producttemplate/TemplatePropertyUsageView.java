@@ -26,6 +26,8 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 
 public class TemplatePropertyUsageView {
 
+    public static final String VIEW_ID = "org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"; //$NON-NLS-1$
+
     private final BindingContext bindingContext = new BindingContext();
     private TemplatePropertyUsagePmo usagePmo;
 
@@ -45,9 +47,16 @@ public class TemplatePropertyUsageView {
      * Sets the property value to display template information for. Refreshes this view.
      */
     public void setPropertyValue(IPropertyValue propertyValue) {
+        disposePmo();
         usagePmo = new TemplatePropertyUsagePmo(propertyValue, IpsUIPlugin.getDefault().getDefaultValidityDate());
         leftTreeViewer.setInput(usagePmo);
         rightTreeViewer.setInput(usagePmo);
+    }
+
+    private void disposePmo() {
+        if (usagePmo != null) {
+            usagePmo.dispose();
+        }
     }
 
     private void createPartControl(Composite parent) {
@@ -140,4 +149,5 @@ public class TemplatePropertyUsageView {
         }
 
     }
+
 }

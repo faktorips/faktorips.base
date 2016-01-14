@@ -11,28 +11,34 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 
 public class TemplatePropertyUsageViewPart extends ViewPart {
 
-    private TemplatePropertyUsageView productTemplateDiffView;
+    private TemplatePropertyUsageView view;
 
     public TemplatePropertyUsageViewPart() {
     }
 
     @Override
     public void createPartControl(Composite parent) {
-        productTemplateDiffView = new TemplatePropertyUsageView(parent);
+        view = new TemplatePropertyUsageView(parent);
     }
 
     @Override
     public void setFocus() {
-        productTemplateDiffView.setFocus();
+        view.setFocus();
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        productTemplateDiffView.dispose();
+        view.dispose();
+
+    }
+
+    public void setPropertyValue(IPropertyValue v) {
+        view.setPropertyValue(v);
     }
 
 }

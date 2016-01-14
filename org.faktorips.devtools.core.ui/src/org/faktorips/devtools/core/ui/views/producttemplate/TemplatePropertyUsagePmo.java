@@ -25,7 +25,6 @@ import com.google.common.collect.Lists;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -33,6 +32,7 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
 import org.faktorips.devtools.core.util.Tree;
 import org.faktorips.devtools.core.util.Tree.Node;
 
@@ -59,6 +59,11 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     /** Returns all product components that define a custom value. */
     public Collection<IProductCmpt> getDefiningProductCmpts() {
         return Collections2.filter(getProductCmptsBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.DEFINED));
+    }
+
+    /** Returns the template whose property usage is displayed. */
+    public IProductCmpt getTemplate() {
+        return template;
     }
 
     /**
@@ -100,7 +105,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * Returns <code>null</code> if the property value does not have a template value.
      */
     private IProductCmpt findTemplate(IPropertyValue p) {
-        if (isDefinedTemplateProperty(p)) {
+        if (TemplatePropertyValueUtil.isDefinedTemplatePropertyValue(p)) {
             return (IProductCmpt)p.getIpsObject();
         }
         IPropertyValue templateValue = p.findTemplateProperty(p.getIpsProject());
@@ -109,11 +114,6 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         } else {
             return templateValue.getPropertyValueContainer().getProductCmpt();
         }
-    }
-
-    private boolean isDefinedTemplateProperty(IPropertyValue p) {
-        return p.getIpsObject().getIpsObjectType() == IpsObjectType.PRODUCT_TEMPLATE
-                && p.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
     }
 
     /**

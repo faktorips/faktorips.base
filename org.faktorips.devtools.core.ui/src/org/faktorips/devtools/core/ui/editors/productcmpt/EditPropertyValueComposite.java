@@ -52,6 +52,8 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
+import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
 
 /**
  * Abstract base class for composites that allow the user to edit property values.
@@ -366,7 +368,6 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     private Menu createTemplateMenue(ToolBar toolBar) {
         MenuManager menuManager = new MenuManager();
         initDynamicMenue(menuManager);
-        // TODO FIPS-4483 Command per extension, analog LinksSection einbinden
         return menuManager.createContextMenu(toolBar);
     }
 
@@ -377,6 +378,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 addOpenTemplateAction(manager);
+                addShowTemplatePropertyUsageAction(manager);
             }
 
             @Override
@@ -398,6 +400,26 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     private String getOpenTemplateText(final IPropertyValue templateValue) {
         return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                .getPropertyValueContainer().getProductCmpt().getName());
+    }
+
+    private void addShowTemplatePropertyUsageAction(IMenuManager manager) {
+        if (TemplatePropertyValueUtil.isDefinedTemplatePropertyValue(getPropertyValue())) {
+            IAction showViewAction = new ShowTemplatePropertyUsageViewAction(getPropertyValue(),
+                    Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage);
+            manager.add(showViewAction);
+        } else {
+            final IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+            if (templateValue != null) {
+                String text = getOpenTemplatePropertyUsageText(templateValue);
+                IAction showViewAction = new ShowTemplatePropertyUsageViewAction(templateValue, text);
+                manager.add(showViewAction);
+            }
+        }
+    }
+
+    private String getOpenTemplatePropertyUsageText(final IPropertyValue templateValue) {
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
                 .getPropertyValueContainer().getProductCmpt().getName());
     }
 
