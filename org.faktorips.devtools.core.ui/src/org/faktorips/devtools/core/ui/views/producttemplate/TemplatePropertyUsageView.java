@@ -11,6 +11,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import com.google.common.base.Optional;
 
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -23,12 +25,15 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
-import org.faktorips.devtools.core.ui.Messages;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -106,6 +111,36 @@ public class TemplatePropertyUsageView {
         leftTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
         leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         leftTreeViewer.setLabelProvider(new InheritedPropertyValueLabelProvider());
+    }
+
+    void setUpToolbar(IViewSite viewSite) {
+        final String toolTip = Messages.TemplatePropertyUsageView_toolTipRefreshContents;
+        final ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif"); //$NON-NLS-1$
+        Action refreshAction = new Action(toolTip, imageDescriptor) {
+            @Override
+            public void run() {
+                refresh();
+            }
+
+            @Override
+            public String getToolTipText() {
+                return toolTip;
+            }
+        };
+
+        viewSite.getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
+        retargetAction.setToolTipText(toolTip);
+        retargetAction.setImageDescriptor(imageDescriptor);
+        viewSite.getActionBars().getToolBarManager().add(retargetAction);
+    }
+
+    private void refresh() {
+        if (usagePmo != null) {
+            usagePmo.partHasChanged();
+            leftTreeViewer.refresh();
+            rightTreeViewer.refresh();
+        }
     }
 
     // @Focus
