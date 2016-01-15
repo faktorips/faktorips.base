@@ -43,7 +43,7 @@ import org.faktorips.values.Decimal;
 
 public class InferTemplateProcessor implements IWorkspaceRunnable {
 
-    private static final Decimal RELATIVE_THRESHOLD = Decimal.valueOf(1);
+    private static final Decimal RELATIVE_THRESHOLD = Decimal.valueOf(0.8);
 
     /**
      * The histograms of the values based on some product components. The string key is the name of

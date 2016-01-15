@@ -132,6 +132,13 @@ public class Histogram<V, E> {
     }
 
     /**
+     * Gives the amount of elements in this histogram.
+     */
+    public int countElements() {
+        return valueToElements.size();
+    }
+
+    /**
      * Returns the elements in this histogram that have the given value.
      * 
      * @param value a value

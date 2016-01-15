@@ -9,12 +9,12 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Collections2.filter;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -27,7 +27,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.util.Histogram;
@@ -38,7 +37,6 @@ import org.faktorips.devtools.core.util.Tree.Node;
 public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     private final IProductCmpt template;
-    private final GregorianCalendar effectiveDate;
 
     // lazily loaded
     private List<IPropertyValue> propertyValuesBasedOnTemplate;
@@ -49,7 +47,6 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     public TemplatePropertyUsagePmo(IPropertyValue propertyValue) {
         super(propertyValue);
         this.template = findTemplate();
-        this.effectiveDate = getEffectiveDate();
     }
 
     /**
@@ -65,20 +62,6 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
             return null;
         } else {
             return templateValue.getPropertyValueContainer().getProductCmpt();
-        }
-    }
-
-    /**
-     * Get the effective date based on the initial property value
-     */
-    private GregorianCalendar getEffectiveDate() {
-        IPropertyValueContainer propertyValueContainer = getInitialPropertyValue().getPropertyValueContainer();
-        if (propertyValueContainer instanceof IProductCmptGeneration) {
-            return ((IProductCmptGeneration)propertyValueContainer).getValidFrom();
-        } else if (propertyValueContainer instanceof IProductCmpt) {
-            return ((IProductCmpt)propertyValueContainer).getValidFrom();
-        } else {
-            return null;
         }
     }
 
@@ -148,7 +131,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     private List<IPropertyValue> findPropertyValuesBasedOnTemplate(Node<IProductCmpt> node) {
         List<IPropertyValue> result = Lists.newArrayList();
-        result.addAll(Lists.transform(getProductNodes(node), nodeToPropertyValue()));
+        result.addAll(filter(Lists.transform(getProductNodes(node), nodeToPropertyValue()), notNull()));
 
         List<Node<IProductCmpt>> templateNodes = getTemplateNodes(node);
         for (Node<IProductCmpt> templateNode : templateNodes) {
@@ -230,8 +213,14 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
             return propertyValue;
         }
 
-        IProductCmptGeneration gen = productCmpt.getGenerationEffectiveOn(effectiveDate);
-        return gen.getPropertyValue(getPropertyName());
+        // TODO FIPS-4433
+        // IProductCmptGeneration gen = productCmpt.getGenerationEffectiveOn(effectiveDate);
+        IProductCmptGeneration gen = productCmpt.getLatestProductCmptGeneration();
+        if (gen != null) {
+            return gen.getPropertyValue(getPropertyName());
+        } else {
+            return null;
+        }
     }
 
     /**

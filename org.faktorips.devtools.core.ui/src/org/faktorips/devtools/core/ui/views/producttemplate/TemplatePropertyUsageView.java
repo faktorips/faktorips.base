@@ -15,9 +15,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
@@ -64,7 +62,8 @@ public class TemplatePropertyUsageView {
         disposePmo();
         usagePmo = new TemplatePropertyUsagePmo(propertyValue);
         leftTreeViewer.setInput(usagePmo);
-        // rightTreeViewer.setInput(usagePmo);
+        rightTreeViewer.setInput(usagePmo);
+        rightTreeViewer.expandAll();
     }
 
     private void disposePmo() {
@@ -108,9 +107,13 @@ public class TemplatePropertyUsageView {
     }
 
     private void setUpTrees() {
-        leftTreeViewer.setContentProvider(new ProdCmptsWithSameValueProvider());
         leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
-        leftTreeViewer.setLabelProvider(new InheritedPropertyValueLabelProvider());
+        leftTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
+        leftTreeViewer.setContentProvider(new InheritedPropertyValueContentProvider());
+
+        rightTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
+        rightTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
+        rightTreeViewer.setContentProvider(new DefinedValuesContentProvider());
     }
 
     void setUpToolbar(IViewSite viewSite) {
@@ -154,47 +157,6 @@ public class TemplatePropertyUsageView {
         bindingContext.dispose();
     }
 
-    public static class ProdCmptsWithSameValueProvider implements ITreeContentProvider {
-        private TemplatePropertyUsagePmo pmo;
-
-        @Override
-        public Object[] getElements(Object inputElement) {
-            if (pmo != null) {
-                return pmo.getInheritingPropertyValues().toArray();
-            } else {
-                return new Object[0];
-            }
-        }
-
-        @Override
-        public void dispose() {
-            // nothing to do
-        }
-
-        @Override
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-            if (newInput instanceof TemplatePropertyUsagePmo) {
-                pmo = (TemplatePropertyUsagePmo)newInput;
-            }
-        }
-
-        @Override
-        public Object[] getChildren(Object parentElement) {
-            return new Object[0];
-        }
-
-        @Override
-        public Object getParent(Object element) {
-            return null;
-        }
-
-        @Override
-        public boolean hasChildren(Object element) {
-            return false;
-        }
-
-    }
-
     private static class OpenProductCmptEditorListener implements IDoubleClickListener {
 
         @Override
@@ -208,7 +170,7 @@ public class TemplatePropertyUsageView {
         }
     }
 
-    private static class InheritedPropertyValueLabelProvider extends DefaultLabelProvider {
+    private static class TemplatePropertyUsageLabelProvider extends DefaultLabelProvider {
 
         @Override
         public String getText(Object element) {
@@ -220,8 +182,15 @@ public class TemplatePropertyUsageView {
                 } else {
                     return super.getText(propertyValueContainer);
                 }
+            } else if (element instanceof DefinedValuesContentProvider.ValueViewItem) {
+                DefinedValuesContentProvider.ValueViewItem viewItem = (DefinedValuesContentProvider.ValueViewItem)element;
+                return super.getText(viewItem.getValue()) + getFormattedRelDistribution(viewItem);
             }
             return super.getText(element);
+        }
+
+        protected String getFormattedRelDistribution(DefinedValuesContentProvider.ValueViewItem viewItem) {
+            return " (" + viewItem.getRelDistributionPercent().stripTrailingZeros().toPlainString() + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         @Override
