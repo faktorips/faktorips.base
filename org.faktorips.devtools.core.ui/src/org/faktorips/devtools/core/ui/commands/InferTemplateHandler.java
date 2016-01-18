@@ -36,8 +36,6 @@ public class InferTemplateHandler extends AbstractHandler {
     public static IContributionItem createContributionItem(IServiceLocator serviceLocator) {
         CommandContributionItemParameter inferProductTemplateParameter = new CommandContributionItemParameter(
                 serviceLocator, null, InferTemplateHandler.CONTRIBUTION_ID, SWT.PUSH);
-        inferProductTemplateParameter.label = Messages.InferTemplateHandler_label_menueItem;
-        inferProductTemplateParameter.tooltip = Messages.InferTemplateHandler_description_menueItem;
         inferProductTemplateParameter.icon = IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "InferProductTemplate.gif"); //$NON-NLS-1$
         CommandContributionItem inferProductTemplateItem = new CommandContributionItem(inferProductTemplateParameter);

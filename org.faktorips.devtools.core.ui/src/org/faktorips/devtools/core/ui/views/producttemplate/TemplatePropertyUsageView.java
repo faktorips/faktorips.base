@@ -38,6 +38,7 @@ import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.binding.ViewerRefreshBinding;
 import org.faktorips.devtools.core.ui.editors.SelectionProviderIntermediate;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -100,10 +101,10 @@ public class TemplatePropertyUsageView {
         rightSide.setLayout(createTreeCompositeLayout());
 
         new Label(leftSide, SWT.NONE).setText(Messages.TemplatePropertyUsageView_SameValue_label);
-        leftTreeViewer = new TreeViewer(leftSide, SWT.BORDER);
+        leftTreeViewer = new TreeViewer(leftSide, SWT.BORDER | SWT.MULTI);
         leftTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         new Label(rightSide, SWT.NONE).setText(Messages.TemplatePropertyUsageView_DifferingValues_Label);
-        rightTreeViewer = new TreeViewer(rightSide, SWT.BORDER);
+        rightTreeViewer = new TreeViewer(rightSide, SWT.BORDER | SWT.MULTI);
         rightTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
     }
 
@@ -124,10 +125,12 @@ public class TemplatePropertyUsageView {
         leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         leftTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
         leftTreeViewer.setContentProvider(new InheritedPropertyValueContentProvider());
+        bindingContext.add(ViewerRefreshBinding.refresh(leftTreeViewer, usagePmo));
 
         rightTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         rightTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
         rightTreeViewer.setContentProvider(new DefinedValuesContentProvider());
+        bindingContext.add(ViewerRefreshBinding.refreshAndExpand(rightTreeViewer, usagePmo));
     }
 
     void setUpToolbar() {
@@ -157,6 +160,7 @@ public class TemplatePropertyUsageView {
             usagePmo.partHasChanged();
             leftTreeViewer.refresh();
             rightTreeViewer.refresh();
+            rightTreeViewer.expandAll();
         }
     }
 
@@ -197,6 +201,7 @@ public class TemplatePropertyUsageView {
     // @PreDestroy
     public void dispose() {
         bindingContext.dispose();
+        disposePmo();
     }
 
     private static class OpenProductCmptEditorListener implements IDoubleClickListener {

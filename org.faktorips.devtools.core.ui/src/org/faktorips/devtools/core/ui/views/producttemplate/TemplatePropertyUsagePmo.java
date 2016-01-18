@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.SortedMap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -43,6 +44,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     // lazily loaded
     private Histogram<Object, IPropertyValue> histogram;
+
+    private SortedMap<Object, Integer> definedAbsoluteDistribution;
 
     public TemplatePropertyUsagePmo(IPropertyValue propertyValue) {
         super(propertyValue);
@@ -94,8 +97,20 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         if (histogram == null) {
             histogram = new Histogram<Object, IPropertyValue>(valueFunction(), valueComparator(),
                     getDefiningPropertyValues());
+            definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
         }
         return histogram;
+    }
+
+    public SortedMap<Object, Integer> getDefinedAbsoluteDistribution() {
+        if (histogram == null) {
+            getDefinedValuesHistogram();
+        }
+        return definedAbsoluteDistribution;
+    }
+
+    public int getCount() {
+        return getInheritingPropertyValues().size() + getDefinedValuesHistogram().countElements();
     }
 
     /** Returns all product components that define a custom value. */
@@ -257,7 +272,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * Returns a function to obtain the value of a property value
      */
     private Function<IPropertyValue, Object> valueFunction() {
-        return getInitialPropertyValue().getPropertyValueType().getValueFunction();
+        return getInitialPropertyValue().getPropertyValueType().getValueGetter();
     }
 
     @Override

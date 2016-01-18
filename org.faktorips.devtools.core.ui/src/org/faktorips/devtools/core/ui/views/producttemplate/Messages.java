@@ -24,6 +24,8 @@ public final class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String SwitchTemplatePropertyValueOperation_progress;
+
     public static String TemplatePropertyUsageView_DifferingValues_Label;
 
     public static String TemplatePropertyUsageView_SameValue_label;

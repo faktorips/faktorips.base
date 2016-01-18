@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.util.functional.BiConsumer;
 
 /**
  * Specifies the different types of {@link IPropertyValue}.
@@ -74,7 +75,7 @@ public enum PropertyValueType {
         }
 
         @Override
-        public Function<IPropertyValue, Object> getValueFunction() {
+        public Function<IPropertyValue, Object> getValueGetter() {
             return new Function<IPropertyValue, Object>() {
 
                 @Override
@@ -91,6 +92,23 @@ public enum PropertyValueType {
         @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE;
+        }
+
+        @Override
+        public BiConsumer<IPropertyValue, Object> getValueSetter() {
+            return new BiConsumer<IPropertyValue, Object>() {
+
+                @Override
+                public void accept(IPropertyValue propertyValue, Object value) {
+                    if (value instanceof IValueHolder<?> && propertyValue instanceof IAttributeValue) {
+                        IValueHolder<?> valueHolder = (IValueHolder<?>)value;
+                        IAttributeValue attributeValue = (IAttributeValue)propertyValue;
+                        attributeValue.setValueHolder(valueHolder.copy(attributeValue));
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
+            };
         }
 
     },
@@ -113,7 +131,7 @@ public enum PropertyValueType {
         }
 
         @Override
-        public Function<IPropertyValue, Object> getValueFunction() {
+        public Function<IPropertyValue, Object> getValueGetter() {
             return new Function<IPropertyValue, Object>() {
 
                 @Override
@@ -130,6 +148,23 @@ public enum PropertyValueType {
         @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.TABLE_STRUCTURE_USAGE;
+        }
+
+        @Override
+        public BiConsumer<IPropertyValue, Object> getValueSetter() {
+            return new BiConsumer<IPropertyValue, Object>() {
+
+                @Override
+                public void accept(IPropertyValue propertyValue, Object value) {
+                    if ((value == null || value instanceof String) && propertyValue instanceof ITableContentUsage) {
+                        String name = (String)value;
+                        ITableContentUsage element = (ITableContentUsage)propertyValue;
+                        element.setTableContentName(name);
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
+            };
         }
 
     },
@@ -151,7 +186,7 @@ public enum PropertyValueType {
         }
 
         @Override
-        public Function<IPropertyValue, Object> getValueFunction() {
+        public Function<IPropertyValue, Object> getValueGetter() {
             return new Function<IPropertyValue, Object>() {
 
                 @Override
@@ -168,6 +203,23 @@ public enum PropertyValueType {
         @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION;
+        }
+
+        @Override
+        public BiConsumer<IPropertyValue, Object> getValueSetter() {
+            return new BiConsumer<IPropertyValue, Object>() {
+
+                @Override
+                public void accept(IPropertyValue propertyValue, Object value) {
+                    if ((value == null || value instanceof String) && propertyValue instanceof IFormula) {
+                        String expression = (String)value;
+                        IFormula element = (IFormula)propertyValue;
+                        element.setExpression(expression);
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
+            };
         }
 
     },
@@ -203,7 +255,7 @@ public enum PropertyValueType {
         }
 
         @Override
-        public Function<IPropertyValue, Object> getValueFunction() {
+        public Function<IPropertyValue, Object> getValueGetter() {
             return new Function<IPropertyValue, Object>() {
 
                 @Override
@@ -236,6 +288,23 @@ public enum PropertyValueType {
             return new ValueSetComparator<T>();
         }
 
+        @Override
+        public BiConsumer<IPropertyValue, Object> getValueSetter() {
+            return new BiConsumer<IPropertyValue, Object>() {
+
+                @Override
+                public void accept(IPropertyValue propertyValue, Object value) {
+                    if (value instanceof IValueSet && propertyValue instanceof IConfigElement) {
+                        IValueSet valueSet = (IValueSet)value;
+                        IConfigElement element = (IConfigElement)propertyValue;
+                        element.setValueSet(valueSet.copy(element, element.getIpsModel().getNextPartId(element)));
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
+            };
+        }
+
     },
 
     /**
@@ -261,7 +330,7 @@ public enum PropertyValueType {
         }
 
         @Override
-        public Function<IPropertyValue, Object> getValueFunction() {
+        public Function<IPropertyValue, Object> getValueGetter() {
             return new Function<IPropertyValue, Object>() {
 
                 @Override
@@ -278,6 +347,23 @@ public enum PropertyValueType {
         @Override
         public ProductCmptPropertyType getCorrespondingPropertyType() {
             return ProductCmptPropertyType.VALIDATION_RULE;
+        }
+
+        @Override
+        public BiConsumer<IPropertyValue, Object> getValueSetter() {
+            return new BiConsumer<IPropertyValue, Object>() {
+
+                @Override
+                public void accept(IPropertyValue propertyValue, Object value) {
+                    if (value instanceof Boolean && propertyValue instanceof IValidationRuleConfig) {
+                        Boolean active = (Boolean)value;
+                        IValidationRuleConfig ruleConfig = (IValidationRuleConfig)propertyValue;
+                        ruleConfig.setActive(active);
+                    } else {
+                        throw new IllegalArgumentException();
+                    }
+                }
+            };
         }
 
     };
@@ -308,7 +394,9 @@ public enum PropertyValueType {
             IProductCmptProperty property,
             String partId);
 
-    public abstract Function<IPropertyValue, Object> getValueFunction();
+    public abstract Function<IPropertyValue, Object> getValueGetter();
+
+    public abstract BiConsumer<IPropertyValue, Object> getValueSetter();
 
     public <T> Comparator<T> getValueComparator() {
         return new NullSafeComparableComparator<T>();

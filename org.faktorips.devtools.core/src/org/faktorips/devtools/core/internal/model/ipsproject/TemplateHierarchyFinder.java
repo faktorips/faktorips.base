@@ -15,7 +15,7 @@ import static org.faktorips.devtools.core.model.ipsobject.IpsObjectType.PRODUCT_
 import java.util.List;
 import java.util.Set;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
@@ -61,7 +61,7 @@ public class TemplateHierarchyFinder {
      * the source files that reference that template.
      */
     private static Multimap<String, IIpsSrcFile> createTemplateMap(List<IIpsSrcFile> srcFiles) {
-        Multimap<String, IIpsSrcFile> templateMap = HashMultimap.create();
+        Multimap<String, IIpsSrcFile> templateMap = LinkedHashMultimap.create();
         for (IIpsSrcFile srcFile : srcFiles) {
             String template = srcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
             if (StringUtils.isNotBlank(template)) {
@@ -96,7 +96,7 @@ public class TemplateHierarchyFinder {
     private static Set<Node<IIpsSrcFile>> addDirectTemplateReferences(Node<IIpsSrcFile> parent,
             String templateQName,
             Multimap<String, IIpsSrcFile> templateMap) {
-        Set<Node<IIpsSrcFile>> addedNodes = Sets.newHashSet();
+        Set<Node<IIpsSrcFile>> addedNodes = Sets.newLinkedHashSet();
         for (IIpsSrcFile srcFile : templateMap.get(templateQName)) {
             addedNodes.add(parent.addChild(srcFile));
         }

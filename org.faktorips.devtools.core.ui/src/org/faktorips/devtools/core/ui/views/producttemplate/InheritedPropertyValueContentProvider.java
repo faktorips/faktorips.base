@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.Viewer;
  * from the initial template property value.
  */
 public class InheritedPropertyValueContentProvider implements ITreeContentProvider {
+
     private TemplatePropertyUsagePmo pmo;
 
     @Override

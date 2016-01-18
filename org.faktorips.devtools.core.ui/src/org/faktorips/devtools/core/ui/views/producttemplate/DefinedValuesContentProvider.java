@@ -35,28 +35,18 @@ import org.faktorips.devtools.core.util.Histogram;
  */
 public class DefinedValuesContentProvider implements ITreeContentProvider {
 
-    private Histogram<Object, IPropertyValue> definedValuesHistorgram;
-
-    private SortedMap<Object, Integer> absoluteDistribution;
-
-    private int inheritedCount;
-
-    private int count;
+    private TemplatePropertyUsagePmo pmo;
 
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         if (newInput instanceof TemplatePropertyUsagePmo) {
-            TemplatePropertyUsagePmo pmo = (TemplatePropertyUsagePmo)newInput;
-            definedValuesHistorgram = pmo.getDefinedValuesHistogram();
-            absoluteDistribution = definedValuesHistorgram.getAbsoluteDistribution();
-            inheritedCount = pmo.getInheritingPropertyValues().size();
-            count = inheritedCount + definedValuesHistorgram.countElements();
+            pmo = (TemplatePropertyUsagePmo)newInput;
         }
     }
 
     @Override
     public Object[] getElements(Object inputElement) {
-        return transform(absoluteDistribution.keySet(), toViewItem()).toArray();
+        return transform(getAbsoluteDistribution().keySet(), toViewItem()).toArray();
     }
 
     @Override
@@ -71,7 +61,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
     @Override
     public Object getParent(Object element) {
-        for (Entry<Object, IPropertyValue> entry : definedValuesHistorgram.getDistribution().entries()) {
+        for (Entry<Object, IPropertyValue> entry : getDefinedValuesHistorgram().getDistribution().entries()) {
             if (ObjectUtils.equals(element, entry.getValue())) {
                 return toViewItem().apply(entry.getKey());
             }
@@ -97,12 +87,20 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 if (value == null) {
                     return null;
                 }
-                BigDecimal distributionPercent = new BigDecimal(absoluteDistribution.get(value)).multiply(
-                        new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
-                Set<IPropertyValue> children = definedValuesHistorgram.getElements(value);
+                BigDecimal distributionPercent = new BigDecimal(getAbsoluteDistribution().get(value)).multiply(
+                        new BigDecimal(100)).divide(new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
+                Set<IPropertyValue> children = getDefinedValuesHistorgram().getElements(value);
                 return new ValueViewItem(value, distributionPercent, children);
             }
         };
+    }
+
+    public Histogram<Object, IPropertyValue> getDefinedValuesHistorgram() {
+        return pmo.getDefinedValuesHistogram();
+    }
+
+    public SortedMap<Object, Integer> getAbsoluteDistribution() {
+        return pmo.getDefinedAbsoluteDistribution();
     }
 
     public static class ValueViewItem {
@@ -150,6 +148,36 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
         private String getFormattedRelDistribution() {
             return " (" + getRelDistributionPercent().stripTrailingZeros().toPlainString() + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((value == null) ? 0 : value.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            ValueViewItem other = (ValueViewItem)obj;
+            if (value == null) {
+                if (other.value != null) {
+                    return false;
+                }
+            } else if (!value.equals(other.value)) {
+                return false;
+            }
+            return true;
         }
 
     }

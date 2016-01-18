@@ -359,8 +359,16 @@
       <command
             categoryId="org.faktorips.devtools.core.ui.category.productcreate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.InferTemplateHandler"
+            description="%org.faktorips.devtools.core.ui.command.inferTemplate.description"
             id="org.faktorips.devtools.core.ui.command.inferTemplate"
-            name="Infer Product Template">
+            name="%org.faktorips.devtools.core.ui.command.inferTemplate.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SwitchTemplatePropertyValueHandler"
+            description="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.description"
+            id="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
+            name="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name">
       </command>
    </extension>
    <extension
@@ -2422,6 +2430,10 @@
                name="navigate"
                visible="true">
          </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
