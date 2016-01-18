@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,12 +31,14 @@ import java.util.concurrent.RunnableFuture;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -48,6 +51,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -97,6 +101,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
@@ -105,6 +110,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.IpsElement;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -1146,6 +1152,35 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         }
 
         return (IpsObjectEditor)activeEditor;
+    }
+
+    /**
+     * This method calls
+     * {@link IpsModel#runAndQueueChangeEvents(IWorkspaceRunnable, IProgressMonitor)} to perform
+     * multiple change operations and queue all change events. In addition it shows a busy indicator
+     * and starts a progress dialog if the operation takes too long.
+     * 
+     * The whole workspace is blocked while the operation runs.
+     * 
+     * @param action The {@link IWorkspaceRunnable} that should be startet-
+     */
+    public void runWorkspaceModification(final IWorkspaceRunnable action) {
+        IWorkbench wb = PlatformUI.getWorkbench();
+        IProgressService ps = wb.getProgressService();
+        try {
+            ps.busyCursorWhile(new IRunnableWithProgress() {
+
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(action, monitor);
+                }
+
+            });
+        } catch (InvocationTargetException e) {
+            logAndShowErrorDialog(e);
+        } catch (InterruptedException e) {
+            logAndShowErrorDialog(e);
+        }
     }
 
     /**

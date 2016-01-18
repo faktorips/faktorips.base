@@ -32,7 +32,6 @@ import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeItem;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.testcase.TestCase;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmpt;
 import org.faktorips.devtools.core.model.testcase.ITestPolicyCmptLink;
 import org.faktorips.devtools.core.model.testcasetype.ITestPolicyCmptTypeParameter;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
@@ -209,7 +209,7 @@ class DropToMoveHelper {
                     }
                 }
             };
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(moveRunnable, null);
+            IpsUIPlugin.getDefault().runWorkspaceModification(moveRunnable);
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }

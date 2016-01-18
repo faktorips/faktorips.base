@@ -117,55 +117,10 @@ public class TestCaseCopyWizard extends ResizableWizard {
             throw new RuntimeException("Target package fragment couldn't be created!"); //$NON-NLS-1$
         }
 
-        try {
-            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    IIpsSrcFile targetTestCaseSrcFile = targetIpsPackageFragment
-                            .createIpsFileFromTemplate(testCaseCopyDestinationPage.getTargetTestCaseName(),
-                                    sourceTestCase, null, null, true, null);
-                    targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
-                    // replace product cmpts of root objects
-                    ITestObject[] testObjects = sourceTestCase.getTestObjects();
-                    ITestObject[] testObjectsTarget = targetTestCase.getTestObjects();
-                    for (int i = 0; i < testObjects.length; i++) {
-                        if (testObjects[i] instanceof ITestPolicyCmpt) {
-                            ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObjects[i];
-                            ITestPolicyCmptTypeParameter parameter = testPolicyCmpt
-                                    .findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
-                            if (parameter == null || !parameter.isRequiresProductCmpt()) {
-                                continue;
-                            }
-                            IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
-                            if (productCmpt == null) {
-                                continue;
-                            }
-                            IIpsSrcFile newProductCmptScrFile = testCaseCopyDestinationPage
-                                    .getProductCmptToReplace(testPolicyCmpt);
-                            if (newProductCmptScrFile == null) {
-                                // no change of product cmpt
-                                continue;
-                            }
-                            IProductCmpt newProductCmpt = (IProductCmpt)newProductCmptScrFile.getIpsObject();
-                            if (productCmpt.equals(newProductCmpt)) {
-                                // same product cmpt, product cmpt will not be changed
-                                continue;
-                            }
+        IWorkspaceRunnable runnable = new CreateNewTargetTestCase(targetIpsPackageFragment);
+        IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
 
-                            // replace all product cmpts
-                            // (because the target is a copy of the source we can use the same
-                            // index: testObjectsTarget[i])
-                            replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], newProductCmpt);
-                        }
-                    }
-                }
-            };
-            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
-
-            testCaseCopyDestinationPage.setNeedRecreateTarget(false);
-        } catch (CoreException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-        }
+        testCaseCopyDestinationPage.setNeedRecreateTarget(false);
     }
 
     /**
@@ -261,30 +216,8 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
     }
 
-    private void deleteUnselectedTestObjects() throws CoreException {
-        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
-            @Override
-            public void run(IProgressMonitor monitor) throws CoreException {
-                ITestObject[] testObjects;
-                testObjects = targetTestCase.getAllTestObjects();
-
-                List<ITestObject> testObjectsList = new ArrayList<ITestObject>(testObjects.length);
-                testObjectsList.addAll(Arrays.asList(testObjects));
-
-                Object[] checkedObjects = testCaseStructurePage.getCheckedObjects();
-                for (Object checkedObject : checkedObjects) {
-                    if (checkedObject instanceof ITestObject) {
-                        testObjectsList.remove(checkedObject);
-                    }
-                }
-
-                for (ITestObject toDeleteTestObj : testObjectsList) {
-                    if (toDeleteTestObj.getParent() != null) {
-                        toDeleteTestObj.delete();
-                    }
-                }
-            }
-        }, null);
+    private void deleteUnselectedTestObjects() {
+        IpsUIPlugin.getDefault().runWorkspaceModification(new DeleteUnselectedTestObjects());
     }
 
     /**
@@ -326,5 +259,77 @@ public class TestCaseCopyWizard extends ResizableWizard {
      */
     public boolean isReplaceParameterChanged() {
         return testCaseCopyDestinationPage.isNeedRecreateTarget();
+    }
+
+    private final class CreateNewTargetTestCase implements IWorkspaceRunnable {
+        private final IIpsPackageFragment targetIpsPackageFragment;
+
+        private CreateNewTargetTestCase(IIpsPackageFragment targetIpsPackageFragment) {
+            this.targetIpsPackageFragment = targetIpsPackageFragment;
+        }
+
+        @Override
+        public void run(IProgressMonitor monitor) throws CoreException {
+            IIpsSrcFile targetTestCaseSrcFile = sourceTestCase.createCopy(targetIpsPackageFragment,
+                    testCaseCopyDestinationPage.getTargetTestCaseName(), true, null);
+            targetTestCase = (ITestCase)targetTestCaseSrcFile.getIpsObject();
+            // replace product cmpts of root objects
+            ITestObject[] testObjects = sourceTestCase.getTestObjects();
+            ITestObject[] testObjectsTarget = targetTestCase.getTestObjects();
+            for (int i = 0; i < testObjects.length; i++) {
+                if (testObjects[i] instanceof ITestPolicyCmpt) {
+                    ITestPolicyCmpt testPolicyCmpt = (ITestPolicyCmpt)testObjects[i];
+                    ITestPolicyCmptTypeParameter parameter = testPolicyCmpt
+                            .findTestPolicyCmptTypeParameter(testPolicyCmpt.getIpsProject());
+                    if (parameter == null || !parameter.isRequiresProductCmpt()) {
+                        continue;
+                    }
+                    IProductCmpt productCmpt = testPolicyCmpt.findProductCmpt(testPolicyCmpt.getIpsProject());
+                    if (productCmpt == null) {
+                        continue;
+                    }
+                    IIpsSrcFile newProductCmptScrFile = testCaseCopyDestinationPage
+                            .getProductCmptToReplace(testPolicyCmpt);
+                    if (newProductCmptScrFile == null) {
+                        // no change of product cmpt
+                        continue;
+                    }
+                    IProductCmpt newProductCmpt = (IProductCmpt)newProductCmptScrFile.getIpsObject();
+                    if (productCmpt.equals(newProductCmpt)) {
+                        // same product cmpt, product cmpt will not be changed
+                        continue;
+                    }
+
+                    // replace all product cmpts
+                    // (because the target is a copy of the source we can use the same
+                    // index: testObjectsTarget[i])
+                    replaceAllProductCmpts((ITestPolicyCmpt)testObjectsTarget[i], newProductCmpt);
+                }
+            }
+        }
+    }
+
+    private final class DeleteUnselectedTestObjects implements IWorkspaceRunnable {
+        @Override
+        public void run(IProgressMonitor monitor) throws CoreException {
+            ITestObject[] testObjects;
+            testObjects = targetTestCase.getAllTestObjects();
+
+            List<ITestObject> testObjectsList = new ArrayList<ITestObject>(testObjects.length);
+            testObjectsList.addAll(Arrays.asList(testObjects));
+
+            Object[] checkedObjects = testCaseStructurePage.getCheckedObjects();
+            for (Object checkedObject : checkedObjects) {
+                if (checkedObject instanceof ITestObject) {
+                    testObjectsList.remove(checkedObject);
+                }
+            }
+
+            for (ITestObject toDeleteTestObj : testObjectsList) {
+                if (toDeleteTestObj.getParent() != null) {
+                    toDeleteTestObj.delete();
+                }
+            }
+        }
     }
 }

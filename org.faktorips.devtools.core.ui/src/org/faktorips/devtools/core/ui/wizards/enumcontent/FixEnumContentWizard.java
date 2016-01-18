@@ -139,23 +139,19 @@ public class FixEnumContentWizard extends Wizard {
         }
 
         if (confirmed) {
-            try {
-                IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
-                    @Override
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        deleteObsoleteEnumAttributeValues();
-                        createNewEnumAttributeValues();
-                        if (enumContent.getEnumValuesCount() > 0) {
-                            moveAttributeValues();
-                        }
-                        enumContent.setEnumType(newEnumType.getQualifiedName());
-                        enumContent.fixAllEnumAttributeValues();
+            IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
+                @Override
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    deleteObsoleteEnumAttributeValues();
+                    createNewEnumAttributeValues();
+                    if (enumContent.getEnumValuesCount() > 0) {
+                        moveAttributeValues();
                     }
-                };
-                enumContent.getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+                    enumContent.setEnumType(newEnumType.getQualifiedName());
+                    enumContent.fixAllEnumAttributeValues();
+                }
+            };
+            IpsUIPlugin.getDefault().runWorkspaceModification(workspaceRunnable);
         }
 
         return confirmed;

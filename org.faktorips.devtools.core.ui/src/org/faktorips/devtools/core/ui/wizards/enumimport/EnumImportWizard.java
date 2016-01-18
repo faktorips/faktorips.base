@@ -17,14 +17,12 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -169,23 +167,15 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
             final MessageList messageList = new MessageList();
 
-            try {
-                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                    @Override
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()),
-                                startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
-                                messageList, startingPage.isImportIntoExisting());
-                    }
-                };
-                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-                model.runAndQueueChangeEvents(runnable, null);
-            } catch (CoreException e) {
-                MessageDialog.openError(getShell(), Messages.EnumImportWizard_title, e.getLocalizedMessage());
-                enumTypeOrContent.getIpsObject().getIpsSrcFile().discardChanges();
-
-                return false;
-            }
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                @Override
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    format.executeEnumImport(enumTypeOrContent, new Path(startingPage.getFilename()),
+                            startingPage.getNullRepresentation(), startingPage.isImportIgnoreColumnHeaderRow(),
+                            messageList, startingPage.isImportIntoExisting());
+                }
+            };
+            IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

@@ -19,11 +19,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
-import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -157,22 +155,14 @@ public class TableImportWizard extends IpsObjectImportWizard {
             final MessageList messageList = new MessageList();
             final boolean ignoreColumnHeader = startingPage.isImportIgnoreColumnHeaderRow();
 
-            try {
-                IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-                    @Override
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        format.executeTableImport(structure, new Path(filename), tableRows, nullRepresentation,
-                                ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
-                    }
-                };
-                IIpsModel model = IpsPlugin.getDefault().getIpsModel();
-                model.runAndQueueChangeEvents(runnable, null);
-            } catch (CoreException e) {
-                MessageDialog.openError(getShell(), Messages.TableImport_title, e.getLocalizedMessage());
-                contents.getIpsObject().getIpsSrcFile().discardChanges();
-
-                return false;
-            }
+            IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+                @Override
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    format.executeTableImport(structure, new Path(filename), tableRows, nullRepresentation,
+                            ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
+                }
+            };
+            IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

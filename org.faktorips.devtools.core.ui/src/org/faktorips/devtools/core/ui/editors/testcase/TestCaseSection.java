@@ -978,11 +978,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
         Runnable runnableWithBusyIndicator = new Runnable() {
             @Override
             public void run() {
-                try {
-                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
-                } catch (CoreException e) {
-                    IpsPlugin.logAndShowErrorDialog(e);
-                }
+                IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
             }
         };
         BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
@@ -2887,11 +2883,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             };
 
-            try {
-                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
         }
 
         /**
