@@ -22,8 +22,7 @@ public class TemplatePropertyUsageViewPart extends ViewPart {
 
     @Override
     public void createPartControl(Composite parent) {
-        view = new TemplatePropertyUsageView(parent);
-        view.setUpToolbar(this.getViewSite());
+        view = new TemplatePropertyUsageView(parent, getViewSite());
     }
 
     @Override

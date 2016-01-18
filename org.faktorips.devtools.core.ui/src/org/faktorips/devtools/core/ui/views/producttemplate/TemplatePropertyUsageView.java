@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import com.google.common.base.Optional;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -23,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
@@ -31,8 +34,11 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.editors.SelectionProviderIntermediate;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 
@@ -46,13 +52,21 @@ public class TemplatePropertyUsageView {
     private TreeViewer leftTreeViewer;
     private TreeViewer rightTreeViewer;
 
+    private IViewSite site;
+
+    private SelectionProviderIntermediate selectionProviderDispatcher;
+
     /*
      * Eclipse 4 constructor. Requires additional libraries.
      */
     // @Inject
-    public TemplatePropertyUsageView(Composite parent) {
+    public TemplatePropertyUsageView(Composite parent, IViewSite site) {
+        this.site = site;
         createPartControl(parent);
         setUpTrees();
+        setUpSelectionProvider();
+        buildContextMenu();
+        setUpToolbar();
     }
 
     /**
@@ -116,7 +130,7 @@ public class TemplatePropertyUsageView {
         rightTreeViewer.setContentProvider(new DefinedValuesContentProvider());
     }
 
-    void setUpToolbar(IViewSite viewSite) {
+    void setUpToolbar() {
         final String toolTip = Messages.TemplatePropertyUsageView_toolTipRefreshContents;
         final ImageDescriptor imageDescriptor = IpsUIPlugin.getImageHandling().createImageDescriptor("Refresh.gif"); //$NON-NLS-1$
         Action refreshAction = new Action(toolTip, imageDescriptor) {
@@ -131,11 +145,11 @@ public class TemplatePropertyUsageView {
             }
         };
 
-        viewSite.getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
-        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(viewSite.getWorkbenchWindow());
+        site.getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
+        IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(site.getWorkbenchWindow());
         retargetAction.setToolTipText(toolTip);
         retargetAction.setImageDescriptor(imageDescriptor);
-        viewSite.getActionBars().getToolBarManager().add(retargetAction);
+        site.getActionBars().getToolBarManager().add(retargetAction);
     }
 
     private void refresh() {
@@ -146,6 +160,35 @@ public class TemplatePropertyUsageView {
         }
     }
 
+    private void setUpSelectionProvider() {
+        selectionProviderDispatcher = new SelectionProviderIntermediate();
+        selectionProviderDispatcher.registerListenersFor(leftTreeViewer);
+        selectionProviderDispatcher.registerListenersFor(rightTreeViewer);
+        site.setSelectionProvider(selectionProviderDispatcher);
+    }
+
+    private void buildContextMenu() {
+        buildContextMenu(leftTreeViewer);
+        buildContextMenu(rightTreeViewer);
+    }
+
+    protected void buildContextMenu(TreeViewer treeViewer) {
+        MenuManager menuManager = new MenuManager();
+
+        menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
+        IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
+
+        site.registerContextMenu(VIEW_ID, menuManager, treeViewer);
+
+        MenuCleaner menuCleaner = new MenuCleaner();
+        menuCleaner.setWhiteListMode(true);
+        menuCleaner.addFilteredPrefix(MenuCleaner.WHITE_LIST_IPS_PREFIX);
+        menuManager.addMenuListener(menuCleaner);
+
+        Menu treePopup = menuManager.createContextMenu(treeViewer.getControl());
+        treeViewer.getTree().setMenu(treePopup);
+    }
+
     // @Focus
     public void setFocus() {
         // to do
@@ -153,7 +196,6 @@ public class TemplatePropertyUsageView {
 
     // @PreDestroy
     public void dispose() {
-        // to do
         bindingContext.dispose();
     }
 

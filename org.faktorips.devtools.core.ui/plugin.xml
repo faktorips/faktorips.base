@@ -2408,6 +2408,22 @@
       <extension
             point="org.eclipse.ui.menus">
       <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView?after=open">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="navigate"
+               visible="true">
+         </separator>
+      </menuContribution>
+      <menuContribution
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
          <command
                commandId="org.faktorips.devtools.core.ui.search.model"
@@ -2507,8 +2523,9 @@
                  visible="true">
 		         </separator>
 		         <command
-		               commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
-		               style="push">
+                 commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+                 icon="icons/Reference.gif"
+                 style="push">
               <visibleWhen
                     checkEnabled="true">
               </visibleWhen>
@@ -2631,6 +2648,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+               icon="icons/Reference.gif"
                label="%SearchReferencesAction_name"
                style="push"
                tooltip="%SearchReferencesAction_description">
