@@ -320,4 +320,30 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         assertThat(pmo.getDefinedValuesHistogram().getDistribution().isEmpty(), is(true));
     }
 
+    @Test
+    public void testGetTemplateValue() throws Exception {
+        IIpsProject ipsProject = newIpsProject();
+        ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
+        ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
+        tableStructurUsage.setRoleName("RoleName");
+
+        IProductCmpt t = newProductTemplate(productCmptType, "Template");
+        IProductCmpt p = newProductCmpt(productCmptType, "Product");
+
+        p.setTemplate(t.getQualifiedName());
+
+        IProductCmptGeneration tGen = (IProductCmptGeneration)t.newGeneration(EFFECTIVE_DATE);
+        IProductCmptGeneration pGen = (IProductCmptGeneration)p.newGeneration(EFFECTIVE_DATE);
+
+        ITableContentUsage tTable = tGen.newTableContentUsage(tableStructurUsage);
+        ITableContentUsage pTable = pGen.newTableContentUsage(tableStructurUsage);
+
+        tTable.setTableContentName("templateTable");
+        pTable.setTableContentName("productTable");
+
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(pTable);
+        assertThat(pmo.getTemplateValue(), is((Object)"templateTable"));
+
+    }
+
 }

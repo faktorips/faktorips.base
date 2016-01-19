@@ -21,6 +21,7 @@ import java.util.SortedMap;
 import com.google.common.base.Function;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -90,7 +91,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 BigDecimal distributionPercent = new BigDecimal(getAbsoluteDistribution().get(value)).multiply(
                         new BigDecimal(100)).divide(new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
                 Set<IPropertyValue> children = getDefinedValuesHistorgram().getElements(value);
-                return new ValueViewItem(value, distributionPercent, children);
+                return new ValueViewItem(value, pmo.getTemplateValue(), distributionPercent, children);
             }
         };
     }
@@ -107,12 +108,16 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
         private final Object value;
 
+        private final boolean sameAsTemplateValue;
+
         private final BigDecimal distributionPercent;
 
         private final Collection<IPropertyValue> children;
 
-        public ValueViewItem(Object value, BigDecimal distributionPercent, Set<IPropertyValue> children) {
+        public ValueViewItem(Object value, Object templateValue, BigDecimal distributionPercent,
+                Set<IPropertyValue> children) {
             this.value = value;
+            this.sameAsTemplateValue = ObjectUtils.equals(value, templateValue);
             this.distributionPercent = distributionPercent;
             this.children = Collections.unmodifiableCollection(children);
         }
@@ -130,7 +135,11 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         }
 
         public String getText() {
-            return getFormattedValue() + getFormattedRelDistribution();
+            return getFormattedValue() + getFormattedRelDistribution() + getSameValueSuffix();
+        }
+
+        public boolean isSameValueAsTemplateValue() {
+            return sameAsTemplateValue;
         }
 
         private String getFormattedValue() {
@@ -148,6 +157,14 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
         private String getFormattedRelDistribution() {
             return " (" + getRelDistributionPercent().stripTrailingZeros().toPlainString() + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
+        }
+
+        private String getSameValueSuffix() {
+            if (isSameValueAsTemplateValue()) {
+                return " - " + Messages.TemplatePropertyUsageView_SameValue_suffix; //$NON-NLS-1$
+            } else {
+                return StringUtils.EMPTY;
+            }
         }
 
         @Override

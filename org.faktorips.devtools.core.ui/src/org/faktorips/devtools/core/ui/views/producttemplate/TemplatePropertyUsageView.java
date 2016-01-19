@@ -16,14 +16,17 @@ import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
@@ -224,7 +227,12 @@ public class TemplatePropertyUsageView {
         }
     }
 
-    private static class TemplatePropertyUsageLabelProvider extends DefaultLabelProvider {
+    private static class TemplatePropertyUsageLabelProvider extends DefaultLabelProvider implements IColorProvider {
+
+        private static final Color BLUE = new Color(Display.getCurrent(), 0, 0, 255);
+
+        // return null to use default colors...
+        private static final Color DEFAULT_COLOR = null;
 
         @Override
         public String getText(Object element) {
@@ -250,6 +258,22 @@ public class TemplatePropertyUsageView {
                 return super.getImage(propertyValue.getPropertyValueContainer().getProductCmpt());
             }
             return super.getImage(element);
+        }
+
+        @Override
+        public Color getForeground(Object element) {
+            if (element instanceof DefinedValuesContentProvider.ValueViewItem) {
+                DefinedValuesContentProvider.ValueViewItem viewItem = (DefinedValuesContentProvider.ValueViewItem)element;
+                if (viewItem.isSameValueAsTemplateValue()) {
+                    return BLUE;
+                }
+            }
+            return DEFAULT_COLOR;
+        }
+
+        @Override
+        public Color getBackground(Object element) {
+            return DEFAULT_COLOR;
         }
 
     }

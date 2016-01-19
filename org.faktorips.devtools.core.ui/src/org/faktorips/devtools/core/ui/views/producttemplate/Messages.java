@@ -35,4 +35,6 @@ public final class Messages extends NLS {
     public static String TemplatePropertyUsageView_SameValue_label;
 
     public static String TemplatePropertyUsageView_toolTipRefreshContents;
+
+    public static String TemplatePropertyUsageView_SameValue_suffix;
 }

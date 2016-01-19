@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Collections2.filter;
 
+import java.beans.PropertyChangeEvent;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collection;
@@ -175,6 +176,12 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     public int getCount() {
         return getInheritingPropertyValues().size() + getDefinedValuesHistogram().countElements();
+    }
+
+    /** Returns the value for the property value in the template. */
+    protected Object getTemplateValue() {
+        IPropertyValue templatePropertyValue = findPropertyValue(getTemplate());
+        return valueFunction().apply(templatePropertyValue);
     }
 
     /** Returns all product components that define a custom value. */
@@ -358,6 +365,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         // reset state to force update
         propertyValuesBasedOnTemplate = null;
         histogram = null;
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTICAL_VALUES_LABEL_TEXT, null, null));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_DIFFERING_VALUES_LABEL_TEXT, null, null));
     }
 
 }
