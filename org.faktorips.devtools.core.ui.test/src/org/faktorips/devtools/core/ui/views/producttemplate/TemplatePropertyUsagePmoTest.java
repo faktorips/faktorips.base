@@ -66,7 +66,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo(p1Value);
+        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo();
+        valuePmo.setPropertyValue(p1Value);
         assertThat(valuePmo.getInheritingPropertyValues(), hasItems(p2Value));
 
         // Property value of generations
@@ -79,7 +80,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo(p1GenValue);
+        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo();
+        genValuePmo.setPropertyValue(p1GenValue);
         assertThat(genValuePmo.getInheritingPropertyValues(), hasItems(p2Value));
     }
 
@@ -113,7 +115,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo(p1Value);
+        TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo();
+        valuePmo.setPropertyValue(p1Value);
         assertThat(valuePmo.getDefiningPropertyValues(), hasItems(p1Value, t2Value));
 
         // Property value of generations
@@ -126,7 +129,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo(p1GenValue);
+        TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo();
+        genValuePmo.setPropertyValue(p1GenValue);
         assertThat(genValuePmo.getDefiningPropertyValues(), hasItems(p1Value, t2Value));
     }
 
@@ -165,7 +169,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p2Table.setTableContentName("Table-B");
         p3Table.setTableContentName("Table-B");
 
-        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(p1Table);
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo();
+        pmo.setPropertyValue(p1Table);
         Histogram<Object, IPropertyValue> histogram = pmo.getDefinedValuesHistogram();
         assertThat(histogram.getDistribution().size(), is(3));
         assertThat(histogram.getDistribution().get("Table-A"), hasItems((IPropertyValue)p1Table));
@@ -191,11 +196,13 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         templateValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         prodCmptValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo templatePmo = new TemplatePropertyUsagePmo(templateValue);
+        TemplatePropertyUsagePmo templatePmo = new TemplatePropertyUsagePmo();
+        templatePmo.setPropertyValue(templateValue);
         assertThat(templatePmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)templateValue));
         assertThat(templatePmo.getTemplate(), is(t));
 
-        TemplatePropertyUsagePmo prodCmptPmo = new TemplatePropertyUsagePmo(prodCmptValue);
+        TemplatePropertyUsagePmo prodCmptPmo = new TemplatePropertyUsagePmo();
+        prodCmptPmo.setPropertyValue(prodCmptValue);
         assertThat(prodCmptPmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)prodCmptValue));
         assertThat(prodCmptPmo.getTemplate(), is(t));
     }
@@ -211,7 +218,8 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IPropertyValue propertyValue = prodCmpt.newPropertyValue(attribute);
         propertyValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(propertyValue);
+        TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo();
+        pmo.setPropertyValue(propertyValue);
         assertThat(pmo.getTemplate(), is(nullValue()));
         assertThat(pmo.getDefiningPropertyValues().isEmpty(), is(true));
         assertThat(pmo.getInheritingPropertyValues().isEmpty(), is(true));

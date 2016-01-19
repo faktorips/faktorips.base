@@ -48,7 +48,8 @@ public class TemplatePropertyUsageView {
     public static final String VIEW_ID = "org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"; //$NON-NLS-1$
 
     private final BindingContext bindingContext = new BindingContext();
-    private TemplatePropertyUsagePmo usagePmo;
+
+    private TemplatePropertyUsagePmo usagePmo = new TemplatePropertyUsagePmo();
 
     private TreeViewer leftTreeViewer;
     private TreeViewer rightTreeViewer;
@@ -56,6 +57,10 @@ public class TemplatePropertyUsageView {
     private IViewSite site;
 
     private SelectionProviderIntermediate selectionProviderDispatcher;
+
+    private Label leftLabel;
+
+    private Label rightLabel;
 
     /*
      * Eclipse 4 constructor. Requires additional libraries.
@@ -65,6 +70,7 @@ public class TemplatePropertyUsageView {
         this.site = site;
         createPartControl(parent);
         setUpTrees();
+        bind();
         setUpSelectionProvider();
         buildContextMenu();
         setUpToolbar();
@@ -74,17 +80,7 @@ public class TemplatePropertyUsageView {
      * Sets the property value to display template information for. Refreshes this view.
      */
     public void setPropertyValue(IPropertyValue propertyValue) {
-        disposePmo();
-        usagePmo = new TemplatePropertyUsagePmo(propertyValue);
-        leftTreeViewer.setInput(usagePmo);
-        rightTreeViewer.setInput(usagePmo);
-        rightTreeViewer.expandAll();
-    }
-
-    private void disposePmo() {
-        if (usagePmo != null) {
-            usagePmo.dispose();
-        }
+        usagePmo.setPropertyValue(propertyValue);
     }
 
     private void createPartControl(Composite parent) {
@@ -100,10 +96,13 @@ public class TemplatePropertyUsageView {
         rightSide.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         rightSide.setLayout(createTreeCompositeLayout());
 
-        new Label(leftSide, SWT.NONE).setText(Messages.TemplatePropertyUsageView_SameValue_label);
+        leftLabel = new Label(leftSide, SWT.NONE);
+        leftLabel.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
         leftTreeViewer = new TreeViewer(leftSide, SWT.BORDER | SWT.MULTI);
         leftTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
-        new Label(rightSide, SWT.NONE).setText(Messages.TemplatePropertyUsageView_DifferingValues_Label);
+
+        rightLabel = new Label(rightSide, SWT.NONE);
+        rightLabel.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
         rightTreeViewer = new TreeViewer(rightSide, SWT.BORDER | SWT.MULTI);
         rightTreeViewer.getTree().setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
     }
@@ -125,12 +124,20 @@ public class TemplatePropertyUsageView {
         leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         leftTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
         leftTreeViewer.setContentProvider(new InheritedPropertyValueContentProvider());
-        bindingContext.add(ViewerRefreshBinding.refresh(leftTreeViewer, usagePmo));
 
         rightTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         rightTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
         rightTreeViewer.setContentProvider(new DefinedValuesContentProvider());
+    }
+
+    private void bind() {
+        bindingContext.bindContent(leftLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_IDENTICAL_VALUES_LABEL_TEXT);
+        bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DIFFERING_VALUES_LABEL_TEXT);
+        bindingContext.add(ViewerRefreshBinding.refresh(leftTreeViewer, usagePmo));
+        leftTreeViewer.setInput(usagePmo);
         bindingContext.add(ViewerRefreshBinding.refreshAndExpand(rightTreeViewer, usagePmo));
+        rightTreeViewer.setInput(usagePmo);
+        bindingContext.updateUI();
     }
 
     void setUpToolbar() {
@@ -200,8 +207,8 @@ public class TemplatePropertyUsageView {
 
     // @PreDestroy
     public void dispose() {
+        usagePmo.dispose();
         bindingContext.dispose();
-        disposePmo();
     }
 
     private static class OpenProductCmptEditorListener implements IDoubleClickListener {

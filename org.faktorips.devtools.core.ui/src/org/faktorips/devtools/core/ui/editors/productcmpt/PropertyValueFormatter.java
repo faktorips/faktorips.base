@@ -99,4 +99,5 @@ public class PropertyValueFormatter {
         throw new IllegalStateException(PropertyValueFormatter.class.getName()
                 + ": Unknown property value type " + propertyValue.getPropertyValueType()); //$NON-NLS-1$
     }
+
 }

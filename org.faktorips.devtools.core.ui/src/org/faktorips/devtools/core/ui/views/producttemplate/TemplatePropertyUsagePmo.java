@@ -12,11 +12,14 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import static com.google.common.base.Predicates.notNull;
 import static com.google.common.collect.Collections2.filter;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -24,12 +27,16 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
+import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
+import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
 import org.faktorips.devtools.core.util.Histogram;
 import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
 import org.faktorips.devtools.core.util.Tree;
@@ -37,7 +44,10 @@ import org.faktorips.devtools.core.util.Tree.Node;
 
 public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
-    private final IProductCmpt template;
+    public static final String PROPERTY_IDENTICAL_VALUES_LABEL_TEXT = "identicalValuesLabelText"; //$NON-NLS-1$
+    public static final String PROPERTY_DIFFERING_VALUES_LABEL_TEXT = "differingValuesLabelText"; //$NON-NLS-1$
+
+    private IProductCmpt template;
 
     // lazily loaded
     private List<IPropertyValue> propertyValuesBasedOnTemplate;
@@ -47,9 +57,62 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     private SortedMap<Object, Integer> definedAbsoluteDistribution;
 
+    public TemplatePropertyUsagePmo() {
+        super();
+    }
+
     public TemplatePropertyUsagePmo(IPropertyValue propertyValue) {
-        super(propertyValue);
-        this.template = findTemplate();
+        super();
+        setPropertyValue(propertyValue);
+    }
+
+    public void setPropertyValue(IPropertyValue propertyValue) {
+        setIpsObjectPartContainer(propertyValue);
+    }
+
+    private boolean hasData() {
+        return getInitialPropertyValue() != null;
+    }
+
+    public String getIdenticalValuesLabelText() {
+        if (hasData()) {
+            return getIdenticalLabelWithData();
+        } else {
+            return Messages.TemplatePropertyLabelPmo_SameValue_fallbackLabel;
+        }
+    }
+
+    private String getIdenticalLabelWithData() {
+        String propertyName = getInitialPropertyValue().getPropertyName();
+        String formattedValue = PropertyValueFormatter.format(getInitialPropertyValue());
+        int inheritedCount = getInheritingPropertyValues().size();
+        BigDecimal inheritedPercent = getInheritPercent(inheritedCount);
+        return NLS.bind(Messages.TemplatePropertyUsageView_SameValue_label, new Object[] { propertyName,
+                formattedValue, inheritedCount, inheritedPercent.stripTrailingZeros().toPlainString() });
+    }
+
+    private BigDecimal getInheritPercent(int inheritedCount) {
+        int count = getCount();
+        if (count == 0) {
+            return BigDecimal.ZERO;
+        } else {
+            BigDecimal inheritedPercent = new BigDecimal(inheritedCount).multiply(new BigDecimal(100)).divide(
+                    new BigDecimal(count), 1, RoundingMode.HALF_UP);
+            return inheritedPercent;
+        }
+    }
+
+    public String getDifferingValuesLabelText() {
+        if (hasData()) {
+            return getDifferingLabelWithData();
+        } else {
+            return Messages.TemplatePropertyLabelPmo_DifferingValue_fallbackLabel;
+        }
+    }
+
+    private String getDifferingLabelWithData() {
+        String propertyName = getInitialPropertyValue().getPropertyName();
+        return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_Label, propertyName);
     }
 
     /**
@@ -81,7 +144,11 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     /** Returns the product components that inherit the value from the template. */
     public Collection<IPropertyValue> getInheritingPropertyValues() {
-        return filter(getPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.INHERITED));
+        if (hasData()) {
+            return filter(getPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.INHERITED));
+        } else {
+            return Collections.emptyList();
+        }
     }
 
     /**
@@ -94,6 +161,14 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * objects.
      */
     public Histogram<Object, IPropertyValue> getDefinedValuesHistogram() {
+        if (hasData()) {
+            return getHistogramInternal();
+        } else {
+            return Histogram.emptyHistogram();
+        }
+    }
+
+    private Histogram<Object, IPropertyValue> getHistogramInternal() {
         if (histogram == null) {
             histogram = new Histogram<Object, IPropertyValue>(valueFunction(), valueComparator(),
                     getDefiningPropertyValues());
@@ -103,6 +178,14 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     public SortedMap<Object, Integer> getDefinedAbsoluteDistribution() {
+        if (hasData()) {
+            return getDefinedAbsoluteDistributionInternal();
+        } else {
+            return new TreeMap<Object, Integer>();
+        }
+    }
+
+    private SortedMap<Object, Integer> getDefinedAbsoluteDistributionInternal() {
         if (histogram == null) {
             getDefinedValuesHistogram();
         }
@@ -275,8 +358,23 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return getInitialPropertyValue().getPropertyValueType().getValueGetter();
     }
 
+    /**
+     * Returns <code>true</code> if the affected IPSSrcFile is a product component or product
+     * template.
+     * <p>
+     * Determining whether a change in some product component really affects one of the displayed
+     * property values would be more effort than simply recalculating everything. Thus this PMO
+     * reacts to every potential change.
+     */
+    @Override
+    protected boolean isAffected(ContentChangeEvent event) {
+        IpsObjectType ipsObjectType = event.getIpsSrcFile().getIpsObjectType();
+        return ipsObjectType == IpsObjectType.PRODUCT_CMPT || ipsObjectType == IpsObjectType.PRODUCT_TEMPLATE;
+    }
+
     @Override
     protected void partHasChanged() {
+        this.template = findTemplate();
         // reset state to force update
         propertyValuesBasedOnTemplate = null;
         histogram = null;

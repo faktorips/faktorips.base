@@ -235,6 +235,11 @@ public class Histogram<V, E> {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public static <E, V> Histogram<E, V> emptyHistogram() {
+        return new Histogram<E, V>(null, (Collection<V>)Collections.emptyList());
+    }
+
     /**
      * Comparator that compares values by their occurrence count in
      * {@link Histogram#valueToElements} so that a value e1 occurring more often than e2 is less
