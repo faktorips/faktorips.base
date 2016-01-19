@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.google.common.base.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
@@ -84,13 +83,7 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
 
     @Override
     protected Function<IFormula, String> getToolTipFormatter() {
-        return new Function<IFormula, String>() {
-
-            @Override
-            public String apply(IFormula formula) {
-                return formula != null ? StringUtils.abbreviateMiddle(formula.getExpression(), "[...]", 50) : StringUtils.EMPTY; //$NON-NLS-1$
-            }
-        };
+        return PropertyValueFormatter.FORMULA;
     }
 
     @Override

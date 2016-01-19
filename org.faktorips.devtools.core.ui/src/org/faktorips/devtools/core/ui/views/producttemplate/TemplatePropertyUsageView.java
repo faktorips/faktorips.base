@@ -226,13 +226,9 @@ public class TemplatePropertyUsageView {
                 }
             } else if (element instanceof DefinedValuesContentProvider.ValueViewItem) {
                 DefinedValuesContentProvider.ValueViewItem viewItem = (DefinedValuesContentProvider.ValueViewItem)element;
-                return super.getText(viewItem.getValue()) + getFormattedRelDistribution(viewItem);
+                return viewItem.getText();
             }
             return super.getText(element);
-        }
-
-        protected String getFormattedRelDistribution(DefinedValuesContentProvider.ValueViewItem viewItem) {
-            return " (" + viewItem.getRelDistributionPercent().stripTrailingZeros().toPlainString() + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
         @Override

@@ -12,7 +12,10 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import static com.google.common.collect.Collections2.transform;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.SortedMap;
 
 import com.google.common.base.Function;
@@ -21,6 +24,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
 import org.faktorips.devtools.core.util.Histogram;
 
 /**
@@ -59,7 +63,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof ValueViewItem) {
             ValueViewItem viewItem = (ValueViewItem)parentElement;
-            return definedValuesHistorgram.getElements(viewItem.getValue()).toArray();
+            return viewItem.getChildren().toArray();
         } else {
             return new Object[0];
         }
@@ -95,7 +99,8 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 }
                 BigDecimal distributionPercent = new BigDecimal(absoluteDistribution.get(value)).multiply(
                         new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
-                return new ValueViewItem(value, distributionPercent);
+                Set<IPropertyValue> children = definedValuesHistorgram.getElements(value);
+                return new ValueViewItem(value, distributionPercent, children);
             }
         };
     }
@@ -106,9 +111,12 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
         private final BigDecimal distributionPercent;
 
-        public ValueViewItem(Object value, BigDecimal distributionPercent) {
+        private final Collection<IPropertyValue> children;
+
+        public ValueViewItem(Object value, BigDecimal distributionPercent, Set<IPropertyValue> children) {
             this.value = value;
             this.distributionPercent = distributionPercent;
+            this.children = Collections.unmodifiableCollection(children);
         }
 
         public Object getValue() {
@@ -117,6 +125,31 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
         public BigDecimal getRelDistributionPercent() {
             return distributionPercent;
+        }
+
+        public Collection<IPropertyValue> getChildren() {
+            return children;
+        }
+
+        public String getText() {
+            return getFormattedValue() + getFormattedRelDistribution();
+        }
+
+        private String getFormattedValue() {
+            IPropertyValue pv = getFirstPropertyValue();
+            return PropertyValueFormatter.format(pv);
+        }
+
+        private IPropertyValue getFirstPropertyValue() {
+            /*
+             * There always is at least one value. Otherwise no item would show up in the
+             * distribution.
+             */
+            return children.iterator().next();
+        }
+
+        private String getFormattedRelDistribution() {
+            return " (" + getRelDistributionPercent().stripTrailingZeros().toPlainString() + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
         }
 
     }
