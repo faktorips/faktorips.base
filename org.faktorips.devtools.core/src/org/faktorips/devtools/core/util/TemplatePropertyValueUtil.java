@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.util;
 
+import org.faktorips.devtools.core.internal.model.ipsproject.TemplateHierarchyFinder;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 
 public class TemplatePropertyValueUtil {
@@ -26,7 +28,36 @@ public class TemplatePropertyValueUtil {
      * @return whether the given property value is defined in a template
      */
     public static boolean isDefinedTemplatePropertyValue(IPropertyValue v) {
-        return v != null && v.getPropertyValueContainer() != null && v.getPropertyValueContainer().isProductTemplate()
-                && v.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+        return isTemplatePropertyValue(v) && v.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
     }
+
+    /**
+     * Returns {@code true} if the given property value belongs to a template.
+     * 
+     * @param v a property value
+     * @return whether the given property value belongs to a template
+     */
+    public static boolean isTemplatePropertyValue(IPropertyValue v) {
+        return v != null && v.getPropertyValueContainer() != null && v.getPropertyValueContainer().isProductTemplate();
+    }
+
+    /**
+     * Returns the {@link IPropertyValue} that is the next higher in the template hierarchy. In
+     * contrast to {@link TemplateHierarchyFinder} it does not search for a defined property value.
+     * 
+     * @param v a property value to search from
+     * @return the next {@link IPropertyValue} in the template hierarchie or <code>null</code> if
+     *         there is none
+     */
+    public static IPropertyValue findNextTemplatePropertyValue(IPropertyValue v) {
+        IPropertyValueContainer propertyValueContainer = v.getPropertyValueContainer();
+        IPropertyValueContainer template = propertyValueContainer.findTemplate(v.getIpsProject());
+        if (template != null) {
+            IPropertyValue propertyValue = template.getPropertyValue(v.getName());
+            return propertyValue;
+        } else {
+            return null;
+        }
+    }
+
 }

@@ -38,7 +38,6 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.ui.binding.IpsObjectPartPmo;
 import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
 import org.faktorips.devtools.core.util.Histogram;
-import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
 import org.faktorips.devtools.core.util.Tree;
 import org.faktorips.devtools.core.util.Tree.Node;
 
@@ -46,8 +45,6 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     public static final String PROPERTY_IDENTICAL_VALUES_LABEL_TEXT = "identicalValuesLabelText"; //$NON-NLS-1$
     public static final String PROPERTY_DIFFERING_VALUES_LABEL_TEXT = "differingValuesLabelText"; //$NON-NLS-1$
-
-    private IProductCmpt template;
 
     // lazily loaded
     private List<IPropertyValue> propertyValuesBasedOnTemplate;
@@ -71,7 +68,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private boolean hasData() {
-        return getInitialPropertyValue() != null;
+        return getTemplatePropertyValue() != null;
     }
 
     public String getIdenticalValuesLabelText() {
@@ -83,8 +80,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private String getIdenticalLabelWithData() {
-        String propertyName = getInitialPropertyValue().getPropertyName();
-        String formattedValue = PropertyValueFormatter.format(getInitialPropertyValue());
+        String propertyName = getTemplatePropertyValue().getPropertyName();
+        String formattedValue = PropertyValueFormatter.format(getTemplatePropertyValue());
         int inheritedCount = getInheritingPropertyValues().size();
         BigDecimal inheritedPercent = getInheritPercent(inheritedCount);
         return NLS.bind(Messages.TemplatePropertyUsageView_SameValue_label, new Object[] { propertyName,
@@ -111,35 +108,19 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private String getDifferingLabelWithData() {
-        String propertyName = getInitialPropertyValue().getPropertyName();
+        String propertyName = getTemplatePropertyValue().getPropertyName();
         return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_Label, propertyName);
     }
 
-    /**
-     * Finds the template of the property value container to which the given property value belongs.
-     * Returns <code>null</code> if the property value does not have a template value.
-     */
-    private IProductCmpt findTemplate() {
-        if (TemplatePropertyValueUtil.isDefinedTemplatePropertyValue(getInitialPropertyValue())) {
-            return (IProductCmpt)getInitialPropertyValue().getIpsObject();
-        }
-        IPropertyValue templateValue = getInitialPropertyValue().findTemplateProperty(getIpsProject());
-        if (templateValue == null) {
-            return null;
-        } else {
-            return templateValue.getPropertyValueContainer().getProductCmpt();
-        }
-    }
-
-    /** Returns the property value with which this PMO was initialized. */
-    private IPropertyValue getInitialPropertyValue() {
+    /** Returns the property which is defined in the template. */
+    private IPropertyValue getTemplatePropertyValue() {
         IPropertyValue propertyValue = (IPropertyValue)getIpsObjectPartContainer();
         return propertyValue;
     }
 
     /** Returns the template whose property usage is displayed. */
     public IProductCmpt getTemplate() {
-        return template;
+        return getTemplatePropertyValue().getPropertyValueContainer().getProductCmpt();
     }
 
     /** Returns the product components that inherit the value from the template. */
@@ -204,7 +185,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     /** Returns the product components that reference this PMO's template. */
     private List<IPropertyValue> getPropertyValuesBasedOnTemplate() {
         if (propertyValuesBasedOnTemplate == null) {
-            propertyValuesBasedOnTemplate = findPropertyValuesBasedOnTemplate(template);
+            propertyValuesBasedOnTemplate = findPropertyValuesBasedOnTemplate();
         }
         return propertyValuesBasedOnTemplate;
     }
@@ -218,13 +199,13 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
      * <li>property values that use templates inheriting their values from the given template</li>
      * </ul>
      */
-    private List<IPropertyValue> findPropertyValuesBasedOnTemplate(IProductCmpt template) {
-        Tree<IIpsSrcFile> srcFileHierarchy = getIpsProject().findTemplateHierarchy(template);
-        if (srcFileHierarchy.isEmpty()) {
+    private List<IPropertyValue> findPropertyValuesBasedOnTemplate() {
+        Tree<IIpsSrcFile> templateSrcFileHierarchy = getIpsProject().findTemplateHierarchy(getTemplate());
+        if (templateSrcFileHierarchy.isEmpty()) {
             return Collections.emptyList();
         }
-        Tree<IProductCmpt> productCmptHierarchy = srcFileHierarchy.transform(srcFileToProductCmpt());
-        return findPropertyValuesBasedOnTemplate(productCmptHierarchy.getRoot());
+        Tree<IProductCmpt> templateHierarchy = templateSrcFileHierarchy.transform(srcFileToProductCmpt());
+        return findPropertyValuesBasedOnTemplate(templateHierarchy.getRoot());
     }
 
     private List<IPropertyValue> findPropertyValuesBasedOnTemplate(Node<IProductCmpt> node) {
@@ -260,7 +241,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     /** Returns this PMO's property. */
     private String getPropertyName() {
-        return getInitialPropertyValue().getPropertyName();
+        return getTemplatePropertyValue().getPropertyName();
     }
 
     /**
@@ -348,14 +329,14 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     /** Returns a comparator to compare the value of property values. */
     private Comparator<Object> valueComparator() {
-        return getInitialPropertyValue().getPropertyValueType().getValueComparator();
+        return getTemplatePropertyValue().getPropertyValueType().getValueComparator();
     }
 
     /**
      * Returns a function to obtain the value of a property value
      */
     private Function<IPropertyValue, Object> valueFunction() {
-        return getInitialPropertyValue().getPropertyValueType().getValueGetter();
+        return getTemplatePropertyValue().getPropertyValueType().getValueGetter();
     }
 
     /**
@@ -374,7 +355,6 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     @Override
     protected void partHasChanged() {
-        this.template = findTemplate();
         // reset state to force update
         propertyValuesBasedOnTemplate = null;
         histogram = null;

@@ -84,7 +84,7 @@ import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
  * @see EditField
  */
 public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
-        Composite {
+Composite {
 
     private final P property;
 
@@ -296,7 +296,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 this.getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
 
@@ -403,18 +403,24 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 .getPropertyValueContainer().getProductCmpt().getName());
     }
 
+    /**
+     * Adds the action to open the template property usage view.
+     */
     private void addShowTemplatePropertyUsageAction(IMenuManager manager) {
-        if (TemplatePropertyValueUtil.isDefinedTemplatePropertyValue(getPropertyValue())) {
-            IAction showViewAction = new ShowTemplatePropertyUsageViewAction(getPropertyValue(),
-                    Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage);
-            manager.add(showViewAction);
+        String text = null;
+        IPropertyValue templatePropertyValue;
+        if (TemplatePropertyValueUtil.isTemplatePropertyValue(getPropertyValue())) {
+            text = Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage;
+            templatePropertyValue = getPropertyValue();
         } else {
-            final IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
-            if (templateValue != null) {
-                String text = getOpenTemplatePropertyUsageText(templateValue);
-                IAction showViewAction = new ShowTemplatePropertyUsageViewAction(templateValue, text);
-                manager.add(showViewAction);
+            templatePropertyValue = getPropertyValue().findTemplateProperty(getIpsProject());
+            if (templatePropertyValue == null) {
+                templatePropertyValue = TemplatePropertyValueUtil.findNextTemplatePropertyValue(getPropertyValue());
             }
+            text = getOpenTemplatePropertyUsageText(templatePropertyValue);
+        }
+        if (templatePropertyValue != null) {
+            manager.add(new ShowTemplatePropertyUsageViewAction(templatePropertyValue, text));
         }
     }
 

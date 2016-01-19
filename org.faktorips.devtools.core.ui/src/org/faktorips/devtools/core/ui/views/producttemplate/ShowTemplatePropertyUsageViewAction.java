@@ -14,6 +14,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
  * Action to show the {@link TemplatePropertyUsageView} for a property.
@@ -22,9 +23,15 @@ public class ShowTemplatePropertyUsageViewAction extends Action {
 
     private final IPropertyValue propertyValue;
 
-    public ShowTemplatePropertyUsageViewAction(IPropertyValue propertyValue, String text) {
-        super(text);
-        this.propertyValue = propertyValue;
+    /**
+     * Creates an action to show the {@link TemplatePropertyUsageView}
+     * 
+     * @param templatePropertyValue The property value which is the root of the template hierarchy
+     * @param text The caption of this action
+     */
+    public ShowTemplatePropertyUsageViewAction(IPropertyValue templatePropertyValue, String text) {
+        super(text, IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TemplateUsage.gif", true)); //$NON-NLS-1$
+        this.propertyValue = templatePropertyValue;
     }
 
     @Override
