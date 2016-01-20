@@ -512,23 +512,11 @@ public enum PropertyValueType {
         @Override
         public int compare(T o1, T o2) {
             if (o1 instanceof IValueSet && o2 instanceof IValueSet) {
-                IValueSet valueSet1 = (IValueSet)o1;
-                IValueSet valueSet2 = (IValueSet)o2;
-                if (valueSet1.equals(valueSet2)) {
-                    return 0;
-                }
-                boolean v1ContainsV2 = valueSet1.containsValueSet(valueSet2);
-                boolean v2ContainsV1 = valueSet2.containsValueSet(valueSet1);
-                if (v1ContainsV2 && v2ContainsV1) {
-                    return 0;
-                } else if (v1ContainsV2) {
-                    return 1;
-                } else {
-                    return -1;
-                }
+                return ((IValueSet)o1).compareTo((IValueSet)o2);
+            } else {
+                throw new IllegalArgumentException("This comparator could only compare two value sets, but got: " //$NON-NLS-1$
+                        + o1 + " and " + o2); //$NON-NLS-1$
             }
-            throw new IllegalArgumentException("This comparator could only compare two value sets, but got: " //$NON-NLS-1$
-                    + o1 + " and " + o2); //$NON-NLS-1$
         }
     }
 

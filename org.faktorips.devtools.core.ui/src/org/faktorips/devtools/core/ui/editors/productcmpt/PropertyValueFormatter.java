@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -20,6 +21,7 @@ import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.ui.inputformat.AnyValueSetFormat;
 
 /**
  * Formats the value of {@link IPropertyValue PropertyValues}. e.g. formats the value represented by
@@ -38,7 +40,8 @@ public class PropertyValueFormatter {
 
         @Override
         public String apply(IConfigElement configElement) {
-            return configElement != null ? configElement.getValueSet().toShortString() : StringUtils.EMPTY;
+            return configElement != null ? AnyValueSetFormat.newInstance(configElement).format(
+                    configElement.getValueSet()) : StringUtils.EMPTY;
         }
     };
 
@@ -46,7 +49,8 @@ public class PropertyValueFormatter {
 
         @Override
         public String apply(ITableContentUsage tableContentUsage) {
-            return tableContentUsage != null ? tableContentUsage.getTableContentName() : StringUtils.EMPTY;
+            return tableContentUsage != null ? getValueOrNullPresentation(tableContentUsage.getTableContentName())
+                    : StringUtils.EMPTY;
         }
     };
 
@@ -54,7 +58,8 @@ public class PropertyValueFormatter {
 
         @Override
         public String apply(IFormula formula) {
-            return formula != null ? StringUtils.abbreviateMiddle(formula.getExpression(), "[...]", 50) : StringUtils.EMPTY; //$NON-NLS-1$
+            return formula != null ? getValueOrNullPresentation(StringUtils.abbreviateMiddle(formula.getExpression(),
+                    "[...]", 50)) : StringUtils.EMPTY; //$NON-NLS-1$
         }
 
     };
@@ -98,6 +103,14 @@ public class PropertyValueFormatter {
         }
         throw new IllegalStateException(PropertyValueFormatter.class.getName()
                 + ": Unknown property value type " + propertyValue.getPropertyValueType()); //$NON-NLS-1$
+    }
+
+    private static String getValueOrNullPresentation(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
+        } else {
+            return value;
+        }
     }
 
 }

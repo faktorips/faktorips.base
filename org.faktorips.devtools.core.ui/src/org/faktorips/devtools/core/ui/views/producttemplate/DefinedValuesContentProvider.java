@@ -24,9 +24,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.util.Histogram;
 
@@ -54,8 +52,8 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
     @Override
     public Object[] getChildren(Object parentElement) {
-        if (parentElement instanceof ValueViewItem) {
-            ValueViewItem viewItem = (ValueViewItem)parentElement;
+        if (parentElement instanceof TemplateUsageViewItem) {
+            TemplateUsageViewItem viewItem = (TemplateUsageViewItem)parentElement;
             return viewItem.getChildren().toArray();
         } else {
             return new Object[0];
@@ -82,18 +80,18 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         // nothing to do
     }
 
-    private Function<Object, ValueViewItem> toViewItem() {
-        return new Function<Object, ValueViewItem>() {
+    private Function<Object, TemplateUsageViewItem> toViewItem() {
+        return new Function<Object, TemplateUsageViewItem>() {
 
             @Override
-            public ValueViewItem apply(Object value) {
+            public TemplateUsageViewItem apply(Object value) {
                 if (value == null) {
                     return null;
                 }
                 BigDecimal distributionPercent = new BigDecimal(getAbsoluteDistribution().get(value)).multiply(
                         new BigDecimal(100)).divide(new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
                 Set<IPropertyValue> children = getDefinedValuesHistorgram().getElements(value);
-                return new ValueViewItem(value, pmo.getTemplateValue(), distributionPercent, children);
+                return new TemplateUsageViewItem(value, pmo.getTemplateValue(), distributionPercent, children);
             }
         };
     }
@@ -108,7 +106,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
 
     /**
      * Helper method to get the selected property values from a selection that might contain
-     * {@link ValueViewItem} objects holding the property values.
+     * {@link TemplateUsageViewItem} objects holding the property values.
      */
     public static Collection<IPropertyValue> getSelectedPropertyValues(ISelection currentSelection) {
         TypedSelection<IPropertyValue> propValueSelection = TypedSelection.createAnyCount(IPropertyValue.class,
@@ -116,107 +114,14 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         if (propValueSelection.isValid()) {
             return propValueSelection.getElements();
         } else {
-            TypedSelection<ValueViewItem> viewItemSelection = TypedSelection.create(ValueViewItem.class,
-                    currentSelection);
+            TypedSelection<TemplateUsageViewItem> viewItemSelection = TypedSelection.create(
+                    TemplateUsageViewItem.class, currentSelection);
             if (viewItemSelection.isValid()) {
-                ValueViewItem element = viewItemSelection.getElement();
+                TemplateUsageViewItem element = viewItemSelection.getElement();
                 return element.getChildren();
             }
         }
         return Collections.emptyList();
-    }
-
-    static class ValueViewItem {
-
-        private final Object value;
-
-        private final boolean sameAsTemplateValue;
-
-        private final BigDecimal distributionPercent;
-
-        private final Collection<IPropertyValue> children;
-
-        public ValueViewItem(Object value, Object templateValue, BigDecimal distributionPercent,
-                Set<IPropertyValue> children) {
-            this.value = value;
-            this.sameAsTemplateValue = ObjectUtils.equals(value, templateValue);
-            this.distributionPercent = distributionPercent;
-            this.children = Collections.unmodifiableCollection(children);
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public BigDecimal getRelDistributionPercent() {
-            return distributionPercent;
-        }
-
-        public Collection<IPropertyValue> getChildren() {
-            return children;
-        }
-
-        public String getText() {
-            final String value = getFormattedValue();
-            final String distribution = getFormattedRelDistribution();
-            if (isSameValueAsTemplateValue()) {
-                return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, value, distribution);
-            } else {
-                return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, value, distribution);
-            }
-        }
-
-        public boolean isSameValueAsTemplateValue() {
-            return sameAsTemplateValue;
-        }
-
-        private String getFormattedValue() {
-            IPropertyValue pv = getFirstPropertyValue();
-            return PropertyValueFormatter.format(pv);
-        }
-
-        private IPropertyValue getFirstPropertyValue() {
-            /*
-             * There always is at least one value. Otherwise no item would show up in the
-             * distribution.
-             */
-            return children.iterator().next();
-        }
-
-        private String getFormattedRelDistribution() {
-            return getRelDistributionPercent().stripTrailingZeros().toPlainString();
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((value == null) ? 0 : value.hashCode());
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            ValueViewItem other = (ValueViewItem)obj;
-            if (value == null) {
-                if (other.value != null) {
-                    return false;
-                }
-            } else if (!value.equals(other.value)) {
-                return false;
-            }
-            return true;
-        }
-
     }
 
 }

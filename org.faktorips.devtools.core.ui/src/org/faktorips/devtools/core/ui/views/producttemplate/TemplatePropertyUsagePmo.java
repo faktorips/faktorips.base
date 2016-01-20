@@ -46,7 +46,7 @@ import org.faktorips.devtools.core.util.Tree.Node;
 public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     public static final String PROPERTY_INHERITED_VALUES_LABEL_TEXT = "inheritedValuesLabelText"; //$NON-NLS-1$
-    public static final String PROPERTY_DIFFERING_VALUES_LABEL_TEXT = "differingValuesLabelText"; //$NON-NLS-1$
+    public static final String PROPERTY_DEFINED_VALUES_LABEL_TEXT = "definedValuesLabelText"; //$NON-NLS-1$
 
     // lazily loaded
     private List<IPropertyValue> propertyValuesBasedOnTemplate;
@@ -101,15 +101,15 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         }
     }
 
-    public String getDifferingValuesLabelText() {
+    public String getDefinedValuesLabelText() {
         if (hasData()) {
-            return getDifferingLabelWithData();
+            return getDefinedLabelWithData();
         } else {
             return Messages.TemplatePropertyUsageView_DifferingValues_fallbackLabel;
         }
     }
 
-    private String getDifferingLabelWithData() {
+    private String getDefinedLabelWithData() {
         return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_label, getPropertyValueLabel());
     }
 
@@ -371,7 +371,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         propertyValuesBasedOnTemplate = null;
         histogram = null;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_INHERITED_VALUES_LABEL_TEXT, null, null));
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_DIFFERING_VALUES_LABEL_TEXT, null, null));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_DEFINED_VALUES_LABEL_TEXT, null, null));
     }
 
 }

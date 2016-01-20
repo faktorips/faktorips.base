@@ -137,7 +137,7 @@ public class TemplatePropertyUsageView {
 
     private void bind() {
         bindingContext.bindContent(leftLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_INHERITED_VALUES_LABEL_TEXT);
-        bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DIFFERING_VALUES_LABEL_TEXT);
+        bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DEFINED_VALUES_LABEL_TEXT);
         bindingContext.add(ViewerRefreshBinding.refresh(leftTreeViewer, usagePmo));
         leftTreeViewer.setInput(usagePmo);
         bindingContext.add(ViewerRefreshBinding.refreshAndExpand(rightTreeViewer, usagePmo));
@@ -260,8 +260,8 @@ public class TemplatePropertyUsageView {
                 } else {
                     return super.getText(propertyValueContainer);
                 }
-            } else if (element instanceof DefinedValuesContentProvider.ValueViewItem) {
-                DefinedValuesContentProvider.ValueViewItem viewItem = (DefinedValuesContentProvider.ValueViewItem)element;
+            } else if (element instanceof TemplateUsageViewItem) {
+                TemplateUsageViewItem viewItem = (TemplateUsageViewItem)element;
                 return viewItem.getText();
             }
             return super.getText(element);
@@ -278,8 +278,8 @@ public class TemplatePropertyUsageView {
 
         @Override
         public Color getForeground(Object element) {
-            if (element instanceof DefinedValuesContentProvider.ValueViewItem) {
-                DefinedValuesContentProvider.ValueViewItem viewItem = (DefinedValuesContentProvider.ValueViewItem)element;
+            if (element instanceof TemplateUsageViewItem) {
+                TemplateUsageViewItem viewItem = (TemplateUsageViewItem)element;
                 if (viewItem.isSameValueAsTemplateValue()) {
                     return BLUE;
                 }

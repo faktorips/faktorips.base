@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.GregorianCalendar;
@@ -26,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.junit.Before;
@@ -276,6 +279,45 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
 
         assertTrue(unrestrictedValueSet.containsValueSet(subSet));
         assertFalse(subSet.containsValueSet(unrestrictedValueSet));
+    }
+
+    @Test
+    public void testCompareTo_BothContainsNull() throws Exception {
+        IUnrestrictedValueSet u1 = createUnrestricted(true);
+        IUnrestrictedValueSet u2 = createUnrestricted(true);
+
+        assertThat(u1.compareTo(u2), is(0));
+        assertThat(u2.compareTo(u1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_BothNotContainsNull() throws Exception {
+        IUnrestrictedValueSet u1 = createUnrestricted(false);
+        IUnrestrictedValueSet u2 = createUnrestricted(false);
+
+        assertThat(u1.compareTo(u2), is(0));
+        assertThat(u2.compareTo(u1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_OneContainsNull() throws Exception {
+        IUnrestrictedValueSet u1 = createUnrestricted(true);
+        IUnrestrictedValueSet u2 = createUnrestricted(false);
+
+        assertThat(u1.compareTo(u2), is(-1));
+        assertThat(u2.compareTo(u1), is(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCompareTo_differentType() {
+        IEnumValueSet u1 = new EnumValueSet(attr, "enumVSId");
+        IUnrestrictedValueSet u2 = createUnrestricted(false);
+
+        u2.compareTo(u1);
+    }
+
+    private IUnrestrictedValueSet createUnrestricted(boolean containsNull) {
+        return new UnrestrictedValueSet(attr, "1", containsNull);
     }
 
 }

@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.ui.views.producttemplate.DefinedValuesContentProvider.ValueViewItem;
 import org.faktorips.devtools.core.util.Histogram;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,9 +81,9 @@ public class DefinedValuesContentProviderTest {
     public void testGetElements() {
         Object[] elements = definedValuesContentProvider.getElements(null);
         assertThat(elements.length, is(3));
-        ValueViewItem item1 = (ValueViewItem)elements[0];
-        ValueViewItem item2 = (ValueViewItem)elements[1];
-        ValueViewItem item3 = (ValueViewItem)elements[2];
+        TemplateUsageViewItem item1 = (TemplateUsageViewItem)elements[0];
+        TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
+        TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
 
         assertEquals(item1.getValue(), "A");
         assertEquals(item2.getValue(), "B");
@@ -95,9 +94,9 @@ public class DefinedValuesContentProviderTest {
     public void getChildren() {
         Object[] elements = definedValuesContentProvider.getElements(null);
         assertThat(elements.length, is(3));
-        ValueViewItem item1 = (ValueViewItem)elements[0];
-        ValueViewItem item2 = (ValueViewItem)elements[1];
-        ValueViewItem item3 = (ValueViewItem)elements[2];
+        TemplateUsageViewItem item1 = (TemplateUsageViewItem)elements[0];
+        TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
+        TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
 
         assertThat(item1.getChildren(), hasItems(value2, value4, value6));
         assertThat(item2.getChildren(), hasItems(value1, value3));

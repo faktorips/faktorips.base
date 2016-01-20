@@ -56,31 +56,6 @@ public class PropertyValueTypeTest {
     private IValidationRuleConfig ruleConfig;
 
     @Test
-    public void testGetValueComparator_valueSet_eq() throws Exception {
-        when(valueSet1.containsValueSet(valueSet2)).thenReturn(true);
-        when(valueSet2.containsValueSet(valueSet1)).thenReturn(true);
-
-        Comparator<Object> valueComparator = PropertyValueType.CONFIG_ELEMENT.getValueComparator();
-        assertThat(valueComparator.compare(valueSet1, valueSet2), is(0));
-    }
-
-    @Test
-    public void testGetValueComparator_valueSet_gt() throws Exception {
-        when(valueSet1.containsValueSet(valueSet2)).thenReturn(true);
-
-        Comparator<Object> valueComparator = PropertyValueType.CONFIG_ELEMENT.getValueComparator();
-        assertThat(valueComparator.compare(valueSet1, valueSet2), is(1));
-    }
-
-    @Test
-    public void testGetValueComparator_valueSet_lt() throws Exception {
-        when(valueSet2.containsValueSet(valueSet1)).thenReturn(true);
-
-        Comparator<Object> valueComparator = PropertyValueType.CONFIG_ELEMENT.getValueComparator();
-        assertThat(valueComparator.compare(valueSet1, valueSet2), is(-1));
-    }
-
-    @Test
     public void testGetValueComparator_other_eq() throws Exception {
         Comparator<Object> valueComparator = PropertyValueType.ATTRIBUTE_VALUE.getValueComparator();
         assertThat(valueComparator.compare("abc", "abc"), is(0));

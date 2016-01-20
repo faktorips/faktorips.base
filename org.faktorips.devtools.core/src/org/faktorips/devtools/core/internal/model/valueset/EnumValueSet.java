@@ -37,6 +37,7 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
+import org.faktorips.devtools.core.util.IntegerUtils;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.message.MessageList;
@@ -126,16 +127,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if (isNullValue(datatype, value)) {
-            return isContainsNull();
+        if (isNullValue(datatype, value) && isContainsNull()) {
+            return true;
         }
         if (isAbstract()) {
             return true;
         }
-        if (!datatype.isParsable(value)) {
-            return false;
-        }
-
         return isValueInEnum(value, datatype);
     }
 
@@ -180,7 +177,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (subset.isAbstract()) {
             return false;
         }
-        return containsAllValues(subset, contextProject);
+        return containsAllValues((IEnumValueSet)subset, contextProject);
     }
 
     private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype, IIpsProject contextProject) {
@@ -188,9 +185,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return ObjectUtils.equals(datatype, subDatatype);
     }
 
-    private boolean containsAllValues(IValueSet subset, IIpsProject contextProject) {
-        IEnumValueSet enumSubset = (IEnumValueSet)subset;
-        String[] subsetValues = enumSubset.getValues();
+    private boolean containsAllValues(IEnumValueSet subset, IIpsProject contextProject) {
+        String[] subsetValues = subset.getValues();
 
         for (String value : subsetValues) {
             try {
@@ -435,4 +431,47 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return valuesToIndexMap;
     }
 
+    @Override
+    public int compareTo(IValueSet o) {
+        if (o.isEnum()) {
+            IEnumValueSet otherEnum = (IEnumValueSet)o;
+            return compareValueSetValues(otherEnum);
+        } else {
+            throw new IllegalArgumentException("Cannot compare different kinds of value sets"); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Compare two enum value sets by comparing their values with each other one by one. Uses the
+     * value set's data type to parse values where possible, otherwise compares the raw values
+     * (strings).
+     */
+    protected int compareValueSetValues(IEnumValueSet otherEnum) {
+        int compareSize = IntegerUtils.compare(size(), otherEnum.size());
+        ValueDatatype datatype = findValueDatatype(getIpsProject());
+        ValueDatatype otherDatatype = otherEnum.findValueDatatype(getIpsProject());
+        if (compareSize != 0) {
+            return compareSize;
+        } else if (!datatype.equals(otherDatatype)) {
+            return datatype.compareTo(otherDatatype);
+        } else {
+            for (int i = 0; i < values.size(); i++) {
+                int valueCompare = compareValueAtIndex(otherEnum, datatype, i);
+                if (valueCompare != 0) {
+                    return valueCompare;
+                }
+            }
+            return 0;
+        }
+    }
+
+    private int compareValueAtIndex(IEnumValueSet otherEnum, ValueDatatype datatype, int i) {
+        String value = getValue(i);
+        String otherValue = otherEnum.getValue(i);
+        if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
+            return datatype.compare(value, otherValue);
+        } else {
+            return ObjectUtils.compare(value, otherValue);
+        }
+    }
 }
