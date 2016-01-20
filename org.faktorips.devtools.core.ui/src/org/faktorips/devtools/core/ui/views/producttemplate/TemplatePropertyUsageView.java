@@ -157,12 +157,26 @@ public class TemplatePropertyUsageView {
                 return toolTip;
             }
         };
-
         site.getActionBars().setGlobalActionHandler(ActionFactory.REFRESH.getId(), refreshAction);
         IWorkbenchAction retargetAction = ActionFactory.REFRESH.create(site.getWorkbenchWindow());
         retargetAction.setToolTipText(toolTip);
         retargetAction.setImageDescriptor(imageDescriptor);
         site.getActionBars().getToolBarManager().add(retargetAction);
+
+        // clear action
+        Action clearAction = new Action(Messages.TemplatePropertyUsageView_ClearActionTooltip, IpsUIPlugin
+                .getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
+            @Override
+            public void run() {
+                setPropertyValue(null);
+            }
+
+            @Override
+            public String getToolTipText() {
+                return Messages.TemplatePropertyUsageView_ClearActionTooltip;
+            }
+        };
+        site.getActionBars().getToolBarManager().add(clearAction);
     }
 
     private void refresh() {
