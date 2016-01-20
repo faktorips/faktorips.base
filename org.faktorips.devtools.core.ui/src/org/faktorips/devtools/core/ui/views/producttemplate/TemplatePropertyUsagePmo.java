@@ -19,8 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -32,7 +30,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -48,20 +45,12 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     public static final String PROPERTY_INHERITED_VALUES_LABEL_TEXT = "inheritedValuesLabelText"; //$NON-NLS-1$
     public static final String PROPERTY_DEFINED_VALUES_LABEL_TEXT = "definedValuesLabelText"; //$NON-NLS-1$
 
-    // lazily loaded
-    private List<IPropertyValue> propertyValuesBasedOnTemplate;
-
-    // lazily loaded
-    private Histogram<Object, IPropertyValue> histogram;
-
-    private SortedMap<Object, Integer> definedAbsoluteDistribution;
-
     public TemplatePropertyUsagePmo() {
         super();
     }
 
     public TemplatePropertyUsagePmo(IPropertyValue propertyValue) {
-        super();
+        this();
         setPropertyValue(propertyValue);
     }
 
@@ -69,7 +58,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         setIpsObjectPartContainer(propertyValue);
     }
 
-    private boolean hasData() {
+    protected boolean hasData() {
         return getTemplatePropertyValue() != null;
     }
 
@@ -132,7 +121,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     /** Returns the product components that inherit the value from the template. */
     public Collection<IPropertyValue> getInheritingPropertyValues() {
         if (hasData()) {
-            return filter(getPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.INHERITED));
+            return filter(findPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.INHERITED));
         } else {
             return Collections.emptyList();
         }
@@ -156,27 +145,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private Histogram<Object, IPropertyValue> getHistogramInternal() {
-        if (histogram == null) {
-            histogram = new Histogram<Object, IPropertyValue>(valueFunction(), valueComparator(),
-                    getDefiningPropertyValues());
-            definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-        }
-        return histogram;
-    }
-
-    public SortedMap<Object, Integer> getDefinedAbsoluteDistribution() {
-        if (hasData()) {
-            return getDefinedAbsoluteDistributionInternal();
-        } else {
-            return new TreeMap<Object, Integer>();
-        }
-    }
-
-    private SortedMap<Object, Integer> getDefinedAbsoluteDistributionInternal() {
-        if (histogram == null) {
-            getDefinedValuesHistogram();
-        }
-        return definedAbsoluteDistribution;
+        return new Histogram<Object, IPropertyValue>(valueFunction(), valueComparator(), getDefiningPropertyValues());
     }
 
     public int getCount() {
@@ -191,15 +160,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     /** Returns all product components that define a custom value. */
     /* private */protected Collection<IPropertyValue> getDefiningPropertyValues() {
-        return filter(getPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.DEFINED));
-    }
-
-    /** Returns the product components that reference this PMO's template. */
-    private List<IPropertyValue> getPropertyValuesBasedOnTemplate() {
-        if (propertyValuesBasedOnTemplate == null) {
-            propertyValuesBasedOnTemplate = findPropertyValuesBasedOnTemplate();
-        }
-        return propertyValuesBasedOnTemplate;
+        return filter(findPropertyValuesBasedOnTemplate(), propertyValueStatus(TemplateValueStatus.DEFINED));
     }
 
     /**
@@ -344,6 +305,11 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return getTemplatePropertyValue().getPropertyValueType().getValueComparator();
     }
 
+    @Override
+    protected boolean isAffected(ContentChangeEvent event) {
+        return false;
+    }
+
     /**
      * Returns a function to obtain the value of a property value
      */
@@ -351,25 +317,8 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return getTemplatePropertyValue().getPropertyValueType().getValueGetter();
     }
 
-    /**
-     * Returns <code>true</code> if the affected IPSSrcFile is a product component or product
-     * template.
-     * <p>
-     * Determining whether a change in some product component really affects one of the displayed
-     * property values would be more effort than simply recalculating everything. Thus this PMO
-     * reacts to every potential change.
-     */
-    @Override
-    protected boolean isAffected(ContentChangeEvent event) {
-        IpsObjectType ipsObjectType = event.getIpsSrcFile().getIpsObjectType();
-        return ipsObjectType == IpsObjectType.PRODUCT_CMPT || ipsObjectType == IpsObjectType.PRODUCT_TEMPLATE;
-    }
-
     @Override
     protected void partHasChanged() {
-        // reset state to force update
-        propertyValuesBasedOnTemplate = null;
-        histogram = null;
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_INHERITED_VALUES_LABEL_TEXT, null, null));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_DEFINED_VALUES_LABEL_TEXT, null, null));
     }

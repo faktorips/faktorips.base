@@ -10,6 +10,7 @@
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -56,6 +57,7 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
         checkForSave(getTemplatePropertyValue());
         getTemplatePropertyValue().getPropertyValueType().getValueSetter()
                 .accept(getTemplatePropertyValue(), getNewValue());
+        getTemplatePropertyValue().setTemplateValueStatus(TemplateValueStatus.DEFINED);
         monitor.worked(1);
         for (IPropertyValue definingPropertyValue : getDefiningPropertyValues()) {
             checkForSave(definingPropertyValue);
@@ -78,16 +80,17 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
     public static SwitchTemplatePropertyValueOperation create(Collection<? extends IPropertyValue> selectedPropertyValues) {
         PropertyValueType propertyValueType = null;
         IPropertyValue templatePropertyValue = null;
+        Comparator<Object> valueComparator = null;
         Object value = null;
         for (IPropertyValue propertyValue : selectedPropertyValues) {
             if (propertyValueType == null) {
                 propertyValueType = propertyValue.getPropertyValueType();
                 templatePropertyValue = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
                 value = propertyValueType.getValueGetter().apply(propertyValue);
+                valueComparator = propertyValueType.getValueComparator();
             } else {
-                if (!propertyValueType.getValueGetter().apply(propertyValue).equals(value)
-                        || !propertyValue.findTemplateProperty(propertyValue.getIpsProject()).equals(
-                                templatePropertyValue)) {
+                Object otherValue = propertyValueType.getValueGetter().apply(propertyValue);
+                if (!isMatchingPropertyValue(templatePropertyValue, valueComparator, value, propertyValue, otherValue)) {
                     return null;
                 }
             }
@@ -96,6 +99,15 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
         Collection<IPropertyValue> inheritingPropertyValues = templatePropertyUsagePmo.getInheritingPropertyValues();
         return new SwitchTemplatePropertyValueOperation(templatePropertyValue, value, inheritingPropertyValues,
                 selectedPropertyValues);
+    }
+
+    protected static boolean isMatchingPropertyValue(IPropertyValue templatePropertyValue,
+            Comparator<Object> valueComparator,
+            Object value,
+            IPropertyValue propertyValue,
+            Object otherValue) {
+        return valueComparator != null && (valueComparator.compare(value, otherValue) == 0)
+                && propertyValue.findTemplateProperty(propertyValue.getIpsProject()).equals(templatePropertyValue);
     }
 
     public IPropertyValue getTemplatePropertyValue() {

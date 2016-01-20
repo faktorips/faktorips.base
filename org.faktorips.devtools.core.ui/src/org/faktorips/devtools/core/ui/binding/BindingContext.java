@@ -34,6 +34,7 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -99,7 +100,7 @@ public class BindingContext {
      * listener for changes and focus losts. Instance of an inner class is used to avoid poluting
      * this class' interface.
      */
-    private final Listener listener = new Listener();
+    private final Listener listener;
 
     /** list of mappings between edit fields and properties of model objects. */
     private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
@@ -115,6 +116,17 @@ public class BindingContext {
     private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<ControlPropertyBinding>();
 
     private final Set<String> ignoredMessageCodes = new HashSet<String>(2);
+
+    public BindingContext() {
+        this.listener = new Listener();
+    }
+
+    /**
+     * Constructor for tests
+     */
+    protected BindingContext(Listener listener) {
+        this.listener = listener;
+    }
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
@@ -825,7 +837,8 @@ public class BindingContext {
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
-    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
+    protected class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener,
+            PropertyChangeListener {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
@@ -853,7 +866,8 @@ public class BindingContext {
         }
 
         @Override
-        public void contentsChanged(ContentChangeEvent event) {
+        public void contentsChanged(final ContentChangeEvent event) {
+            // No need of running in Display Thread because the IpsModel already handles it
             for (FieldPropertyMapping<?> mapping : mappings) {
                 IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
                 if (mappedPart != null) {
@@ -875,20 +889,27 @@ public class BindingContext {
         }
 
         @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            for (FieldPropertyMapping<?> mapping : mappings) {
-                if (mapping.getObject() == evt.getSource()) {
-                    try {
-                        mapping.setControlValue();
-                    } catch (Exception ex) {
-                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                    }
-                }
-            }
+        public void propertyChange(final PropertyChangeEvent evt) {
+            Display.getDefault().asyncExec(new Runnable() {
 
-            showValidationStatus(mappings);
-            applyControlBindings(evt.getPropertyName());
+                @Override
+                public void run() {
+                    for (FieldPropertyMapping<?> mapping : mappings) {
+                        if (mapping.getObject() == evt.getSource()) {
+                            try {
+                                mapping.setControlValue();
+                            } catch (Exception ex) {
+                                IpsPlugin.log(new IpsStatus(
+                                        "Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
+                            }
+                        }
+                    }
+
+                    showValidationStatus(mappings);
+                    applyControlBindings(evt.getPropertyName());
+                }
+            });
         }
     }
 

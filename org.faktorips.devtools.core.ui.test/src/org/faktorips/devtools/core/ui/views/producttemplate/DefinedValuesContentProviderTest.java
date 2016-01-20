@@ -60,8 +60,8 @@ public class DefinedValuesContentProviderTest {
         when(value6.getPropertyValue()).thenReturn("A");
         histogram = new Histogram<Object, IPropertyValue>(getValueFunction(), Lists.newArrayList(value1, value2,
                 value3, value4, value5, value6));
+        when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);
-        when(pmo.getDefinedAbsoluteDistribution()).thenReturn(histogram.getAbsoluteDistribution());
         when(pmo.getCount()).thenReturn(6);
 
         definedValuesContentProvider = new DefinedValuesContentProvider();

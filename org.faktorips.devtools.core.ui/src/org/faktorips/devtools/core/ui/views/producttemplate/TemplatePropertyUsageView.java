@@ -32,6 +32,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
+import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
@@ -41,7 +44,6 @@ import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
-import org.faktorips.devtools.core.ui.binding.ViewerRefreshBinding;
 import org.faktorips.devtools.core.ui.editors.SelectionProviderIntermediate;
 import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -67,6 +69,8 @@ public class TemplatePropertyUsageView {
 
     private Label rightLabel;
 
+    private IIpsSrcFilesChangeListener changeListener;
+
     /*
      * Eclipse 4 constructor. Requires additional libraries.
      */
@@ -86,6 +90,7 @@ public class TemplatePropertyUsageView {
      */
     public void setPropertyValue(IPropertyValue propertyValue) {
         usagePmo.setPropertyValue(propertyValue);
+        refresh();
     }
 
     private void createPartControl(Composite parent) {
@@ -138,10 +143,22 @@ public class TemplatePropertyUsageView {
     private void bind() {
         bindingContext.bindContent(leftLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_INHERITED_VALUES_LABEL_TEXT);
         bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DEFINED_VALUES_LABEL_TEXT);
-        bindingContext.add(ViewerRefreshBinding.refresh(leftTreeViewer, usagePmo));
         leftTreeViewer.setInput(usagePmo);
-        bindingContext.add(ViewerRefreshBinding.refreshAndExpand(rightTreeViewer, usagePmo));
         rightTreeViewer.setInput(usagePmo);
+        changeListener = new IIpsSrcFilesChangeListener() {
+
+            @Override
+            public void ipsSrcFilesChanged(IpsSrcFilesChangedEvent event) {
+                Display.getDefault().asyncExec(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        refresh();
+                    }
+                });
+            }
+        };
+        IpsPlugin.getDefault().getIpsModel().addIpsSrcFilesChangedListener(changeListener);
         bindingContext.updateUI();
     }
 
@@ -226,6 +243,7 @@ public class TemplatePropertyUsageView {
 
     // @PreDestroy
     public void dispose() {
+        IpsPlugin.getDefault().getIpsModel().removeIpsSrcFilesChangedListener(changeListener);
         usagePmo.dispose();
         bindingContext.dispose();
     }
