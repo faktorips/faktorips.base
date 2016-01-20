@@ -975,13 +975,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
             }
         };
 
-        Runnable runnableWithBusyIndicator = new Runnable() {
-            @Override
-            public void run() {
-                IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
-            }
-        };
-        BusyIndicator.showWhile(getDisplay(), runnableWithBusyIndicator);
+        IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
     }
 
     /**
@@ -2883,7 +2877,7 @@ public class TestCaseSection extends IpsSection implements IIpsTestRunListener {
                 }
             };
 
-            IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
         }
 
         /**

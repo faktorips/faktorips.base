@@ -162,7 +162,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
                             ignoreColumnHeader, messageList, startingPage.isImportIntoExisting());
                 }
             };
-            IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

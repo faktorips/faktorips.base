@@ -175,7 +175,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
                             messageList, startingPage.isImportIntoExisting());
                 }
             };
-            IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
 
             if (!messageList.isEmpty()) {
                 getShell().getDisplay().syncExec(

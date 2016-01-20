@@ -132,10 +132,10 @@ public class FixEnumContentWizard extends Wizard {
             String message = (numberNotAssignedColumns > 1) ? NLS.bind(
                     Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessagePlural,
                     numberNotAssignedColumns) : NLS.bind(
-                    Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular,
-                    numberNotAssignedColumns);
-            confirmed = MessageDialog.openConfirm(getShell(),
-                    Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle, message);
+                            Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular,
+                            numberNotAssignedColumns);
+                    confirmed = MessageDialog.openConfirm(getShell(),
+                            Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle, message);
         }
 
         if (confirmed) {
@@ -151,7 +151,7 @@ public class FixEnumContentWizard extends Wizard {
                     enumContent.fixAllEnumAttributeValues();
                 }
             };
-            IpsUIPlugin.getDefault().runWorkspaceModification(workspaceRunnable);
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
         }
 
         return confirmed;

@@ -118,7 +118,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
         }
 
         IWorkspaceRunnable runnable = new CreateNewTargetTestCase(targetIpsPackageFragment);
-        IpsUIPlugin.getDefault().runWorkspaceModification(runnable);
+        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(runnable, null);
 
         testCaseCopyDestinationPage.setNeedRecreateTarget(false);
     }
@@ -217,7 +217,7 @@ public class TestCaseCopyWizard extends ResizableWizard {
     }
 
     private void deleteUnselectedTestObjects() {
-        IpsUIPlugin.getDefault().runWorkspaceModification(new DeleteUnselectedTestObjects());
+        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new DeleteUnselectedTestObjects(), null);
     }
 
     /**
