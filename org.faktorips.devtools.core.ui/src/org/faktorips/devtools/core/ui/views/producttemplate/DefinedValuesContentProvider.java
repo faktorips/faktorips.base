@@ -22,10 +22,12 @@ import com.google.common.base.Function;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.util.Histogram;
 
 /**
@@ -104,7 +106,27 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         return pmo.getDefinedAbsoluteDistribution();
     }
 
-    public static class ValueViewItem {
+    /**
+     * Helper method to get the selected property values from a selection that might contain
+     * {@link ValueViewItem} objects holding the property values.
+     */
+    public static Collection<IPropertyValue> getSelectedPropertyValues(ISelection currentSelection) {
+        TypedSelection<IPropertyValue> propValueSelection = TypedSelection.createAnyCount(IPropertyValue.class,
+                currentSelection);
+        if (propValueSelection.isValid()) {
+            return propValueSelection.getElements();
+        } else {
+            TypedSelection<ValueViewItem> viewItemSelection = TypedSelection.create(ValueViewItem.class,
+                    currentSelection);
+            if (viewItemSelection.isValid()) {
+                ValueViewItem element = viewItemSelection.getElement();
+                return element.getChildren();
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    static class ValueViewItem {
 
         private final Object value;
 

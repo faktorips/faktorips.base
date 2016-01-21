@@ -18,6 +18,7 @@ public class Messages extends NLS {
     public static String SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentElements;
     public static String SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentValue;
     public static String SwitchTemplatePropertyValueHandler_warning_title;
+    public static String SetTemplateValueStatus_warning_title;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

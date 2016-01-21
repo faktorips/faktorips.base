@@ -10,15 +10,10 @@
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -33,14 +28,12 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
  * 
  * @author dirmeier
  */
-public class SwitchTemplatePropertyValueOperation implements IWorkspaceRunnable {
+public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueOperation {
 
     private final IPropertyValue templatePropertyValue;
     private final Object newValue;
     private final Collection<? extends IPropertyValue> inheritingPropertyValues;
     private final Collection<? extends IPropertyValue> definingPropertyValues;
-
-    private Set<IIpsSrcFile> filesToSave = new HashSet<IIpsSrcFile>();
 
     public SwitchTemplatePropertyValueOperation(IPropertyValue templatePropertyValue, Object newValue,
             Collection<? extends IPropertyValue> inheritingPropertyValues,
@@ -71,23 +64,6 @@ public class SwitchTemplatePropertyValueOperation implements IWorkspaceRunnable 
         }
         save(new SubProgressMonitor(monitor, 10));
         monitor.done();
-    }
-
-    private void checkForSave(IPropertyValue propertyValue) {
-        IIpsSrcFile ipsSrcFile = propertyValue.getIpsSrcFile();
-        if (!ipsSrcFile.isDirty()) {
-            filesToSave.add(ipsSrcFile);
-        }
-    }
-
-    private void save(IProgressMonitor monitor) {
-        for (IIpsSrcFile ipsSrcFile : filesToSave) {
-            try {
-                ipsSrcFile.save(true, new SubProgressMonitor(monitor, 1));
-            } catch (CoreException e) {
-                IpsPlugin.log(e);
-            }
-        }
     }
 
     /**

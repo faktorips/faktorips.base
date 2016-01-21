@@ -19,11 +19,20 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.producttemplate.DefinedValuesContentProvider;
-import org.faktorips.devtools.core.ui.views.producttemplate.SwitchTemplatePropertyValueOperation;
+import org.faktorips.devtools.core.ui.views.producttemplate.SetTemplateValueStatusOperation;
 
-public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
+/** A handler to change the template value status of property values. */
+public class SetTemplateValueStatusHandler extends AbstractHandler {
+
+    private final TemplateValueStatus status;
+
+    public SetTemplateValueStatusHandler(TemplateValueStatus status) {
+        super();
+        this.status = status;
+    }
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -31,24 +40,16 @@ public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
         Collection<IPropertyValue> elements = DefinedValuesContentProvider.getSelectedPropertyValues(currentSelection);
         if (elements.isEmpty()) {
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
-                    Messages.SwitchTemplatePropertyValueHandler_warning_title,
+                    Messages.SetTemplateValueStatus_warning_title,
                     Messages.SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentElements);
         } else {
-            switchTemplateValue(elements);
+            setTemplateValueStatus(elements);
         }
         return null;
     }
 
-    private void switchTemplateValue(Collection<IPropertyValue> elements) {
-        SwitchTemplatePropertyValueOperation switchPropertyValueOperation = SwitchTemplatePropertyValueOperation
-                .create(elements);
-        if (switchPropertyValueOperation != null) {
-            IpsUIPlugin.getDefault().runWorkspaceModification(switchPropertyValueOperation);
-        } else {
-            MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
-                    Messages.SwitchTemplatePropertyValueHandler_warning_title,
-                    Messages.SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentValue);
-        }
+    private void setTemplateValueStatus(Collection<IPropertyValue> elements) {
+        IpsUIPlugin.getDefault().runWorkspaceModification(new SetTemplateValueStatusOperation(elements, status));
     }
 
 }

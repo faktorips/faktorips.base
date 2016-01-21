@@ -26,6 +26,8 @@ public final class Messages extends NLS {
 
     public static String SwitchTemplatePropertyValueOperation_progress;
 
+    public static String SetTemplateValueStatusOperation_progress;
+
     public static String TemplatePropertyLabelPmo_DifferingValue_fallbackLabel;
 
     public static String TemplatePropertyLabelPmo_SameValue_fallbackLabel;

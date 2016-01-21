@@ -370,6 +370,20 @@
             id="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
             name="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name">
       </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SetInheritedTemplateValueStatusHandler"
+            description="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.description"
+            id="org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus"
+            name="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SetDefinedTemplateValueStatusHandler"
+            description="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.description"
+            id="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
+            name="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -2416,7 +2430,29 @@
       <extension
             point="org.eclipse.ui.menus">
       <menuContribution
-            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView?after=open">
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.leftTree?after=open">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="navigate"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
+               label="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.description">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.rightTree?after=open">
          <command
                commandId="org.faktorips.devtools.core.ui.openEditor"
                icon="icons/OpenIpsObject.gif"
@@ -2432,7 +2468,15 @@
          </separator>
          <command
                commandId="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
-               style="push">
+               label="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.description">
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus"
+               label="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.description">
          </command>
       </menuContribution>
       <menuContribution

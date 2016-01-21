@@ -49,6 +49,8 @@ import org.faktorips.devtools.core.ui.util.TypedSelection;
 public class TemplatePropertyUsageView {
 
     public static final String VIEW_ID = "org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"; //$NON-NLS-1$
+    public static final String RIGHT_TREE_MENU_ID = "org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.rightTree"; //$NON-NLS-1$
+    public static final String LEFT_TREE_MENU_ID = "org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.leftTree"; //$NON-NLS-1$
 
     private final BindingContext bindingContext = new BindingContext();
 
@@ -196,17 +198,17 @@ public class TemplatePropertyUsageView {
     }
 
     private void buildContextMenu() {
-        buildContextMenu(leftTreeViewer);
-        buildContextMenu(rightTreeViewer);
+        buildTreeContextMenu(LEFT_TREE_MENU_ID, leftTreeViewer);
+        buildTreeContextMenu(RIGHT_TREE_MENU_ID, rightTreeViewer);
     }
 
-    protected void buildContextMenu(TreeViewer treeViewer) {
+    private void buildTreeContextMenu(String menuId, TreeViewer treeViewer) {
         MenuManager menuManager = new MenuManager();
 
         menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
         IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
 
-        site.registerContextMenu(VIEW_ID, menuManager, treeViewer);
+        site.registerContextMenu(menuId, menuManager, treeViewer);
 
         MenuCleaner menuCleaner = new MenuCleaner();
         menuCleaner.setWhiteListMode(true);
