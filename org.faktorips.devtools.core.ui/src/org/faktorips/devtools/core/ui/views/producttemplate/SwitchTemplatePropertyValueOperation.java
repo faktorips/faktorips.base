@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import java.util.Collection;
 import java.util.Comparator;
 
+import com.google.common.collect.Iterables;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
@@ -70,14 +72,16 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
 
     /**
      * Check the list of property values if they all have the same value and are based on the same
-     * template. If the check passes this method returns a new
-     * {@link SwitchTemplatePropertyValueOperation} that could be performed. Otherwise it returns
-     * <code>null</code>.
+     * template. If the check passes this method returns <code>true</code> otherwise
+     * <code>false</code>
      * 
      * @param selectedPropertyValues A list of property values with the same value and template
-     * @return an operation that could be performed to switch the template.
+     * @return <code>true</code> if you could use this selection to perform this opertation
      */
-    public static SwitchTemplatePropertyValueOperation create(Collection<? extends IPropertyValue> selectedPropertyValues) {
+    public static boolean isValidSelection(Collection<? extends IPropertyValue> selectedPropertyValues) {
+        if (selectedPropertyValues.isEmpty()) {
+            return false;
+        }
         PropertyValueType propertyValueType = null;
         IPropertyValue templatePropertyValue = null;
         Comparator<Object> valueComparator = null;
@@ -86,19 +90,19 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
             if (propertyValueType == null) {
                 propertyValueType = propertyValue.getPropertyValueType();
                 templatePropertyValue = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
+                if (templatePropertyValue == null) {
+                    return false;
+                }
                 value = propertyValueType.getValueGetter().apply(propertyValue);
                 valueComparator = propertyValueType.getValueComparator();
             } else {
                 Object otherValue = propertyValueType.getValueGetter().apply(propertyValue);
                 if (!isMatchingPropertyValue(templatePropertyValue, valueComparator, value, propertyValue, otherValue)) {
-                    return null;
+                    return false;
                 }
             }
         }
-        TemplatePropertyUsagePmo templatePropertyUsagePmo = new TemplatePropertyUsagePmo(templatePropertyValue);
-        Collection<IPropertyValue> inheritingPropertyValues = templatePropertyUsagePmo.getInheritingPropertyValues();
-        return new SwitchTemplatePropertyValueOperation(templatePropertyValue, value, inheritingPropertyValues,
-                selectedPropertyValues);
+        return true;
     }
 
     protected static boolean isMatchingPropertyValue(IPropertyValue templatePropertyValue,
@@ -108,6 +112,29 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
             Object otherValue) {
         return valueComparator != null && (valueComparator.compare(value, otherValue) == 0)
                 && propertyValue.findTemplateProperty(propertyValue.getIpsProject()).equals(templatePropertyValue);
+    }
+
+    /**
+     * Check the list of property values if they all have the same value and are based on the same
+     * template. If the check passes this method returns a new
+     * {@link SwitchTemplatePropertyValueOperation} that could be performed. Otherwise it returns
+     * <code>null</code>.
+     * 
+     * @param selectedPropertyValues A list of property values with the same value and template
+     * @return an operation that could be performed to switch the template.
+     */
+    public static SwitchTemplatePropertyValueOperation create(Collection<? extends IPropertyValue> selectedPropertyValues) {
+        if (!isValidSelection(selectedPropertyValues)) {
+            throw new IllegalArgumentException("Illegal selection for switch template value opertation."); //$NON-NLS-1$
+        }
+        IPropertyValue templatePropertyValue = null;
+        IPropertyValue propertyValue = Iterables.get(selectedPropertyValues, 0);
+        PropertyValueType propertyValueType = propertyValue.getPropertyValueType();
+        templatePropertyValue = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
+        TemplatePropertyUsagePmo templatePropertyUsagePmo = new TemplatePropertyUsagePmo(templatePropertyValue);
+        Collection<IPropertyValue> inheritingPropertyValues = templatePropertyUsagePmo.getInheritingPropertyValues();
+        return new SwitchTemplatePropertyValueOperation(templatePropertyValue, propertyValueType.getValueGetter()
+                .apply(propertyValue), inheritingPropertyValues, selectedPropertyValues);
     }
 
     public IPropertyValue getTemplatePropertyValue() {

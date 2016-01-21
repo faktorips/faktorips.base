@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,6 +106,24 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         assertEquals(Arrays.asList(inhValue1, inhValue2),
                 new ArrayList<IPropertyValue>(operation.getInheritingPropertyValues()));
         assertEquals(VALUE1, operation.getNewValue());
+    }
+
+    @Test
+    public void testCreateSwitchTemplatePropertyValueOperation_MissingTemplate() throws Exception {
+        defProd1.setTemplate("Can't touch this");
+        defProd2.setTemplate("Oh-oh Oh Oh Oh-oh-oh");
+        List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
+
+        assertThat(SwitchTemplatePropertyValueOperation.isValidSelection(selected), is(false));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateSwitchTemplatePropertyValueOperation_MissingTemplate_ExceptionOnCreate() throws Exception {
+        defProd1.setTemplate("Can't touch this");
+        defProd2.setTemplate("Oh-oh Oh Oh Oh-oh-oh");
+        List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
+
+        SwitchTemplatePropertyValueOperation.create(selected);
     }
 
     @Test
