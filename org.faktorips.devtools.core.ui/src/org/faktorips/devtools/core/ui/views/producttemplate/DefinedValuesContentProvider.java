@@ -21,10 +21,10 @@ import java.util.SortedMap;
 import com.google.common.base.Function;
 
 import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -157,7 +157,13 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         }
 
         public String getText() {
-            return getFormattedValue() + getFormattedRelDistribution() + getSameValueSuffix();
+            final String value = getFormattedValue();
+            final String distribution = getFormattedRelDistribution();
+            if (isSameValueAsTemplateValue()) {
+                return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, value, distribution);
+            } else {
+                return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, value, distribution);
+            }
         }
 
         public boolean isSameValueAsTemplateValue() {
@@ -178,15 +184,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         }
 
         private String getFormattedRelDistribution() {
-            return " (" + getRelDistributionPercent().stripTrailingZeros().toPlainString() + "%)"; //$NON-NLS-1$ //$NON-NLS-2$
-        }
-
-        private String getSameValueSuffix() {
-            if (isSameValueAsTemplateValue()) {
-                return " - " + Messages.TemplatePropertyUsageView_SameValue_suffix; //$NON-NLS-1$
-            } else {
-                return StringUtils.EMPTY;
-            }
+            return getRelDistributionPercent().stripTrailingZeros().toPlainString();
         }
 
         @Override

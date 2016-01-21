@@ -29,6 +29,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 import org.eclipse.osgi.util.NLS;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -44,7 +45,7 @@ import org.faktorips.devtools.core.util.Tree.Node;
 
 public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
-    public static final String PROPERTY_IDENTICAL_VALUES_LABEL_TEXT = "identicalValuesLabelText"; //$NON-NLS-1$
+    public static final String PROPERTY_INHERITED_VALUES_LABEL_TEXT = "inheritedValuesLabelText"; //$NON-NLS-1$
     public static final String PROPERTY_DIFFERING_VALUES_LABEL_TEXT = "differingValuesLabelText"; //$NON-NLS-1$
 
     // lazily loaded
@@ -72,21 +73,21 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return getTemplatePropertyValue() != null;
     }
 
-    public String getIdenticalValuesLabelText() {
+    public String getInheritedValuesLabelText() {
         if (hasData()) {
-            return getIdenticalLabelWithData();
+            return getInheritedValuesLabelWithData();
         } else {
-            return Messages.TemplatePropertyLabelPmo_SameValue_fallbackLabel;
+            return Messages.TemplatePropertyUsageView_InheritedValue_fallbackLabel;
         }
     }
 
-    private String getIdenticalLabelWithData() {
-        String propertyName = getTemplatePropertyValue().getPropertyName();
+    private String getInheritedValuesLabelWithData() {
+        String propertyName = getPropertyValueLabel();
         String formattedValue = PropertyValueFormatter.format(getTemplatePropertyValue());
         int inheritedCount = getInheritingPropertyValues().size();
-        BigDecimal inheritedPercent = getInheritPercent(inheritedCount);
-        return NLS.bind(Messages.TemplatePropertyUsageView_SameValue_label, new Object[] { propertyName,
-                formattedValue, inheritedCount, inheritedPercent.stripTrailingZeros().toPlainString() });
+        String inheritedPercent = getInheritPercent(inheritedCount).stripTrailingZeros().toPlainString();
+        return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_label, new Object[] { propertyName,
+                formattedValue, inheritedCount, inheritedPercent });
     }
 
     private BigDecimal getInheritPercent(int inheritedCount) {
@@ -104,13 +105,17 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         if (hasData()) {
             return getDifferingLabelWithData();
         } else {
-            return Messages.TemplatePropertyLabelPmo_DifferingValue_fallbackLabel;
+            return Messages.TemplatePropertyUsageView_DifferingValues_fallbackLabel;
         }
     }
 
     private String getDifferingLabelWithData() {
-        String propertyName = getTemplatePropertyValue().getPropertyName();
-        return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_Label, propertyName);
+        return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_label, getPropertyValueLabel());
+    }
+
+    /** Returns the label for property value. */
+    private String getPropertyValueLabel() {
+        return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getTemplatePropertyValue());
     }
 
     /** Returns the property which is defined in the template. */
@@ -365,7 +370,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         // reset state to force update
         propertyValuesBasedOnTemplate = null;
         histogram = null;
-        notifyListeners(new PropertyChangeEvent(this, PROPERTY_IDENTICAL_VALUES_LABEL_TEXT, null, null));
+        notifyListeners(new PropertyChangeEvent(this, PROPERTY_INHERITED_VALUES_LABEL_TEXT, null, null));
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_DIFFERING_VALUES_LABEL_TEXT, null, null));
     }
 

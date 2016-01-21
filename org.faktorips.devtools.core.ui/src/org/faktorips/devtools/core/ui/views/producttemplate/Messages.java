@@ -28,17 +28,20 @@ public final class Messages extends NLS {
 
     public static String SetTemplateValueStatusOperation_progress;
 
-    public static String TemplatePropertyLabelPmo_DifferingValue_fallbackLabel;
-
-    public static String TemplatePropertyLabelPmo_SameValue_fallbackLabel;
-
     public static String TemplatePropertyUsageView_ClearActionTooltip;
 
-    public static String TemplatePropertyUsageView_DifferingValues_Label;
+    public static String TemplatePropertyUsageView_DifferingValues_label;
 
-    public static String TemplatePropertyUsageView_SameValue_label;
+    public static String TemplatePropertyUsageView_DifferingValues_fallbackLabel;
+
+    public static String TemplatePropertyUsageView_DifferingValues_valueLabel;
+
+    public static String TemplatePropertyUsageView_DifferingValues_sameValueLabel;
+
+    public static String TemplatePropertyUsageView_InheritedValue_label;
+
+    public static String TemplatePropertyUsageView_InheritedValue_fallbackLabel;
 
     public static String TemplatePropertyUsageView_toolTipRefreshContents;
 
-    public static String TemplatePropertyUsageView_SameValue_suffix;
 }

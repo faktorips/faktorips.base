@@ -136,7 +136,7 @@ public class TemplatePropertyUsageView {
     }
 
     private void bind() {
-        bindingContext.bindContent(leftLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_IDENTICAL_VALUES_LABEL_TEXT);
+        bindingContext.bindContent(leftLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_INHERITED_VALUES_LABEL_TEXT);
         bindingContext.bindContent(rightLabel, usagePmo, TemplatePropertyUsagePmo.PROPERTY_DIFFERING_VALUES_LABEL_TEXT);
         bindingContext.add(ViewerRefreshBinding.refresh(leftTreeViewer, usagePmo));
         leftTreeViewer.setInput(usagePmo);
