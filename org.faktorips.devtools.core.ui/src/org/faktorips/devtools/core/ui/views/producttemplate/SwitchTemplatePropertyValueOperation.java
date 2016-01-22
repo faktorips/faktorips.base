@@ -71,12 +71,11 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
     }
 
     /**
-     * Check the list of property values if they all have the same value and are based on the same
-     * template. If the check passes this method returns <code>true</code> otherwise
-     * <code>false</code>
+     * Checks whether all property values have the same value and are based on the same template. If
+     * the check passes returns <code>true</code> otherwise <code>false</code>
      * 
      * @param selectedPropertyValues A list of property values with the same value and template
-     * @return <code>true</code> if you could use this selection to perform this opertation
+     * @return <code>true</code> if you can use this selection to perform this operation
      */
     public static boolean isValidSelection(Collection<? extends IPropertyValue> selectedPropertyValues) {
         if (selectedPropertyValues.isEmpty()) {
@@ -115,13 +114,12 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
     }
 
     /**
-     * Check the list of property values if they all have the same value and are based on the same
-     * template. If the check passes this method returns a new
-     * {@link SwitchTemplatePropertyValueOperation} that could be performed. Otherwise it returns
-     * <code>null</code>.
+     * Checks whether all property values have the same value and are based on the same template. If
+     * the check passes this method returns a new {@link SwitchTemplatePropertyValueOperation} that
+     * can be executed, otherwise returns <code>null</code>.
      * 
      * @param selectedPropertyValues A list of property values with the same value and template
-     * @return an operation that could be performed to switch the template.
+     * @return an operation that can be executed to switch template values.
      */
     public static SwitchTemplatePropertyValueOperation create(Collection<? extends IPropertyValue> selectedPropertyValues) {
         if (!isValidSelection(selectedPropertyValues)) {

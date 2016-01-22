@@ -127,6 +127,8 @@ public class TypedSelection<T> {
                 T adapted = (T)((IAdaptable)element).getAdapter(type);
                 if (adapted != null) {
                     elements.add(adapted);
+                } else {
+                    return false;
                 }
             } else {
                 return false;

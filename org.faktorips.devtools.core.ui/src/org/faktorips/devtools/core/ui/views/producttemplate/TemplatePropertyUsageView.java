@@ -13,6 +13,8 @@ import com.google.common.base.Optional;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -220,10 +222,16 @@ public class TemplatePropertyUsageView {
     }
 
     private void buildTreeContextMenu(String menuId, TreeViewer treeViewer) {
-        MenuManager menuManager = new MenuManager();
+        final MenuManager menuManager = new MenuManager();
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener() {
 
-        menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
-        IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                menuManager.add(new GroupMarker("open")); //$NON-NLS-1$
+                IpsMenuId.GROUP_NAVIGATE.addSeparator(menuManager);
+            }
+        });
 
         site.registerContextMenu(menuId, menuManager, treeViewer);
 

@@ -408,4 +408,19 @@ public class TypedSelectionTest {
                 selection);
         assertThat(typedSelection.getElement(), is(prodCmpt));
     }
+
+    /**
+     * Checks whether typed selection tries to adapt the selected element to the specified type
+     * using {@link IWorkbenchAdapter}.
+     */
+    @Test
+    public void testAdaptation_withInvalidAdaptable() {
+        IIpsSrcFile ipsSrcFile = mock(IIpsSrcFile.class, withSettings().extraInterfaces(IAdaptable.class));
+
+        StructuredSelection selection = new StructuredSelection(Lists.newArrayList(ipsSrcFile));
+        TypedSelection<IProductCmpt> typedSelection = TypedSelection.<IProductCmpt> create(IProductCmpt.class,
+                selection);
+        assertThat(typedSelection.isValid(), is(false));
+    }
+
 }
