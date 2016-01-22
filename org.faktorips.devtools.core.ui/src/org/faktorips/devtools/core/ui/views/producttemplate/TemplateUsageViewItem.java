@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
@@ -29,10 +28,10 @@ public class TemplateUsageViewItem {
 
     private final Collection<IPropertyValue> children;
 
-    public TemplateUsageViewItem(Object value, Object templateValue, BigDecimal distributionPercent,
+    public TemplateUsageViewItem(Object value, boolean sameAsTemplateValue, BigDecimal distributionPercent,
             Set<IPropertyValue> children) {
         this.value = value;
-        this.sameAsTemplateValue = ObjectUtils.equals(value, templateValue);
+        this.sameAsTemplateValue = sameAsTemplateValue;
         this.distributionPercent = distributionPercent;
         this.children = Collections.unmodifiableCollection(children);
     }
@@ -53,9 +52,11 @@ public class TemplateUsageViewItem {
         final String formattedValue = getFormattedValue();
         final String distribution = getFormattedRelDistribution();
         if (isSameValueAsTemplateValue()) {
-            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, formattedValue, distribution);
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, formattedValue,
+                    distribution);
         } else {
-            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, formattedValue, distribution);
+            return NLS
+                    .bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, formattedValue, distribution);
         }
     }
 

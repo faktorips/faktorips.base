@@ -14,6 +14,7 @@ import static com.google.common.collect.Collections2.transform;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.SortedMap;
 
@@ -87,6 +88,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         final SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
         final int count = pmo.getCount();
         final Object templateValue = pmo.getTemplateValue();
+        final Comparator<Object> comparator = pmo.getValueComparator();
 
         return new Function<Object, TemplateUsageViewItem>() {
 
@@ -95,10 +97,11 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 if (value == null) {
                     return null;
                 }
+                boolean sameAsTemplateValue = comparator.compare(value, templateValue) == 0;
                 BigDecimal distributionPercent = new BigDecimal(definedAbsoluteDistribution.get(value)).multiply(
                         new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
                 Set<IPropertyValue> children = histogram.getElements(value);
-                return new TemplateUsageViewItem(value, templateValue, distributionPercent, children);
+                return new TemplateUsageViewItem(value, sameAsTemplateValue, distributionPercent, children);
             }
         };
     }

@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.util.Histogram;
 import org.junit.Before;
 import org.junit.Test;
@@ -63,6 +64,7 @@ public class DefinedValuesContentProviderTest {
         when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);
         when(pmo.getCount()).thenReturn(6);
+        when(pmo.getValueComparator()).thenReturn(PropertyValueType.FORMULA.getValueComparator());
 
         definedValuesContentProvider = new DefinedValuesContentProvider();
         definedValuesContentProvider.inputChanged(viewer, null, pmo);

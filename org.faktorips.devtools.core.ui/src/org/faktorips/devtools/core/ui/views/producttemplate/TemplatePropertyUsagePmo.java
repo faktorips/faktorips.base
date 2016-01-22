@@ -145,7 +145,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     private Histogram<Object, IPropertyValue> getHistogramInternal() {
-        return new Histogram<Object, IPropertyValue>(valueFunction(), valueComparator(), getDefiningPropertyValues());
+        return new Histogram<Object, IPropertyValue>(valueFunction(), getValueComparator(), getDefiningPropertyValues());
     }
 
     public int getCount() {
@@ -301,7 +301,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     /** Returns a comparator to compare the value of property values. */
-    private Comparator<Object> valueComparator() {
+    public Comparator<Object> getValueComparator() {
         return getTemplatePropertyValue().getPropertyValueType().getValueComparator();
     }
 
