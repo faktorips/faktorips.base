@@ -341,7 +341,7 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
                 return compareDifferentRanges(otherRangeValueSet);
             }
         } else {
-            throw new IllegalArgumentException("Cannot compare different kind of value set"); //$NON-NLS-1$
+            return compareDifferentValueSets(o);
         }
 
     }

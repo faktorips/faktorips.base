@@ -437,7 +437,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
             IEnumValueSet otherEnum = (IEnumValueSet)o;
             return compareValueSetValues(otherEnum);
         } else {
-            throw new IllegalArgumentException("Cannot compare different kinds of value sets"); //$NON-NLS-1$
+            return compareDifferentValueSets(o);
         }
     }
 

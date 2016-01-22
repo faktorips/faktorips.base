@@ -28,7 +28,6 @@ import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
-import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.junit.Before;
@@ -306,14 +305,6 @@ public class UnrestrictedValueSetTest extends AbstractIpsPluginTest {
 
         assertThat(u1.compareTo(u2), is(-1));
         assertThat(u2.compareTo(u1), is(1));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testCompareTo_differentType() {
-        IEnumValueSet u1 = new EnumValueSet(attr, "enumVSId");
-        IUnrestrictedValueSet u2 = createUnrestricted(false);
-
-        u2.compareTo(u1);
     }
 
     private IUnrestrictedValueSet createUnrestricted(boolean containsNull) {

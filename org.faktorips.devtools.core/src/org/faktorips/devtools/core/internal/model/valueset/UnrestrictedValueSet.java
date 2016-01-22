@@ -185,7 +185,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
                 return 1;
             }
         } else {
-            throw new IllegalArgumentException("Cannot compare different kind of value set"); //$NON-NLS-1$
+            return compareDifferentValueSets(o);
         }
     }
 
