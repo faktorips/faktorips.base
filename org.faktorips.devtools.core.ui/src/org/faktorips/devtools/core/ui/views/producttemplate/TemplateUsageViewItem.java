@@ -66,7 +66,7 @@ public class TemplateUsageViewItem {
 
     private String getFormattedValue() {
         IPropertyValue pv = getFirstPropertyValue();
-        return PropertyValueFormatter.format(pv);
+        return PropertyValueFormatter.shortedFormat(pv);
     }
 
     private IPropertyValue getFirstPropertyValue() {

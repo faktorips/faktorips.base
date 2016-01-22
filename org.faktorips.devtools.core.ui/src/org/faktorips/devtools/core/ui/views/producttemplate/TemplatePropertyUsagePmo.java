@@ -72,7 +72,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     private String getInheritedValuesLabelWithData() {
         String propertyName = getPropertyValueLabel();
-        String formattedValue = PropertyValueFormatter.format(getTemplatePropertyValue());
+        String formattedValue = PropertyValueFormatter.shortedFormat(getTemplatePropertyValue());
         int inheritedCount = getInheritingPropertyValues().size();
         String inheritedPercent = getInheritPercent(inheritedCount).stripTrailingZeros().toPlainString();
         return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_label, new Object[] { propertyName,

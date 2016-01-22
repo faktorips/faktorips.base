@@ -58,8 +58,7 @@ public class PropertyValueFormatter {
 
         @Override
         public String apply(IFormula formula) {
-            return formula != null ? getValueOrNullPresentation(StringUtils.abbreviateMiddle(formula.getExpression(),
-                    "[...]", 50)) : StringUtils.EMPTY; //$NON-NLS-1$
+            return formula != null ? getValueOrNullPresentation(formula.getExpression()) : StringUtils.EMPTY;
         }
 
     };
@@ -103,6 +102,10 @@ public class PropertyValueFormatter {
         }
         throw new IllegalStateException(PropertyValueFormatter.class.getName()
                 + ": Unknown property value type " + propertyValue.getPropertyValueType()); //$NON-NLS-1$
+    }
+
+    public static String shortedFormat(IPropertyValue propertyValue) {
+        return StringUtils.abbreviateMiddle(format(propertyValue), "[...]", 45); //$NON-NLS-1$
     }
 
     private static String getValueOrNullPresentation(String value) {
