@@ -43,4 +43,16 @@ public class SetTemplateValueStatusOperation extends AbstractPropertyValueOperat
         monitor.done();
     }
 
+    public static boolean isValid(Collection<IPropertyValue> selectedPropertyValues) {
+        if (selectedPropertyValues.isEmpty()) {
+            return false;
+        }
+        for (IPropertyValue propertyValue : selectedPropertyValues) {
+            if (propertyValue.findTemplateProperty(propertyValue.getIpsProject()) == null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

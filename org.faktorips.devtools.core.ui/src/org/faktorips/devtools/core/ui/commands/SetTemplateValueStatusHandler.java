@@ -14,9 +14,11 @@ import java.util.Collection;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.expressions.IEvaluationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISources;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -28,6 +30,7 @@ import org.faktorips.devtools.core.ui.views.producttemplate.SetTemplateValueStat
 public class SetTemplateValueStatusHandler extends AbstractHandler {
 
     private final TemplateValueStatus status;
+    private boolean enabled;
 
     public SetTemplateValueStatusHandler(TemplateValueStatus status) {
         super();
@@ -35,15 +38,38 @@ public class SetTemplateValueStatusHandler extends AbstractHandler {
     }
 
     @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public void setEnabled(Object evaluationContext) {
+        if (evaluationContext instanceof IEvaluationContext) {
+            IEvaluationContext context = (IEvaluationContext)evaluationContext;
+            Object variable = context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
+            if (variable instanceof ISelection) {
+                ISelection selection = (ISelection)variable;
+                Collection<IPropertyValue> selectedPropertyValues = DefinedValuesContentProvider
+                        .getSelectedPropertyValues(selection);
+                enabled = SetTemplateValueStatusOperation.isValid(selectedPropertyValues);
+            } else {
+                enabled = false;
+            }
+        } else {
+            enabled = false;
+        }
+    }
+
+    @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
         Collection<IPropertyValue> elements = DefinedValuesContentProvider.getSelectedPropertyValues(currentSelection);
-        if (elements.isEmpty()) {
+        if (SetTemplateValueStatusOperation.isValid(elements)) {
+            setTemplateValueStatus(elements);
+        } else {
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
                     Messages.SetTemplateValueStatus_warning_title,
                     Messages.SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentElements);
-        } else {
-            setTemplateValueStatus(elements);
         }
         return null;
     }

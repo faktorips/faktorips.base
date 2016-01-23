@@ -11,7 +11,9 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -175,6 +177,40 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         assertEquals(false, inhProd1.getIpsSrcFile().isDirty());
         assertEquals(false, inhProd2.getIpsSrcFile().isDirty());
         assertEquals(false, template.getIpsSrcFile().isDirty());
+    }
+
+    @Test
+    public void testRun_TemplateUnrestricted() throws Exception {
+        templatePropertyValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        inhValue1.setFormulaSignature("not needed in this test");
+        inhValue2.setFormulaSignature("not needed in this test");
+        List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
+        SwitchTemplatePropertyValueOperation operation = SwitchTemplatePropertyValueOperation.create(selected);
+
+        operation.run(new NullProgressMonitor());
+
+        assertEquals(TemplateValueStatus.DEFINED, templatePropertyValue.getTemplateValueStatus());
+        assertEquals(VALUE1, templatePropertyValue.getExpression());
+        assertEquals(VALUE1, defValue1.getExpression());
+        assertEquals(VALUE1, defValue2.getExpression());
+        assertEquals(TemplateValueStatus.INHERITED, defValue1.getTemplateValueStatus());
+        assertEquals(TemplateValueStatus.INHERITED, defValue2.getTemplateValueStatus());
+    }
+
+    @Test
+    public void testIsValidSelection_TemplateUnrestricted() throws Exception {
+        templatePropertyValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
+
+        assertTrue(SwitchTemplatePropertyValueOperation.isValidSelection(selected));
+    }
+
+    @Test
+    public void testIsValidSelection_TemplateNotFound() throws Exception {
+        templatePropertyValue.setFormulaSignature("invalid");
+        List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
+
+        assertFalse(SwitchTemplatePropertyValueOperation.isValidSelection(selected));
     }
 
 }

@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
 
 /**
  * An operation to switch a template value. The operation is triggered with a list of
@@ -57,9 +58,9 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
             monitor.worked(1);
         }
         checkForSave(getTemplatePropertyValue());
-        getTemplatePropertyValue().getPropertyValueType().getValueSetter()
-                .accept(getTemplatePropertyValue(), getNewValue());
         getTemplatePropertyValue().setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        getTemplatePropertyValue().getPropertyValueType().getValueSetter()
+        .accept(getTemplatePropertyValue(), getNewValue());
         monitor.worked(1);
         for (IPropertyValue definingPropertyValue : getDefiningPropertyValues()) {
             checkForSave(definingPropertyValue);
@@ -88,7 +89,7 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
         for (IPropertyValue propertyValue : selectedPropertyValues) {
             if (propertyValueType == null) {
                 propertyValueType = propertyValue.getPropertyValueType();
-                templatePropertyValue = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
+                templatePropertyValue = getTemplatePropertyValue(propertyValue);
                 if (templatePropertyValue == null) {
                     return false;
                 }
@@ -104,13 +105,25 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
         return true;
     }
 
-    protected static boolean isMatchingPropertyValue(IPropertyValue templatePropertyValue,
+    private static boolean isMatchingPropertyValue(IPropertyValue templatePropertyValue,
             Comparator<Object> valueComparator,
             Object value,
             IPropertyValue propertyValue,
             Object otherValue) {
-        return valueComparator != null && (valueComparator.compare(value, otherValue) == 0)
-                && propertyValue.findTemplateProperty(propertyValue.getIpsProject()).equals(templatePropertyValue);
+        if (valueComparator == null || valueComparator.compare(value, otherValue) != 0) {
+            return false;
+        }
+        IPropertyValue foundTemplateProperty = getTemplatePropertyValue(propertyValue);
+        return templatePropertyValue.equals(foundTemplateProperty);
+    }
+
+    private static IPropertyValue getTemplatePropertyValue(IPropertyValue propertyValue) {
+        IPropertyValue foundTemplateProperty = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
+        if (foundTemplateProperty == null) {
+            foundTemplateProperty = TemplatePropertyValueUtil.findNextTemplatePropertyValue(propertyValue);
+        }
+        return foundTemplateProperty;
+
     }
 
     /**
@@ -128,7 +141,7 @@ public class SwitchTemplatePropertyValueOperation extends AbstractPropertyValueO
         IPropertyValue templatePropertyValue = null;
         IPropertyValue propertyValue = Iterables.get(selectedPropertyValues, 0);
         PropertyValueType propertyValueType = propertyValue.getPropertyValueType();
-        templatePropertyValue = propertyValue.findTemplateProperty(propertyValue.getIpsProject());
+        templatePropertyValue = getTemplatePropertyValue(propertyValue);
         TemplatePropertyUsagePmo templatePropertyUsagePmo = new TemplatePropertyUsagePmo(templatePropertyValue);
         Collection<IPropertyValue> inheritingPropertyValues = templatePropertyUsagePmo.getInheritingPropertyValues();
         return new SwitchTemplatePropertyValueOperation(templatePropertyValue, propertyValueType.getValueGetter()
