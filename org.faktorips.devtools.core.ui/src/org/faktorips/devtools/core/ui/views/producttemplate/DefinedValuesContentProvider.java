@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 import static com.google.common.collect.Collections2.transform;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,7 +61,10 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof TemplateUsageViewItem) {
             TemplateUsageViewItem viewItem = (TemplateUsageViewItem)parentElement;
-            return viewItem.getChildren().toArray();
+            Collection<IPropertyValue> propertyValues = viewItem.getChildren();
+            IPropertyValue[] children = propertyValues.toArray(new IPropertyValue[propertyValues.size()]);
+            Arrays.sort(children, new PropertyValueProductCmptNameComparator());
+            return children;
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
         }

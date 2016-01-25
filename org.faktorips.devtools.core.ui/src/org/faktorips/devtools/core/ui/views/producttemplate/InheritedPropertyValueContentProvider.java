@@ -9,8 +9,13 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 
 /**
  * Provides the content for the left tree of the {@link TemplatePropertyUsageView}.
@@ -25,9 +30,12 @@ public class InheritedPropertyValueContentProvider implements ITreeContentProvid
     @Override
     public Object[] getElements(Object inputElement) {
         if (pmo != null) {
-            return pmo.getInheritingPropertyValues().toArray();
+            Collection<IPropertyValue> propertyValues = pmo.getInheritingPropertyValues();
+            IPropertyValue[] elements = propertyValues.toArray(new IPropertyValue[propertyValues.size()]);
+            Arrays.sort(elements, new PropertyValueProductCmptNameComparator());
+            return elements;
         } else {
-            return new Object[0];
+            return ArrayUtils.EMPTY_OBJECT_ARRAY;
         }
     }
 
