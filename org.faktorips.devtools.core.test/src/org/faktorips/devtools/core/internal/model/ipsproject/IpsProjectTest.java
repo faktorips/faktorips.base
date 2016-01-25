@@ -2439,8 +2439,9 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
 
     @Test
     public void testFindTemplateHierarchy_IndirectReference() throws CoreException {
-        IProductCmpt t1 = newProductTemplate(ipsProject, "Template-1");
-        IProductCmpt t2 = newProductTemplate(ipsProject, "Template-2");
+        makeIpsProjectDependOnBaseProject();
+        IProductCmpt t1 = newProductTemplate(baseProject, "Template-1");
+        IProductCmpt t2 = newProductTemplate(baseProject, "Template-2");
         IProductCmpt t3 = newProductTemplate(ipsProject, "Template-3");
         IProductCmpt p = newProductCmpt(ipsProject, "Product");
 
@@ -2448,7 +2449,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         t3.setTemplate(t2.getQualifiedName());
         p.setTemplate(t3.getQualifiedName());
 
-        Tree<IIpsSrcFile> hierarchy = ipsProject.findTemplateHierarchy(t1);
+        Tree<IIpsSrcFile> hierarchy = baseProject.findTemplateHierarchy(t1);
         Node<IIpsSrcFile> root = hierarchy.getRoot();
         assertThat(root.getElement(), is(t1.getIpsSrcFile()));
         assertThat(root.getChildren().size(), is(1));

@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import static org.faktorips.devtools.core.model.ipsobject.IpsObjectType.PRODUCT_CMPT;
 import static org.faktorips.devtools.core.model.ipsobject.IpsObjectType.PRODUCT_TEMPLATE;
 
-import java.util.List;
 import java.util.Set;
 
 import com.google.common.collect.LinkedHashMultimap;
@@ -48,21 +47,24 @@ public class TemplateHierarchyFinder {
             return Tree.emptyTree();
         }
 
-        Tree<IIpsSrcFile> tree = new Tree<IIpsSrcFile>(template.getIpsSrcFile());
-        List<IIpsSrcFile> srcFiles = ipsProject.findAllIpsSrcFiles(PRODUCT_CMPT, PRODUCT_TEMPLATE);
-        Multimap<String, IIpsSrcFile> templateMap = createTemplateMap(srcFiles);
+        Multimap<String, IIpsSrcFile> templateMap = LinkedHashMultimap.create();
+        for (IIpsProject p : ipsProject.findReferencingProjectLeavesOrSelf()) {
+            templateMap.putAll(createTemplateMap(p));
+        }
 
+        Tree<IIpsSrcFile> tree = new Tree<IIpsSrcFile>(template.getIpsSrcFile());
         addTemplateReferences(tree.getRoot(), template.getQualifiedName(), templateMap);
         return tree;
     }
 
     /**
-     * Create a new multimap where the keys are the qualified names of templates and the values are
-     * the source files that reference that template.
+     * Creates a new template map for the given project. The keys in the template map are the
+     * qualified names of templates and the values are the source files found in the given project
+     * that reference that template.
      */
-    private static Multimap<String, IIpsSrcFile> createTemplateMap(List<IIpsSrcFile> srcFiles) {
+    private static Multimap<String, IIpsSrcFile> createTemplateMap(IIpsProject ipsProject) {
         Multimap<String, IIpsSrcFile> templateMap = LinkedHashMultimap.create();
-        for (IIpsSrcFile srcFile : srcFiles) {
+        for (IIpsSrcFile srcFile : ipsProject.findAllIpsSrcFiles(PRODUCT_CMPT, PRODUCT_TEMPLATE)) {
             String template = srcFile.getPropertyValue(IProductCmpt.PROPERTY_TEMPLATE);
             if (StringUtils.isNotBlank(template)) {
                 templateMap.put(template, srcFile);
@@ -72,8 +74,8 @@ public class TemplateHierarchyFinder {
     }
 
     /**
-     * Adds child nodes to the given parent node for all source files in the multimap that reference
-     * the given template directly or indirectly.
+     * Adds child nodes to the given parent node for all source files in the given template map that
+     * reference the given template directly or indirectly.
      */
     private static void addTemplateReferences(Node<IIpsSrcFile> parent,
             String templateQName,
@@ -90,8 +92,8 @@ public class TemplateHierarchyFinder {
     }
 
     /**
-     * Adds nodes to the given node for all source files in the multimap that directly reference the
-     * given template and returns these nodes.
+     * Adds child nodes to the given parent node for all source files in the given template map that
+     * directly reference the given template. Returns the added child nodes.
      */
     private static Set<Node<IIpsSrcFile>> addDirectTemplateReferences(Node<IIpsSrcFile> parent,
             String templateQName,
