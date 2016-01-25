@@ -11,17 +11,18 @@ package org.faktorips.devtools.core.model.productcmpt.template;
 
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedPropertyContainer;
 
-public abstract class TemplateHierarchyVisitor extends HierarchyVisitor<IPropertyValueContainer> {
+public abstract class TemplateHierarchyVisitor<T extends ITemplatedPropertyContainer> extends HierarchyVisitor<T> {
 
     public TemplateHierarchyVisitor(IIpsProject ipsProject) {
         super(ipsProject);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected IPropertyValueContainer findSupertype(IPropertyValueContainer currentType, IIpsProject ipsProject) {
-        return currentType.findTemplate(ipsProject);
+    protected T findSupertype(ITemplatedPropertyContainer currentType, IIpsProject ipsProject) {
+        return (T)currentType.findTemplate(ipsProject);
     }
 
 }

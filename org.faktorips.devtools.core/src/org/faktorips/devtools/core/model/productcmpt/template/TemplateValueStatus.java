@@ -12,7 +12,7 @@ package org.faktorips.devtools.core.model.productcmpt.template;
 import java.util.Arrays;
 import java.util.List;
 
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
 
 /**
  * Defines the status of a property value with regard to the template hierarchy it is used in.
@@ -25,7 +25,7 @@ public enum TemplateValueStatus {
      */
     INHERITED("inherited") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(IPropertyValue value) {
+        public boolean isAllowedStatus(ITemplatedProperty value) {
             return value.findTemplateProperty(value.getIpsProject()) != null;
         }
     },
@@ -36,7 +36,7 @@ public enum TemplateValueStatus {
      */
     DEFINED("defined") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(IPropertyValue value) {
+        public boolean isAllowedStatus(ITemplatedProperty value) {
             return true;
         }
     },
@@ -48,8 +48,8 @@ public enum TemplateValueStatus {
      */
     UNDEFINED("undefined") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(IPropertyValue value) {
-            return value.getPropertyValueContainer().isProductTemplate();
+        public boolean isAllowedStatus(ITemplatedProperty value) {
+            return value.getTemplatedPropertyContainer().isProductTemplate();
         }
     };
 
@@ -74,7 +74,7 @@ public enum TemplateValueStatus {
         return xmlValue;
     }
 
-    public TemplateValueStatus getNextStatus(IPropertyValue value) {
+    public TemplateValueStatus getNextStatus(ITemplatedProperty value) {
         int index = (VALUES.indexOf(this) + 1) % VALUES.size();
         TemplateValueStatus nextStatus = VALUES.get(index);
         if (nextStatus.isAllowedStatus(value)) {
@@ -85,6 +85,6 @@ public enum TemplateValueStatus {
     }
 
     /** Returns whether or not the status is allowed for the given {@code IPropertyValue}. */
-    public abstract boolean isAllowedStatus(IPropertyValue value);
+    public abstract boolean isAllowedStatus(ITemplatedProperty value);
 
 }

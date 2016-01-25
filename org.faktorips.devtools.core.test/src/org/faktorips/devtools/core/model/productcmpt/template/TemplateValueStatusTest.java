@@ -18,7 +18,6 @@ import static org.mockito.Mockito.when;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -105,13 +104,13 @@ public class TemplateValueStatusTest {
     private void makeTemplate(IAttributeValue value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(container.isProductTemplate()).thenReturn(true);
-        when(value.getPropertyValueContainer()).thenReturn(container);
+        when(value.getTemplatedPropertyContainer()).thenReturn(container);
     }
 
     private void makeProductCmpt(IAttributeValue value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(container.isProductTemplate()).thenReturn(false);
-        when(value.getPropertyValueContainer()).thenReturn(container);
+        when(value.getTemplatedPropertyContainer()).thenReturn(container);
     }
 
     private TemplateValueStatus nextStatus(TemplateValueStatus start) {

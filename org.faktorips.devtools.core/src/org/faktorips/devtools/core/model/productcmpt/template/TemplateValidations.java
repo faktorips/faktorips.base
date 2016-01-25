@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedPropertyContainer;
 import org.faktorips.devtools.core.model.productcmpt.Messages;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.util.message.Message;
@@ -121,14 +121,14 @@ public class TemplateValidations {
     }
 
     /** Visitor that detects a cycle in a template's template hierarchy. */
-    private static class TemplateCycleDetectionVisitor extends TemplateHierarchyVisitor {
+    private static class TemplateCycleDetectionVisitor extends TemplateHierarchyVisitor<ITemplatedPropertyContainer> {
 
         public TemplateCycleDetectionVisitor(IIpsProject ipsProject) {
             super(ipsProject);
         }
 
         @Override
-        protected boolean visit(IPropertyValueContainer currentType) {
+        protected boolean visit(ITemplatedPropertyContainer currentType) {
             return true;
         }
 

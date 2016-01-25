@@ -79,6 +79,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
+    public IPropertyValueContainer getTemplatedPropertyContainer() {
+        return getPropertyValueContainer();
+    }
+
+    @Override
     public String getPropertyName() {
         return structureUsage;
     }

@@ -16,6 +16,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.productcmpt.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -26,12 +27,12 @@ import org.w3c.dom.Element;
  */
 public class TemplateValueSettings {
 
-    private final IPropertyValue parent;
+    private final ITemplatedProperty parent;
     private TemplateValueStatus status = TemplateValueStatus.DEFINED;
 
-    public TemplateValueSettings(IPropertyValue parent) {
+    public TemplateValueSettings(ITemplatedProperty parent) {
         this.parent = parent;
-        IPropertyValue templateValue = parent.findTemplateProperty(parent.getIpsProject());
+        ITemplatedProperty templateValue = parent.findTemplateProperty(parent.getIpsProject());
         if (templateValue != null) {
             status = TemplateValueStatus.INHERITED;
         }

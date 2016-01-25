@@ -75,6 +75,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
+    public IPropertyValueContainer getTemplatedPropertyContainer() {
+        return getPropertyValueContainer();
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }

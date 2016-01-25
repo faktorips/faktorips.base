@@ -100,7 +100,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(3);
         Element element = link.toXml(newDocument());
 
-        IProductCmptLink copy = new ProductCmptLink();
+        IProductCmptLink copy = new ProductCmptLink(productCmpt, "asd");
         copy.initFromXml(element);
         assertEquals(link.getId(), copy.getId());
         assertEquals("newTarget", copy.getTarget());

@@ -63,6 +63,11 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
+    public IPropertyValueContainer getTemplatedPropertyContainer() {
+        return getPropertyValueContainer();
+    }
+
+    @Override
     protected Element createElement(Document doc) {
         return doc.createElement(TAG_NAME);
     }

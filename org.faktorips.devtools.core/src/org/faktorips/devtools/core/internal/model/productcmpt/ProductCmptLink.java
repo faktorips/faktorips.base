@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -27,6 +30,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -50,12 +54,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     private int maxCardinality = 1;
 
+    private final TemplateValueSettings templateValueSettings;
+
     public ProductCmptLink(IProductCmptLinkContainer parent, String id) {
         super(parent, id);
-    }
-
-    public ProductCmptLink() {
-        super();
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -75,6 +78,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     @Override
     public IProductCmptLinkContainer getProductCmptLinkContainer() {
         return (IProductCmptLinkContainer)getParent();
+    }
+
+    @Override
+    public IProductCmptLinkContainer getTemplatedPropertyContainer() {
+        return getProductCmptLinkContainer();
     }
 
     @Override
@@ -205,7 +213,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         associationLabel,
                         getName(),
                         IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                                .getGenerationConceptNameSingular(true) });
+                        .getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -280,7 +288,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                     || defaultCardinality == Integer.MAX_VALUE) {
                 String text = NLS.bind(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange, Integer
                         .toString(minCardinality),
-                        maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : Integer.toString(maxCardinality) //$NON-NLS-1$ 
+                        maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : Integer.toString(maxCardinality) //$NON-NLS-1$
                         );
                 list.add(new Message(MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE, text, Message.ERROR, this,
                         PROPERTY_DEFAULT_CARDINALITY));
@@ -425,6 +433,36 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             return false;
         }
         return actualTargetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // TODO FIPS-4649 copy from template;
+        }
+        TemplateValueStatus oldValue = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public IProductCmptLink findTemplateProperty(IIpsProject ipsProject) {
+        return TemplatePropertyFinder.findTemplateLink(this);
+    }
+
+    @Override
+    public boolean isConfiguringTemplateValueStatus() {
+        return getProductCmptLinkContainer().isProductTemplate() || getProductCmptLinkContainer().isUsingTemplate();
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {

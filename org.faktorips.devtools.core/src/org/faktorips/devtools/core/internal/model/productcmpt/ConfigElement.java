@@ -83,6 +83,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return (IPropertyValueContainer)getParent();
     }
 
+    @Override
+    public IPropertyValueContainer getTemplatedPropertyContainer() {
+        return getPropertyValueContainer();
+    }
+
     /**
      * Returns the product component generation this configuration element belongs to.
      * 
