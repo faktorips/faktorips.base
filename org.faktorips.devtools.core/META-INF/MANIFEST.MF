@@ -100,7 +100,8 @@ Export-Package: org.faktorips.devtools.core,
  org.faktorips.devtools.tableconversion
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.apache.commons.collections;version="3.2.1",
+Import-Package: edu.umd.cs.findbugs.annotations;version="2.0.0",
+ org.apache.commons.collections;version="3.2.1",
  org.apache.commons.collections.comparators;version="3.2.1",
  org.apache.commons.collections.map;version="3.2.1",
  org.apache.commons.lang;version="[2.6.0,2.6.0]"

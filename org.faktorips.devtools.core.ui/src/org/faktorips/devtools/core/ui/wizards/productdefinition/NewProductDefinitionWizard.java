@@ -120,6 +120,7 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
     @Override
     public boolean performFinish() {
         try {
+            setNeedsProgressMonitor(true);
             getContainer().run(false, true, getOperation());
         } catch (InvocationTargetException e) {
             IpsPlugin.logAndShowErrorDialog(e);

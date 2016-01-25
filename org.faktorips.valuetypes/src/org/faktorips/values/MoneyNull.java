@@ -18,8 +18,9 @@ package org.faktorips.values;
  */
 public class MoneyNull extends Money implements NullObject {
 
-    private static final long serialVersionUID = -3546233368167459967L;
     static final String STRING_REPRESENTATION = "MoneyNull";
+    
+    private static final long serialVersionUID = -3546233368167459967L;
 
     MoneyNull() {
         super(0, null);
@@ -145,20 +146,20 @@ public class MoneyNull extends Money implements NullObject {
         return false;
     }
 
+    /**
+     * Returns 0 if compared to Money.NULL. Returns -1 when compared to any other money value
+     * (behavior analogous to ObjectUtils#compare()). Throws a {@link NullPointerException} if
+     * compared to <code>null</code>.
+     */
     @Override
     public int compareTo(Money other) {
-        throw new NullPointerException();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
+        if (other == null) {
+            throw new NullPointerException();
+        } else if (other.isNull()) {
+            return 0;
+        } else {
+            return -1;
         }
-        if (!(o instanceof Money)) {
-            return false;
-        }
-        return ((Money)o).isNull();
     }
 
     @Override

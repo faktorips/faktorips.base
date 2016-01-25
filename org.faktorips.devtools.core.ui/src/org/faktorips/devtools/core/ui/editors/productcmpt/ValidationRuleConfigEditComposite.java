@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see IValidationRuleConfig
  */
 public class ValidationRuleConfigEditComposite extends
-EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
+        EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -78,20 +78,7 @@ EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     @Override
     protected Function<IValidationRuleConfig, String> getToolTipFormatter() {
-        return new Function<IValidationRuleConfig, String>() {
-
-            @Override
-            public String apply(IValidationRuleConfig ruleConfig) {
-                if (ruleConfig == null) {
-                    return StringUtils.EMPTY;
-                }
-                if (ruleConfig.isActive()) {
-                    return Messages.ValidationRuleConfigEditComposite_activated;
-                } else {
-                    return Messages.ValidationRuleConfigEditComposite_deactivated;
-                }
-            }
-        };
+        return PropertyValueFormatter.VALIDATION_RULE_CONFIG;
     }
 
 }

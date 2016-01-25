@@ -28,6 +28,10 @@ public class ViewerRefreshBinding extends ControlPropertyBinding {
         return new ViewerRefreshBinding(viewer, object, null, false);
     }
 
+    public static ViewerRefreshBinding refreshAndExpand(Viewer viewer, Object object) {
+        return new ViewerRefreshBinding(viewer, object, null, true);
+    }
+
     public static ViewerRefreshBinding refresh(Viewer viewer, Object object, String propertyName) {
         return new ViewerRefreshBinding(viewer, object, propertyName, false);
     }

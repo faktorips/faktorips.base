@@ -722,7 +722,7 @@ public abstract class IpsObjectEditor extends FormEditor implements ContentsChan
                         toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                     }
                 };
-                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(fix, null);
+                IpsUIPlugin.getDefault().runWorkspaceModification(fix);
                 refreshIncludingStructuralChanges();
             } else {
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);

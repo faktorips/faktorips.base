@@ -14,9 +14,11 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "org.faktorips.devtools.core.ui.commands.messages"; //$NON-NLS-1$
-    public static String InferTemplateHandler_label_menueItem;
-    public static String InferTemplateHandler_description_menueItem;
     public static String IpsDeleteHandler_deleteResources;
+    public static String SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentElements;
+    public static String SwitchTemplatePropertyValueHandler_warning_illegalSelection_differentValue;
+    public static String SwitchTemplatePropertyValueHandler_warning_title;
+    public static String SetTemplateValueStatus_warning_title;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

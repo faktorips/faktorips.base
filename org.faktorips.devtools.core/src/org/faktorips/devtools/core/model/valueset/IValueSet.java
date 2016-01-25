@@ -30,7 +30,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
  * @author Thorsten Guenther
  * @author Jan Ortmann
  */
-public interface IValueSet extends IIpsObjectPart {
+public interface IValueSet extends IIpsObjectPart, Comparable<IValueSet> {
 
     public static final String PROPERTY_CONTAINS_NULL = "containsNull"; //$NON-NLS-1$
 

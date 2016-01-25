@@ -15,7 +15,6 @@ import java.util.Locale;
 
 import com.google.common.base.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -157,13 +156,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     @Override
     protected Function<IAttributeValue, String> getToolTipFormatter() {
-        return new Function<IAttributeValue, String>() {
-
-            @Override
-            public String apply(IAttributeValue attributeValue) {
-                return attributeValue != null ? AttributeValueFormatter.format(attributeValue) : StringUtils.EMPTY;
-            }
-        };
+        return PropertyValueFormatter.ATTRIBUTE_VALUE;
     }
 
     public static IValue<?> getSingleValue(IAttributeValue attributeValue) {

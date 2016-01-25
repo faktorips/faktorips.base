@@ -132,30 +132,26 @@ public class FixEnumContentWizard extends Wizard {
             String message = (numberNotAssignedColumns > 1) ? NLS.bind(
                     Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessagePlural,
                     numberNotAssignedColumns) : NLS.bind(
-                    Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular,
-                    numberNotAssignedColumns);
-            confirmed = MessageDialog.openConfirm(getShell(),
-                    Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle, message);
+                            Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationMessageSingular,
+                            numberNotAssignedColumns);
+                    confirmed = MessageDialog.openConfirm(getShell(),
+                            Messages.FixEnumContentWizard_assignEnumAttributesDeleteColumnsConfirmationTitle, message);
         }
 
         if (confirmed) {
-            try {
-                IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
-                    @Override
-                    public void run(IProgressMonitor monitor) throws CoreException {
-                        deleteObsoleteEnumAttributeValues();
-                        createNewEnumAttributeValues();
-                        if (enumContent.getEnumValuesCount() > 0) {
-                            moveAttributeValues();
-                        }
-                        enumContent.setEnumType(newEnumType.getQualifiedName());
-                        enumContent.fixAllEnumAttributeValues();
+            IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
+                @Override
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    deleteObsoleteEnumAttributeValues();
+                    createNewEnumAttributeValues();
+                    if (enumContent.getEnumValuesCount() > 0) {
+                        moveAttributeValues();
                     }
-                };
-                enumContent.getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+                    enumContent.setEnumType(newEnumType.getQualifiedName());
+                    enumContent.fixAllEnumAttributeValues();
+                }
+            };
+            IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(workspaceRunnable, null);
         }
 
         return confirmed;

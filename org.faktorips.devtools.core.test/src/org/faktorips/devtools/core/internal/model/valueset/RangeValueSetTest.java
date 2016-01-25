@@ -10,9 +10,11 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -624,6 +626,133 @@ public class RangeValueSetTest extends AbstractIpsPluginTest {
         subRange.setLowerBound("12");
         subRange.setUpperBound("20");
         assertTrue(range.containsValueSet(subRange));
+    }
+
+    @Test
+    public void testCompareTo_Eq() throws Exception {
+        IRangeValueSet range1 = createRange("0", "1", "1");
+        IRangeValueSet range2 = createRange("0", "1", "1");
+
+        assertThat(range1.compareTo(range2), is(0));
+        assertThat(range2.compareTo(range1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_datatypeCompare() throws Exception {
+        IRangeValueSet range1 = createRange("0", "01", "1");
+        IRangeValueSet range2 = createRange("00", "1", "1");
+
+        assertThat(range1.compareTo(range2), is(0));
+        assertThat(range2.compareTo(range1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_LowNull() throws Exception {
+        IRangeValueSet range1 = createRange(null, "1", null);
+        IRangeValueSet range2 = createRange(null, "1", null);
+
+        assertThat(range1.compareTo(range2), is(0));
+        assertThat(range2.compareTo(range1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_UpNull() throws Exception {
+        IRangeValueSet range1 = createRange("1", null, null);
+        IRangeValueSet range2 = createRange("1", null, null);
+
+        assertThat(range1.compareTo(range2), is(0));
+        assertThat(range2.compareTo(range1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_AllNull() throws Exception {
+        IRangeValueSet range1 = createRange(null, null, null);
+        IRangeValueSet range2 = createRange(null, null, null);
+
+        assertThat(range1.compareTo(range2), is(0));
+        assertThat(range2.compareTo(range1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Included() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", null);
+        IRangeValueSet range2 = createRange("20", "80", null);
+
+        assertThat(range1.compareTo(range2), is(1));
+        assertThat(range2.compareTo(range1), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_LowerEq() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", null);
+        IRangeValueSet range2 = createRange("1", "80", null);
+
+        assertThat(range1.compareTo(range2), is(1));
+        assertThat(range2.compareTo(range1), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_LowerEq_DiffStep() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", "1");
+        IRangeValueSet range2 = createRange("1", "80", "2");
+
+        // less-than matcher not available in current hamcrest version
+        assertTrue(range1.compareTo(range2) < 0);
+        assertTrue(range2.compareTo(range1) > 0);
+    }
+
+    @Test
+    public void testCompareTo_UpperEq() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", null);
+        IRangeValueSet range2 = createRange("2", "100", null);
+
+        assertThat(range1.compareTo(range2), is(1));
+        assertThat(range2.compareTo(range1), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_DifferentStep() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", "1");
+        IRangeValueSet range2 = createRange("1", "100", "2");
+
+        assertThat(range1.compareTo(range2), is(-1));
+        assertThat(range2.compareTo(range1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_Intercept() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", "1");
+        IRangeValueSet range2 = createRange("2", "110", "1");
+
+        assertThat(range1.compareTo(range2), is(-1));
+        assertThat(range2.compareTo(range1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_Intercept_DiffStep() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", "1");
+        IRangeValueSet range2 = createRange("2", "110", "2");
+
+        assertThat(range1.compareTo(range2), is(-1));
+        assertThat(range2.compareTo(range1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_Distinct() throws Exception {
+        IRangeValueSet range1 = createRange("1", "100", "1");
+        IRangeValueSet range2 = createRange("101", "110", "1");
+
+        // less-than matcher not available in current hamcrest version
+        assertTrue(range1.compareTo(range2) < 0);
+        assertTrue(range2.compareTo(range1) > 0);
+    }
+
+    private IRangeValueSet createRange(String lower, String upper, String step) {
+        RangeValueSet range = new RangeValueSet(intEl, "1234");
+        range.setLowerBound(lower);
+        range.setUpperBound(upper);
+        range.setStep(step);
+        return range;
     }
 
 }

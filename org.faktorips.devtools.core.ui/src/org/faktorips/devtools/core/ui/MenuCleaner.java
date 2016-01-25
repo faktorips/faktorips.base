@@ -43,6 +43,8 @@ import org.faktorips.util.ArgumentCheck;
  */
 public final class MenuCleaner implements IMenuListener {
 
+    public static final String WHITE_LIST_IPS_PREFIX = "org.faktorips"; //$NON-NLS-1$
+
     /** All items matching at least one of the prefixes contained in this set will be filtered out. */
     private final Set<String> filteredPrefixes = new HashSet<String>();
 

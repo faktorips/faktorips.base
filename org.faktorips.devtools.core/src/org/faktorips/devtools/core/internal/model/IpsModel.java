@@ -62,6 +62,7 @@ import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
@@ -305,7 +306,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     @Override
-    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException {
+    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) {
 
         runAndQueueChangeEvents(action, getWorkspace().getRoot(), IWorkspace.AVOID_UPDATE, monitor);
     }
@@ -314,10 +315,15 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     public void runAndQueueChangeEvents(IWorkspaceRunnable action,
             ISchedulingRule rule,
             int flags,
-            IProgressMonitor monitor) throws CoreException {
+            IProgressMonitor monitor) {
 
         if (changeListeners.isEmpty() && modificationStatusChangeListeners.isEmpty()) {
-            getWorkspace().run(action, rule, flags, monitor);
+            try {
+                getWorkspace().run(action, rule, flags, monitor);
+            } catch (CoreException e) {
+                IpsPlugin.log(e);
+                throw new CoreRuntimeException(e);
+            }
             return;
         }
         List<ContentsChangeListener> listeners = new ArrayList<ContentsChangeListener>(changeListeners);
@@ -341,7 +347,7 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         addModifcationStatusChangeListener(batchModifiyListener);
 
         try {
-            getWorkspace().run(action, rule, flags, monitor);
+            runSafe(action, rule, flags, monitor, modifiedSrcFiles);
         } finally {
             // restore change listeners
             removeChangeListener(batchListener);
@@ -360,6 +366,24 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
 
+    }
+
+    protected void runSafe(IWorkspaceRunnable action,
+            ISchedulingRule rule,
+            int flags,
+            IProgressMonitor monitor,
+            final Set<IIpsSrcFile> modifiedSrcFiles) {
+        try {
+            getWorkspace().run(action, rule, flags, monitor);
+        } catch (CoreException e) {
+            for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+                ipsSrcFile.discardChanges();
+            }
+        } catch (CoreRuntimeException e) {
+            for (IIpsSrcFile ipsSrcFile : modifiedSrcFiles) {
+                ipsSrcFile.discardChanges();
+            }
+        }
     }
 
     @Override

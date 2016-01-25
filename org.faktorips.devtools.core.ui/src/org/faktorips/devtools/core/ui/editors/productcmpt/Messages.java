@@ -30,6 +30,10 @@ public class Messages extends NLS {
 
     public static String AttributeValueEditComposite_MenuItem_openTemplate;
 
+    public static String AttributeValueEditComposite_MenuItem_showPropertyUsage;
+
+    public static String AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage;
+
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
     public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;

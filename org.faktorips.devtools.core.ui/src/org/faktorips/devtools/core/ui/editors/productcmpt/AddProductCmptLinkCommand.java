@@ -20,7 +20,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
@@ -43,6 +42,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.commands.AbstractAddAndNewProductCmptCommand;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog;
 import org.faktorips.devtools.core.ui.dialogs.SingleTypeSelectIpsObjectContext;
@@ -157,9 +157,9 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
 
     private void addLinksToGenerationOrProductCmpt(final IProductCmptGeneration activeProductCmptGeneration,
             final IProductCmptTypeAssociation association,
-            final List<IIpsElement> selectedIpsElements) throws CoreException {
+            final List<IIpsElement> selectedIpsElements) {
 
-        activeProductCmptGeneration.getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+        IpsUIPlugin.getDefault().runWorkspaceModification(new IWorkspaceRunnable() {
             @Override
             public void run(IProgressMonitor monitor) throws CoreException {
                 for (IIpsElement element : selectedIpsElements) {
@@ -172,7 +172,7 @@ public class AddProductCmptLinkCommand extends AbstractAddAndNewProductCmptComma
                     }
                 }
             }
-        }, new NullProgressMonitor());
+        });
     }
 
     private void addLinkOnReference(ExecutionEvent event) {

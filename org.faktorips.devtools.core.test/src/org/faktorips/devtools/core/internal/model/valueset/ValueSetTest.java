@@ -10,7 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
@@ -20,6 +22,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
+import org.faktorips.devtools.core.model.valueset.IUnrestrictedValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.junit.Before;
@@ -179,4 +182,32 @@ public class ValueSetTest extends AbstractIpsPluginTest {
         owner1.setDatatype(Datatype.PRIMITIVE_INT.getName());
         assertFalse(unrestricted.isContainingNullAllowed(ipsProject));
     }
+
+    @Test
+    public void testCompareTo_enum_range() throws Exception {
+        IRangeValueSet range1 = new RangeValueSet(owner1, "123");
+        IEnumValueSet enum1 = new EnumValueSet(owner1, "yx");
+
+        assertThat(range1.compareTo(enum1), is(1));
+        assertThat(enum1.compareTo(range1), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_unrestricted_range() throws Exception {
+        IRangeValueSet range1 = new RangeValueSet(owner1, "123");
+        IUnrestrictedValueSet unrestricted1 = new UnrestrictedValueSet(owner1, "yx");
+
+        assertThat(range1.compareTo(unrestricted1), is(1));
+        assertThat(unrestricted1.compareTo(range1), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_unrestricted_enum() throws Exception {
+        IEnumValueSet enum1 = new EnumValueSet(owner1, "yx");
+        IUnrestrictedValueSet unrestricted1 = new UnrestrictedValueSet(owner1, "yx");
+
+        assertThat(enum1.compareTo(unrestricted1), is(1));
+        assertThat(unrestricted1.compareTo(enum1), is(-1));
+    }
+
 }

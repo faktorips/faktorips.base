@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -38,11 +39,24 @@ public class OpenEditorHandler extends AbstractHandler {
         IProductCmptLink link = IpsObjectPartTester.castOrAdaptToPart(firstElement, IProductCmptLink.class);
         if (link != null) {
             openEditorForLink(link);
+            return null;
+        }
+
+        IProductCmptGeneration generation = (IProductCmptGeneration)typedSelection.getFirstElement().getAdapter(
+                IProductCmptGeneration.class);
+        if (generation != null) {
+            IpsUIPlugin.getDefault().openEditor(generation);
+            return null;
+        }
+
+        IIpsObject ipsObject = (IIpsObject)typedSelection.getFirstElement().getAdapter(IIpsObject.class);
+        if (ipsObject != null) {
+            IpsUIPlugin.getDefault().openEditor(ipsObject);
+            return null;
         }
 
         IFile file = (IFile)typedSelection.getFirstElement().getAdapter(IFile.class);
-        openEditorForFile(file);
-
+        IpsUIPlugin.getDefault().openEditor(file);
         return null;
     }
 
@@ -73,10 +87,6 @@ public class OpenEditorHandler extends AbstractHandler {
 
     private void openEditorForProductCmptGeneration(IProductCmptGeneration generation) {
         IpsUIPlugin.getDefault().openEditor(generation);
-    }
-
-    private void openEditorForFile(IFile file) {
-        IpsUIPlugin.getDefault().openEditor(file);
     }
 
 }

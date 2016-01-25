@@ -12,10 +12,11 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
@@ -25,6 +26,7 @@ import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
+import org.faktorips.util.collections.ListComparator;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -149,9 +151,12 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     @Override
     public int compareTo(IValueHolder<List<SingleValueHolder>> o) {
         if (o == null) {
-            return -1;
+            return 1;
+        } else {
+            @SuppressWarnings("unchecked")
+            Comparator<SingleValueHolder> naturalComparator = ComparatorUtils.naturalComparator();
+            return ListComparator.listComparator(naturalComparator).compare(values, o.getValue());
         }
-        return getStringValue().compareTo(o.getStringValue());
     }
 
     /**
@@ -209,15 +214,11 @@ public class MultiValueHolder extends AbstractValueHolder<List<SingleValueHolder
     }
 
     private ValueType getValueTypeForNoEntries() {
-        try {
-            IProductCmptTypeAttribute attribute = getParent().findAttribute(getIpsProject());
-            if (attribute != null) {
-                return getValueTypeFromAttribute(attribute);
-            } else {
-                return ValueType.STRING;
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptTypeAttribute attribute = getParent().findAttribute(getIpsProject());
+        if (attribute != null) {
+            return getValueTypeFromAttribute(attribute);
+        } else {
+            return ValueType.STRING;
         }
     }
 

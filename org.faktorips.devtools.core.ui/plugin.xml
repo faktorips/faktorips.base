@@ -359,8 +359,30 @@
       <command
             categoryId="org.faktorips.devtools.core.ui.category.productcreate"
             defaultHandler="org.faktorips.devtools.core.ui.commands.InferTemplateHandler"
+            description="%org.faktorips.devtools.core.ui.command.inferTemplate.description"
             id="org.faktorips.devtools.core.ui.command.inferTemplate"
-            name="Infer Product Template">
+            name="%org.faktorips.devtools.core.ui.command.inferTemplate.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SwitchTemplatePropertyValueHandler"
+            description="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.description"
+            id="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
+            name="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SetInheritedTemplateValueStatusHandler"
+            description="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.description"
+            id="org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus"
+            name="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.name">
+      </command>
+      <command
+            categoryId="org.faktorips.devtools.core.ui.category.refactoring"
+            defaultHandler="org.faktorips.devtools.core.ui.commands.SetDefinedTemplateValueStatusHandler"
+            description="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.description"
+            id="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
+            name="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name">
       </command>
    </extension>
    <extension
@@ -1219,6 +1241,15 @@
             icon="icons/ModelStructure.gif"
             id="org.faktorips.devtools.core.ui.views.modelstructure.ModelStructure"
             name="%IpsModelStructureTitle"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="false"
+            category="org.faktorips.devtools.productDefinitionCategory"
+            class="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageViewPart"
+            icon="icons/TemplateUsage.gif"
+            id="org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView"
+            name="%TemplatePropertyUsageViewTitle"
             restorable="true">
       </view>
    </extension>
@@ -2399,6 +2430,56 @@
       <extension
             point="org.eclipse.ui.menus">
       <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.leftTree?after=open">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="navigate"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus"
+               label="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.setDefinedTemplateValueStatus.description">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.faktorips.devtools.core.ui.views.producttemplate.TemplatePropertyUsageView.rightTree?after=open">
+         <command
+               commandId="org.faktorips.devtools.core.ui.openEditor"
+               icon="icons/OpenIpsObject.gif"
+               label="%openInNewEditor"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <separator
+               name="navigate"
+               visible="true">
+         </separator>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue"
+               label="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.switchTemplatePropertyValue.description">
+         </command>
+         <command
+               commandId="org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus"
+               label="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.name"
+               style="push"
+               tooltip="%org.faktorips.devtools.core.ui.command.setInheritedTemplateValueStatus.description">
+         </command>
+      </menuContribution>
+      <menuContribution
             locationURI="menu:org.eclipse.search.menu?after=dialogGroup">
          <command
                commandId="org.faktorips.devtools.core.ui.search.model"
@@ -2498,8 +2579,9 @@
                  visible="true">
 		         </separator>
 		         <command
-		               commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
-		               style="push">
+                 commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+                 icon="icons/Reference.gif"
+                 style="push">
               <visibleWhen
                     checkEnabled="true">
               </visibleWhen>
@@ -2622,6 +2704,7 @@
          </command>
          <command
                commandId="org.faktorips.devtools.core.ui.commands.searchReferencesAction"
+               icon="icons/Reference.gif"
                label="%SearchReferencesAction_name"
                style="push"
                tooltip="%SearchReferencesAction_description">

@@ -174,4 +174,19 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         };
     }
 
+    @Override
+    public int compareTo(IValueSet o) {
+        if (o.isUnrestricted()) {
+            if (isContainsNull() == o.isContainsNull()) {
+                return 0;
+            } else if (isContainsNull()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        } else {
+            return compareDifferentValueSets(o);
+        }
+    }
+
 }

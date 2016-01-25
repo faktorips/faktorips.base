@@ -11,17 +11,20 @@
 package org.faktorips.devtools.core.internal.model;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.Assert;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.XmlSupport;
 import org.faktorips.runtime.internal.InternationalStringXmlReaderWriter;
+import org.faktorips.util.collections.DistinctElementComparator;
 import org.faktorips.values.LocalizedString;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,6 +50,15 @@ public class InternationalString extends Observable implements IInternationalStr
     public static final String XML_ATTR_LOCALE = "locale"; //$NON-NLS-1$
 
     public static final String XML_ATTR_TEXT = "text"; //$NON-NLS-1$
+
+    private static final DistinctElementComparator<LocalizedString> COMPARATOR = DistinctElementComparator
+            .createComparator(new Comparator<LocalizedString>() {
+
+                @Override
+                public int compare(LocalizedString o1, LocalizedString o2) {
+                    return ObjectUtils.compare(o1.getValue(), o2.getValue());
+                }
+            });
 
     private final Map<Locale, LocalizedString> localizedStringMap = new LinkedHashMap<Locale, LocalizedString>();
 
@@ -183,6 +195,11 @@ public class InternationalString extends Observable implements IInternationalStr
 
     private LocalizedString emptyLocalizedString(Locale locale) {
         return new LocalizedString(locale, StringUtils.EMPTY);
+    }
+
+    @Override
+    public int compareTo(IInternationalString o) {
+        return COMPARATOR.compare(values(), o.values());
     }
 
 }

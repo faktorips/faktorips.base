@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -106,11 +105,10 @@ IProductCmptLinkContainer {
      * @return The product component type this product component generation is based on or
      *         {@code null} if the product component type can't be found.
      * 
-     * @throws CoreException if an exception occurs while searching for the type.
      * @throws NullPointerException if ipsProject is {@code null}.
      */
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns the number of attribute values defined in the generation.

@@ -24,10 +24,12 @@ import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Maps.EntryTransformer;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.common.collect.TreeMultimap;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.util.IntegerUtils;
 import org.faktorips.values.Decimal;
 
 /**
@@ -118,6 +120,23 @@ public class Histogram<V, E> {
         SortedMap<V, Integer> absoluteDistribution = getAbsoluteDistribution();
         SortedMap<V, Decimal> relativeDistribution = transformToRelativeDistribution(absoluteDistribution);
         return Collections.unmodifiableSortedMap(relativeDistribution);
+    }
+
+    /**
+     * Returns the distribution of values and elements with these values.
+     * 
+     * @return a multimap that contains all values in this histogram (the map's keys) and the
+     *         elements with these values (the map's values)
+     */
+    public Multimap<V, E> getDistribution() {
+        return Multimaps.unmodifiableMultimap(valueToElements);
+    }
+
+    /**
+     * Gives the amount of elements in this histogram.
+     */
+    public int countElements() {
+        return valueToElements.size();
     }
 
     /**
@@ -215,6 +234,11 @@ public class Histogram<V, E> {
         } else {
             return BestValue.<V> missingValue();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <E, V> Histogram<E, V> emptyHistogram() {
+        return new Histogram<E, V>(null, (Collection<V>)Collections.emptyList());
     }
 
     /**

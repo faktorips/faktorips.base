@@ -215,7 +215,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         // We use whitelist menu cleaner to avoid any other actions
         MenuCleaner menuCleaner = new MenuCleaner();
         menuCleaner.setWhiteListMode(true);
-        menuCleaner.addFilteredPrefix("org.faktorips"); //$NON-NLS-1$
+        menuCleaner.addFilteredPrefix(MenuCleaner.WHITE_LIST_IPS_PREFIX);
         menuCleaner.addFilteredPrefix("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
         menuManager.addMenuListener(menuCleaner);
 

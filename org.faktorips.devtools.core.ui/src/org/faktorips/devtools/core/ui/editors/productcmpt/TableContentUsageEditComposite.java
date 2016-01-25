@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.google.common.base.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -33,7 +32,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {
@@ -62,13 +61,6 @@ EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     @Override
     protected Function<ITableContentUsage, String> getToolTipFormatter() {
-        return new Function<ITableContentUsage, String>() {
-
-            @Override
-            public String apply(ITableContentUsage tableContentUsage) {
-                return tableContentUsage != null ? tableContentUsage.getTableContentName() : StringUtils.EMPTY;
-            }
-        };
+        return PropertyValueFormatter.TABLE_CONTENT_USAGE;
     }
-
 }

@@ -52,6 +52,8 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
+import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
 
 /**
  * Abstract base class for composites that allow the user to edit property values.
@@ -82,7 +84,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see EditField
  */
 public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
-        Composite {
+Composite {
 
     private final P property;
 
@@ -294,7 +296,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 this.getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
 
@@ -366,7 +368,6 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     private Menu createTemplateMenue(ToolBar toolBar) {
         MenuManager menuManager = new MenuManager();
         initDynamicMenue(menuManager);
-        // TODO FIPS-4483 Command per extension, analog LinksSection einbinden
         return menuManager.createContextMenu(toolBar);
     }
 
@@ -377,6 +378,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             @Override
             public void menuAboutToShow(IMenuManager manager) {
                 addOpenTemplateAction(manager);
+                addShowTemplatePropertyUsageAction(manager);
             }
 
             @Override
@@ -398,6 +400,32 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
 
     private String getOpenTemplateText(final IPropertyValue templateValue) {
         return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                .getPropertyValueContainer().getProductCmpt().getName());
+    }
+
+    /**
+     * Adds the action to open the template property usage view.
+     */
+    private void addShowTemplatePropertyUsageAction(IMenuManager manager) {
+        String text = null;
+        IPropertyValue templatePropertyValue;
+        if (TemplatePropertyValueUtil.isTemplatePropertyValue(getPropertyValue())) {
+            text = Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage;
+            templatePropertyValue = getPropertyValue();
+        } else {
+            templatePropertyValue = getPropertyValue().findTemplateProperty(getIpsProject());
+            if (templatePropertyValue == null) {
+                templatePropertyValue = TemplatePropertyValueUtil.findNextTemplatePropertyValue(getPropertyValue());
+            }
+            text = getOpenTemplatePropertyUsageText(templatePropertyValue);
+        }
+        if (templatePropertyValue != null) {
+            manager.add(new ShowTemplatePropertyUsageViewAction(templatePropertyValue, text));
+        }
+    }
+
+    private String getOpenTemplatePropertyUsageText(final IPropertyValue templateValue) {
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
                 .getPropertyValueContainer().getProductCmpt().getName());
     }
 

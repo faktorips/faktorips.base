@@ -149,11 +149,7 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
-        try {
-            return getPropertyValueContainer().findProductCmptType(ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
     @Override

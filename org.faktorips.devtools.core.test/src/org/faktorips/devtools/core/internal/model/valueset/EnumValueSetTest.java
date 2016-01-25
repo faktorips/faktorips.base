@@ -899,4 +899,150 @@ public class EnumValueSetTest extends AbstractIpsPluginTest {
         assertEquals(NLS.bind(Messages.EnumValueSet_abstract, nullText), shortString);
     }
 
+    @Test
+    public void testCompareTo_Eq_empty() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet();
+        IEnumValueSet enum2 = createEnumValueSet();
+
+        assertThat(enum1.compareTo(enum2), is(0));
+        assertThat(enum2.compareTo(enum1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_anyValue() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("abc123");
+        IEnumValueSet enum2 = createEnumValueSet("abc123");
+
+        assertThat(enum1.compareTo(enum2), is(0));
+        assertThat(enum2.compareTo(enum1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_DatatypeCompare() throws Exception {
+        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IEnumValueSet enum1 = createEnumValueSet("0001");
+        IEnumValueSet enum2 = createEnumValueSet("1");
+
+        assertThat(enum1.compareTo(enum2), is(0));
+        assertThat(enum2.compareTo(enum1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_MultipleValues() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("1", "asdf", "");
+        IEnumValueSet enum2 = createEnumValueSet("1", "asdf", "");
+
+        assertThat(enum1.compareTo(enum2), is(0));
+        assertThat(enum2.compareTo(enum1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Eq_MultipleValues_InklNullAndEmpty() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("", null, "");
+        IEnumValueSet enum2 = createEnumValueSet("", null, "");
+
+        assertThat(enum1.compareTo(enum2), is(0));
+        assertThat(enum2.compareTo(enum1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_Empty_NonEmpty() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet();
+        IEnumValueSet enum2 = createEnumValueSet("");
+
+        assertThat(enum1.compareTo(enum2), is(-1));
+        assertThat(enum2.compareTo(enum1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_DifferentValues() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("123");
+        IEnumValueSet enum2 = createEnumValueSet("312");
+
+        // less-than matcher not available in current hamcrest version
+        assertTrue(enum1.compareTo(enum2) < 0);
+        assertTrue(enum2.compareTo(enum1) > 0);
+    }
+
+    @Test
+    public void testCompareTo_DifferentAmountOfSameValues() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("1");
+        IEnumValueSet enum2 = createEnumValueSet("1", "1");
+
+        assertThat(enum1.compareTo(enum2), is(-1));
+        assertThat(enum2.compareTo(enum1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_DifferentAmountOfValues() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("1");
+        IEnumValueSet enum2 = createEnumValueSet("1", "2");
+
+        assertThat(enum1.compareTo(enum2), is(-1));
+        assertThat(enum2.compareTo(enum1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_FirstValuesSame() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("1", "1", "2");
+        IEnumValueSet enum2 = createEnumValueSet("1", "1", "3");
+
+        assertThat(enum1.compareTo(enum2), is(-1));
+        assertThat(enum2.compareTo(enum1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_InklNull() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet(null, "1", "2");
+        IEnumValueSet enum2 = createEnumValueSet("1", "1", "3");
+
+        assertThat(enum1.compareTo(enum2), is(-1));
+        assertThat(enum2.compareTo(enum1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_SameValuesDifferentOrder() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("2", "1", "3");
+        IEnumValueSet enum2 = createEnumValueSet("1", "2", "3");
+
+        assertThat(enum1.compareTo(enum2), is(1));
+        assertThat(enum2.compareTo(enum1), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_transitivity() throws Exception {
+        IEnumValueSet enum1 = createEnumValueSet("1", "2");
+        IEnumValueSet enum2 = createEnumValueSet("2", "1");
+        IEnumValueSet enum3 = createEnumValueSet("2", "2");
+
+        assertThat(enum1.compareTo(enum2), is(-1));
+        assertThat(enum2.compareTo(enum3), is(-1));
+        assertThat(enum1.compareTo(enum3), is(-1));
+        assertThat(enum3.compareTo(enum1), is(1));
+        assertThat(enum3.compareTo(enum2), is(1));
+        assertThat(enum2.compareTo(enum1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_SameValuesDifferentDatatypes() throws Exception {
+        attr.setDatatype(Datatype.INTEGER.getQualifiedName());
+        IEnumValueSet enum1 = createEnumValueSet("1", "2", "3");
+
+        IPolicyCmptTypeAttribute attr2 = policyCmptType.newPolicyCmptTypeAttribute();
+        attr2.setName("attr2");
+        attr2.setDatatype(Datatype.DECIMAL.getQualifiedName());
+        IConfigElement ce2 = generation.newConfigElement(attr2);
+        EnumValueSet enum2 = new EnumValueSet(ce2, "id");
+        enum2.addValues(Arrays.asList("1", "2", "3"));
+
+        assertTrue(enum1.compareTo(enum2) > 0);
+        assertTrue(enum2.compareTo(enum1) < 0);
+    }
+
+    private IEnumValueSet createEnumValueSet(String... values) {
+        EnumValueSet enumValueSet = new EnumValueSet(ce, "id");
+        enumValueSet.addValues(Arrays.asList(values));
+        return enumValueSet;
+    }
+
 }

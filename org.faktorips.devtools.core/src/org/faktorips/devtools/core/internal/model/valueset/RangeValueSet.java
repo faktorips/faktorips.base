@@ -326,6 +326,46 @@ public class RangeValueSet extends ValueSet implements IRangeValueSet {
     }
 
     @Override
+    public int compareTo(IValueSet o) {
+        if (o.isRange()) {
+            IRangeValueSet otherRangeValueSet = (IRangeValueSet)o;
+            boolean thisContainsOther = this.containsValueSet(o);
+            boolean otherContainsThis = o.containsValueSet(this);
+            if (thisContainsOther && otherContainsThis) {
+                return 0;
+            } else if (thisContainsOther) {
+                return 1;
+            } else if (otherContainsThis) {
+                return -1;
+            } else {
+                return compareDifferentRanges(otherRangeValueSet);
+            }
+        } else {
+            return compareDifferentValueSets(o);
+        }
+
+    }
+
+    /**
+     * Compare two ranges that are known to be different. It is important that these two ranges will
+     * never be treated as equal and that the comparison is symmetric.
+     * 
+     * For better performance we ignore the datatype comparison - the equality is already proved
+     * using datatype compare.
+     */
+    private int compareDifferentRanges(IRangeValueSet otherRangeValueSet) {
+        int compareLow = ObjectUtils.compare(getLowerBound(), otherRangeValueSet.getLowerBound());
+        if (compareLow != 0) {
+            return compareLow;
+        }
+        int compareUp = ObjectUtils.compare(getUpperBound(), otherRangeValueSet.getUpperBound());
+        if (compareUp != 0) {
+            return compareUp;
+        }
+        return ObjectUtils.compare(getStep(), otherRangeValueSet.getStep());
+    }
+
+    @Override
     public String toString() {
         if (isAbstract()) {
             return super.toString() + "(abstract)"; //$NON-NLS-1$

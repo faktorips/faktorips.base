@@ -281,7 +281,10 @@ public class InferTemplateProcessorTest {
                     if (propertyName.endsWith("0")) {
                         return valueSet;
                     } else {
-                        return mock(IValueSet.class);
+                        IValueSet mockValueSet = mock(IValueSet.class);
+                        when(mockValueSet.compareTo(mockValueSet)).thenReturn(0);
+                        when(mockValueSet.compareTo(any(IValueSet.class))).thenReturn(-1);
+                        return mockValueSet;
                     }
                 }
             };
@@ -320,5 +323,4 @@ public class InferTemplateProcessorTest {
 
         }
     }
-
 }

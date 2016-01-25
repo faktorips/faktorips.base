@@ -45,7 +45,7 @@ public class PropertyValueHistograms {
     private void populateHistogram(String name, Collection<IPropertyValue> propertyValues) {
         if (!propertyValues.isEmpty()) {
             PropertyValueType valueType = getPropertyValueType(propertyValues);
-            propertyValueHistorgram.put(name, new Histogram<Object, IPropertyValue>(valueType.getValueFunction(),
+            propertyValueHistorgram.put(name, new Histogram<Object, IPropertyValue>(valueType.getValueGetter(),
                     valueType.getValueComparator(), propertyValues));
         }
     }

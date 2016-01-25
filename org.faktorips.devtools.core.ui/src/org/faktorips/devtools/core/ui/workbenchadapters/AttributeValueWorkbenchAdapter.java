@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.ui.workbenchadapters;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
@@ -45,16 +44,11 @@ public class AttributeValueWorkbenchAdapter extends IpsObjectPartWorkbenchAdapte
         String caption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(attributeValue);
 
         String value = attributeValue.getPropertyValue();
-        try {
-            // try to get formatted value
-            IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
-            if (attribute != null) {
-                value = IpsUIPlugin.getDefault().getDatatypeFormatter()
-                        .formatValue(attribute.findDatatype(attributeValue.getIpsProject()), value);
-            }
-        } catch (CoreException e) {
-            // ignore exceptions because we log a bunch of these if there is any
-            // the value is also displayed unformatted
+        // try to get formatted value
+        IProductCmptTypeAttribute attribute = attributeValue.findAttribute(attributeValue.getIpsProject());
+        if (attribute != null) {
+            value = IpsUIPlugin.getDefault().getDatatypeFormatter()
+                    .formatValue(attribute.findDatatype(attributeValue.getIpsProject()), value);
         }
         return caption + ": " + value; //$NON-NLS-1$
     }

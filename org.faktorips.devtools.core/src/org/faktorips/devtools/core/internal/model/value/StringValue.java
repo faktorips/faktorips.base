@@ -12,10 +12,12 @@ package org.faktorips.devtools.core.internal.model.value;
 
 import java.util.Observer;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -127,6 +129,19 @@ public class StringValue extends AbstractValue<String> {
     @Override
     public void deleteObserver(Observer observer) {
         // no implementation
+    }
+
+    @Override
+    public int compare(IValue<?> other, ValueDatatype valueDatatype) {
+        if (other == null || (other.getContent() == null && content != null)) {
+            return 1;
+        }
+        if (other.getContent().getClass() == String.class) {
+            if (valueDatatype.supportsCompare()) {
+                return valueDatatype.compare(content, (String)other.getContent());
+            }
+        }
+        return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
     }
 
 }

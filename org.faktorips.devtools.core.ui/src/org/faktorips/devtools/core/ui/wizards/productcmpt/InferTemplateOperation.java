@@ -9,9 +9,8 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.wizards.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.PropertyValueHistograms;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -36,11 +35,7 @@ public class InferTemplateOperation extends NewProductCmptOperation {
                 .getProductCmptsToInferTemplate());
         InferTemplateProcessor inferTemplateProzessor = new InferTemplateProcessor(templateGeneration, getPmo()
                 .getProductCmptsToInferTemplate(), histograms);
-        try {
-            ipsSrcFile.getIpsModel().runAndQueueChangeEvents(inferTemplateProzessor, monitor);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(inferTemplateProzessor, monitor);
     }
 
 }

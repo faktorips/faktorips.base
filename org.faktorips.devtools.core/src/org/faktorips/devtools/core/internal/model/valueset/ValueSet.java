@@ -230,6 +230,20 @@ public abstract class ValueSet extends AtomicIpsObjectPart implements IValueSet 
         return dataType == null || !dataType.isPrimitive();
     }
 
+    protected int compareDifferentValueSets(IValueSet o) {
+        if (isUnrestricted()) {
+            return -1;
+        } else if (isEnum()) {
+            if (o.isUnrestricted()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        } else {
+            return 1;
+        }
+    }
+
     protected abstract AbstractValueSetValidator<?> createValidator(IValueSetOwner owner, ValueDatatype datatype);
 
 }

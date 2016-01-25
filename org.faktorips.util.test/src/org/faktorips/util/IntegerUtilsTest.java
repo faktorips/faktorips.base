@@ -7,11 +7,12 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.util;
+package org.faktorips.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import org.faktorips.util.IntegerUtils;
 import org.junit.Test;
 
 public class IntegerUtilsTest {

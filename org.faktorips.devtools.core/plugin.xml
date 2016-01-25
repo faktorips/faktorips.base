@@ -441,6 +441,22 @@
          </adapter>
       </factory>
       <factory
+            adaptableType="org.faktorips.devtools.core.model.productcmpt.IPropertyValue"
+            class="org.faktorips.devtools.core.internal.model.adapter.PropertyValueAdapterFactory">
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsObject">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration">
+         </adapter>
+         <adapter
+               type="org.faktorips.devtools.core.model.productcmpt.IProductCmpt">
+         </adapter>
+      </factory>
+      <factory
             adaptableType="org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference"
             class="org.faktorips.devtools.core.model.productcmpt.treestructure.ProductCmptStructureAdapterFactory">
          <adapter

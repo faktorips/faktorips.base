@@ -36,7 +36,7 @@ import org.w3c.dom.Element;
  * Every writing call leads to an {@link IllegalStateException}
  */
 public class DelegatingValueSet extends AtomicIpsObjectPart implements IEnumValueSet, IRangeValueSet,
-IUnrestrictedValueSet {
+        IUnrestrictedValueSet {
 
     private final ValueSet delegate;
 
@@ -304,5 +304,10 @@ IUnrestrictedValueSet {
     @Override
     public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         return delegate.findValueDatatype(ipsProject);
+    }
+
+    @Override
+    public int compareTo(IValueSet o) {
+        return delegate.compareTo(o);
     }
 }

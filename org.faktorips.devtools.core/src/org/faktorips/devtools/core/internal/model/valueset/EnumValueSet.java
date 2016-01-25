@@ -15,6 +15,7 @@ import static org.faktorips.devtools.core.model.DatatypeUtil.isNullValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +42,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.collections.ListComparator;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -126,16 +130,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if (isNullValue(datatype, value)) {
-            return isContainsNull();
+        if (isNullValue(datatype, value) && isContainsNull()) {
+            return true;
         }
         if (isAbstract()) {
             return true;
         }
-        if (!datatype.isParsable(value)) {
-            return false;
-        }
-
         return isValueInEnum(value, datatype);
     }
 
@@ -180,7 +180,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (subset.isAbstract()) {
             return false;
         }
-        return containsAllValues(subset, contextProject);
+        return containsAllValues((IEnumValueSet)subset, contextProject);
     }
 
     private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype, IIpsProject contextProject) {
@@ -188,9 +188,8 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         return ObjectUtils.equals(datatype, subDatatype);
     }
 
-    private boolean containsAllValues(IValueSet subset, IIpsProject contextProject) {
-        IEnumValueSet enumSubset = (IEnumValueSet)subset;
-        String[] subsetValues = enumSubset.getValues();
+    private boolean containsAllValues(IEnumValueSet subset, IIpsProject contextProject) {
+        String[] subsetValues = subset.getValues();
 
         for (String value : subsetValues) {
             try {
@@ -433,6 +432,52 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
 
     protected Map<String, List<Integer>> getValuesToIndexMap() {
         return valuesToIndexMap;
+    }
+
+    @Override
+    public int compareTo(IValueSet o) {
+        if (o.isEnum()) {
+            IEnumValueSet otherEnum = (IEnumValueSet)o;
+            return compareValueSetValues(otherEnum);
+        } else {
+            return compareDifferentValueSets(o);
+        }
+    }
+
+    /**
+     * Compare two enum value sets by comparing their values with each other one by one. Uses the
+     * value set's data type to parse values where possible, otherwise compares the raw values
+     * (strings).
+     */
+    protected int compareValueSetValues(IEnumValueSet otherEnum) {
+        ValueDatatype datatype = findValueDatatype(getIpsProject());
+        ValueDatatype otherDatatype = otherEnum.findValueDatatype(getIpsProject());
+        if (!datatype.equals(otherDatatype)) {
+            return datatype.compareTo(otherDatatype);
+        } else {
+            ListComparator<String> listComparator = ListComparator.listComparator(new ValueComparator(datatype));
+            return listComparator.compare(values, otherEnum.getValuesAsList());
+        }
+    }
+
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    private static class ValueComparator implements Comparator<String> {
+
+        private final ValueDatatype datatype;
+
+        public ValueComparator(ValueDatatype datatype) {
+            this.datatype = datatype;
+        }
+
+        @Override
+        public int compare(String value, String otherValue) {
+            if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
+                return datatype.compare(value, otherValue);
+            } else {
+                return ObjectUtils.compare(value, otherValue);
+            }
+        }
+
     }
 
 }

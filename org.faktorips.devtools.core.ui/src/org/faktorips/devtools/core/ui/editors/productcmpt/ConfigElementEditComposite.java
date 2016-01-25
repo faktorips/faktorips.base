@@ -14,7 +14,6 @@ import java.util.List;
 
 import com.google.common.base.Function;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -169,12 +168,6 @@ public class ConfigElementEditComposite extends EditPropertyValueComposite<IPoli
 
     @Override
     protected Function<IConfigElement, String> getToolTipFormatter() {
-        return new Function<IConfigElement, String>() {
-
-            @Override
-            public String apply(IConfigElement configElement) {
-                return configElement != null ? configElement.getValueSet().toShortString() : StringUtils.EMPTY;
-            }
-        };
+        return PropertyValueFormatter.CONFIG_ELEMENT;
     }
 }
