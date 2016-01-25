@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -101,7 +100,7 @@ public interface IPropertyValueContainer extends IProductPartsContainer {
     public String getProductCmptType();
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Finds the {@link IPolicyCmptType} this this property value container configures or returns

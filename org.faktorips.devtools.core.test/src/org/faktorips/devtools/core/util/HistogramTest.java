@@ -27,6 +27,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import org.faktorips.devtools.core.util.Histogram.BestValue;
+import org.faktorips.util.IntegerUtils;
 import org.faktorips.values.Decimal;
 import org.junit.Test;
 

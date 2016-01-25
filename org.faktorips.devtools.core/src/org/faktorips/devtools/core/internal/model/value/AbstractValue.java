@@ -65,12 +65,4 @@ public abstract class AbstractValue<T> implements IValue<T> {
         return getContentAsString().hashCode();
     }
 
-    @Override
-    public int compareTo(IValue<T> o) {
-        if (o == null) {
-            return 1;
-        } else {
-            return ObjectUtils.compare(getContentAsString(), o.getContentAsString());
-        }
-    }
 }

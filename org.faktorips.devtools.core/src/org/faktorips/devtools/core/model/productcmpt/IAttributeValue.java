@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 
@@ -123,7 +122,7 @@ public interface IAttributeValue extends IPropertyValue {
     /**
      * Returns the product component type attribute this object provides the value for.
      */
-    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject);
 
     /**
      * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant

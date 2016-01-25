@@ -15,6 +15,7 @@ import static org.faktorips.devtools.core.model.DatatypeUtil.isNullValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -37,9 +40,9 @@ import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.devtools.core.util.IntegerUtils;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.collections.ListComparator;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -447,31 +450,34 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
      * (strings).
      */
     protected int compareValueSetValues(IEnumValueSet otherEnum) {
-        int compareSize = IntegerUtils.compare(size(), otherEnum.size());
         ValueDatatype datatype = findValueDatatype(getIpsProject());
         ValueDatatype otherDatatype = otherEnum.findValueDatatype(getIpsProject());
-        if (compareSize != 0) {
-            return compareSize;
-        } else if (!datatype.equals(otherDatatype)) {
+        if (!datatype.equals(otherDatatype)) {
             return datatype.compareTo(otherDatatype);
         } else {
-            for (int i = 0; i < values.size(); i++) {
-                int valueCompare = compareValueAtIndex(otherEnum, datatype, i);
-                if (valueCompare != 0) {
-                    return valueCompare;
-                }
-            }
-            return 0;
+            ListComparator<String> listComparator = ListComparator.listComparator(new ValueComparator(datatype));
+            return listComparator.compare(values, otherEnum.getValuesAsList());
         }
     }
 
-    private int compareValueAtIndex(IEnumValueSet otherEnum, ValueDatatype datatype, int i) {
-        String value = getValue(i);
-        String otherValue = otherEnum.getValue(i);
-        if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
-            return datatype.compare(value, otherValue);
-        } else {
-            return ObjectUtils.compare(value, otherValue);
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    private static class ValueComparator implements Comparator<String> {
+
+        private final ValueDatatype datatype;
+
+        public ValueComparator(ValueDatatype datatype) {
+            this.datatype = datatype;
         }
+
+        @Override
+        public int compare(String value, String otherValue) {
+            if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
+                return datatype.compare(value, otherValue);
+            } else {
+                return ObjectUtils.compare(value, otherValue);
+            }
+        }
+
     }
+
 }

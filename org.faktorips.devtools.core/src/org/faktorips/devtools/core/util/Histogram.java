@@ -29,6 +29,7 @@ import com.google.common.collect.TreeMultimap;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.util.IntegerUtils;
 import org.faktorips.values.Decimal;
 
 /**

@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
@@ -151,15 +150,11 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     private IValueHolder<?> getUndefinedValueHolder() {
-        try {
-            IProductCmptTypeAttribute typeAttribute = findAttribute(getIpsProject());
-            if (typeAttribute == null) {
-                return new SingleValueHolder(this);
-            } else {
-                return AttributeValueType.getTypeFor(typeAttribute).newHolderInstance(this);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptTypeAttribute typeAttribute = findAttribute(getIpsProject());
+        if (typeAttribute == null) {
+            return new SingleValueHolder(this);
+        } else {
+            return AttributeValueType.getTypeFor(typeAttribute).newHolderInstance(this);
         }
     }
 
@@ -209,7 +204,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) {
         IProductCmptType type = getPropertyValueContainer().findProductCmptType(ipsProject);
         if (type == null) {
             return null;

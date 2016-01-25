@@ -15,7 +15,7 @@ import java.util.Observer;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
@@ -93,12 +93,8 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     }
 
     private static IProductCmptTypeAttribute findAttribute(IAttributeValue parent) {
-        try {
-            if (parent != null && parent.getIpsProject() != null) {
-                return parent.findAttribute(parent.getIpsProject());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (parent != null && parent.getIpsProject() != null) {
+            return parent.findAttribute(parent.getIpsProject());
         }
         return null;
     }
@@ -199,7 +195,11 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
         if (this.equals(o)) {
             return 0;
         }
-        return ObjectUtils.compare(value, o.getValue());
+        if (value == null) {
+            return ObjectUtils.compare(null, o.getStringValue());
+        }
+        ValueDatatype datatype = getParent().findAttribute(getIpsProject()).findValueDatatype(getIpsProject());
+        return value.compare(o.getValue(), datatype);
     }
 
     @Override

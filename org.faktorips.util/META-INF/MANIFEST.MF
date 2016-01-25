@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.faktorips.util
 Bundle-Version: 3.16.0.qualifier
 Bundle-Vendor: Faktor Zehn AG
 Export-Package: org.faktorips.util,
+ org.faktorips.util.collections,
  org.faktorips.util.functional,
  org.faktorips.util.memento,
  org.faktorips.util.message

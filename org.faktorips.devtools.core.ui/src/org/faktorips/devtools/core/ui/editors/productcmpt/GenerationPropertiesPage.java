@@ -180,18 +180,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     private void createCategorySections(Composite left, Composite right) {
         // Find product component type
         IProductCmptType productCmptType = null;
-        try {
-            productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
-
-        } catch (CoreException e) {
-            /*
-             * An error occurred while searching for the product component type. Recover by creating
-             * a fallback section and log the exception.
-             */
-            createFallbackSection(left);
-            IpsPlugin.log(e);
-            return;
-        }
+        productCmptType = getActiveGeneration().findProductCmptType(getActiveGeneration().getIpsProject());
 
         // Create a fallback section if the product component type cannot be found
         if (productCmptType == null) {
@@ -322,7 +311,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .showView(ModelDescriptionView.EXTENSION_ID);
+                    .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -373,7 +362,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                .getNumOfGenerations() - 1];
+                                                                                                    .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }

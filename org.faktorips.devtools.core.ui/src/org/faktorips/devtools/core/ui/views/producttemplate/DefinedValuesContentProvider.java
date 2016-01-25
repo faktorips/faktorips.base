@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
-import static com.google.common.collect.Collections2.transform;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +18,9 @@ import java.util.Set;
 import java.util.SortedMap;
 
 import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Ordering;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ISelection;
@@ -49,12 +50,34 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     @Override
     public Object[] getElements(Object inputElement) {
         if (pmo.hasData()) {
+
             Histogram<Object, IPropertyValue> histogram = pmo.getDefinedValuesHistogram();
             SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-            return transform(definedAbsoluteDistribution.keySet(), toViewItem(histogram)).toArray();
+            ImmutableList<TemplateUsageViewItem> elements = FluentIterable.from(definedAbsoluteDistribution.keySet())
+                    .transform(toViewItem(histogram)).toImmutableList();
+            return getOrdering(elements).sortedCopy(elements).toArray();
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
         }
+    }
+
+    protected Ordering<TemplateUsageViewItem> getOrdering(ImmutableList<TemplateUsageViewItem> elements) {
+        final Ordering<TemplateUsageViewItem> secOrder = Ordering.explicit(elements);
+
+        Ordering<TemplateUsageViewItem> order = Ordering.from(new Comparator<TemplateUsageViewItem>() {
+
+            @Override
+            public int compare(TemplateUsageViewItem o1, TemplateUsageViewItem o2) {
+                if (o1.isSameValueAsTemplateValue()) {
+                    return -1;
+                } else if (o2.isSameValueAsTemplateValue()) {
+                    return 1;
+                } else {
+                    return secOrder.compare(o1, o2);
+                }
+            }
+        });
+        return order;
     }
 
     @Override
@@ -102,8 +125,9 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                     return null;
                 }
                 boolean sameAsTemplateValue = comparator.compare(value, templateValue) == 0;
-                BigDecimal distributionPercent = new BigDecimal(definedAbsoluteDistribution.get(value)).multiply(
-                        new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
+                Integer definedDist = definedAbsoluteDistribution.get(value);
+                BigDecimal distributionPercent = definedDist == null ? new BigDecimal(0) : new BigDecimal(definedDist)
+                        .multiply(new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
                 Set<IPropertyValue> children = histogram.getElements(value);
                 return new TemplateUsageViewItem(value, sameAsTemplateValue, distributionPercent, children);
             }

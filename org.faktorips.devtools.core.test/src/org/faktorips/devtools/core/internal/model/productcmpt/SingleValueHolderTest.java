@@ -14,24 +14,45 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.value.InternationalStringValue;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueType;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SingleValueHolderTest {
 
+    @Mock
+    private IIpsProject ipsProject;
+
+    @Mock
+    private IProductCmptTypeAttribute attribute;
+
+    @Mock
     private IAttributeValue attributeValue;
+
+    private ValueDatatype datatype = ValueDatatype.STRING;
+
+    @Before
+    public void setUp() {
+        when(attributeValue.getIpsProject()).thenReturn(ipsProject);
+        when(attributeValue.findAttribute(ipsProject)).thenReturn(attribute);
+        when(attribute.findValueDatatype(ipsProject)).thenReturn(datatype);
+    }
 
     @Test
     public void testGetValueType() {
-
         SingleValueHolder singleValueHolder = new SingleValueHolder(attributeValue, "abc");
         assertEquals(ValueType.STRING, singleValueHolder.getValueType());
 

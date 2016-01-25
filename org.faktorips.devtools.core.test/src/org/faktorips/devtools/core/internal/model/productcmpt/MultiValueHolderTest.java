@@ -11,23 +11,27 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 
 import com.google.common.collect.Lists;
 
+import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.MultiValueHolder.Factory;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.junit.Test;
 
 public class MultiValueHolderTest {
@@ -129,39 +133,79 @@ public class MultiValueHolderTest {
     }
 
     @Test
-    public void testCompareTo() {
-        IAttributeValue attribute = mock(AttributeValue.class);
-        SingleValueHolder a = new SingleValueHolder(attribute, "a");
-        SingleValueHolder b = new SingleValueHolder(attribute, "b");
-        SingleValueHolder c = new SingleValueHolder(attribute, "c");
-        SingleValueHolder d = new SingleValueHolder(attribute, "d");
+    public void testCompareTo_String() {
+        IAttributeValue attributeValue = mock(AttributeValue.class);
+        IProductCmptTypeAttribute attribue = mock(IProductCmptTypeAttribute.class);
+        when(attributeValue.findAttribute(any(IIpsProject.class))).thenReturn(attribue);
+        when(attribue.findValueDatatype(any(IIpsProject.class))).thenReturn(ValueDatatype.STRING);
+        SingleValueHolder a = new SingleValueHolder(attributeValue, "a");
+        SingleValueHolder b = new SingleValueHolder(attributeValue, "b");
+        SingleValueHolder c = new SingleValueHolder(attributeValue, "c");
+        SingleValueHolder d = new SingleValueHolder(attributeValue, "d");
 
-        MultiValueHolder empty = new MultiValueHolder(attribute, new ArrayList<SingleValueHolder>());
+        MultiValueHolder empty = new MultiValueHolder(attributeValue, new ArrayList<SingleValueHolder>());
 
-        MultiValueHolder abc1 = new MultiValueHolder(attribute, Lists.newArrayList(a, b, c));
-        MultiValueHolder abc2 = new MultiValueHolder(attribute, Lists.newArrayList(a, b, c));
+        MultiValueHolder abc1 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
+        MultiValueHolder abc2 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
 
-        MultiValueHolder cba = new MultiValueHolder(attribute, Lists.newArrayList(c, b, a));
-        MultiValueHolder abcd = new MultiValueHolder(attribute, Lists.newArrayList(a, b, c, d));
+        MultiValueHolder cba = new MultiValueHolder(attributeValue, Lists.newArrayList(c, b, a));
+        MultiValueHolder abcd = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c, d));
 
         assertThat(empty.compareTo(empty), is(0));
-        assertThat(empty.compareTo(null), is(not(0)));
-        assertThat(empty.compareTo(abc1), is(not(0)));
-        assertThat(empty.compareTo(abc2), is(not(0)));
-        assertThat(empty.compareTo(abcd), is(not(0)));
-        assertThat(empty.compareTo(cba), is(not(0)));
+        assertThat(empty.compareTo(null), is(1));
+        assertThat(empty.compareTo(abc1), is(-1));
+        assertThat(empty.compareTo(abc2), is(-1));
+        assertThat(empty.compareTo(abcd), is(-1));
+        assertThat(empty.compareTo(cba), is(-1));
 
         assertThat(abc1.compareTo(abc1), is(0));
         assertThat(abc1.compareTo(abc2), is(0));
         assertThat(abc2.compareTo(abc1), is(0));
 
-        assertThat(abc1.compareTo(null), is(not(0)));
-        assertThat(abc1.compareTo(empty), is(not(0)));
-        assertThat(abc1.compareTo(cba), is(not(0)));
-        assertThat(cba.compareTo(abc1), is(not(0)));
-        assertThat(abc1.compareTo(abcd), is(not(0)));
-        assertThat(abcd.compareTo(abc1), is(not(0)));
+        assertThat(abc1.compareTo(null), is(1));
+        assertThat(abc1.compareTo(empty), is(1));
+        assertThat(abc1.compareTo(cba), is(-2));
+        assertThat(cba.compareTo(abc1), is(2));
+        assertThat(abc1.compareTo(abcd), is(-1));
+        assertThat(abcd.compareTo(abc1), is(1));
+    }
 
+    @Test
+    public void testCompareTo_Integer() {
+        IAttributeValue attributeValue = mock(AttributeValue.class);
+        IProductCmptTypeAttribute attribue = mock(IProductCmptTypeAttribute.class);
+        when(attributeValue.findAttribute(any(IIpsProject.class))).thenReturn(attribue);
+        when(attribue.findValueDatatype(any(IIpsProject.class))).thenReturn(ValueDatatype.INTEGER);
+        SingleValueHolder a = new SingleValueHolder(attributeValue, "1");
+        SingleValueHolder b = new SingleValueHolder(attributeValue, "12");
+        SingleValueHolder c = new SingleValueHolder(attributeValue, "33");
+        SingleValueHolder d = new SingleValueHolder(attributeValue, "41");
+
+        MultiValueHolder empty = new MultiValueHolder(attributeValue, new ArrayList<SingleValueHolder>());
+
+        MultiValueHolder abc1 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
+        MultiValueHolder abc2 = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c));
+
+        MultiValueHolder cba = new MultiValueHolder(attributeValue, Lists.newArrayList(c, b, a));
+        MultiValueHolder abcd = new MultiValueHolder(attributeValue, Lists.newArrayList(a, b, c, d));
+
+        assertThat(empty.compareTo(empty), is(0));
+        assertThat(empty.compareTo(null), is(1));
+        assertThat(empty.compareTo(abc1), is(-1));
+        assertThat(empty.compareTo(abc2), is(-1));
+        assertThat(empty.compareTo(abcd), is(-1));
+        assertThat(empty.compareTo(cba), is(-1));
+
+        assertThat(abc1.compareTo(abc1), is(0));
+        assertThat(abc1.compareTo(abc2), is(0));
+        assertThat(abc2.compareTo(abc1), is(0));
+
+        assertThat(abc1.compareTo(null), is(1));
+        assertThat(abc1.compareTo(empty), is(1));
+        assertThat(abc1.compareTo(cba), is(-1));
+        assertThat(cba.compareTo(abc1), is(1));
+        assertThat(abc1.compareTo(abcd), is(-1));
+        assertThat(abcd.compareTo(abc1), is(1));
     }
 
 }
