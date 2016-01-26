@@ -42,6 +42,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
+import org.faktorips.devtools.core.ui.IpsColor;
 import org.faktorips.devtools.core.ui.IpsMenuId;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.MenuCleaner;
@@ -271,11 +272,6 @@ public class TemplatePropertyUsageView {
 
     private static class TemplatePropertyUsageLabelProvider extends DefaultLabelProvider implements IColorProvider {
 
-        private static final Color BLUE = new Color(Display.getCurrent(), 0, 0, 255);
-
-        // return null to use default colors...
-        private static final Color DEFAULT_COLOR = null;
-
         @Override
         public String getText(Object element) {
             if (element instanceof IPropertyValue) {
@@ -307,15 +303,15 @@ public class TemplatePropertyUsageView {
             if (element instanceof TemplateUsageViewItem) {
                 TemplateUsageViewItem viewItem = (TemplateUsageViewItem)element;
                 if (viewItem.isSameValueAsTemplateValue()) {
-                    return BLUE;
+                    return IpsColor.TEMPLATE_BLUE.getColor();
                 }
             }
-            return DEFAULT_COLOR;
+            return IpsColor.DEFAULT.getColor();
         }
 
         @Override
         public Color getBackground(Object element) {
-            return DEFAULT_COLOR;
+            return IpsColor.DEFAULT.getColor();
         }
 
     }

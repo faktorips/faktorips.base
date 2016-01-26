@@ -222,7 +222,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             mandatory.setSelection(true);
             optional.setSelection(false);
             other.setSelection(false);
-        } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$ 
+        } else if (min.equals("0") && max.equals("1")) { //$NON-NLS-1$ //$NON-NLS-2$
             optional.setSelection(true);
             mandatory.setSelection(false);
             other.setSelection(false);
@@ -312,9 +312,9 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                 currentLink.setMinCardinality(0);
                 currentLink.setMaxCardinality(1);
             } else if (e.getSource() == mandatory) {
+                currentLink.setDefaultCardinality(1);
                 currentLink.setMinCardinality(1);
                 currentLink.setMaxCardinality(1);
-                currentLink.setDefaultCardinality(1);
             }
 
         }

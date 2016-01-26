@@ -67,7 +67,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findTargetProductCmptType(IIpsProject ipsProject) {
         return (IProductCmptType)ipsProject.findIpsObject(IpsObjectType.PRODUCT_CMPT_TYPE, getTarget());
     }
 
@@ -166,8 +166,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject)
-            throws CoreException {
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject) {
         if (StringUtils.isEmpty(matchingAssociationSource) || StringUtils.isEmpty(matchingAssociationName)) {
             return findDefaultPolicyCmptTypeAssociation(ipsProject);
         }
@@ -203,7 +202,7 @@ public class ProductCmptTypeAssociation extends Association implements IProductC
     }
 
     @Override
-    public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject) {
 
         IPolicyCmptType policyCmptType = getProductCmptType().findPolicyCmptType(ipsProject);
         if (policyCmptType == null) {

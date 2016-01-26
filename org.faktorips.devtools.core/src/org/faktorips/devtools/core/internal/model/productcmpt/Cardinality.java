@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 
@@ -141,6 +142,11 @@ public class Cardinality {
         return result;
     }
 
+    /** Returns the cardinality as a formatted string. */
+    public String format() {
+        return StringUtil.getRangeString(min, max, defaultCard);
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -177,7 +183,7 @@ public class Cardinality {
 
     @Override
     public String toString() {
-        return "[" + min + "..." + max + ", " + defaultCard + "]"; //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
+        return format();
     }
 
 }

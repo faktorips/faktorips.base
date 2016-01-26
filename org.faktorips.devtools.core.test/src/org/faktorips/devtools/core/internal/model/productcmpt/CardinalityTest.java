@@ -91,4 +91,8 @@ public class CardinalityTest {
         assertThat(cardinality.validate(link).getMessage(0), hasInvalidObject(link));
     }
 
+    @Test
+    public void testFormat() {
+        assertThat(new Cardinality(0, 1, 0).format(), is("[0..1, 0]"));
+    }
 }

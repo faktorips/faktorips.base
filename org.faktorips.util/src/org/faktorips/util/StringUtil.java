@@ -20,6 +20,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * A collection of utility methods for Strings.
  * 
@@ -29,15 +31,23 @@ public class StringUtil {
 
     public static final String CAMEL_CASE_SEPERATORS = "[-_., ]";
 
-    public final static String CHARSET_UTF8 = "UTF-8";
+    public static final String CHARSET_UTF8 = "UTF-8";
 
-    public final static String CHARSET_ISO_8859_1 = "ISO-8859-1";
+    public static final String CHARSET_ISO_8859_1 = "ISO-8859-1";
+
+    private static final String FORMAT_CARDINALITY = "[%d..%s]"; //$NON-NLS-1$
+
+    private static final String FORMAT_CARDINALITY_WITH_DEFAULT = "[%d..%s, %d]"; //$NON-NLS-1$
+
+    private StringUtil() {
+        // do not instantiate
+    }
 
     /**
      * Reads the available bytes from the input stream and returns them as a string using the given
      * {@link java.nio.charset.Charset charset}. The method does not close the stream.
      */
-    public final static String readFromInputStream(InputStream is, Charset charset) throws IOException {
+    public static final String readFromInputStream(InputStream is, Charset charset) throws IOException {
         return readFromInputStream(is, charset.name());
     }
 
@@ -47,7 +57,7 @@ public class StringUtil {
      * <p>
      * This method closes the input stream before returning!
      */
-    public final static String readFromInputStream(InputStream is, String charsetName) throws IOException {
+    public static final String readFromInputStream(InputStream is, String charsetName) throws IOException {
 
         StringBuffer buf = new StringBuffer(is.available());
         BufferedReader in = new BufferedReader(new InputStreamReader(is, charsetName));
@@ -92,7 +102,7 @@ public class StringUtil {
     /**
      * Takes a name like a class name and removes the package information from the beginning.
      */
-    public final static String unqualifiedName(String qualifiedName) {
+    public static final String unqualifiedName(String qualifiedName) {
         int index = qualifiedName.lastIndexOf(".");
         if (index == -1) {
             return qualifiedName;
@@ -104,7 +114,7 @@ public class StringUtil {
      * Takes a name like a class name and removes the package information from the beginning,
      * leaving the last two parts and the '.' between.
      */
-    public final static String unqualifiedRelationName(String qualifiedName) {
+    public static final String unqualifiedRelationName(String qualifiedName) {
         int index = qualifiedName.lastIndexOf(".");
         if (index == -1) {
             return qualifiedName;
@@ -118,9 +128,9 @@ public class StringUtil {
      * 
      * @throws NullPointerException if unqualifiedName is <code>null</code>.
      */
-    public final static String qualifiedName(String packageName, String unqualifiedName) {
+    public static final String qualifiedName(String packageName, String unqualifiedName) {
         ArgumentCheck.notNull(unqualifiedName);
-        if (packageName == null || packageName.equals("")) {
+        if (packageName == null || StringUtils.isEmpty(packageName)) {
             return unqualifiedName;
         }
         return packageName + '.' + unqualifiedName;
@@ -132,7 +142,7 @@ public class StringUtil {
      * 
      * @throws NullPointerException if the qualifiedClassName is null.
      */
-    public final static String getPackageName(String qualifiedClassName) {
+    public static final String getPackageName(String qualifiedClassName) {
         int index = qualifiedClassName.lastIndexOf(".");
         if (index == -1) {
             return "";
@@ -164,7 +174,7 @@ public class StringUtil {
      * Returns the lines of the given text as array. Each array item represents one line. The lines
      * don't contains the line separator.
      */
-    public final static String[] getLines(String text, String lineSeparator) {
+    public static final String[] getLines(String text, String lineSeparator) {
         List<String> lines = new ArrayList<String>();
         int start = 0;
         int end = text.indexOf(lineSeparator);
@@ -181,7 +191,7 @@ public class StringUtil {
      * Returns the line in the text that starts at the given position and ends at the next line
      * separator. The line separator itself is not returned as part of the line.
      */
-    public final static String getLine(String text, int startPos, String lineSeparator) {
+    public static final String getLine(String text, int startPos, String lineSeparator) {
         int pos = text.indexOf(lineSeparator, startPos);
         if (pos == -1) {
             return text.substring(startPos);
@@ -285,28 +295,37 @@ public class StringUtil {
     }
 
     /**
-     * Returns a String of the form ' [x..y, z]', where x and y are the minimum and maximum values
-     * of a range, and z is the default value of that range. If z is unknown and showDefault set to
-     * false, no default is present in the String and the result will have the form ' [x..y]'. Note
-     * that maxValue will be represented as an asterisk (*) if its value is Integer.MAX_VALUE.
+     * Returns a String of the form ' [x..y]', where x and y are the minimum and maximum values of a
+     * range.
      * 
-     * @param showDefault flag to indicate if the default value should be included in the result.
+     * Note that maxValue will be represented as an asterisk (*) if its value is Integer.MAX_VALUE.
+     * 
+     * @param minValue minimum value of the range.
+     * @param maxValue maximum value of the range or Integer.MAX_VALUE to indicate an unbound range.
+     * @return a String representation of the range in the form ' [min..max]'.
+     */
+    public static String getRangeString(int minValue, int maxValue) {
+        return String.format(FORMAT_CARDINALITY, minValue, formatMax(maxValue));
+    }
+
+    /**
+     * Returns a String of the form ' [x..y, z]', where x and y are the minimum and maximum values
+     * of a range, and z is the default value of that range.
+     * 
+     * Note that maxValue will be represented as an asterisk (*) if its value is Integer.MAX_VALUE.
+     * 
      * @param minValue minimum value of the range.
      * @param maxValue maximum value of the range or Integer.MAX_VALUE to indicate an unbound range.
      * @param defaultValue default value of the range (if showDefault is false, this value will be
      *            ignored).
      * @return a String representation of the range in the form ' [min..max, default]'.
      */
-    public static String getRangeString(boolean showDefault, int minValue, int maxValue, int defaultValue) {
-        StringBuilder cardinalityString = new StringBuilder(" ["); //$NON-NLS-1$
-        cardinalityString.append(minValue);
-        cardinalityString.append(".."); //$NON-NLS-1$
-        cardinalityString.append(maxValue == Integer.MAX_VALUE ? "*" : maxValue); //$NON-NLS-1$
-        if (showDefault) {
-            cardinalityString.append(", "); //$NON-NLS-1$
-            cardinalityString.append(defaultValue);
-        }
-        cardinalityString.append("]"); //$NON-NLS-1$
-        return cardinalityString.toString();
+    public static String getRangeString(int minValue, int maxValue, int defaultValue) {
+        return String.format(FORMAT_CARDINALITY_WITH_DEFAULT, minValue, formatMax(maxValue), defaultValue);
     }
+
+    private static String formatMax(int maxValue) {
+        return maxValue == Integer.MAX_VALUE ? "*" : String.valueOf(maxValue);
+    }
+
 }
