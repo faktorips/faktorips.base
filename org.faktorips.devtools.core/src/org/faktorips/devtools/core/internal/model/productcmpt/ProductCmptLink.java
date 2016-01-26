@@ -43,12 +43,14 @@ import org.w3c.dom.Element;
 
 public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmptLink {
 
+    private static final Cardinality DEFAULT_CARDINALITY = new Cardinality(0, 1, 0);
+
     /** the name of the association this link is an instance of */
     private String association = ""; //$NON-NLS-1$
 
     private String target = ""; //$NON-NLS-1$
 
-    private Cardinality cardinality = new Cardinality(0, 1, 0);
+    private Cardinality cardinality = DEFAULT_CARDINALITY;
 
     private final TemplateValueSettings templateValueSettings;
 
@@ -126,7 +128,24 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public Cardinality getCardinality() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateCardinality();
+        }
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return DEFAULT_CARDINALITY;
+        }
         return cardinality;
+    }
+
+    private Cardinality findTemplateCardinality() {
+        IProductCmptLink templateLink = findTemplateProperty(getIpsProject());
+        if (templateLink == null) {
+            // Template should have a link but does not. Use the "last known" cardinality
+            // as a more or less helpful fallback while some validation hopefully addresses
+            // the missing link in the template...
+            return cardinality;
+        }
+        return templateLink.getCardinality();
     }
 
     @Override
@@ -220,7 +239,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         associationLabel,
                         getName(),
                         IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                                .getGenerationConceptNameSingular(true) });
+                        .getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -442,9 +461,10 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
-        // TODO FIPS-4649 copy from template;
-        // if (newStatus == TemplateValueStatus.DEFINED) {
-        // }
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // safe the current cardinality from template
+            cardinality = getCardinality();
+        }
         TemplateValueStatus oldValue = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));

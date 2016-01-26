@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -30,6 +32,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
@@ -474,6 +477,91 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         IProductCmptLink newLink = new ProductCmptLink(container, partId);
         newLink.setAssociation(associationName);
         return newLink;
+    }
+
+    @Test
+    public void testGetMinCardinality() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        link.setCardinality(cardinality);
+
+        assertThat(link.getMinCardinality(), is(123));
+    }
+
+    @Test
+    public void testGetMaxCardinality() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        link.setCardinality(cardinality);
+
+        assertThat(link.getMaxCardinality(), is(321));
+    }
+
+    @Test
+    public void testGetDefaultCardinality() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        link.setCardinality(cardinality);
+
+        assertThat(link.getDefaultCardinality(), is(221));
+    }
+
+    @Test
+    public void testGetCardinality_Defined_NoTemplate() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        link.setCardinality(cardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        assertThat(link.getCardinality(), is(cardinality));
+    }
+
+    @Test
+    public void testGetCardinality_Inherited_WithTemplate() throws Exception {
+        Cardinality templateCardinality = new Cardinality(123, 321, 221);
+        Cardinality linkCardinality = new Cardinality(2, 5, 3);
+        IProductCmptLink templateLink = createTemplateLink();
+        templateLink.setCardinality(templateCardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        link.setCardinality(linkCardinality);
+
+        assertThat(link.getCardinality(), is(linkCardinality));
+    }
+
+    @Test
+    public void testGetCardinality_Undefined() throws Exception {
+        productCmpt.setTemplate("AnyTemplate");
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        link.setCardinality(cardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+
+        assertThat(link.getCardinality(), is(new Cardinality(0, 1, 0)));
+    }
+
+    @Test
+    public void testGetCardinality_Inherited() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        IProductCmptLink templateLink = createTemplateLink();
+        templateLink.setCardinality(cardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        assertThat(link.getCardinality(), is(cardinality));
+    }
+
+    @Test
+    public void testSetTemplateValueStatus_CopyCardinality() throws Exception {
+        Cardinality templateCardinality = new Cardinality(123, 321, 221);
+        Cardinality linkCardinality = new Cardinality(2, 5, 3);
+        link.setCardinality(linkCardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        IProductCmptLink templateLink = createTemplateLink();
+        templateLink.setCardinality(templateCardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        assertThat(link.getCardinality(), is(templateCardinality));
+    }
+
+    protected IProductCmptLink createTemplateLink() throws CoreException {
+        ProductCmpt template = newProductTemplate(productCmptType, "Template");
+        productCmpt.setTemplate(template.getQualifiedName());
+        IProductCmptLink templateLink = template.getProductCmptGeneration(0).newLink("CoverageType");
+        return templateLink;
     }
 
 }

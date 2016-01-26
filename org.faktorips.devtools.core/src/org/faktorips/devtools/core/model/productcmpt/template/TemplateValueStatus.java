@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.model.productcmpt.template;
 import java.util.Arrays;
 import java.util.List;
 
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
 
 /**
@@ -42,14 +43,20 @@ public enum TemplateValueStatus {
     },
 
     /**
-     * For template property values only. Indicates that the property will not be used by this
+     * This status applies only to property values in templates and to links in both product
+     * components and templates.
+     * <p>
+     * For a template's property the status indicates that the property will not be used by the
      * template (and its children). The property is regarded as "undefined". Thus child templates or
-     * product components can no longer inherit said value and must define it explicitly.
+     * product components cannot inherit said value and must explicitly define their own values.
+     * <p>
+     * For links the status indicates that the link was inherited from a template but was removed
+     * from the child template or the child product component.
      */
     UNDEFINED("undefined") { //$NON-NLS-1$
         @Override
         public boolean isAllowedStatus(ITemplatedProperty value) {
-            return value.getTemplatedPropertyContainer().isProductTemplate();
+            return value.getTemplatedPropertyContainer().isProductTemplate() || value instanceof IProductCmptLink;
         }
     };
 
