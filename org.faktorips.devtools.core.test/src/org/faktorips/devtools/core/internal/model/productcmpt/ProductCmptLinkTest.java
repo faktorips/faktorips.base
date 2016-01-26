@@ -168,19 +168,19 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(0);
         MessageList ml = link.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MISSING_MAX_CARDINALITY));
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+        assertNotNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
         link.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+        assertNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
         link.setMinCardinality(2);
         ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+        assertNotNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
 
         link.setMaxCardinality(3);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+        assertNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
 
         // min-max validations according to MTB#515
 
@@ -196,6 +196,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         policyAssociation.setMaxCardinality(1);
         link.setMinCardinality(1);
         link.setMaxCardinality(2);
+        link.setDefaultCardinality(1);
         ml = link.validate(ipsProject);
         assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
@@ -242,7 +243,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
         secondLink.setMinCardinality(1);
-        secondLink.setMaxCardinality(IProductCmptLink.CARDINALITY_MANY);
+        secondLink.setMaxCardinality(Cardinality.CARDINALITY_MANY);
         ml = link.validate(ipsProject);
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
         assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));

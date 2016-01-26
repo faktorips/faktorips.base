@@ -64,6 +64,7 @@ public class Messages extends NLS {
     public static String TableAccessFunctionFlFunctionAdapter_msgErrorDuringCodeGeneration;
 
     public static String ProductCmptRelation_msgNoRelationDefined;
+    public static String ProductCmptRelation_msgMinCardinalityIsLessThan0;
     public static String ProductCmptRelation_msgMaxCardinalityIsLessThan1;
     public static String ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
     public static String ProductCmptLink_msgChaningOverTimeMismatch_partOfComponent;

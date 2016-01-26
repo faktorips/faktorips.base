@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
+import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
@@ -29,11 +30,10 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITe
 
     public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public static final String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
+    public static final String PROPERTY_CARDINALITY = "cardinality"; //$NON-NLS-1$
     public static final String PROPERTY_MIN_CARDINALITY = "minCardinality"; //$NON-NLS-1$
     public static final String PROPERTY_DEFAULT_CARDINALITY = "defaultCardinality"; //$NON-NLS-1$
     public static final String PROPERTY_MAX_CARDINALITY = "maxCardinality"; //$NON-NLS-1$
-
-    public static final int CARDINALITY_MANY = IAssociation.CARDINALITY_MANY;
 
     /**
      * The name of the XML-tag used if this object is saved to XML.
@@ -61,11 +61,6 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITe
     public static final String MSGCODE_MISSING_MAX_CARDINALITY = MSGCODE_PREFIX + "MissingMaxCardinality"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the maximum cardinality is less than 1.
-     */
-    public static final String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1 = MSGCODE_PREFIX + "MaxCardinalityIsLessThan1"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the maximum cardinality exceeds the maximum
      * cardinality defined in the model.
      */
@@ -78,20 +73,6 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITe
      */
     public static final String MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN = MSGCODE_PREFIX
             + "MinCardinalityFallsBelowModelMin"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the default cardinality is less than the min- or
-     * greater than the max cardinality.
-     */
-    public static final String MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE = MSGCODE_PREFIX
-            + "DefaultCardinalityOutOfRange"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the maximum cardinality is less than the minimum
-     * cardinality.
-     */
-    public static final String MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN = MSGCODE_PREFIX
-            + "MaxCardinalityIsLessThanMin"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the maximum cardinality is less than the minimum
@@ -183,34 +164,44 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITe
     public IProductCmpt findTarget(IIpsProject ipsProject) throws CoreException;
 
     /**
-     * Returns the minimum number of target instances required in this relation.
+     * Returns the cardinality of target instances in this link
+     */
+    public Cardinality getCardinality();
+
+    /**
+     * Set the cardinality of target instances in this link
+     */
+    public void setCardinality(Cardinality cardinality);
+
+    /**
+     * Returns the minimum number of target instances required by this link.
      */
     public int getMinCardinality();
 
     /**
-     * Sets the minimum number of target instances required in this relation.
+     * Sets the minimum number of target instances required by this link.
      */
     public void setMinCardinality(int newValue);
 
     /**
-     * returns the default number of target instances in this relation.
+     * returns the default number of target instances in this link.
      */
     public int getDefaultCardinality();
 
     /**
-     * Sets the default number of target instances in this relation.
+     * Sets the default number of target instances in this link.
      */
     public void setDefaultCardinality(int newValue);
 
     /**
      * Returns the maximum number of target instances allowed in this relation. If the number is not
-     * limited CARDINALITY_MANY is returned.
+     * limited {@link Cardinality#CARDINALITY_MANY} is returned.
      */
     public int getMaxCardinality();
 
     /**
      * Sets the maximum number of target instances allowed in this relation. An unlimited number is
-     * represented by CARDINALITY_MANY.
+     * represented by {@link Cardinality#CARDINALITY_MANY}.
      */
     public void setMaxCardinality(int newValue);
 

@@ -40,7 +40,7 @@ public class CardinalityRange extends IntegerRange {
      */
     private static final long serialVersionUID = -6655684714703290189L;
 
-    private Integer defaultCardinality;
+    private final Integer defaultCardinality;
 
     /**
      * Constructs a {@link CardinalityRange} with the given lower and upper bounds as well as the
