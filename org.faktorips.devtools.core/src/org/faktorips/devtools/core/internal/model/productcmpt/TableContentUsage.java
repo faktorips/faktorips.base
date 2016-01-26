@@ -130,7 +130,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return getPropertyValueContainer().getProductCmpt();
     }
 
-    private IProductCmptType getProductCmptType(IIpsProject ipsProject) throws CoreException {
+    private IProductCmptType getProductCmptType(IIpsProject ipsProject) {
         return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
