@@ -97,10 +97,12 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
+        productCmpt.setTemplate("anyTmpl");
         link = generation.newLink("coverage");
         link.setTarget("newTarget");
         link.setMinCardinality(2);
         link.setMaxCardinality(3);
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         Element element = link.toXml(newDocument());
 
         IProductCmptLink copy = new ProductCmptLink(productCmpt, "asd");
@@ -110,6 +112,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals("coverage", copy.getAssociation());
         assertEquals(2, copy.getMinCardinality());
         assertEquals(3, copy.getMaxCardinality());
+        assertEquals(TemplateValueStatus.INHERITED, link.getTemplateValueStatus());
 
         link.setMaxCardinality(Integer.MAX_VALUE);
         element = link.toXml(newDocument());
@@ -119,6 +122,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testInitFromXml() {
+        productCmpt.setTemplate("anyTmpl");
         link.initFromXml((Element)getTestDocument().getDocumentElement()
                 .getElementsByTagName(IProductCmptLink.TAG_NAME).item(0));
         assertEquals("42", link.getId());
@@ -126,6 +130,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals("FullCoveragePlus", link.getTarget());
         assertEquals(2, link.getMinCardinality());
         assertEquals(3, link.getMaxCardinality());
+        assertEquals(TemplateValueStatus.INHERITED, link.getTemplateValueStatus());
 
         link.initFromXml((Element)getTestDocument().getDocumentElement()
                 .getElementsByTagName(IProductCmptLink.TAG_NAME).item(1));

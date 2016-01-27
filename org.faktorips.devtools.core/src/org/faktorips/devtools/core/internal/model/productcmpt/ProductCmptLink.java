@@ -349,6 +349,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             }
         }
         cardinality = new Cardinality(minCardinality, maxCardinality, defaultCardinality);
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
@@ -365,6 +366,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         } else {
             element.setAttribute(PROPERTY_MAX_CARDINALITY, Integer.toString(card.getMax()));
         }
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
