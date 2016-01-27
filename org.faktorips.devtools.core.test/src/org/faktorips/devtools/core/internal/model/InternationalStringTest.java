@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -30,7 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import org.faktorips.abstracttest.test.XmlAbstractTestCase;
 import org.faktorips.values.LocalizedString;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -72,8 +72,7 @@ public class InternationalStringTest extends XmlAbstractTestCase {
         internationalString.add(localizedString);
 
         Collection<LocalizedString> values = internationalString.values();
-        assertThat(values,
-                JUnitMatchers.<LocalizedString> hasItem(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY)));
+        assertThat(values, hasItem(new LocalizedString(Locale.GERMAN, StringUtils.EMPTY)));
     }
 
     @Test

@@ -113,7 +113,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
                 createFolderIfNotThere((IFolder)parent);
             }
             file.create(new ByteArrayInputStream("".getBytes()), true, null); //$NON-NLS-1$
-            file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+            file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             return true;
         }
 
@@ -143,7 +143,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
                 createFolderIfNotThere((IFolder)parent);
             }
             folder.create(true, true, null);
-            folder.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+            folder.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
             return true;
         }
         return false;
@@ -161,6 +161,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the localized text for the provided key. Calling this method is only allowed during
      * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
      * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
+     * 
      * @param key the key that identifies the requested text
      */
     public String getLocalizedText(String key) {
@@ -182,6 +183,7 @@ public abstract class AbstractArtefactBuilder implements IIpsArtefactBuilder {
      * Returns the localized text for the provided key. Calling this method is only allowed during
      * the build cycle. If it is called outside the build cycle a RuntimeException is thrown. In
      * addition if no LocalizedStringSet has been set to this builder a RuntimeException is thrown.
+     * 
      * @param key the key that identifies the requested text
      * @param replacement an indicated region within the text is replaced by the string
      *            representation of this value

@@ -120,7 +120,7 @@ public class EnumPropertyBuilder extends AbstractArtefactBuilder {
     private void createFileIfNotTher(IFile file) throws CoreException {
         if (!file.exists()) {
             file.create(new ByteArrayInputStream("".getBytes()), true, null);
-            file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived());
+            file.setDerived(buildsDerivedArtefacts() && getBuilderSet().isMarkNoneMergableResourcesAsDerived(), null);
         }
     }
 

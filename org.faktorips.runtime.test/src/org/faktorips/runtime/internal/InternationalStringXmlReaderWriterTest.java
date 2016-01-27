@@ -11,7 +11,7 @@
 package org.faktorips.runtime.internal;
 
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItem;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

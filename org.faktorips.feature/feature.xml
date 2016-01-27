@@ -273,7 +273,7 @@ Benutzerschnittstelle zu entfernen oder zu ändern.
          unpack="false"/>
 
    <plugin
-         id="commons-collections"
+         id="org.apache.commons.collections"
          download-size="0"
          install-size="0"
          version="0.0.0"

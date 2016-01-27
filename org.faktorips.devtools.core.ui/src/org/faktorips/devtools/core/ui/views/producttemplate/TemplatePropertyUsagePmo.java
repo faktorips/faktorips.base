@@ -204,12 +204,12 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
     /** Returns the children of the given node that hold product components (i.e. not templates). */
     private List<Node<IProductCmpt>> getProductNodes(Node<IProductCmpt> node) {
-        return FluentIterable.from(node.getChildren()).filter(Predicates.not(isTemplate())).toImmutableList();
+        return FluentIterable.from(node.getChildren()).filter(Predicates.not(isTemplate())).toList();
     }
 
     /** Returns the children of the given node that hold product templates. */
     private List<Node<IProductCmpt>> getTemplateNodes(Node<IProductCmpt> node) {
-        return FluentIterable.from(node.getChildren()).filter(isTemplate()).toImmutableList();
+        return FluentIterable.from(node.getChildren()).filter(isTemplate()).toList();
     }
 
     /** Returns this PMO's property. */

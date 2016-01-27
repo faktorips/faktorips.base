@@ -880,11 +880,11 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         configElement.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         configElement.setPolicyCmptTypeAttribute(attr.getName());
 
-        assertThat(configElement.getValueSet(), is(DelegatingValueSet.class));
+        assertThat(configElement.getValueSet(), instanceOf(DelegatingValueSet.class));
 
         configElement.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
-        assertThat(configElement.getValueSet(), is(UnrestrictedValueSet.class));
+        assertThat(configElement.getValueSet(), instanceOf(UnrestrictedValueSet.class));
     }
 
     private IConfigElement createTemplateConfigElement() throws CoreException {

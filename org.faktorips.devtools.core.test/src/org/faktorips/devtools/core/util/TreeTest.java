@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.util;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.hasItems;
 
 import com.google.common.base.Functions;
 
