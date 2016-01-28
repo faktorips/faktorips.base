@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.model.productcmpt;
 
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -27,13 +26,6 @@ public interface IPropertyValue extends IIpsObjectPart, ITemplatedProperty {
 
     /** Prefix for all message codes of this class. */
     public static final String MSGCODE_PREFIX = "PROPERTYVALUE-"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that this property value's template status is invalid.
-     * 
-     * @see TemplateValueSettings
-     */
-    public static final String MSGCODE_INVALID_TEMPLATE_STATUS = MSGCODE_PREFIX + "InvalidTemplateStatus"; //$NON-NLS-1$
 
     /**
      * Returns the name of the product definition property, this is a value of.

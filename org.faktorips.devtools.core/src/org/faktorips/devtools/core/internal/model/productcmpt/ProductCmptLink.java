@@ -225,6 +225,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
             validateChangingOverTimeProperty(list, associationObj);
         }
+        list.add(templateValueSettings.validate(this, ipsProject));
     }
 
     private void validateChangingOverTimeProperty(MessageList list, IProductCmptTypeAssociation associationObj) {

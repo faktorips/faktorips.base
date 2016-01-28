@@ -21,6 +21,9 @@ public interface ITemplatedProperty {
     /** The name of the template value status property. */
     public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
 
+    /** Validation message code to indicate that this property's template status is invalid. */
+    public static final String MSGCODE_INVALID_TEMPLATE_VALUE_STATUS = "TEMPLATEDPROPERTY-InvalidTemplateValueStatus"; //$NON-NLS-1$
+
     /**
      * Sets this property's template status (e.g. whether it is inherited from a parent template or
      * not).

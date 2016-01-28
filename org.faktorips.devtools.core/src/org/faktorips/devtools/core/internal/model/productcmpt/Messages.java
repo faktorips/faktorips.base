@@ -99,8 +99,10 @@ public class Messages extends NLS {
     public static String TableContentUsage_msgUnknownStructureUsage;
     public static String TableContentUsage_msgUnknownTableContent;
     public static String TableContentUsage_msgInvalidTableContent;
-    public static String TemplateStatusHandler_Msg_ExcludeNotAllowedInProductCmpt;
-    public static String TemplateStatusHandler_Msg_noInheritableValueFound;
+    public static String TemplateValueSettings_msgExcludeNotAllowedInProductCmpt;
+    public static String TemplateValueSettings_msgNoInheritableValueFound;
+    public static String TemplateValueSettings_msgNoInheritableLinkFound;
+    public static String TemplateValueSettings_msgNoDeletableLinkFound;
 
     public static String DefaultRuntimeIdStrategy_msgRuntimeIdNotValid;
     public static String MultiValueHolder_AtLeastOneInvalidValueMessageText;
