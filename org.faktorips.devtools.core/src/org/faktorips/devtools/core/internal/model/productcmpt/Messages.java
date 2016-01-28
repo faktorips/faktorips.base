@@ -53,7 +53,6 @@ public class Messages extends NLS {
     public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DatatypeOfParameterNotFound;
     public static String FormulaTestInputValue_FormulaTestInputValue_ValidationMessage_DataypeNotFound;
 
-    public static String ProductCmptGeneration_msgPropertyNotConfigured;
     public static String ProductCmptGeneration_msgNoGenerationInLinkedTargetForEffectiveDate;
     public static String ProductCmptGeneration_msgTemplateNotFound;
     public static String ProductCmptGeneration_msgNotEnoughRelations;
@@ -84,8 +83,6 @@ public class Messages extends NLS {
     public static String DateBasedProductCmptNamingStrategy_msgWrongFormat;
 
     public static String ProductCmpt_msgInvalidTypeHierarchy;
-    public static String ProductCmpt_msgInvalidGenerations;
-    public static String ProductCmpt_msgPropertyNotConfigured;
 
     public static String FormulaTestInputValue_CoreException_WrongIdentifierForParameter;
     public static String FormulaTestInputValue_ValidationMessage_FormulaParameterNotFound;
@@ -110,5 +107,6 @@ public class Messages extends NLS {
 
     public static String AttributeValue_NotMultiLingual;
     public static String AttributeValue_MultiLingual;
+    public static String ProductCmpt_Error_DifferencesToModel0;
 
 }

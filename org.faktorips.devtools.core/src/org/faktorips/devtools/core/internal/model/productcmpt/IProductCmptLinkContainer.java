@@ -176,4 +176,7 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
 
+    @Override
+    public IProductCmptLinkContainer findTemplate(IIpsProject ipsProject);
+
 }

@@ -92,10 +92,9 @@ public class TemplateValidations {
         if (parentTemplate == null || !parentTemplate.isProductTemplate()) {
             return;
         }
-
         String text = NLS.bind(Messages.TemplateValidations_warning_mutlipleTemplatesWithSameType,
                 StringUtils.trimToEmpty(templateName));
-        Message warning = Message.newWarning(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE, text, null, null);
+        Message warning = Message.newWarning(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE, text);
         validateTemplateTypeDiffers(templateType, parentTemplate, warning, list, ipsProject);
     }
 

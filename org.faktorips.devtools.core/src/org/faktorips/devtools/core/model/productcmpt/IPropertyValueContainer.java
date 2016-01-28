@@ -113,4 +113,7 @@ public interface IPropertyValueContainer extends IProductPartsContainer, ITempla
      */
     public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
+    @Override
+    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
+
 }

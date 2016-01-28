@@ -51,7 +51,7 @@ public interface ITemplatedPropertyContainer {
      * @param ipsProject The project that should be used to search for the template
      * @return The property container that is specified as the template of this property container
      */
-    public IPropertyValueContainer findTemplate(IIpsProject ipsProject);
+    public ITemplatedPropertyContainer findTemplate(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if properties of this container are used in a template hierarchy,

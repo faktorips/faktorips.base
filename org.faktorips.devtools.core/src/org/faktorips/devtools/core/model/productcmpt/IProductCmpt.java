@@ -75,19 +75,6 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public static final String MSGCODE_INCONSISTENT_TEMPLATE_TYPE = MSGCODE_PREFIX + "InconsistTemplateType"; //$NON-NLS-1$
 
     /**
-     * Validation message code that indicates if the product component has invalid generations. This
-     * could be in case when the product component does not allow, but still has generations.
-     */
-    public static final String MSGCODE_INVALID_GENERATIONS = MSGCODE_PREFIX + "InvalidGenerations"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the product component type for this product
-     * component contains an attribute, method or tableStructureUsage that has no corresponding
-     * property configured in this generation.
-     */
-    public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the template hierarchy for this template contains a
      * cycle.
      */
@@ -98,6 +85,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      */
     public static final String MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE = MSGCODE_PREFIX
             + "MultipleTemplatesWithSameType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the template for the product this generation is for
+     * could not be found.
+     */
+    public static final String MSGCODE_DIFFERENCES_TO_MODEL = MSGCODE_PREFIX + "DifferencesToModel"; //$NON-NLS-1$
 
     /**
      * Returns the product component's generation at the specified index.

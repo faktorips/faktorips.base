@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
+
 /**
  * A delta entry describes a single difference between a product component generation and the type
  * it is based on. For example the type might contain a new attribute but the product component has
@@ -23,6 +25,11 @@ public interface IDeltaEntry {
      * Returns the entry's type.
      */
     public DeltaType getDeltaType();
+
+    /**
+     * Returns the class of the part that will be added, deleted or modified by the delta fix.
+     */
+    public Class<? extends IpsObjectPart> getPartType();
 
     /**
      * Returns a detailed description, especially for mismatches.

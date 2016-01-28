@@ -35,11 +35,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -508,16 +505,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             list.add(new Message(MSGCODE_NO_TEMPLATE, Messages.ProductCmptGeneration_msgTemplateNotFound,
                     Message.ERROR, this));
             return;
-        }
-
-        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
-        IDeltaEntry[] entries = delta.getEntries();
-        for (IDeltaEntry entrie : entries) {
-            if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-                String text = NLS.bind(Messages.ProductCmptGeneration_msgPropertyNotConfigured,
-                        ((IDeltaEntryForProperty)entrie).getDescription());
-                list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
-            }
         }
 
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);

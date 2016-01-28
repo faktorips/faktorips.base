@@ -44,10 +44,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -284,27 +281,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     }
 
     private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) throws CoreException {
-        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
-        IDeltaEntry[] entries = delta.getEntries();
-        for (IDeltaEntry entry : entries) {
-            validateNotConfiguredProperties(list, entry);
-            validateInvalidGenerations(list, entry);
-        }
-    }
-
-    private void validateNotConfiguredProperties(MessageList list, IDeltaEntry entry) {
-        if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-            String text = NLS.bind(Messages.ProductCmpt_msgPropertyNotConfigured,
-                    ((IDeltaEntryForProperty)entry).getDescription());
-            list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
-        }
-    }
-
-    private void validateInvalidGenerations(MessageList list, IDeltaEntry entry) {
-        if (entry.getDeltaType() == DeltaType.INVALID_GENERATIONS) {
-            String text = NLS.bind(Messages.ProductCmpt_msgInvalidGenerations, IpsPlugin.getDefault()
-                    .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural(true));
-            list.add(new Message(MSGCODE_INVALID_GENERATIONS, text, Message.WARNING, this));
+        if (containsDifferenceToModel(ipsProject)) {
+            list.newError(
+                    MSGCODE_DIFFERENCES_TO_MODEL,
+                    Messages.ProductCmpt_Error_DifferencesToModel0,
+                    this);
         }
     }
 
@@ -357,7 +338,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                    IpsObjectType.TABLE_CONTENTS));
+                            IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }

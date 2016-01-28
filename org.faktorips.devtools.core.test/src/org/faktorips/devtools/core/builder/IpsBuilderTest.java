@@ -601,8 +601,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         TestIpsArtefactBuilderSet builderSet = new TestIpsArtefactBuilderSet(new IIpsArtefactBuilder[] { builder });
         builderSet.setIpsProject(ipsProject);
         ((IpsModel)ipsProject.getIpsModel())
-                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                        builderSet) });
+        .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                builderSet) });
 
         IIpsObject ipsObject = this.newIpsObject(ipsProject, IpsObjectType.POLICY_CMPT_TYPE, "IpsObjectToRemove");
         ipsProject.getProject().build(IncrementalProjectBuilder.INCREMENTAL_BUILD, new NullProgressMonitor());
@@ -1010,11 +1010,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
         ipsObjectPath.setUsingManifest(false);
         ipsProject.setIpsObjectPath(ipsObjectPath);
 
-        list.newError("1111", "1111", null, null);
+        list.newError("1111", "1111");
         list.newError("3333", "3333", ipsObjectPath, "3333");
         list.newError("4444", "4444", ipsObjectPath.getEntries()[0], "4444");
         list.newError("5555", "5555", ipsObjectPath.getEntries()[0], "5555");
-        list.newError("2222", "2222", null, null);
+        list.newError("2222", "2222");
 
         IFile propertiesFile = spy(ipsProject.getIpsProjectPropertiesFile());
 
@@ -1061,11 +1061,11 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         MessageList messages = new MessageList();
 
-        messages.newError("1111", "1111", null, null);
+        messages.newError("1111", "1111");
         messages.newError("2222", "2222", ipsObjectPath, "2222");
         messages.newError("3333", "3333", ipsObjectPath.getEntries()[0], "3333");
         messages.newError("4444", "4444", ipsObjectPath.getEntries()[0], "4444");
-        messages.newError("5555", "5555", null, null);
+        messages.newError("5555", "5555");
 
         ipsBuilder.createMarkersForIpsProjectProperties(messages, spiedIpsProject);
 
@@ -1103,8 +1103,8 @@ public class IpsBuilderTest extends AbstractIpsPluginTest {
 
         MessageList messages = new MessageList();
 
-        messages.newError("1111", "1111", null, null);
-        messages.newError("5555", "5555", null, null);
+        messages.newError("1111", "1111");
+        messages.newError("5555", "5555");
 
         ipsBuilder.createMarkersForIpsProjectProperties(messages, spiedIpsProject);
 

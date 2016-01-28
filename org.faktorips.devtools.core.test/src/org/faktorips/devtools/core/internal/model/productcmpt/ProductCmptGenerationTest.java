@@ -401,21 +401,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateAttributeWithMissingConfigElement() throws Exception {
-        IProductCmpt product = newProductCmpt(productCmptType, "EmptyTestProduct");
-        IProductCmptGeneration gen = product.getProductCmptGeneration(0);
-        MessageList msgList = gen.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
-
-        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
-        attribute.setName("test");
-        msgList = gen.validate(ipsProject);
-        assertFalse(msgList.isEmpty());
-        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_PROPERTY_NOT_CONFIGURED));
-    }
-
-    @Test
     public void testCanCreateValidRelation() throws Exception {
         assertFalse(generation.canCreateValidLink(null, null, ipsProject));
         assertFalse(generation.canCreateValidLink(productCmpt, null, ipsProject));

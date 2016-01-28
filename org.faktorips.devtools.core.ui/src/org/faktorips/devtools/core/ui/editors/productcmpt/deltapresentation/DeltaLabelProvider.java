@@ -17,12 +17,10 @@ import org.eclipse.jface.resource.ResourceManager;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
-import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
+import org.faktorips.devtools.core.model.productcmpt.DeltaType.Kind;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
-import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.deltapresentation.DeltaCompositeIcon;
 
@@ -44,79 +42,56 @@ public class DeltaLabelProvider extends LabelProvider {
         ImageDescriptor descriptor = null;
         if (element instanceof DeltaTypeWrapper) {
             descriptor = getBaseImage(((DeltaTypeWrapper)element).getDeltaType());
-        } else if (element instanceof IDeltaEntryForProperty) {
-            descriptor = getImageDescriptorForDeltaEntryForProperty((IDeltaEntryForProperty)element);
         } else if (element instanceof IDeltaEntry) {
             descriptor = getImageDescriptorForDeltaEntry((IDeltaEntry)element);
         }
         return getImageForDescriptor(element, descriptor);
     }
 
+    // CSOFF: CyclomaticComplexityCheck
     private ImageDescriptor getBaseImage(DeltaType deltaType) {
-        if (deltaType == DeltaType.MISSING_PROPERTY_VALUE) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.VALUE_WITHOUT_PROPERTY) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.PROPERTY_TYPE_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.VALUE_SET_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.LINK_WITHOUT_ASSOCIATION) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.LINK_CHANGING_OVER_TIME_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
-        } else if (deltaType == DeltaType.VALUE_HOLDER_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.HIDDEN_ATTRIBUTE_MISMATCH) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeHiddenAttributeMismatch.gif"); //$NON-NLS-1$
-        } else if (deltaType == DeltaType.INVALID_GENERATIONS) {
-            return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeUnusedGeneration.gif"); //$NON-NLS-1$
-        } else {
-            return null;
+        switch (deltaType) {
+            case MISSING_PROPERTY_VALUE:
+            case VALUE_HOLDER_MISMATCH:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeMissingPropertyValue.gif"); //$NON-NLS-1$
+            case VALUE_WITHOUT_PROPERTY:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueWithoutProperty.gif"); //$NON-NLS-1$
+            case PROPERTY_TYPE_MISMATCH:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypePropertyTypeMismatch.gif"); //$NON-NLS-1$
+            case VALUE_SET_MISMATCH:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeValueSetMismatch.gif"); //$NON-NLS-1$
+            case LINK_WITHOUT_ASSOCIATION:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeLinkWithoutAssociation.gif"); //$NON-NLS-1$
+            case HIDDEN_ATTRIBUTE_MISMATCH:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeHiddenAttributeMismatch.gif"); //$NON-NLS-1$
+            case INVALID_GENERATIONS:
+                return IpsUIPlugin.getImageHandling().createImageDescriptor("DeltaTypeUnusedGeneration.gif"); //$NON-NLS-1$
+            case LINK_CHANGING_OVER_TIME_MISMATCH:
+            case MISSING_TEMPLATE_LINK:
+            case REMOVED_TEMPLATE_LINK:
+                return IpsUIPlugin.getImageHandling().getDefaultImageDescriptor(ProductCmptTypeAssociation.class);
+            default:
+                return null;
         }
-    }
-
-    private ImageDescriptor getImageDescriptorForDeltaEntryForProperty(IDeltaEntryForProperty entry) {
-        ImageDescriptor descriptor;
-        Image baseImage = getBaseImage(entry.getPropertyType());
-        if (entry.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-            descriptor = DeltaCompositeIcon.createAddImage(baseImage);
-        } else if (entry.getDeltaType() == DeltaType.VALUE_WITHOUT_PROPERTY) {
-            descriptor = DeltaCompositeIcon.createDeleteImage(baseImage);
-        } else {
-            descriptor = DeltaCompositeIcon.createModifyImage(baseImage);
-        }
-        return descriptor;
-    }
-
-    private Image getBaseImage(PropertyValueType propertyType) {
-        return propertyType == null ? null : IpsUIPlugin.getImageHandling().getDefaultImage(
-                propertyType.getImplementationClass());
+        // CSON: CyclomaticComplexityCheck
     }
 
     private ImageDescriptor getImageDescriptorForDeltaEntry(IDeltaEntry deltaEntry) {
-        ImageDescriptor baseImageDescriptor = getBaseImage(deltaEntry.getDeltaType());
-        baseImageDescriptor = getChangingOverTimeDecorationIfRequired(deltaEntry, baseImageDescriptor);
-        return baseImageDescriptor;
+        Image baseImage = getBaseImage(deltaEntry);
+        return getOverlayedImageDescriptor(baseImage, deltaEntry.getDeltaType().getKind());
     }
 
-    private ImageDescriptor getChangingOverTimeDecorationIfRequired(IDeltaEntry deltaEntry,
-            ImageDescriptor baseImageDescriptor) {
-        ImageDescriptor resultDescriptor = baseImageDescriptor;
-        if (deltaEntry.getDeltaType() == DeltaType.LINK_CHANGING_OVER_TIME_MISMATCH) {
-            LinkChangingOverTimeMismatchEntry mismatchEntry = (LinkChangingOverTimeMismatchEntry)deltaEntry;
-            resultDescriptor = getChangingOverTimeMismatchDescriptor(mismatchEntry, baseImageDescriptor);
-        }
-        return resultDescriptor;
+    private Image getBaseImage(IDeltaEntry deltaEntry) {
+        return IpsUIPlugin.getImageHandling().getDefaultImage(deltaEntry.getPartType());
     }
 
-    private ImageDescriptor getChangingOverTimeMismatchDescriptor(LinkChangingOverTimeMismatchEntry mismatchEntry,
-            ImageDescriptor baseImageDescriptor) {
-        Image baseImage = (Image)resourceManager.get(baseImageDescriptor);
-        if (mismatchEntry.isMovingLink()) {
-            return DeltaCompositeIcon.createModifyImage(baseImage);
-        } else {
+    private ImageDescriptor getOverlayedImageDescriptor(Image baseImage, DeltaType.Kind kind) {
+        if (kind == Kind.ADD) {
+            return DeltaCompositeIcon.createAddImage(baseImage);
+        } else if (kind == Kind.DELETE) {
             return DeltaCompositeIcon.createDeleteImage(baseImage);
+        } else {
+            return DeltaCompositeIcon.createModifyImage(baseImage);
         }
     }
 

@@ -23,7 +23,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 
 public interface IProductCmptGeneration extends IIpsObjectGeneration, IPropertyValueContainer,
-IProductCmptLinkContainer {
+        IProductCmptLinkContainer {
 
     /**
      * Prefix for all message codes of this class.
@@ -31,58 +31,10 @@ IProductCmptLinkContainer {
     public static final String MSGCODE_PREFIX = "PRODUCTCMPTGEN-"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the generation contains less relations of a specific
-     * relation type than required by the relation type. E.g. a motor product must contain at least
-     * one relation to a collision coverage component, but it does not.
-     * <p>
-     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
-     * The first one contains the generation and the second one the relation type as string. In both
-     * cases the property part of the ObjectProperty is empty.
-     * 
-     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_NOT_ENOUGH_RELATIONS}
-     *             instead.
-     */
-    @Deprecated
-    public static final String MSGCODE_NOT_ENOUGH_RELATIONS = MSGCODE_PREFIX + "NotEnoughRelations"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the generation contains more relations of a specific
-     * relation type than specified by the relation type. E.g. a motor product can contain at most
-     * one relation to a collision coverage component, but contains two (or more) relations to
-     * collision coverage components.
-     * <p>
-     * Note that the message returned by the validate method contains two (Invalid)ObjectProperties.
-     * The first one contains the generation and the second one the relation type as string. In both
-     * cases the property part of the ObjectProperty is empty.
-     * 
-     * @deprecated As of 3.8. Use {@link IProductCmptLinkContainer#MSGCODE_TOO_MANY_RELATIONS}
-     *             instead.
-     */
-    @Deprecated
-    public static final String MSGCODE_TOO_MANY_RELATIONS = MSGCODE_PREFIX + "ToManyRelations"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that two or more relations of a specific type have the
-     * same target.
-     * 
-     * @deprecated As of 3.8. Use
-     *             {@link IProductCmptLinkContainer#MSGCODE_DUPLICATE_RELATION_TARGET} instead.
-     */
-    @Deprecated
-    public static final String MSGCODE_DUPLICATE_RELATION_TARGET = MSGCODE_PREFIX + "DuplicateRelationTarget"; //$NON-NLS-1$
-
-    /**
      * Validation message code to indicate that the template for the product this generation is for
      * could not be found.
      */
     public static final String MSGCODE_NO_TEMPLATE = MSGCODE_PREFIX + "NoTemplate"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that the product component type for this generation
-     * contains an attribute, method or tableStructureUsage that has no corresponding property
-     * configured in this generation.
-     */
-    public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
 
     /**
      * Validation message code to identify the message that informs about a link to a product

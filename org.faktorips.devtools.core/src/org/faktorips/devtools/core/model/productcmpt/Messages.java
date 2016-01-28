@@ -31,6 +31,8 @@ public class Messages extends NLS {
     public static String DeltaType_LinksWithWrongParent;
 
     public static String DeltaType_LinksNotFoundInTheModel;
+    public static String DeltaType_missingTemplateLink;
+
     public static String DeltaType_missingValue;
 
     public static String DeltaType_ConfigWithoutValidationRule;
@@ -52,6 +54,8 @@ public class Messages extends NLS {
     public static String DeltaType_multilingualMismatch;
 
     public static String DeltaType_invalidGenerations;
+
+    public static String DeltaType_removedTemplateLink;
 
     public static String TemplateValidations_error_templateCycle;
     public static String TemplateValidations_warning_mutlipleTemplatesWithSameType;

@@ -86,21 +86,11 @@ public class ProductCmptGenerationToTypeDeltaTest {
         cmptLinks.add(staticLink2);
         when(prodCmpt.getLinksAsList()).thenReturn(cmptLinks);
 
-        when(link1.getAssociation()).thenReturn("assoc1");
-        when(link1.getProductCmptLinkContainer()).thenReturn(gen);
-        when(link1.findTarget(any(IIpsProject.class))).thenReturn(target1);
-        when(link2.getAssociation()).thenReturn("assoc2");
-        when(link2.getProductCmptLinkContainer()).thenReturn(gen);
-        when(link2.findTarget(any(IIpsProject.class))).thenReturn(target2);
-        when(link3.getAssociation()).thenReturn("assoc2");
-        when(link3.getProductCmptLinkContainer()).thenReturn(gen);
-        when(link3.findTarget(any(IIpsProject.class))).thenReturn(target3);
-        when(staticLink1.getAssociation()).thenReturn("staticAssociation");
-        when(staticLink1.getProductCmptLinkContainer()).thenReturn(prodCmpt);
-        when(staticLink1.findTarget(any(IIpsProject.class))).thenReturn(target1);
-        when(staticLink2.getAssociation()).thenReturn("staticAssociation");
-        when(staticLink2.getProductCmptLinkContainer()).thenReturn(prodCmpt);
-        when(staticLink2.findTarget(any(IIpsProject.class))).thenReturn(target2);
+        setUpLink(link1, "assoc1", gen, target1);
+        setUpLink(link2, "assoc2", gen, target2);
+        setUpLink(link3, "assoc2", gen, target3);
+        setUpLink(staticLink1, "staticAssociation", prodCmpt, target1);
+        setUpLink(staticLink2, "staticAssociation", prodCmpt, target2);
 
         doReturn(type).when(delta).getProductCmptType();
         doReturn(ipsProject).when(delta).getIpsProject();
@@ -111,6 +101,16 @@ public class ProductCmptGenerationToTypeDeltaTest {
         when(gen.isContainerFor(assoc1)).thenReturn(true);
         when(gen.isContainerFor(assoc2)).thenReturn(true);
         when(prodCmpt.isContainerFor(staticAssociation)).thenReturn(true);
+    }
+
+    private void setUpLink(IProductCmptLink link,
+            String association,
+            IProductCmptLinkContainer container,
+            IProductCmpt target) throws CoreException {
+        when(link.getAssociation()).thenReturn(association);
+        when(link.getProductCmptLinkContainer()).thenReturn(container);
+        when(link.findTarget(any(IIpsProject.class))).thenReturn(target);
+        when(link.getTarget()).thenReturn("anyTargetName");
     }
 
     @Test
