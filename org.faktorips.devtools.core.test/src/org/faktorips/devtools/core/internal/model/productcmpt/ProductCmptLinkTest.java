@@ -10,7 +10,9 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -560,6 +562,77 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         assertThat(link.getCardinality(), is(templateCardinality));
+    }
+
+    @Test
+    public void testDelete_InheritedLinkIsSetToUndefined() throws CoreException {
+        IProductCmptLink templateLink = createTemplateLink();
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        // sanity check
+        assertThat(link.findTemplateProperty(ipsProject), is(templateLink));
+
+        link.delete();
+        assertThat(link.isDeleted(), is(false));
+        assertThat(link.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
+        assertThat(generation.getLinksAsList(), hasItem(link));
+    }
+
+    @Test
+    public void testDelete_DefinedLinkIsSetToUndefinedWhenTemplateIsPresent() throws CoreException {
+        IProductCmptLink templateLink = createTemplateLink();
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        // sanity check
+        assertThat(link.findTemplateProperty(ipsProject), is(templateLink));
+
+        link.delete();
+        assertThat(link.isDeleted(), is(false));
+        assertThat(link.getTemplateValueStatus(), is(TemplateValueStatus.UNDEFINED));
+        assertThat(generation.getLinksAsList(), hasItem(link));
+    }
+
+    @Test
+    public void testDelete_LinkIsDeletedIfNoTemplateLinkExists() throws CoreException {
+        // There is a template but no matching link
+        ProductCmpt template = newProductTemplate(productCmptType, "Template");
+        productCmpt.setTemplate(template.getQualifiedName());
+
+        // sanity check
+        assertThat(productCmpt.isUsingTemplate(), is(true));
+        assertThat(link.findTemplateProperty(ipsProject), is(nullValue()));
+        assertThat(generation.getLinksAsList(), hasItem(link));
+
+        link.delete();
+        assertThat(link.isDeleted(), is(true));
+        assertThat(generation.getLinksAsList().size(), is(0));
+    }
+
+    @Test
+    public void testDelete_LinkIsDeletedIfTemplateDoesNotExist() {
+        // The referenced template does not exist
+        productCmpt.setTemplate("There is no such template");
+
+        // sanity check
+        assertThat(productCmpt.isUsingTemplate(), is(true));
+        assertThat(link.findTemplateProperty(ipsProject), is(nullValue()));
+        assertThat(generation.getLinksAsList(), hasItem(link));
+
+        link.delete();
+        assertThat(link.isDeleted(), is(true));
+        assertThat(generation.getLinksAsList().size(), is(0));
+    }
+
+    @Test
+    public void testDelete_LinkIsDeletedIfNoTemplateExists() {
+        // sanity check
+        assertThat(productCmpt.isUsingTemplate(), is(false));
+        assertThat(link.findTemplateProperty(ipsProject), is(nullValue()));
+        assertThat(generation.getLinksAsList(), hasItem(link));
+
+        link.delete();
+        assertThat(link.isDeleted(), is(true));
+        assertThat(generation.getLinksAsList().size(), is(0));
     }
 
     protected IProductCmptLink createTemplateLink() throws CoreException {
