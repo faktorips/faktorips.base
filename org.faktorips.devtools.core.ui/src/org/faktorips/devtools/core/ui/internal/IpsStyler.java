@@ -55,6 +55,6 @@ public class IpsStyler extends Styler {
     public void applyStyles(TextStyle textStyle) {
         textStyle.foreground = foregroundColor.getColor();
         textStyle.strikeout = strikeout;
-
     }
+
 }

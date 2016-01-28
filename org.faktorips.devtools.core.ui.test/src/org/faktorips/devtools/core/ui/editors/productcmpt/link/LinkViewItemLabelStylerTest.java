@@ -75,6 +75,35 @@ public class LinkViewItemLabelStylerTest extends AbstractIpsPluginTest {
     }
 
     @Test
+    public void testGetStyledLabel_TemplatedNonConfiguredLink() throws CoreException {
+        IIpsProject project = newIpsProject();
+
+        IPolicyCmptType policyType = newPolicyAndProductCmptType(project, "PolicyType", "ProductType");
+        IProductCmptType type = policyType.findProductCmptType(project);
+
+        IProductCmptTypeAssociation association = type.newProductCmptTypeAssociation();
+        association.setMatchingAssociationSource(policyType.getQualifiedName());
+
+        IProductCmpt template = newProductTemplate(type, "Template");
+        IProductCmpt product = newProductCmpt(type, "Product");
+        product.setTemplate(template.getQualifiedName());
+
+        IProductCmptLink templateLink = template.newLink(association);
+        templateLink.setTarget("target");
+        templateLink.setCardinality(new Cardinality(1, 1, 1));
+
+        IProductCmptLink productLink = product.newLink(association);
+        productLink.setTarget("target");
+        productLink.setCardinality(new Cardinality(1, 1, 1));
+        productLink.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+
+        LinkViewItemLabelStyler styler = new LinkViewItemLabelStyler(new LinkViewItem(productLink));
+        StyledString label = styler.getStyledLabel();
+
+        assertThat(label.getString(), is("target" + LinkViewItemLabelStyler.INHERITED_SIGN));
+    }
+
+    @Test
     public void testGetStyledLabel_TemplatedLinkInherited() throws CoreException {
         IProductCmptLink productLink = createTemplatedLink();
 

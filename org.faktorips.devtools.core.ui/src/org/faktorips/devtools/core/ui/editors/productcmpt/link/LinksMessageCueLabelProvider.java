@@ -102,8 +102,9 @@ public class LinksMessageCueLabelProvider extends MessageCueLabelProvider {
             if (policyAssociation == null) {
                 return StringUtils.EMPTY;
             } else {
-                return StringUtil.getRangeString(policyAssociation.getMinCardinality(),
-                        policyAssociation.getMaxCardinality());
+                return StringUtil.BLANK
+                        + StringUtil.getRangeString(policyAssociation.getMinCardinality(),
+                                policyAssociation.getMaxCardinality());
             }
         }
 

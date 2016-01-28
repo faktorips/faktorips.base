@@ -19,10 +19,12 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiStatus;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
+import org.faktorips.util.StringUtil;
 
 public class LinkViewItemLabelStyler {
 
     static final String OVERWRITE_EQUAL_SIGN = " \u25CB"; //$NON-NLS-1$
+    static final String INHERITED_SIGN = "   \u25B3"; //$NON-NLS-1$
 
     private static final StyledString EMPTY_STYLED_STRING = new StyledString();
 
@@ -36,7 +38,11 @@ public class LinkViewItemLabelStyler {
     }
 
     public StyledString getStyledLabel() {
-        return styledName().append(styledLinkCardinality()).append(styledOverwrittenTemplateCardinality());
+        if (displayCardinality()) {
+            return styledName().append(styledLinkCardinality()).append(styledTemplateCardinality());
+        } else {
+            return styledName().append(styledInheritedTemplateSign());
+        }
     }
 
     private StyledString styledName() {
@@ -64,22 +70,14 @@ public class LinkViewItemLabelStyler {
         throw new IllegalStateException();
     }
 
-    private String formattedCardinality() {
-        if (displayCardinality()) {
-            return formattedCardinality(viewItem.getLink());
-        } else {
-            return StringUtils.EMPTY;
-        }
-    }
-
     /**
-     * Returns the styles string with the link's template cardinality. Returns an empty styled
-     * string if the link's association does not configure a policy association or if the template
-     * cardinality should not be displayed (e.g. because it the link's cardinality is already the
-     * inherited template cardinality).
+     * Returns the styled string with the link's template cardinality (if the link overwrites the
+     * template cardinality) or {@link #OVERWRITE_EQUAL_SIGN} (if the links inherits its cardinality
+     * from the template. Returns an empty styled string if the template cardinality should not be
+     * displayed.
      */
-    private StyledString styledOverwrittenTemplateCardinality() {
-        if (!displayOverwrittenTemplateCardinality()) {
+    private StyledString styledTemplateCardinality() {
+        if (!displayTemplateCardinality()) {
             return EMPTY_STYLED_STRING;
         } else if (status == TemplateValueUiStatus.OVERWRITE_EQUAL) {
             return new StyledString(OVERWRITE_EQUAL_SIGN);
@@ -87,6 +85,22 @@ public class LinkViewItemLabelStyler {
             String formattedTemplateCardinality = formattedTemplateCardinality();
             return new StyledString(formattedTemplateCardinality, IpsStyler.OVERWRITE_TEMPLATE_STYLER);
         }
+    }
+
+    /**
+     * Returns the styled string with the {@link #INHERITED_SIGN} if the link is inherited. Returns
+     * an empty styled string if the link is not inherited.
+     */
+    private StyledString styledInheritedTemplateSign() {
+        if (status == TemplateValueUiStatus.INHERITED) {
+            return new StyledString(INHERITED_SIGN, IpsStyler.TEMPLATE_STYLER);
+        } else {
+            return EMPTY_STYLED_STRING;
+        }
+    }
+
+    private String formattedCardinality() {
+        return formattedCardinality(viewItem.getLink());
     }
 
     private String formattedTemplateCardinality() {
@@ -100,19 +114,14 @@ public class LinkViewItemLabelStyler {
 
     /** Returns the cardinality of the given link as a formatted string. */
     private String formattedCardinality(IProductCmptLink link) {
-        return " " + link.getCardinality().format(); //$NON-NLS-1$
+        return StringUtil.BLANK + link.getCardinality().format();
     }
 
     /**
-     * Returns {@code true} if the link's template cardinality should be displayed, i.e. if the link
-     * has a template and does not inherit the template'S cardinality.
+     * Returns {@code true} if cardinalities should be displayed, i.e. if the link is configuring a
+     * policy association.
      */
     private boolean displayCardinality() {
-        return isConfiguringPolicyAssociation();
-    }
-
-    /** Returns {@code true} if the link configures a policy association. */
-    private boolean isConfiguringPolicyAssociation() {
         try {
             IProductCmptTypeAssociation productAsssociation = viewItem.getLink().findAssociation(ipsProject());
             return productAsssociation.findMatchingPolicyCmptTypeAssociation(ipsProject()) != null;
@@ -122,14 +131,11 @@ public class LinkViewItemLabelStyler {
     }
 
     /**
-     * Returns {@code true} if the link's template cardinality should be displayed, i.e. if the link
-     * is configuring a policy association, has a template and does not inherit the template's
+     * Returns {@code true} if the link's template cardinality for a policy configuring link should
+     * be displayed, i.e. if the link has a template and does not inherit the template's
      * cardinality.
      */
-    private boolean displayOverwrittenTemplateCardinality() {
-        if (!isConfiguringPolicyAssociation()) {
-            return false;
-        }
+    private boolean displayTemplateCardinality() {
         IProductCmptLink link = viewItem.getLink();
         return link.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
     }

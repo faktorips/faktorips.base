@@ -29,6 +29,8 @@ import org.apache.commons.lang.StringUtils;
  */
 public class StringUtil {
 
+    public static final String BLANK = " ";
+
     public static final String CAMEL_CASE_SEPERATORS = "[-_., ]";
 
     public static final String CHARSET_UTF8 = "UTF-8";
