@@ -54,7 +54,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
             Histogram<Object, IPropertyValue> histogram = pmo.getDefinedValuesHistogram();
             SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
             ImmutableList<TemplateUsageViewItem> elements = FluentIterable.from(definedAbsoluteDistribution.keySet())
-                    .transform(toViewItem(histogram)).toImmutableList();
+                    .transform(toViewItem(histogram)).toList();
             return getOrdering(elements).sortedCopy(elements).toArray();
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -127,7 +127,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 boolean sameAsTemplateValue = comparator.compare(value, templateValue) == 0;
                 Integer definedDist = definedAbsoluteDistribution.get(value);
                 BigDecimal distributionPercent = definedDist == null ? new BigDecimal(0) : new BigDecimal(definedDist)
-                        .multiply(new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
+                .multiply(new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
                 Set<IPropertyValue> children = histogram.getElements(value);
                 return new TemplateUsageViewItem(value, sameAsTemplateValue, distributionPercent, children);
             }

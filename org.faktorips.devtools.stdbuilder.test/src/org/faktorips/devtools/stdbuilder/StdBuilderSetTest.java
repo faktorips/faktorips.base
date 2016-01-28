@@ -167,7 +167,7 @@ public class StdBuilderSetTest extends AbstractStdBuilderTest {
         // Putting an arbitrary file into a sub folder of the derived destination folder.
         IFile file = baseDir.getFile("keep.txt");
         file.create(new ByteArrayInputStream("".getBytes()), true, null);
-        file.setDerived(false);
+        file.setDerived(false, null);
         assertTrue(file.exists());
 
         /*

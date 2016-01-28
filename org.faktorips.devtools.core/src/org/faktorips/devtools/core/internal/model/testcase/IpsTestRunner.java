@@ -114,7 +114,7 @@ public class IpsTestRunner implements IIpsTestRunner {
     }
 
     /** Shared instance of the test runner */
-    private static IpsTestRunner ipsTestRunner = new IpsTestRunner();
+    private static final IpsTestRunner ipsTestRunner = new IpsTestRunner();
 
     private int port;
     private IIpsProject ipsProject;
@@ -436,7 +436,7 @@ public class IpsTestRunner implements IIpsTestRunner {
                 confName = StringUtil.unqualifiedName(testName);
             }
         }
-        confName = manager.generateUniqueLaunchConfigurationNameFrom(confName);
+        confName = manager.generateLaunchConfigurationName(confName);
 
         ILaunchConfigurationType configType = getLaunchConfigType();
         trace("Create jobLaunch configuration: " + confName); //$NON-NLS-1$
