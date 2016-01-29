@@ -148,6 +148,9 @@ public abstract class ValueClassNameDatatype extends AbstractDatatype implements
             throw new UnsupportedOperationException("Datatype " + getQualifiedName() //$NON-NLS-1$
                     + " does not support comparison of values"); //$NON-NLS-1$
         }
+        if (areValuesEqual(valueA, valueB)) {
+            return 0;
+        }
         @SuppressWarnings("unchecked")
         Comparable<Object> valA = (Comparable<Object>)getValue(valueA);
         if (valA == null) {

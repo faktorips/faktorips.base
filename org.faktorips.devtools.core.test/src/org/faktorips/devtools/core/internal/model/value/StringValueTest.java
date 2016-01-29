@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.ValueDatatype;
 import org.junit.Test;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
@@ -88,4 +89,59 @@ public class StringValueTest extends AbstractIpsPluginTest {
         assertTrue(stringValue.equals(copy));
 
     }
+
+    @Test
+    public void testCompare_OtherType() throws Exception {
+        StringValue stringValue = new StringValue("abc");
+        InternationalStringValue internationalStringValue = new InternationalStringValue();
+
+        assertTrue(stringValue.compare(internationalStringValue, ValueDatatype.STRING) > 0);
+    }
+
+    @Test
+    public void testCompare_Equal() throws Exception {
+        StringValue stringValue1 = new StringValue("abc");
+        StringValue stringValue2 = new StringValue("abc");
+
+        assertTrue(stringValue1.compare(stringValue2, ValueDatatype.STRING) == 0);
+        assertTrue(stringValue2.compare(stringValue1, ValueDatatype.STRING) == 0);
+    }
+
+    @Test
+    public void testCompare_EqualNullContent() throws Exception {
+        StringValue stringValue1 = new StringValue(null);
+        StringValue stringValue2 = new StringValue(null);
+
+        assertTrue(stringValue1.compare(stringValue2, ValueDatatype.STRING) == 0);
+        assertTrue(stringValue2.compare(stringValue1, ValueDatatype.STRING) == 0);
+    }
+
+    @Test
+    public void testCompare_CompareToNull() throws Exception {
+        StringValue stringValue1 = new StringValue("abc");
+        StringValue stringValue2 = new StringValue(null);
+
+        assertTrue(stringValue1.compare(null, ValueDatatype.STRING) > 0);
+        assertTrue(stringValue1.compare(stringValue2, ValueDatatype.STRING) > 0);
+        assertTrue(stringValue2.compare(stringValue1, ValueDatatype.STRING) < 0);
+    }
+
+    @Test
+    public void testCompare() throws Exception {
+        StringValue stringValue1 = new StringValue("abc");
+        StringValue stringValue2 = new StringValue("xyz");
+
+        assertTrue(stringValue1.compare(stringValue2, ValueDatatype.STRING) < 0);
+        assertTrue(stringValue2.compare(stringValue1, ValueDatatype.STRING) > 0);
+    }
+
+    @Test
+    public void testCompare_Integer() throws Exception {
+        StringValue stringValue1 = new StringValue("03");
+        StringValue stringValue2 = new StringValue("010");
+
+        assertTrue(stringValue1.compare(stringValue2, ValueDatatype.INTEGER) < 0);
+        assertTrue(stringValue2.compare(stringValue1, ValueDatatype.INTEGER) > 0);
+    }
+
 }
