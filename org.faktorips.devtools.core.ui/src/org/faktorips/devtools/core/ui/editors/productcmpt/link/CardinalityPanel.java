@@ -430,11 +430,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
         }
 
         public boolean isMinMaxEnabled() {
-            return isAllowInput() && isOther();
-        }
-
-        private boolean isOther() {
-            return !isOptional() && !isMandatory();
+            return isAllowInput();
         }
 
         private boolean isAllowInput() {
