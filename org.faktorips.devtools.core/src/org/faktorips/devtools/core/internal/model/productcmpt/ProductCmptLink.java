@@ -131,11 +131,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public Cardinality getCardinality() {
-        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED
+                || getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
             return findTemplateCardinality();
-        }
-        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
-            return DEFAULT_CARDINALITY;
         }
         return cardinality;
     }

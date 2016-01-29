@@ -533,12 +533,12 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
     @Test
     public void testGetCardinality_Undefined() throws Exception {
-        productCmpt.setTemplate("AnyTemplate");
         Cardinality cardinality = new Cardinality(123, 321, 221);
-        link.setCardinality(cardinality);
+        IProductCmptLink templateLink = createTemplateLink();
+        templateLink.setCardinality(cardinality);
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        assertThat(link.getCardinality(), is(new Cardinality(0, 1, 0)));
+        assertThat(link.getCardinality(), is(cardinality));
     }
 
     @Test
