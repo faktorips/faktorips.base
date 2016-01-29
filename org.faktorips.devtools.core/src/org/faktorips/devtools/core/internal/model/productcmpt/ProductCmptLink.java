@@ -471,11 +471,14 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        TemplateValueStatus oldValue = templateValueSettings.getStatus();
+        if (oldValue == newStatus) {
+            return;
+        }
         if (newStatus == TemplateValueStatus.DEFINED) {
             // safe the current cardinality from template
             cardinality = getCardinality();
         }
-        TemplateValueStatus oldValue = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
     }

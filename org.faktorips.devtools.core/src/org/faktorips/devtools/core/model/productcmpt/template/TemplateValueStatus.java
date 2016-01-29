@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
 
 /**
@@ -56,7 +57,15 @@ public enum TemplateValueStatus {
     UNDEFINED("undefined") { //$NON-NLS-1$
         @Override
         public boolean isAllowedStatus(ITemplatedProperty value) {
-            return value.getTemplatedPropertyContainer().isProductTemplate() || value instanceof IProductCmptLink;
+            return isTemplatePropertyValue(value) || isLinkWithTemplate(value);
+        }
+
+        private boolean isTemplatePropertyValue(ITemplatedProperty value) {
+            return value instanceof IPropertyValue && value.getTemplatedPropertyContainer().isProductTemplate();
+        }
+
+        private boolean isLinkWithTemplate(ITemplatedProperty value) {
+            return value instanceof IProductCmptLink && value.findTemplateProperty(value.getIpsProject()) != null;
         }
     };
 
