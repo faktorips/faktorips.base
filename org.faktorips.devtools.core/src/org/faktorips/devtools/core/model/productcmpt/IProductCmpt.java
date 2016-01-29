@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
-        IPropertyValueContainer {
+IPropertyValueContainer {
 
     /**
      * The name of the product component type property
@@ -73,6 +73,12 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * product's type
      */
     public static final String MSGCODE_INCONSISTENT_TEMPLATE_TYPE = MSGCODE_PREFIX + "InconsistTemplateType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates if the template's type is inconsistent to this
+     * product's type
+     */
+    public static final String MSGCODE_INCONSISTENT_TEMPLATE_VALID_FROM = MSGCODE_PREFIX + "InconsistTemplateValidFrom"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template hierarchy for this template contains a
