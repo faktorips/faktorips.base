@@ -72,14 +72,14 @@ public class ProductCmptBuilderTest extends AbstractStdBuilderTest {
         type.getIpsSrcFile().save(true, null);
 
         productCmpt = newProductCmpt(productCmptType, "Product");
-        productCmptGen = (IProductCmptGeneration)productCmpt.newGeneration();
+        productCmptGen = productCmpt.getLatestProductCmptGeneration();
         productCmptGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
         IFormula ce = productCmptGen.newFormula();
         ce.setFormulaSignature(method.getFormulaName());
         ce.setExpression("42");
         IFormula staticFormula = (IFormula)productCmpt.newPropertyValue(staticMethod);
+        staticFormula.setFormulaSignature("StaticAgeCalculation");
         staticFormula.setExpression("42");
-
         productCmpt.getIpsSrcFile().save(true, null);
         assertFalse(productCmpt.validate(ipsProject).containsErrorMsg());
 

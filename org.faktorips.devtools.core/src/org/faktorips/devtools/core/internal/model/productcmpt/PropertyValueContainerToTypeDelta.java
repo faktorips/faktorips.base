@@ -14,14 +14,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AbstractFixDifferencesComposite;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkChangingOverTimeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.LinkWithoutAssociationEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingTemplateLinkEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MultilingualMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.PropertyTypeMismatchEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.RemovedTemplateLinkEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueHolderMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueSetMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
@@ -77,6 +83,9 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
         createEntriesForProperties();
         createEntriesForLinks();
+        if (getLinkContainer().isUsingTemplate()) {
+            createEntriesForTemplateLinks();
+        }
         createAdditionalEntriesAndChildren();
     }
 
@@ -93,6 +102,33 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
                 addEntry(entry);
             }
         }
+    }
+
+    public void createEntriesForTemplateLinks() {
+        IProductCmptLinkContainer templateContainer = getLinkContainer().findTemplate(getIpsProject());
+        if (templateContainer == null) {
+            return;
+        }
+        for (IProductCmptLink templateLink : templateContainer.getLinksAsList()) {
+            if (isLinkAbsent(templateLink, getLinkContainer())) {
+                addEntry(new MissingTemplateLinkEntry(templateLink, getLinkContainer()));
+            }
+        }
+        for (IProductCmptLink link : getLinkContainer().getLinksAsList()) {
+            if (link.getTemplateValueStatus() != TemplateValueStatus.DEFINED && isLinkAbsent(link, templateContainer)) {
+                addEntry(new RemovedTemplateLinkEntry(link));
+            }
+        }
+    }
+
+    private boolean isLinkAbsent(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
+        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()), new Predicate<IProductCmptLink>() {
+
+            @Override
+            public boolean apply(IProductCmptLink link) {
+                return link != null && ObjectUtils.equals(linkToFind.getTarget(), link.getTarget());
+            }
+        });
     }
 
     protected IProductCmptLinkContainer getLinkContainer() {

@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.controller.fields;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Base-class to represent and edit cardinality values (which means int-values and the asterisk
  * (*)). The askerisk is mapped to Integer.MAX_VALUE on object conversions and vice versa.
@@ -21,7 +23,7 @@ public abstract class AbstractCardinalityField extends DefaultEditField<Integer>
     @Override
     public Integer parseContent() {
         String text = getText();
-        if (text.equals("*")) { //$NON-NLS-1$
+        if ("*".equals(text)) { //$NON-NLS-1$
             return new Integer(Integer.MAX_VALUE);
         } else {
             return Integer.valueOf(text);
@@ -30,11 +32,12 @@ public abstract class AbstractCardinalityField extends DefaultEditField<Integer>
 
     @Override
     public void setValue(Integer newValue) {
-        Integer value = newValue;
-        if (value.intValue() == Integer.MAX_VALUE) {
+        if (newValue == null) {
+            setText(StringUtils.EMPTY);
+        } else if (newValue.intValue() == Integer.MAX_VALUE) {
             setText("*"); //$NON-NLS-1$
         } else {
-            setText(value.toString());
+            setText(newValue.toString());
         }
     }
 

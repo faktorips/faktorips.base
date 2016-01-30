@@ -83,6 +83,11 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return (IPropertyValueContainer)getParent();
     }
 
+    @Override
+    public IPropertyValueContainer getTemplatedPropertyContainer() {
+        return getPropertyValueContainer();
+    }
+
     /**
      * Returns the product component generation this configuration element belongs to.
      * 
@@ -557,8 +562,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public boolean isConfiguringTemplateValueStatus() {
-        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    public boolean isPartOfTemplateHierarchy() {
+        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
     }
 
 }

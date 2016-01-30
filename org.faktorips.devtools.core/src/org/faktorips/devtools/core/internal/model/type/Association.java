@@ -48,7 +48,7 @@ public abstract class Association extends TypePart implements IAssociation {
     private String targetRoleSingular = ""; //$NON-NLS-1$
     private String targetRolePlural = ""; //$NON-NLS-1$
     private int minCardinality = 0;
-    private int maxCardinality = Integer.MAX_VALUE;
+    private int maxCardinality = CARDINALITY_MANY;
     private String subsettedDerivedUnion = ""; //$NON-NLS-1$
     private boolean derivedUnion = false;
     private boolean constrain = false;

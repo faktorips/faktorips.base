@@ -4,7 +4,7 @@
  Test data for ProductCmptLink.java
 -->
 <root>
-<Link id="42" association="FullCoverage" target="FullCoveragePlus" minCardinality="2" maxCardinality="3">
+<Link id="42" association="FullCoverage" target="FullCoveragePlus" minCardinality="2" maxCardinality="3" templateValueStatus="inherited">
 </Link>
-<Link id="43" association="FullCoverage" target="FullCoveragePlus" minCardinality="1" maxCardinality="*"/>
+<Link id="43" association="FullCoverage" target="FullCoveragePlus" minCardinality="1" maxCardinality="*" templateValueStatus="defined"/>
 </root>

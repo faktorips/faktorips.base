@@ -12,7 +12,9 @@ package org.faktorips.devtools.core.model.productcmpt.template;
 import java.util.Arrays;
 import java.util.List;
 
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
 
 /**
  * Defines the status of a property value with regard to the template hierarchy it is used in.
@@ -25,7 +27,7 @@ public enum TemplateValueStatus {
      */
     INHERITED("inherited") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(IPropertyValue value) {
+        public boolean isAllowedStatus(ITemplatedProperty value) {
             return value.findTemplateProperty(value.getIpsProject()) != null;
         }
     },
@@ -36,20 +38,34 @@ public enum TemplateValueStatus {
      */
     DEFINED("defined") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(IPropertyValue value) {
+        public boolean isAllowedStatus(ITemplatedProperty value) {
             return true;
         }
     },
 
     /**
-     * For template property values only. Indicates that the property will not be used by this
+     * This status applies only to property values in templates and to links in both product
+     * components and templates.
+     * <p>
+     * For a template's property the status indicates that the property will not be used by the
      * template (and its children). The property is regarded as "undefined". Thus child templates or
-     * product components can no longer inherit said value and must define it explicitly.
+     * product components cannot inherit said value and must explicitly define their own values.
+     * <p>
+     * For links the status indicates that the link was inherited from a template but was removed
+     * from the child template or the child product component.
      */
     UNDEFINED("undefined") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(IPropertyValue value) {
-            return value.getPropertyValueContainer().isProductTemplate();
+        public boolean isAllowedStatus(ITemplatedProperty value) {
+            return isTemplatePropertyValue(value) || isLinkWithTemplate(value);
+        }
+
+        private boolean isTemplatePropertyValue(ITemplatedProperty value) {
+            return value instanceof IPropertyValue && value.getTemplatedPropertyContainer().isProductTemplate();
+        }
+
+        private boolean isLinkWithTemplate(ITemplatedProperty value) {
+            return value instanceof IProductCmptLink && value.findTemplateProperty(value.getIpsProject()) != null;
         }
     };
 
@@ -74,7 +90,7 @@ public enum TemplateValueStatus {
         return xmlValue;
     }
 
-    public TemplateValueStatus getNextStatus(IPropertyValue value) {
+    public TemplateValueStatus getNextStatus(ITemplatedProperty value) {
         int index = (VALUES.indexOf(this) + 1) % VALUES.size();
         TemplateValueStatus nextStatus = VALUES.get(index);
         if (nextStatus.isAllowedStatus(value)) {
@@ -85,6 +101,6 @@ public enum TemplateValueStatus {
     }
 
     /** Returns whether or not the status is allowed for the given {@code IPropertyValue}. */
-    public abstract boolean isAllowedStatus(IPropertyValue value);
+    public abstract boolean isAllowedStatus(ITemplatedProperty value);
 
 }

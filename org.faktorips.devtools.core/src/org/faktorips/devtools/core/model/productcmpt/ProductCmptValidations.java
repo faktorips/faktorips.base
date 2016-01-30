@@ -95,6 +95,7 @@ public class ProductCmptValidations {
                 ObjectProperty typeProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
                 ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
                 validateTemplateType(productCmptType, list, ipsProject, template, typeProperty, templateProperty);
+                validateValidFrom(list, template, productCmpt);
             } else {
                 ObjectProperty templateProperty = new ObjectProperty(productCmpt, IProductCmpt.PROPERTY_TEMPLATE);
                 String text = NLS.bind(Messages.ProductCmptValidations_error_invalidTemplate, templateName);
@@ -117,6 +118,14 @@ public class ProductCmptValidations {
                 list.newError(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_TYPE,
                         Messages.ProductCmptValidations_error_inconsistentTemplateType, invalidProperties);
             }
+        }
+    }
+
+    protected static void validateValidFrom(MessageList list, IProductCmpt template, IProductCmpt productCmpt) {
+        if (productCmpt.getValidFrom().before(template.getValidFrom())) {
+            list.newError(IProductCmpt.MSGCODE_INCONSISTENT_TEMPLATE_VALID_FROM,
+                    Messages.ProductCmptValidations_error_validFromTemplate, productCmpt,
+                    IProductCmpt.PROPERTY_TEMPLATE);
         }
     }
 

@@ -79,6 +79,11 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
+    public IPropertyValueContainer getTemplatedPropertyContainer() {
+        return getPropertyValueContainer();
+    }
+
+    @Override
     public String getPropertyName() {
         return structureUsage;
     }
@@ -298,8 +303,8 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
-    public boolean isConfiguringTemplateValueStatus() {
-        return getPropertyValueContainer().isProductTemplate() || getPropertyValueContainer().isUsingTemplate();
+    public boolean isPartOfTemplateHierarchy() {
+        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
     }
 
     @Override

@@ -137,7 +137,7 @@ public class BooleanControlFactory extends ValueDatatypeControlFactory {
             RadioButtonGroup<String> radioButtonGroup,
             String valueId) {
         Button buttonForId = radioButtonGroup.getRadioButton(valueId);
-        if (buttonForId != null) {
+        if (buttonForId != null && !buttonForId.isDisposed()) {
             buttonForId.setEnabled(valueSetContainsId(valueSet, valueId));
         }
     }

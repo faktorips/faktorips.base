@@ -11,7 +11,9 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -24,7 +26,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -114,7 +115,8 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
 
         productCmptType = newProductCmptType(ipsProject, "ProdType");
         policyCmptType = newPolicyCmptType(ipsProject, "PolType");
-        policyCmptType.setProductCmptType("ProdType");
+        policyCmptType.setProductCmptType(productCmptType.getQualifiedName());
+        productCmptType.setPolicyCmptType(policyCmptType.getQualifiedName());
         attr1 = new ProductCmptTypeAttribute(productCmptType, "IDAttr1");
         attr1.setName("TypeAttr1");
         attr2 = new ProductCmptTypeAttribute(productCmptType, "IDAttr2");
@@ -412,22 +414,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_PropertyNotConfigured() throws CoreException {
+    public void testValidate_FixDifferences() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         IProductCmptTypeAttribute attribute = type.newProductCmptTypeAttribute("attribtue");
         attribute.setChangingOverTime(true);
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
+        assertThat(product.validate(type.getIpsProject()), hasMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
 
-        MessageList ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_PROPERTY_NOT_CONFIGURED));
+        product.fixAllDifferencesToModel(ipsProject);
+        assertNull(product.validate(type.getIpsProject()).getMessageByCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
 
         attribute.setChangingOverTime(false);
-        ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_PROPERTY_NOT_CONFIGURED));
+        assertThat(product.validate(type.getIpsProject()), hasMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
     }
 
     @Test
-    public void testValidate_InvalidGenerations() throws CoreException {
+    public void testValidate_FixDifferences_InvalidGenerations() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         type.setChangingOverTime(true);
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");
@@ -436,11 +438,22 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         product.newGeneration(new GregorianCalendar(2016, 7, 28));
 
         MessageList ml = product.validate(type.getIpsProject());
-        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INVALID_GENERATIONS));
+        assertNull(ml.getMessageByCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
 
         type.setChangingOverTime(false);
         ml = product.validate(type.getIpsProject());
-        assertNotNull(ml.getMessageByCode(IProductCmpt.MSGCODE_INVALID_GENERATIONS));
+        assertThat(ml, hasMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
+    }
+
+    @Test
+    public void testValidate_FixDifferences_AttributeWithMissingConfigElement() throws Exception {
+        IProductCmpt product = newProductCmpt(productCmptType, "EmptyTestProduct");
+        assertThat(product.validate(ipsProject), isEmpty());
+
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
+        attribute.setProductRelevant(true);
+        attribute.setName("test");
+        assertThat(product.validate(ipsProject), hasMessageCode(IProductCmpt.MSGCODE_DIFFERENCES_TO_MODEL));
     }
 
     @Test
@@ -1329,5 +1342,27 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         IProductCmpt template = newProductTemplate(ipsProject, "template");
         product.setTemplate(template.getQualifiedName());
         assertThat(product.findTemplate(ipsProject), is(template));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreException {
+        IProductCmpt product = newProductCmpt(ipsProject, "product");
+        product.setTemplate(null);
+
+        assertThat(product.isPartOfTemplateHierarchy(), is(false));
+
+        product.setTemplate("someTemplate");
+        assertThat(product.isPartOfTemplateHierarchy(), is(true));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_template() throws CoreException {
+        IProductCmpt product = newProductTemplate(ipsProject, "product");
+        product.setTemplate(null);
+
+        assertThat(product.isPartOfTemplateHierarchy(), is(true));
+
+        product.setTemplate("parentTemplate");
+        assertThat(product.isPartOfTemplateHierarchy(), is(true));
     }
 }

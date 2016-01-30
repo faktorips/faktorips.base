@@ -11,6 +11,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectGeneration;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
@@ -49,6 +50,11 @@ public class InvalidGenerationsDeltaEntry implements IDeltaEntry {
         for (int i = 1; i < generationsOrderedByValidDate.length; i++) {
             generationsOrderedByValidDate[i].delete();
         }
+    }
+
+    @Override
+    public Class<ProductCmptGeneration> getPartType() {
+        return ProductCmptGeneration.class;
     }
 
 }

@@ -105,7 +105,7 @@ public class IpsBundleEntry extends IpsLibraryEntry {
     public MessageList validate() {
         MessageList messageList = new MessageList();
         if (ipsBundle == null || !ipsBundle.isValid()) {
-            messageList.newError(MSGCODE_MISSING_BUNDLE, Messages.IpsBundleEntry_msg_invalid, this, null);
+            messageList.newError(MSGCODE_MISSING_BUNDLE, Messages.IpsBundleEntry_msg_invalid, this);
         }
         return messageList;
     }

@@ -485,18 +485,14 @@ public class NewProductCmptPMO extends NewProductDefinitionPMO {
         if (addToProductCmptGeneration == null || addToAssociation == null) {
             return;
         }
-        try {
-            IProductCmptType targetProductCmptType = addToAssociation
-                    .findTargetProductCmptType(addToProductCmptGeneration.getIpsProject());
-            this.addToProductCmptGeneration = addToProductCmptGeneration;
-            this.addToAssociation = addToAssociation;
-            setEffectiveDate(addToProductCmptGeneration.getValidFrom());
-            setSelectedBaseType(targetProductCmptType);
-            if (targetProductCmptType != null && !targetProductCmptType.isAbstract()) {
-                setSelectedType(targetProductCmptType);
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        IProductCmptType targetProductCmptType = addToAssociation.findTargetProductCmptType(addToProductCmptGeneration
+                .getIpsProject());
+        this.addToProductCmptGeneration = addToProductCmptGeneration;
+        this.addToAssociation = addToAssociation;
+        setEffectiveDate(addToProductCmptGeneration.getValidFrom());
+        setSelectedBaseType(targetProductCmptType);
+        if (targetProductCmptType != null && !targetProductCmptType.isAbstract()) {
+            setSelectedType(targetProductCmptType);
         }
     }
 

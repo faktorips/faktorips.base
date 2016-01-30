@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.views.productstructureexplorer;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -35,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptV
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.devtools.core.ui.internal.generationdate.GenerationDate;
 import org.faktorips.util.StringUtil;
 
@@ -146,43 +146,36 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
             // show cardinality
             if (productCmptReference.getLink() != null && showCardinalities) {
                 IProductCmptLink link = productCmptReference.getLink();
-                styledString.append(new StyledString(StringUtil.getRangeString(true, link.getMinCardinality(),
-                        link.getMaxCardinality(), link.getDefaultCardinality()), StyledString.COUNTER_STYLER));
+                styledString.append(new StyledString(link.getCardinality().format(),
+                        IpsStyler.DEFAULT_CARDINALITY_STYLER));
             }
 
             // show association nodes
             if (!isShowAssociationNodes()) {
-                styledString.append(getRolenameLabel(productCmptReference), StyledString.DECORATIONS_STYLER);
+                styledString.append(getRolenameLabel(productCmptReference), IpsStyler.ROLENAME_STYLER);
             }
 
             // generation labels
-            styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()),
-                    StyledString.QUALIFIER_STYLER);
+            styledString.append(getGenerationLabel(productCmptReference.getProductCmpt()), IpsStyler.QUALIFIER_STYLER);
 
         } else if (element instanceof IProductCmptVRuleReference) {
             // Rule
             IProductCmptVRuleReference vRuleRef = (IProductCmptVRuleReference)element;
             if (!vRuleRef.getValidationRuleConfig().isActive()) {
                 // gray-out inactive rules
-                styledString.setStyle(0, styledString.length(), StyledString.QUALIFIER_STYLER);
+                styledString.setStyle(0, styledString.length(), IpsStyler.DEACTIVATED_STYLER);
                 styledString.append(Messages.ProductStructureLabelProvider_inactiveDecoration,
-                        StyledString.QUALIFIER_STYLER);
+                        IpsStyler.DEACTIVATED_STYLER);
             }
         } else if (element instanceof IProductCmptTypeAssociationReference) {
             IProductCmptTypeAssociation association = ((IProductCmptTypeAssociationReference)element).getAssociation();
             if (showCardinalities) {
-                try {
-                    IPolicyCmptTypeAssociation policyAssociation = association
-                            .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
-                    if (policyAssociation != null) {
-                        styledString.append(new StyledString(StringUtil.getRangeString(false,
-                                policyAssociation.getMinCardinality(), policyAssociation.getMaxCardinality(), 0),
-                                StyledString.COUNTER_STYLER));
-                    }
-                } catch (CoreException e) {
-                    // Ignore, because if no matching policy association exists, we don't show
-                    // anything;
-                    // so, if an error occurs, don't make it worse; i.e. don't show anything.
+                IPolicyCmptTypeAssociation policyAssociation = association
+                        .findMatchingPolicyCmptTypeAssociation(association.getIpsProject());
+                if (policyAssociation != null) {
+                    styledString.append(new StyledString(StringUtil.getRangeString(
+                            policyAssociation.getMinCardinality(), policyAssociation.getMaxCardinality()),
+                            IpsStyler.MODEL_CARDINALITY_STYLER));
                 }
             }
         }
@@ -214,7 +207,7 @@ public class ProductStructureLabelProvider extends LabelProvider implements ISty
                     // if the association is another one but have the same target... show role name
                     if (aReference != associationReference
                             && aReference.getAssociation().getTarget()
-                                    .equals(associationReference.getAssociation().getTarget())) {
+                            .equals(associationReference.getAssociation().getTarget())) {
                         return getRolenameLabel(associationReference.getAssociation());
                     }
                 }

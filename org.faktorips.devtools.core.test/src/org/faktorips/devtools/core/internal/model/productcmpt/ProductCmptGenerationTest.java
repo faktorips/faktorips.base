@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,7 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -401,21 +401,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidateAttributeWithMissingConfigElement() throws Exception {
-        IProductCmpt product = newProductCmpt(productCmptType, "EmptyTestProduct");
-        IProductCmptGeneration gen = product.getProductCmptGeneration(0);
-        MessageList msgList = gen.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
-
-        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
-        attribute.setName("test");
-        msgList = gen.validate(ipsProject);
-        assertFalse(msgList.isEmpty());
-        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_PROPERTY_NOT_CONFIGURED));
-    }
-
-    @Test
     public void testCanCreateValidRelation() throws Exception {
         assertFalse(generation.canCreateValidLink(null, null, ipsProject));
         assertFalse(generation.canCreateValidLink(productCmpt, null, ipsProject));
@@ -571,7 +556,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
     @Test
     public void testValidateIfReferencedProductComponentsAreValidOnThisGenerationsValidFromDate() throws CoreException,
-    Exception {
+            Exception {
         generation.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
         IProductCmptLink link = generation.newLink(association);
         link.setTarget(target.getQualifiedName());
@@ -592,7 +577,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         msgList = ((ProductCmptGeneration)generation).validate(ipsProject);
         assertNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_LINKS_WITH_WRONG_EFFECTIVE_DATE));
         ipsProject.getProperties()
-        .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
+                .setReferencedProductComponentsAreValidOnThisGenerationsValidFromDateRuleEnabled(true);
         ipsProject.setProperties(oldProps);
 
         targetGeneration.setValidFrom(DateUtil.parseIsoDateStringToGregorianCalendar("2007-01-01"));
@@ -803,5 +788,29 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
 
         assertThat(gen.isUsingTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreException {
+        IProductCmpt product = newProductCmpt(ipsProject, "product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
+        product.setTemplate(null);
+
+        assertThat(generation.isPartOfTemplateHierarchy(), is(false));
+
+        product.setTemplate("someTemplate");
+        assertThat(generation.isPartOfTemplateHierarchy(), is(true));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_template() throws CoreException {
+        IProductCmpt product = newProductTemplate(ipsProject, "product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
+        product.setTemplate(null);
+
+        assertThat(generation.isPartOfTemplateHierarchy(), is(true));
+
+        product.setTemplate("parentTemplate");
+        assertThat(generation.isPartOfTemplateHierarchy(), is(true));
     }
 }

@@ -12,13 +12,15 @@ package org.faktorips.devtools.core.model.productcmpt.template;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -29,6 +31,9 @@ public class TemplateValueStatusTest {
 
     @Mock
     private IAttributeValue attributeValue;
+
+    @Mock
+    private IProductCmptLink link;
 
     @Test
     public void testGetNextStatus_INHERITED() throws Exception {
@@ -85,6 +90,19 @@ public class TemplateValueStatusTest {
     }
 
     @Test
+    public void testIsAllowedStatus_Link_UNDEFINED() throws Exception {
+        makeProductCmpt(link);
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(link), is(false));
+
+        ITemplatedProperty templateLink = mock(IProductCmptLink.class);
+        makeTemplate(templateLink);
+        doReturn(templateLink).when(link).findTemplateProperty(any(IIpsProject.class));
+
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(link), is(true));
+        assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(templateLink), is(false));
+    }
+
+    @Test
     public void testIsAllowedStatus_INHERITED() throws Exception {
         assertThat(TemplateValueStatus.INHERITED.isAllowedStatus(attributeValue), is(false));
 
@@ -102,16 +120,16 @@ public class TemplateValueStatusTest {
         when(value.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
     }
 
-    private void makeTemplate(IAttributeValue value) {
+    private void makeTemplate(ITemplatedProperty value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(container.isProductTemplate()).thenReturn(true);
-        when(value.getPropertyValueContainer()).thenReturn(container);
+        when(value.getTemplatedPropertyContainer()).thenReturn(container);
     }
 
-    private void makeProductCmpt(IAttributeValue value) {
+    private void makeProductCmpt(ITemplatedProperty value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(container.isProductTemplate()).thenReturn(false);
-        when(value.getPropertyValueContainer()).thenReturn(container);
+        when(value.getTemplatedPropertyContainer()).thenReturn(container);
     }
 
     private TemplateValueStatus nextStatus(TemplateValueStatus start) {

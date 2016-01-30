@@ -103,10 +103,10 @@ public class ProductCmptPropertyTypeTest {
     @Test
     public void testCreatePropertyValue_TemplateValueStatusShouldBeInheritedWhenUsingTemplate() {
         when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
-        when(prodCmpt.isUsingTemplate()).thenReturn(true);
+        when(prodCmpt.isPartOfTemplateHierarchy()).thenReturn(true);
         when(prodCmpt.findTemplate(ipsProject)).thenReturn(templateCmpt);
         when(templateCmpt.getPropertyValue(pctAttr2.getPropertyName(), IAttributeValue.class))
-        .thenReturn(templateValue);
+                .thenReturn(templateValue);
         IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
                 pctAttr2, "partID");
 

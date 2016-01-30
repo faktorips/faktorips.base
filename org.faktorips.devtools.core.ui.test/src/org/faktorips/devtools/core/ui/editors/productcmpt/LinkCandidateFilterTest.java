@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -61,7 +60,7 @@ public class LinkCandidateFilterTest {
     private GregorianCalendar validAt;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         when(prodCmpt.getIpsProject()).thenReturn(ipsProject);
 
         when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(prodCmptGeneration);

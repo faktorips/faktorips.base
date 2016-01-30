@@ -12,31 +12,21 @@ package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 
 /**
  * 
  * @author Jan Ortmann
  */
-public class LinkWithoutAssociationEntry implements IDeltaEntry {
-
-    private final IProductCmptLink link;
+public class LinkWithoutAssociationEntry extends AbstractDeltaEntryForLinks {
 
     public LinkWithoutAssociationEntry(IProductCmptLink link) {
-        this.link = link;
-    }
-
-    /**
-     * Returns the link that is missing the association.
-     */
-    public IProductCmptLink getLink() {
-        return link;
+        super(link);
     }
 
     @Override
     public void fix() {
-        link.delete();
+        getLink().delete();
     }
 
     @Override
@@ -46,7 +36,7 @@ public class LinkWithoutAssociationEntry implements IDeltaEntry {
 
     @Override
     public String getDescription() {
-        return getDeltaType() + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link); //$NON-NLS-1$
+        return getDeltaType() + ": " + IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getLink()); //$NON-NLS-1$
     }
 
 }

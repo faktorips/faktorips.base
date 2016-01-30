@@ -133,15 +133,16 @@ public class StringValue extends AbstractValue<String> {
 
     @Override
     public int compare(IValue<?> other, ValueDatatype valueDatatype) {
-        if (other == null || (other.getContent() == null && content != null)) {
-            return 1;
-        }
-        if (other.getContent().getClass() == String.class) {
+        if (other instanceof StringValue) {
             if (valueDatatype.supportsCompare()) {
                 return valueDatatype.compare(content, (String)other.getContent());
             }
         }
-        return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
+        if (other == null) {
+            return 1;
+        } else {
+            return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
+        }
     }
 
 }

@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +21,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuListener2;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
@@ -27,11 +31,11 @@ import org.eclipse.jface.viewers.DecorationContext;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.FileTransfer;
@@ -60,6 +64,7 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectPartChangeRefreshHelper;
 import org.faktorips.devtools.core.ui.editors.TreeMessageHoverService;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
+import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
@@ -199,9 +204,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private void buildCardinalityPanel(UIToolkit toolkit, Composite relationRootPanel) {
-        cardinalityPanel = new CardinalityPanel(relationRootPanel, toolkit);
+        cardinalityPanel = new CardinalityPanel(relationRootPanel, toolkit, generation.isPartOfTemplateHierarchy());
         cardinalityPanel.setDataChangeable(isDataChangeable());
-        cardinalityPanel.deactivate();
     }
 
     /**
@@ -211,6 +215,20 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         MenuManager menuManager = new MenuManager();
 
         editor.getSite().registerContextMenu(ID, menuManager, treeViewer);
+
+        menuManager.setRemoveAllWhenShown(true);
+        menuManager.addMenuListener(new IMenuListener2() {
+
+            @Override
+            public void menuAboutToShow(IMenuManager manager) {
+                addOpenTemplateAction(manager);
+            }
+
+            @Override
+            public void menuAboutToHide(IMenuManager manager) {
+                // nothing to do
+            }
+        });
 
         // We use whitelist menu cleaner to avoid any other actions
         MenuCleaner menuCleaner = new MenuCleaner();
@@ -225,6 +243,25 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         // create empty menu for later use
         emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
+    }
+
+    private void addOpenTemplateAction(IMenuManager manager) {
+        TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<IProductCmptLink>(IProductCmptLink.class,
+                treeViewer.getSelection());
+        if (typedSelection.isValid()) {
+            IProductCmptLink firstLink = typedSelection.getFirstElement();
+            final IProductCmptLink templateLink = firstLink.findTemplateProperty(firstLink.getIpsProject());
+            if (templateLink != null) {
+                String text = getOpenTemplateText(templateLink);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateLink, text);
+                manager.add(openTemplateAction);
+            }
+        }
+    }
+
+    private String getOpenTemplateText(final IProductCmptLink templateLink) {
+        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateLink
+                .getTemplatedPropertyContainer().getProductCmpt().getName());
     }
 
     private void registerSelectionChangedListener() {
@@ -364,7 +401,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         } else {
             treeViewer.getTree().setMenu(emptyMenu);
         }
-        cardinalityPanel.setEnabled(enabled);
+        cardinalityPanel.update(enabled);
     }
 
     /**
@@ -407,15 +444,15 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
-            Object selected = ((IStructuredSelection)event.getSelection()).getFirstElement();
-
+            TypedSelection<LinkViewItem> typedSelection = TypedSelection.createAnyCount(LinkViewItem.class,
+                    event.getSelection());
+            if (typedSelection.isValid()) {
+                cardinalityPanel.setProductCmptLinkToEdit(typedSelection.getElements());
+            } else {
+                cardinalityPanel.setProductCmptLinkToEdit(Collections.<LinkViewItem> emptyList());
+            }
             if (!isDataChangeable()) {
                 cardinalityPanel.setDataChangeable(false);
-            }
-            if (selected instanceof LinkViewItem) {
-                cardinalityPanel.setProductCmptLinkToEdit(((LinkViewItem)selected).getLink());
-            } else {
-                cardinalityPanel.setProductCmptLinkToEdit(null);
             }
         }
 

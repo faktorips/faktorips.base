@@ -141,75 +141,6 @@ public class TypedSelection<T> {
         failIfNotValid(this);
     }
 
-    /**
-     * Returns whether this selection is valid.
-     * 
-     * @return <code>true</code> if this selection is valid, <code>false</code> otherwise
-     */
-    public final boolean isValid() {
-        return isValidSelection;
-    }
-
-    /**
-     * Returns the element of this single selection.
-     * 
-     * @return the first element of this single selection.
-     */
-    public final T getElement() {
-        failIfNotValid();
-        ArgumentCheck.isTrue(elements.size() == 1,
-                "getElement should be used for single selections only, but size is " + elements.size()); //$NON-NLS-1$
-
-        return getFirstElement();
-    }
-
-    /**
-     * Returns the first element of this selection.
-     * 
-     * @return the first element of this selection.
-     */
-    public final T getFirstElement() {
-        failIfNotValid();
-
-        return elements.get(0);
-    }
-
-    /**
-     * Returns the second element of this selection.
-     * 
-     * @return the second element of this selection.
-     */
-    public final T getSecondElement() {
-        failIfNotValid();
-        ArgumentCheck.isTrue(elements.size() >= 2, "Can't extract second element of a selection of size < 2."); //$NON-NLS-1$
-
-        return elements.get(1);
-    }
-
-    /**
-     * Returns the contents of this selection as an unmodifiable list with "read-only" access.
-     * Attempts to modify this list, whether direct or via its iterator, result in an
-     * {@link UnsupportedOperationException}.
-     * 
-     * @return the contents of this selection
-     */
-    public final List<T> getElements() {
-        failIfNotValid();
-
-        return Collections.unmodifiableList(elements);
-    }
-
-    /**
-     * Returns the number of elements in this selection.
-     * 
-     * @return the number of elements in this selection.
-     */
-    public final int getElementCount() {
-        failIfNotValid();
-
-        return elements.size();
-    }
-
     public IStructuredSelection asStructuredSelection() {
         return new StructuredSelection(getElements());
     }
@@ -394,6 +325,75 @@ public class TypedSelection<T> {
 
     private static void failIfNotValid(final TypedSelection<?> validator) {
         ArgumentCheck.isTrue(validator.isValid(), "Selection is not valid."); //$NON-NLS-1$
+    }
+
+    /**
+     * Returns whether this selection is valid.
+     * 
+     * @return <code>true</code> if this selection is valid, <code>false</code> otherwise
+     */
+    public final boolean isValid() {
+        return isValidSelection;
+    }
+
+    /**
+     * Returns the element of this single selection.
+     * 
+     * @return the first element of this single selection.
+     */
+    public final T getElement() {
+        failIfNotValid();
+        ArgumentCheck.isTrue(elements.size() == 1,
+                "getElement should be used for single selections only, but size is " + elements.size()); //$NON-NLS-1$
+
+        return getFirstElement();
+    }
+
+    /**
+     * Returns the first element of this selection.
+     * 
+     * @return the first element of this selection.
+     */
+    public final T getFirstElement() {
+        failIfNotValid();
+
+        return elements.get(0);
+    }
+
+    /**
+     * Returns the second element of this selection.
+     * 
+     * @return the second element of this selection.
+     */
+    public final T getSecondElement() {
+        failIfNotValid();
+        ArgumentCheck.isTrue(elements.size() >= 2, "Can't extract second element of a selection of size < 2."); //$NON-NLS-1$
+
+        return elements.get(1);
+    }
+
+    /**
+     * Returns the contents of this selection as an unmodifiable list with "read-only" access.
+     * Attempts to modify this list, whether direct or via its iterator, result in an
+     * {@link UnsupportedOperationException}.
+     * 
+     * @return the contents of this selection
+     */
+    public final List<T> getElements() {
+        failIfNotValid();
+
+        return Collections.unmodifiableList(elements);
+    }
+
+    /**
+     * Returns the number of elements in this selection.
+     * 
+     * @return the number of elements in this selection.
+     */
+    public final int getElementCount() {
+        failIfNotValid();
+
+        return elements.size();
     }
 
 }

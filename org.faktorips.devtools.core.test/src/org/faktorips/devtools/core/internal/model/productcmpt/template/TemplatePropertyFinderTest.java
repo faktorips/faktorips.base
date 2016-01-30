@@ -18,8 +18,13 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import java.util.Arrays;
+
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder.LinkFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder.PropertyValueFinder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -32,23 +37,37 @@ import org.mockito.runners.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class TemplatePropertyFinderTest {
 
+    private static final String TARGET = "myTarget";
+
+    private static final String ASSOCIATION = "myAssociation";
+
     @Mock
     private IIpsProject ipsProject;
+
     @Mock
     private IPropertyValueContainer container;
+
     @Mock
     private IPropertyValueContainer parentContainer;
+
     @Mock
     private IPropertyValue propertyValue;
+
     @Mock
     private IPropertyValue parentValue;
 
-    private TemplatePropertyFinder<IPropertyValue> finder;
+    @Mock
+    private IProductCmptLink link;
+
+    @Mock
+    private IProductCmptLinkContainer linkContainer;
+
+    private TemplatePropertyFinder<IPropertyValue, IPropertyValueContainer> finder;
 
     @Before
     public void setUp() {
-        finder = new TemplatePropertyFinder<IPropertyValue>(propertyValue, IPropertyValue.class, ipsProject);
-        when(propertyValue.getPropertyName()).thenReturn("someProperty");
+        finder = new TemplatePropertyFinder<IPropertyValue, IPropertyValueContainer>(propertyValue,
+                new PropertyValueFinder<IPropertyValue>("someProperty", IPropertyValue.class), ipsProject);
     }
 
     @Test
@@ -106,4 +125,34 @@ public class TemplatePropertyFinderTest {
         assertFalse(continueVisiting);
         assertThat(finder.getPropertyValue(), is(nullValue()));
     }
+
+    @Test
+    public void testLinkFinder_Found() {
+        mockLinkAndContainer();
+        LinkFinder linkFinder = new TemplatePropertyFinder.LinkFinder(ASSOCIATION, TARGET);
+
+        assertThat(linkFinder.apply(linkContainer), is(link));
+    }
+
+    @Test
+    public void testLinkFinder_InvalidAssociation() {
+        mockLinkAndContainer();
+        LinkFinder linkFinder = new TemplatePropertyFinder.LinkFinder("invalid", TARGET);
+
+        assertThat(linkFinder.apply(linkContainer), is(nullValue()));
+    }
+
+    @Test
+    public void testLinkFinder_InvalidTarget() {
+        mockLinkAndContainer();
+        LinkFinder linkFinder = new TemplatePropertyFinder.LinkFinder(ASSOCIATION, "invalid");
+
+        assertThat(linkFinder.apply(linkContainer), is(nullValue()));
+    }
+
+    private void mockLinkAndContainer() {
+        when(linkContainer.getLinksAsList(ASSOCIATION)).thenReturn(Arrays.asList(link));
+        when(link.getTarget()).thenReturn(TARGET);
+    }
+
 }
