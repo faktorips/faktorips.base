@@ -196,7 +196,7 @@ public class ProductReleaseProcessor {
     }
 
     private void commitFiles(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor) throws CoreException,
-            TeamException, InterruptedException {
+            InterruptedException {
         List<IResource> resources = new ArrayList<IResource>();
         resources.add(ipsProject.getProject().getFile(IpsProject.PROPERTY_FILE_EXTENSION_INCL_DOT));
         for (IIpsPackageFragmentRoot root : ipsProject.getIpsPackageFragmentRoots()) {
@@ -221,7 +221,7 @@ public class ProductReleaseProcessor {
     private String tagProject(IIpsProject ipsProject, String newVersion, IProgressMonitor monitor)
             throws TeamException, InterruptedException {
         String tagName = getReleaseAndDeploymentOperation().getTagName(newVersion, ipsProject);
-        teamOperation.tagProject(newVersion, ipsProject.getProject(), monitor);
+        teamOperation.tagProject(tagName, ipsProject.getProject(), monitor);
         return tagName;
     }
 
