@@ -894,26 +894,29 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
                 .appendOpenBracket();
         methodBody.append("throw new ");
         methodBody.appendClassName(IllegalArgumentException.class);
-        methodBody.append("(\"");
-        methodBody.append(getExceptionMessage());
-        methodBody.append(" ");
-        List<String> parameterNames = indexCodeParts.get(index).getAllItemParameterNames();
-        for (int i = 0; i < parameterNames.size(); i++) {
-            methodBody.append(parameterNames.get(i));
-            methodBody.append(" = \" + ");
-            methodBody.append(parameterNames.get(i));
-            if (i < parameterNames.size() - 1) {
-                methodBody.append(" + ");
-                methodBody.append("\", ");
-            }
-        }
+        methodBody.append("(");
+        methodBody.append(getExceptionMessage(index));
         methodBody.append(");");
         methodBody.appendCloseBracket();
         return methodBody;
     }
 
-    private String getExceptionMessage() throws CoreException {
-        return NLS.bind(getLocalizedText(FIND_EXISTING_ROW_EXCEPTION_MESSAGE), getUnqualifiedClassName());
+    private String getExceptionMessage(IIndex index) {
+        StringBuilder text = new StringBuilder();
+        text.append("\"");
+        text.append(NLS.bind(getLocalizedText(FIND_EXISTING_ROW_EXCEPTION_MESSAGE), "\" + getName() + \""));
+        text.append(" ");
+        List<String> parameterNames = indexCodeParts.get(index).getAllItemParameterNames();
+        for (int i = 0; i < parameterNames.size(); i++) {
+            text.append(parameterNames.get(i));
+            text.append(" = \" + ");
+            text.append(parameterNames.get(i));
+            if (i < parameterNames.size() - 1) {
+                text.append(" + ");
+                text.append("\", ");
+            }
+        }
+        return text.toString();
     }
 
     String getMethodNameFindExistingRow(String methodNameSuffix) {
