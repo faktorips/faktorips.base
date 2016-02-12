@@ -10,21 +10,18 @@
 package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.util.message.MessageList;
-import org.hamcrest.Description;
+import org.hamcrest.BaseMatcher;
 
-/**
- * Checks whether a {@link MessageList} is empty.
- */
-public class EmptyMessageListMatcher extends AbstractMessageListMatcher {
+public abstract class AbstractMessageListMatcher extends BaseMatcher<MessageList> {
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText("an empty message list");
+    public boolean matches(Object item) {
+        if (!(item instanceof MessageList)) {
+            return false;
+        }
+        return matchesSafely((MessageList)item);
     }
 
-    @Override
-    boolean matchesSafely(MessageList list) {
-        return list.isEmpty();
-    }
+    abstract boolean matchesSafely(MessageList item);
 
 }

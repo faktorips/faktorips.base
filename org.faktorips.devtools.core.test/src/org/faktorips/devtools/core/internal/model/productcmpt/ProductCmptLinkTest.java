@@ -10,6 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.faktorips.abstracttest.matcher.Matchers.containsMessages;
+import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
+import static org.faktorips.abstracttest.matcher.Matchers.hasSeverity;
+import static org.faktorips.abstracttest.matcher.Matchers.hasSize;
+import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
+import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -50,6 +56,9 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     private ProductCmpt productCmpt;
     private IProductCmptGeneration generation;
     private IProductCmptLink link;
+    private ProductCmpt template;
+    private IProductCmptGeneration templateGeneration;
+    private IProductCmptLink templateLink;
     private IPolicyCmptType policyCmptType;
     private IProductCmptType productCmptType;
     private IIpsProject ipsProject;
@@ -64,6 +73,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         productCmpt = newProductCmpt(productCmptType, "TestProduct");
         generation = productCmpt.getProductCmptGeneration(0);
         link = generation.newLink("CoverageType");
+
+        template = newProductTemplate(productCmptType, "TestTemplate");
+        templateGeneration = template.getProductCmptGeneration(0);
+        templateLink = templateGeneration.newLink("CoverageType");
+
         ipsSrcFile = productCmpt.getIpsSrcFile();
     }
 
@@ -144,18 +158,44 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateUnknownAssociate() throws CoreException {
         MessageList ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION));
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_UNKNWON_ASSOCIATION));
     }
 
     @Test
     public void testValidateUnknownTarget() throws CoreException {
         link.setTarget("unknown");
         MessageList ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
 
         link.setTarget(productCmpt.getQualifiedName());
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_UNKNWON_TARGET));
+    }
+
+    @Test
+    public void testValidateCardinality_TemplateLink() throws CoreException {
+        IPolicyCmptType coverageType = newPolicyAndProductCmptType(ipsProject, "TestCoverage", "TestCoverageType");
+        IProductCmptType coverageTypeType = coverageType.findProductCmptType(ipsProject);
+
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTarget(coverageTypeType.getQualifiedName());
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        IAssociation policyAssociation = policyCmptType.newAssociation();
+        policyAssociation.setTarget(coverageType.getQualifiedName());
+        policyAssociation.setTargetRoleSingular("Coverage");
+
+        // Preconditions
+        assertThat(productAssociation.findMatchingPolicyCmptTypeAssociation(ipsProject), is(policyAssociation));
+        assertThat(templateLink.findAssociation(ipsProject), is(productAssociation));
+
+        // validation should not report an error for template according to FIPS-4670
+        policyAssociation.setMinCardinality(1);
+        policyAssociation.setMaxCardinality(1);
+        templateLink.setMinCardinality(0);
+        templateLink.setMaxCardinality(1);
+        MessageList ml = templateLink.validate(ipsProject);
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
     }
 
     @Test
@@ -177,20 +217,20 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
 
         link.setMaxCardinality(0);
         MessageList ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MISSING_MAX_CARDINALITY));
-        assertNotNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MISSING_MAX_CARDINALITY));
+        assertThat(ml, hasMessageCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
         link.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
+        assertThat(ml, lacksMessageCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1));
 
         link.setMinCardinality(2);
         ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+        assertThat(ml, hasMessageCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
 
         link.setMaxCardinality(3);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
+        assertThat(ml, lacksMessageCode(Cardinality.MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN));
 
         // min-max validations according to MTB#515
 
@@ -199,8 +239,8 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMinCardinality(1);
         link.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
         policyAssociation.setMinCardinality(1);
         policyAssociation.setMaxCardinality(1);
@@ -208,14 +248,16 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setMaxCardinality(2);
         link.setDefaultCardinality(1);
         ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
         policyAssociation.setMinCardinality(1);
         policyAssociation.setMaxCardinality(1);
         link.setMinCardinality(0);
         link.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN),
+                hasSeverity(Message.ERROR));
 
         // with second link
         IProductCmptLink secondLink = generation.newLink("CoverageType");
@@ -227,8 +269,8 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         secondLink.setMinCardinality(0);
         secondLink.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
         policyAssociation.setMinCardinality(1);
         policyAssociation.setMaxCardinality(1);
@@ -237,7 +279,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         secondLink.setMinCardinality(1);
         secondLink.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
         policyAssociation.setMinCardinality(2);
         policyAssociation.setMaxCardinality(2);
@@ -246,7 +288,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         secondLink.setMinCardinality(1);
         secondLink.setMaxCardinality(1);
         ml = link.validate(ipsProject);
-        assertNotNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(ml, hasMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
 
         policyAssociation.setMinCardinality(2);
         policyAssociation.setMaxCardinality(2);
@@ -255,8 +297,8 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         secondLink.setMinCardinality(1);
         secondLink.setMaxCardinality(Cardinality.CARDINALITY_MANY);
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
 
     }
 
@@ -280,21 +322,21 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         policyAssociation.setMaxCardinality(1);
 
         MessageList msgList = link.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
+        assertThat(msgList, isEmpty());
 
         IProductCmptLink secondLink = generation.newLink("CoverageType");
         secondLink.setTarget(cmpt.getQualifiedName());
         secondLink.setMaxCardinality(1);
 
         msgList = link.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
+        assertThat(msgList, isEmpty());
         msgList = secondLink.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
+        assertThat(msgList, isEmpty());
 
         secondLink.setMaxCardinality(2);
         msgList = secondLink.validate(ipsProject);
-        assertFalse(msgList.isEmpty());
-        assertNotNull(msgList.getMessageByCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
+        assertThat(msgList, containsMessages());
+        assertThat(msgList, hasMessageCode(IProductCmptLink.MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX));
     }
 
     @Test
@@ -312,13 +354,13 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         MessageList ml = link.validate(ipsProject);
         Message invalidTargetMessage = ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET);
         assertNotNull(invalidTargetMessage);
-        assertEquals(1, ml.getMessagesFor(link).size());
+        assertThat(ml.getMessagesFor(link), hasSize(1));
         assertEquals(invalidTargetMessage, ml.getMessagesFor(link).getMessage(0));
 
         link.setTarget(target.getQualifiedName());
 
         ml = link.validate(ipsProject);
-        assertNull(ml.getMessageByCode(IProductCmptLink.MSGCODE_INVALID_TARGET));
+        assertThat(ml, lacksMessageCode(IProductCmptLink.MSGCODE_INVALID_TARGET));
     }
 
     @Test
@@ -372,7 +414,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         setUpAssociation(true);
 
         MessageList messageList = link.validate(ipsProject);
-        assertEquals(0, messageList.size());
+        assertThat(messageList, hasSize(0));
     }
 
     @Test
@@ -380,7 +422,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         setUpAssociation(false);
 
         MessageList messageList = link.validate(ipsProject);
-        assertEquals(1, messageList.size());
+        assertThat(messageList, hasSize(1));
     }
 
     private void setUpAssociation(boolean changingOverTime) throws CoreException {

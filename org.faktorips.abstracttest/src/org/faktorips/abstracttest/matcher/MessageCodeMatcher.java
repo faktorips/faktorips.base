@@ -10,13 +10,12 @@
 package org.faktorips.abstracttest.matcher;
 
 import org.faktorips.util.message.MessageList;
-import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 
 /**
  * Checks whether a {@link MessageList} contains a message with a certain message code.
  */
-public class MessageCodeMatcher extends BaseMatcher<MessageList> {
+public class MessageCodeMatcher extends AbstractMessageListMatcher {
     private final String msgCode;
     private boolean expectMessage;
 
@@ -41,11 +40,7 @@ public class MessageCodeMatcher extends BaseMatcher<MessageList> {
     }
 
     @Override
-    public boolean matches(Object item) {
-        if (!(item instanceof MessageList)) {
-            return false;
-        }
-        MessageList list = (MessageList)item;
+    public boolean matchesSafely(MessageList list) {
         return list.getMessageByCode(msgCode) != null == expectMessage;
     }
 }

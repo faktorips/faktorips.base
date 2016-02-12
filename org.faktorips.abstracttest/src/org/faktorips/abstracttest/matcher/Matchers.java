@@ -12,6 +12,7 @@ package org.faktorips.abstracttest.matcher;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.hamcrest.Matcher;
+import org.hamcrest.core.IsNot;
 
 public class Matchers {
 
@@ -27,12 +28,24 @@ public class Matchers {
         return new MessageCodeMatcher(msgCode, false);
     }
 
+    public static Matcher<MessageList> hasSize(int size) {
+        return new MessageListSizeMatcher(size);
+    }
+
     public static Matcher<MessageList> isEmpty() {
         return new EmptyMessageListMatcher();
     }
 
+    public static Matcher<MessageList> containsMessages() {
+        return new IsNot<MessageList>(new EmptyMessageListMatcher());
+    }
+
     public static Matcher<Message> hasInvalidObject(Object invalidObject) {
         return new MessageInvalidObjectMatcher(invalidObject);
+    }
+
+    public static Matcher<Message> hasSeverity(int severity) {
+        return new MessageSevertiyMatcher(severity);
     }
 
 }

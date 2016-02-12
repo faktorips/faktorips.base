@@ -15,16 +15,23 @@ import org.hamcrest.Description;
 /**
  * Checks whether a {@link MessageList} is empty.
  */
-public class EmptyMessageListMatcher extends AbstractMessageListMatcher {
+public class MessageListSizeMatcher extends AbstractMessageListMatcher {
+
+    private final int size;
+
+    public MessageListSizeMatcher(int size) {
+        super();
+        this.size = size;
+    }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("an empty message list");
+        description.appendText("a message list with size " + size);
     }
 
     @Override
     boolean matchesSafely(MessageList list) {
-        return list.isEmpty();
+        return list.size() == size;
     }
 
 }

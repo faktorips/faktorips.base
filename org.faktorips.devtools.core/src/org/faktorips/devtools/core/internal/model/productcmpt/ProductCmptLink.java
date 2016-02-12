@@ -241,7 +241,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         associationLabel,
                         getName(),
                         IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                                .getGenerationConceptNameSingular(true) });
+                        .getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -310,10 +310,19 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             }
         }
         if (sumMaxCardinality < minType) {
+            addTotalMinMessage(list, minType);
+        }
+    }
+
+    /**
+     * Do not display error for templates according to FIPS-4670
+     */
+    private void addTotalMinMessage(MessageList list, int minType) {
+        if (!getProductCmptLinkContainer().isProductTemplate()) {
             String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, this.getMinCardinality(),
                     Integer.toString(minType));
-            list.add(new Message(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
-                    PROPERTY_MIN_CARDINALITY));
+            ObjectProperty property = new ObjectProperty(this, PROPERTY_MIN_CARDINALITY);
+            list.newError(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, property);
         }
     }
 
