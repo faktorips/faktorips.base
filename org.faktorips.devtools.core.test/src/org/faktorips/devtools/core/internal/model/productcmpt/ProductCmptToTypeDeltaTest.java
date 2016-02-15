@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -84,7 +83,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
         createLink(productTemplate, ASSOCIATION, TARGET2);
         ProductCmptToTypeDelta productCmptToTypeDelta = new ProductCmptToTypeDelta(productCmpt, ipsProject);
 
-        assertThat(productCmptToTypeDelta.getEntries(), is(new IDeltaEntry[] {}));
+        assertTrue(productCmptToTypeDelta.isEmpty());
     }
 
     @Test
@@ -119,7 +118,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
         createLink(productTemplate, ASSOCIATION, TARGET1);
         ProductCmptToTypeDelta productCmptToTypeDelta = new ProductCmptToTypeDelta(productCmpt, ipsProject);
 
-        assertThat(productCmptToTypeDelta.getEntries()[0].getDeltaType(), is(DeltaType.REMOVED_TEMPLATE_LINK));
+        assertTrue(productCmptToTypeDelta.isEmpty());
     }
 
     @Test
@@ -131,7 +130,7 @@ public class ProductCmptToTypeDeltaTest extends AbstractIpsPluginTest {
         createLink(productTemplate, ASSOCIATION, TARGET1);
         ProductCmptToTypeDelta productCmptToTypeDelta = new ProductCmptToTypeDelta(productCmpt, ipsProject);
 
-        assertThat(productCmptToTypeDelta.getEntries(), is(new IDeltaEntry[] {}));
+        assertTrue(productCmptToTypeDelta.isEmpty());
     }
 
     protected ProductCmpt setUpTemplateAndAssociation() throws CoreException {

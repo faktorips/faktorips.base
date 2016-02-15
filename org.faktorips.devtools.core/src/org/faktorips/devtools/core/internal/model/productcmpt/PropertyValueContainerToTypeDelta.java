@@ -121,8 +121,14 @@ public abstract class PropertyValueContainerToTypeDelta extends AbstractFixDiffe
         }
     }
 
-    private boolean isLinkAbsent(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
-        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()), new Predicate<IProductCmptLink>() {
+    private boolean isLinkAbsent(final IProductCmptLink templateLink, IProductCmptLinkContainer container) {
+        return templateLink.getTemplateValueStatus() != TemplateValueStatus.UNDEFINED
+                && matchingLinkIsMissing(templateLink, container);
+    }
+
+    private boolean matchingLinkIsMissing(final IProductCmptLink linkToFind, IProductCmptLinkContainer container) {
+        return !Iterables.any(container.getLinksAsList(linkToFind.getAssociation()),
+                new Predicate<IProductCmptLink>() {
 
             @Override
             public boolean apply(IProductCmptLink link) {

@@ -29,6 +29,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingPropertyValueEntry;
+import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.MissingTemplateLinkEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.ValueWithoutPropertyEntry;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -147,6 +148,40 @@ public class PropertyValueContainerToTypeDeltaTest extends AbstractIpsPluginTest
         delta.fixAllDifferencesToModel();
         assertEquals(0, generation.getNumOfLinks());
         assertTrue(link.isDeleted());
+    }
+
+    @Test
+    public void testMissingTemplateLink_entryForDefinedLinks() throws CoreException {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+
+        IProductCmpt template = newProductTemplate(productCmptType, "template");
+        IProductCmptLink templateLink = template.newLink(association);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+
+        productCmpt.setTemplate(template.getQualifiedName());
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertFalse(delta.isEmpty());
+
+        IDeltaEntry[] entries = delta.getEntries();
+        assertEquals(1, entries.length);
+        assertTrue(entries[0] instanceof MissingTemplateLinkEntry);
+    }
+
+    @Test
+    public void testMissingTemplateLink_NoEntryForUndefinedLinks() throws CoreException {
+        IProductCmptTypeAssociation association = productCmptType.newProductCmptTypeAssociation();
+        association.setChangingOverTime(false);
+
+        IProductCmpt template = newProductTemplate(productCmptType, "template");
+        IProductCmptLink templateLink = template.newLink(association);
+        templateLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+
+        productCmpt.setTemplate(template.getQualifiedName());
+
+        IPropertyValueContainerToTypeDelta delta = productCmpt.computeDeltaToModel(ipsProject);
+        assertTrue(delta.isEmpty());
     }
 
     @Test
