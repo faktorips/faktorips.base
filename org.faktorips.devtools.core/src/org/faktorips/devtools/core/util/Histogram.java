@@ -221,12 +221,16 @@ public class Histogram<V, E> {
     }
 
     /**
+     * Returns the best value (regarding the relative distribution) whose occurrence is greater than
+     * of equal to the given threshold.
+     * 
      * @param threshold the relative occurrence at which a value is used.
-     * @return the best value (regarding the relative distribution) whose occurrence exceeds the
-     *         threshold. Never returns <code>null</code>. Returns a {@link BestValue} with
-     *         {@link BestValue#isPresent()} <code>false</code> if there is no best value.
+     * @return the best value (regarding the relative distribution) whose occurrence is greater than
+     *         or equal to the threshold. Never returns <code>null</code>. Returns a
+     *         {@link BestValue} with {@link BestValue#isPresent()} <code>false</code> if there is
+     *         no best value.
      */
-    public BestValue<V> getBestValueExceeding(Decimal threshold) {
+    public BestValue<V> getBestValue(Decimal threshold) {
         SortedMap<V, Decimal> relativeDistribution = getRelativeDistribution();
         V candidateValue = relativeDistribution.firstKey();
         if (relativeDistribution.get(candidateValue).greaterThanOrEqual(threshold)) {

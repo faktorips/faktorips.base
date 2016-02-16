@@ -95,6 +95,12 @@ public class InferTemplateProcessorTest {
     @Mock
     private IProductCmpt productCmpt2;
 
+    @Mock
+    private IProductCmptGeneration gen1;
+
+    @Mock
+    private IProductCmptGeneration gen2;
+
     private List<IProductCmpt> productCmpts;
 
     private InferTemplateProcessor inferTemplateProcessor;
@@ -112,7 +118,12 @@ public class InferTemplateProcessorTest {
     private List<IPropertyValue> propertyValues;
 
     @Before
+    @SuppressWarnings("deprecation")
     public void setUp() {
+
+        when(productCmpt1.getLatestProductCmptGeneration()).thenReturn(gen1);
+        when(productCmpt2.getLatestProductCmptGeneration()).thenReturn(gen2);
+
         productCmpts = Arrays.asList(productCmpt1, productCmpt2);
         when(productCmpt1.getIpsSrcFile()).thenReturn(productSrcFile);
         inferTemplateProcessor = new InferTemplateProcessor(templateGeneration, productCmpts, histograms);
