@@ -95,4 +95,43 @@ public class CardinalityTest {
     public void testFormat() {
         assertThat(new Cardinality(0, 1, 0).format(), is("[0..1, 0]"));
     }
+
+    @Test
+    public void testCompareTo_Null() {
+        assertThat(new Cardinality(0, 1, 0).compareTo(null), is(-1));
+    }
+
+    @Test
+    public void testCompareTo_EqualsCardinalities() {
+        Cardinality c1 = new Cardinality(0, 1, 0);
+        Cardinality c2 = new Cardinality(0, 1, 0);
+
+        assertThat(c1.compareTo(c1), is(0));
+        assertThat(c1.compareTo(c2), is(0));
+        assertThat(c2.compareTo(c1), is(0));
+    }
+
+    @Test
+    public void testCompareTo_ComparesMin() {
+        Cardinality c1 = new Cardinality(0, 9, 9);
+        Cardinality c2 = new Cardinality(1, 1, 0);
+        assertThat(c1.compareTo(c2), is(-1));
+        assertThat(c2.compareTo(c1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_ComparesMax() {
+        Cardinality c1 = new Cardinality(1, 1, 9);
+        Cardinality c2 = new Cardinality(1, 2, 0);
+        assertThat(c1.compareTo(c2), is(-1));
+        assertThat(c2.compareTo(c1), is(1));
+    }
+
+    @Test
+    public void testCompareTo_ComparesDefault() {
+        Cardinality c1 = new Cardinality(1, 1, 0);
+        Cardinality c2 = new Cardinality(1, 1, 1);
+        assertThat(c1.compareTo(c2), is(-1));
+        assertThat(c2.compareTo(c1), is(1));
+    }
 }

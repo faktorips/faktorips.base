@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.util.IntegerUtils;
 import org.faktorips.util.StringUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
@@ -23,7 +24,7 @@ import org.faktorips.util.message.MessageList;
  * This class is immutable. If you like to "change" only one property you could call the with...
  * methods to get a new {@link Cardinality} with the one updated value.
  */
-public class Cardinality {
+public class Cardinality implements Comparable<Cardinality> {
 
     public static final int CARDINALITY_MANY = IAssociation.CARDINALITY_MANY;
 
@@ -184,6 +185,23 @@ public class Cardinality {
     @Override
     public String toString() {
         return format();
+    }
+
+    @Override
+    public int compareTo(Cardinality o) {
+        if (o == null) {
+            return -1;
+        }
+
+        if (this.min != o.min) {
+            return IntegerUtils.compare(min, o.min);
+        }
+
+        if (max != o.max) {
+            return IntegerUtils.compare(max, o.max);
+        }
+
+        return IntegerUtils.compare(defaultCard, o.defaultCard);
     }
 
 }

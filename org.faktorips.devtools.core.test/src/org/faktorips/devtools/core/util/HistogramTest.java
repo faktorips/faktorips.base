@@ -311,31 +311,31 @@ public class HistogramTest {
     }
 
     @Test
-    public void testGetBestValueExceeding() {
-        Element a1 = new Element("A");
-        Element a2 = new Element("A");
-        Element b = new Element("B");
-
-        List<Element> elements = Lists.newArrayList(a1, a2, b);
-        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
-
-        BestValue<String> bestValue = histogram.getBestValueExceeding(Decimal.valueOf(0.1));
-        assertThat(bestValue.isPresent(), is(true));
-        assertThat(bestValue.getValue(), is("A"));
-    }
+        public void testGetBestValue() {
+            Element a1 = new Element("A");
+            Element a2 = new Element("A");
+            Element b = new Element("B");
+    
+            List<Element> elements = Lists.newArrayList(a1, a2, b);
+            Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+    
+            BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.1));
+            assertThat(bestValue.isPresent(), is(true));
+            assertThat(bestValue.getValue(), is("A"));
+        }
 
     @Test
-    public void testGetBestValueExceeding_missingValue() {
-        Element a1 = new Element("A");
-        Element a2 = new Element("A");
-        Element b = new Element("B");
-
-        List<Element> elements = Lists.newArrayList(a1, a2, b);
-        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
-
-        BestValue<String> bestValue = histogram.getBestValueExceeding(Decimal.valueOf(0.99));
-        assertThat(bestValue.isPresent(), is(false));
-    }
+        public void testGetBestValue_missingValue() {
+            Element a1 = new Element("A");
+            Element a2 = new Element("A");
+            Element b = new Element("B");
+    
+            List<Element> elements = Lists.newArrayList(a1, a2, b);
+            Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+    
+            BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.99));
+            assertThat(bestValue.isPresent(), is(false));
+        }
 
     private static Element element(String s) {
         return new Element(s);
