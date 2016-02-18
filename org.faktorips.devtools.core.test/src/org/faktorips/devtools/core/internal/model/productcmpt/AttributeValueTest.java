@@ -39,7 +39,7 @@ import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -326,7 +326,7 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate("anyTemplate");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        assertThat(attributeValue.validate(ipsProject), hasMessageCode(ITemplatedProperty.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+        assertThat(attributeValue.validate(ipsProject), hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
     }
 
     @Test
@@ -340,11 +340,11 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         assertThat(attributeValue.validate(ipsProject),
-                lacksMessageCode(ITemplatedProperty.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+                lacksMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
 
         productCmpt.setTemplate("invalid template");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        assertThat(attributeValue.validate(ipsProject), hasMessageCode(ITemplatedProperty.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+        assertThat(attributeValue.validate(ipsProject), hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
     }
 
     @Test

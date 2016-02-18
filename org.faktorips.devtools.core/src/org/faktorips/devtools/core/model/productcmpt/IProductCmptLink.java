@@ -10,15 +10,18 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmptGeneration;
 import org.faktorips.devtools.core.model.ipsobject.IDescribedElement;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * A link between two product components. A link is an instance of an association between product
@@ -26,7 +29,7 @@ import org.faktorips.devtools.core.model.type.IAssociation;
  * 
  * @see IProductCmptTypeAssociation
  */
-public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITemplatedProperty {
+public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
 
     public static final String PROPERTY_TARGET = "target"; //$NON-NLS-1$
     public static final String PROPERTY_ASSOCIATION = "association"; //$NON-NLS-1$
@@ -249,5 +252,72 @@ public interface IProductCmptLink extends IIpsObjectPart, IDescribedElement, ITe
 
     @Override
     public IProductCmptLink findTemplateProperty(IIpsProject ipsProject);
+
+    /** A class that can be used to identify links by means of their association and target. */
+    class LinkIdentifier implements ITemplatedValueIdentifier {
+
+        private final String association;
+        private final String target;
+
+        public LinkIdentifier(String association, String target) {
+            super();
+            this.association = checkNotNull(association);
+            this.target = checkNotNull(target);
+        }
+
+        public LinkIdentifier(IProductCmptLink link) {
+            this(link.getAssociation(), link.getTarget());
+        }
+
+        public String getAssociation() {
+            return association;
+        }
+
+        public String getTarget() {
+            return target;
+        }
+
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + association.hashCode();
+            result = prime * result + target.hashCode();
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            LinkIdentifier other = (LinkIdentifier)obj;
+            if (!association.equals(other.association)) {
+                return false;
+            }
+            if (!target.equals(other.target)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public IProductCmptLink getValueFrom(ITemplatedValueContainer container) {
+            ArgumentCheck.isInstanceOf(container, IProductCmptLinkContainer.class);
+            IProductCmptLinkContainer linkContainer = (IProductCmptLinkContainer)container;
+            for (IProductCmptLink link : linkContainer.getLinksAsList(association)) {
+                if (StringUtils.equals(target, link.getTarget())) {
+                    return link;
+                }
+            }
+            return null;
+        }
+    }
 
 }

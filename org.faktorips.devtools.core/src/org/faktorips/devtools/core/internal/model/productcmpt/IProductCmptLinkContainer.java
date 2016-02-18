@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductPartsContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedPropertyContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 
@@ -34,7 +34,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * @since 3.8
  * @author widmaier
  */
-public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemplatedPropertyContainer {
+public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemplatedValueContainer {
 
     public static final String MSGCODE_PREFIX = "ProductCmptLinkContainer"; //$NON-NLS-1$
 

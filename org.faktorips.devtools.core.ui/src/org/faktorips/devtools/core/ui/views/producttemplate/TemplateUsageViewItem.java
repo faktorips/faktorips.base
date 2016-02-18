@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
 
 public class TemplateUsageViewItem {
 
@@ -26,10 +26,10 @@ public class TemplateUsageViewItem {
 
     private final BigDecimal distributionPercent;
 
-    private final Collection<IPropertyValue> children;
+    private final Collection<ITemplatedValue> children;
 
     public TemplateUsageViewItem(Object value, boolean sameAsTemplateValue, BigDecimal distributionPercent,
-            Set<IPropertyValue> children) {
+            Set<ITemplatedValue> children) {
         this.value = value;
         this.sameAsTemplateValue = sameAsTemplateValue;
         this.distributionPercent = distributionPercent;
@@ -44,7 +44,7 @@ public class TemplateUsageViewItem {
         return distributionPercent;
     }
 
-    public Collection<IPropertyValue> getChildren() {
+    public Collection<ITemplatedValue> getChildren() {
         return children;
     }
 
@@ -65,11 +65,11 @@ public class TemplateUsageViewItem {
     }
 
     private String getFormattedValue() {
-        IPropertyValue pv = getFirstPropertyValue();
-        return PropertyValueFormatter.shortedFormat(pv);
+        ITemplatedValue pv = getFirstTemplatedValue();
+        return TemplatedValueFormatter.shortedFormat(pv);
     }
 
-    private IPropertyValue getFirstPropertyValue() {
+    private ITemplatedValue getFirstTemplatedValue() {
         /*
          * There always is at least one value. Otherwise no item would show up in the distribution.
          */

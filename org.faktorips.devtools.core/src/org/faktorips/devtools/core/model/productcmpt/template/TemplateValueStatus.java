@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 
 /**
  * Defines the status of a property value with regard to the template hierarchy it is used in.
@@ -27,7 +27,7 @@ public enum TemplateValueStatus {
      */
     INHERITED("inherited") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(ITemplatedProperty value) {
+        public boolean isAllowedStatus(ITemplatedValue value) {
             return value.findTemplateProperty(value.getIpsProject()) != null;
         }
     },
@@ -38,7 +38,7 @@ public enum TemplateValueStatus {
      */
     DEFINED("defined") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(ITemplatedProperty value) {
+        public boolean isAllowedStatus(ITemplatedValue value) {
             return true;
         }
     },
@@ -56,15 +56,15 @@ public enum TemplateValueStatus {
      */
     UNDEFINED("undefined") { //$NON-NLS-1$
         @Override
-        public boolean isAllowedStatus(ITemplatedProperty value) {
+        public boolean isAllowedStatus(ITemplatedValue value) {
             return isTemplatePropertyValue(value) || isLinkWithTemplate(value);
         }
 
-        private boolean isTemplatePropertyValue(ITemplatedProperty value) {
-            return value instanceof IPropertyValue && value.getTemplatedPropertyContainer().isProductTemplate();
+        private boolean isTemplatePropertyValue(ITemplatedValue value) {
+            return value instanceof IPropertyValue && value.getTemplatedValueContainer().isProductTemplate();
         }
 
-        private boolean isLinkWithTemplate(ITemplatedProperty value) {
+        private boolean isLinkWithTemplate(ITemplatedValue value) {
             return value instanceof IProductCmptLink && value.findTemplateProperty(value.getIpsProject()) != null;
         }
     };
@@ -90,7 +90,7 @@ public enum TemplateValueStatus {
         return xmlValue;
     }
 
-    public TemplateValueStatus getNextStatus(ITemplatedProperty value) {
+    public TemplateValueStatus getNextStatus(ITemplatedValue value) {
         int index = (VALUES.indexOf(this) + 1) % VALUES.size();
         TemplateValueStatus nextStatus = VALUES.get(index);
         if (nextStatus.isAllowedStatus(value)) {
@@ -101,6 +101,6 @@ public enum TemplateValueStatus {
     }
 
     /** Returns whether or not the status is allowed for the given {@code IPropertyValue}. */
-    public abstract boolean isAllowedStatus(ITemplatedProperty value);
+    public abstract boolean isAllowedStatus(ITemplatedValue value);
 
 }

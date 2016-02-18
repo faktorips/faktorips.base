@@ -261,7 +261,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
     private String getOpenTemplateText(final IProductCmptLink templateLink) {
         return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateLink
-                .getTemplatedPropertyContainer().getProductCmpt().getName());
+                .getTemplatedValueContainer().getProductCmpt().getName());
     }
 
     private void registerSelectionChangedListener() {

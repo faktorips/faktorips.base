@@ -40,6 +40,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -50,7 +51,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
-import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
+import org.faktorips.devtools.core.util.TemplatedValueUtil;
 
 /**
  * Abstract base class for composites that allow the user to edit property values.
@@ -81,7 +82,7 @@ import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
  * @see EditField
  */
 public abstract class EditPropertyValueComposite<P extends IProductCmptProperty, V extends IPropertyValue> extends
-        Composite {
+Composite {
 
     private final P property;
 
@@ -293,7 +294,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 this.getParent());
         controlDecoration.setDescriptionText(NLS.bind(
                 Messages.AttributeValueEditComposite_attributeNotChangingOverTimeDescription, IpsPlugin.getDefault()
-                        .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
+                .getIpsPreferences().getChangesOverTimeNamingConvention().getGenerationConceptNamePlural()));
         controlDecoration.setImage(IpsUIPlugin.getImageHandling().getImage(OverlayIcons.NOT_CHANGEOVERTIME_OVR_DESC));
         controlDecoration.setMarginWidth(1);
 
@@ -374,30 +375,28 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 .getPropertyValueContainer().getProductCmpt().getName());
     }
 
-    /**
-     * Adds the action to open the template property usage view.
-     */
+    /** Adds the action to open the template property usage view. */
     private void addShowTemplatePropertyUsageAction(IMenuManager manager) {
         String text = null;
-        IPropertyValue templatePropertyValue;
-        if (TemplatePropertyValueUtil.isTemplatePropertyValue(getPropertyValue())) {
+        ITemplatedValue templateValue;
+        if (TemplatedValueUtil.isTemplateValue(getPropertyValue())) {
             text = Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage;
-            templatePropertyValue = getPropertyValue();
+            templateValue = getPropertyValue();
         } else {
-            templatePropertyValue = getPropertyValue().findTemplateProperty(getIpsProject());
-            if (templatePropertyValue == null) {
-                templatePropertyValue = TemplatePropertyValueUtil.findNextTemplatePropertyValue(getPropertyValue());
+            templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+            if (templateValue == null) {
+                templateValue = TemplatedValueUtil.findNextTemplateValue(getPropertyValue());
             }
-            text = getOpenTemplatePropertyUsageText(templatePropertyValue);
+            text = getOpenTemplatePropertyUsageText(templateValue);
         }
-        if (templatePropertyValue != null) {
-            manager.add(new ShowTemplatePropertyUsageViewAction(templatePropertyValue, text));
+        if (templateValue != null) {
+            manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
         }
     }
 
-    private String getOpenTemplatePropertyUsageText(final IPropertyValue templateValue) {
+    private String getOpenTemplatePropertyUsageText(final ITemplatedValue templateValue) {
         return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
-                .getPropertyValueContainer().getProductCmpt().getName());
+                .getTemplatedValueContainer().getProductCmpt().getName());
     }
 
     private IIpsProject getIpsProject() {

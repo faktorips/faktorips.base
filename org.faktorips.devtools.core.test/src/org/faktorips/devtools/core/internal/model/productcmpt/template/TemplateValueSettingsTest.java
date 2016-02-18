@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.internal.model.productcmpt.template;
 
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
-import static org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
+import static org.faktorips.devtools.core.model.productcmpt.ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;

@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see ITableContentUsage
  */
 public class TableContentUsageEditComposite extends
-        EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
+EditPropertyValueComposite<ITableStructureUsage, ITableContentUsage> {
 
     public TableContentUsageEditComposite(ITableStructureUsage property, ITableContentUsage propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {

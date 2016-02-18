@@ -148,7 +148,7 @@ public class AttributeValueEditComposite extends EditPropertyValueComposite<IPro
 
     private void createControlForExtensionProperty() {
         extProContFact
-                .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
+        .createControls(this, getToolkit(), getPropertyValue(), IExtensionPropertyDefinition.POSITION_TOP);
         extProContFact.createControls(this, getToolkit(), getPropertyValue(),
                 IExtensionPropertyDefinition.POSITION_BOTTOM);
         extProContFact.bind(getBindingContext());

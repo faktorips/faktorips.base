@@ -9,10 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Mockito.when;
 
 import com.google.common.base.Function;
@@ -20,6 +20,7 @@ import com.google.common.collect.Lists;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.util.Histogram;
 import org.junit.Before;
@@ -49,7 +50,7 @@ public class DefinedValuesContentProviderTest {
     private IPropertyValue value6;
 
     private DefinedValuesContentProvider definedValuesContentProvider;
-    private Histogram<Object, IPropertyValue> histogram;
+    private Histogram<Object, ITemplatedValue> histogram;
 
     @Before
     public void setUp() {
@@ -59,8 +60,9 @@ public class DefinedValuesContentProviderTest {
         when(value4.getPropertyValue()).thenReturn("A");
         when(value5.getPropertyValue()).thenReturn("C");
         when(value6.getPropertyValue()).thenReturn("A");
-        histogram = new Histogram<Object, IPropertyValue>(getValueFunction(), Lists.newArrayList(value1, value2,
-                value3, value4, value5, value6));
+
+        histogram = new Histogram<Object, ITemplatedValue>(getValueFunction(), Lists.<ITemplatedValue> newArrayList(
+                value1, value2, value3, value4, value5, value6));
         when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);
         when(pmo.getCount()).thenReturn(6);
@@ -70,11 +72,11 @@ public class DefinedValuesContentProviderTest {
         definedValuesContentProvider.inputChanged(viewer, null, pmo);
     }
 
-    private Function<IPropertyValue, Object> getValueFunction() {
-        return new Function<IPropertyValue, Object>() {
+    private Function<ITemplatedValue, Object> getValueFunction() {
+        return new Function<ITemplatedValue, Object>() {
             @Override
-            public Object apply(IPropertyValue p) {
-                return p.getPropertyValue();
+            public Object apply(ITemplatedValue p) {
+                return ((IPropertyValue)p).getPropertyValue();
             }
         };
     }
@@ -100,8 +102,8 @@ public class DefinedValuesContentProviderTest {
         TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
         TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
 
-        assertThat(item1.getChildren(), hasItems(value2, value4, value6));
-        assertThat(item2.getChildren(), hasItems(value1, value3));
-        assertThat(item3.getChildren(), hasItems(value5));
+        assertThat(item1.getChildren(), hasItems((ITemplatedValue)value2, value4, value6));
+        assertThat(item2.getChildren(), hasItems((ITemplatedValue)value1, value3));
+        assertThat(item3.getChildren(), hasItems((ITemplatedValue)value5));
     }
 }

@@ -25,13 +25,14 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginTest {
+public class SwitchTemplatedValueOperationTest extends AbstractIpsPluginTest {
 
     private static final String FORMULA_NAME = "myFormula";
 
@@ -101,12 +102,12 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
     public void testCreateSwitchTemplatePropertyValueOperation() throws Exception {
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
 
-        SwitchTemplatePropertyValueOperation operation = SwitchTemplatePropertyValueOperation.create(selected);
+        SwitchTemplatedValueOperation operation = SwitchTemplatedValueOperation.create(selected);
 
-        assertEquals(templatePropertyValue, operation.getTemplatePropertyValue());
+        assertEquals(templatePropertyValue, operation.getTemplateValue());
         assertEquals(selected, operation.getDefiningPropertyValues());
         assertEquals(Arrays.asList(inhValue1, inhValue2),
-                new ArrayList<IPropertyValue>(operation.getInheritingPropertyValues()));
+                new ArrayList<ITemplatedValue>(operation.getInheritingPropertyValues()));
         assertEquals(VALUE1, operation.getNewValue());
     }
 
@@ -116,7 +117,7 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         defProd2.setTemplate("Oh-oh Oh Oh Oh-oh-oh");
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
 
-        assertThat(SwitchTemplatePropertyValueOperation.isValidSelection(selected), is(false));
+        assertThat(SwitchTemplatedValueOperation.isValidSelection(selected), is(false));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -125,13 +126,13 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         defProd2.setTemplate("Oh-oh Oh Oh Oh-oh-oh");
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
 
-        SwitchTemplatePropertyValueOperation.create(selected);
+        SwitchTemplatedValueOperation.create(selected);
     }
 
     @Test
     public void testRun() throws Exception {
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
-        SwitchTemplatePropertyValueOperation operation = SwitchTemplatePropertyValueOperation.create(selected);
+        SwitchTemplatedValueOperation operation = SwitchTemplatedValueOperation.create(selected);
 
         operation.run(new NullProgressMonitor());
 
@@ -149,7 +150,7 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
     @Test
     public void testRun_NotSaveWhenDirty() throws Exception {
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
-        SwitchTemplatePropertyValueOperation operation = SwitchTemplatePropertyValueOperation.create(selected);
+        SwitchTemplatedValueOperation operation = SwitchTemplatedValueOperation.create(selected);
 
         operation.run(new NullProgressMonitor());
 
@@ -168,7 +169,7 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         inhProd2.getIpsSrcFile().save(true, null);
         template.getIpsSrcFile().save(true, null);
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
-        SwitchTemplatePropertyValueOperation operation = SwitchTemplatePropertyValueOperation.create(selected);
+        SwitchTemplatedValueOperation operation = SwitchTemplatedValueOperation.create(selected);
 
         operation.run(new NullProgressMonitor());
 
@@ -185,7 +186,7 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         inhValue1.setFormulaSignature("not needed in this test");
         inhValue2.setFormulaSignature("not needed in this test");
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
-        SwitchTemplatePropertyValueOperation operation = SwitchTemplatePropertyValueOperation.create(selected);
+        SwitchTemplatedValueOperation operation = SwitchTemplatedValueOperation.create(selected);
 
         operation.run(new NullProgressMonitor());
 
@@ -202,7 +203,7 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         templatePropertyValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
 
-        assertTrue(SwitchTemplatePropertyValueOperation.isValidSelection(selected));
+        assertTrue(SwitchTemplatedValueOperation.isValidSelection(selected));
     }
 
     @Test
@@ -210,7 +211,7 @@ public class SwitchTemplatePropertyValueOperationTest extends AbstractIpsPluginT
         templatePropertyValue.setFormulaSignature("invalid");
         List<IPropertyValue> selected = Arrays.<IPropertyValue> asList(defValue1, defValue2);
 
-        assertFalse(SwitchTemplatePropertyValueOperation.isValidSelection(selected));
+        assertFalse(SwitchTemplatedValueOperation.isValidSelection(selected));
     }
 
 }

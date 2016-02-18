@@ -15,7 +15,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.swt.graphics.Image;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
@@ -66,7 +66,7 @@ public enum TemplateValueUiStatus {
         });
     }
 
-    private static <T extends ITemplatedProperty> TemplateValueUiStatus mapStatusInternal(T propertyValue,
+    private static <T extends ITemplatedValue> TemplateValueUiStatus mapStatusInternal(T propertyValue,
             Function<T, Object> valueFunction) {
         TemplateValueStatus templateStatus = propertyValue.getTemplateValueStatus();
         if (templateStatus == TemplateValueStatus.INHERITED) {
@@ -78,7 +78,7 @@ public enum TemplateValueUiStatus {
         }
     }
 
-    private static <T extends ITemplatedProperty> TemplateValueUiStatus mapDefinedStatus(T property,
+    private static <T extends ITemplatedValue> TemplateValueUiStatus mapDefinedStatus(T property,
             Function<T, Object> valueFunction) {
         @SuppressWarnings("unchecked")
         T templateProperty = (T)property.findTemplateProperty(property.getIpsProject());

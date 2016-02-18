@@ -12,8 +12,11 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -27,8 +30,10 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -36,6 +41,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,7 +69,7 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
-    public IPropertyValueContainer getTemplatedPropertyContainer() {
+    public IPropertyValueContainer getTemplatedValueContainer() {
         return getPropertyValueContainer();
     }
 
@@ -271,7 +277,26 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
+        return getTemplatedValueContainer().isPartOfTemplateHierarchy();
     }
 
+    @Override
+    public Comparator<Object> getValueComparator() {
+        return getPropertyValueType().getValueComparator();
+    }
+
+    @Override
+    public Function<IPropertyValue, Object> getValueGetter() {
+        return getPropertyValueType().getValueGetter();
+    }
+
+    @Override
+    public BiConsumer<IPropertyValue, Object> getValueSetter() {
+        return getPropertyValueType().getValueSetter();
+    }
+
+    @Override
+    public ITemplatedValueIdentifier getIdentifier() {
+        return new PropertyValueIdentifier(this);
+    }
 }

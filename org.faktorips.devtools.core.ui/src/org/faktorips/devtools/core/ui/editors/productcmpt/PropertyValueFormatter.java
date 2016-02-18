@@ -77,7 +77,9 @@ public class PropertyValueFormatter {
         }
     };
 
+    // Utility class that should not be instantiated
     private PropertyValueFormatter() {
+        super();
     }
 
     /**
@@ -102,10 +104,6 @@ public class PropertyValueFormatter {
         }
         throw new IllegalStateException(PropertyValueFormatter.class.getName()
                 + ": Unknown property value type " + propertyValue.getPropertyValueType()); //$NON-NLS-1$
-    }
-
-    public static String shortedFormat(IPropertyValue propertyValue) {
-        return StringUtils.abbreviateMiddle(format(propertyValue), "[...]", 45); //$NON-NLS-1$
     }
 
     private static String getValueOrNullPresentation(String value) {

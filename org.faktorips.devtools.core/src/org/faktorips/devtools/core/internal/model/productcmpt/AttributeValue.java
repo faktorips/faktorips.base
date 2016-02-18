@@ -11,7 +11,10 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Comparator;
 import java.util.Locale;
+
+import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -26,7 +29,9 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -39,6 +44,7 @@ import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -75,7 +81,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public IPropertyValueContainer getTemplatedPropertyContainer() {
+    public IPropertyValueContainer getTemplatedValueContainer() {
         return getPropertyValueContainer();
     }
 
@@ -229,7 +235,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
+        return getTemplatedValueContainer().isPartOfTemplateHierarchy();
     }
 
     @Override
@@ -340,6 +346,26 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     @Override
     public String toString() {
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
+    }
+
+    @Override
+    public Comparator<Object> getValueComparator() {
+        return getPropertyValueType().getValueComparator();
+    }
+
+    @Override
+    public Function<IPropertyValue, Object> getValueGetter() {
+        return getPropertyValueType().getValueGetter();
+    }
+
+    @Override
+    public BiConsumer<IPropertyValue, Object> getValueSetter() {
+        return getPropertyValueType().getValueSetter();
+    }
+
+    @Override
+    public ITemplatedValueIdentifier getIdentifier() {
+        return new PropertyValueIdentifier(this);
     }
 
 }

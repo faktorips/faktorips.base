@@ -11,8 +11,13 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.base.Function;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -34,7 +39,9 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.util.NullSafeComparableComparator;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -82,7 +89,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public IProductCmptLinkContainer getTemplatedPropertyContainer() {
+    public IProductCmptLinkContainer getTemplatedValueContainer() {
         return getProductCmptLinkContainer();
     }
 
@@ -517,6 +524,39 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         } else {
             super.delete();
         }
+    }
+
+    @Override
+    public Comparator<Object> getValueComparator() {
+        return new NullSafeComparableComparator<Object>();
+    }
+
+    @Override
+    public Function<IProductCmptLink, Object> getValueGetter() {
+        return new Function<IProductCmptLink, Object>() {
+
+            @SuppressFBWarnings
+            @Override
+            public Object apply(IProductCmptLink input) {
+                return input.getCardinality();
+            }
+        };
+    }
+
+    @Override
+    public BiConsumer<IProductCmptLink, Object> getValueSetter() {
+        return new BiConsumer<IProductCmptLink, Object>() {
+            @Override
+            public void accept(IProductCmptLink t, Object u) {
+                ArgumentCheck.isInstanceOf(u, Cardinality.class);
+                t.setCardinality((Cardinality)u);
+            }
+        };
+    }
+
+    @Override
+    public LinkIdentifier getIdentifier() {
+        return new LinkIdentifier(this);
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {

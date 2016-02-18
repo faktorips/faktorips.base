@@ -38,7 +38,7 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * @see IValidationRuleConfig
  */
 public class ValidationRuleConfigEditComposite extends
-        EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
+EditPropertyValueComposite<IValidationRule, IValidationRuleConfig> {
 
     public ValidationRuleConfigEditComposite(IValidationRule property, IValidationRuleConfig propertyValue,
             IpsSection parentSection, Composite parent, BindingContext bindingContext, UIToolkit toolkit) {

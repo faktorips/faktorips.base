@@ -21,12 +21,12 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedPropertyContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateHierarchyVisitor;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 
-public class TemplatePropertyFinder<P extends ITemplatedProperty, C extends ITemplatedPropertyContainer> extends
+public class TemplatePropertyFinder<P extends ITemplatedValue, C extends ITemplatedValueContainer> extends
         TemplateHierarchyVisitor<C> {
 
     private final P originalPropertyValue;
@@ -41,7 +41,7 @@ public class TemplatePropertyFinder<P extends ITemplatedProperty, C extends ITem
 
     @Override
     protected boolean visit(C currentValueContainer) {
-        if (originalPropertyValue.getTemplatedPropertyContainer() == currentValueContainer) {
+        if (originalPropertyValue.getTemplatedValueContainer() == currentValueContainer) {
             /*
              * Ignore property value on which the search was started and continue searching.
              */

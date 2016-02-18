@@ -15,7 +15,6 @@ import java.util.Comparator;
 
 import com.google.common.base.Function;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
@@ -32,6 +31,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
+import org.faktorips.devtools.core.util.NullSafeComparableComparator;
 import org.faktorips.util.functional.BiConsumer;
 
 /**
@@ -518,24 +518,6 @@ public enum PropertyValueType {
                         + o1 + " and " + o2); //$NON-NLS-1$
             }
         }
-    }
-
-    /**
-     * Comparator that for objects of type T that assumes T to implement {@code Comparable<T>} and
-     * allows objects to be null.
-     */
-    private static class NullSafeComparableComparator<T> implements Comparator<T>, Serializable {
-
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        @SuppressWarnings("unchecked")
-        public int compare(T o1, T o2) {
-            Comparable<T> c1 = (Comparable<T>)o1;
-            Comparable<T> c2 = (Comparable<T>)o2;
-            return ObjectUtils.compare(c1, c2);
-        }
-
     }
 
 }
