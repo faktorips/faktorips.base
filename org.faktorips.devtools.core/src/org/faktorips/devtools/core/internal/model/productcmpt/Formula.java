@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -272,7 +272,7 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     public IFormula findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IFormula.class);
+        return TemplateValueFinder.findTemplateValue(this, IFormula.class);
     }
 
     @Override

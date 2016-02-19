@@ -27,7 +27,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -564,7 +564,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public IConfigElement findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IConfigElement.class);
+        return TemplateValueFinder.findTemplateValue(this, IConfigElement.class);
     }
 
     @Override

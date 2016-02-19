@@ -18,7 +18,7 @@ import com.google.common.base.Function;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -220,7 +220,7 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
 
     @Override
     public IValidationRuleConfig findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IValidationRuleConfig.class);
+        return TemplateValueFinder.findTemplateValue(this, IValidationRuleConfig.class);
     }
 
     @Override

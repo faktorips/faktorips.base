@@ -105,8 +105,7 @@ public class ProductCmptPropertyTypeTest {
         when(templateValue.getTemplateValueStatus()).thenReturn(TemplateValueStatus.DEFINED);
         when(prodCmpt.isPartOfTemplateHierarchy()).thenReturn(true);
         when(prodCmpt.findTemplate(ipsProject)).thenReturn(templateCmpt);
-        when(templateCmpt.getPropertyValue(pctAttr2.getPropertyName(), IAttributeValue.class))
-                .thenReturn(templateValue);
+        when(templateCmpt.getPropertyValue(pctAttr2.getPropertyName())).thenReturn(templateValue);
         IAttributeValue attrValue = (IAttributeValue)PropertyValueType.ATTRIBUTE_VALUE.createPropertyValue(prodCmpt,
                 pctAttr2, "partID");
 

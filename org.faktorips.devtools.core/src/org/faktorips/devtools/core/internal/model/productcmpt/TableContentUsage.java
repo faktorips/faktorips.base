@@ -20,7 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -315,7 +315,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     @Override
     public ITableContentUsage findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, ITableContentUsage.class);
+        return TemplateValueFinder.findTemplateValue(this, ITableContentUsage.class);
     }
 
     @Override

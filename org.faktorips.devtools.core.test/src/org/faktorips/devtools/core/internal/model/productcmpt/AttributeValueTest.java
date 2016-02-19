@@ -20,9 +20,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +38,9 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
-import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.util.message.Message;
@@ -59,9 +54,11 @@ import org.w3c.dom.Node;
 public class AttributeValueTest extends AbstractIpsPluginTest {
 
     private static final String ATTRIBUTE_NAME = "attributeName";
+    private static final String TEMPLATE_NAME = "Template";
     private IIpsProject ipsProject;
     private IProductCmptType productCmptType;
     private IProductCmptTypeAttribute attribute;
+    private IProductCmptTypeAttribute templatedAttribute;
     private IProductCmpt productCmpt;
     private IProductCmptGeneration generation;
 
@@ -76,6 +73,8 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attribute = productCmptType.newProductCmptTypeAttribute();
         attribute.setName("minimumPremium");
         attribute.setDatatype(Datatype.INTEGER.getQualifiedName());
+        templatedAttribute = productCmptType.newProductCmptTypeAttribute();
+        templatedAttribute.setName(ATTRIBUTE_NAME);
         productCmpt = newProductCmpt(productCmptType, "ProductA");
         generation = productCmpt.getProductCmptGeneration(0);
         attributeValue = generation.newAttributeValue(attribute);
@@ -369,19 +368,29 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testSetTemplateValueStatus_DefinedShouldCopyValueHolder() {
-        String inheritedValue = "inherited value";
-        ProductCmpt productCmpt = setUpMocksForTemplateInheritedCheck(TemplateValueStatus.DEFINED, inheritedValue);
-        AttributeValue attributeValue = new AttributeValue(productCmpt, "id");
-        attributeValue.setAttribute(ATTRIBUTE_NAME);
-        SingleValueHolder valueHolder = new SingleValueHolder(attributeValue, "defined value");
-        attributeValue.setValueHolder(valueHolder);
+    public void testSetTemplateValueStatus_DefinedShouldCopyValueHolder() throws CoreException {
+        String templateValue = "template value";
+        String definedValue = "defined value";
+
+        // Set up a template with an attribute value for templatedAttribute
+        IProductCmpt template = newProductTemplate(productCmptType, TEMPLATE_NAME);
+        IProductCmptGeneration templateGeneration = template.getProductCmptGeneration(0);
+        IAttributeValue templateAttributeValue = templateGeneration.newAttributeValue(templatedAttribute);
+        templateAttributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        templateAttributeValue.setValueHolder(new SingleValueHolder(templateAttributeValue, templateValue));
+
+        // Add attribute value to productCmpt's generation
+        productCmpt.setTemplate(template.getName());
+        IAttributeValue attributeValue = generation.newAttributeValue(templatedAttribute);
+        attributeValue.setValueHolder(new SingleValueHolder(attributeValue, definedValue));
+
+        // Make attribute value inherit the templates value
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        assertThat(attributeValue.getValueHolder().getStringValue(), is(inheritedValue));
+        assertThat(attributeValue.getValueHolder().getStringValue(), is(templateValue));
 
+        // Make attribute value of productCmpt's generation DEFINED, the value should be copied
         attributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-
-        assertThat(attributeValue.getValueHolder().getStringValue(), is(inheritedValue));
+        assertThat(attributeValue.getValueHolder().getStringValue(), is(templateValue));
 
         // Copied value holder has to be writable
         SingleValueHolder copiedValueHolder = (SingleValueHolder)attributeValue.getValueHolder();
@@ -452,33 +461,6 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         assertThat((SingleValueHolder)attributeValue.getValueHolder(), is(valueHolder));
-    }
-
-    /**
-     * Mocks a product component, a corresponding template and a attribute value in the template
-     * called {@link #ATTRIBUTE_NAME}. If you want to set a value in the template attribute value.
-     * The property {@link #attributeValue} is an optional parameter and you should only provide
-     * maximum one value (only the first value will be taken)
-     */
-    private ProductCmpt setUpMocksForTemplateInheritedCheck(TemplateValueStatus templateAttributeStatus,
-            String... attributeValue) {
-        ProductCmpt productCmpt = mock(ProductCmpt.class);
-        when(productCmpt.isPartOfTemplateHierarchy()).thenCallRealMethod();
-        when(productCmpt.getIpsProject()).thenReturn(ipsProject);
-        IProductCmpt templateContainer = mock(IProductCmpt.class);
-        IAttributeValue templateAttributeValue = mock(IAttributeValue.class);
-        when(productCmpt.findTemplate(ipsProject)).thenReturn(templateContainer);
-        when(productCmpt.isUsingTemplate()).thenReturn(true);
-        when(templateContainer.getPropertyValue(ATTRIBUTE_NAME, IAttributeValue.class)).thenReturn(
-                templateAttributeValue);
-        when(templateAttributeValue.getTemplateValueStatus()).thenReturn(templateAttributeStatus);
-        if (attributeValue.length > 0) {
-            IValueHolder<?> valueHolder = new SingleValueHolder(templateAttributeValue,
-                    ValueFactory.createStringValue(attributeValue[0]));
-            doReturn(valueHolder).when(templateAttributeValue).getValueHolder();
-        }
-        when(productCmpt.getIpsObject()).thenReturn(productCmpt);
-        return productCmpt;
     }
 
     @Test

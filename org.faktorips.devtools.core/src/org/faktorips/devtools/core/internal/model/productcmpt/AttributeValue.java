@@ -22,7 +22,7 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -225,7 +225,7 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public IAttributeValue findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IAttributeValue.class);
+        return TemplateValueFinder.findTemplateValue(this, IAttributeValue.class);
     }
 
     @Override
