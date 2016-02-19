@@ -299,4 +299,9 @@ public class Formula extends Expression implements IFormula {
     public ITemplatedValueIdentifier getIdentifier() {
         return new PropertyValueIdentifier(this);
     }
+
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
 }

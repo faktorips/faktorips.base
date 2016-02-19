@@ -684,4 +684,18 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         return templateLink;
     }
 
+    @Test
+    public void testIsConcreteValue() {
+        // make product cmpt part of template hierarchy
+        productCmpt.setTemplate("someTemplate");
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        assertTrue(link.isConcreteValue());
+
+        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertTrue(link.isConcreteValue());
+
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        assertFalse(link.isConcreteValue());
+    }
+
 }

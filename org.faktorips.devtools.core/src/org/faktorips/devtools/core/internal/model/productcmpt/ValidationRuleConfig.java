@@ -253,4 +253,9 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     public ITemplatedValueIdentifier getIdentifier() {
         return new PropertyValueIdentifier(this);
     }
+
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
 }

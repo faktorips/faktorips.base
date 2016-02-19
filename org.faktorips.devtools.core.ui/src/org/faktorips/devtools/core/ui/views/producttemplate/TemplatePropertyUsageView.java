@@ -91,8 +91,8 @@ public class TemplatePropertyUsageView {
     /**
      * Sets the templated value to display template information for. Refreshes this view.
      */
-    public void setTemplatedValue(ITemplatedValue propertyValue) {
-        usagePmo.setTemplatedValue(propertyValue);
+    public void setTemplatedValue(ITemplatedValue templatedValue) {
+        usagePmo.setTemplatedValue(templatedValue);
         refresh();
     }
 

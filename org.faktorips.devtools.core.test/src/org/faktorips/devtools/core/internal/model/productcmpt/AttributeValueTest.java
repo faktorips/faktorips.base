@@ -15,6 +15,7 @@ import static org.faktorips.abstracttest.matcher.Matchers.lacksMessageCode;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
@@ -326,7 +327,8 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate("anyTemplate");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        assertThat(attributeValue.validate(ipsProject), hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+        assertThat(attributeValue.validate(ipsProject),
+                hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
     }
 
     @Test
@@ -344,7 +346,8 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
 
         productCmpt.setTemplate("invalid template");
         attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
-        assertThat(attributeValue.validate(ipsProject), hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
+        assertThat(attributeValue.validate(ipsProject),
+                hasMessageCode(ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS));
     }
 
     @Test
@@ -476,6 +479,20 @@ public class AttributeValueTest extends AbstractIpsPluginTest {
         }
         when(productCmpt.getIpsObject()).thenReturn(productCmpt);
         return productCmpt;
+    }
+
+    @Test
+    public void testIsConcreteValue() {
+        // make product cmpt part of template hierarchy
+        productCmpt.setTemplate("someTemplate");
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        assertTrue(attributeValue.isConcreteValue());
+
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertFalse(attributeValue.isConcreteValue());
+
+        attributeValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        assertFalse(attributeValue.isConcreteValue());
     }
 
 }

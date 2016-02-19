@@ -105,4 +105,24 @@ public interface ITemplatedValue extends IIpsObjectPart {
 
     ITemplatedValueIdentifier getIdentifier();
 
+    /**
+     * A concrete {@link ITemplatedValue} has its value used as it is. Whether a value is concrete
+     * depends on its template value status and the kind of property.
+     * <ul>
+     * <li>Defined values are concrete values, naturally.</li>
+     * <li>Inherited values are never concrete values, as their actual value is never used, the
+     * corresponding value from a template is used instead.</li>
+     * <li>For undefined values the result depends on the kind of templated property:
+     * <ul>
+     * <li>For PropertyValues undefined means, well, undefined, and thus not concrete.</li>
+     * <li>For links however, undefined means something like "deleted". Deleted (or cardinality 0
+     * for that matter) is effectively used, and thus is viewed as a concrete value.</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * 
+     * @return whether this value defines a concrete value.
+     */
+    public boolean isConcreteValue();
+
 }

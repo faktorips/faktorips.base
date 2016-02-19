@@ -592,4 +592,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         return new PropertyValueIdentifier(this);
     }
 
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
+
 }

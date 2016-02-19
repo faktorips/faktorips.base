@@ -368,4 +368,9 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         return new PropertyValueIdentifier(this);
     }
 
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
+
 }

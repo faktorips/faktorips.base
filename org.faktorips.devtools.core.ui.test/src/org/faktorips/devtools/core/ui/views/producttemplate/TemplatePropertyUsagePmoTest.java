@@ -324,7 +324,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetTemplateValue() throws Exception {
+    public void testGetActualTemplateValue() throws Exception {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
@@ -345,7 +345,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         pTable.setTableContentName("productTable");
 
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(pTable);
-        assertThat(pmo.getTemplateValue(), is((Object)"templateTable"));
+        assertThat(pmo.getActualTemplateValue(), is((Object)"templateTable"));
 
     }
 

@@ -56,8 +56,16 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         setTemplatedValue(propertyValue);
     }
 
-    public void setTemplatedValue(ITemplatedValue propertyValue) {
-        setIpsObjectPartContainer(propertyValue);
+    public void setTemplatedValue(ITemplatedValue templatedValue) {
+        setIpsObjectPartContainer(templatedValue);
+    }
+
+    /**
+     * Returns the templated value which the PMO currently uses. This is a templated value from a
+     * product template.
+     */
+    private ITemplatedValue getTemplatedValue() {
+        return (ITemplatedValue)getIpsObjectPartContainer();
     }
 
     protected boolean hasData() {
@@ -109,10 +117,6 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getTemplatedValue());
     }
 
-    private ITemplatedValue getTemplatedValue() {
-        return (ITemplatedValue)getIpsObjectPartContainer();
-    }
-
     /** Returns the template whose property usage is displayed. */
     public ITemplatedValueContainer getTemplate() {
         return getTemplatedValue().getTemplatedValueContainer();
@@ -153,14 +157,17 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return getInheritingTemplatedValues().size() + getDefinedValuesHistogram().countElements();
     }
 
-    /** Returns the value for the templated value in the template. */
-    protected Object getTemplateValue() {
+    /**
+     * Returns the "actual" value of the templated value in the template. See
+     * {@link TemplatePropertyUsagePmo#valueFunction()} for a definition of "actual" value.
+     */
+    protected Object getActualTemplateValue() {
         ITemplatedValue templatePropertyValue = findTemplatedValue(getTemplate());
         return valueFunction().apply(templatePropertyValue);
     }
 
     /** Returns all templated values that define a custom value. */
-    /* private */protected Collection<ITemplatedValue> getDefiningTemplatedValues() {
+    protected Collection<ITemplatedValue> getDefiningTemplatedValues() {
         return filter(findTemplatedValuesBasedOnTemplate(), valueStatus(TemplateValueStatus.DEFINED));
     }
 
@@ -189,22 +196,29 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
 
         List<Node<ITemplatedValueContainer>> templateNodes = getTemplateNodes(node);
         for (Node<ITemplatedValueContainer> templateNode : templateNodes) {
-            ITemplatedValue templateValue = findTemplatedValue(templateNode.getElement());
-            if (definesValue(templateValue)) {
-                // Include template as it defines a custom value. Product components using the
-                // template do not have to be included as their value depends on template and not
-                // the initial template.
-                result.add(templateValue);
-            } else {
-                // If the template does not define a value all product components using the template
-                // should be included as their values actually depend on this PMO's template.
-                result.addAll(findTemplatedValuesBasedOnTemplate(templateNode));
-            }
+            result.addAll(getRelevantValues(templateNode));
         }
         return result;
     }
 
-    /** Returns the children of the given node that hold product components (i.e. not templates). */
+    private List<ITemplatedValue> getRelevantValues(Node<ITemplatedValueContainer> templateNode) {
+        ITemplatedValue templateValue = findTemplatedValue(templateNode.getElement());
+        if (templateValue.isConcreteValue()) {
+            // Include the template's value as it is a concrete value. Product components using the
+            // template do not have to be included as their value depends on the template.
+            return Lists.newArrayList(templateValue);
+        } else {
+            // If the template does not define a concrete value, the values of all product
+            // components (and templates) based on it have to be included as their values actually
+            // depend on the value from the template this PMO uses.
+            return findTemplatedValuesBasedOnTemplate(templateNode);
+        }
+    }
+
+    /**
+     * Returns the children of the given node that hold containers that are not templates (i.e.
+     * "normal" product components or generations).
+     */
     private List<Node<ITemplatedValueContainer>> getContainerNodes(Node<ITemplatedValueContainer> node) {
         return FluentIterable.from(node.getChildren()).filter(Predicates.not(isTemplate())).toList();
     }
@@ -214,20 +228,12 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return FluentIterable.from(node.getChildren()).filter(isTemplate()).toList();
     }
 
-    /** Returns this PMO's property. */
+    /** Returns the identifier for the templated values used in this PMO. */
     private ITemplatedValueIdentifier getIdentifier() {
         return getTemplatedValue().getIdentifier();
     }
 
-    /**
-     * Returns whether or not the given property value defines a custom values (i.e. does not
-     * inherit the value from its template).
-     */
-    private boolean definesValue(ITemplatedValue value) {
-        return value != null && value.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
-    }
-
-    /** Function to transform an IIpsSrcFile to the IProductCmpt enclosed in it. */
+    /** Function to transform an IIpsSrcFile to the ITemplatedValueContainer enclosed in it. */
     private Function<IIpsSrcFile, ITemplatedValueContainer> srcFileToContainer() {
         return new Function<IIpsSrcFile, ITemplatedValueContainer>() {
             @Override
@@ -242,7 +248,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         };
     }
 
-    /** Function to transform a node to the IPropertyValue enclosed in it. */
+    /** Function to transform a node to the ITemplatedValue enclosed in it. */
     private Function<Node<ITemplatedValueContainer>, ITemplatedValue> nodeToTemplatedValue() {
         return new Function<Node<ITemplatedValueContainer>, ITemplatedValue>() {
 
@@ -257,10 +263,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         };
     }
 
-    /**
-     * Returns the value for this PMO's property from the given product component (or its
-     * generation).
-     */
+    /** Returns the templated value from the given product component (or its generation). */
     private ITemplatedValue findTemplatedValue(ITemplatedValueContainer container) {
         IProductCmpt productCmpt = container.getProductCmpt();
         ITemplatedValue templatedValue = getIdentifier().getValueFrom(productCmpt);
@@ -280,8 +283,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     /**
-     * Predicate that matches an IProductCmpt whose property value (for this PMO's property) has the
-     * given TemplateValueStatus.
+     * Predicate that matches an ITemplatedValue that has the given TemplateValueStatus.
      */
     private Predicate<ITemplatedValue> valueStatus(final TemplateValueStatus t) {
         return new Predicate<ITemplatedValue>() {
@@ -294,7 +296,7 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         };
     }
 
-    /** Predicate that matches a node that encloses an IProductCmpt that is a template. */
+    /** Predicate that matches a node that encloses an ITemplatedValueContainer that is a template. */
     private Predicate<Node<ITemplatedValueContainer>> isTemplate() {
         return new Predicate<Node<ITemplatedValueContainer>>() {
             @Override
@@ -304,7 +306,10 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         };
     }
 
-    /** Returns a comparator to compare the value of property values. */
+    /**
+     * Returns a comparator to compare the "actual" values of templated value objects. See
+     * {@link #valueFunction()} for a definition of "actual" value.
+     */
     public Comparator<Object> getValueComparator() {
         return getTemplatedValue().getValueComparator();
     }
@@ -315,7 +320,15 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     /**
-     * Returns a function to obtain the value of a property value
+     * Returns a function to obtain the "actual" value of a templated value.
+     * <p>
+     * For an {@link org.faktorips.devtools.core.model.productcmpt.IAttributeValue} the actual value
+     * is the String/Decimal/... that is defined in the product component (or generation), for an
+     * {@link org.faktorips.devtools.core.model.productcmpt.ITableContentUsage} the actual value is
+     * the name of the table etc.
+     * <p>
+     * For an {@link org.faktorips.devtools.core.model.productcmpt.IProductCmptLink} the actual
+     * value (in this context) is its cardinality.
      */
     @SuppressWarnings("unchecked")
     private Function<ITemplatedValue, Object> valueFunction() {

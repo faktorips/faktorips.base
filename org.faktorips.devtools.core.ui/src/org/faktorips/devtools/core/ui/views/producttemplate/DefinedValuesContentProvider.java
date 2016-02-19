@@ -114,7 +114,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     private Function<Object, TemplateUsageViewItem> toViewItem(final Histogram<Object, ITemplatedValue> histogram) {
         final SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
         final int count = pmo.getCount();
-        final Object templateValue = pmo.getTemplateValue();
+        final Object templateValue = pmo.getActualTemplateValue();
         final Comparator<Object> comparator = pmo.getValueComparator();
 
         return new Function<Object, TemplateUsageViewItem>() {

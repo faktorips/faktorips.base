@@ -338,4 +338,9 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         return new PropertyValueIdentifier(this);
     }
 
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
+
 }
