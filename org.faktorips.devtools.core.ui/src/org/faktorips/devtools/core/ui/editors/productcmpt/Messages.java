@@ -118,6 +118,10 @@ public class Messages extends NLS {
 
     public static String CardinalityPanel_labelOther;
 
+    public static String CardinalityPanel_MenuItem_showUsage;
+
+    public static String CardinalityPanel_MenuItem_showTemplateLinkUsage;
+
     public static String ExpressionProposalProvider_defaultValue;
 
     public static String MissingResourcePage_msgFileOutOfSync;

@@ -67,4 +67,16 @@ public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> 
         setTemplatedProperty(link);
     }
 
+    public IProductCmptLink getLink() {
+        if (isLinkAvailable()) {
+            return getTemplatedProperty();
+        } else {
+            return null;
+        }
+    }
+
+    public IProductCmptLink findTemplateLink() {
+        return findTemplateProperty();
+    }
+
 }
