@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+import com.google.common.base.Preconditions;
+
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
@@ -21,17 +23,17 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatte
 public class TemplateUsageViewItem {
 
     private final Object value;
-
     private final boolean sameAsTemplateValue;
-
+    private final boolean deletedValue;
     private final BigDecimal distributionPercent;
-
     private final Collection<ITemplatedValue> children;
 
-    public TemplateUsageViewItem(Object value, boolean sameAsTemplateValue, BigDecimal distributionPercent,
-            Set<ITemplatedValue> children) {
+    public TemplateUsageViewItem(Object value, boolean sameAsTemplateValue, boolean deletedValue,
+            BigDecimal distributionPercent, Set<ITemplatedValue> children) {
+        Preconditions.checkArgument(!(sameAsTemplateValue && deletedValue));
         this.value = value;
         this.sameAsTemplateValue = sameAsTemplateValue;
+        this.deletedValue = deletedValue;
         this.distributionPercent = distributionPercent;
         this.children = Collections.unmodifiableCollection(children);
     }
@@ -40,7 +42,7 @@ public class TemplateUsageViewItem {
         return value;
     }
 
-    public BigDecimal getRelDistributionPercent() {
+    public BigDecimal getRelativeDistributionPercent() {
         return distributionPercent;
     }
 
@@ -50,10 +52,12 @@ public class TemplateUsageViewItem {
 
     public String getText() {
         final String formattedValue = getFormattedValue();
-        final String distribution = getFormattedRelDistribution();
+        final String distribution = getFormattedRelativeDistribution();
         if (isSameValueAsTemplateValue()) {
             return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, formattedValue,
                     distribution);
+        } else if (isDeletedValue()) {
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_deletedValueLabel, distribution);
         } else {
             return NLS
                     .bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, formattedValue, distribution);
@@ -62,6 +66,10 @@ public class TemplateUsageViewItem {
 
     public boolean isSameValueAsTemplateValue() {
         return sameAsTemplateValue;
+    }
+
+    public boolean isDeletedValue() {
+        return deletedValue;
     }
 
     private String getFormattedValue() {
@@ -76,8 +84,8 @@ public class TemplateUsageViewItem {
         return children.iterator().next();
     }
 
-    private String getFormattedRelDistribution() {
-        return getRelDistributionPercent().stripTrailingZeros().toPlainString();
+    private String getFormattedRelativeDistribution() {
+        return getRelativeDistributionPercent().stripTrailingZeros().toPlainString();
     }
 
     @Override

@@ -28,6 +28,8 @@ public class Cardinality implements Comparable<Cardinality> {
 
     public static final int CARDINALITY_MANY = IAssociation.CARDINALITY_MANY;
 
+    public static final Cardinality UNDEFINED = new UndefinedCardinality();
+
     /**
      * Validation message code to indicate that the default cardinality is less than the min- or
      * greater than the max cardinality.
@@ -189,7 +191,7 @@ public class Cardinality implements Comparable<Cardinality> {
 
     @Override
     public int compareTo(Cardinality o) {
-        if (o == null) {
+        if (o == null || o instanceof UndefinedCardinality) {
             return -1;
         }
 
@@ -204,4 +206,40 @@ public class Cardinality implements Comparable<Cardinality> {
         return IntegerUtils.compare(defaultCard, o.defaultCard);
     }
 
+    /**
+     * Special cardinality to use for deleted {@link IProductCmptLink}. All values are 0, validation
+     * is overridden to allow that.
+     */
+    private static class UndefinedCardinality extends Cardinality {
+
+        private UndefinedCardinality() {
+            super(0, 0, 0);
+        }
+
+        @Override
+        public MessageList validate(IProductCmptLink link) {
+            return new MessageList();
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof UndefinedCardinality;
+        }
+
+        @Override
+        public int compareTo(Cardinality o) {
+            if (o == null) {
+                return -1;
+            }
+            if (o instanceof UndefinedCardinality) {
+                return 0;
+            }
+            return 1;
+        }
+    }
 }

@@ -19,12 +19,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -166,9 +168,15 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         return valueFunction().apply(templatePropertyValue);
     }
 
-    /** Returns all templated values that define a custom value. */
+    /**
+     * Returns all templated values that define a custom value.
+     * <p>
+     * Unlike the name suggests, these templated values may contain some with
+     * {@code TemplateValueStatus.UNDEFINED}, namely product component links that were deleted.
+     */
     protected Collection<ITemplatedValue> getDefiningTemplatedValues() {
-        return filter(findTemplatedValuesBasedOnTemplate(), valueStatus(TemplateValueStatus.DEFINED));
+        return filter(findTemplatedValuesBasedOnTemplate(),
+                valueStatus(TemplateValueStatus.DEFINED, TemplateValueStatus.UNDEFINED));
     }
 
     /**
@@ -283,14 +291,16 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
     }
 
     /**
-     * Predicate that matches an ITemplatedValue that has the given TemplateValueStatus.
+     * Predicate that matches an ITemplatedValue with a TemplateValueStatus contained in the given
+     * TemplateValueStatus.
      */
-    private Predicate<ITemplatedValue> valueStatus(final TemplateValueStatus t) {
+    private Predicate<ITemplatedValue> valueStatus(final TemplateValueStatus... t) {
+        final Set<TemplateValueStatus> states = Sets.newHashSet(t);
         return new Predicate<ITemplatedValue>() {
 
             @Override
             public boolean apply(ITemplatedValue value) {
-                return value != null && value.getTemplateValueStatus() == t;
+                return value != null && states.contains(value.getTemplateValueStatus());
             }
 
         };

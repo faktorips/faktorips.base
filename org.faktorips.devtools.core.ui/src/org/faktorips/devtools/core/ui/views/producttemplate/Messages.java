@@ -38,6 +38,8 @@ public final class Messages extends NLS {
 
     public static String TemplatePropertyUsageView_DifferingValues_sameValueLabel;
 
+    public static String TemplatePropertyUsageView_DifferingValues_deletedValueLabel;
+
     public static String TemplatePropertyUsageView_InheritedValue_label;
 
     public static String TemplatePropertyUsageView_InheritedValue_fallbackLabel;

@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.util.Histogram;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,32 +38,32 @@ public class DefinedValuesContentProviderTest {
     @Mock
     private TemplatePropertyUsagePmo pmo;
     @Mock
-    private IPropertyValue value1;
+    private IPropertyValue valueA1;
     @Mock
-    private IPropertyValue value2;
+    private IPropertyValue valueA2;
     @Mock
-    private IPropertyValue value3;
+    private IPropertyValue valueA3;
     @Mock
-    private IPropertyValue value4;
+    private IPropertyValue valueB1;
     @Mock
-    private IPropertyValue value5;
+    private IPropertyValue valueB2;
     @Mock
-    private IPropertyValue value6;
+    private IPropertyValue valueC;
 
     private DefinedValuesContentProvider definedValuesContentProvider;
     private Histogram<Object, ITemplatedValue> histogram;
 
     @Before
     public void setUp() {
-        when(value1.getPropertyValue()).thenReturn("B");
-        when(value2.getPropertyValue()).thenReturn("A");
-        when(value3.getPropertyValue()).thenReturn("B");
-        when(value4.getPropertyValue()).thenReturn("A");
-        when(value5.getPropertyValue()).thenReturn("C");
-        when(value6.getPropertyValue()).thenReturn("A");
+        when(valueA1.getPropertyValue()).thenReturn("A");
+        when(valueA2.getPropertyValue()).thenReturn("A");
+        when(valueA3.getPropertyValue()).thenReturn("A");
+        when(valueB1.getPropertyValue()).thenReturn("B");
+        when(valueB2.getPropertyValue()).thenReturn("B");
+        when(valueC.getPropertyValue()).thenReturn("C");
 
         histogram = new Histogram<Object, ITemplatedValue>(getValueFunction(), Lists.<ITemplatedValue> newArrayList(
-                value1, value2, value3, value4, value5, value6));
+                valueB1, valueA1, valueB2, valueA2, valueC, valueA3));
         when(pmo.hasData()).thenReturn(true);
         when(pmo.getDefinedValuesHistogram()).thenReturn(histogram);
         when(pmo.getCount()).thenReturn(6);
@@ -102,8 +103,56 @@ public class DefinedValuesContentProviderTest {
         TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
         TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
 
-        assertThat(item1.getChildren(), hasItems((ITemplatedValue)value2, value4, value6));
-        assertThat(item2.getChildren(), hasItems((ITemplatedValue)value1, value3));
-        assertThat(item3.getChildren(), hasItems((ITemplatedValue)value5));
+        assertThat(item1.getChildren(), hasItems((ITemplatedValue)valueA1, valueA2, valueA3));
+        assertThat(item2.getChildren(), hasItems((ITemplatedValue)valueB1, valueB2));
+        assertThat(item3.getChildren(), hasItems((ITemplatedValue)valueC));
+    }
+
+    @Test
+    public void getChildren_ItemsWithSameValueAsTemplateAreSortedAtTheBeginning() {
+        when(pmo.getActualTemplateValue()).thenReturn("C");
+        Object[] elements = definedValuesContentProvider.getElements(null);
+        assertThat(elements.length, is(3));
+        TemplateUsageViewItem item1 = (TemplateUsageViewItem)elements[0];
+        TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
+        TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
+
+        assertThat(item1.getChildren(), hasItems((ITemplatedValue)valueC));
+        assertThat(item2.getChildren(), hasItems((ITemplatedValue)valueA1, valueA2, valueA3));
+        assertThat(item3.getChildren(), hasItems((ITemplatedValue)valueB1, valueB2));
+    }
+
+    @Test
+    public void getChildren_DeletedItemsAreSortedAtTheBeginning() {
+        when(valueC.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        Object[] elements = definedValuesContentProvider.getElements(null);
+        assertThat(elements.length, is(3));
+        TemplateUsageViewItem item1 = (TemplateUsageViewItem)elements[0];
+        TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
+        TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
+
+        assertThat(item1.getChildren(), hasItems((ITemplatedValue)valueC));
+        assertThat(item2.getChildren(), hasItems((ITemplatedValue)valueA1, valueA2, valueA3));
+        assertThat(item3.getChildren(), hasItems((ITemplatedValue)valueB1, valueB2));
+    }
+
+    @Test
+    public void getChildren_DeletedItemsAreSortedAfterItemsWithSameValue() {
+        // C is the same value as in the template and should be sorted at the top
+        when(pmo.getActualTemplateValue()).thenReturn("C");
+        // valueB1 and valueB2 are UNDEFINED and should be sorted at the top below the items with
+        // the same value as the template
+        when(valueB1.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+        when(valueB2.getTemplateValueStatus()).thenReturn(TemplateValueStatus.UNDEFINED);
+
+        Object[] elements = definedValuesContentProvider.getElements(null);
+        assertThat(elements.length, is(3));
+        TemplateUsageViewItem item1 = (TemplateUsageViewItem)elements[0];
+        TemplateUsageViewItem item2 = (TemplateUsageViewItem)elements[1];
+        TemplateUsageViewItem item3 = (TemplateUsageViewItem)elements[2];
+
+        assertThat(item1.getChildren(), hasItems((ITemplatedValue)valueC));
+        assertThat(item2.getChildren(), hasItems((ITemplatedValue)valueB1, valueB2));
+        assertThat(item3.getChildren(), hasItems((ITemplatedValue)valueA1, valueA2, valueA3));
     }
 }

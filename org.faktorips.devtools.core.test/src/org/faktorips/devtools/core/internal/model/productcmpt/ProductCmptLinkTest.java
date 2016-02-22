@@ -153,6 +153,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals("43", link.getId());
         assertEquals(1, link.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
+
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(2));
+        assertEquals("44", link.getId());
+        assertEquals(Cardinality.UNDEFINED, link.getCardinality());
     }
 
     @Test
@@ -580,7 +585,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         templateLink.setCardinality(cardinality);
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        assertThat(link.getCardinality(), is(cardinality));
+        assertThat(link.getCardinality(), is(Cardinality.UNDEFINED));
     }
 
     @Test
@@ -604,6 +609,18 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         assertThat(link.getCardinality(), is(templateCardinality));
+    }
+
+    @Test
+    public void testSetTemplateValueStatus_FormerlyUndefinedCardinalityIsCopiedFromTemplate() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        IProductCmptLink templateLink = createTemplateLink();
+        templateLink.setCardinality(cardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertThat(link.getCardinality(), is(Cardinality.UNDEFINED));
+
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        assertThat(link.getCardinality(), is(cardinality));
     }
 
     @Test

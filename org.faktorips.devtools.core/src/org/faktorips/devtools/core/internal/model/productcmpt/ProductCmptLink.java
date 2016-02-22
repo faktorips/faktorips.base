@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
@@ -138,8 +139,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public Cardinality getCardinality() {
-        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED
-                || getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
             return findTemplateCardinality();
         }
         return cardinality;
@@ -366,7 +366,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 maxCardinality = 0;
             }
         }
-        cardinality = new Cardinality(minCardinality, maxCardinality, defaultCardinality);
+        if (minCardinality == 0 && maxCardinality == 0 && defaultCardinality == 0) {
+            cardinality = Cardinality.UNDEFINED;
+        } else {
+            cardinality = new Cardinality(minCardinality, maxCardinality, defaultCardinality);
+        }
         templateValueSettings.initPropertiesFromXml(element);
     }
 
@@ -491,7 +495,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
         if (newStatus == TemplateValueStatus.DEFINED) {
             // safe the current cardinality from template
-            cardinality = getCardinality();
+            cardinality = Optional.fromNullable(findTemplateCardinality()).or(DEFAULT_CARDINALITY);
+        } else if (newStatus == TemplateValueStatus.UNDEFINED) {
+            cardinality = Cardinality.UNDEFINED;
         }
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
