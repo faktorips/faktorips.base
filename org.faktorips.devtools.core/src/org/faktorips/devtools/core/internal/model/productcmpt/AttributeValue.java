@@ -11,16 +11,12 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Comparator;
 import java.util.Locale;
-
-import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
@@ -29,9 +25,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
@@ -39,12 +33,10 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -54,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class AttributeValue extends AtomicIpsObjectPart implements IAttributeValue {
+public class AttributeValue extends AbstractSimplePropertyValue implements IAttributeValue {
 
     public static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
@@ -73,16 +65,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
         this.templateValueSettings = new TemplateValueSettings(this);
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IPropertyValueContainer getTemplatedValueContainer() {
-        return getPropertyValueContainer();
     }
 
     @Override
@@ -196,16 +178,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return getProductCmptPropertyType();
-    }
-
-    @Override
-    public ProductCmptPropertyType getProductCmptPropertyType() {
-        return getPropertyValueType().getCorrespondingPropertyType();
-    }
-
-    @Override
     public String getPropertyValue() {
         if (getValueHolder() != null) {
             return getValueHolder().getStringValue();
@@ -234,11 +206,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedValueContainer().isPartOfTemplateHierarchy();
-    }
-
-    @Override
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             valueHolder = getValueHolder().copy(this);
@@ -246,11 +213,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         TemplateValueStatus oldValue = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
-    }
-
-    @Override
-    public void switchTemplateValueStatus() {
-        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
     }
 
     @Override
@@ -347,30 +309,4 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String toString() {
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
-
-    @Override
-    public Comparator<Object> getValueComparator() {
-        return getPropertyValueType().getValueComparator();
-    }
-
-    @Override
-    public Function<IPropertyValue, Object> getValueGetter() {
-        return getPropertyValueType().getValueGetter();
-    }
-
-    @Override
-    public BiConsumer<IPropertyValue, Object> getValueSetter() {
-        return getPropertyValueType().getValueSetter();
-    }
-
-    @Override
-    public ITemplatedValueIdentifier getIdentifier() {
-        return new PropertyValueIdentifier(this);
-    }
-
-    @Override
-    public boolean isConcreteValue() {
-        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
-    }
-
 }

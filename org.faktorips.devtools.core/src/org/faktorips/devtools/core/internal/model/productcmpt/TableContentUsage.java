@@ -11,35 +11,27 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
-import java.util.Comparator;
 import java.util.Locale;
-
-import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.util.ArgumentCheck;
-import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
@@ -49,7 +41,7 @@ import org.w3c.dom.Element;
  * 
  * @author Thorsten Guenther
  */
-public class TableContentUsage extends AtomicIpsObjectPart implements ITableContentUsage {
+public class TableContentUsage extends AbstractSimplePropertyValue implements ITableContentUsage {
 
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_TABLE_CONTENT_USAGE;
     /**
@@ -64,11 +56,6 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
 
     private final TemplateValueSettings templateValueSettings;
 
-    public TableContentUsage() {
-        super();
-        this.templateValueSettings = new TemplateValueSettings(this);
-    }
-
     public TableContentUsage(IPropertyValueContainer parent, String id) {
         this(parent, id, ""); //$NON-NLS-1$
     }
@@ -77,16 +64,6 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
         super(parent, id);
         this.structureUsage = structureUsage;
         this.templateValueSettings = new TemplateValueSettings(this);
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IPropertyValueContainer getTemplatedValueContainer() {
-        return getPropertyValueContainer();
     }
 
     @Override
@@ -102,16 +79,6 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     @Override
     public PropertyValueType getPropertyValueType() {
         return PropertyValueType.TABLE_CONTENT_USAGE;
-    }
-
-    @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return getProductCmptPropertyType();
-    }
-
-    @Override
-    public ProductCmptPropertyType getProductCmptPropertyType() {
-        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override
@@ -304,43 +271,7 @@ public class TableContentUsage extends AtomicIpsObjectPart implements ITableCont
     }
 
     @Override
-    public void switchTemplateValueStatus() {
-        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
-    }
-
-    @Override
-    public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedValueContainer().isPartOfTemplateHierarchy();
-    }
-
-    @Override
     public ITableContentUsage findTemplateProperty(IIpsProject ipsProject) {
         return TemplateValueFinder.findTemplateValue(this, ITableContentUsage.class);
     }
-
-    @Override
-    public Comparator<Object> getValueComparator() {
-        return getPropertyValueType().getValueComparator();
-    }
-
-    @Override
-    public Function<IPropertyValue, Object> getValueGetter() {
-        return getPropertyValueType().getValueGetter();
-    }
-
-    @Override
-    public BiConsumer<IPropertyValue, Object> getValueSetter() {
-        return getPropertyValueType().getValueSetter();
-    }
-
-    @Override
-    public ITemplatedValueIdentifier getIdentifier() {
-        return new PropertyValueIdentifier(this);
-    }
-
-    @Override
-    public boolean isConcreteValue() {
-        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
-    }
-
 }
