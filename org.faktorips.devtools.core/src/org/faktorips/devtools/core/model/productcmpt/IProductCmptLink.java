@@ -250,6 +250,13 @@ public interface IProductCmptLink extends IDescribedElement, ITemplatedValue {
      */
     boolean isLinkOfAssociation(IAssociation association, IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Returns {@code true} if this link is configuring an association on the policy component
+     * configured by it parent container. Returns {@code false} if its parent does not configure a
+     * policy component or this link does not configure an association in the policy component.
+     */
+    boolean isConfiguringPolicyAssociation();
+
     @Override
     public IProductCmptLink findTemplateProperty(IIpsProject ipsProject);
 

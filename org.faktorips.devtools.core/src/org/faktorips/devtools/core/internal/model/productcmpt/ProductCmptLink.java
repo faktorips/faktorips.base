@@ -248,7 +248,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         associationLabel,
                         getName(),
                         IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                                .getGenerationConceptNameSingular(true) });
+                        .getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -569,6 +569,16 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     public boolean isConcreteValue() {
         return getTemplateValueStatus() == TemplateValueStatus.DEFINED
                 || getTemplateValueStatus() == TemplateValueStatus.UNDEFINED;
+    }
+
+    @Override
+    public boolean isConfiguringPolicyAssociation() {
+        try {
+            IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
+            return productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {

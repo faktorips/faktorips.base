@@ -9,16 +9,13 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.SortedMap;
 
 import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
@@ -28,7 +25,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.util.Histogram;
 
@@ -118,11 +114,6 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     }
 
     private Function<Object, TemplateUsageViewItem> toViewItem(final Histogram<Object, ITemplatedValue> histogram) {
-        final SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-        final int count = pmo.getCount();
-        final Object templateValue = pmo.getActualTemplateValue();
-        final Comparator<Object> comparator = pmo.getValueComparator();
-
         return new Function<Object, TemplateUsageViewItem>() {
 
             @Override
@@ -130,24 +121,10 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 if (value == null) {
                     return null;
                 }
-                boolean sameAsTemplateValue = comparator.compare(value, templateValue) == 0;
-                BigDecimal distributionPercent = getDistributionPercent(value);
-                Set<ITemplatedValue> children = histogram.getElements(value);
-                boolean deletedLink = isDeletedLink(children.iterator().next());
-                return new TemplateUsageViewItem(value, sameAsTemplateValue, deletedLink, distributionPercent, children);
-            }
-
-            private BigDecimal getDistributionPercent(Object value) {
-                Integer definedDist = Optional.fromNullable(definedAbsoluteDistribution.get(value)).or(0);
-                BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100)).divide(
-                        new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
-                return distributionPercent;
-            }
-
-            private boolean isDeletedLink(ITemplatedValue v) {
-                return v.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED;
+                return new TemplateUsageViewItem(value, pmo, histogram);
             }
         };
+
     }
 
     /**

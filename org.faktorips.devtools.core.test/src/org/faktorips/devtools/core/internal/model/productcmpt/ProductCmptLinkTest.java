@@ -715,4 +715,31 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertFalse(link.isConcreteValue());
     }
 
+    @Test
+    public void testIsConfiguringPolicyAssociation() {
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+        productAssociation.setMatchingAssociationSource(policyCmptType.getName());
+        productAssociation.setMatchingAssociationName("Coverage");
+        assertThat(link.isConfiguringPolicyAssociation(), is(false));
+
+        IPolicyCmptTypeAssociation policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyAssociation.setTargetRoleSingular("Coverage");
+        assertThat(link.isConfiguringPolicyAssociation(), is(true));
+    }
+
+    @Test
+    public void testIsConfiguringPolicyAssociation_ProductCmptWithoutPolicyCmpt() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
+        IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        IProductCmpt cmpt = newProductCmpt(type, "NonConfiguringComponent");
+        IProductCmptGeneration gen = cmpt.getProductCmptGeneration(0);
+        IProductCmptLink nonConfiguringLink = gen.newLink("CoverageType");
+
+        assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
+
+    }
+
 }

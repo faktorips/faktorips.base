@@ -34,6 +34,7 @@ import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
@@ -87,8 +88,31 @@ public class TemplatePropertyUsagePmo extends IpsObjectPartPmo {
         String formattedValue = TemplatedValueFormatter.shortedFormat(getTemplatedValue());
         int inheritedCount = getInheritingTemplatedValues().size();
         String inheritedPercent = getInheritPercent(inheritedCount).stripTrailingZeros().toPlainString();
-        return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_label, new Object[] { propertyName,
-                formattedValue, inheritedCount, inheritedPercent });
+        if (showValues()) {
+            return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_label, new Object[] { propertyName,
+                    formattedValue, inheritedCount, inheritedPercent });
+        } else {
+            return NLS.bind(Messages.TemplatePropertyUsageView_InheritedValue_labelWithoutValue, new Object[] {
+                    propertyName, inheritedCount, inheritedPercent });
+        }
+    }
+
+    /**
+     * Whether or not the "actual" values of the templated values should be displayed.
+     * <p>
+     * For {@link org.faktorips.devtools.core.model.productcmpt.IPropertyValue property values} the
+     * value should always be displayed. For {@link IProductCmptLink links} the value (i.e. the
+     * cardinality) should only be displayed if there is a meaningful cardinality, i.e. if the link
+     * is configuring a policy association.
+     * <p>
+     * See {@link #valueFunction()} for a definition of "actual" value.
+     */
+    protected boolean showValues() {
+        if (getTemplatedValue() instanceof IProductCmptLink) {
+            IProductCmptLink link = (IProductCmptLink)getTemplatedValue();
+            return link.isConfiguringPolicyAssociation();
+        }
+        return true;
     }
 
     private BigDecimal getInheritPercent(int inheritedCount) {
