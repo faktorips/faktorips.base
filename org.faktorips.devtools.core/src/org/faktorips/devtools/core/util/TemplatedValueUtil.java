@@ -26,7 +26,7 @@ public class TemplatedValueUtil {
      * @param v a property value
      * @return whether the given property value is defined in a template
      */
-    public static boolean isDefinedTemplatedValue(ITemplatedValue v) {
+    public static boolean isDefinedTemplateValue(ITemplatedValue v) {
         return isTemplateValue(v) && v.getTemplateValueStatus() == TemplateValueStatus.DEFINED;
     }
 

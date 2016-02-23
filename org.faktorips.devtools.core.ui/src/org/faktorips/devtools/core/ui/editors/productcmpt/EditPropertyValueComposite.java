@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -210,7 +209,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     /**
-     * Creates and sets the {@link LayoutData} of this composite.
+     * Creates and sets the layout data of this composite.
      * <p>
      * <strong>Subclassing:</strong><br>
      * The default implementation creates a {@link GridData} object with the flag
