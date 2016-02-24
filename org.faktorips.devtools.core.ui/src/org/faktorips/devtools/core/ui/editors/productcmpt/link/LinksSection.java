@@ -68,6 +68,7 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPar
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinkSectionDropListener.MoveLinkDragListener;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
+import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 
@@ -221,7 +222,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
 
             @Override
             public void menuAboutToShow(IMenuManager manager) {
-                addOpenTemplateAction(manager);
+                addTemplateActions(manager);
             }
 
             @Override
@@ -245,7 +246,7 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
         emptyMenu = new MenuManager().createContextMenu(treeViewer.getControl());
     }
 
-    private void addOpenTemplateAction(IMenuManager manager) {
+    private void addTemplateActions(IMenuManager manager) {
         TypedSelection<IProductCmptLink> typedSelection = new TypedSelection<IProductCmptLink>(IProductCmptLink.class,
                 treeViewer.getSelection());
         if (typedSelection.isValid()) {
@@ -255,7 +256,12 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
                 String text = getOpenTemplateText(templateLink);
                 IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateLink, text);
                 manager.add(openTemplateAction);
-            }
+                manager.add(new ShowTemplatePropertyUsageViewAction(templateLink,
+                        Messages.CardinalityPanel_MenuItem_showUsage));
+            } else if (firstLink.isPartOfTemplateHierarchy()) {
+                    manager.add(new ShowTemplatePropertyUsageViewAction(firstLink,
+                            Messages.CardinalityPanel_MenuItem_showUsage));
+                }
         }
     }
 
