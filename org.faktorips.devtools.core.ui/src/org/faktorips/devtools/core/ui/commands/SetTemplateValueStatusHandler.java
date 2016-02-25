@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.producttemplate.DefinedValuesContentProvider;
@@ -49,8 +49,8 @@ public class SetTemplateValueStatusHandler extends AbstractHandler {
             Object variable = context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
             if (variable instanceof ISelection) {
                 ISelection selection = (ISelection)variable;
-                Collection<IPropertyValue> selectedPropertyValues = DefinedValuesContentProvider
-                        .getSelectedPropertyValues(selection);
+                Collection<ITemplatedValue> selectedPropertyValues = DefinedValuesContentProvider
+                        .getSelectedTemplatedValues(selection);
                 enabled = SetTemplateValueStatusOperation.isValid(selectedPropertyValues);
             } else {
                 enabled = false;
@@ -63,7 +63,8 @@ public class SetTemplateValueStatusHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
-        Collection<IPropertyValue> elements = DefinedValuesContentProvider.getSelectedPropertyValues(currentSelection);
+        Collection<ITemplatedValue> elements = DefinedValuesContentProvider
+                .getSelectedTemplatedValues(currentSelection);
         if (SetTemplateValueStatusOperation.isValid(elements)) {
             setTemplateValueStatus(elements);
         } else {
@@ -74,7 +75,7 @@ public class SetTemplateValueStatusHandler extends AbstractHandler {
         return null;
     }
 
-    private void setTemplateValueStatus(Collection<IPropertyValue> elements) {
+    private void setTemplateValueStatus(Collection<ITemplatedValue> elements) {
         IpsUIPlugin.getDefault().runWorkspaceModification(new SetTemplateValueStatusOperation(elements, status));
     }
 

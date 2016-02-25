@@ -9,8 +9,6 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt.template;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,6 +23,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkCo
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink.LinkIdentifier;
 import org.faktorips.devtools.core.util.Histogram;
 
 /**
@@ -84,71 +83,10 @@ public class ProductCmptLinkHistograms {
         Multimap<LinkIdentifier, IProductCmptLink> links = LinkedHashMultimap.create();
         for (IProductCmptLinkContainer container : containers) {
             for (IProductCmptLink link : container.getLinksAsList()) {
-                links.put(LinkIdentifier.createFor(link), link);
+                links.put(new LinkIdentifier(link), link);
             }
         }
         return new ProductCmptLinkHistograms(links);
     }
 
-    /**
-     * A class that is used as an identifier for {@link IProductCmptLink links} in
-     * {@link ProductCmptLinkHistograms}. Links are identified by their association and target.
-     */
-    public static class LinkIdentifier {
-
-        private final String association;
-        private final String target;
-
-        public LinkIdentifier(String association, String target) {
-            super();
-            this.association = checkNotNull(association);
-            this.target = checkNotNull(target);
-        }
-
-        public String getAssociation() {
-            return association;
-        }
-
-        public String getTarget() {
-            return target;
-        }
-
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + association.hashCode();
-            result = prime * result + target.hashCode();
-            return result;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            LinkIdentifier other = (LinkIdentifier)obj;
-            if (!association.equals(other.association)) {
-                return false;
-            }
-            if (!target.equals(other.target)) {
-                return false;
-            }
-            return true;
-        }
-
-        public static LinkIdentifier createFor(IProductCmptLink link) {
-            return new LinkIdentifier(link.getAssociation(), link.getTarget());
-        }
-
-        public static LinkIdentifier createFor(String association, String target) {
-            return new LinkIdentifier(association, target);
-        }
-    }
 }

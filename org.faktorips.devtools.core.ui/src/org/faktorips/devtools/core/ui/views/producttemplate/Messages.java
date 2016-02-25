@@ -32,11 +32,15 @@ public final class Messages extends NLS {
 
     public static String TemplatePropertyUsageView_DifferingValues_label;
 
+    public static String TemplatePropertyUsageView_InheritedValue_labelWithoutValue;
+
     public static String TemplatePropertyUsageView_DifferingValues_fallbackLabel;
 
     public static String TemplatePropertyUsageView_DifferingValues_valueLabel;
 
     public static String TemplatePropertyUsageView_DifferingValues_sameValueLabel;
+
+    public static String TemplatePropertyUsageView_DifferingValues_deletedValueLabel;
 
     public static String TemplatePropertyUsageView_InheritedValue_label;
 

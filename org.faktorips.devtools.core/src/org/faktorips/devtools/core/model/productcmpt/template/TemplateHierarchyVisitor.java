@@ -11,9 +11,9 @@ package org.faktorips.devtools.core.model.productcmpt.template;
 
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedPropertyContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 
-public abstract class TemplateHierarchyVisitor<T extends ITemplatedPropertyContainer> extends HierarchyVisitor<T> {
+public abstract class TemplateHierarchyVisitor<T extends ITemplatedValueContainer> extends HierarchyVisitor<T> {
 
     public TemplateHierarchyVisitor(IIpsProject ipsProject) {
         super(ipsProject);
@@ -21,7 +21,7 @@ public abstract class TemplateHierarchyVisitor<T extends ITemplatedPropertyConta
 
     @SuppressWarnings("unchecked")
     @Override
-    protected T findSupertype(ITemplatedPropertyContainer currentType, IIpsProject ipsProject) {
+    protected T findSupertype(ITemplatedValueContainer currentType, IIpsProject ipsProject) {
         return (T)currentType.findTemplate(ipsProject);
     }
 

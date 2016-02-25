@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 
 public class TemplatePropertyUsageViewPart extends ViewPart {
 
@@ -37,8 +37,8 @@ public class TemplatePropertyUsageViewPart extends ViewPart {
 
     }
 
-    public void setPropertyValue(IPropertyValue v) {
-        view.setPropertyValue(v);
+    public void setTemplateValue(ITemplatedValue v) {
+        view.setTemplatedValue(v);
     }
 
 }

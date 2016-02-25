@@ -13,7 +13,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 
 /**
@@ -21,17 +21,17 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
  */
 public class ShowTemplatePropertyUsageViewAction extends Action {
 
-    private final IPropertyValue propertyValue;
+    private final ITemplatedValue templateValue;
 
     /**
      * Creates an action to show the {@link TemplatePropertyUsageView}
      * 
-     * @param templatePropertyValue The property value which is the root of the template hierarchy
+     * @param templateValue The templated value which is the root of the template hierarchy
      * @param text The caption of this action
      */
-    public ShowTemplatePropertyUsageViewAction(IPropertyValue templatePropertyValue, String text) {
+    public ShowTemplatePropertyUsageViewAction(ITemplatedValue templateValue, String text) {
         super(text, IpsUIPlugin.getImageHandling().getSharedImageDescriptor("TemplateUsage.gif", true)); //$NON-NLS-1$
-        this.propertyValue = templatePropertyValue;
+        this.templateValue = templateValue;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ShowTemplatePropertyUsageViewAction extends Action {
         try {
             TemplatePropertyUsageViewPart viewPart = (TemplatePropertyUsageViewPart)PlatformUI.getWorkbench()
                     .getActiveWorkbenchWindow().getActivePage().showView(TemplatePropertyUsageView.VIEW_ID);
-            viewPart.setPropertyValue(propertyValue);
+            viewPart.setTemplateValue(templateValue);
         } catch (PartInitException e) {
             throw new CoreRuntimeException(e);
         }

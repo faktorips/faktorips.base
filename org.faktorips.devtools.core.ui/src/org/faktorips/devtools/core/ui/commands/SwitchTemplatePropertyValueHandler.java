@@ -20,10 +20,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ISources;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.views.producttemplate.DefinedValuesContentProvider;
-import org.faktorips.devtools.core.ui.views.producttemplate.SwitchTemplatePropertyValueOperation;
+import org.faktorips.devtools.core.ui.views.producttemplate.SwitchTemplatedValueOperation;
 
 public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
 
@@ -32,7 +32,8 @@ public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
         ISelection currentSelection = HandlerUtil.getCurrentSelection(event);
-        Collection<IPropertyValue> elements = DefinedValuesContentProvider.getSelectedPropertyValues(currentSelection);
+        Collection<ITemplatedValue> elements = DefinedValuesContentProvider
+                .getSelectedTemplatedValues(currentSelection);
         if (elements.isEmpty()) {
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(),
                     Messages.SwitchTemplatePropertyValueHandler_warning_title,
@@ -55,9 +56,9 @@ public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
             Object variable = context.getVariable(ISources.ACTIVE_CURRENT_SELECTION_NAME);
             if (variable instanceof ISelection) {
                 ISelection selection = (ISelection)variable;
-                Collection<IPropertyValue> selectedPropertyValues = DefinedValuesContentProvider
-                        .getSelectedPropertyValues(selection);
-                enabled = SwitchTemplatePropertyValueOperation.isValidSelection(selectedPropertyValues);
+                Collection<ITemplatedValue> selectedValues = DefinedValuesContentProvider
+                        .getSelectedTemplatedValues(selection);
+                enabled = SwitchTemplatedValueOperation.isValidSelection(selectedValues);
             } else {
                 enabled = false;
             }
@@ -66,9 +67,8 @@ public class SwitchTemplatePropertyValueHandler extends AbstractHandler {
         }
     }
 
-    private void switchTemplateValue(Collection<IPropertyValue> elements) {
-        SwitchTemplatePropertyValueOperation switchPropertyValueOperation = SwitchTemplatePropertyValueOperation
-                .create(elements);
+    private void switchTemplateValue(Collection<ITemplatedValue> elements) {
+        SwitchTemplatedValueOperation switchPropertyValueOperation = SwitchTemplatedValueOperation.create(elements);
         if (switchPropertyValueOperation != null) {
             IpsUIPlugin.getDefault().runWorkspaceModification(switchPropertyValueOperation);
         } else {

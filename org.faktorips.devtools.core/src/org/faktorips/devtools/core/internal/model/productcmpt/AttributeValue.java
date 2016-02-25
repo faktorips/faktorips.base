@@ -17,9 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
 import org.faktorips.devtools.core.internal.model.productcmpt.deltaentries.HiddenAttributeMismatchEntry;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -34,7 +33,6 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
 import org.faktorips.runtime.internal.XmlUtil;
@@ -48,7 +46,7 @@ import org.w3c.dom.Element;
  * 
  * @author Jan Ortmann
  */
-public class AttributeValue extends AtomicIpsObjectPart implements IAttributeValue {
+public class AttributeValue extends AbstractSimplePropertyValue implements IAttributeValue {
 
     public static final String TAG_NAME = "AttributeValue"; //$NON-NLS-1$
 
@@ -67,16 +65,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         ArgumentCheck.notNull(attribute);
         this.attribute = attribute;
         this.templateValueSettings = new TemplateValueSettings(this);
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IPropertyValueContainer getTemplatedPropertyContainer() {
-        return getPropertyValueContainer();
     }
 
     @Override
@@ -190,16 +178,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return getProductCmptPropertyType();
-    }
-
-    @Override
-    public ProductCmptPropertyType getProductCmptPropertyType() {
-        return getPropertyValueType().getCorrespondingPropertyType();
-    }
-
-    @Override
     public String getPropertyValue() {
         if (getValueHolder() != null) {
             return getValueHolder().getStringValue();
@@ -219,17 +197,12 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
 
     @Override
     public IAttributeValue findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IAttributeValue.class);
+        return TemplateValueFinder.findTemplateValue(this, IAttributeValue.class);
     }
 
     @Override
     public TemplateValueStatus getTemplateValueStatus() {
         return templateValueSettings.getStatus();
-    }
-
-    @Override
-    public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
     }
 
     @Override
@@ -240,11 +213,6 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
         TemplateValueStatus oldValue = templateValueSettings.getStatus();
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
-    }
-
-    @Override
-    public void switchTemplateValueStatus() {
-        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
     }
 
     @Override
@@ -341,5 +309,4 @@ public class AttributeValue extends AtomicIpsObjectPart implements IAttributeVal
     public String toString() {
         return attribute + "=" + getPropertyValue(); //$NON-NLS-1$
     }
-
 }

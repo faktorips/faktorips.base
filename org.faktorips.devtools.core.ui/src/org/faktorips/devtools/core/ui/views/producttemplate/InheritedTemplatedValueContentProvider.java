@@ -15,7 +15,7 @@ import java.util.Collection;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 
 /**
  * Provides the content for the left tree of the {@link TemplatePropertyUsageView}.
@@ -23,16 +23,16 @@ import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
  * The tree is just a list (only one level) containing all property values that inherit the value
  * from the initial template property value.
  */
-public class InheritedPropertyValueContentProvider implements ITreeContentProvider {
+public class InheritedTemplatedValueContentProvider implements ITreeContentProvider {
 
     private TemplatePropertyUsagePmo pmo;
 
     @Override
     public Object[] getElements(Object inputElement) {
         if (pmo != null) {
-            Collection<IPropertyValue> propertyValues = pmo.getInheritingPropertyValues();
-            IPropertyValue[] elements = propertyValues.toArray(new IPropertyValue[propertyValues.size()]);
-            Arrays.sort(elements, new PropertyValueProductCmptNameComparator());
+            Collection<ITemplatedValue> propertyValues = pmo.getInheritingTemplatedValues();
+            ITemplatedValue[] elements = propertyValues.toArray(new ITemplatedValue[propertyValues.size()]);
+            Arrays.sort(elements, new TemplatedValueContainerNameComparator());
             return elements;
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;

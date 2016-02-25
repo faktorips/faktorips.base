@@ -14,8 +14,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -25,13 +24,12 @@ import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
 import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValidationRuleConfig {
+public class ValidationRuleConfig extends AbstractSimplePropertyValue implements IValidationRuleConfig {
 
     public static final String TAG_NAME = "ValidationRuleConfig"; //$NON-NLS-1$
 
@@ -48,16 +46,6 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
         super(parent, id);
         this.validationRuleName = ruleName;
         this.templateValueSettings = new TemplateValueSettings(this);
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IPropertyValueContainer getTemplatedPropertyContainer() {
-        return getPropertyValueContainer();
     }
 
     @Override
@@ -181,16 +169,6 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return getProductCmptPropertyType();
-    }
-
-    @Override
-    public ProductCmptPropertyType getProductCmptPropertyType() {
-        return getPropertyValueType().getCorrespondingPropertyType();
-    }
-
-    @Override
     public void setTemplateValueStatus(TemplateValueStatus newStatus) {
         if (newStatus == TemplateValueStatus.DEFINED) {
             // Copy current active state from template (if present)
@@ -208,18 +186,8 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
     }
 
     @Override
-    public void switchTemplateValueStatus() {
-        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
-    }
-
-    @Override
     public IValidationRuleConfig findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IValidationRuleConfig.class);
-    }
-
-    @Override
-    public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
+        return TemplateValueFinder.findTemplateValue(this, IValidationRuleConfig.class);
     }
 
     @Override
@@ -227,4 +195,5 @@ public class ValidationRuleConfig extends AtomicIpsObjectPart implements IValida
         super.validateThis(list, ipsProject);
         list.add(templateValueSettings.validate(this, ipsProject));
     }
+
 }

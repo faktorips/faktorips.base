@@ -9,14 +9,20 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.model.productcmpt;
 
+import java.util.Comparator;
+
+import com.google.common.base.Function;
+
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.util.functional.BiConsumer;
 
 /**
  * An interface for product component properties ({@link IPropertyValue} or {@link IProductCmptLink}
  * ) that could be configured using templates.
  */
-public interface ITemplatedProperty {
+public interface ITemplatedValue extends IIpsObjectPart {
 
     /** The name of the template value status property. */
     public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
@@ -67,7 +73,7 @@ public interface ITemplatedProperty {
      * @return the property that should be used as template or <code>null</code> if there is no such
      *         property.
      */
-    public ITemplatedProperty findTemplateProperty(IIpsProject ipsProject);
+    public ITemplatedValue findTemplateProperty(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if this property is part of a template hierarchy, by either acting
@@ -85,17 +91,38 @@ public interface ITemplatedProperty {
     boolean isPartOfTemplateHierarchy();
 
     /**
-     * Get the {@link IIpsProject} of this property.
-     * 
-     * @return The parent {@link IIpsProject} of this
-     */
-    public IIpsProject getIpsProject();
-
-    /**
-     * Returns the {@link ITemplatedPropertyContainer} which is the parent of this object
+     * Returns the {@link ITemplatedValueContainer} which is the parent of this object
      * 
      * @return the container this object belongs to
      */
-    public ITemplatedPropertyContainer getTemplatedPropertyContainer();
+    public ITemplatedValueContainer getTemplatedValueContainer();
+
+    Comparator<Object> getValueComparator();
+
+    BiConsumer<? extends ITemplatedValue, Object> getValueSetter();
+
+    Function<? extends ITemplatedValue, Object> getValueGetter();
+
+    ITemplatedValueIdentifier getIdentifier();
+
+    /**
+     * A concrete {@link ITemplatedValue} has its value used as it is. Whether a value is concrete
+     * depends on its template value status and the kind of property.
+     * <ul>
+     * <li>Defined values are concrete values, naturally.</li>
+     * <li>Inherited values are never concrete values, as their actual value is never used, the
+     * corresponding value from a template is used instead.</li>
+     * <li>For undefined values the result depends on the kind of templated property:
+     * <ul>
+     * <li>For PropertyValues undefined means, well, undefined, and thus not concrete.</li>
+     * <li>For links however, undefined means something like "deleted". Deleted (or cardinality 0
+     * for that matter) is effectively used, and thus is viewed as a concrete value.</li>
+     * </ul>
+     * </li>
+     * </ul>
+     * 
+     * @return whether this value defines a concrete value.
+     */
+    public boolean isConcreteValue();
 
 }

@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.model.productcmpt;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
-public interface ITemplatedPropertyContainer {
+public interface ITemplatedValueContainer {
 
     /**
      * Returns the product component for this container. If this container is a
@@ -51,7 +51,7 @@ public interface ITemplatedPropertyContainer {
      * @param ipsProject The project that should be used to search for the template
      * @return The property container that is specified as the template of this property container
      */
-    public ITemplatedPropertyContainer findTemplate(IIpsProject ipsProject);
+    public ITemplatedValueContainer findTemplate(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if properties of this container are used in a template hierarchy,

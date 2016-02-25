@@ -153,6 +153,11 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         assertEquals("43", link.getId());
         assertEquals(1, link.getMinCardinality());
         assertEquals(Integer.MAX_VALUE, link.getMaxCardinality());
+
+        link.initFromXml((Element)getTestDocument().getDocumentElement()
+                .getElementsByTagName(IProductCmptLink.TAG_NAME).item(2));
+        assertEquals("44", link.getId());
+        assertEquals(Cardinality.UNDEFINED, link.getCardinality());
     }
 
     @Test
@@ -580,7 +585,7 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         templateLink.setCardinality(cardinality);
         link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
 
-        assertThat(link.getCardinality(), is(cardinality));
+        assertThat(link.getCardinality(), is(Cardinality.UNDEFINED));
     }
 
     @Test
@@ -604,6 +609,18 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         assertThat(link.getCardinality(), is(templateCardinality));
+    }
+
+    @Test
+    public void testSetTemplateValueStatus_FormerlyUndefinedCardinalityIsCopiedFromTemplate() throws Exception {
+        Cardinality cardinality = new Cardinality(123, 321, 221);
+        IProductCmptLink templateLink = createTemplateLink();
+        templateLink.setCardinality(cardinality);
+        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertThat(link.getCardinality(), is(Cardinality.UNDEFINED));
+
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        assertThat(link.getCardinality(), is(cardinality));
     }
 
     @Test
@@ -682,6 +699,47 @@ public class ProductCmptLinkTest extends AbstractIpsPluginTest {
         productCmpt.setTemplate(template.getQualifiedName());
         IProductCmptLink templateLink = template.getProductCmptGeneration(0).newLink("CoverageType");
         return templateLink;
+    }
+
+    @Test
+    public void testIsConcreteValue() {
+        // make product cmpt part of template hierarchy
+        productCmpt.setTemplate("someTemplate");
+        link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        assertTrue(link.isConcreteValue());
+
+        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        assertTrue(link.isConcreteValue());
+
+        link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        assertFalse(link.isConcreteValue());
+    }
+
+    @Test
+    public void testIsConfiguringPolicyAssociation() {
+        IProductCmptTypeAssociation productAssociation = productCmptType.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+        productAssociation.setMatchingAssociationSource(policyCmptType.getName());
+        productAssociation.setMatchingAssociationName("Coverage");
+        assertThat(link.isConfiguringPolicyAssociation(), is(false));
+
+        IPolicyCmptTypeAssociation policyAssociation = policyCmptType.newPolicyCmptTypeAssociation();
+        policyAssociation.setTargetRoleSingular("Coverage");
+        assertThat(link.isConfiguringPolicyAssociation(), is(true));
+    }
+
+    @Test
+    public void testIsConfiguringPolicyAssociation_ProductCmptWithoutPolicyCmpt() throws CoreException {
+        IProductCmptType type = newProductCmptType(ipsProject, "NonConfiguringType");
+        IProductCmptTypeAssociation productAssociation = type.newProductCmptTypeAssociation();
+        productAssociation.setTargetRoleSingular("CoverageType");
+
+        IProductCmpt cmpt = newProductCmpt(type, "NonConfiguringComponent");
+        IProductCmptGeneration gen = cmpt.getProductCmptGeneration(0);
+        IProductCmptLink nonConfiguringLink = gen.newLink("CoverageType");
+
+        assertThat(nonConfiguringLink.isConfiguringPolicyAssociation(), is(false));
+
     }
 
 }

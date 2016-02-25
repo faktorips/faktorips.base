@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import org.junit.Test;
 
 public class DecimalTest {
+
     @Test
     public void testDoubleValue() {
         Decimal d = Decimal.valueOf("5.312");
@@ -105,12 +106,23 @@ public class DecimalTest {
     }
 
     @Test
-    public void testCompareToDecimal() {
+    public void testCompareTo() {
         Decimal d1 = Decimal.valueOf("3.45");
         Decimal d2 = Decimal.valueOf("3.46");
         assertTrue(d1.compareTo(d2) < 0);
         assertTrue(d2.compareTo(d1) > 0);
         assertTrue(d1.compareTo(Decimal.valueOf("3.45")) == 0);
+    }
+
+    @Test
+    public void testCompareTo_DecimalNull() {
+        Decimal d1 = Decimal.valueOf(1);
+        assertTrue(d1.compareTo(Decimal.NULL) > 0);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testCompareTo_ShouldThrowExceptionForNull() {
+        Decimal.ZERO.compareTo(null);
     }
 
     @Test

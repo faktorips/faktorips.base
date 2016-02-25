@@ -16,7 +16,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PropertyChangeBinding;
 
@@ -25,7 +25,7 @@ public class TemplateValueUiUtil {
     private TemplateValueUiUtil() {
     }
 
-    public static <T extends ITemplatedProperty> ToolItem setUpStatusToolItem(ToolBar toolBar,
+    public static <T extends ITemplatedValue> ToolItem setUpStatusToolItem(ToolBar toolBar,
             BindingContext bindingContext,
             AbstractTemplateValuePmo<T> pmo) {
         final ToolItem toolItem = new ToolItem(toolBar, SWT.PUSH);
@@ -39,7 +39,7 @@ public class TemplateValueUiUtil {
         return toolItem;
     }
 
-    private static <T extends ITemplatedProperty> void listenToTemplateStatusClick(final ToolItem toolItem,
+    private static <T extends ITemplatedValue> void listenToTemplateStatusClick(final ToolItem toolItem,
             final AbstractTemplateValuePmo<T> pmo) {
         toolItem.addSelectionListener(new SelectionAdapter() {
 
@@ -50,7 +50,7 @@ public class TemplateValueUiUtil {
         });
     }
 
-    public static <T extends ITemplatedProperty> void bindTemplateStatusButton(final BindingContext bindingContext,
+    public static <T extends ITemplatedValue> void bindTemplateStatusButton(final BindingContext bindingContext,
             final ToolBar toolBar,
             final ToolItem toolItem,
             final AbstractTemplateValuePmo<T> pmo) {

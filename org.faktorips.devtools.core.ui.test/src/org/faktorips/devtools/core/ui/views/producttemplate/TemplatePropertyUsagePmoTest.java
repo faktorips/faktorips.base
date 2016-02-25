@@ -9,9 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.hasItems;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -25,6 +25,8 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
@@ -36,7 +38,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
     private static final GregorianCalendar EFFECTIVE_DATE = new GregorianCalendar(2016, Calendar.JANUARY, 1);
 
     @Test
-    public void testGetInheritingPropertyValues() throws CoreException {
+    public void testGetInheritingTemplatedValues() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -56,36 +58,36 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        IPropertyValue t1Value = t1.newPropertyValue(attribute);
-        IPropertyValue t2Value = t2.newPropertyValue(attribute);
-        IPropertyValue p1Value = p1.newPropertyValue(attribute);
-        IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        ITemplatedValue t1Value = t1.newPropertyValue(attribute);
+        ITemplatedValue t2Value = t2.newPropertyValue(attribute);
+        ITemplatedValue p1Value = p1.newPropertyValue(attribute);
+        ITemplatedValue p2Value = p2.newPropertyValue(attribute);
         t1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo();
-        valuePmo.setPropertyValue(t1Value);
-        assertThat(valuePmo.getInheritingPropertyValues(), hasItems(p2Value));
+        valuePmo.setTemplatedValue(t1Value);
+        assertThat(valuePmo.getInheritingTemplatedValues(), hasItems(p2Value));
 
         // Property value of generations
-        IPropertyValue t1GenValue = t1Gen.newPropertyValue(attribute);
-        IPropertyValue t2GenValue = t2Gen.newPropertyValue(attribute);
-        IPropertyValue p1GenValue = p1Gen.newPropertyValue(attribute);
-        IPropertyValue p2GenValue = p2Gen.newPropertyValue(attribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(attribute);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(attribute);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(attribute);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(attribute);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
         TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo();
-        genValuePmo.setPropertyValue(t1GenValue);
-        assertThat(genValuePmo.getInheritingPropertyValues(), hasItems(p2Value));
+        genValuePmo.setTemplatedValue(t1GenValue);
+        assertThat(genValuePmo.getInheritingTemplatedValues(), hasItems(p2Value));
     }
 
     @Test
-    public void testGetInheritingPropertyValues_UndefinedTemplateValue() throws CoreException {
+    public void testGetInheritingTemplatedValues_UndefinedTemplateValue() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -117,25 +119,26 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        assertThat(new TemplatePropertyUsagePmo(t1Value).getInheritingPropertyValues().isEmpty(), is(true));
-        assertThat(new TemplatePropertyUsagePmo(t2Value).getInheritingPropertyValues(), hasItems(p2Value));
+        assertThat(new TemplatePropertyUsagePmo(t1Value).getInheritingTemplatedValues().isEmpty(), is(true));
+        assertThat(new TemplatePropertyUsagePmo(t2Value).getInheritingTemplatedValues(),
+                hasItems((ITemplatedValue)p2Value));
 
         // Property value of generations
-        IPropertyValue t1GenValue = t1Gen.newPropertyValue(genAttribute);
-        IPropertyValue t2GenValue = t2Gen.newPropertyValue(genAttribute);
-        IPropertyValue p1GenValue = p1Gen.newPropertyValue(genAttribute);
-        IPropertyValue p2GenValue = p2Gen.newPropertyValue(genAttribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(genAttribute);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(genAttribute);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(genAttribute);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(genAttribute);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        assertThat(new TemplatePropertyUsagePmo(t1GenValue).getInheritingPropertyValues().isEmpty(), is(true));
-        assertThat(new TemplatePropertyUsagePmo(t2GenValue).getInheritingPropertyValues(), hasItems(p2GenValue));
+        assertThat(new TemplatePropertyUsagePmo(t1GenValue).getInheritingTemplatedValues().isEmpty(), is(true));
+        assertThat(new TemplatePropertyUsagePmo(t2GenValue).getInheritingTemplatedValues(), hasItems(p2GenValue));
     }
 
     @Test
-    public void testGetDefiningPropertyValues() throws CoreException {
+    public void testGetDefiningTemplatedValues() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -155,36 +158,36 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        IPropertyValue t1Value = t1.newPropertyValue(attribute);
-        IPropertyValue t2Value = t2.newPropertyValue(attribute);
-        IPropertyValue p1Value = p1.newPropertyValue(attribute);
-        IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        ITemplatedValue t1Value = t1.newPropertyValue(attribute);
+        ITemplatedValue t2Value = t2.newPropertyValue(attribute);
+        ITemplatedValue p1Value = p1.newPropertyValue(attribute);
+        ITemplatedValue p2Value = p2.newPropertyValue(attribute);
         t1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplatePropertyUsagePmo valuePmo = new TemplatePropertyUsagePmo();
-        valuePmo.setPropertyValue(t1Value);
-        assertThat(valuePmo.getDefiningPropertyValues(), hasItems(p1Value, t2Value));
+        valuePmo.setTemplatedValue(t1Value);
+        assertThat(valuePmo.getDefiningTemplatedValues(), hasItems(p1Value, t2Value));
 
         // Property value of generations
-        IPropertyValue t1GenValue = t1Gen.newPropertyValue(attribute);
-        IPropertyValue t2GenValue = t2Gen.newPropertyValue(attribute);
-        IPropertyValue p1GenValue = p1Gen.newPropertyValue(attribute);
-        IPropertyValue p2GenValue = p2Gen.newPropertyValue(attribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(attribute);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(attribute);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(attribute);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(attribute);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplatePropertyUsagePmo genValuePmo = new TemplatePropertyUsagePmo();
-        genValuePmo.setPropertyValue(t1GenValue);
-        assertThat(genValuePmo.getDefiningPropertyValues(), hasItems(p1Value, t2Value));
+        genValuePmo.setTemplatedValue(t1GenValue);
+        assertThat(genValuePmo.getDefiningTemplatedValues(), hasItems(p1Value, t2Value));
     }
 
     @Test
-    public void testGetDefiningPropertyValues_UndefinedTemplateValue() throws CoreException {
+    public void testGetDefiningTemplatedValues_UndefinedTemplateValue() throws CoreException {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute();
@@ -207,31 +210,31 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         IProductCmptGeneration p2Gen = (IProductCmptGeneration)p2.newGeneration(EFFECTIVE_DATE);
 
         // Property value of product components
-        IPropertyValue t1Value = t1.newPropertyValue(attribute);
-        IPropertyValue t2Value = t2.newPropertyValue(attribute);
-        IPropertyValue p1Value = p1.newPropertyValue(attribute);
-        IPropertyValue p2Value = p2.newPropertyValue(attribute);
+        ITemplatedValue t1Value = t1.newPropertyValue(attribute);
+        ITemplatedValue t2Value = t2.newPropertyValue(attribute);
+        ITemplatedValue p1Value = p1.newPropertyValue(attribute);
+        ITemplatedValue p2Value = p2.newPropertyValue(attribute);
         t1Value.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1Value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2Value.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        assertThat(new TemplatePropertyUsagePmo(t1Value).getDefiningPropertyValues(), hasItems(p1Value, t2Value));
-        assertThat(new TemplatePropertyUsagePmo(t2Value).getDefiningPropertyValues().isEmpty(), is(true));
+        assertThat(new TemplatePropertyUsagePmo(t1Value).getDefiningTemplatedValues(), hasItems(p1Value, t2Value));
+        assertThat(new TemplatePropertyUsagePmo(t2Value).getDefiningTemplatedValues().isEmpty(), is(true));
 
         // Property value of generations
-        IPropertyValue t1GenValue = t1Gen.newPropertyValue(genAttribute);
-        IPropertyValue t2GenValue = t2Gen.newPropertyValue(genAttribute);
-        IPropertyValue p1GenValue = p1Gen.newPropertyValue(genAttribute);
-        IPropertyValue p2GenValue = p2Gen.newPropertyValue(genAttribute);
+        ITemplatedValue t1GenValue = t1Gen.newPropertyValue(genAttribute);
+        ITemplatedValue t2GenValue = t2Gen.newPropertyValue(genAttribute);
+        ITemplatedValue p1GenValue = p1Gen.newPropertyValue(genAttribute);
+        ITemplatedValue p2GenValue = p2Gen.newPropertyValue(genAttribute);
         t1GenValue.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         t2GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p1GenValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
         p2GenValue.setTemplateValueStatus(TemplateValueStatus.INHERITED);
 
-        assertThat(new TemplatePropertyUsagePmo(t1GenValue).getDefiningPropertyValues(),
+        assertThat(new TemplatePropertyUsagePmo(t1GenValue).getDefiningTemplatedValues(),
                 hasItems(p1GenValue, t2GenValue));
-        assertThat(new TemplatePropertyUsagePmo(t2GenValue).getDefiningPropertyValues().isEmpty(), is(true));
+        assertThat(new TemplatePropertyUsagePmo(t2GenValue).getDefiningTemplatedValues().isEmpty(), is(true));
     }
 
     @Test
@@ -270,11 +273,11 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         p3Table.setTableContentName("Table-B");
 
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo();
-        pmo.setPropertyValue(tTable);
-        Histogram<Object, IPropertyValue> histogram = pmo.getDefinedValuesHistogram();
+        pmo.setTemplatedValue(tTable);
+        Histogram<Object, ITemplatedValue> histogram = pmo.getDefinedValuesHistogram();
         assertThat(histogram.getDistribution().size(), is(3));
-        assertThat(histogram.getDistribution().get("Table-A"), hasItems((IPropertyValue)p1Table));
-        assertThat(histogram.getDistribution().get("Table-B"), hasItems((IPropertyValue)p2Table, p2Table));
+        assertThat(histogram.getDistribution().get("Table-A"), hasItems((ITemplatedValue)p1Table));
+        assertThat(histogram.getDistribution().get("Table-B"), hasItems((ITemplatedValue)p2Table, p2Table));
 
     }
 
@@ -297,9 +300,9 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         prodCmptValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplatePropertyUsagePmo templatePmo = new TemplatePropertyUsagePmo();
-        templatePmo.setPropertyValue(templateValue);
+        templatePmo.setTemplatedValue(templateValue);
         assertThat(templatePmo.getIpsObjectPartContainer(), is((IIpsObjectPartContainer)templateValue));
-        assertThat(templatePmo.getTemplate(), is(t));
+        assertThat(templatePmo.getTemplate(), is((ITemplatedValueContainer)t));
     }
 
     @Test
@@ -314,14 +317,14 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         propertyValue.setTemplateValueStatus(TemplateValueStatus.DEFINED);
 
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo();
-        pmo.setPropertyValue(propertyValue);
-        assertThat(pmo.getDefiningPropertyValues().isEmpty(), is(true));
-        assertThat(pmo.getInheritingPropertyValues().isEmpty(), is(true));
+        pmo.setTemplatedValue(propertyValue);
+        assertThat(pmo.getDefiningTemplatedValues().isEmpty(), is(true));
+        assertThat(pmo.getInheritingTemplatedValues().isEmpty(), is(true));
         assertThat(pmo.getDefinedValuesHistogram().getDistribution().isEmpty(), is(true));
     }
 
     @Test
-    public void testGetTemplateValue() throws Exception {
+    public void testGetActualTemplateValue() throws Exception {
         IIpsProject ipsProject = newIpsProject();
         ProductCmptType productCmptType = newProductCmptType(ipsProject, "Type");
         ITableStructureUsage tableStructurUsage = productCmptType.newTableStructureUsage();
@@ -342,7 +345,7 @@ public class TemplatePropertyUsagePmoTest extends AbstractIpsPluginTest {
         pTable.setTableContentName("productTable");
 
         TemplatePropertyUsagePmo pmo = new TemplatePropertyUsagePmo(pTable);
-        assertThat(pmo.getTemplateValue(), is((Object)"templateTable"));
+        assertThat(pmo.getActualTemplateValue(), is((Object)"templateTable"));
 
     }
 

@@ -18,7 +18,7 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
-public interface IPropertyValueContainer extends IProductPartsContainer, ITemplatedPropertyContainer {
+public interface IPropertyValueContainer extends IProductPartsContainer, ITemplatedValueContainer {
 
     /**
      * Returns the property value for the given property or <code>null</code> if no value is defined

@@ -2615,6 +2615,14 @@
             </menu>
       </menuContribution>
       <menuContribution
+            locationURI="popup:org.eclipse.search.ui.views.SearchView?after=additions">
+            <!-- Same menu in search view as in package explorer. Just reference the same menu id! -->
+            <menu
+                  id="faktorIPSMenu"
+                  label="Faktor-IPS"
+                  mnemonic="s" />
+      </menuContribution>
+      <menuContribution
             locationURI="popup:org.eclipse.ui.popup.any?after=fips.goto">
          <menu
                commandId="org.eclipse.ui.navigate.showInQuickMenu"

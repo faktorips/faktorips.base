@@ -20,7 +20,7 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -94,7 +94,7 @@ public class TemplateValueStatusTest {
         makeProductCmpt(link);
         assertThat(TemplateValueStatus.UNDEFINED.isAllowedStatus(link), is(false));
 
-        ITemplatedProperty templateLink = mock(IProductCmptLink.class);
+        ITemplatedValue templateLink = mock(IProductCmptLink.class);
         makeTemplate(templateLink);
         doReturn(templateLink).when(link).findTemplateProperty(any(IIpsProject.class));
 
@@ -120,16 +120,16 @@ public class TemplateValueStatusTest {
         when(value.findTemplateProperty(any(IIpsProject.class))).thenReturn(templateValue);
     }
 
-    private void makeTemplate(ITemplatedProperty value) {
+    private void makeTemplate(ITemplatedValue value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(container.isProductTemplate()).thenReturn(true);
-        when(value.getTemplatedPropertyContainer()).thenReturn(container);
+        when(value.getTemplatedValueContainer()).thenReturn(container);
     }
 
-    private void makeProductCmpt(ITemplatedProperty value) {
+    private void makeProductCmpt(ITemplatedValue value) {
         IPropertyValueContainer container = mock(IPropertyValueContainer.class);
         when(container.isProductTemplate()).thenReturn(false);
-        when(value.getTemplatedPropertyContainer()).thenReturn(container);
+        when(value.getTemplatedValueContainer()).thenReturn(container);
     }
 
     private TemplateValueStatus nextStatus(TemplateValueStatus start) {

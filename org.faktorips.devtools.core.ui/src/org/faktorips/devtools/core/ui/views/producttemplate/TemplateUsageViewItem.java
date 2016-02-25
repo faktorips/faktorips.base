@@ -11,73 +11,92 @@ package org.faktorips.devtools.core.ui.views.producttemplate;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.SortedMap;
 
+import com.google.common.base.Optional;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.ui.editors.productcmpt.PropertyValueFormatter;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
+import org.faktorips.devtools.core.ui.editors.productcmpt.TemplatedValueFormatter;
+import org.faktorips.devtools.core.util.Histogram;
 
 public class TemplateUsageViewItem {
 
     private final Object value;
+    private final TemplatePropertyUsagePmo pmo;
+    private final Histogram<Object, ITemplatedValue> histogram;
 
-    private final boolean sameAsTemplateValue;
-
-    private final BigDecimal distributionPercent;
-
-    private final Collection<IPropertyValue> children;
-
-    public TemplateUsageViewItem(Object value, boolean sameAsTemplateValue, BigDecimal distributionPercent,
-            Set<IPropertyValue> children) {
+    public TemplateUsageViewItem(Object value, TemplatePropertyUsagePmo pmo,
+            Histogram<Object, ITemplatedValue> histogram) {
         this.value = value;
-        this.sameAsTemplateValue = sameAsTemplateValue;
-        this.distributionPercent = distributionPercent;
-        this.children = Collections.unmodifiableCollection(children);
+        this.pmo = pmo;
+        this.histogram = histogram;
     }
 
     public Object getValue() {
         return value;
     }
 
-    public BigDecimal getRelDistributionPercent() {
-        return distributionPercent;
-    }
-
-    public Collection<IPropertyValue> getChildren() {
-        return children;
+    public Collection<ITemplatedValue> getChildren() {
+        return histogram.getElements(value);
     }
 
     public String getText() {
         final String formattedValue = getFormattedValue();
-        final String distribution = getFormattedRelDistribution();
+        final String distribution = getFormattedRelativeDistribution();
         if (isSameValueAsTemplateValue()) {
-            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, formattedValue,
-                    distribution);
+            return getSameValueItemText(formattedValue, distribution);
+        } else if (isDeletedValue()) {
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_deletedValueLabel, distribution);
         } else {
             return NLS
                     .bind(Messages.TemplatePropertyUsageView_DifferingValues_valueLabel, formattedValue, distribution);
         }
     }
 
+    private String getSameValueItemText(final String formattedValue, final String distribution) {
+        if (pmo.showValues()) {
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, formattedValue,
+                    distribution);
+        } else {
+            return NLS.bind(Messages.TemplatePropertyUsageView_DifferingValues_sameValueLabel, StringUtils.EMPTY,
+                    distribution).trim();
+        }
+    }
+
     public boolean isSameValueAsTemplateValue() {
-        return sameAsTemplateValue;
+        Object templateValue = pmo.getActualTemplateValue();
+        return pmo.getValueComparator().compare(value, templateValue) == 0;
+    }
+
+    public boolean isDeletedValue() {
+        return getFirstTemplatedValue().getTemplateValueStatus() == TemplateValueStatus.UNDEFINED;
     }
 
     private String getFormattedValue() {
-        IPropertyValue pv = getFirstPropertyValue();
-        return PropertyValueFormatter.shortedFormat(pv);
+        ITemplatedValue pv = getFirstTemplatedValue();
+        return TemplatedValueFormatter.shortedFormat(pv);
     }
 
-    private IPropertyValue getFirstPropertyValue() {
+    private ITemplatedValue getFirstTemplatedValue() {
         /*
          * There always is at least one value. Otherwise no item would show up in the distribution.
          */
-        return children.iterator().next();
+        return getChildren().iterator().next();
     }
 
-    private String getFormattedRelDistribution() {
-        return getRelDistributionPercent().stripTrailingZeros().toPlainString();
+    private String getFormattedRelativeDistribution() {
+        return getRelativeDistributionPercent().stripTrailingZeros().toPlainString();
+    }
+
+    public BigDecimal getRelativeDistributionPercent() {
+        SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
+        Integer definedDist = Optional.fromNullable(definedAbsoluteDistribution.get(value)).or(0);
+        BigDecimal distributionPercent = new BigDecimal(definedDist).multiply(new BigDecimal(100)).divide(
+                new BigDecimal(pmo.getCount()), 1, BigDecimal.ROUND_HALF_UP);
+        return distributionPercent;
     }
 
     @Override

@@ -23,8 +23,7 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
@@ -42,7 +41,6 @@ import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -55,7 +53,7 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ConfigElement extends IpsObjectPart implements IConfigElement {
+public class ConfigElement extends AbstractSimplePropertyValue implements IConfigElement {
 
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIG_ELEMENT;
 
@@ -76,16 +74,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         this.pcTypeAttribute = pcTypeAttribute;
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
         this.templateValueSettings = new TemplateValueSettings(this);
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
-    }
-
-    @Override
-    public IPropertyValueContainer getTemplatedPropertyContainer() {
-        return getPropertyValueContainer();
     }
 
     /**
@@ -114,16 +102,6 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     public PropertyValueType getPropertyValueType() {
         return PropertyValueType.CONFIG_ELEMENT;
-    }
-
-    @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return getProductCmptPropertyType();
-    }
-
-    @Override
-    public ProductCmptPropertyType getProductCmptPropertyType() {
-        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override
@@ -552,18 +530,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public void switchTemplateValueStatus() {
-        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
-    }
-
-    @Override
     public IConfigElement findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplatePropertyValue(this, IConfigElement.class);
-    }
-
-    @Override
-    public boolean isPartOfTemplateHierarchy() {
-        return getTemplatedPropertyContainer().isPartOfTemplateHierarchy();
+        return TemplateValueFinder.findTemplateValue(this, IConfigElement.class);
     }
 
 }

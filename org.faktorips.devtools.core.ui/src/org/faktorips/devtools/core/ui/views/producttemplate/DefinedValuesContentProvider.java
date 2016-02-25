@@ -9,12 +9,10 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.views.producttemplate;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Set;
 import java.util.SortedMap;
 
 import com.google.common.base.Function;
@@ -26,7 +24,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.devtools.core.util.Histogram;
 
@@ -51,7 +49,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     public Object[] getElements(Object inputElement) {
         if (pmo.hasData()) {
 
-            Histogram<Object, IPropertyValue> histogram = pmo.getDefinedValuesHistogram();
+            Histogram<Object, ITemplatedValue> histogram = pmo.getDefinedValuesHistogram();
             SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
             ImmutableList<TemplateUsageViewItem> elements = FluentIterable.from(definedAbsoluteDistribution.keySet())
                     .transform(toViewItem(histogram)).toList();
@@ -72,6 +70,10 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                     return -1;
                 } else if (o2.isSameValueAsTemplateValue()) {
                     return 1;
+                } else if (o1.isDeletedValue()) {
+                    return -1;
+                } else if (o2.isDeletedValue()) {
+                    return 1;
                 } else {
                     return secOrder.compare(o1, o2);
                 }
@@ -84,9 +86,9 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
     public Object[] getChildren(Object parentElement) {
         if (parentElement instanceof TemplateUsageViewItem) {
             TemplateUsageViewItem viewItem = (TemplateUsageViewItem)parentElement;
-            Collection<IPropertyValue> propertyValues = viewItem.getChildren();
-            IPropertyValue[] children = propertyValues.toArray(new IPropertyValue[propertyValues.size()]);
-            Arrays.sort(children, new PropertyValueProductCmptNameComparator());
+            Collection<ITemplatedValue> values = viewItem.getChildren();
+            ITemplatedValue[] children = values.toArray(new ITemplatedValue[values.size()]);
+            Arrays.sort(children, new TemplatedValueContainerNameComparator());
             return children;
         } else {
             return ArrayUtils.EMPTY_OBJECT_ARRAY;
@@ -111,12 +113,7 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
         // nothing to do
     }
 
-    private Function<Object, TemplateUsageViewItem> toViewItem(final Histogram<Object, IPropertyValue> histogram) {
-        final SortedMap<Object, Integer> definedAbsoluteDistribution = histogram.getAbsoluteDistribution();
-        final int count = pmo.getCount();
-        final Object templateValue = pmo.getTemplateValue();
-        final Comparator<Object> comparator = pmo.getValueComparator();
-
+    private Function<Object, TemplateUsageViewItem> toViewItem(final Histogram<Object, ITemplatedValue> histogram) {
         return new Function<Object, TemplateUsageViewItem>() {
 
             @Override
@@ -124,22 +121,18 @@ public class DefinedValuesContentProvider implements ITreeContentProvider {
                 if (value == null) {
                     return null;
                 }
-                boolean sameAsTemplateValue = comparator.compare(value, templateValue) == 0;
-                Integer definedDist = definedAbsoluteDistribution.get(value);
-                BigDecimal distributionPercent = definedDist == null ? new BigDecimal(0) : new BigDecimal(definedDist)
-                .multiply(new BigDecimal(100)).divide(new BigDecimal(count), 1, BigDecimal.ROUND_HALF_UP);
-                Set<IPropertyValue> children = histogram.getElements(value);
-                return new TemplateUsageViewItem(value, sameAsTemplateValue, distributionPercent, children);
+                return new TemplateUsageViewItem(value, pmo, histogram);
             }
         };
+
     }
 
     /**
-     * Helper method to get the selected property values from a selection that might contain
+     * Helper method to get the selected templated values from a selection that might contain
      * {@link TemplateUsageViewItem} objects holding the property values.
      */
-    public static Collection<IPropertyValue> getSelectedPropertyValues(ISelection currentSelection) {
-        TypedSelection<IPropertyValue> propValueSelection = TypedSelection.createAnyCount(IPropertyValue.class,
+    public static Collection<ITemplatedValue> getSelectedTemplatedValues(ISelection currentSelection) {
+        TypedSelection<ITemplatedValue> propValueSelection = TypedSelection.createAnyCount(ITemplatedValue.class,
                 currentSelection);
         if (propValueSelection.isValid()) {
             return propValueSelection.getElements();

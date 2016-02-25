@@ -10,13 +10,10 @@
 package org.faktorips.devtools.core.ui.editors.productcmpt.link;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.StyledString;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
-import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiStatus;
 import org.faktorips.devtools.core.ui.internal.IpsStyler;
 import org.faktorips.util.StringUtil;
@@ -122,12 +119,7 @@ public class LinkViewItemLabelStyler {
      * policy association.
      */
     private boolean displayCardinality() {
-        try {
-            IProductCmptTypeAssociation productAsssociation = viewItem.getLink().findAssociation(ipsProject());
-            return productAsssociation.findMatchingPolicyCmptTypeAssociation(ipsProject()) != null;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return viewItem.getLink().isConfiguringPolicyAssociation();
     }
 
     /**

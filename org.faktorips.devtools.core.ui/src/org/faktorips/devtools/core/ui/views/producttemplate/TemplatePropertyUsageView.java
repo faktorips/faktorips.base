@@ -39,8 +39,8 @@ import org.faktorips.devtools.core.model.IIpsSrcFilesChangeListener;
 import org.faktorips.devtools.core.model.IpsSrcFilesChangedEvent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueContainer;
 import org.faktorips.devtools.core.ui.DefaultLabelProvider;
 import org.faktorips.devtools.core.ui.IpsColor;
 import org.faktorips.devtools.core.ui.IpsMenuId;
@@ -89,10 +89,10 @@ public class TemplatePropertyUsageView {
     }
 
     /**
-     * Sets the property value to display template information for. Refreshes this view.
+     * Sets the templated value to display template information for. Refreshes this view.
      */
-    public void setPropertyValue(IPropertyValue propertyValue) {
-        usagePmo.setPropertyValue(propertyValue);
+    public void setTemplatedValue(ITemplatedValue templatedValue) {
+        usagePmo.setTemplatedValue(templatedValue);
         refresh();
     }
 
@@ -136,7 +136,7 @@ public class TemplatePropertyUsageView {
     private void setUpTrees() {
         leftTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         leftTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
-        leftTreeViewer.setContentProvider(new InheritedPropertyValueContentProvider());
+        leftTreeViewer.setContentProvider(new InheritedTemplatedValueContentProvider());
 
         rightTreeViewer.addDoubleClickListener(new OpenProductCmptEditorListener());
         rightTreeViewer.setLabelProvider(new TemplatePropertyUsageLabelProvider());
@@ -190,7 +190,7 @@ public class TemplatePropertyUsageView {
                 .getImageHandling().createImageDescriptor("Clear.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
-                setPropertyValue(null);
+                setTemplatedValue(null);
             }
 
             @Override
@@ -274,13 +274,13 @@ public class TemplatePropertyUsageView {
 
         @Override
         public String getText(Object element) {
-            if (element instanceof IPropertyValue) {
-                IPropertyValueContainer propertyValueContainer = ((IPropertyValue)element).getPropertyValueContainer();
-                if (propertyValueContainer instanceof IProductCmptGeneration) {
-                    IProductCmptGeneration generation = (IProductCmptGeneration)propertyValueContainer;
+            if (element instanceof ITemplatedValue) {
+                ITemplatedValueContainer container = ((ITemplatedValue)element).getTemplatedValueContainer();
+                if (container instanceof IProductCmptGeneration) {
+                    IProductCmptGeneration generation = (IProductCmptGeneration)container;
                     return super.getText(generation.getProductCmpt()) + " (" + super.getText(generation) + ")"; //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
-                    return super.getText(propertyValueContainer);
+                    return super.getText(container);
                 }
             } else if (element instanceof TemplateUsageViewItem) {
                 TemplateUsageViewItem viewItem = (TemplateUsageViewItem)element;
@@ -291,9 +291,9 @@ public class TemplatePropertyUsageView {
 
         @Override
         public Image getImage(Object element) {
-            if (element instanceof IPropertyValue) {
-                IPropertyValue propertyValue = (IPropertyValue)element;
-                return super.getImage(propertyValue.getPropertyValueContainer().getProductCmpt());
+            if (element instanceof ITemplatedValue) {
+                ITemplatedValue value = (ITemplatedValue)element;
+                return super.getImage(value.getTemplatedValueContainer().getProductCmpt());
             }
             return super.getImage(element);
         }

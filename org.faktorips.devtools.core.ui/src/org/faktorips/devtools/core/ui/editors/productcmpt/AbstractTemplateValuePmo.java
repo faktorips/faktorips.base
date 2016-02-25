@@ -12,10 +12,10 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.beans.PropertyChangeEvent;
 
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 
-public abstract class AbstractTemplateValuePmo<T extends ITemplatedProperty> extends PresentationModelObject {
+public abstract class AbstractTemplateValuePmo<T extends ITemplatedValue> extends PresentationModelObject {
 
     public static final String PROPERTY_TEMPLATE_VALUE_STATUS = "templateValueStatus"; //$NON-NLS-1$
     public static final String PROPERTY_TOOL_TIP_TEXT = "toolTipText"; //$NON-NLS-1$
@@ -42,7 +42,7 @@ public abstract class AbstractTemplateValuePmo<T extends ITemplatedProperty> ext
     }
 
     protected boolean isUsingTemplate() {
-        return getTemplatedProperty().getTemplatedPropertyContainer().isUsingTemplate();
+        return getTemplatedProperty().getTemplatedValueContainer().isUsingTemplate();
     }
 
     private IIpsProject getIpsProject() {
@@ -56,9 +56,9 @@ public abstract class AbstractTemplateValuePmo<T extends ITemplatedProperty> ext
     protected String getTemplateName() {
         T templateProperty = findTemplateProperty();
         if (templateProperty != null) {
-            return templateProperty.getTemplatedPropertyContainer().getProductCmpt().getName();
+            return templateProperty.getTemplatedValueContainer().getProductCmpt().getName();
         } else {
-            return getTemplatedProperty().getTemplatedPropertyContainer().getTemplate();
+            return getTemplatedProperty().getTemplatedValueContainer().getTemplate();
         }
     }
 

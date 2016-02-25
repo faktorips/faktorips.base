@@ -11,8 +11,14 @@
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -21,7 +27,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplatePropertyFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -34,7 +40,9 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.util.NullSafeComparableComparator;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -82,7 +90,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
-    public IProductCmptLinkContainer getTemplatedPropertyContainer() {
+    public IProductCmptLinkContainer getTemplatedValueContainer() {
         return getProductCmptLinkContainer();
     }
 
@@ -131,8 +139,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public Cardinality getCardinality() {
-        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED
-                || getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
             return findTemplateCardinality();
         }
         return cardinality;
@@ -362,7 +369,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 maxCardinality = 0;
             }
         }
-        cardinality = new Cardinality(minCardinality, maxCardinality, defaultCardinality);
+        if (minCardinality == 0 && maxCardinality == 0 && defaultCardinality == 0) {
+            cardinality = Cardinality.UNDEFINED;
+        } else {
+            cardinality = new Cardinality(minCardinality, maxCardinality, defaultCardinality);
+        }
         templateValueSettings.initPropertiesFromXml(element);
     }
 
@@ -487,7 +498,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         }
         if (newStatus == TemplateValueStatus.DEFINED) {
             // safe the current cardinality from template
-            cardinality = getCardinality();
+            cardinality = Optional.fromNullable(findTemplateCardinality()).or(DEFAULT_CARDINALITY);
+        } else if (newStatus == TemplateValueStatus.UNDEFINED) {
+            cardinality = Cardinality.UNDEFINED;
         }
         templateValueSettings.setStatus(newStatus);
         objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
@@ -505,7 +518,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
 
     @Override
     public IProductCmptLink findTemplateProperty(IIpsProject ipsProject) {
-        return TemplatePropertyFinder.findTemplateLink(this);
+        return TemplateValueFinder.findTemplateValue(this, IProductCmptLink.class);
     }
 
     @Override
@@ -519,6 +532,55 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
         } else {
             super.delete();
+        }
+    }
+
+    @Override
+    public Comparator<Object> getValueComparator() {
+        return new NullSafeComparableComparator<Object>();
+    }
+
+    @Override
+    public Function<IProductCmptLink, Object> getValueGetter() {
+        return new Function<IProductCmptLink, Object>() {
+
+            @SuppressFBWarnings
+            @Override
+            public Object apply(IProductCmptLink input) {
+                return input.getCardinality();
+            }
+        };
+    }
+
+    @Override
+    public BiConsumer<IProductCmptLink, Object> getValueSetter() {
+        return new BiConsumer<IProductCmptLink, Object>() {
+            @Override
+            public void accept(IProductCmptLink t, Object u) {
+                ArgumentCheck.isInstanceOf(u, Cardinality.class);
+                t.setCardinality((Cardinality)u);
+            }
+        };
+    }
+
+    @Override
+    public LinkIdentifier getIdentifier() {
+        return new LinkIdentifier(this);
+    }
+
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED
+                || getTemplateValueStatus() == TemplateValueStatus.UNDEFINED;
+    }
+
+    @Override
+    public boolean isConfiguringPolicyAssociation() {
+        try {
+            IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
+            return productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
     }
 

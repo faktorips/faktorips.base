@@ -9,15 +9,15 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt.template;
 
-import static org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
-import static org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty.PROPERTY_TEMPLATE_VALUE_STATUS;
+import static org.faktorips.devtools.core.model.productcmpt.ITemplatedValue.MSGCODE_INVALID_TEMPLATE_VALUE_STATUS;
+import static org.faktorips.devtools.core.model.productcmpt.ITemplatedValue.PROPERTY_TEMPLATE_VALUE_STATUS;
 
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.internal.model.productcmpt.Messages;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
-import org.faktorips.devtools.core.model.productcmpt.ITemplatedProperty;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -28,12 +28,12 @@ import org.w3c.dom.Element;
  */
 public class TemplateValueSettings {
 
-    private final ITemplatedProperty parent;
+    private final ITemplatedValue parent;
     private TemplateValueStatus status = TemplateValueStatus.DEFINED;
 
-    public TemplateValueSettings(ITemplatedProperty parent) {
+    public TemplateValueSettings(ITemplatedValue parent) {
         this.parent = parent;
-        ITemplatedProperty templateValue = parent.findTemplateProperty(parent.getIpsProject());
+        ITemplatedValue templateValue = parent.findTemplateProperty(parent.getIpsProject());
         if (templateValue != null) {
             status = TemplateValueStatus.INHERITED;
         }
@@ -100,7 +100,7 @@ public class TemplateValueSettings {
                 && !propertyValue.getPropertyValueContainer().isProductTemplate();
     }
 
-    private boolean noInheritablePropertyFound(ITemplatedProperty property, IIpsProject ipsProject) {
+    private boolean noInheritablePropertyFound(ITemplatedValue property, IIpsProject ipsProject) {
         return property.getTemplateValueStatus() == TemplateValueStatus.INHERITED
                 && property.findTemplateProperty(ipsProject) == null;
     }

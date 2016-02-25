@@ -15,6 +15,9 @@ import java.util.List;
 
 import com.google.common.base.Objects;
 
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -30,15 +33,20 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.binding.PresentationModelObject;
 import org.faktorips.devtools.core.ui.controller.fields.CardinalityField;
+import org.faktorips.devtools.core.ui.editors.productcmpt.AbstractTemplateToolBarMenuBuilder;
 import org.faktorips.devtools.core.ui.editors.productcmpt.Messages;
+import org.faktorips.devtools.core.ui.editors.productcmpt.SimpleOpenIpsObjectPartAction;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateLinkPmo;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiStatus;
 import org.faktorips.devtools.core.ui.editors.productcmpt.TemplateValueUiUtil;
+import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
+import org.faktorips.devtools.core.util.TemplatedValueUtil;
 
 /**
  * Panel to display cardinality. Note that this is <strong>NOT</strong> a control.
@@ -170,6 +178,7 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
             TemplateValueUiUtil.setUpStatusToolItem(templateStatusToolBar, bindingContext, pmo.getTemplateLinkPmo());
             bindingContext.bindEnabled(templateStatusToolBar, pmo.getTemplateLinkPmo(),
                     TemplateLinkPmo.PROPERTY_STATUS_BUTTON_ENABLED);
+            templateStatusToolBar.setMenu(new TemplateToolBarMenuBuilder(templateStatusToolBar).createTemplateMenue());
         }
     }
 
@@ -458,6 +467,39 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
                 return OPTIONAL;
             } else {
                 return OTHER;
+            }
+        }
+
+    }
+
+    private class TemplateToolBarMenuBuilder extends AbstractTemplateToolBarMenuBuilder {
+
+        public TemplateToolBarMenuBuilder(ToolBar toolBar) {
+            super(toolBar);
+        }
+
+        @Override
+        protected void addOpenTemplateAction(IMenuManager manager) {
+            IProductCmptLink templateLink = pmo.getTemplateLinkPmo().findTemplateLink();
+            if (templateLink != null) {
+                String text = NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateLink
+                        .getProductCmptLinkContainer().getProductCmpt().getName());
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateLink, text);
+                manager.add(openTemplateAction);
+            }
+        }
+
+        @Override
+        protected void addShowTemplatePropertyUsageAction(IMenuManager manager) {
+            if (TemplatedValueUtil.isTemplateValue(pmo.getTemplateLinkPmo().getLink())) {
+                ITemplatedValue templateValue = pmo.getTemplateLinkPmo().getLink();
+                String text = Messages.CardinalityPanel_MenuItem_showUsage;
+                manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
+            } else if (pmo.getTemplateLinkPmo().findTemplateLink() != null) {
+                ITemplatedValue templateValue = pmo.getTemplateLinkPmo().findTemplateLink();
+                String text = NLS.bind(Messages.CardinalityPanel_MenuItem_showTemplateLinkUsage, templateValue
+                        .getTemplatedValueContainer().getProductCmpt().getName());
+                manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
             }
         }
 

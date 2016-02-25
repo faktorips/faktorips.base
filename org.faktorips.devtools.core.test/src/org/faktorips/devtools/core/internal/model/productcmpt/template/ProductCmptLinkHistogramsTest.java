@@ -23,10 +23,10 @@ import com.google.common.collect.Lists;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
-import org.faktorips.devtools.core.internal.model.productcmpt.template.ProductCmptLinkHistograms.LinkIdentifier;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink.LinkIdentifier;
 import org.junit.Test;
 
 public class ProductCmptLinkHistogramsTest {
@@ -48,8 +48,8 @@ public class ProductCmptLinkHistogramsTest {
         IProductCmptLink aToT = mockLink("a", "t", c010);
         IProductCmptLink bToU = mockLink("b", "u", c111);
 
-        LinkIdentifier aToTId = LinkIdentifier.createFor(aToT);
-        LinkIdentifier bToUId = LinkIdentifier.createFor(bToU);
+        IProductCmptLink.LinkIdentifier aToTId = new LinkIdentifier(aToT);
+        IProductCmptLink.LinkIdentifier bToUId = new LinkIdentifier(bToU);
 
         IProductCmpt prod = mockProductCmpt(aToT, bToU);
         mockProductCmptGeneration(prod, aToT, bToU);
@@ -70,7 +70,7 @@ public class ProductCmptLinkHistogramsTest {
         assertThat(p.getHistogram(bToUId).getElements(new Cardinality(9, 9, 9)).size(), is(0));
 
         // No links with that association/target
-        assertThat(p.getHistogram(LinkIdentifier.createFor("x", "y")), is(nullValue()));
+        assertThat(p.getHistogram(new LinkIdentifier("x", "y")), is(nullValue()));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class ProductCmptLinkHistogramsTest {
         IProductCmptLink pToT2 = mockLink("p", "t", c111);
         IProductCmptLink pToU2 = mockLink("p", "u", c111);
 
-        LinkIdentifier pToTId = LinkIdentifier.createFor("p", "t");
-        LinkIdentifier pToUId = LinkIdentifier.createFor("p", "u");
+        IProductCmptLink.LinkIdentifier pToTId = new LinkIdentifier("p", "t");
+        IProductCmptLink.LinkIdentifier pToUId = new LinkIdentifier("p", "u");
 
         IProductCmpt prod1 = mockProductCmpt(pToT1, pToU1);
         mockProductCmptGeneration(prod1, NO_LINKS);
@@ -100,7 +100,7 @@ public class ProductCmptLinkHistogramsTest {
         assertThat(p.getHistogram(pToUId).getElements(c010), hasItem(pToU1));
         assertThat(p.getHistogram(pToUId).getElements(c111), hasItem(pToU2));
 
-        assertThat(p.getHistogram(LinkIdentifier.createFor("x", "y")), is(nullValue()));
+        assertThat(p.getHistogram(new LinkIdentifier("x", "y")), is(nullValue()));
     }
 
     @Test
@@ -108,7 +108,7 @@ public class ProductCmptLinkHistogramsTest {
         IProductCmptLink gToT1 = mockLink("g", "t", c010);
         IProductCmptLink gToT2 = mockLink("g", "t", c111);
 
-        LinkIdentifier gToTId = LinkIdentifier.createFor("g", "t");
+        IProductCmptLink.LinkIdentifier gToTId = new LinkIdentifier("g", "t");
 
         IProductCmptGeneration gen1 = mockProductCmptGeneration(mockProductCmpt(NO_LINKS), gToT1);
         IProductCmptGeneration gen2 = mockProductCmptGeneration(mockProductCmpt(NO_LINKS), gToT2);

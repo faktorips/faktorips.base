@@ -18,19 +18,19 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 
-/** Base class for operations that modify property values. */
-public abstract class AbstractPropertyValueOperation implements IWorkspaceRunnable {
+/** Base class for operations that modify templated values. */
+public abstract class AbstractTemplatedValueOperation implements IWorkspaceRunnable {
 
     private Set<IIpsSrcFile> filesToSave = new HashSet<IIpsSrcFile>();
 
-    public AbstractPropertyValueOperation() {
+    public AbstractTemplatedValueOperation() {
         super();
     }
 
-    void checkForSave(IPropertyValue propertyValue) {
-        IIpsSrcFile ipsSrcFile = propertyValue.getIpsSrcFile();
+    void checkForSave(ITemplatedValue value) {
+        IIpsSrcFile ipsSrcFile = value.getIpsSrcFile();
         if (!ipsSrcFile.isDirty()) {
             filesToSave.add(ipsSrcFile);
         }

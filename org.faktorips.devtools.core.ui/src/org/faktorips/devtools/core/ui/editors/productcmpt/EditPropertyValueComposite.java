@@ -17,11 +17,8 @@ import com.google.common.base.Function;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener2;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -33,13 +30,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
@@ -50,7 +47,7 @@ import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
-import org.faktorips.devtools.core.util.TemplatePropertyValueUtil;
+import org.faktorips.devtools.core.util.TemplatedValueUtil;
 
 /**
  * Abstract base class for composites that allow the user to edit property values.
@@ -212,7 +209,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     /**
-     * Creates and sets the {@link LayoutData} of this composite.
+     * Creates and sets the layout data of this composite.
      * <p>
      * <strong>Subclassing:</strong><br>
      * The default implementation creates a {@link GridData} object with the flag
@@ -318,7 +315,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
             focusOnTemplateStatusClick(editField.getControl(), toolItem);
             bindTemplateDependentEnabled(editField.getControl());
             bindProblemMarker(editField);
-            toolBar.setMenu(createTemplateMenue(toolBar));
+            toolBar.setMenu(new TemplateToolBarMenuBuilder(toolBar).createTemplateMenue());
         }
     }
 
@@ -334,70 +331,6 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
                 }
             }
         });
-    }
-
-    private Menu createTemplateMenue(ToolBar toolBar) {
-        MenuManager menuManager = new MenuManager();
-        initDynamicMenue(menuManager);
-        return menuManager.createContextMenu(toolBar);
-    }
-
-    private void initDynamicMenue(MenuManager menuManager) {
-        menuManager.setRemoveAllWhenShown(true);
-        menuManager.addMenuListener(new IMenuListener2() {
-
-            @Override
-            public void menuAboutToShow(IMenuManager manager) {
-                addOpenTemplateAction(manager);
-                addShowTemplatePropertyUsageAction(manager);
-            }
-
-            @Override
-            public void menuAboutToHide(IMenuManager manager) {
-                // nothing to do
-            }
-
-        });
-    }
-
-    private void addOpenTemplateAction(IMenuManager manager) {
-        final IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
-        if (templateValue != null) {
-            String text = getOpenTemplateText(templateValue);
-            IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
-            manager.add(openTemplateAction);
-        }
-    }
-
-    private String getOpenTemplateText(final IPropertyValue templateValue) {
-        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
-                .getPropertyValueContainer().getProductCmpt().getName());
-    }
-
-    /**
-     * Adds the action to open the template property usage view.
-     */
-    private void addShowTemplatePropertyUsageAction(IMenuManager manager) {
-        String text = null;
-        IPropertyValue templatePropertyValue;
-        if (TemplatePropertyValueUtil.isTemplatePropertyValue(getPropertyValue())) {
-            text = Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage;
-            templatePropertyValue = getPropertyValue();
-        } else {
-            templatePropertyValue = getPropertyValue().findTemplateProperty(getIpsProject());
-            if (templatePropertyValue == null) {
-                templatePropertyValue = TemplatePropertyValueUtil.findNextTemplatePropertyValue(getPropertyValue());
-            }
-            text = getOpenTemplatePropertyUsageText(templatePropertyValue);
-        }
-        if (templatePropertyValue != null) {
-            manager.add(new ShowTemplatePropertyUsageViewAction(templatePropertyValue, text));
-        }
-    }
-
-    private String getOpenTemplatePropertyUsageText(final IPropertyValue templateValue) {
-        return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
-                .getPropertyValueContainer().getProductCmpt().getName());
     }
 
     private IIpsProject getIpsProject() {
@@ -436,6 +369,54 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         @Override
         public void focusLost(FocusEvent e) {
             controlDecoration.setMarginWidth(0);
+        }
+
+    }
+
+    private class TemplateToolBarMenuBuilder extends AbstractTemplateToolBarMenuBuilder {
+
+        public TemplateToolBarMenuBuilder(ToolBar toolBar) {
+            super(toolBar);
+        }
+
+        @Override
+        protected void addOpenTemplateAction(IMenuManager manager) {
+            IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+            if (templateValue != null) {
+                String text = getOpenTemplateText(templateValue);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
+                manager.add(openTemplateAction);
+            }
+
+        }
+
+        @Override
+        protected void addShowTemplatePropertyUsageAction(IMenuManager manager) {
+            String text = null;
+            ITemplatedValue templateValue;
+            if (TemplatedValueUtil.isTemplateValue(getPropertyValue())) {
+                text = Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage;
+                templateValue = getPropertyValue();
+            } else {
+                templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+                if (templateValue == null) {
+                    templateValue = TemplatedValueUtil.findNextTemplateValue(getPropertyValue());
+                }
+                text = getOpenTemplatePropertyUsageText(templateValue);
+            }
+            if (templateValue != null) {
+                manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
+            }
+        }
+
+        private String getOpenTemplateText(final IPropertyValue templateValue) {
+            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                    .getPropertyValueContainer().getProductCmpt().getName());
+        }
+
+        private String getOpenTemplatePropertyUsageText(final ITemplatedValue templateValue) {
+            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
+                    .getTemplatedValueContainer().getProductCmpt().getName());
         }
 
     }

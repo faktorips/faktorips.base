@@ -14,27 +14,26 @@ import java.util.Collection;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 
 /** An operation to set the template value status of property values. */
-public class SetTemplateValueStatusOperation extends AbstractPropertyValueOperation {
+public class SetTemplateValueStatusOperation extends AbstractTemplatedValueOperation {
 
-    private final Collection<? extends IPropertyValue> propertyValues;
+    private final Collection<? extends ITemplatedValue> values;
     private final TemplateValueStatus status;
 
-    public SetTemplateValueStatusOperation(Collection<? extends IPropertyValue> propertyValues,
-            TemplateValueStatus status) {
+    public SetTemplateValueStatusOperation(Collection<? extends ITemplatedValue> values, TemplateValueStatus status) {
         super();
-        this.propertyValues = propertyValues;
+        this.values = values;
         this.status = status;
     }
 
     @Override
     public void run(IProgressMonitor monitor) throws CoreException {
-        int count = propertyValues.size();
+        int count = values.size();
         monitor.beginTask(Messages.SetTemplateValueStatusOperation_progress, count + 10);
-        for (IPropertyValue propertyValue : propertyValues) {
+        for (ITemplatedValue propertyValue : values) {
             checkForSave(propertyValue);
             propertyValue.setTemplateValueStatus(status);
             monitor.worked(1);
@@ -43,12 +42,12 @@ public class SetTemplateValueStatusOperation extends AbstractPropertyValueOperat
         monitor.done();
     }
 
-    public static boolean isValid(Collection<IPropertyValue> selectedPropertyValues) {
-        if (selectedPropertyValues.isEmpty()) {
+    public static boolean isValid(Collection<ITemplatedValue> selectedValues) {
+        if (selectedValues.isEmpty()) {
             return false;
         }
-        for (IPropertyValue propertyValue : selectedPropertyValues) {
-            if (propertyValue.findTemplateProperty(propertyValue.getIpsProject()) == null) {
+        for (ITemplatedValue value : selectedValues) {
+            if (value.findTemplateProperty(value.getIpsProject()) == null) {
                 return false;
             }
         }

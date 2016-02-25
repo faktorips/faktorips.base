@@ -10,11 +10,14 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
+import com.google.common.base.Preconditions;
+
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.ArgumentCheck;
 
 /**
  * Base interface for properties stored in product component generations like formulas, table
@@ -22,7 +25,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
  * 
  * @author Jan Ortmann
  */
-public interface IPropertyValue extends IIpsObjectPart, ITemplatedProperty {
+public interface IPropertyValue extends ITemplatedValue {
 
     /** Prefix for all message codes of this class. */
     public static final String MSGCODE_PREFIX = "PROPERTYVALUE-"; //$NON-NLS-1$
@@ -90,5 +93,47 @@ public interface IPropertyValue extends IIpsObjectPart, ITemplatedProperty {
 
     @Override
     public IPropertyValue findTemplateProperty(IIpsProject ipsProject);
+
+    /** A identifier that identifies property values by means of their property's name. */
+    static class PropertyValueIdentifier implements ITemplatedValueIdentifier {
+
+        private final String propertyName;
+
+        public PropertyValueIdentifier(String propertyName) {
+            super();
+            this.propertyName = Preconditions.checkNotNull(propertyName);
+        }
+
+        public PropertyValueIdentifier(IPropertyValue p) {
+            this(p.getPropertyName());
+        }
+
+        @Override
+        public int hashCode() {
+            return propertyName.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null) {
+                return false;
+            }
+            if (getClass() != o.getClass()) {
+                return false;
+            }
+            return StringUtils.equals(propertyName, ((PropertyValueIdentifier)o).propertyName);
+        }
+
+        @Override
+        public IPropertyValue getValueFrom(ITemplatedValueContainer container) {
+            ArgumentCheck.isInstanceOf(container, IPropertyValueContainer.class);
+            IPropertyValueContainer propertyValueContainer = (IPropertyValueContainer)container;
+            return propertyValueContainer.getPropertyValue(propertyName);
+        }
+
+    }
 
 }

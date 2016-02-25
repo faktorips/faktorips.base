@@ -13,6 +13,7 @@ import static org.faktorips.abstracttest.matcher.Matchers.hasInvalidObject;
 import static org.faktorips.abstracttest.matcher.Matchers.hasMessageCode;
 import static org.faktorips.abstracttest.matcher.Matchers.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -134,4 +135,38 @@ public class CardinalityTest {
         assertThat(c1.compareTo(c2), is(-1));
         assertThat(c2.compareTo(c1), is(1));
     }
+
+    @Test
+    public void testCompareTo_UndefinedCardinality() {
+        Cardinality c0 = new Cardinality(0, 0, 0);
+        Cardinality c1 = new Cardinality(1, 1, 1);
+
+        assertThat(c0.compareTo(Cardinality.UNDEFINED), is(-1));
+        assertThat(Cardinality.UNDEFINED.compareTo(c0), is(1));
+
+        assertThat(c1.compareTo(Cardinality.UNDEFINED), is(-1));
+        assertThat(Cardinality.UNDEFINED.compareTo(c1), is(1));
+
+        assertThat(Cardinality.UNDEFINED.compareTo(Cardinality.UNDEFINED), is(0));
+        assertThat(Cardinality.UNDEFINED.compareTo(null), is(-1));
+    }
+
+    @Test
+    public void testUndefinedCardinalityGetters() {
+        assertThat(Cardinality.UNDEFINED.getMin(), is(0));
+        assertThat(Cardinality.UNDEFINED.getMax(), is(0));
+        assertThat(Cardinality.UNDEFINED.getDefault(), is(0));
+    }
+
+    @Test
+    public void testUndefinedCardinalityValidation() {
+        assertThat(Cardinality.UNDEFINED.validate(link), isEmpty());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testUndefinedCardinalityWithCreatesNewCardinality() {
+        assertThat((Class<Cardinality>)Cardinality.UNDEFINED.withMin(1).getClass(), is(sameInstance(Cardinality.class)));
+    }
+
 }
