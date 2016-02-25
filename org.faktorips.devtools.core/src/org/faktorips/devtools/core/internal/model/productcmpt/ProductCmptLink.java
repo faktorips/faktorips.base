@@ -211,11 +211,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, association, typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
         } else {
-            IPolicyCmptTypeAssociation polAssociation = associationObj
-                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
-            if (polAssociation != null) {
-                validateCardinality(list, polAssociation);
-            }
+            validateCardinalityForMatchingAssociation(list, ipsProject, associationObj);
 
             IProductCmpt targetObj = findTarget(ipsProject);
             if (!willBeValid(targetObj, associationObj, ipsProject)) {
@@ -227,6 +223,18 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             validateChangingOverTimeProperty(list, associationObj);
         }
         list.add(templateValueSettings.validate(this, ipsProject));
+    }
+
+    protected void validateCardinalityForMatchingAssociation(MessageList list,
+            IIpsProject ipsProject,
+            IProductCmptTypeAssociation associationObj) {
+        if (!getProductCmptLinkContainer().isProductTemplate()) {
+            IPolicyCmptTypeAssociation polAssociation = associationObj
+                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
+            if (polAssociation != null) {
+                validateCardinality(list, polAssociation);
+            }
+        }
     }
 
     private void validateChangingOverTimeProperty(MessageList list, IProductCmptTypeAssociation associationObj) {
@@ -313,17 +321,12 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             addTotalMinMessage(list, minType);
         }
     }
-
-    /**
-     * Do not display error for templates according to FIPS-4670
-     */
+    
     private void addTotalMinMessage(MessageList list, int minType) {
-        if (!getProductCmptLinkContainer().isProductTemplate()) {
-            String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, this.getMinCardinality(),
-                    Integer.toString(minType));
-            ObjectProperty property = new ObjectProperty(this, PROPERTY_MIN_CARDINALITY);
-            list.newError(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, property);
-        }
+        String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, this.getMinCardinality(),
+                Integer.toString(minType));
+        ObjectProperty property = new ObjectProperty(this, PROPERTY_MIN_CARDINALITY);
+        list.newError(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, property);
     }
 
     @Override

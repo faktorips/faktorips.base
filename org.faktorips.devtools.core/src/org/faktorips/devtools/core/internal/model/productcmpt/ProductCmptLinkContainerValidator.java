@@ -121,7 +121,7 @@ public class ProductCmptLinkContainerValidator extends TypeHierarchyVisitor<IPro
             List<IProductCmptLink> relations,
             MessageList messageList) {
         int minCardinality = association.getMinCardinality();
-        if (minCardinality > relations.size()) {
+        if (!linkContainer.isProductTemplate() && minCardinality > relations.size()) {
             addBelowMinCardinalityErrorMessage(association, relations, messageList, minCardinality);
         }
     }
