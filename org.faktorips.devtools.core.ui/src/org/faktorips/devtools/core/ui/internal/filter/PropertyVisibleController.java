@@ -13,6 +13,7 @@ package org.faktorips.devtools.core.ui.internal.filter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -154,6 +155,13 @@ public class PropertyVisibleController implements IPropertyVisibleController {
             }
         }
         return false;
+    }
+
+    @Override
+    public void addFilters(List<IProductCmptPropertyFilter> filters) {
+        for (IProductCmptPropertyFilter filter : filters) {
+            addFilter(filter);
+        }
     }
 
 }

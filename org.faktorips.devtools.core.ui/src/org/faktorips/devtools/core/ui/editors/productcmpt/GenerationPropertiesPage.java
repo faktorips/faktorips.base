@@ -53,7 +53,6 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
-import org.faktorips.devtools.core.ui.filter.AbstractProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
@@ -217,7 +216,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private void createFallbackSection(Composite left) {
         List<IPropertyValue> propertyValues = getPropertyValues(null);
-        leftSections.add(new FallbackSection(propertyValues, left, toolkit));
+        leftSections.add(new FallbackSection(propertyValues, left, toolkit, getEditor().getVisibilityController()));
     }
 
     private void createSectionForCategoryIfNecessary(IProductCmptCategory category, Composite left, Composite right) {
@@ -236,7 +235,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             List<IPropertyValue> propertyValues) {
         List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
         Composite parent = category.isAtLeftPosition() ? left : right;
-        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit);
+        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit, getEditor()
+                .getVisibilityController());
         sections.add(section);
     }
 
@@ -341,7 +341,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         updateTabFolderName(getPartControl());
 
         // Refreshes the visible controller by application start
-        IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
+        getEditor().getVisibilityController().updateUI();
 
         super.refresh();
     }
@@ -509,8 +509,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FallbackSection"; //$NON-NLS-1$
 
-        private FallbackSection(List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
-            super(ID, propertyValues, parent, GridData.FILL_BOTH, toolkit);
+        private FallbackSection(List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit,
+                IPropertyVisibleController visibilityController) {
+            super(ID, propertyValues, parent, GridData.FILL_BOTH, toolkit, visibilityController);
             initControls();
         }
 
@@ -530,10 +531,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         private final IProductCmptCategory category;
 
         private PropertySection(IProductCmptCategory category, List<IPropertyValue> propertyValues, Composite parent,
-                UIToolkit toolkit) {
+                UIToolkit toolkit, IPropertyVisibleController visibilityController) {
 
             super(category.getId(), propertyValues, parent, category.isAtLeftPosition() ? GridData.FILL_BOTH
-                    : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit);
+                    : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit, visibilityController);
 
             this.category = category;
 
@@ -647,7 +648,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     }
 
-    private class InheritedValueVisibilityFilter extends AbstractProductCmptPropertyFilter {
+    private class InheritedValueVisibilityFilter implements IProductCmptPropertyFilter {
 
         @Override
         public boolean isFiltered(IProductCmptProperty property) {
@@ -665,6 +666,16 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private boolean isInherited(IPropertyValue propertyValue) {
             return propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED;
+        }
+
+        @Override
+        public void setPropertyVisibleController(IPropertyVisibleController controller) {
+            // deprecated
+        }
+
+        @Override
+        public void notifyController() {
+            // deprecated
         }
 
     }

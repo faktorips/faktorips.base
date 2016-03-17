@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.filter;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -102,4 +104,9 @@ public interface IPropertyVisibleController {
      * 
      */
     public boolean isFiltered(IProductCmptProperty property);
+
+    /**
+     * Adds the list of filters to this controller. Useful when adding multiple filters at once.
+     */
+    public void addFilters(List<IProductCmptPropertyFilter> filters);
 }
