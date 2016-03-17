@@ -16,10 +16,6 @@ import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener2;
@@ -54,6 +50,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsWorkspacePreferences;
 import org.faktorips.devtools.core.ui.MenuCleaner;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.CollapseAllAction;
@@ -117,6 +114,8 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     private FilterEmptyAssociationsAction filterEmptyAssociationAction;
 
     private final ViewerFilter emptyAssociationFilter = new EmptyAssociationFilter();
+
+    private final IpsWorkspacePreferences preferences = new IpsWorkspacePreferences();
 
     /**
      * Creates a new RelationsSection which displays relations for the given generation.
@@ -259,9 +258,9 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
                 manager.add(new ShowTemplatePropertyUsageViewAction(templateLink,
                         Messages.CardinalityPanel_MenuItem_showUsage));
             } else if (firstLink.isPartOfTemplateHierarchy()) {
-                    manager.add(new ShowTemplatePropertyUsageViewAction(firstLink,
-                            Messages.CardinalityPanel_MenuItem_showUsage));
-                }
+                manager.add(new ShowTemplatePropertyUsageViewAction(firstLink,
+                        Messages.CardinalityPanel_MenuItem_showUsage));
+            }
         }
     }
 
@@ -336,18 +335,11 @@ public class LinksSection extends IpsSection implements ICompositeWithSelectable
     }
 
     private boolean loadFilterEmptyAssociations() {
-        IPreferencesService preferencesService = Platform.getPreferencesService();
-        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-        String preferenceId = ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS;
-
-        return preferencesService.getBoolean(pluginId, preferenceId, false, null);
+        return preferences.getBoolean(ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS);
     }
 
     private void storeFilterEmptyAssociations(boolean exclude) {
-        String pluginId = IpsUIPlugin.getDefault().getBundle().getSymbolicName();
-        IEclipsePreferences node = new InstanceScope().getNode(pluginId);
-        String preferenceId = ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS;
-        node.putBoolean(preferenceId, exclude);
+        preferences.putBoolean(ID + PREFERENCE_ID_SUFFIX_FILTER_EMPTY_ASSOCIATIONS, exclude);
     }
 
     private void openLink(IProductCmptLink link) {

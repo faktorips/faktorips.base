@@ -154,6 +154,10 @@ public class Messages extends NLS {
 
     public static String GenerationPropertiesPage_msg_warning_notLatestGeneration;
 
+    public static String GenerationPropertiesPage_hideInheritedValues;
+
+    public static String GenerationPropertiesPage_showAllValues;
+
     public static String GenerationSelectionDialog_labelCreate;
 
     public static String GenerationSelectionDialog_labelSwitch;
