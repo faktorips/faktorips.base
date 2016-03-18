@@ -38,6 +38,9 @@ import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.TimedIpsObjectEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.deltapresentation.ProductCmptDeltaDialog;
+import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
+import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.views.modeldescription.IModelDescriptionSupport;
 import org.faktorips.devtools.core.ui.views.modeldescription.ProductCmptTypeDescriptionPage;
 
@@ -56,6 +59,17 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private static final String SETTING_WORK_WITH_MISSING_TYPE = "workWithMissingType"; //$NON-NLS-1$
 
     private GenerationPropertiesPage generationPropertiesPage;
+
+    private final IPropertyVisibleController visibilityController = new PropertyVisibleController();
+
+    public ProductCmptEditor() {
+        initVisibilityController();
+    }
+
+    private void initVisibilityController() {
+        List<IProductCmptPropertyFilter> filters = IpsUIPlugin.getDefault().getPropertyVisibilityFilters();
+        visibilityController.addFilters(filters);
+    }
 
     @Override
     protected void addPagesForParsableSrcFile() throws PartInitException {
@@ -317,6 +331,14 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
                 return null;
             }
         }
+    }
+
+    public IPropertyVisibleController getVisibilityController() {
+        return visibilityController;
+    }
+
+    public void refreshVisibility() {
+        visibilityController.updateUI();
     }
 
 }

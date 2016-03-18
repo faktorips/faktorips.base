@@ -30,12 +30,6 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 public interface IProductCmptPropertyFilter {
 
     /**
-     * Sets the {@link IPropertyVisibleController} that will be responsible for managing this
-     * {@link IProductCmptPropertyFilter}.
-     */
-    public void setPropertyVisibleController(IPropertyVisibleController controller);
-
-    /**
      * Returns whether the given {@link IProductCmptProperty product component property} is
      * filtered.
      * 
@@ -44,9 +38,22 @@ public interface IProductCmptPropertyFilter {
     public boolean isFiltered(IProductCmptProperty property);
 
     /**
+     * Sets the {@link IPropertyVisibleController} that will be responsible for managing this
+     * {@link IProductCmptPropertyFilter}.
+     * 
+     * @deprecated as of 3.17. Filters might be global while controllers exist per editor, thus such
+     *             an association is no longer possible.
+     */
+    @Deprecated
+    public void setPropertyVisibleController(IPropertyVisibleController controller);
+
+    /**
      * Notifies the {@link IPropertyVisibleController} that manages this
      * {@link IProductCmptPropertyFilter} that the filtering conditions changed.
+     * 
+     * @deprecated as of 3.17. Filters can no longer notify controllers. Update Editors manually.
      */
+    @Deprecated
     public void notifyController();
 
 }

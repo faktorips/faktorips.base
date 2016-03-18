@@ -18,7 +18,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -39,15 +41,20 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.ExtensionPropertyControlFactory;
 import org.faktorips.devtools.core.ui.IExtensionPropertySectionFactory.Position;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
+import org.faktorips.devtools.core.ui.IpsWorkspacePreferences;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.editors.IGotoIpsObjectPart;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
 import org.faktorips.devtools.core.ui.editors.productcmpt.link.LinksSection;
+import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.views.modeldescription.ModelDescriptionView;
 
@@ -209,7 +216,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private void createFallbackSection(Composite left) {
         List<IPropertyValue> propertyValues = getPropertyValues(null);
-        leftSections.add(new FallbackSection(propertyValues, left, toolkit));
+        leftSections.add(new FallbackSection(propertyValues, left, toolkit, getEditor().getVisibilityController()));
     }
 
     private void createSectionForCategoryIfNecessary(IProductCmptCategory category, Composite left, Composite right) {
@@ -228,7 +235,8 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             List<IPropertyValue> propertyValues) {
         List<IpsSection> sections = category.isAtLeftPosition() ? leftSections : rightSections;
         Composite parent = category.isAtLeftPosition() ? left : right;
-        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit);
+        IpsSection section = new PropertySection(category, propertyValues, parent, toolkit, getEditor()
+                .getVisibilityController());
         sections.add(section);
     }
 
@@ -265,9 +273,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         }
         if (getProductCmpt().isUsingTemplate()) {
             createOpenTemplateAction(toolbarManager);
+            createFilterInheritedValuesAction(toolbarManager);
         }
-        Action openModelDescription = createOpenModelDescriptionAction();
-        toolbarManager.add(openModelDescription);
+        createOpenModelDescriptionAction(toolbarManager);
         getManagedForm().getForm().updateToolBar();
     }
 
@@ -304,19 +312,27 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         }
     }
 
-    private Action createOpenModelDescriptionAction() {
-        return new Action(Messages.GenerationPropertiesPage_openModelDescView, IpsUIPlugin.getImageHandling()
-                .createImageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
+    private void createFilterInheritedValuesAction(IToolBarManager toolbarManager) {
+        FilterInheritedValuesAction action = new FilterInheritedValuesAction(getEditor().getVisibilityController(),
+                new InheritedValueVisibilityFilter());
+        action.initCheckedState();
+        toolbarManager.add(action);
+    }
+
+    private void createOpenModelDescriptionAction(IToolBarManager toolbarManager) {
+        Action openModelDesciptionAction = new Action(Messages.GenerationPropertiesPage_openModelDescView,
+                imageDescriptor("ModelDescription.gif")) { //$NON-NLS-1$
             @Override
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .showView(ModelDescriptionView.EXTENSION_ID);
+                            .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
             }
         };
+        toolbarManager.add(openModelDesciptionAction);
     }
 
     @Override
@@ -325,7 +341,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         updateTabFolderName(getPartControl());
 
         // Refreshes the visible controller by application start
-        IpsUIPlugin.getDefault().getPropertyVisibleController().updateUI();
+        getEditor().getVisibilityController().updateUI();
 
         super.refresh();
     }
@@ -362,7 +378,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                                                                                                    .getNumOfGenerations() - 1];
+                .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }
@@ -445,6 +461,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         }
     }
 
+    private static ImageDescriptor imageDescriptor(String name) {
+        return IpsUIPlugin.getImageHandling().createImageDescriptor(name);
+    }
+
     private final class NotLatestGenerationMessage implements IMessage {
         @Override
         public int getMessageType() {
@@ -489,8 +509,9 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private static final String ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FallbackSection"; //$NON-NLS-1$
 
-        private FallbackSection(List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit) {
-            super(ID, propertyValues, parent, GridData.FILL_BOTH, toolkit);
+        private FallbackSection(List<IPropertyValue> propertyValues, Composite parent, UIToolkit toolkit,
+                IPropertyVisibleController visibilityController) {
+            super(ID, propertyValues, parent, GridData.FILL_BOTH, toolkit, visibilityController);
             initControls();
         }
 
@@ -510,10 +531,10 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
         private final IProductCmptCategory category;
 
         private PropertySection(IProductCmptCategory category, List<IPropertyValue> propertyValues, Composite parent,
-                UIToolkit toolkit) {
+                UIToolkit toolkit, IPropertyVisibleController visibilityController) {
 
             super(category.getId(), propertyValues, parent, category.isAtLeftPosition() ? GridData.FILL_BOTH
-                    : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit);
+                    : GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_FILL, toolkit, visibilityController);
 
             this.category = category;
 
@@ -541,7 +562,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         public GotoGenerationAction(GenerationPropertiesPage generationPropertiesPage, String imageName) {
             this.generationPropertiesPage = generationPropertiesPage;
-            setImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(imageName));
+            setImageDescriptor(imageDescriptor(imageName));
             update();
         }
 
@@ -572,6 +593,89 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         public GenerationPropertiesPage getGenerationPropertiesPage() {
             return generationPropertiesPage;
+        }
+
+    }
+
+    private static class FilterInheritedValuesAction extends Action {
+
+        private static final String PREF_ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FilterInheritedValuesAction_enabled"; //$NON-NLS-1$
+
+        private static final String IMAGE_NAME = "templateInherited-16.png"; //$NON-NLS-1$
+
+        private final IProductCmptPropertyFilter filter;
+        private final IPropertyVisibleController controller;
+        private final IpsWorkspacePreferences preferences = new IpsWorkspacePreferences();
+
+        public FilterInheritedValuesAction(IPropertyVisibleController controller, IProductCmptPropertyFilter filter) {
+            super(Messages.GenerationPropertiesPage_hideInheritedValues, IAction.AS_CHECK_BOX);
+            setImageDescriptor(imageDescriptor(IMAGE_NAME));
+            this.controller = controller;
+            this.filter = filter;
+        }
+
+        public void initCheckedState() {
+            setChecked(preferences.getBoolean(PREF_ID));
+        }
+
+        @Override
+        public void setChecked(boolean checked) {
+            if (isChecked() == checked) {
+                return;
+            }
+
+            super.setChecked(checked);
+            preferences.putBoolean(PREF_ID, checked);
+
+            if (checked) {
+                hideInheritedValues();
+                setText(Messages.GenerationPropertiesPage_showAllValues);
+            } else {
+                showAllValues();
+                setText(Messages.GenerationPropertiesPage_hideInheritedValues);
+            }
+        }
+
+        private void hideInheritedValues() {
+            controller.addFilter(filter);
+            controller.updateUI();
+        }
+
+        private void showAllValues() {
+            controller.removeFilter(filter);
+            controller.updateUI();
+        }
+
+    }
+
+    private class InheritedValueVisibilityFilter implements IProductCmptPropertyFilter {
+
+        @Override
+        public boolean isFiltered(IProductCmptProperty property) {
+            IProductCmptGeneration gen = getActiveGeneration();
+            if (gen.getPropertyValue(property) != null) {
+                return isInherited(gen.getPropertyValue(property));
+            }
+
+            IProductCmpt cmpt = gen.getProductCmpt();
+            if (cmpt.getPropertyValue(property) != null) {
+                return isInherited(cmpt.getPropertyValue(property));
+            }
+            return false;
+        }
+
+        private boolean isInherited(IPropertyValue propertyValue) {
+            return propertyValue.getTemplateValueStatus() == TemplateValueStatus.INHERITED;
+        }
+
+        @Override
+        public void setPropertyVisibleController(IPropertyVisibleController controller) {
+            // deprecated
+        }
+
+        @Override
+        public void notifyController() {
+            // deprecated
         }
 
     }

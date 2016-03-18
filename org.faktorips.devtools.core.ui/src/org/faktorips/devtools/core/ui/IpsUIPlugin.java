@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -118,7 +119,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
@@ -129,11 +129,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
-import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -216,8 +214,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private static List<IWorkbenchAdapterProvider> workbenchAdapterProviders;
 
-    private IPropertyVisibleController propertyVisibleController;
-
     /** Factories for creating controls depending on the datatype. */
     private ValueDatatypeControlFactory[] controlFactories;
 
@@ -251,19 +247,16 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private final ImageHandling images = new ImageHandling();
 
     /**
+     * List of global property visibility filters.
+     */
+    private List<IProductCmptPropertyFilter> propertyVisibilityFilters;
+
+    /**
      * This method is for test purposes only.
      */
     protected void setExtensionRegistry(IExtensionRegistry registry) {
         IpsUIPlugin.registry = registry;
         extensionPropertyEditFieldFactoryMap = null;
-    }
-
-    /**
-     * Returns the {@link IPropertyVisibleController} that allows to dynamically hide elements
-     * associated to {@link IProductCmptProperty product component properties} from the UI.
-     */
-    public IPropertyVisibleController getPropertyVisibleController() {
-        return propertyVisibleController;
     }
 
     @Override
@@ -273,7 +266,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         registry = Platform.getExtensionRegistry();
         ipsEditorSettings = new IpsObjectEditorSettings();
         ipsEditorSettings.load(getStateLocation());
-        createPropertyVisibleController();
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
         ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
@@ -284,6 +276,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
         initDefaultValidityDate();
+        propertyVisibilityFilters = Collections.unmodifiableList(loadPropertyFilters());
     }
 
     private void initDefaultValidityDate() {
@@ -297,21 +290,25 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         defaultValidityDate.setTimeInMillis(timeInMillis);
     }
 
-    private void createPropertyVisibleController() {
-        propertyVisibleController = new PropertyVisibleController();
-        loadPropertyFilters(propertyVisibleController);
+    /**
+     * @return the list of global property filters, added through the extension point
+     *         "productCmptPropertyFilter".
+     */
+    public List<IProductCmptPropertyFilter> getPropertyVisibilityFilters() {
+        return propertyVisibilityFilters;
     }
 
-    private void loadPropertyFilters(IPropertyVisibleController propertyVisibleController) {
+    private List<IProductCmptPropertyFilter> loadPropertyFilters() {
+        List<IProductCmptPropertyFilter> filters = new ArrayList<IProductCmptPropertyFilter>();
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER);
         for (IExtension extension : extensions) {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             IProductCmptPropertyFilter filter = ExtensionPoints.createExecutableExtension(extension, configElements[0],
                     "class", IProductCmptPropertyFilter.class); //$NON-NLS-1$
-            filter.setPropertyVisibleController(propertyVisibleController);
-            propertyVisibleController.addFilter(filter);
+            filters.add(filter);
         }
+        return filters;
     }
 
     private List<IIpsDropAdapterProvider> initProductCmptDnDHandler() {
@@ -371,8 +368,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                    + extension.getExtensionPointUniqueIdentifier()
-                                    + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
+                            + extension.getExtensionPointUniqueIdentifier()
+                            + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
@@ -536,8 +533,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                    + extension.getExtensionPointUniqueIdentifier()
-                                    + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
+                            + extension.getExtensionPointUniqueIdentifier()
+                            + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
                 }
                 if (tableFormat.getClass().getName().equals(configElClass)) {
                     // the current configuration element corresponds to the given table format
@@ -771,8 +768,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isEmpty(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                        + extension.getExtensionPointUniqueIdentifier()
-                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                                + extension.getExtensionPointUniqueIdentifier()
+                                + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertyEditFieldFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElements[0], CONFIG_PROPERTY_CLASS, IExtensionPropertyEditFieldFactory.class);
@@ -811,8 +808,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isBlank(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                        + extension.getExtensionPointUniqueIdentifier()
-                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                                + extension.getExtensionPointUniqueIdentifier()
+                                + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertySectionFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, IExtensionPropertySectionFactory.class);
@@ -1354,8 +1351,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                  * using the default IPS object editor.
                  */
                 ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                        .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                                Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+                .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                        Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
                 return editorPart;
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);

@@ -13,8 +13,11 @@ package org.faktorips.devtools.core.ui.internal.filter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.base.Optional;
 
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -22,6 +25,8 @@ import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
+import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.util.SwtUtil;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -57,7 +62,7 @@ public class PropertyVisibleController implements IPropertyVisibleController {
     @Override
     public void updateUI() {
         updateControlVisibility();
-        relayoutParents();
+        relayoutSections();
     }
 
     private void updateControlVisibility() {
@@ -79,13 +84,18 @@ public class PropertyVisibleController implements IPropertyVisibleController {
         }
     }
 
-    private void relayoutParents() {
+    private void relayoutSections() {
         Set<Composite> parents = new HashSet<Composite>();
         for (Control containerControl : propertyControlMappings.keySet()) {
             for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
                 for (Control control : propertyControlMappings.get(containerControl).get(property)) {
                     if (!control.isDisposed()) {
-                        parents.add(control.getParent());
+                        Optional<IpsSection> section = SwtUtil.getParent(control, IpsSection.class);
+                        // FIPS-4738: In order to display sections correctly after child-controls
+                        // are displayed, the section's parent has to be updated
+                        if (section.isPresent() && section.get().getParent() != null) {
+                            parents.add(section.get().getParent());
+                        }
                     }
                 }
             }
@@ -154,6 +164,13 @@ public class PropertyVisibleController implements IPropertyVisibleController {
             }
         }
         return false;
+    }
+
+    @Override
+    public void addFilters(List<IProductCmptPropertyFilter> filters) {
+        for (IProductCmptPropertyFilter filter : filters) {
+            addFilter(filter);
+        }
     }
 
 }

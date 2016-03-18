@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
+import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 
 /**
@@ -79,6 +80,8 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      */
     private Composite rootPane;
 
+    private final IPropertyVisibleController visibilityController;
+
     /**
      * Creates a {@link ProductCmptPropertySection} that can be expanded and collapsed by the user.
      * <p>
@@ -90,11 +93,12 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      * @param propertyValues list containing the property values to be displayed by this section
      */
     protected ProductCmptPropertySection(String id, List<IPropertyValue> propertyValues, Composite parent,
-            int layoutData, UIToolkit toolkit) {
+            int layoutData, UIToolkit toolkit, IPropertyVisibleController visibilityController) {
 
         super(id, parent, layoutData, toolkit);
 
         this.propertyValues = propertyValues;
+        this.visibilityController = visibilityController;
 
         setInitCollapsedIfNoContent(true);
     }
@@ -109,11 +113,12 @@ public abstract class ProductCmptPropertySection extends IpsSection {
      * @param propertyValues list containing the property values to be displayed by this section
      */
     protected ProductCmptPropertySection(List<IPropertyValue> propertyValues, Composite parent, int style,
-            int layoutData, UIToolkit toolkit) {
+            int layoutData, UIToolkit toolkit, IPropertyVisibleController visibilityController) {
 
         super(parent, style, layoutData, toolkit);
 
         this.propertyValues = propertyValues;
+        this.visibilityController = visibilityController;
 
         setInitCollapsedIfNoContent(true);
     }
@@ -153,8 +158,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
             addDisposeListener(new DisposeListener() {
                 @Override
                 public void widgetDisposed(DisposeEvent e) {
-                    IpsUIPlugin.getDefault().getPropertyVisibleController()
-                            .removePropertyControlMapping(ProductCmptPropertySection.this);
+                    visibilityController.removePropertyControlMapping(ProductCmptPropertySection.this);
                 }
             });
         } else {
@@ -176,8 +180,7 @@ public abstract class ProductCmptPropertySection extends IpsSection {
         EditPropertyValueComposite<?, ?> editComposite = createEditComposite(propertyValue, property);
 
         if (property != null) {
-            IpsUIPlugin.getDefault().getPropertyVisibleController()
-                    .addPropertyControlMapping(this, property, label, editComposite);
+            visibilityController.addPropertyControlMapping(this, property, label, editComposite);
         }
 
         verticallyAlignLabel(label, editComposite);
