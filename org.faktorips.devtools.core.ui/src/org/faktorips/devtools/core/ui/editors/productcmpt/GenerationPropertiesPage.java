@@ -326,7 +326,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                            .showView(ModelDescriptionView.EXTENSION_ID);
+                    .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -378,7 +378,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                .getNumOfGenerations() - 1];
+                                                                                                    .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }
@@ -601,7 +601,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private static final String PREF_ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FilterInheritedValuesAction_enabled"; //$NON-NLS-1$
 
-        private static final String IMAGE_NAME = "templateInherited-16.png"; //$NON-NLS-1$
+        private static final String IMAGE_NAME = "templateFilterInherited.png"; //$NON-NLS-1$
 
         private final IProductCmptPropertyFilter filter;
         private final IPropertyVisibleController controller;
