@@ -47,7 +47,7 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 		«IF generateSerializablePolicyCmptsSupport-»
 			/**
 			 * @generated
-	 		 */
+			 */
 			private static final long serialVersionUID = 1L;
 		«ENDIF-»
 		
@@ -64,10 +64,10 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 * «localizedJDoc("PRODUCTCONFIGURATION_FIELD")»
 			 *  
 			 * @generated
-	 		 */
-	 		«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD)-» 
-    		private final «ProductConfiguration()» productConfiguration;
-    	«ENDIF»			
+			 */
+			«getAnnotations(AnnotatedJavaElementType::POLICY_CMPT_IMPL_CLASS_PRODUCTCONFIGURATION_FIELD)-»
+			private «ProductConfiguration()» productConfiguration;
+		«ENDIF»
 		
 		«EXPAND PolicyCmptAssociation::field FOREACH associations-»
 		
