@@ -12,9 +12,7 @@ package org.faktorips.devtools.core.ui.internal.filter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -25,7 +23,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
-import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -105,30 +102,12 @@ public class PropertyVisibleControllerTest {
 
     @Test
     public void testUpdateUI_RelayoutSectionParent() {
-        IProductCmptProperty p1 = mock(IProductCmptProperty.class);
-        IProductCmptProperty p2 = mock(IProductCmptProperty.class);
+        Runnable callback = mock(Runnable.class);
+        controller.setRefreshCallback(callback);
 
-        Composite parent = mock(Composite.class);
+        controller.updateUI(true);
 
-        IpsSection sectionP1C1 = mockIpsSection(parent);
-        IpsSection sectionP1C2 = mockIpsSection(parent);
-        IpsSection sectionP2 = mockIpsSection(parent);
-
-        Control p1C1 = mockControl(sectionP1C1, new GridData());
-        Control p1C2 = mockControl(sectionP1C2, new GridData());
-        Control p2C1 = mockControl(sectionP2, new GridData());
-        Control p2C2 = mockControl(sectionP2, new GridData());
-
-        IProductCmptPropertyFilter filter = mock(IProductCmptPropertyFilter.class);
-        when(filter.isFiltered(any(IProductCmptProperty.class))).thenReturn(true);
-
-        controller.addPropertyControlMapping(outerControl, p1, p1C1, p1C2);
-        controller.addPropertyControlMapping(outerControl, p2, p2C1, p2C2);
-        controller.addFilter(filter);
-
-        controller.updateUI();
-
-        verify(parent, times(1)).layout();
+        verify(callback).run();
     }
 
     @Test
@@ -228,12 +207,6 @@ public class PropertyVisibleControllerTest {
         when(control.getLayoutData()).thenReturn(layoutData);
 
         return control;
-    }
-
-    private IpsSection mockIpsSection(Composite parent) {
-        IpsSection section = mock(IpsSection.class);
-        when(section.getParent()).thenReturn(parent);
-        return section;
     }
 
 }

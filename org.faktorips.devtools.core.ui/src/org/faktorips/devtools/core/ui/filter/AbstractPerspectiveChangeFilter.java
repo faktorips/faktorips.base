@@ -23,8 +23,8 @@ import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 
 /**
  * Base implementation of {@link IProductCmptPropertyFilter} that simplifies the implementation of
- * filters. Automatically calls {@link ProductCmptEditor#refreshVisibility()} on the currently
- * active editor when the perspective changes.
+ * filters. Automatically updates the visibility filters on the currently active editor when the
+ * perspective changes.
  * <p>
  * <strong>Subclassing:</strong><br>
  * Subclasses must implement the {@link #isFiltered(IProductCmptProperty)} method to indicate
@@ -133,7 +133,7 @@ public abstract class AbstractPerspectiveChangeFilter implements IProductCmptPro
         }
 
         private void refreshProductCmptEditor(ProductCmptEditor pcEditor) {
-            pcEditor.refreshVisibility();
+            pcEditor.getVisibilityController().updateUI(true);
             IManagedForm form = pcEditor.getActiveIpsObjectEditorPage().getManagedForm();
             if (form != null) {
                 form.reflow(true);

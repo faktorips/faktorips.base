@@ -69,6 +69,13 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
     private void initVisibilityController() {
         List<IProductCmptPropertyFilter> filters = IpsUIPlugin.getDefault().getPropertyVisibilityFilters();
         visibilityController.addFilters(filters);
+        visibilityController.setRefreshCallback(new Runnable() {
+
+            @Override
+            public void run() {
+                refreshIncludingStructuralChanges();
+            }
+        });
     }
 
     @Override
@@ -193,6 +200,8 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
             if (getGenerationPropertiesPage() != null) {
                 generationPropertiesPage.rebuildInclStructuralChanges();
             }
+            // Refreshes the visible controller by application start
+            getVisibilityController().updateUI(false);
             refresh();
         }
     }
@@ -335,10 +344,6 @@ public class ProductCmptEditor extends TimedIpsObjectEditor implements IModelDes
 
     public IPropertyVisibleController getVisibilityController() {
         return visibilityController;
-    }
-
-    public void refreshVisibility() {
-        visibilityController.updateUI();
     }
 
 }

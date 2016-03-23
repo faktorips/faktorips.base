@@ -17,16 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.base.Optional;
-
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
 import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
-import org.faktorips.devtools.core.ui.forms.IpsSection;
-import org.faktorips.devtools.core.ui.util.SwtUtil;
 import org.faktorips.util.ArgumentCheck;
 
 /**
@@ -44,6 +39,8 @@ public class PropertyVisibleController implements IPropertyVisibleController {
 
     private final Set<IProductCmptPropertyFilter> filters = new HashSet<IProductCmptPropertyFilter>();
 
+    private Runnable refreshCallback;
+
     /**
      * {@inheritDoc}
      * <p>
@@ -55,14 +52,13 @@ public class PropertyVisibleController implements IPropertyVisibleController {
      * If at least one {@link IProductCmptPropertyFilter product component property filter} returns
      * {@code true}, the controls are made invisible. If all {@link IProductCmptPropertyFilter
      * product component property filters} return {@code false}, the control is made visible.
-     * <p>
-     * Finally, {@link Composite#layout()} is called on the parents of the controls in order to
-     * adapt the layout with respect to the new conditions.
      */
     @Override
-    public void updateUI() {
+    public void updateUI(boolean refresh) {
         updateControlVisibility();
-        relayoutSections();
+        if (refresh) {
+            refreshCallback.run();
+        }
     }
 
     private void updateControlVisibility() {
@@ -81,27 +77,6 @@ public class PropertyVisibleController implements IPropertyVisibleController {
                 Object layoutData = control.getLayoutData();
                 ((GridData)layoutData).exclude = filtered;
             }
-        }
-    }
-
-    private void relayoutSections() {
-        Set<Composite> parents = new HashSet<Composite>();
-        for (Control containerControl : propertyControlMappings.keySet()) {
-            for (IProductCmptProperty property : propertyControlMappings.get(containerControl).keySet()) {
-                for (Control control : propertyControlMappings.get(containerControl).get(property)) {
-                    if (!control.isDisposed()) {
-                        Optional<IpsSection> section = SwtUtil.getParent(control, IpsSection.class);
-                        // FIPS-4738: In order to display sections correctly after child-controls
-                        // are displayed, the section's parent has to be updated
-                        if (section.isPresent() && section.get().getParent() != null) {
-                            parents.add(section.get().getParent());
-                        }
-                    }
-                }
-            }
-        }
-        for (Composite parent : parents) {
-            parent.layout();
         }
     }
 
@@ -171,6 +146,11 @@ public class PropertyVisibleController implements IPropertyVisibleController {
         for (IProductCmptPropertyFilter filter : filters) {
             addFilter(filter);
         }
+    }
+
+    @Override
+    public void setRefreshCallback(Runnable refreshCallback) {
+        this.refreshCallback = refreshCallback;
     }
 
 }
