@@ -326,7 +326,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             public void run() {
                 try {
                     IpsUIPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage()
-                    .showView(ModelDescriptionView.EXTENSION_ID);
+                            .showView(ModelDescriptionView.EXTENSION_ID);
                 } catch (PartInitException e) {
                     IpsPlugin.log(e);
                 }
@@ -357,6 +357,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             updateGenerationName();
             updateTabFolderName(getPartControl());
             resetDataChangeableState();
+            refresh();
         }
         if (getProductCmpt().allowGenerations()) {
             gotoPreviousGenerationAction.update();
@@ -374,7 +375,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
     private boolean isNewestGeneration() {
         IIpsObjectGeneration newestGeneration = getProductCmpt().getGenerationsOrderedByValidDate()[getProductCmpt()
-                                                                                                    .getNumOfGenerations() - 1];
+                .getNumOfGenerations() - 1];
         if (newestGeneration.equals(getActiveGeneration())) {
             return true;
         }
