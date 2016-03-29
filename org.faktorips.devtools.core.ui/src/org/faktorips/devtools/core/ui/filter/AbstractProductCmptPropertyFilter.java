@@ -42,7 +42,7 @@ public abstract class AbstractProductCmptPropertyFilter implements IProductCmptP
 
     @Override
     public final void notifyController() {
-        controller.updateUI();
+        controller.updateUI(false);
     }
 
 }

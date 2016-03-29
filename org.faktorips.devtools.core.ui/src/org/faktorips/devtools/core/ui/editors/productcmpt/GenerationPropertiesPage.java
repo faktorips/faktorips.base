@@ -339,10 +339,6 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
     public void refresh() {
         updateGenerationName();
         updateTabFolderName(getPartControl());
-
-        // Refreshes the visible controller by application start
-        getEditor().getVisibilityController().updateUI();
-
         super.refresh();
     }
 
@@ -361,6 +357,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
             updateGenerationName();
             updateTabFolderName(getPartControl());
             resetDataChangeableState();
+            refresh();
         }
         if (getProductCmpt().allowGenerations()) {
             gotoPreviousGenerationAction.update();
@@ -601,7 +598,7 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private static final String PREF_ID = "org.faktorips.devtools.core.ui.editors.productcmpt.FilterInheritedValuesAction_enabled"; //$NON-NLS-1$
 
-        private static final String IMAGE_NAME = "templateInherited-16.png"; //$NON-NLS-1$
+        private static final String IMAGE_NAME = "templateFilterInherited.png"; //$NON-NLS-1$
 
         private final IProductCmptPropertyFilter filter;
         private final IPropertyVisibleController controller;
@@ -638,12 +635,12 @@ public class GenerationPropertiesPage extends IpsObjectEditorPage implements IGo
 
         private void hideInheritedValues() {
             controller.addFilter(filter);
-            controller.updateUI();
+            controller.updateUI(true);
         }
 
         private void showAllValues() {
             controller.removeFilter(filter);
-            controller.updateUI();
+            controller.updateUI(true);
         }
 
     }
