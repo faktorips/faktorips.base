@@ -26,6 +26,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -42,6 +43,7 @@ import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.tableconversion.ITableFormat;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -56,6 +58,8 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
     private Map<String, String> editFieldFactoryAttributes;
 
     private IExtensionPropertyEditFieldFactory editFieldFactory2;
+
+    private IExtensionRegistry oldRegistry;
 
     @Override
     @Before
@@ -135,8 +139,15 @@ public class IpsUIPluginTest extends AbstractIpsPluginTest {
         extension = TestMockingUtils.mockExtension(IpsPlugin.PLUGIN_ID + "." + "externalTableFormat", configEl);
         IExtensionPoint tableFormatExtPoint = TestMockingUtils.mockExtensionPoint(IpsPlugin.PLUGIN_ID,
                 "externalTableFormat", extension);
-        IpsUIPlugin.getDefault().setExtensionRegistry(
+        oldRegistry = IpsUIPlugin.getDefault().setExtensionRegistry(
                 new TestExtensionRegistry(new IExtensionPoint[] { extPoint, tableFormatExtPoint }));
+    }
+
+    @Override
+    @After
+    public void tearDown() throws Exception {
+        super.tearDown();
+        IpsUIPlugin.getDefault().setExtensionRegistry(oldRegistry);
     }
 
     @Test

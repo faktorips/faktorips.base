@@ -246,10 +246,16 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     /**
      * This method is for test purposes only.
+     * <p>
+     * Note: Always reset the registry in test tear down!!!
+     * 
+     * @return the previous used registry to reset after the test
      */
-    protected void setExtensionRegistry(IExtensionRegistry registry) {
+    protected IExtensionRegistry setExtensionRegistry(IExtensionRegistry registry) {
+        IExtensionRegistry oldRegistry = IpsUIPlugin.registry;
         IpsUIPlugin.registry = registry;
         extensionPropertyEditFieldFactoryMap = null;
+        return oldRegistry;
     }
 
     /**

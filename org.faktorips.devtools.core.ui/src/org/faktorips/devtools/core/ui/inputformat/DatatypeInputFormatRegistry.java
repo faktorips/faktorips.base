@@ -68,7 +68,7 @@ public class DatatypeInputFormatRegistry {
         } catch (CoreException e) {
             throw new CoreRuntimeException(new IpsStatus(
                     "Unable to create the InputFormatFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                            + extension.getUniqueIdentifier(), e));
+                    + extension.getUniqueIdentifier(), e));
         }
     }
 
@@ -89,7 +89,7 @@ public class DatatypeInputFormatRegistry {
         } catch (ClassNotFoundException e) {
             throw new CoreRuntimeException(new IpsStatus(
                     "Cannot load class " + classAttribute + " while loading extension " //$NON-NLS-1$ //$NON-NLS-2$
-                            + extension.getUniqueIdentifier(), e));
+                    + extension.getUniqueIdentifier(), e));
         }
     }
 
