@@ -13,9 +13,13 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.faktorips.devtools.core.internal.model.SingleEventModification;
+import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 
 /**
@@ -51,17 +55,29 @@ public class RemoveTemplateOperation implements IWorkspaceRunnable {
         @Override
         protected boolean execute() throws CoreException {
             processPropertyValues(productCmpt);
-            for (IPropertyValueContainer container : productCmpt.getProductCmptGenerations()) {
+            processLinks(productCmpt);
+            for (IProductCmptGeneration container : productCmpt.getProductCmptGenerations()) {
                 processPropertyValues(container);
+                processLinks(container);
             }
             return true;
         }
 
         private void processPropertyValues(IPropertyValueContainer container) {
             for (IPropertyValue value : container.getAllPropertyValues()) {
-                if (value.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
-                    value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
-                }
+                switchInheritedValuesToDefined(value);
+            }
+        }
+
+        private void processLinks(IProductCmptLinkContainer container) {
+            for (IProductCmptLink link : container.getLinksAsList()) {
+                switchInheritedValuesToDefined(link);
+            }
+        }
+
+        private void switchInheritedValuesToDefined(ITemplatedValue value) {
+            if (value.getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+                value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
             }
         }
     }

@@ -34,7 +34,6 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -889,27 +888,20 @@ public class BindingContext {
         }
 
         @Override
-        public void propertyChange(final PropertyChangeEvent evt) {
-            Display.getDefault().asyncExec(new Runnable() {
-
-                @Override
-                public void run() {
-                    for (FieldPropertyMapping<?> mapping : mappings) {
-                        if (mapping.getObject() == evt.getSource()) {
-                            try {
-                                mapping.setControlValue();
-                            } catch (Exception ex) {
-                                IpsPlugin.log(new IpsStatus(
-                                        "Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                            }
-                        }
+        public void propertyChange(PropertyChangeEvent evt) {
+            for (FieldPropertyMapping<?> mapping : mappings) {
+                if (mapping.getObject() == evt.getSource()) {
+                    try {
+                        mapping.setControlValue();
+                    } catch (Exception ex) {
+                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                     }
-
-                    showValidationStatus(mappings);
-                    applyControlBindings(evt.getPropertyName());
                 }
-            });
+            }
+
+            showValidationStatus(mappings);
+            applyControlBindings(evt.getPropertyName());
         }
     }
 

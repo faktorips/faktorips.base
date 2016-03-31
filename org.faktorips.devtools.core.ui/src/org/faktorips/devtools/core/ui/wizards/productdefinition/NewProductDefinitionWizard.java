@@ -15,13 +15,18 @@ import java.lang.reflect.InvocationTargetException;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -119,15 +124,20 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
 
     @Override
     public boolean performFinish() {
-        try {
-            setNeedsProgressMonitor(true);
-            getContainer().run(false, true, getOperation());
-        } catch (InvocationTargetException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        } catch (InterruptedException e) {
-            return false;
-        }
+        setNeedsProgressMonitor(true);
+        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    getContainer().run(false, true, getOperation());
+                } catch (InvocationTargetException e) {
+                    throw new CoreException(new IpsStatus(e));
+                } catch (InterruptedException e) {
+                    throw new CoreException(new IpsStatus(e));
+                }
+            }
+        }, new NullProgressMonitor());
         afterFinishPerformed();
         return true;
     }
