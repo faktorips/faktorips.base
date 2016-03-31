@@ -13,6 +13,7 @@ package org.faktorips.codegen.dthelpers;
 import static org.junit.Assert.assertEquals;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,7 +23,7 @@ public class StringHelperTest {
 
     @Before
     public void setUp() {
-        helper = new StringHelper();
+        helper = new StringHelper(Datatype.STRING);
     }
 
     @Test

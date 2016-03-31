@@ -45,12 +45,12 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         // Make only implicit conversions int to Decimal.
         ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
         ccg.add(new PrimitiveIntToDecimalCg());
-        compiler.setConversionCodeGenerator(ccg);
+        getCompiler().setConversionCodeGenerator(ccg);
 
         // Only binary operator is Decimal+Decimal
         @SuppressWarnings("unchecked")
         BinaryOperation<JavaCodeFragment>[] binaryOperations = new BinaryOperation[] { new AddDecimalDecimal() };
-        compiler.setBinaryOperations(binaryOperations);
+        getCompiler().setBinaryOperations(binaryOperations);
 
         // compiler should convert primitive int on lhs to Decimal
         execAndTestSuccessfull("41 + 1.2", Decimal.valueOf(422, 1), Datatype.DECIMAL);
@@ -62,8 +62,8 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testOperation_double_minus_double_plus_double() throws Exception {
-        compiler.setConversionCodeGenerator(ConversionCodeGenerator.getDefault());
-        compiler.registerDefaults();
+        getCompiler().setConversionCodeGenerator(ConversionCodeGenerator.getDefault());
+        getCompiler().registerDefaults();
 
         execAndTestSuccessfull("a - b + c", Decimal.valueOf(0.4), new String[] { "a", "b", "c" }, new Datatype[] {
             Datatype.DOUBLE, Datatype.DOUBLE, Datatype.DOUBLE }, new Object[] { 0.2, 0.3, 0.5 }, Datatype.DECIMAL);
@@ -71,7 +71,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testFunctionResolvingSuccessfull() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("ROUND(2.34; 1)", Decimal.valueOf("2.3"), Datatype.DECIMAL);
     }
 
@@ -92,12 +92,12 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         // Make only implicit conversions int to Integer.
         ConversionCodeGenerator<JavaCodeFragment> ccg = new ConversionCodeGenerator<JavaCodeFragment>();
         ccg.add(new PrimitiveIntToIntegerCg());
-        compiler.setConversionCodeGenerator(ccg);
+        getCompiler().setConversionCodeGenerator(ccg);
 
         // Only unary plus operator is defined on Integer
         @SuppressWarnings("unchecked")
         UnaryOperation<JavaCodeFragment>[] unaryOperations = new UnaryOperation[] { new PlusInteger() };
-        compiler.setUnaryOperations(unaryOperations);
+        getCompiler().setUnaryOperations(unaryOperations);
 
         // compiler should convert primitive int to Integer
         execAndTestSuccessfull("+ 42", new Integer(42), Datatype.INTEGER);
@@ -110,26 +110,26 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testFunctionResolving_FailWithWrongArgTypes() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestFail("ROUND(false; 1)", ExprCompiler.WRONG_ARGUMENT_TYPES);
     }
 
     @Test
     public void testFunctionCall_ErrorInArgumentsTypes() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestFail("ROUND(false + 1; 1)", ExprCompiler.UNDEFINED_OPERATOR);
     }
 
     @Test
     public void testBooleanConstant() {
-        compiler.setEnsureResultIsObject(false);
-        CompilationResult<JavaCodeFragment> result = compiler.compile("false");
+        getCompiler().setEnsureResultIsObject(false);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("false");
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
         JavaCodeFragment expected = DatatypeHelper.PRIMITIVE_BOOLEAN.newInstance("false");
         assertEquals(expected, result.getCodeFragment());
 
-        result = compiler.compile("true");
+        result = getCompiler().compile("true");
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_BOOLEAN, result.getDatatype());
         expected = DatatypeHelper.PRIMITIVE_BOOLEAN.newInstance("true");
@@ -138,7 +138,7 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testStringConstant() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("\"blabla\"");
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("\"blabla\"");
         assertTrue(result.successfull());
         assertEquals(Datatype.STRING, result.getDatatype());
         JavaCodeFragment expected = DatatypeHelper.STRING.newInstance("blabla");
@@ -153,14 +153,14 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntegerConstant() {
-        compiler.setEnsureResultIsObject(false);
-        CompilationResult<JavaCodeFragment> result = compiler.compile("42");
+        getCompiler().setEnsureResultIsObject(false);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("42");
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_INT, result.getDatatype());
         JavaCodeFragment expected = DatatypeHelper.PRIMITIVE_INTEGER.newInstance("42");
         assertEquals(expected, result.getCodeFragment());
 
-        result = compiler.compile("-42");
+        result = getCompiler().compile("-42");
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_INT, result.getDatatype());
         expected = DatatypeHelper.PRIMITIVE_INTEGER.newInstance("-42");
@@ -175,28 +175,28 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testSemicolonAtEnd() {
-        CompilationResult<JavaCodeFragment> result = compiler.compile("1");
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("1");
         assertTrue(result.successfull());
-        result = compiler.compile("1;a");
+        result = getCompiler().compile("1;a");
         assertFalse(result.successfull());
     }
 
     @Test
     public void testSpaceInSyntax() {
-        assertTrue(compiler.compile("1+1").successfull());
-        assertTrue(compiler.compile("1 +1").successfull());
-        assertTrue(compiler.compile("1+ 1").successfull());
-        assertTrue(compiler.compile("1 + 1").successfull());
-        assertTrue(compiler.compile("1-1").successfull());
-        assertTrue(compiler.compile("1 -1").successfull());
-        assertTrue(compiler.compile("1- 1").successfull());
-        assertTrue(compiler.compile("1 - 1").successfull());
-        CompilationResult<JavaCodeFragment> compile = compiler.compile("1+-1");
+        assertTrue(getCompiler().compile("1+1").successfull());
+        assertTrue(getCompiler().compile("1 +1").successfull());
+        assertTrue(getCompiler().compile("1+ 1").successfull());
+        assertTrue(getCompiler().compile("1 + 1").successfull());
+        assertTrue(getCompiler().compile("1-1").successfull());
+        assertTrue(getCompiler().compile("1 -1").successfull());
+        assertTrue(getCompiler().compile("1- 1").successfull());
+        assertTrue(getCompiler().compile("1 - 1").successfull());
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile("1+-1");
         assertTrue(compile.successfull());
         assertEquals(SystemUtils.LINE_SEPARATOR + "Integer.valueOf(1 + -1)", compile.getCodeFragment().toString());
         assertEquals(0, new Integer(1 + -1).intValue());
-        assertTrue(compiler.compile("1>1").successfull());
-        assertTrue(compiler.compile("1=1").successfull());
+        assertTrue(getCompiler().compile("1>1").successfull());
+        assertTrue(getCompiler().compile("1=1").successfull());
     }
 
     @Test
@@ -220,10 +220,10 @@ public class JavaExprCompilerTest extends JavaExprCompilerAbstractTest {
         @SuppressWarnings("unchecked")
         FunctionResolver<JavaCodeFragment> fctResolver2 = createFunctionResolver(function3, function4, function5);
 
-        compiler.add(fctResolver1);
-        compiler.add(fctResolver2);
+        getCompiler().add(fctResolver1);
+        getCompiler().add(fctResolver2);
 
-        CompilationResult<JavaCodeFragment> resultWithAmbiguousFunctionCall = compiler.compile(matchingFunctionName
+        CompilationResult<JavaCodeFragment> resultWithAmbiguousFunctionCall = getCompiler().compile(matchingFunctionName
                 + "(2.0)");
 
         MessageList messageList = resultWithAmbiguousFunctionCall.getMessages();

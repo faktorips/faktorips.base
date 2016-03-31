@@ -40,7 +40,7 @@ public class SumBeanArrayPropertyFctTest extends FunctionAbstractTest {
     @Test
     public void test() throws Exception {
         registerFunction(new SumBeanArrayPropertyFct());
-        compiler.setIdentifierResolver(new BeanIdentifierResolver());
+        getCompiler().setIdentifierResolver(new BeanIdentifierResolver());
         execAndTestSuccessfull("SUM(beans; value)", Decimal.valueOf("42"), Datatype.DECIMAL);
     }
 

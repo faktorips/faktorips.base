@@ -20,10 +20,17 @@ import org.faktorips.codegen.dthelpers.AbstractDatatypeHelper;
 public class BaseJodaDatatypeHelper extends AbstractDatatypeHelper {
 
     public static final String ORG_FAKTORIPS_UTIL_JODA_UTIL = "org.faktorips.util.JodaUtil"; //$NON-NLS-1$
-    private String parseMethod;
+    private final String parseMethod;
+    private final String className;
 
-    public BaseJodaDatatypeHelper(String parseMethod) {
+    public BaseJodaDatatypeHelper(String className, String parseMethod) {
+        this.className = className;
         this.parseMethod = parseMethod;
+    }
+
+    @Override
+    public String getJavaClassName() {
+        return className;
     }
 
     @Override

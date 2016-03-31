@@ -20,11 +20,12 @@ import org.faktorips.values.DateUtil;
  */
 public class LocalDateTimeDatatype extends ValueClassNameDatatype {
 
-    public static final String ORG_JODA_TIME_LOCAL_DATE_TIME = "org.joda.time.LocalDateTime"; //$NON-NLS-1$
     public static final ValueDatatype DATATYPE = new LocalDateTimeDatatype();
 
+    private static final String NAME = "LocalDateTime"; //$NON-NLS-1$
+
     public LocalDateTimeDatatype() {
-        super(ORG_JODA_TIME_LOCAL_DATE_TIME);
+        super(NAME);
     }
 
     @Override

@@ -19,8 +19,6 @@ import org.faktorips.util.ArgumentCheck;
 
 public class Date extends AbstractFlFunction {
 
-    private static final String LOCAL_DATE_CLASS = "org.joda.time.LocalDate";
-
     public Date(String name, String description) {
         super(name, description, FunctionSignatures.DATE);
     }
@@ -32,7 +30,7 @@ public class Date extends AbstractFlFunction {
         JavaCodeFragment month = argResults[1].getCodeFragment();
         JavaCodeFragment day = argResults[2].getCodeFragment();
         JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ").appendClassName(LOCAL_DATE_CLASS).append("(");
+        fragment.append("new ").appendClassName(getJavaClassName(getType())).append("(");
         fragment.append(year).append(", ").append(month).append(", ").append(day).append(")");
         return new CompilationResultImpl(fragment, getType());
     }

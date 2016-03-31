@@ -51,7 +51,6 @@ public class EnumNodeGenerator extends StdBuilderIdentifierNodeGenerator {
         EnumValueNode valueNode = (EnumValueNode)identifierNode;
         EnumDatatype enumDatatype = valueNode.getDatatype();
         JavaCodeFragment codeFragment = new JavaCodeFragment();
-        codeFragment.getImportDeclaration().add(enumDatatype.getJavaClassName());
         if (isEnumTypeDatatypeAdapter(enumDatatype)) {
             addNewInstanceForEnumType(codeFragment, (EnumTypeDatatypeAdapter)enumDatatype, valueNode.getEnumValueName());
         } else {

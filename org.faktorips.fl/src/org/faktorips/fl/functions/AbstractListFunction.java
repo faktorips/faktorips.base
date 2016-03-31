@@ -25,8 +25,6 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
 
     private static final String MSG_CODE_INVALID_DATATYPE = ExprCompiler.PREFIX + "LIST_FUNCTION_INVALID_DATATYPE"; //$NON-NLS-1$
 
-    private Datatype datatype;
-
     public AbstractListFunction(String name, String description, FunctionSignatures signature) {
         super(name, description, signature);
     }
@@ -34,16 +32,18 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
     @Override
     public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
         ArgumentCheck.length(argResults, 1);
-        AbstractCompilationResult<JavaCodeFragment> listArgument = (AbstractCompilationResult<JavaCodeFragment>)argResults[0];
-
-        datatype = getBasicType(listArgument);
-
+        AbstractCompilationResult<JavaCodeFragment> listArgument = getListArgument(argResults);
+        Datatype datatype = getBasicType(listArgument);
         CompilationResult<JavaCodeFragment> datatypeResult = validateBasicDatatype(datatype);
         if (compilationFailed(datatypeResult)) {
             return datatypeResult;
         } else {
             return generateFunctionCode(listArgument);
         }
+    }
+
+    protected AbstractCompilationResult<JavaCodeFragment> getListArgument(CompilationResult<JavaCodeFragment>[] argResults) {
+        return (AbstractCompilationResult<JavaCodeFragment>)argResults[0];
     }
 
     private boolean compilationFailed(CompilationResult<JavaCodeFragment> datatypeResult) {
@@ -64,10 +64,11 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
     protected CompilationResult<JavaCodeFragment> generateFunctionCode(CompilationResult<JavaCodeFragment> listArgument) {
         JavaCodeFragment fragment = new JavaCodeFragment();
 
-        CompilationResultImpl arg1Result = new CompilationResultImpl("currentResult", getBasicType(listArgument));
-        CompilationResultImpl arg2Result = new CompilationResultImpl("nextValue", getBasicType(listArgument));
+        Datatype datatype = getBasicType(listArgument);
+        CompilationResultImpl arg1Result = new CompilationResultImpl("currentResult", datatype);
+        CompilationResultImpl arg2Result = new CompilationResultImpl("nextValue", datatype);
 
-        String datatypeClassName = getBasicType(listArgument).getJavaClassName();
+        String datatypeClassName = getJavaClassName(datatype);
 
         fragment.append("new ");
         fragment.appendClassName("org.faktorips.runtime.formula.FormulaEvaluatorUtil.FunctionWithListAsArgumentHelper");
@@ -83,7 +84,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         CompilationResult<JavaCodeFragment> functionCall = generateFunctionCall(arg1Result, arg2Result);
         if (functionCall.failed()) {
             String messageText = Messages.INSTANCE.getString(MSG_CODE_INVALID_DATATYPE, new Object[] { getName(),
-                    getBasicType(listArgument).getName() });
+                    datatype.getName() });
             return new CompilationResultImpl(Message.newError(MSG_CODE_INVALID_DATATYPE, messageText));
         } else {
             fragment.append(functionCall.getCodeFragment());
@@ -91,7 +92,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         fragment.append(";}\n@Override public ");
         fragment.appendClassName(datatypeClassName);
         fragment.append(" getFallBackValue(){");
-        fragment.append(generateReturnFallBackValueCall());
+        fragment.append(generateReturnFallBackValueCall(datatype));
         fragment.append(";}}.getResult(");
         fragment.append(listArgument.getCodeFragment());
         fragment.append(")");
@@ -99,7 +100,7 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         return createCompilationResult(listArgument, fragment);
     }
 
-    protected abstract JavaCodeFragment generateReturnFallBackValueCall();
+    protected abstract JavaCodeFragment generateReturnFallBackValueCall(Datatype datatype);
 
     protected CompilationResult<JavaCodeFragment> generateFunctionCall(CompilationResultImpl argument1,
             CompilationResultImpl argument2) {
@@ -118,14 +119,10 @@ public abstract class AbstractListFunction extends AbstractFlFunction {
         return result;
     }
 
-    private Datatype getBasicType(CompilationResult<JavaCodeFragment> listArgument) {
+    protected Datatype getBasicType(CompilationResult<JavaCodeFragment> listArgument) {
         ListOfTypeDatatype listDatatype = (ListOfTypeDatatype)listArgument.getDatatype();
         Datatype basicDatatype = listDatatype.getBasicDatatype();
         return basicDatatype;
-    }
-
-    public Datatype getDatatype() {
-        return datatype;
     }
 
 }

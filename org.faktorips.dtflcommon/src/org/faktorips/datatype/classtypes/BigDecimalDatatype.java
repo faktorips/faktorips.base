@@ -14,17 +14,17 @@ import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 
 /**
  * Data type for {@link BigDecimal}.
  * 
  * @author Jan Ortmann
  */
-public class BigDecimalDatatype extends ValueClassDatatype implements NumericDatatype {
+public class BigDecimalDatatype extends ValueClassNameDatatype implements NumericDatatype {
 
     public BigDecimalDatatype() {
-        super(BigDecimal.class);
+        super(BigDecimal.class.getSimpleName());
     }
 
     @Override

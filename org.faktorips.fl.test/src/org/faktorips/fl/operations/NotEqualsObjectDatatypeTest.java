@@ -17,24 +17,24 @@ import org.junit.Test;
 public class NotEqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
     @Test
     public void testDecimal() throws Exception {
-        compiler.setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.DECIMAL, Datatype.DECIMAL)));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.DECIMAL, Datatype.DECIMAL)));
+        getCompiler().setEnsureResultIsObject(false);
         execAndTestSuccessfull("1!=2", true);
         execAndTestSuccessfull("1.0!=1.0", false);
     }
 
     @Test
     public void testMoney() throws Exception {
-        compiler.setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY)));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY)));
+        getCompiler().setEnsureResultIsObject(false);
         execAndTestSuccessfull("1EUR!=2EUR", true);
         execAndTestSuccessfull("1.23EUR!=1.23EUR", false);
     }
 
     @Test
     public void testString() throws Exception {
-        compiler.setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.STRING, Datatype.STRING)));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setBinaryOperations(toArray(new NotEqualsObjectDatatype(Datatype.STRING, Datatype.STRING)));
+        getCompiler().setEnsureResultIsObject(false);
         execAndTestSuccessfull("\"abc\"!=\"cde\"", true);
         execAndTestSuccessfull("\"abc\"!=\"abc\"", false);
     }

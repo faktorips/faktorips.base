@@ -18,6 +18,7 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
@@ -35,6 +36,7 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
         registerFunction(new MinMaxComparableDatatypes("MAX", "", true, LocalDateDatatype.DATATYPE));
         registerFunction(new MinMaxComparableDatatypes("MIN", "", false, LocalDateDatatype.DATATYPE));
         registerFunction(new Date("DATE", ""));
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new LocalDateHelper());
     }
 
     @Test
@@ -54,7 +56,8 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
     @Test
     public void testCompileMinDate() throws Exception {
 
-        CompilationResult<JavaCodeFragment> compile = compiler.compile("MIN(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "MIN(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
         assertEquals(
                 "(new LocalDate(2014, 02, 01).compareTo(new LocalDate(2014, 03, 08)) < 0 ? new LocalDate(2014, 02, 01) : new LocalDate(2014, 03, 08))",
@@ -66,7 +69,8 @@ public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {
     @Test
     public void testCompileMaxDate() throws Exception {
 
-        CompilationResult<JavaCodeFragment> compile = compiler.compile("MAX(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "MAX(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
         assertEquals(
                 "(new LocalDate(2014, 02, 01).compareTo(new LocalDate(2014, 03, 08)) > 0 ? new LocalDate(2014, 02, 01) : new LocalDate(2014, 03, 08))",

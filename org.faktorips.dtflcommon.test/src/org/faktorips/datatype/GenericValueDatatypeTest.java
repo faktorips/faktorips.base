@@ -152,7 +152,7 @@ public class GenericValueDatatypeTest {
         GenericValueDatatype paymentMode2 = new GenericValueDatatype() {
 
             @Override
-            public Class getAdaptedClass() {
+            public Class<?> getAdaptedClass() {
                 return null;
             }
 
@@ -173,7 +173,7 @@ public class GenericValueDatatypeTest {
         GenericValueDatatype paymentMode2 = new GenericValueDatatype() {
 
             @Override
-            public Class getAdaptedClass() {
+            public Class<?> getAdaptedClass() {
                 return null;
             }
 
@@ -220,7 +220,7 @@ public class GenericValueDatatypeTest {
     private class InvalidType extends GenericValueDatatype {
 
         @Override
-        public Class getAdaptedClass() {
+        public Class<?> getAdaptedClass() {
             return null;
         }
 

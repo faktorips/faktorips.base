@@ -22,7 +22,7 @@ public class AndOrTest extends FunctionAbstractTest {
         super.setUp();
         registerFunction(new And("AND", ""));
         registerFunction(new Or("OR", ""));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
     }
 
     @Test

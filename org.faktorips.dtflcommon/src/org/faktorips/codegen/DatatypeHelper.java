@@ -10,21 +10,16 @@
 
 package org.faktorips.codegen;
 
+import org.faktorips.codegen.dthelpers.BigDecimalHelper;
 import org.faktorips.codegen.dthelpers.BooleanHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
 import org.faktorips.codegen.dthelpers.IntegerHelper;
+import org.faktorips.codegen.dthelpers.LongHelper;
 import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.codegen.dthelpers.PrimitiveBooleanHelper;
 import org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper;
 import org.faktorips.codegen.dthelpers.StringHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.PrimitiveBooleanDatatype;
-import org.faktorips.datatype.PrimitiveIntegerDatatype;
-import org.faktorips.datatype.classtypes.BooleanDatatype;
-import org.faktorips.datatype.classtypes.DecimalDatatype;
-import org.faktorips.datatype.classtypes.IntegerDatatype;
-import org.faktorips.datatype.classtypes.MoneyDatatype;
-import org.faktorips.datatype.classtypes.StringDatatype;
 
 /**
  * Interface that defines functionality needed to generate Java sourcecode for datatypes.
@@ -35,40 +30,49 @@ public interface DatatypeHelper extends BaseDatatypeHelper<JavaCodeFragment> {
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#BOOLEAN Datatype.BOOLEAN}.
      */
-    public final static DatatypeHelper BOOLEAN = new BooleanHelper((BooleanDatatype)Datatype.BOOLEAN);
+    public static final DatatypeHelper BOOLEAN = new BooleanHelper(Datatype.BOOLEAN);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#DECIMAL Datatype.DECIMAL}.
      */
-    public final static DatatypeHelper DECIMAL = new DecimalHelper((DecimalDatatype)Datatype.DECIMAL);
+    public static final DatatypeHelper DECIMAL = new DecimalHelper(Datatype.DECIMAL);
+
+    /**
+     * Helper for {@link org.faktorips.datatype.Datatype#DECIMAL Datatype.BIG_DECIMAL}.
+     */
+    public static final DatatypeHelper BIG_DECIMAL = new BigDecimalHelper(Datatype.BIG_DECIMAL);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#INTEGER Datatype.INTEGER}.
      */
-    public final static DatatypeHelper INTEGER = new IntegerHelper((IntegerDatatype)Datatype.INTEGER);
+    public static final DatatypeHelper INTEGER = new IntegerHelper(Datatype.INTEGER);
+
+    /**
+     * Helper for {@link org.faktorips.datatype.Datatype#LONG Datatype.LONG}.
+     */
+    public static final DatatypeHelper LONG = new LongHelper(Datatype.LONG);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#MONEY Datatype.MONEY}.
      */
-    public final static DatatypeHelper MONEY = new MoneyHelper((MoneyDatatype)Datatype.MONEY);
+    public static final DatatypeHelper MONEY = new MoneyHelper(Datatype.MONEY);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_BOOLEAN
      * Datatype.PRIMITIVE_BOOLEAN}.
      */
-    public final static PrimitiveDatatypeHelper PRIMITIVE_BOOLEAN = new PrimitiveBooleanHelper(
-            (PrimitiveBooleanDatatype)Datatype.PRIMITIVE_BOOLEAN);
+    public static final PrimitiveDatatypeHelper PRIMITIVE_BOOLEAN = new PrimitiveBooleanHelper(
+            Datatype.PRIMITIVE_BOOLEAN);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#PRIMITIVE_INT Datatype.PRIMITIVE_INTEGER}.
      */
-    public final static PrimitiveDatatypeHelper PRIMITIVE_INTEGER = new PrimitiveIntegerHelper(
-            (PrimitiveIntegerDatatype)Datatype.PRIMITIVE_INT);
+    public static final PrimitiveDatatypeHelper PRIMITIVE_INTEGER = new PrimitiveIntegerHelper(Datatype.PRIMITIVE_INT);
 
     /**
      * Helper for {@link org.faktorips.datatype.Datatype#STRING Datatype.STRING}.
      */
-    public final static DatatypeHelper STRING = new StringHelper((StringDatatype)Datatype.STRING);
+    public static final DatatypeHelper STRING = new StringHelper(Datatype.STRING);
 
     /**
      * Returns the datatype this is a helper for.

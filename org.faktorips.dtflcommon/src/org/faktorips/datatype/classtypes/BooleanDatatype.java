@@ -10,21 +10,21 @@
 
 package org.faktorips.datatype.classtypes;
 
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 
 /**
  * Datatype for <code>Boolean</code>.
  * 
  * @author Jan Ortmann
  */
-public class BooleanDatatype extends ValueClassDatatype {
+public class BooleanDatatype extends ValueClassNameDatatype {
 
     public BooleanDatatype() {
-        super(Boolean.class);
+        super(Boolean.class.getSimpleName());
     }
 
     public BooleanDatatype(String name) {
-        super(Boolean.class, name);
+        super(name);
     }
 
     @Override

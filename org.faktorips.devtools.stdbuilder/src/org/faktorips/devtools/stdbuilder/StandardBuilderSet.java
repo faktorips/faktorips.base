@@ -503,23 +503,27 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public String getJavaClassName(Datatype datatype, boolean interfaces) {
         if (datatype instanceof IPolicyCmptType) {
-            return getJavaClassNameForPolicyCmptType(datatype, interfaces);
+            return getJavaClassNameForPolicyCmptType((IPolicyCmptType)datatype, interfaces);
         } else if (datatype instanceof IProductCmptType) {
-            return getJavaClassNameForProductCmptType(datatype, interfaces);
+            return getJavaClassNameForProductCmptType((IProductCmptType)datatype, interfaces);
         } else {
-            return datatype.getJavaClassName();
+            return getDatatypeHelper(datatype).getJavaClassName();
         }
     }
 
-    private String getJavaClassNameForPolicyCmptType(Datatype datatype, boolean interfaces) {
-        return getJavaClassName((IPolicyCmptType)datatype, interfaces, XPolicyCmptClass.class);
+    private DatatypeHelper getDatatypeHelper(Datatype datatype) {
+        return getIpsProject().getDatatypeHelper(datatype);
     }
 
-    private String getJavaClassNameForProductCmptType(Datatype datatype, boolean interfaces) {
-        if (((IProductCmptType)datatype).isChangingOverTime()) {
-            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptGenerationClass.class);
+    private String getJavaClassNameForPolicyCmptType(IPolicyCmptType type, boolean interfaces) {
+        return getJavaClassName(type, interfaces, XPolicyCmptClass.class);
+    }
+
+    private String getJavaClassNameForProductCmptType(IProductCmptType type, boolean interfaces) {
+        if (type.isChangingOverTime()) {
+            return getJavaClassName(type, interfaces, XProductCmptGenerationClass.class);
         } else {
-            return getJavaClassName((IProductCmptType)datatype, interfaces, XProductCmptClass.class);
+            return getJavaClassName(type, interfaces, XProductCmptClass.class);
         }
     }
 

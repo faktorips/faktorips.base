@@ -23,6 +23,6 @@ public abstract class FunctionAbstractTest extends JavaExprCompilerAbstractTest 
     protected void registerFunction(FlFunction<JavaCodeFragment> function) {
         DefaultFunctionResolver<JavaCodeFragment> resolver = new DefaultFunctionResolver<JavaCodeFragment>();
         resolver.add(function);
-        compiler.add(resolver);
+        getCompiler().add(resolver);
     }
 }

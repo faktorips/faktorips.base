@@ -26,7 +26,7 @@ public class SubtractDecimalDecimalTest extends JavaExprCompilerAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(toArray(new SubtractDecimalDecimal()));
+        getCompiler().setBinaryOperations(toArray(new SubtractDecimalDecimal()));
     }
 
     @Test

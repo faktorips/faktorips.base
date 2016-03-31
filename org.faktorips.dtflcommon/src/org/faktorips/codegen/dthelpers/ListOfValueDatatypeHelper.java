@@ -13,8 +13,10 @@ package org.faktorips.codegen.dthelpers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
+import org.faktorips.codegen.PrimitiveDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.datatype.ValueDatatype;
@@ -30,8 +32,16 @@ import org.faktorips.datatype.ValueDatatype;
  */
 public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
-    public ListOfValueDatatypeHelper(ValueDatatype elementDatatype) {
-        super(new ListOfTypeDatatype(elementDatatype));
+    private final DatatypeHelper elementDatatypeHelper;
+
+    public ListOfValueDatatypeHelper(DatatypeHelper elementDatatypeHelper) {
+        super(new ListOfTypeDatatype(elementDatatypeHelper.getDatatype()));
+        if (elementDatatypeHelper instanceof PrimitiveDatatypeHelper) {
+            PrimitiveDatatypeHelper primitiveDatatypeHelper = (PrimitiveDatatypeHelper)elementDatatypeHelper;
+            this.elementDatatypeHelper = primitiveDatatypeHelper.getWrapperTypeHelper();
+        } else {
+            this.elementDatatypeHelper = elementDatatypeHelper;
+        }
     }
 
     @Override
@@ -47,7 +57,20 @@ public class ListOfValueDatatypeHelper extends AbstractDatatypeHelper {
     }
 
     public String getBasicJavaClassName() {
-        return getBasicDatatype().getJavaClassName();
+        return elementDatatypeHelper.getJavaClassName();
+    }
+
+    @Override
+    public String getJavaClassName() {
+        StringBuffer buffer = new StringBuffer(List.class.getName());
+        buffer.append('<');
+        appendBasicJavaName(buffer);
+        buffer.append('>');
+        return buffer.toString();
+    }
+
+    private void appendBasicJavaName(StringBuffer buffer) {
+        buffer.append(elementDatatypeHelper.getJavaClassName());
     }
 
     /**

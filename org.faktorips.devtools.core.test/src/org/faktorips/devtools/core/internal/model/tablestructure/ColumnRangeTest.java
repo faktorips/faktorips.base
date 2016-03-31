@@ -87,11 +87,11 @@ public class ColumnRangeTest extends AbstractIpsPluginTest {
     public void testGetDatatype() {
         range.initFromXml(getTestDocument().getDocumentElement());
         IColumn column = table.newColumn();
-        column.setDatatype(Datatype.PRIMITIVE_INT.getJavaClassName());
+        column.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         column.setName("ageFrom");
 
         column = table.newColumn();
-        column.setDatatype(Datatype.PRIMITIVE_INT.getJavaClassName());
+        column.setDatatype(Datatype.PRIMITIVE_INT.getQualifiedName());
         column.setName("ageTo");
 
         String dataType = range.getDatatype();

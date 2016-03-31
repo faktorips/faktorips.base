@@ -13,7 +13,6 @@ package org.faktorips.codegen.conversion;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.PrimitiveBooleanHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.PrimitiveBooleanDatatype;
 
 public class PrimitiveBooleanToBooleanCg extends AbstractSingleConversionCg {
 
@@ -23,7 +22,7 @@ public class PrimitiveBooleanToBooleanCg extends AbstractSingleConversionCg {
 
     @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-        return new PrimitiveBooleanHelper((PrimitiveBooleanDatatype)Datatype.PRIMITIVE_BOOLEAN).toWrapper(fromValue);
+        return new PrimitiveBooleanHelper(Datatype.PRIMITIVE_BOOLEAN).toWrapper(fromValue);
     }
 
 }

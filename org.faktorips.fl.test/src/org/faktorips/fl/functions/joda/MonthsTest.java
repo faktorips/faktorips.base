@@ -17,6 +17,8 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
+import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
 import org.junit.Test;
@@ -28,14 +30,14 @@ public class MonthsTest extends FunctionAbstractTest {
 
     @Test
     public void testCompile() throws Exception {
-
         months = new Months("MONTHS", "");
         date = new Date("DATE", "");
         registerFunction(months);
         registerFunction(date);
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new LocalDateHelper());
 
-        CompilationResult<JavaCodeFragment> compile = compiler
-                .compile("MONTHS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "MONTHS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
 
         assertEquals(

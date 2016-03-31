@@ -17,8 +17,10 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
  */
 public class LocalDateHelper extends BaseJodaDatatypeHelper {
 
+    public static final String ORG_JODA_TIME_LOCAL_DATE = "org.joda.time.LocalDate"; //$NON-NLS-1$
+
     public LocalDateHelper() {
-        super("toLocalDate"); //$NON-NLS-1$
+        super(ORG_JODA_TIME_LOCAL_DATE, "toLocalDate"); //$NON-NLS-1$
     }
 
 }

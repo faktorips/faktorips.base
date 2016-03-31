@@ -36,6 +36,16 @@ public class PrimitiveBooleanHelper extends AbstractPrimitiveDatatypeHelper {
     }
 
     @Override
+    public DatatypeHelper getWrapperTypeHelper() {
+        return DatatypeHelper.BOOLEAN;
+    }
+
+    @Override
+    public String getJavaClassName() {
+        return Boolean.TYPE.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         Boolean booleanValue = Boolean.valueOf(value);
         if (booleanValue.booleanValue()) {

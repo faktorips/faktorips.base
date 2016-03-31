@@ -1210,7 +1210,9 @@ public class IpsProject extends IpsElement implements IIpsProject {
             return null;
         }
         if (datatype instanceof ArrayOfValueDatatype) {
-            return new ArrayOfValueDatatypeHelper(datatype);
+            ArrayOfValueDatatype arrayDatatype = (ArrayOfValueDatatype)datatype;
+            return new ArrayOfValueDatatypeHelper(arrayDatatype,
+                    getDatatypeHelper(arrayDatatype.getBasicDatatype()));
         }
         if (datatype instanceof EnumTypeDatatypeAdapter) {
             return getIpsArtefactBuilderSet().getDatatypeHelperForEnumType((EnumTypeDatatypeAdapter)datatype);

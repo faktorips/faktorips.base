@@ -24,6 +24,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ListOfTypeDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.JavaExprCompiler;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,6 +61,7 @@ public class MinMaxListTest {
         CompilationResultImpl fragment = new CompilationResultImpl(
                 new JavaCodeFragment("currentResult.max(nextValue)"), Datatype.DECIMAL);
         doReturn(fragment).when(maxList).generateFunctionCall(arg1Result, arg2Result);
+        maxList.setCompiler(new JavaExprCompiler());
     }
 
     @Test(expected = IllegalArgumentException.class)

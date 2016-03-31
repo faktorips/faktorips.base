@@ -19,6 +19,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.Message;
@@ -29,15 +30,15 @@ import org.junit.Before;
  */
 public abstract class JavaExprCompilerAbstractTest {
 
-    protected JavaExprCompiler compiler;
+    private JavaExprCompiler compiler;
     private ExprEvaluator processor;
 
     @Before
     public void setUp() throws Exception {
-        compiler = new JavaExprCompiler();
+        setCompiler(new JavaExprCompiler());
         Locale.setDefault(Locale.ENGLISH);
-        compiler.setLocale(Locale.ENGLISH);
-        processor = new ExprEvaluator(compiler);
+        getCompiler().setLocale(Locale.ENGLISH);
+        processor = new ExprEvaluator(getCompiler());
     }
 
     /**
@@ -49,7 +50,7 @@ public abstract class JavaExprCompilerAbstractTest {
             Object expectedValue,
             Datatype expectedDatatype) throws Exception {
 
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
@@ -88,8 +89,8 @@ public abstract class JavaExprCompilerAbstractTest {
                         "The parameter " + identifier + " cannot be resolved.", Message.ERROR));
             }
         };
-        compiler.setIdentifierResolver(resolver);
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        getCompiler().setIdentifierResolver(resolver);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
@@ -112,7 +113,7 @@ public abstract class JavaExprCompilerAbstractTest {
     protected CompilationResult<JavaCodeFragment> execAndTestSuccessfull(String expression, boolean expectedValue)
             throws Exception {
 
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }
@@ -134,7 +135,7 @@ public abstract class JavaExprCompilerAbstractTest {
      */
     protected CompilationResult<JavaCodeFragment> execAndTestFail(String expression, String expectedMessageCode)
             throws Exception {
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
         assertTrue(result.failed());
         assertNotNull(result.getMessages().getMessageByCode(expectedMessageCode));
         return result;
@@ -145,4 +146,17 @@ public abstract class JavaExprCompilerAbstractTest {
         BinaryOperation<JavaCodeFragment>[] binaryOperations = new BinaryOperation[] { binaryOperation };
         return binaryOperations;
     }
+
+    public JavaExprCompiler getCompiler() {
+        return compiler;
+    }
+
+    public void setCompiler(JavaExprCompiler compiler) {
+        this.compiler = compiler;
+    }
+
+    protected void putDatatypeHelper(Datatype datatype, DatatypeHelper helper) {
+        ((DefaultDatatypeHelperProvider)getCompiler().getDatatypeHelperProvider()).put(datatype, helper);
+    }
+
 }

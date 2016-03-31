@@ -10,6 +10,7 @@
 
 package org.faktorips.datatype;
 
+import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -74,8 +75,7 @@ public abstract class AbstractDatatype implements Datatype {
      */
     @Override
     public int compareTo(Datatype o) {
-        Datatype type = o;
-        return getQualifiedName().compareTo(type.getQualifiedName());
+        return DatatypeComparator.doCompare(this, o);
     }
 
     @Override

@@ -10,6 +10,7 @@
 
 package org.faktorips.datatype;
 
+import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -65,13 +66,8 @@ public class AnyDatatype implements Datatype {
     }
 
     @Override
-    public String getJavaClassName() {
-        return null;
-    }
-
-    @Override
     public int compareTo(Datatype o) {
-        return 0;
+        return DatatypeComparator.doCompare(this, o);
     }
 
     @Override

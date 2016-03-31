@@ -18,8 +18,6 @@ import org.faktorips.codegen.conversion.BooleanToPrimitiveBooleanCg;
 import org.faktorips.codegen.conversion.DecimalToBigDecimalCg;
 import org.faktorips.codegen.conversion.DecimalToDoubleCg;
 import org.faktorips.codegen.conversion.DoubleToDecimalCg;
-import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateCg;
-import org.faktorips.codegen.conversion.GregorianCalendarToLocalDateTimeCg;
 import org.faktorips.codegen.conversion.IntegerToBigDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToDecimalCg;
 import org.faktorips.codegen.conversion.IntegerToLongCg;
@@ -92,8 +90,6 @@ public class ConversionCodeGenerator<T extends CodeFragment> implements Conversi
         ccg.add(new DecimalToDoubleCg());
         ccg.add(new LocalDateToGregorianCalendarCg());
         ccg.add(new LocalDateTimeToGregorianCalendarCg());
-        ccg.add(new GregorianCalendarToLocalDateCg());
-        ccg.add(new GregorianCalendarToLocalDateTimeCg());
         return ccg;
     }
 

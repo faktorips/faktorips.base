@@ -23,16 +23,22 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         super(datatype);
     }
 
-    private GenericValueDatatype getGenericValueDatatype() {
-        return (GenericValueDatatype)getDatatype();
+    @Override
+    public GenericValueDatatype getDatatype() {
+        return (GenericValueDatatype)super.getDatatype();
+    }
+
+    @Override
+    public String getJavaClassName() {
+        return getDatatype().getJavaClassName();
     }
 
     @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         JavaCodeFragment code = new JavaCodeFragment();
-        code.appendClassName(getGenericValueDatatype().getJavaClassName());
+        code.appendClassName(getDatatype().getJavaClassName());
         code.append('.');
-        code.append(getGenericValueDatatype().getValueOfMethodName());
+        code.append(getDatatype().getValueOfMethodName());
         code.append('(');
         code.append(expression);
         code.append(')');
@@ -41,7 +47,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
 
     @Override
     public JavaCodeFragment nullExpression() {
-        GenericValueDatatype datatype = getGenericValueDatatype();
+        GenericValueDatatype datatype = getDatatype();
         JavaCodeFragment code = new JavaCodeFragment();
         if (!datatype.hasNullObject()) {
             code.append("null"); //$NON-NLS-1$
@@ -75,7 +81,7 @@ public class GenericValueDatatypeHelper extends AbstractDatatypeHelper {
         fragment.append("==null?null:"); //$NON-NLS-1$
         fragment.append(fieldName);
         fragment.append("."); //$NON-NLS-1$
-        fragment.append(((GenericValueDatatype)getDatatype()).getToStringMethodName());
+        fragment.append(getDatatype().getToStringMethodName());
         fragment.append("()"); //$NON-NLS-1$
         return fragment;
     }

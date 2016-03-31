@@ -13,7 +13,6 @@ package org.faktorips.codegen.conversion;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.PrimitiveIntegerDatatype;
 
 public class PrimitiveIntToIntegerCg extends AbstractSingleConversionCg {
 
@@ -23,7 +22,7 @@ public class PrimitiveIntToIntegerCg extends AbstractSingleConversionCg {
 
     @Override
     public JavaCodeFragment getConversionCode(JavaCodeFragment fromValue) {
-        return new PrimitiveIntegerHelper((PrimitiveIntegerDatatype)Datatype.PRIMITIVE_INT).toWrapper(fromValue);
+        return new PrimitiveIntegerHelper(Datatype.PRIMITIVE_INT).toWrapper(fromValue);
     }
 
 }

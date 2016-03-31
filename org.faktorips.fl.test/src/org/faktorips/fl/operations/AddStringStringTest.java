@@ -25,7 +25,7 @@ public class AddStringStringTest extends JavaExprCompilerAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(toArray(new AddStringString()));
+        getCompiler().setBinaryOperations(toArray(new AddStringString()));
     }
 
     @Test

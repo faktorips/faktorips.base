@@ -17,8 +17,10 @@ import org.faktorips.datatype.joda.LocalTimeDatatype;
  */
 public class LocalTimeHelper extends BaseJodaDatatypeHelper {
 
+    public static final String ORG_JODA_TIME_LOCAL_TIME = "org.joda.time.LocalTime"; //$NON-NLS-1$
+
     public LocalTimeHelper() {
-        super("toLocalTime"); //$NON-NLS-1$
+        super(ORG_JODA_TIME_LOCAL_TIME, "toLocalTime"); //$NON-NLS-1$
     }
 
 }

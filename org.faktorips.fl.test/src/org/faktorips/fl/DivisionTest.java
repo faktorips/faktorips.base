@@ -38,13 +38,13 @@ public class DivisionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testDecimalInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("10.8 / WHOLENUMBER(4.1)", Decimal.valueOf("2.7000000000"), Datatype.DECIMAL);
     }
 
     @Test
     public void testIntegerDecimal() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(10.2) / 2.5", Decimal.valueOf("4.0000000000"), Datatype.DECIMAL);
     }
 
@@ -55,19 +55,19 @@ public class DivisionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("10 / WHOLENUMBER(4)", Decimal.valueOf("2.5000000000"), Datatype.DECIMAL);
     }
 
     @Test
     public void testIntegerInt() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(10) / WHOLENUMBER(4)", Decimal.valueOf("2.5000000000"), Datatype.DECIMAL);
     }
 
     @Test
     public void testIntegerInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(10) / WHOLENUMBER(4)", Decimal.valueOf("2.5000000000"), Datatype.DECIMAL);
     }
 
@@ -83,7 +83,7 @@ public class DivisionTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testMoneyInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("10.00EUR / WHOLENUMBER(4)", Money.valueOf("2.50EUR"), Datatype.MONEY);
     }
 

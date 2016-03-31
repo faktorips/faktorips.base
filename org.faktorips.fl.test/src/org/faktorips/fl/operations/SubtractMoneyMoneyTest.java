@@ -26,7 +26,7 @@ public class SubtractMoneyMoneyTest extends JavaExprCompilerAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(toArray(new SubtractMoneyMoney()));
+        getCompiler().setBinaryOperations(toArray(new SubtractMoneyMoney()));
     }
 
     @Test

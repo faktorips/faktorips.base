@@ -17,6 +17,8 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
+import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
 import org.junit.Test;
@@ -32,9 +34,10 @@ public class Days360Test extends FunctionAbstractTest {
         date = new Date("DATE", "");
         registerFunction(days);
         registerFunction(date);
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new LocalDateHelper());
 
-        CompilationResult<JavaCodeFragment> compile = compiler
-                .compile("DAYS360(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "DAYS360(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
         String resultingSourcecode = "Integer.valueOf(((new LocalDate(2014, 03, 08).getYear() - new LocalDate(2014, 02, 01).getYear()) * 360 + (new LocalDate(2014, 03, 08).getMonthOfYear() - new LocalDate(2014, 02, 01).getMonthOfYear()) * 30 + (Math.min(new LocalDate(2014, 03, 08).getDayOfMonth(), 30) - Math.min(new LocalDate(2014, 02, 01).getDayOfMonth(), 30))))";
 

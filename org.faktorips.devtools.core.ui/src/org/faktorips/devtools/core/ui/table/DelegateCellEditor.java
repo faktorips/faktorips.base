@@ -66,11 +66,6 @@ public class DelegateCellEditor extends CellEditor {
         }
 
         @Override
-        public String getJavaClassName() {
-            return null;
-        }
-
-        @Override
         public String getName() {
             return null;
         }

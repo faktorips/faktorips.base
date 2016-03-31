@@ -827,7 +827,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(3, types.length);
         assertEquals(Datatype.DECIMAL, types[0]);
         assertEquals(Datatype.MONEY, types[1]);
-        assertEquals(TestEnumType.class.getName(), types[2].getJavaClassName());
 
         // only value types, void included
         types = ipsProject.findDatatypes(true, true);
@@ -835,7 +834,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.VOID, types[0]);
         assertEquals(Datatype.DECIMAL, types[1]);
         assertEquals(Datatype.MONEY, types[2]);
-        assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
 
         // all types, void not included
         types = ipsProject.findDatatypes(false, false);
@@ -843,7 +841,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.DECIMAL, types[0]);
         assertEquals(messageListDatatype, types[1]);
         assertEquals(Datatype.MONEY, types[2]);
-        assertEquals(TestEnumType.class.getName(), types[3].getJavaClassName());
         assertEquals(pcType1, types[4]);
         assertEquals(pcType2, types[5]);
 
@@ -854,7 +851,6 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         assertEquals(Datatype.DECIMAL, types[1]);
         assertEquals(messageListDatatype, types[2]);
         assertEquals(Datatype.MONEY, types[3]);
-        assertEquals(TestEnumType.class.getName(), types[4].getJavaClassName());
         assertEquals(pcType1, types[5]);
         assertEquals(pcType2, types[6]);
     }

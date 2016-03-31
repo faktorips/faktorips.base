@@ -593,11 +593,6 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
         }
 
         @Override
-        public String getJavaClassName() {
-            return null;
-        }
-
-        @Override
         public MessageList checkReadyToUse() {
             MessageList ml = new MessageList();
 
@@ -655,6 +650,10 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
     private class InvalidDatatypeHelper extends AbstractDatatypeHelper {
 
+        public InvalidDatatypeHelper() {
+            super(new InvalidDatatype());
+        }
+
         @Override
         protected JavaCodeFragment valueOfExpression(String expression) {
             return null;
@@ -667,6 +666,11 @@ public class ConfigElementTest extends AbstractIpsPluginTest {
 
         @Override
         public JavaCodeFragment newInstance(String value) {
+            return null;
+        }
+
+        @Override
+        public String getJavaClassName() {
             return null;
         }
 

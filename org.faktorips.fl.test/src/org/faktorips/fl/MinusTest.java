@@ -33,14 +33,14 @@ public class MinusTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("- WHOLENUMBER(42.2)", new Integer(-42), Datatype.INTEGER);
     }
 
     @Test
     public void testInt() throws Exception {
-        compiler.setEnsureResultIsObject(false);
-        CompilationResult<JavaCodeFragment> result = compiler.compile("- 42");
+        getCompiler().setEnsureResultIsObject(false);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("- 42");
         assertTrue(result.successfull());
         assertEquals(Datatype.PRIMITIVE_INT, result.getDatatype());
         assertEquals("-42", result.getCodeFragment().getSourcecode());

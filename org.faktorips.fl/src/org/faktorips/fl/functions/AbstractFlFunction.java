@@ -10,6 +10,7 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.FlFunction;
@@ -61,4 +62,13 @@ public abstract class AbstractFlFunction extends AbstractBaseFlFunction<JavaCode
     public JavaExprCompiler getCompiler() {
         return (JavaExprCompiler)super.getCompiler();
     }
+
+    public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+        return getCompiler().getDatatypeHelper(datatype);
+    }
+
+    public String getJavaClassName(Datatype datatype) {
+        return getDatatypeHelper(datatype).getJavaClassName();
+    }
+
 }

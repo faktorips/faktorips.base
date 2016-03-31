@@ -332,7 +332,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             Datatype datatype = decision.findDatatype(getIpsProject());
             DatatypeHelper helper = getIpsProject().findDatatypeHelper(datatype.getQualifiedName());
 
-            body.appendClassName(datatype.getJavaClassName());
+            body.appendClassName(helper.getJavaClassName());
             body.append(" conditionValue = ");
             body.append(getMethodNameGetConditionValue(decision));
             body.appendln("();");
@@ -418,7 +418,7 @@ public class BusinessFunctionBuilder extends DefaultJavaSourceFileBuilder {
             body.append("();");
             alreadyGenerated.add(getKeyForMethodCallDecision(decision));
         }
-        methodBuilder.method(Modifier.PRIVATE, datatype.getJavaClassName(), getMethodNameGetConditionValue(decision),
+        methodBuilder.method(Modifier.PRIVATE, helper.getJavaClassName(), getMethodNameGetConditionValue(decision),
                 new String[0], new String[0], body, "", ANNOTATION_GENERATED);
     }
 
