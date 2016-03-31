@@ -19,7 +19,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
@@ -103,12 +102,12 @@ public class EmptyBuilderSet extends AbstractBuilderSet {
     }
 
     @Override
-    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
+    public IPersistenceProvider getPersistenceProvider() {
         return null;
     }
 
     @Override
-    public IPersistenceProvider getPersistenceProvider() {
+    public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         return null;
     }
 

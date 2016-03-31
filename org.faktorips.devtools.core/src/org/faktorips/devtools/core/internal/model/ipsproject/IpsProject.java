@@ -1211,13 +1211,10 @@ public class IpsProject extends IpsElement implements IIpsProject {
         }
         if (datatype instanceof ArrayOfValueDatatype) {
             ArrayOfValueDatatype arrayDatatype = (ArrayOfValueDatatype)datatype;
-            return new ArrayOfValueDatatypeHelper(arrayDatatype,
-                    getDatatypeHelper(arrayDatatype.getBasicDatatype()));
+            return new ArrayOfValueDatatypeHelper(arrayDatatype, getDatatypeHelper(arrayDatatype.getBasicDatatype()));
         }
-        if (datatype instanceof EnumTypeDatatypeAdapter) {
-            return getIpsArtefactBuilderSet().getDatatypeHelperForEnumType((EnumTypeDatatypeAdapter)datatype);
-        }
-        DatatypeHelper helper = getIpsModel().getDatatypeHelper(this, (ValueDatatype)datatype);
+
+        DatatypeHelper helper = getIpsArtefactBuilderSet().getDatatypeHelper(datatype);
         if (helper != null) {
             return helper;
         }
@@ -1902,4 +1899,5 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public LinkedHashSet<IIpsSrcFile> getMarkerEnums() {
         return getIpsModel().getMarkerEnums(this);
     }
+
 }

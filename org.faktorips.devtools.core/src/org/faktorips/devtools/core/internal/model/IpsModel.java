@@ -51,10 +51,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
-import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.GenericValueDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
@@ -157,11 +154,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
      * at the lazy loading mechanism
      */
     private Map<String, Datatype> datatypes = null;
-
-    /**
-     * A map containing a code generation helper (value) per datatype (key)
-     */
-    private Map<Datatype, DatatypeHelper> datatypeHelpersMap = null;
 
     /**
      * A map containing the project for every name.
@@ -773,7 +765,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
         }
         IpsProjectData ipsProjectData = getIpsProjectData(project);
         LinkedHashMap<String, Datatype> projectTypes = ipsProjectData.getProjectDatatypesMap();
-        Map<ValueDatatype, DatatypeHelper> projectHelperMap = ipsProjectData.getProjectDatatypeHelpersMap();
 
         IIpsProjectProperties props = getIpsProjectProperties((IpsProject)project);
         String[] datatypeIds = props.getPredefinedDatatypesUsed();
@@ -783,21 +774,10 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
                 continue;
             }
             projectTypes.put(datatypeId, datatype);
-            if (datatype.isValueDatatype()) {
-                ValueDatatype valueDatatype = (ValueDatatype)datatype;
-                DatatypeHelper helper = datatypeHelpersMap.get(valueDatatype);
-                if (helper != null) {
-                    projectHelperMap.put(valueDatatype, helper);
-                }
-            }
         }
         List<Datatype> definedDatatypes = props.getDefinedDatatypes();
         for (Datatype datatype : definedDatatypes) {
             projectTypes.put(datatype.getQualifiedName(), datatype);
-            if (datatype instanceof GenericValueDatatype) {
-                GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
-                projectHelperMap.put(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
-            }
         }
     }
 
@@ -911,20 +891,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
             }
         }
         return graphs.toArray(new DependencyGraph[graphs.size()]);
-    }
-
-    /**
-     * Returns the datatype helper for the given value datatype or <code>null</code> if no helper is
-     * defined for the value datatype.
-     */
-    public DatatypeHelper getDatatypeHelper(IIpsProject ipsProject, ValueDatatype datatype) {
-        reinitIpsProjectPropertiesIfNecessary((IpsProject)ipsProject);
-        Map<ValueDatatype, DatatypeHelper> map = getIpsProjectData(ipsProject).getProjectDatatypeHelpersMap();
-        if (map.isEmpty()) {
-            initDatatypesDefinedInProjectProperties(ipsProject);
-            map = getIpsProjectData(ipsProject).getProjectDatatypeHelpersMap();
-        }
-        return map.get(datatype);
     }
 
     /**
@@ -1157,7 +1123,6 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
 
     private void initDatatypesDefinedViaExtension() {
         datatypes = new HashMap<String, Datatype>();
-        datatypeHelpersMap = new HashMap<Datatype, DatatypeHelper>();
         IExtensionRegistry registry = Platform.getExtensionRegistry();
         IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID, "datatypeDefinition"); //$NON-NLS-1$
         IExtension[] extensions = point.getExtensions();
@@ -1179,41 +1144,12 @@ public class IpsModel extends IpsElement implements IIpsModel, IResourceChangeLi
     }
 
     private void createDatatypeDefinition(IExtension extension) {
-        IConfigurationElement[] configElements = extension.getConfigurationElements();
-        for (int i = 0; i < configElements.length; i++) {
-            if (!"datatypeDefinition".equalsIgnoreCase(configElements[i].getName())) { //$NON-NLS-1$
-                String text = "Illegal datatype definition " + extension.getUniqueIdentifier()//$NON-NLS-1$
-                        + ". Expected Config Element <datatypeDefinition> was " //$NON-NLS-1$
-                        + configElements[i].getName();
-                IpsPlugin.log(new IpsStatus(text));
-                continue;
+        for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+            DatatypeDefinition definition = new DatatypeDefinition(extension, configElement);
+            if (definition.hasDatatype()) {
+                datatypes.put(definition.getDatatype().getQualifiedName(), definition.getDatatype());
             }
-            Object datatypeObj = ExtensionPoints.createExecutableExtension(extension, configElements[i],
-                    "datatypeClass", Datatype.class); //$NON-NLS-1$
-            if (datatypeObj == null) {
-                continue;
-            }
-            Datatype datatype = (Datatype)datatypeObj;
-            datatypes.put(datatype.getQualifiedName(), datatype);
-            Object dtHelperObj = ExtensionPoints.createExecutableExtension(extension, configElements[i],
-                    "helperClass", DatatypeHelper.class); //$NON-NLS-1$
-            if (dtHelperObj == null) {
-                continue;
-            }
-            DatatypeHelper dtHelper = (DatatypeHelper)dtHelperObj;
-            dtHelper.setDatatype(datatype);
-            datatypeHelpersMap.put(datatype, dtHelper);
         }
-    }
-
-    /**
-     * Adds the datatype helper and it's datatype to the available once. For testing purposes.
-     * During normal execution the available datatypes are discovered by extension point lookup.
-     */
-    public void addDatatypeHelper(DatatypeHelper helper) {
-        Datatype datatype = helper.getDatatype();
-        datatypes.put(datatype.getQualifiedName(), datatype);
-        datatypeHelpersMap.put(helper.getDatatype(), helper);
     }
 
     @Override

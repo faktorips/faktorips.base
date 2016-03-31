@@ -21,12 +21,21 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaElement;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
+import org.faktorips.datatype.GenericValueDatatype;
+import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.datatype.joda.LocalDateTimeDatatype;
+import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
@@ -34,6 +43,7 @@ import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.DatatypeDefinition;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
@@ -46,6 +56,7 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IExpression;
@@ -202,6 +213,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
     private Map<String, IPersistenceProvider> allSupportedPersistenceProvider;
 
     private final String version;
+
+    /**
+     * Registry for looking up helpers for data types.
+     * <p>
+     * Note that the registry is initialized when the IPS project is set (i.e. when
+     * {@link #setIpsProject(IIpsProject)} is invoked).
+     */
+    private DatatypeHelperRegistry datatypeHelperRegistry;
 
     public StandardBuilderSet() {
         version = "3.0.0"; //$NON-NLS-1$
@@ -396,11 +415,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         return builders;
     }
 
-    @Override
-    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
-        return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), datatypeAdapter);
-    }
-
     /**
      * Returns the standard builder plugin version in the format [major.minor.micro]. The version
      * qualifier is not included in the version string.
@@ -509,10 +523,6 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         } else {
             return getDatatypeHelper(datatype).getJavaClassName();
         }
-    }
-
-    private DatatypeHelper getDatatypeHelper(Datatype datatype) {
-        return getIpsProject().getDatatypeHelper(datatype);
     }
 
     private String getJavaClassNameForPolicyCmptType(IPolicyCmptType type, boolean interfaces) {
@@ -661,4 +671,130 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return this == XML || this == Both;
         }
     }
+
+    @Override
+    public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+        if (datatype instanceof EnumTypeDatatypeAdapter) {
+            return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), (EnumTypeDatatypeAdapter)datatype);
+        }
+
+        if (isLocalDateDatatype(datatype)) {
+            getLocalDateHelperVariant().getDatatypeHelper(datatype);
+        }
+
+        return getDatatypeHelperRegistry().getDatatypeHelper(datatype);
+    }
+
+    @Override
+    public void setIpsProject(IIpsProject ipsProject) {
+        super.setIpsProject(ipsProject);
+        synchronized (ipsProject) {
+            datatypeHelperRegistry = new DatatypeHelperRegistry();
+            datatypeHelperRegistry.initialize(getIpsProject());
+        }
+    }
+
+    private LocalDateHelperVariant getLocalDateHelperVariant() {
+        // TODO
+        return LocalDateHelperVariant.JODA;
+    }
+
+    private boolean isLocalDateDatatype(Datatype datatype) {
+        return LocalDateDatatype.DATATYPE.equals(datatype) || LocalDateTimeDatatype.DATATYPE.equals(datatype)
+                || LocalTimeDatatype.DATATYPE.equals(datatype);
+    }
+
+    private DatatypeHelperRegistry getDatatypeHelperRegistry() {
+        return datatypeHelperRegistry;
+    }
+
+    private static enum LocalDateHelperVariant {
+        JODA {
+            @Override
+            public DatatypeHelper getDatatypeHelper(Datatype d) {
+                if (LocalDateDatatype.DATATYPE.equals(d)) {
+                    return new org.faktorips.codegen.dthelpers.joda.LocalDateHelper();
+                }
+                if (LocalDateTimeDatatype.DATATYPE.equals(d)) {
+                    return new org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper();
+                }
+                if (LocalTimeDatatype.DATATYPE.equals(d)) {
+                    return new org.faktorips.codegen.dthelpers.joda.LocalTimeHelper();
+                }
+                return null;
+            }
+        },
+        JAVA8 {
+            @Override
+            public DatatypeHelper getDatatypeHelper(Datatype d) {
+                if (LocalDateDatatype.DATATYPE.equals(d)) {
+                    return new org.faktorips.codegen.dthelpers.java8.LocalDateHelper((LocalDateDatatype)d);
+                }
+                if (LocalDateTimeDatatype.DATATYPE.equals(d)) {
+                    return new org.faktorips.codegen.dthelpers.java8.LocalDateTimeHelper((LocalDateTimeDatatype)d);
+                }
+                if (LocalTimeDatatype.DATATYPE.equals(d)) {
+                    return new org.faktorips.codegen.dthelpers.java8.LocalTimeHelper((LocalTimeDatatype)d);
+                }
+                return null;
+            }
+        };
+
+        public abstract DatatypeHelper getDatatypeHelper(Datatype d);
+    }
+
+    /** Registry for looking up the {@link DatatypeHelper} for a {@link Datatype}. */
+    private static class DatatypeHelperRegistry {
+
+        /** Name of the extension point used to register data types and helpers. */
+        private static final String DATATYPE_DEFINITION_EXTENSION_POINT = "datatypeDefinition";
+
+        private Map<Datatype, DatatypeHelper> helperMap = new HashMap<Datatype, DatatypeHelper>();
+
+        /**
+         * Returns the helper registered for the given data type or {@code null} if no helper is
+         * registered for that type. Make sure that the registry is {@link #initialize(IIpsProject)
+         * initialized}.
+         */
+        public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+            return helperMap.get(datatype);
+        }
+
+        /**
+         * Initializes the registered helpers using (all) the helpers provided via the
+         * {@link #DATATYPE_DEFINITION_EXTENSION_POINT extension point} and the data type defined in
+         * the given projects.
+         */
+        public void initialize(IIpsProject ipsProject) {
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint point = registry
+                    .getExtensionPoint(IpsPlugin.PLUGIN_ID, DATATYPE_DEFINITION_EXTENSION_POINT);
+            IExtension[] extensions = point.getExtensions();
+
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    registerHelper(new DatatypeDefinition(extension, configElement));
+                }
+            }
+
+            List<Datatype> definedDatatypes = ipsProject.getProperties().getDefinedDatatypes();
+            for (Datatype datatype : definedDatatypes) {
+                if (datatype instanceof GenericValueDatatype) {
+                    GenericValueDatatype valueDatatype = (GenericValueDatatype)datatype;
+                    registerHelper(valueDatatype, new GenericValueDatatypeHelper(valueDatatype));
+                }
+            }
+        }
+
+        private void registerHelper(DatatypeDefinition definition) {
+            if (definition.hasDatatype() && definition.hasHelper()) {
+                helperMap.put(definition.getDatatype(), definition.getHelper());
+            }
+        }
+
+        private void registerHelper(Datatype datatype, DatatypeHelper helper) {
+            helperMap.put(datatype, helper);
+        }
+    }
+
 }

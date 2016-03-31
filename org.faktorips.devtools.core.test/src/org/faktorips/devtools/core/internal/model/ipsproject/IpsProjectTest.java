@@ -54,10 +54,9 @@ import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
 import org.faktorips.abstracttest.TestIpsFeatureVersionManager;
 import org.faktorips.abstracttest.builder.TestArtefactBuilderSetInfo;
+import org.faktorips.abstracttest.builder.TestIpsArtefactBuilderSet;
 import org.faktorips.codegen.DatatypeHelper;
-import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
 import org.faktorips.codegen.dthelpers.DecimalHelper;
-import org.faktorips.codegen.dthelpers.MoneyHelper;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
@@ -135,9 +134,7 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         root = ipsProject.getIpsPackageFragmentRoots()[0];
 
         baseProject = (IpsProject)this.newIpsProject();
-        IIpsProjectProperties props = baseProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { "Integer" });
-        baseProject.setProperties(props);
+        setPredefinedDatatypesUsed(baseProject, "Integer");
     }
 
     @Test
@@ -752,22 +749,42 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testGetDatatypeHelper() throws Exception {
-        IIpsProjectProperties props = ipsProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName() });
-        ipsProject.setProperties(props);
+    public void testGetDatatypeHelper_DelegatesToBuilderSet() throws CoreException {
+        // no helper registered in builder set
+        assertNull(ipsProject.getDatatypeHelper(Datatype.MONEY));
+
+        // register helper
+        setPredefinedDatatypesUsed(ipsProject, Datatype.DECIMAL.getQualifiedName());
+        TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        builderSet.testObjectsMap.put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
+
         DatatypeHelper helper = ipsProject.getDatatypeHelper(Datatype.DECIMAL);
-        assertEquals(DecimalHelper.class, helper.getClass());
-        helper = ipsProject.getDatatypeHelper(new ArrayOfValueDatatype(Datatype.DECIMAL, 1));
         assertNotNull(helper);
-        assertEquals(ArrayOfValueDatatypeHelper.class, helper.getClass());
+        assertEquals(DecimalHelper.class, helper.getClass());
 
-        helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
-        assertNull(helper);
+        // still no helper registered
+        assertNull(ipsProject.getDatatypeHelper(Datatype.MONEY));
+    }
 
-        createRefProject();
-        helper = ipsProject.getDatatypeHelper(Datatype.MONEY);
-        assertEquals(MoneyHelper.class, helper.getClass());
+    @Test
+    public void testGetDatatypeHelper_DelegatesToReferencedProjects() throws Exception {
+        // no referenced project present, no helper is found
+        IIpsProject referencingProject = newIpsProject();
+        assertNull(referencingProject.getDatatypeHelper(Datatype.DECIMAL));
+
+        // create a referenced project with a data type helper
+        setPredefinedDatatypesUsed(ipsProject, Datatype.DECIMAL.getQualifiedName());
+        TestIpsArtefactBuilderSet builderSet = (TestIpsArtefactBuilderSet)ipsProject.getIpsArtefactBuilderSet();
+        builderSet.testObjectsMap.put(Datatype.DECIMAL, new DecimalHelper(Datatype.DECIMAL));
+        createProjectReference(referencingProject, ipsProject);
+
+        // precondition: helper is found in referenced project
+        assertNotNull(ipsProject.getDatatypeHelper(Datatype.DECIMAL));
+
+        // referenced project exists, helper should be found in project
+        DatatypeHelper helper = referencingProject.getDatatypeHelper(Datatype.DECIMAL);
+        assertNotNull(helper);
+        assertEquals(DecimalHelper.class, helper.getClass());
     }
 
     @Test
@@ -938,16 +955,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
      */
     private IIpsProject createRefProject() throws Exception {
         IIpsProject refProject = newIpsProject("RefProject");
-        IIpsProjectProperties props = refProject.getProperties();
-        props.setPredefinedDatatypesUsed(new String[] { Datatype.DECIMAL.getQualifiedName(),
-                Datatype.MONEY.getQualifiedName() });
-        refProject.setProperties(props);
+        setPredefinedDatatypesUsed(refProject, Datatype.DECIMAL.getQualifiedName(), Datatype.MONEY.getQualifiedName());
 
         newDefinedEnumDatatype(refProject, new Class[] { TestEnumType.class });
         // set the reference from the ips project to the referenced project
-        IIpsObjectPath path = ipsProject.getIpsObjectPath();
-        path.newIpsProjectRefEntry(refProject);
-        ipsProject.setIpsObjectPath(path);
+        createProjectReference(ipsProject, refProject);
         return refProject;
     }
 
@@ -1728,6 +1740,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
                 return true;
             }
 
+            @Override
+            public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+                return null;
+            }
+
         };
         projectABuilderSet.setId("projectABuilderSet");
         projectABuilderSet.setIpsProject(ipsProject);
@@ -1778,6 +1795,11 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
             @Override
             public boolean isGeneratePublishedInterfaces() {
                 return true;
+            }
+
+            @Override
+            public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+                return null;
             }
 
         };
@@ -2352,6 +2374,18 @@ public class IpsProjectTest extends AbstractIpsPluginTest {
         Set<IIpsSrcFile> markerEnums = ipsProject.getMarkerEnums();
 
         assertTrue(markerEnums.isEmpty());
+    }
+
+    private void setPredefinedDatatypesUsed(IIpsProject project, String... datatypes) throws CoreException {
+        IIpsProjectProperties props = project.getProperties();
+        props.setPredefinedDatatypesUsed(datatypes);
+        project.setProperties(props);
+    }
+
+    private void createProjectReference(IIpsProject from, IIpsProject to) throws CoreException {
+        IIpsObjectPath path = from.getIpsObjectPath();
+        path.newIpsProjectRefEntry(to);
+        from.setIpsObjectPath(path);
     }
 
     class InvalidMigrationMockManager extends TestIpsFeatureVersionManager {

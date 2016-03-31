@@ -8,20 +8,22 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.codegen.conversion;
+package org.faktorips.codegen.conversion.joda;
 
 import static org.junit.Assert.assertEquals;
 
+import org.faktorips.codegen.conversion.AbstractSingleConversionCgTest;
+import org.faktorips.codegen.conversion.joda.LocalDateTimeToGregorianCalendarCg;
 import org.junit.Before;
 import org.junit.Test;
 
-public class LocalDateToGregorianCalendarCgTest extends AbstractSingleConversionCgTest {
+public class LocalDateTimeToGregorianCalendarCgTest extends AbstractSingleConversionCgTest {
 
-    private LocalDateToGregorianCalendarCg converter;
+    private LocalDateTimeToGregorianCalendarCg converter;
 
     @Before
     public void setUp() throws Exception {
-        converter = new LocalDateToGregorianCalendarCg();
+        converter = new LocalDateTimeToGregorianCalendarCg();
     }
 
     @Test

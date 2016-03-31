@@ -21,6 +21,8 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsObjectPath;
@@ -118,6 +120,11 @@ public class DefaultBuilderSetTest extends AbstractIpsPluginTest {
         @Override
         public boolean isGeneratePublishedInterfaces() {
             return true;
+        }
+
+        @Override
+        public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+            return null;
         }
 
     }

@@ -24,7 +24,7 @@ public class LocalDateTimeDatatypeTest {
         datatype = new LocalDateTimeDatatype();
         assertTrue(datatype.isParsable(null));
         assertTrue(datatype.isParsable(""));
-        assertTrue(datatype.isParsable("2013-11-13 10:44:00"));
+        assertTrue(datatype.isParsable("2013-11-13T10:44:00"));
         assertFalse(datatype.isParsable("2013-11-13 24:61:61"));
     }
 }

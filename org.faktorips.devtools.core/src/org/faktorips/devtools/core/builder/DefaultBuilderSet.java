@@ -17,10 +17,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.devtools.core.builder.naming.JavaPackageStructure;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.ipsproject.IIpsSrcFolderEntry;
@@ -125,16 +123,6 @@ public abstract class DefaultBuilderSet extends AbstractBuilderSet implements IJ
     @Override
     public IdentifierResolver<JavaCodeFragment> createFlIdentifierResolver(IExpression formula,
             ExprCompiler<JavaCodeFragment> exprCompiler) throws CoreException {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Returns <code>null</code>. This method is supposed to be overridden by subclasses.
-     */
-    @Override
-    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
         return null;
     }
 

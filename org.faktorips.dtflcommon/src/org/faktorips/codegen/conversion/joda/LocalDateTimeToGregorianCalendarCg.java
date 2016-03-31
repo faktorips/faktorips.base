@@ -8,17 +8,18 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.codegen.conversion;
+package org.faktorips.codegen.conversion.joda;
 
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.conversion.AbstractSingleConversionCg;
 import org.faktorips.codegen.dthelpers.joda.BaseJodaDatatypeHelper;
 import org.faktorips.datatype.Datatype;
-import org.faktorips.datatype.joda.LocalDateDatatype;
+import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 
-public class LocalDateToGregorianCalendarCg extends AbstractSingleConversionCg {
+public class LocalDateTimeToGregorianCalendarCg extends AbstractSingleConversionCg {
 
-    public LocalDateToGregorianCalendarCg() {
-        super(LocalDateDatatype.DATATYPE, Datatype.GREGORIAN_CALENDAR);
+    public LocalDateTimeToGregorianCalendarCg() {
+        super(LocalDateTimeDatatype.DATATYPE, Datatype.GREGORIAN_CALENDAR);
     }
 
     @Override
