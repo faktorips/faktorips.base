@@ -29,6 +29,9 @@ import com.google.common.collect.TreeMultimap;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.eclipse.core.runtime.IStatus;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.util.IntegerUtils;
 import org.faktorips.values.Decimal;
 
@@ -233,11 +236,29 @@ public class Histogram<V, E> {
     public BestValue<V> getBestValue(Decimal threshold) {
         SortedMap<V, Decimal> relativeDistribution = getRelativeDistribution();
         V candidateValue = relativeDistribution.firstKey();
-        if (relativeDistribution.get(candidateValue).greaterThanOrEqual(threshold)) {
-            return new BestValue<V>(candidateValue);
+        Decimal relativeFrequency = getRelativeFrequency(relativeDistribution, candidateValue);
+        if (relativeFrequency.greaterThanOrEqual(threshold)) {
+            return new BestValue<V>(candidateValue, relativeFrequency);
         } else {
             return BestValue.<V> missingValue();
         }
+    }
+
+    /**
+     * We had several times the problem that a datatype comparator was not implemented correctly.
+     * 
+     * This method reports the problem and tries to give best information to fix the problem. To
+     * have an instant workaround this method returns <code>0</code> to always ignore the
+     * problematic property.
+     */
+    private Decimal getRelativeFrequency(SortedMap<V, Decimal> relativeDistribution, V candidateValue) {
+        Decimal relDist = relativeDistribution.get(candidateValue);
+        if (relDist == null) {
+            IpsPlugin.log(new IpsStatus(IStatus.ERROR, "There seems to be an error in a datatype comparator: " //$NON-NLS-1$
+                    + valueToElements.values().iterator().next() + " Value: " + candidateValue)); //$NON-NLS-1$
+            return Decimal.valueOf(0);
+        }
+        return relDist;
     }
 
     @SuppressWarnings("unchecked")
@@ -331,15 +352,18 @@ public class Histogram<V, E> {
     public static class BestValue<V> {
 
         private final V value;
+        private final Decimal relativeFrequency;
         private final boolean isPresent;
 
-        public BestValue(V value) {
+        public BestValue(V value, Decimal relativeFrequency) {
             this.value = value;
+            this.relativeFrequency = relativeFrequency;
             isPresent = true;
         }
 
         public BestValue() {
             this.value = null;
+            relativeFrequency = Decimal.NULL;
             isPresent = false;
         }
 
@@ -356,6 +380,14 @@ public class Histogram<V, E> {
 
         public static <V> BestValue<V> missingValue() {
             return new BestValue<V>();
+        }
+
+        /**
+         * Return the relative frequency with which this value occurs within the {@link Histogram}.
+         * For example, if 4 of 5 entries had this value, the relative frequency would be 0.8.
+         */
+        public Decimal getRelativeFrequency() {
+            return relativeFrequency;
         }
 
     }

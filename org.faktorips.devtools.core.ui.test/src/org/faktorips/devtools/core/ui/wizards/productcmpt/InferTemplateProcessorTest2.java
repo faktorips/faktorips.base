@@ -15,22 +15,32 @@ import static org.faktorips.devtools.core.model.productcmpt.template.TemplateVal
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
+
 import com.google.common.collect.Lists;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
+import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
+import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
+import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
+import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
+import org.faktorips.values.Decimal;
 import org.junit.Test;
 
 public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
@@ -292,6 +302,98 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
         assertThat(product2Link.getTemplateValueStatus(), is(DEFINED));
         assertThat(gen1Link.getTemplateValueStatus(), is(DEFINED));
         assertThat(gen2Link.getTemplateValueStatus(), is(DEFINED));
+    }
+
+    @Test
+    public void testRun_usesThresholdFromIpsProjectPropertiesForLinks() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmpt[] products = new IProductCmpt[10];
+        IProductCmptLink[][] productLinks = new IProductCmptLink[10][11];
+        for (int i = 0; i < 10; i++) {
+            products[i] = newProductCmpt(type, "Product" + i);
+            for (int j = 1; j <= 10; j++) {
+                productLinks[i][j] = products[i].newLink(PRODUCT_ASSOCIATION + j);
+                productLinks[i][j].setTarget("a");
+                productLinks[i][j].setCardinality(new Cardinality(1, (j >= 10 - i ? 1 : i + 20), 1));
+            }
+        }
+
+        for (int t = 1; t <= 10; t++) {
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setInferredTemplateLinkThreshold(project, threshold);
+
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(products));
+            processor.run(new NullProgressMonitor());
+
+            for (int j = 1; j <= 10; j++) {
+                assertThat(PRODUCT_ASSOCIATION + j + " has the same cardinality for " + j
+                        + " products and should therefor be in the template for a threshold of " + threshold, template
+                        .getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(j >= t ? 1 : 0));
+            }
+        }
+
+    }
+
+    private void setInferredTemplateLinkThreshold(IIpsProject project, Decimal threshold) throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setInferredTemplateLinkThreshold(threshold);
+        project.setProperties(properties);
+    }
+
+    @Test
+    public void testRun_usesThresholdFromIpsProjectPropertiesForValues() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmptTypeAttribute[] attributes = new IProductCmptTypeAttribute[11];
+        for (int i = 1; i <= 10; i++) {
+            attributes[i] = type.newProductCmptTypeAttribute();
+            attributes[i].setName("a" + i);
+            attributes[i].setDatatype(Datatype.STRING.getQualifiedName());
+            attributes[i].setModifier(Modifier.PUBLISHED);
+        }
+
+        IProductCmpt[] products = new IProductCmpt[10];
+        for (int i = 0; i < 10; i++) {
+            products[i] = newProductCmpt(type, "Product" + i);
+            for (int j = 1; j <= 10; j++) {
+                IAttributeValue propertyValue = (IAttributeValue)products[i].newPropertyValue(attributes[j]);
+                propertyValue
+                .setValueHolder(new SingleValueHolder(propertyValue, "v" + (j >= 10 - i ? j : j + "_" + i)));
+            }
+        }
+
+        for (int t = 1; t <= 10; t++) {
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setInferredTemplatePropertyValueThreshold(project, threshold);
+
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            for (int j = 1; j <= 10; j++) {
+                // initialize empty values
+                template.newPropertyValue(attributes[j]);
+            }
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(products));
+            processor.run(new NullProgressMonitor());
+
+            for (int j = 1; j <= 10; j++) {
+                assertThat("attribute a" + j + " has the same value for " + j
+                        + " products and should therefor be in the template for a threshold of " + threshold, template
+                        .getAttributeValue("a" + j).getTemplateValueStatus(), j >= t ? is(TemplateValueStatus.DEFINED)
+                        : is(TemplateValueStatus.UNDEFINED));
+            }
+        }
+
+    }
+
+    private void setInferredTemplatePropertyValueThreshold(IIpsProject project, Decimal threshold) throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setInferredTemplatePropertyValueThreshold(threshold);
+        project.setProperties(properties);
     }
 
 }

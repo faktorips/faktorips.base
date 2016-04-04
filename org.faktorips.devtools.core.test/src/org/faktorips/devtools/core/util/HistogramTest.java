@@ -9,6 +9,7 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.util;
 
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -16,7 +17,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.hamcrest.CoreMatchers.hasItems;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -311,31 +311,31 @@ public class HistogramTest {
     }
 
     @Test
-        public void testGetBestValue() {
-            Element a1 = new Element("A");
-            Element a2 = new Element("A");
-            Element b = new Element("B");
-    
-            List<Element> elements = Lists.newArrayList(a1, a2, b);
-            Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
-    
-            BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.1));
-            assertThat(bestValue.isPresent(), is(true));
-            assertThat(bestValue.getValue(), is("A"));
-        }
+    public void testGetBestValue() {
+        Element a1 = new Element("A");
+        Element a2 = new Element("A");
+        Element b = new Element("B");
+
+        List<Element> elements = Lists.newArrayList(a1, a2, b);
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+
+        BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.1));
+        assertThat(bestValue.isPresent(), is(true));
+        assertThat(bestValue.getValue(), is("A"));
+    }
 
     @Test
-        public void testGetBestValue_missingValue() {
-            Element a1 = new Element("A");
-            Element a2 = new Element("A");
-            Element b = new Element("B");
-    
-            List<Element> elements = Lists.newArrayList(a1, a2, b);
-            Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
-    
-            BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.99));
-            assertThat(bestValue.isPresent(), is(false));
-        }
+    public void testGetBestValue_missingValue() {
+        Element a1 = new Element("A");
+        Element a2 = new Element("A");
+        Element b = new Element("B");
+
+        List<Element> elements = Lists.newArrayList(a1, a2, b);
+        Histogram<String, Element> histogram = new Histogram<String, Element>(VALUE_FUNCTION, elements);
+
+        BestValue<String> bestValue = histogram.getBestValue(Decimal.valueOf(0.99));
+        assertThat(bestValue.isPresent(), is(false));
+    }
 
     private static Element element(String s) {
         return new Element(s);
@@ -349,25 +349,25 @@ public class HistogramTest {
 
     @Test
     public void testBestValueIsPresent_null() {
-        BestValue<?> valueOptional = new BestValue<String>(null);
+        BestValue<?> valueOptional = new BestValue<String>(null, Decimal.ZERO);
         assertTrue(valueOptional.isPresent());
     }
 
     @Test
     public void testBestValueIsPresent_validValue() {
-        BestValue<?> valueOptional = new BestValue<String>("test");
+        BestValue<?> valueOptional = new BestValue<String>("test", Decimal.ZERO);
         assertTrue(valueOptional.isPresent());
     }
 
     @Test
     public void testBestValueGetValue_null() {
-        BestValue<?> valueOptional = new BestValue<String>(null);
+        BestValue<?> valueOptional = new BestValue<String>(null, Decimal.ZERO);
         assertNull(valueOptional.getValue());
     }
 
     @Test
     public void testBestValueGetValue_validValue() {
-        BestValue<?> valueOptional = new BestValue<String>("test");
+        BestValue<?> valueOptional = new BestValue<String>("test", Decimal.ZERO);
         assertEquals("test", valueOptional.getValue());
     }
 

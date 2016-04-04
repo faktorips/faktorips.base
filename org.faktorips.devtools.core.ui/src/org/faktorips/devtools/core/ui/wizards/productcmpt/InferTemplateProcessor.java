@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.template.ProductCm
 import org.faktorips.devtools.core.internal.model.productcmpt.template.PropertyValueHistograms;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
@@ -40,12 +41,8 @@ import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatu
 import org.faktorips.devtools.core.util.Histogram;
 import org.faktorips.devtools.core.util.Histogram.BestValue;
 import org.faktorips.util.functional.BiConsumer;
-import org.faktorips.values.Decimal;
 
 public class InferTemplateProcessor implements IWorkspaceRunnable {
-
-    private static final Decimal RELATIVE_LINK_THRESHOLD = Decimal.valueOf(1.0);
-    private static final Decimal RELATIVE_PROPERTY_VALUE_THRESHOLD = Decimal.valueOf(0.8);
 
     /**
      * Histograms for property values. The name of the property is the string key for the map of
@@ -116,7 +113,7 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     /**
      * Sets the values in the given template generation (and the corresponding template/product
      * generation) for which a histogram is found and for which the value in that histogram has a
-     * relative distribution of at least {@link #RELATIVE_PROPERTY_VALUE_THRESHOLD}.
+     * relative distribution of at least {@link IIpsProjectProperties#getInferredTemplateLinkThreshold()}.
      */
     private void inferTemplate() {
         monitor.beginTask(Messages.InferTemplateOperation_progress_inferringTemplate, propertyValueHistograms.size()
@@ -171,8 +168,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
      * Sets the values of the given class to the property values of the given class in the given
      * template generation (and the corresponding product component). Only property values for which
      * a histogram is found and for which the value in that histogram has a relative distribution of
-     * at least {@link #RELATIVE_PROPERTY_VALUE_THRESHOLD} are set. The value of the property value
-     * is set with the given setter.
+     * at least {@link IIpsProjectProperties#getInferredTemplatePropertyValueThreshold()} are set. The value
+     * of the property value is set with the given setter.
      */
     private void updatePropertyValues(Class<? extends IPropertyValue> propertyValueClass,
             BiConsumer<IPropertyValue, Object> setter) {
@@ -198,8 +195,13 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
      */
     private <P extends IPropertyValue> BestValue<Object> getBestValueFor(P propertyValue) {
         Histogram<Object, IPropertyValue> histogram = propertyValueHistograms.get(propertyValue.getPropertyName());
-        BestValue<Object> bestValue = histogram.getBestValue(RELATIVE_PROPERTY_VALUE_THRESHOLD);
+        BestValue<Object> bestValue = histogram.getBestValue(getIpsProjectProperties()
+                .getInferredTemplatePropertyValueThreshold());
         return bestValue;
+    }
+
+    private IIpsProjectProperties getIpsProjectProperties() {
+        return templateGeneration.getIpsProject().getProperties();
     }
 
     private void updateOriginPropertyValues(String propertyName, Object value) {
@@ -225,7 +227,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     private void updateLinks(ProductCmptLinkHistograms histograms, IProductCmptLinkContainer templateContainer) {
         for (Entry<LinkIdentifier, Histogram<Cardinality, IProductCmptLink>> e : histograms.getEntries()) {
             Histogram<Cardinality, IProductCmptLink> histogram = e.getValue();
-            BestValue<Cardinality> cardinality = histogram.getBestValue(RELATIVE_LINK_THRESHOLD);
+            BestValue<Cardinality> cardinality = histogram.getBestValue(getIpsProjectProperties()
+                    .getInferredTemplateLinkThreshold());
             // Only consider links that occur in all product components with the same cardinality
             if (histogram.countElements() == productCmpts.size() && cardinality.isPresent()) {
                 addTemplateLink(templateContainer, e.getKey(), cardinality.getValue());

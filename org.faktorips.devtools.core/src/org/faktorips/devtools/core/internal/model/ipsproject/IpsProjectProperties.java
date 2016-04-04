@@ -62,6 +62,7 @@ import org.faktorips.util.IoUtil;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
+import org.faktorips.values.Decimal;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
@@ -107,6 +108,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private static final String SETTING_BUSINESS_FUNCTIONS_FOR_VALIDATION_RULES = "businessFunctionsForValidationRules"; //$NON-NLS-1$
 
     private static final String SETTING_CHANGING_OVER_TIME_DEFAULT = "changingOverTimeDefault"; //$NON-NLS-1$
+
+    private static final String SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD = "inferredTemplateLinkThreshold"; //$NON-NLS-1$
+
+    private static final String SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD = "inferredTemplatePropertyValueThreshold"; //$NON-NLS-1$
 
     private static final String VERSION_ATTRIBUTE = "version"; //$NON-NLS-1$
 
@@ -169,6 +174,8 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     private boolean enableMarkerEnums = true;
     private boolean businessFunctionsForValidationRules = false;
     private boolean changingOverTimeDefault = true;
+    private Decimal inferredTemplateLinkThreshold = Decimal.valueOf(1);
+    private Decimal inferredTemplatePropertyValueThreshold = Decimal.valueOf(0.8);
 
     private LinkedHashSet<String> markerEnums = new LinkedHashSet<String>();
     private Map<String, String> requiredFeatures = new HashMap<String, String>();
@@ -649,6 +656,12 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
         additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_CHANGING_OVER_TIME_DEFAULT,
                 isChangingOverTimeDefaultEnabled()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD,
+                getInferredTemplateLinkThreshold().toString()));
+
+        additionalSettingsEl.appendChild(createSettingElement(doc, SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD,
+                getInferredTemplatePropertyValueThreshold().toString()));
     }
 
     private String getMarkerEnumsAsString() {
@@ -847,7 +860,7 @@ public class IpsProjectProperties implements IIpsProjectProperties {
 
     private void initProductCmptNamingStrategyFromXml(IIpsProject ipsProject, Element el) {
         defaultCmptNamingStrategy = new NoVersionIdProductCmptNamingStrategyFactory()
-                .newProductCmptNamingStrategy(ipsProject);
+        .newProductCmptNamingStrategy(ipsProject);
         if (el != null) {
             productCmptNamingStrategyId = el.getAttribute("id"); //$NON-NLS-1$
             if (StringUtils.isEmpty(productCmptNamingStrategyId)) {
@@ -1012,6 +1025,10 @@ public class IpsProjectProperties implements IIpsProjectProperties {
             setBusinessFunctionsForValidationRules(enabled);
         } else if (name.equals(SETTING_CHANGING_OVER_TIME_DEFAULT)) {
             setChangingOverTimeDefault(enabled);
+        } else if (name.equals(SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD)) {
+            setInferredTemplateLinkThreshold(Decimal.valueOf(value));
+        } else if (name.equals(SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD)) {
+            setInferredTemplatePropertyValueThreshold(Decimal.valueOf(value));
         }
     }
 
@@ -1390,6 +1407,14 @@ public class IpsProjectProperties implements IIpsProjectProperties {
                 + "    <!-- False to set the default state of changing over time flag on product component types to disabled. -->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
                 + "    <" + SETTING_TAG_NAME + " enabled=\"false\"" + " name=\"" + SETTING_CHANGING_OVER_TIME_DEFAULT + "\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                 + SystemUtils.LINE_SEPARATOR
+                + "    <!-- When inferring a template from multiple product components, Faktor-IPS checks whether a link is used in all or at least many of those product components." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        This setting determines, which ratio is considered 'many'. The default value of 1.0 only considers links used by all selected product components.-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_INFERRED_TEMPLATE_LINK_THRESHOLD + "\" value=\"1.0\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
+                + "    <!-- When inferring a template from multiple product components, Faktor-IPS checks whether a property value is used in all or at least many of those product components." + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "        This setting determines, which ratio is considered 'many'. The default value of 0.8 only considers values used in at least 80% of all selected product components.-->" + SystemUtils.LINE_SEPARATOR //$NON-NLS-1$
+                + "    <" + SETTING_TAG_NAME + " name=\"" + SETTING_INFERRED_TEMPLATE_PROPERTY_VALUE_THRESHOLD + "\" value=\"0.8\"/>" //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                + SystemUtils.LINE_SEPARATOR
                 //
                 // Check if the inverse associations have to be type safe or not. Due to Issue
                 // FIPS-85 we need to have to possibility to use the inverse association of the super type as
@@ -1728,6 +1753,26 @@ public class IpsProjectProperties implements IIpsProjectProperties {
     @Override
     public void setChangingOverTimeDefault(boolean enabled) {
         changingOverTimeDefault = enabled;
+    }
+
+    @Override
+    public Decimal getInferredTemplateLinkThreshold() {
+        return inferredTemplateLinkThreshold;
+    }
+
+    @Override
+    public void setInferredTemplateLinkThreshold(Decimal inferredTemplateLinkThreshold) {
+        this.inferredTemplateLinkThreshold = inferredTemplateLinkThreshold;
+    }
+
+    @Override
+    public Decimal getInferredTemplatePropertyValueThreshold() {
+        return inferredTemplatePropertyValueThreshold;
+    }
+
+    @Override
+    public void setInferredTemplatePropertyValueThreshold(Decimal inferredTemplatePropertyValueThreshold) {
+        this.inferredTemplatePropertyValueThreshold = inferredTemplatePropertyValueThreshold;
     }
 
 }
