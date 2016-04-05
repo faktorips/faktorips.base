@@ -3,10 +3,12 @@
 <schema targetNamespace="org.faktorips.plugin" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.faktorips.plugin" id="datatypeDefinition" name="DatatypeDefinition"/>
+         <meta.schema plugin="org.faktorips.plugin" id="datatypeHelperFactory" name="DatatypeHelperFactory"/>
       </appinfo>
       <documentation>
-         Defines a datatype and a default datatype helper to use with this datatype. If there is more than one helper implementation for a datatype, a helper factory can be registered using the datatypeHelperFactory extension point.
+         A factory to be used for creating data type helpers for a data type for which several helper implementations exist.
+&lt;p&gt;
+Note that the factory takes precedence over the default helper that is defined in the datatypeDefinition extension point. When a factory is registered, it is always used to create helpers for the data type and the default helper class defined in the datatypeDefinition extension point is effectively ignored.
       </documentation>
    </annotation>
 
@@ -18,7 +20,7 @@
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="datatypeDefinition"/>
+            <element ref="datatypeHelperFactory"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -30,25 +32,25 @@
       </complexType>
    </element>
 
-   <element name="datatypeDefinition">
+   <element name="datatypeHelperFactory">
       <complexType>
          <attribute name="datatypeClass" type="string" use="required">
             <annotation>
                <documentation>
-                  The datatype tha is defined here.
+                  The class of the datatype for which the factory can create helpers.
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.faktorips.datatype.Datatype"/>
                </appinfo>
             </annotation>
          </attribute>
-         <attribute name="helperClass" type="string">
+         <attribute name="factoryClass" type="string" use="required">
             <annotation>
                <documentation>
-                  The class of the default helper to use for the datatype.
+                  The factory that creates helpers for the data type.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.faktorips.codegen.DatatypeHelper"/>
+                  <meta.attribute kind="java" basedOn=":org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory"/>
                </appinfo>
             </annotation>
          </attribute>

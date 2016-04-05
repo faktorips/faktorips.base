@@ -12,6 +12,7 @@ package org.faktorips.codegen.dthelpers.joda;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.AbstractTimeHelper;
+import org.faktorips.datatype.Datatype;
 
 /**
  * Base class for Joda-Time {@link DatatypeHelper} implementations
@@ -21,6 +22,12 @@ public class BaseJodaDatatypeHelper extends AbstractTimeHelper {
     public static final String ORG_FAKTORIPS_UTIL_JODA_UTIL = "org.faktorips.util.JodaUtil"; //$NON-NLS-1$
     private final String parseMethod;
     private final String className;
+
+    public BaseJodaDatatypeHelper(Datatype datatype, String className, String parseMethod) {
+        super(datatype);
+        this.className = className;
+        this.parseMethod = parseMethod;
+    }
 
     public BaseJodaDatatypeHelper(String className, String parseMethod) {
         this.className = className;

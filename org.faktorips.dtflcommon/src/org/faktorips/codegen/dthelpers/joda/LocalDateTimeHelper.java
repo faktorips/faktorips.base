@@ -19,8 +19,14 @@ public class LocalDateTimeHelper extends BaseJodaDatatypeHelper {
 
     public static final String ORG_JODA_TIME_LOCAL_DATE_TIME = "org.joda.time.LocalDateTime"; //$NON-NLS-1$
 
+    private static final String PARSE_METHOD = "toLocalDateTime"; //$NON-NLS-1$
+
     public LocalDateTimeHelper() {
-        super(ORG_JODA_TIME_LOCAL_DATE_TIME, "toLocalDateTime"); //$NON-NLS-1$
+        super(ORG_JODA_TIME_LOCAL_DATE_TIME, PARSE_METHOD);
+    }
+
+    public LocalDateTimeHelper(LocalDateTimeDatatype d) {
+        super(d, ORG_JODA_TIME_LOCAL_DATE_TIME, PARSE_METHOD);
     }
 
 }

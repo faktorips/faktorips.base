@@ -29,8 +29,14 @@ public class LocalDateHelper extends BaseJodaDatatypeHelper implements ILocalDat
     private static final String MONTHS_HELPER_CLASS = "org.joda.time.Months"; //$NON-NLS-1$
     private static final String YEARS_HELPER_CLASS = "org.joda.time.Years"; //$NON-NLS-1$
 
+    private static final String PARSE_METHOD = "toLocalDate"; //$NON-NLS-1$
+
     public LocalDateHelper() {
-        super(ORG_JODA_TIME_LOCAL_DATE, "toLocalDate"); //$NON-NLS-1$
+        super(ORG_JODA_TIME_LOCAL_DATE, PARSE_METHOD);
+    }
+
+    public LocalDateHelper(LocalDateDatatype d) {
+        super(d, ORG_JODA_TIME_LOCAL_DATE, PARSE_METHOD);
     }
 
     @Override

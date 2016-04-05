@@ -7,7 +7,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.devtools.core.internal.model;
+package org.faktorips.devtools.core.internal.model.datatype;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -26,7 +26,7 @@ import org.junit.Test;
 public class DatatypeDefinitionTest {
 
     @Test
-    public void testDatatypeDefinition() throws Exception {
+    public void testDatatypeDefinition() throws CoreException {
         DatatypeHelper helper = mock(DatatypeHelper.class);
         Datatype datatype = mock(Datatype.class);
         IExtension extension = mock(IExtension.class);
@@ -44,7 +44,7 @@ public class DatatypeDefinitionTest {
     }
 
     @Test
-    public void testDatatypeDefinition_MissingHelperClass() throws Exception {
+    public void testDatatypeDefinition_MissingHelperClass() throws CoreException {
         Datatype datatype = mock(Datatype.class);
         IExtension extension = mock(IExtension.class);
         IConfigurationElement configElement = mock(IConfigurationElement.class);

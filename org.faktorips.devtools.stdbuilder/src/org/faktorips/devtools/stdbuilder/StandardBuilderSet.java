@@ -31,9 +31,6 @@ import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.dthelpers.GenericValueDatatypeHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.GenericValueDatatype;
-import org.faktorips.datatype.joda.LocalDateDatatype;
-import org.faktorips.datatype.joda.LocalDateTimeDatatype;
-import org.faktorips.datatype.joda.LocalTimeDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
@@ -43,12 +40,14 @@ import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
-import org.faktorips.devtools.core.internal.model.DatatypeDefinition;
+import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
+import org.faktorips.devtools.core.internal.model.datatype.DatatypeHelperFactoryDefinition;
 import org.faktorips.devtools.core.internal.model.enums.EnumType;
 import org.faktorips.devtools.core.internal.model.pctype.PolicyCmptType;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.tablecontents.TableContents;
 import org.faktorips.devtools.core.internal.model.tablestructure.TableStructure;
+import org.faktorips.devtools.core.model.datatype.DatatypeHelperFactory;
 import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -221,6 +220,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      * {@link #setIpsProject(IIpsProject)} is invoked).
      */
     private DatatypeHelperRegistry datatypeHelperRegistry;
+
+    /**
+     * Registry for looking up helper factories for data types.
+     * <p>
+     * Note that the registry is initialized when the IPS project is set (i.e. when
+     * {@link #setIpsProject(IIpsProject)} is invoked).
+     */
+    private DatatypeHelperFactoryRegistry datatypeHelperFactoryRegistry;
 
     public StandardBuilderSet() {
         version = "3.0.0"; //$NON-NLS-1$
@@ -678,69 +685,21 @@ public class StandardBuilderSet extends DefaultBuilderSet {
             return new EnumTypeDatatypeHelper(getEnumTypeBuilder(), (EnumTypeDatatypeAdapter)datatype);
         }
 
-        if (isLocalDateDatatype(datatype)) {
-            getLocalDateHelperVariant().getDatatypeHelper(datatype);
+        if (datatypeHelperFactoryRegistry.hasFactory(datatype)) {
+            DatatypeHelperFactory factory = datatypeHelperFactoryRegistry.getFactory(datatype);
+            return factory.createDatatypeHelper(datatype, getIpsProject());
         }
 
-        return getDatatypeHelperRegistry().getDatatypeHelper(datatype);
+        return datatypeHelperRegistry.getDatatypeHelper(datatype);
     }
 
     @Override
     public void setIpsProject(IIpsProject ipsProject) {
         super.setIpsProject(ipsProject);
         synchronized (ipsProject) {
-            datatypeHelperRegistry = new DatatypeHelperRegistry();
-            datatypeHelperRegistry.initialize(getIpsProject());
+            datatypeHelperRegistry = new DatatypeHelperRegistry(getIpsProject());
+            datatypeHelperFactoryRegistry = new DatatypeHelperFactoryRegistry();
         }
-    }
-
-    private LocalDateHelperVariant getLocalDateHelperVariant() {
-        // TODO
-        return LocalDateHelperVariant.JODA;
-    }
-
-    private boolean isLocalDateDatatype(Datatype datatype) {
-        return LocalDateDatatype.DATATYPE.equals(datatype) || LocalDateTimeDatatype.DATATYPE.equals(datatype)
-                || LocalTimeDatatype.DATATYPE.equals(datatype);
-    }
-
-    private DatatypeHelperRegistry getDatatypeHelperRegistry() {
-        return datatypeHelperRegistry;
-    }
-
-    private static enum LocalDateHelperVariant {
-        JODA {
-            @Override
-            public DatatypeHelper getDatatypeHelper(Datatype d) {
-                if (LocalDateDatatype.DATATYPE.equals(d)) {
-                    return new org.faktorips.codegen.dthelpers.joda.LocalDateHelper();
-                }
-                if (LocalDateTimeDatatype.DATATYPE.equals(d)) {
-                    return new org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper();
-                }
-                if (LocalTimeDatatype.DATATYPE.equals(d)) {
-                    return new org.faktorips.codegen.dthelpers.joda.LocalTimeHelper();
-                }
-                return null;
-            }
-        },
-        JAVA8 {
-            @Override
-            public DatatypeHelper getDatatypeHelper(Datatype d) {
-                if (LocalDateDatatype.DATATYPE.equals(d)) {
-                    return new org.faktorips.codegen.dthelpers.java8.LocalDateHelper((LocalDateDatatype)d);
-                }
-                if (LocalDateTimeDatatype.DATATYPE.equals(d)) {
-                    return new org.faktorips.codegen.dthelpers.java8.LocalDateTimeHelper((LocalDateTimeDatatype)d);
-                }
-                if (LocalTimeDatatype.DATATYPE.equals(d)) {
-                    return new org.faktorips.codegen.dthelpers.java8.LocalTimeHelper((LocalTimeDatatype)d);
-                }
-                return null;
-            }
-        };
-
-        public abstract DatatypeHelper getDatatypeHelper(Datatype d);
     }
 
     /** Registry for looking up the {@link DatatypeHelper} for a {@link Datatype}. */
@@ -751,10 +710,14 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
         private Map<Datatype, DatatypeHelper> helperMap = new HashMap<Datatype, DatatypeHelper>();
 
+        public DatatypeHelperRegistry(IIpsProject ipsProject) {
+            super();
+            initialize(ipsProject);
+        }
+
         /**
          * Returns the helper registered for the given data type or {@code null} if no helper is
-         * registered for that type. Make sure that the registry is {@link #initialize(IIpsProject)
-         * initialized}.
+         * registered for that type.
          */
         public DatatypeHelper getDatatypeHelper(Datatype datatype) {
             return helperMap.get(datatype);
@@ -765,7 +728,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
          * {@link #DATATYPE_DEFINITION_EXTENSION_POINT extension point} and the data type defined in
          * the given projects.
          */
-        public void initialize(IIpsProject ipsProject) {
+        private void initialize(IIpsProject ipsProject) {
             IExtensionRegistry registry = Platform.getExtensionRegistry();
             IExtensionPoint point = registry
                     .getExtensionPoint(IpsPlugin.PLUGIN_ID, DATATYPE_DEFINITION_EXTENSION_POINT);
@@ -795,6 +758,55 @@ public class StandardBuilderSet extends DefaultBuilderSet {
         private void registerHelper(Datatype datatype, DatatypeHelper helper) {
             helperMap.put(datatype, helper);
         }
+    }
+
+    /** Registry for looking up the {@link DatatypeHelperFactory} for a {@link Datatype}. */
+    private static class DatatypeHelperFactoryRegistry {
+
+        /** Name of the extension point used to register data types and helpers. */
+        private static final String DATATYPE_HELPER_FACTORY_EXTENSION_POINT = "datatypeHelperFactory";
+
+        private Map<Datatype, DatatypeHelperFactory> factoryMap = new HashMap<Datatype, DatatypeHelperFactory>();
+
+        public DatatypeHelperFactoryRegistry() {
+            super();
+            initialize();
+        }
+
+        /**
+         * Returns the helper registered for the given data type or {@code null} if no helper is
+         * registered for that type.
+         */
+        public DatatypeHelperFactory getFactory(Datatype datatype) {
+            return factoryMap.get(datatype);
+        }
+
+        public boolean hasFactory(Datatype d) {
+            return factoryMap.containsKey(d);
+        }
+
+        /**
+         * Initializes the registered factories using (all) the helpers provided via the
+         * {@link #DATATYPE_HELPER_FACTORY_EXTENSION_POINT extension point} and the data type
+         * defined in the given projects.
+         */
+        private void initialize() {
+            IExtensionRegistry registry = Platform.getExtensionRegistry();
+            IExtensionPoint point = registry.getExtensionPoint(IpsPlugin.PLUGIN_ID,
+                    DATATYPE_HELPER_FACTORY_EXTENSION_POINT);
+            IExtension[] extensions = point.getExtensions();
+
+            for (IExtension extension : extensions) {
+                for (IConfigurationElement configElement : extension.getConfigurationElements()) {
+                    registerHelper(new DatatypeHelperFactoryDefinition(extension, configElement));
+                }
+            }
+        }
+
+        private void registerHelper(DatatypeHelperFactoryDefinition definition) {
+            factoryMap.put(definition.getDatatype(), definition.getFactory());
+        }
+
     }
 
 }

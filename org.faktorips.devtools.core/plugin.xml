@@ -25,6 +25,7 @@
    <extension-point id="flIdentifierFilterExtension" name="Identifier Filter" schema="schema/flIdentifierFilterExtension.exsd"/>
    <extension-point id="newProductDefinitionOperation" name="New Product Definition Operation" schema="schema/newProductDefinitionOperation.exsd"/>
    <extension-point id="versionProvider" name="Version Provider" schema="schema/versionProvider.exsd"/>
+   <extension-point id="datatypeHelperFactory" name="DatatypeHelperFactory" schema="schema/datatypeHelperFactory.exsd"/>
    
    
 <!-- 
@@ -85,44 +86,44 @@
     
 <!-- 
     Default Datatypes
-  -->
+-->
    <extension point="org.faktorips.devtools.core.datatypeDefinition">
       <datatypeDefinition 
-      			datatypeClass="org.faktorips.datatype.classtypes.StringDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.StringHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.StringDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.StringHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.IntegerDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.IntegerHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.IntegerDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.IntegerHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.LongDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.LongHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.LongDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.LongHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.BooleanDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.BooleanHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.BooleanDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.BooleanHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.DateDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.DateHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.DateDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.DateHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.GregorianCalendarAsDateHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.GregorianCalendarAsDateDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.GregorianCalendarAsDateHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.DecimalDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.DecimalHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.DecimalDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.DecimalHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.MoneyDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.MoneyHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.MoneyDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.MoneyHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.classtypes.DoubleDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.DoubleHelper"/>
+            datatypeClass="org.faktorips.datatype.classtypes.DoubleDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.DoubleHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.PrimitiveBooleanDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.PrimitiveBooleanHelper"/>
+            datatypeClass="org.faktorips.datatype.PrimitiveBooleanDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.PrimitiveBooleanHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
+            datatypeClass="org.faktorips.datatype.PrimitiveIntegerDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.PrimitiveIntegerHelper"/>
       <datatypeDefinition 
-		        datatypeClass="org.faktorips.datatype.PrimitiveLongDatatype"
-      			helperClass="org.faktorips.codegen.dthelpers.PrimitiveLongHelper"/>
+            datatypeClass="org.faktorips.datatype.PrimitiveLongDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.PrimitiveLongHelper"/>
       <datatypeDefinition
             datatypeClass="org.faktorips.datatype.classtypes.BigDecimalDatatype"
             helperClass="org.faktorips.codegen.dthelpers.BigDecimalHelper">
@@ -139,6 +140,24 @@
             datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
             helperClass="org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper">
       </datatypeDefinition>
+   </extension>
+
+<!-- 
+    Datatype Helper Factories
+-->
+   <extension point="org.faktorips.devtools.core.datatypeHelperFactory">
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.LocalDateDatatype"
+            factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalDateHelperFactory">
+      </datatypeHelperFactory>
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
+            factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalDateTimeHelperFactory">
+      </datatypeHelperFactory>
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.LocalTimeDatatype"
+            factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalTimeHelperFactory">
+      </datatypeHelperFactory>
    </extension>
 
 <!-- 

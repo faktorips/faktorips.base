@@ -60,6 +60,7 @@ import org.faktorips.devtools.core.Util;
 import org.faktorips.devtools.core.builder.EmptyBuilderSet;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
+import org.faktorips.devtools.core.internal.model.datatype.DatatypeDefinition;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsObject;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFileContent;
