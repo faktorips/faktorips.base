@@ -17,7 +17,6 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
@@ -29,12 +28,12 @@ public class YearsTest extends FunctionAbstractTest {
     private Date date;
 
     @Test
-    public void testCompile() throws Exception {
+    public void testCompileJoda() throws Exception {
         years = new Years("YEARS", "");
         date = new Date("DATE", "");
         registerFunction(years);
         registerFunction(date);
-        putDatatypeHelper(LocalDateDatatype.DATATYPE, new LocalDateHelper());
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new org.faktorips.codegen.dthelpers.joda.LocalDateHelper());
 
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
                 "YEARS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
@@ -45,6 +44,26 @@ public class YearsTest extends FunctionAbstractTest {
                 compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("org.joda.time.LocalDate"));
         assertThat(imports, hasItem("org.joda.time.Years"));
+    }
+
+    @Test
+    public void testCompileJava8() throws Exception {
+        years = new Years("YEARS", "");
+        date = new Date("DATE", "");
+        registerFunction(years);
+        registerFunction(date);
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new org.faktorips.codegen.dthelpers.java8.LocalDateHelper(
+                LocalDateDatatype.DATATYPE));
+
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "YEARS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
+
+        assertEquals(
+                "Integer.valueOf(Period.between(new LocalDate(2014, 02, 01), new LocalDate(2014, 03, 08)).getYears())",
+                compile.getCodeFragment().getSourcecode());
+        assertThat(imports, hasItem("java.time.LocalDate"));
+        assertThat(imports, hasItem("java.time.Period"));
     }
 
 }

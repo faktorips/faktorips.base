@@ -17,7 +17,6 @@ import static org.junit.matchers.JUnitMatchers.hasItem;
 import java.util.Set;
 
 import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
@@ -29,19 +28,39 @@ public class Days360Test extends FunctionAbstractTest {
     private Date date;
 
     @Test
-    public void testCompile() throws Exception {
+    public void testCompileJoda() throws Exception {
         days = new Days360("DAYS360", "");
         date = new Date("DATE", "");
         registerFunction(days);
         registerFunction(date);
-        putDatatypeHelper(LocalDateDatatype.DATATYPE, new LocalDateHelper());
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new org.faktorips.codegen.dthelpers.joda.LocalDateHelper());
 
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
                 "DAYS360(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
-        String resultingSourcecode = "Integer.valueOf(((new LocalDate(2014, 03, 08).getYear() - new LocalDate(2014, 02, 01).getYear()) * 360 + (new LocalDate(2014, 03, 08).getMonthOfYear() - new LocalDate(2014, 02, 01).getMonthOfYear()) * 30 + (Math.min(new LocalDate(2014, 03, 08).getDayOfMonth(), 30) - Math.min(new LocalDate(2014, 02, 01).getDayOfMonth(), 30))))";
+        String resultingSourcecode = "Integer.valueOf(((new LocalDate(2014, 03, 08).get(DateTimeFieldType.year()) - new LocalDate(2014, 02, 01).get(DateTimeFieldType.year())) * 360 + (new LocalDate(2014, 03, 08).get(DateTimeFieldType.monthOfYear()) - new LocalDate(2014, 02, 01).get(DateTimeFieldType.monthOfYear())) * 30 + (Math.min(new LocalDate(2014, 03, 08).get(DateTimeFieldType.dayOfMonth()), 30) - Math.min(new LocalDate(2014, 02, 01).get(DateTimeFieldType.dayOfMonth()), 30))))";
 
         assertEquals(resultingSourcecode, compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("org.joda.time.LocalDate"));
+        assertThat(imports, hasItem("org.joda.time.DateTimeFieldType"));
+    }
+
+    @Test
+    public void testCompileJava8() throws Exception {
+        days = new Days360("DAYS360", "");
+        date = new Date("DATE", "");
+        registerFunction(days);
+        registerFunction(date);
+        putDatatypeHelper(LocalDateDatatype.DATATYPE, new org.faktorips.codegen.dthelpers.java8.LocalDateHelper(
+                LocalDateDatatype.DATATYPE));
+
+        CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
+                "DAYS360(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+        Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
+        String resultingSourcecode = "Integer.valueOf(((new LocalDate(2014, 03, 08).get(ChronoField.YEAR) - new LocalDate(2014, 02, 01).get(ChronoField.YEAR)) * 360 + (new LocalDate(2014, 03, 08).get(ChronoField.MONTH_OF_YEAR) - new LocalDate(2014, 02, 01).get(ChronoField.MONTH_OF_YEAR)) * 30 + (Math.min(new LocalDate(2014, 03, 08).get(ChronoField.DAY_OF_MONTH), 30) - Math.min(new LocalDate(2014, 02, 01).get(ChronoField.DAY_OF_MONTH), 30))))";
+
+        assertEquals(resultingSourcecode, compile.getCodeFragment().getSourcecode());
+        assertThat(imports, hasItem("java.time.LocalDate"));
+        assertThat(imports, hasItem("java.time.temporal.ChronoField"));
     }
 }

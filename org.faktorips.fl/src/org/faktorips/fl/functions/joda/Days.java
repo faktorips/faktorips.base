@@ -10,29 +10,13 @@
  *******************************************************************************/
 package org.faktorips.fl.functions.joda;
 
-import org.faktorips.codegen.JavaCodeFragment;
-import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.codegen.dthelpers.ILocalDateHelper.Period;
 import org.faktorips.fl.FunctionSignatures;
-import org.faktorips.fl.functions.AbstractFlFunction;
-import org.faktorips.util.ArgumentCheck;
 
-public class Days extends AbstractFlFunction {
-
-    private static final String DAYS_HELPER_CLASS = "org.joda.time.Days";
+public class Days extends AbstractPeriodFunction {
 
     public Days(String name, String description) {
-        super(name, description, FunctionSignatures.DAYS);
-    }
-
-    @Override
-    public CompilationResult<JavaCodeFragment> compile(CompilationResult<JavaCodeFragment>[] argResults) {
-        ArgumentCheck.length(argResults, 2);
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.appendClassName(DAYS_HELPER_CLASS);
-        fragment.append(".daysBetween(").append(argResults[0].getCodeFragment()).append(", ")
-        .append(argResults[1].getCodeFragment()).append(")").append(".getDays()");
-        return new CompilationResultImpl(fragment, getType());
+        super(name, description, FunctionSignatures.DAYS, Period.DAYS);
     }
 
 }
