@@ -140,6 +140,10 @@
             datatypeClass="org.faktorips.datatype.joda.LocalDateTimeDatatype"
             helperClass="org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper">
       </datatypeDefinition>
+      <datatypeDefinition
+            datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
+            helperClass="org.faktorips.codegen.dthelpers.joda.MonthDayHelper">
+      </datatypeDefinition>
    </extension>
 
 <!-- 

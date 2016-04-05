@@ -15,6 +15,8 @@ import java.util.GregorianCalendar;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.joda.time.MonthDay;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.ISODateTimeFormat;
@@ -24,6 +26,8 @@ import org.joda.time.format.ISODateTimeFormat;
  * {@link LocalDateTime}.
  */
 public class JodaUtil {
+
+    private static final DateTimeFormatter MONTH_DAY_FORMATTER = DateTimeFormat.forPattern("--MM-dd");
 
     private static final DateTimeFormatter LOCAL_DATE_FORMATTER = ISODateTimeFormat.date();
 
@@ -51,7 +55,7 @@ public class JodaUtil {
         try {
             return LocalDate.parse(dateInIsoFormat, LOCAL_DATE_FORMATTER);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Date must be in ISO format 'YYYY-MM-DD'.", e); //$NON-NLS-1$ 
+            throw new IllegalArgumentException("Date must be in ISO format 'YYYY-MM-DD'.", e); //$NON-NLS-1$
         }
     }
 
@@ -79,7 +83,7 @@ public class JodaUtil {
         try {
             return LocalTime.parse(time, LOCAL_TIME_FORMATTER);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Time must be in ISO format 'hh:mm:ss'.", e); //$NON-NLS-1$ 
+            throw new IllegalArgumentException("Time must be in ISO format 'hh:mm:ss'.", e); //$NON-NLS-1$
         }
     }
 
@@ -107,7 +111,26 @@ public class JodaUtil {
         try {
             return LocalDateTime.parse(dateTime, LOCAL_DATE_TIME_FORMATTER);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Date/time must be in ISO format 'YYYY-MM-DD hh:mm:ss'.", e); //$NON-NLS-1$ 
+            throw new IllegalArgumentException("Date/time must be in ISO format 'YYYY-MM-DD hh:mm:ss'.", e); //$NON-NLS-1$
+        }
+    }
+
+    /**
+     * Parses the given {@link String} and returns a {@link MonthDay}. Returns null if the string is
+     * {@code null} or empty.
+     * 
+     * @param monthDay the month day in ISO format, e.g. --03-04
+     * 
+     * @throws IllegalArgumentException if the String can't be parsed
+     */
+    public static final MonthDay toMonthDay(String monthDay) {
+        if (monthDay == null || monthDay.isEmpty()) {
+            return null;
+        }
+        try {
+            return MonthDay.parse(monthDay, MONTH_DAY_FORMATTER);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Month day must be in ISO format '--MM-dd'", e); //$NON-NLS-1$
         }
     }
 

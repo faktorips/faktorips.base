@@ -18,6 +18,7 @@ import java.util.GregorianCalendar;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
+import org.joda.time.MonthDay;
 import org.junit.Test;
 
 public class JodaUtilTest {
@@ -74,6 +75,33 @@ public class JodaUtilTest {
         assertEquals(null, JodaUtil.toGregorianCalendar((LocalDateTime)null));
         assertEquals(new GregorianCalendar(2010, 2, 5, 8, 4, 10),
                 JodaUtil.toGregorianCalendar(new LocalDateTime(2010, 3, 5, 8, 4, 10)));
+    }
+
+    @Test
+    public void testToMonthDay() {
+        assertNull(JodaUtil.toMonthDay(null));
+        assertNull(JodaUtil.toMonthDay(""));
+        assertEquals(new MonthDay(1, 4), JodaUtil.toMonthDay("--01-04"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToMonthDay_MissingLeadingDashes() {
+        JodaUtil.toMonthDay("01-04");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToMonthDay_AmericanStyle() {
+        JodaUtil.toMonthDay("01/04/");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToMonthDay_GermanStyle() {
+        JodaUtil.toMonthDay("04.01.");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToMonthDay_InvalidDayAndMonth() {
+        JodaUtil.toMonthDay("--86-98");
     }
 
 }
