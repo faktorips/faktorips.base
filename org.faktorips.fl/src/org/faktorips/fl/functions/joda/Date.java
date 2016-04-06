@@ -10,12 +10,18 @@
  *******************************************************************************/
 package org.faktorips.fl.functions.joda;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.codegen.dthelpers.ILocalDateHelper;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.CompilationResultImpl;
+import org.faktorips.fl.ExprCompiler;
 import org.faktorips.fl.FunctionSignatures;
 import org.faktorips.fl.functions.AbstractFlFunction;
+import org.faktorips.fl.functions.Messages;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.message.Message;
 
 public class Date extends AbstractFlFunction {
 
@@ -29,10 +35,17 @@ public class Date extends AbstractFlFunction {
         JavaCodeFragment year = argResults[0].getCodeFragment();
         JavaCodeFragment month = argResults[1].getCodeFragment();
         JavaCodeFragment day = argResults[2].getCodeFragment();
-        JavaCodeFragment fragment = new JavaCodeFragment();
-        fragment.append("new ").appendClassName(getJavaClassName(getType())).append("(");
-        fragment.append(year).append(", ").append(month).append(", ").append(day).append(")");
-        return new CompilationResultImpl(fragment, getType());
+        Datatype datatype = getType();
+        DatatypeHelper datatypeHelper = getDatatypeHelper(datatype);
+        if (datatypeHelper instanceof ILocalDateHelper) {
+            JavaCodeFragment fragment = ((ILocalDateHelper)datatypeHelper).getDateInitialization(year, month, day);
+            return new CompilationResultImpl(fragment, datatype);
+        } else {
+            String code = ExprCompiler.PREFIX + AbstractPeriodFunction.NO_PERIOD_SUPPORT;
+            String text = Messages.INSTANCE.getString(code, new Object[] { datatype });
+            Message msg = Message.newError(code, text);
+            return new CompilationResultImpl(msg);
+        }
     }
 
 }

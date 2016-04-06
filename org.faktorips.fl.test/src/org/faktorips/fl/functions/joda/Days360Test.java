@@ -57,7 +57,7 @@ public class Days360Test extends FunctionAbstractTest {
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
                 "DAYS360(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
-        String resultingSourcecode = "Integer.valueOf(((new LocalDate(2014, 03, 08).get(ChronoField.YEAR) - new LocalDate(2014, 02, 01).get(ChronoField.YEAR)) * 360 + (new LocalDate(2014, 03, 08).get(ChronoField.MONTH_OF_YEAR) - new LocalDate(2014, 02, 01).get(ChronoField.MONTH_OF_YEAR)) * 30 + (Math.min(new LocalDate(2014, 03, 08).get(ChronoField.DAY_OF_MONTH), 30) - Math.min(new LocalDate(2014, 02, 01).get(ChronoField.DAY_OF_MONTH), 30))))";
+        String resultingSourcecode = "Integer.valueOf(((LocalDate.of(2014, 03, 08).get(ChronoField.YEAR) - LocalDate.of(2014, 02, 01).get(ChronoField.YEAR)) * 360 + (LocalDate.of(2014, 03, 08).get(ChronoField.MONTH_OF_YEAR) - LocalDate.of(2014, 02, 01).get(ChronoField.MONTH_OF_YEAR)) * 30 + (Math.min(LocalDate.of(2014, 03, 08).get(ChronoField.DAY_OF_MONTH), 30) - Math.min(LocalDate.of(2014, 02, 01).get(ChronoField.DAY_OF_MONTH), 30))))";
 
         assertEquals(resultingSourcecode, compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("java.time.LocalDate"));

@@ -16,10 +16,12 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 
 public class LocalDateHelper extends AbstractTimeHelper implements ILocalDateHelper {
 
+    private static final String WEEKS = "WEEKS"; //$NON-NLS-1$
     private static final String YEAR = "YEAR"; //$NON-NLS-1$
     private static final String MONTH_OF_YEAR = "MONTH_OF_YEAR"; //$NON-NLS-1$
     private static final String DAY_OF_MONTH = "DAY_OF_MONTH"; //$NON-NLS-1$
     private static final String JAVA_TIME_TEMPORAL_CHRONO_FIELD = "java.time.temporal.ChronoField"; //$NON-NLS-1$
+    private static final String JAVA_TIME_TEMPORAL_CHRONO_UNIT = "java.time.temporal.ChronoUnit"; //$NON-NLS-1$
     private static final String JAVA_TIME_LOCAL_DATE = "java.time.LocalDate"; //$NON-NLS-1$
     private static final String PERIOD_CLASS = "java.time.Period"; //$NON-NLS-1$
 
@@ -40,14 +42,17 @@ public class LocalDateHelper extends AbstractTimeHelper implements ILocalDateHel
     @Override
     public JavaCodeFragment getPeriodCode(JavaCodeFragment arg1, JavaCodeFragment arg2, Period period) {
         JavaCodeFragment fragment = new JavaCodeFragment();
+        if (Period.WEEKS == period) {
+            fragment.append("(int) "); //$NON-NLS-1$
+        }
         fragment.appendClassName(PERIOD_CLASS).append(".between(").append(arg1).append(", ").append(arg2) //$NON-NLS-1$ //$NON-NLS-2$
-                .append(")"); //$NON-NLS-1$
+        .append(")"); //$NON-NLS-1$
         switch (period) {
             case DAYS:
                 fragment.append(".getDays()"); //$NON-NLS-1$
                 break;
             case WEEKS:
-                fragment.append(".getWeeks()"); //$NON-NLS-1$
+                fragment.append(".get(").appendClassName(JAVA_TIME_TEMPORAL_CHRONO_UNIT).append('.').append(WEEKS).append(')'); //$NON-NLS-1$
                 break;
             case MONTHS:
                 fragment.append(".getMonths()"); //$NON-NLS-1$
@@ -59,6 +64,14 @@ public class LocalDateHelper extends AbstractTimeHelper implements ILocalDateHel
             default:
                 break;
         }
+        return fragment;
+    }
+
+    @Override
+    public JavaCodeFragment getDateInitialization(JavaCodeFragment year, JavaCodeFragment month, JavaCodeFragment day) {
+        JavaCodeFragment fragment = new JavaCodeFragment();
+        fragment.appendClassName(getJavaClassName()).append(".of(")//$NON-NLS-1$
+                .append(year).append(", ").append(month).append(", ").append(day).append(")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
         return fragment;
     }
 

@@ -29,6 +29,11 @@ public interface ILocalDateHelper {
     JavaCodeFragment getPeriodCode(JavaCodeFragment arg1, JavaCodeFragment arg2, Period period);
 
     /**
+     * Returns the code to create a new LocalDate.
+     */
+    JavaCodeFragment getDateInitialization(JavaCodeFragment year, JavaCodeFragment month, JavaCodeFragment day);
+
+    /**
      * Returns the name of the class listing the accessible fields of the LocalDate.
      */
     String getDateFieldEnumClass();

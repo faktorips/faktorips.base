@@ -60,10 +60,11 @@ public class WeeksTest extends FunctionAbstractTest {
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
 
         assertEquals(
-                "Integer.valueOf(Period.between(new LocalDate(2014, 02, 01), new LocalDate(2014, 03, 08)).getWeeks())",
+                "Integer.valueOf((int) Period.between(LocalDate.of(2014, 02, 01), LocalDate.of(2014, 03, 08)).get(ChronoUnit.WEEKS))",
                 compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("java.time.LocalDate"));
         assertThat(imports, hasItem("java.time.Period"));
+        assertThat(imports, hasItem("java.time.temporal.ChronoUnit"));
     }
 
 }

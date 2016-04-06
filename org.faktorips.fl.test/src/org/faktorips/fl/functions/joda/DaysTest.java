@@ -60,7 +60,7 @@ public class DaysTest extends FunctionAbstractTest {
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
 
         assertEquals(
-                "Integer.valueOf(Period.between(new LocalDate(2014, 02, 01), new LocalDate(2014, 03, 08)).getDays())",
+                "Integer.valueOf(Period.between(LocalDate.of(2014, 02, 01), LocalDate.of(2014, 03, 08)).getDays())",
                 compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("java.time.LocalDate"));
         assertThat(imports, hasItem("java.time.Period"));
