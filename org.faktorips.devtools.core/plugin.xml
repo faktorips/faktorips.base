@@ -162,6 +162,10 @@
             datatypeClass="org.faktorips.datatype.joda.LocalTimeDatatype"
             factoryClass="org.faktorips.devtools.core.internal.model.datatype.LocalTimeHelperFactory">
       </datatypeHelperFactory>
+      <datatypeHelperFactory
+            datatypeClass="org.faktorips.datatype.joda.MonthDayDatatype"
+            factoryClass="org.faktorips.devtools.core.internal.model.datatype.MonthDayHelperFactory">
+      </datatypeHelperFactory>
    </extension>
 
 <!-- 

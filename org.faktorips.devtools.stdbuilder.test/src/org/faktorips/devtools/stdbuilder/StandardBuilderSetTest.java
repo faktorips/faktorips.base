@@ -24,6 +24,7 @@ import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.datatype.joda.LocalDateTimeDatatype;
 import org.faktorips.datatype.joda.LocalTimeDatatype;
+import org.faktorips.datatype.joda.MonthDayDatatype;
 import org.faktorips.devtools.core.internal.model.datatype.AbstractDateHelperFactory;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
@@ -61,6 +62,8 @@ public class StandardBuilderSetTest extends AbstractIpsPluginTest {
                 is(instanceOf(org.faktorips.codegen.dthelpers.joda.LocalDateTimeHelper.class)));
         assertThat(builderSet.getDatatypeHelper(LocalTimeDatatype.DATATYPE),
                 is(instanceOf(org.faktorips.codegen.dthelpers.joda.LocalTimeHelper.class)));
+        assertThat(builderSet.getDatatypeHelper(MonthDayDatatype.DATATYPE),
+                is(instanceOf(org.faktorips.codegen.dthelpers.joda.MonthDayHelper.class)));
     }
 
     @Test
@@ -89,6 +92,8 @@ public class StandardBuilderSetTest extends AbstractIpsPluginTest {
                 is(instanceOf(org.faktorips.codegen.dthelpers.java8.LocalDateTimeHelper.class)));
         assertThat(builderSet.getDatatypeHelper(LocalTimeDatatype.DATATYPE),
                 is(instanceOf(org.faktorips.codegen.dthelpers.java8.LocalTimeHelper.class)));
+        assertThat(builderSet.getDatatypeHelper(MonthDayDatatype.DATATYPE),
+                is(instanceOf(org.faktorips.codegen.dthelpers.java8.MonthDayHelper.class)));
     }
 
 }
