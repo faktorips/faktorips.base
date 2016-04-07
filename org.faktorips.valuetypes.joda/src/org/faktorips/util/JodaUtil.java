@@ -35,7 +35,7 @@ public class JodaUtil {
             .appendLiteral(':').appendMinuteOfHour(2).appendLiteral(':').appendSecondOfMinute(2).toFormatter();
 
     private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
-            .append(LOCAL_DATE_FORMATTER).appendLiteral(' ').append(LOCAL_TIME_FORMATTER).toFormatter();
+            .append(LOCAL_DATE_FORMATTER).appendLiteral('T').append(LOCAL_TIME_FORMATTER).toFormatter();
 
     private JodaUtil() {
         // do not instantiate
@@ -111,7 +111,7 @@ public class JodaUtil {
         try {
             return LocalDateTime.parse(dateTime, LOCAL_DATE_TIME_FORMATTER);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Date/time must be in ISO format 'YYYY-MM-DD hh:mm:ss'.", e); //$NON-NLS-1$
+            throw new IllegalArgumentException("Date/time must be in ISO format 'YYYY-MM-DDThh:mm:ss'.", e); //$NON-NLS-1$
         }
     }
 

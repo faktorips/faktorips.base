@@ -61,13 +61,23 @@ public class JodaUtilTest {
         assertNull(JodaUtil.toLocalDateTime(null));
         assertNull(JodaUtil.toLocalDateTime(""));
 
-        assertEquals(new LocalDateTime(2010, 3, 5, 8, 4, 10), JodaUtil.toLocalDateTime("2010-03-05 08:04:10"));
+        assertEquals(new LocalDateTime(2010, 3, 5, 8, 4, 10), JodaUtil.toLocalDateTime("2010-03-05T08:04:10"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToLocalDateTime_WrongISOFormatWithMissingT() {
+        JodaUtil.toLocalDateTime("2010-03-05 08:04:10");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testToLocalDateTime_NonDateTimeString() {
+        JodaUtil.toLocalDateTime("not a date time");
     }
 
     @Test
     public void testToStringLocalDateTime() {
         assertEquals("", JodaUtil.toString((LocalDateTime)null));
-        assertEquals("2010-03-05 08:04:10", JodaUtil.toString(new LocalDateTime(2010, 3, 5, 8, 4, 10)));
+        assertEquals("2010-03-05T08:04:10", JodaUtil.toString(new LocalDateTime(2010, 3, 5, 8, 4, 10)));
     }
 
     @Test
