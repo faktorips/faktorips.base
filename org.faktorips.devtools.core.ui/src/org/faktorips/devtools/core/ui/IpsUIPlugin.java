@@ -1391,7 +1391,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 return getImage(descriptor);
             } else {
                 if (descriptor != null) {
-                    return (Image)resourceManager.find(descriptor);
+                    return (Image)getResourceManager().find(descriptor);
                 } else {
                     return null;
                 }
@@ -1688,6 +1688,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         public void dispose() {
             if (resourceManager != null) {
                 resourceManager.dispose();
+                resourceManager = null;
             }
         }
     }
