@@ -1365,4 +1365,5 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
         product.setTemplate("parentTemplate");
         assertThat(product.isPartOfTemplateHierarchy(), is(true));
     }
+
 }

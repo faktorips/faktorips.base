@@ -282,10 +282,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
 
     private void validateDifferencesToModel(MessageList list, IIpsProject ipsProject) throws CoreException {
         if (containsDifferenceToModel(ipsProject)) {
-            list.newError(
-                    MSGCODE_DIFFERENCES_TO_MODEL,
-                    Messages.ProductCmpt_Error_DifferencesToModel0,
-                    this);
+            list.newError(MSGCODE_DIFFERENCES_TO_MODEL, Messages.ProductCmpt_Error_DifferencesToModel0, this);
         }
     }
 
@@ -822,6 +819,11 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
     @Override
     public boolean isPartOfTemplateHierarchy() {
         return isProductTemplate() || isUsingTemplate();
+    }
+
+    @Override
+    public void removeUndefinedLinks() {
+        linkCollection.removeUndefinedLinks();
     }
 
 }

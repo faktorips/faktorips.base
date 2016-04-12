@@ -645,4 +645,8 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         return getProductCmpt().isPartOfTemplateHierarchy();
     }
 
+    @Override
+    public void removeUndefinedLinks() {
+        linkCollection.removeUndefinedLinks();
+    }
 }

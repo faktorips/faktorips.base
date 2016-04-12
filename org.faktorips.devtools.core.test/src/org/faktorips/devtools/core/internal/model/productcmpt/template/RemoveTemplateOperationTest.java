@@ -115,6 +115,9 @@ public class RemoveTemplateOperationTest {
         verify(g1l2).setTemplateValueStatus(TemplateValueStatus.DEFINED);
         verify(g2l1, never()).setTemplateValueStatus(TemplateValueStatus.DEFINED);
         verify(g2l2).setTemplateValueStatus(TemplateValueStatus.DEFINED);
+        verify(prodCmpt).removeUndefinedLinks();
+        verify(gen1).removeUndefinedLinks();
+        verify(gen2).removeUndefinedLinks();
     }
 
 }

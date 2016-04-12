@@ -179,4 +179,13 @@ public interface IProductCmptLinkContainer extends IProductPartsContainer, ITemp
     @Override
     public IProductCmptLinkContainer findTemplate(IIpsProject ipsProject);
 
+    /**
+     * Removes all links whose
+     * {@link org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus
+     * TemplateValueStatus} is
+     * {@link org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus#UNDEFINED
+     * UNDEFINED}
+     */
+    public void removeUndefinedLinks();
+
 }

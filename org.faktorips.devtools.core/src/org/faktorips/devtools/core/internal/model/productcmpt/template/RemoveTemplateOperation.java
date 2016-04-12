@@ -70,6 +70,7 @@ public class RemoveTemplateOperation implements IWorkspaceRunnable {
         }
 
         private void processLinks(IProductCmptLinkContainer container) {
+            container.removeUndefinedLinks();
             for (IProductCmptLink link : container.getLinksAsList()) {
                 switchInheritedValuesToDefined(link);
             }
@@ -80,6 +81,7 @@ public class RemoveTemplateOperation implements IWorkspaceRunnable {
                 value.setTemplateValueStatus(TemplateValueStatus.DEFINED);
             }
         }
+
     }
 
 }

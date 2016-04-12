@@ -26,6 +26,7 @@ import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 
 /**
  * Contains all {@link IProductCmptLink link} instances for one {@link IProductCmptLinkContainer
@@ -320,5 +321,16 @@ public class ProductCmptLinkCollection {
      */
     public int size() {
         return links.size();
+    }
+
+    /**
+     * Removes all links whose {@link TemplateValueStatus} is {@link TemplateValueStatus#UNDEFINED}.
+     */
+    public void removeUndefinedLinks() {
+        for (IProductCmptLink link : getLinks()) {
+            if (link.getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+                remove(link);
+            }
+        }
     }
 }
