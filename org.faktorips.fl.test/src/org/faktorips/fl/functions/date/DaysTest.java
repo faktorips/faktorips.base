@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.fl.functions.joda;
+package org.faktorips.fl.functions.date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -22,49 +22,47 @@ import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
 import org.junit.Test;
 
-public class WeeksTest extends FunctionAbstractTest {
+public class DaysTest extends FunctionAbstractTest {
 
-    private Weeks weeks;
+    private Days months;
     private Date date;
 
     @Test
     public void testCompileJoda() throws Exception {
-        weeks = new Weeks("WEEKS", "");
+        months = new Days("DAYS", "");
         date = new Date("DATE", "");
-        registerFunction(weeks);
+        registerFunction(months);
         registerFunction(date);
         putDatatypeHelper(LocalDateDatatype.DATATYPE, new org.faktorips.codegen.dthelpers.joda.LocalDateHelper());
 
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
-                "WEEKS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+                "DAYS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
 
         assertEquals(
-                "Integer.valueOf(Weeks.weeksBetween(new LocalDate(2014, 02, 01), new LocalDate(2014, 03, 08)).getWeeks())",
+                "Integer.valueOf(Days.daysBetween(new LocalDate(2014, 02, 01), new LocalDate(2014, 03, 08)).getDays())",
                 compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("org.joda.time.LocalDate"));
-        assertThat(imports, hasItem("org.joda.time.Weeks"));
+        assertThat(imports, hasItem("org.joda.time.Days"));
     }
 
     @Test
     public void testCompileJava8() throws Exception {
-        weeks = new Weeks("WEEKS", "");
+        months = new Days("DAYS", "");
         date = new Date("DATE", "");
-        registerFunction(weeks);
+        registerFunction(months);
         registerFunction(date);
         putDatatypeHelper(LocalDateDatatype.DATATYPE, new org.faktorips.codegen.dthelpers.java8.LocalDateHelper(
                 LocalDateDatatype.DATATYPE));
 
         CompilationResult<JavaCodeFragment> compile = getCompiler().compile(
-                "WEEKS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
+                "DAYS(DATE(2014; 02; 01); DATE(2014; 03; 08))");
         Set<String> imports = compile.getCodeFragment().getImportDeclaration().getImports();
 
         assertEquals(
-                "Integer.valueOf((int) Period.between(LocalDate.of(2014, 02, 01), LocalDate.of(2014, 03, 08)).get(ChronoUnit.WEEKS))",
+                "Integer.valueOf(Period.between(LocalDate.of(2014, 02, 01), LocalDate.of(2014, 03, 08)).getDays())",
                 compile.getCodeFragment().getSourcecode());
         assertThat(imports, hasItem("java.time.LocalDate"));
         assertThat(imports, hasItem("java.time.Period"));
-        assertThat(imports, hasItem("java.time.temporal.ChronoUnit"));
     }
-
 }

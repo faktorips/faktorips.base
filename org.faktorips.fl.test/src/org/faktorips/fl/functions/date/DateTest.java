@@ -8,7 +8,7 @@
  * restrictions as well as the possibility of alternative license terms.
  *******************************************************************************/
 
-package org.faktorips.fl.functions.joda;
+package org.faktorips.fl.functions.date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;

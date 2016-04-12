@@ -21,7 +21,7 @@ import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.BinaryOperation;
 import org.faktorips.fl.CompilationResult;
 import org.faktorips.fl.functions.FunctionAbstractTest;
-import org.faktorips.fl.functions.joda.Date;
+import org.faktorips.fl.functions.date.Date;
 import org.junit.Test;
 
 public class CompareToComparableDatatypeTest extends FunctionAbstractTest {

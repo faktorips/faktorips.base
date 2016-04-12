@@ -22,7 +22,7 @@ import org.faktorips.codegen.dthelpers.joda.LocalDateHelper;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.joda.LocalDateDatatype;
 import org.faktorips.fl.CompilationResult;
-import org.faktorips.fl.functions.joda.Date;
+import org.faktorips.fl.functions.date.Date;
 import org.junit.Test;
 
 public class MinMaxComparableDatatypeTest extends FunctionAbstractTest {

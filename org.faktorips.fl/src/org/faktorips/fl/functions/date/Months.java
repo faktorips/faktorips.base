@@ -8,15 +8,15 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and the
  * possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.fl.functions.joda;
+package org.faktorips.fl.functions.date;
 
 import org.faktorips.codegen.dthelpers.ILocalDateHelper.Period;
 import org.faktorips.fl.FunctionSignatures;
 
-public class Days extends AbstractPeriodFunction {
+public class Months extends AbstractPeriodFunction {
 
-    public Days(String name, String description) {
-        super(name, description, FunctionSignatures.DAYS, Period.DAYS);
+    public Months(String name, String description) {
+        super(name, description, FunctionSignatures.MONTHS, Period.MONTHS);
     }
 
 }

@@ -8,7 +8,7 @@
  * Please see LICENSE.txt for full license terms, including the additional permissions and the
  * possibility of alternative license terms.
  *******************************************************************************/
-package org.faktorips.fl.functions.joda;
+package org.faktorips.fl.functions.date;
 
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
