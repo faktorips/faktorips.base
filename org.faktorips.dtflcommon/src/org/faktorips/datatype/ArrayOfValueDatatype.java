@@ -145,15 +145,6 @@ public class ArrayOfValueDatatype extends AbstractDatatype implements ValueDatat
     }
 
     @Override
-    public String getJavaClassName() {
-        StringBuffer buffer = new StringBuffer(datatype.getJavaClassName());
-        for (int i = 0; i < dimension; i++) {
-            buffer.append("[]"); //$NON-NLS-1$
-        }
-        return buffer.toString();
-    }
-
-    @Override
     public ValueDatatype getWrapperType() {
         return null;
     }

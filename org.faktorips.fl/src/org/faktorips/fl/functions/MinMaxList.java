@@ -46,7 +46,7 @@ public class MinMaxList extends AbstractListFunction {
     }
 
     @Override
-    protected JavaCodeFragment generateReturnFallBackValueCall() {
+    protected JavaCodeFragment generateReturnFallBackValueCall(Datatype datatype) {
         JavaCodeFragment fragment = new JavaCodeFragment();
         fragment.append("throw new ");
         fragment.appendClassName(IllegalArgumentException.class);

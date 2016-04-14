@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -303,11 +304,6 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
     }
 
     @Override
-    public String getJavaClassName() {
-        return getEnumValueContainer().getIpsProject().getDatatypeHelper(this).getJavaClassName();
-    }
-
-    @Override
     public String getName() {
         return enumType.getName();
     }
@@ -369,8 +365,7 @@ public class EnumTypeDatatypeAdapter implements EnumDatatype {
 
     @Override
     public int compareTo(Datatype o) {
-        EnumDatatype other = (EnumDatatype)o;
-        return getQualifiedName().compareTo(other.getQualifiedName());
+        return DatatypeComparator.doCompare(this, o);
     }
 
     /** Returns the enumeration type of this adapter. */

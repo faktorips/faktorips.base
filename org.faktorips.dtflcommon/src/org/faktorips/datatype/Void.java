@@ -65,11 +65,6 @@ public class Void extends AbstractDatatype implements ValueDatatype {
     }
 
     @Override
-    public String getJavaClassName() {
-        return "void"; //$NON-NLS-1$
-    }
-
-    @Override
     public String getDefaultValue() {
         throw new UnsupportedOperationException("Can't get a default value for Datatype void."); //$NON-NLS-1$
     }

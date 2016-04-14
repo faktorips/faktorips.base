@@ -58,8 +58,6 @@ public class ConversionCodeGeneratorTest {
         assertTrue(codeGenerator.canConvert(Datatype.DECIMAL, Datatype.DOUBLE));
         assertTrue(codeGenerator.canConvert(LocalDateDatatype.DATATYPE, Datatype.GREGORIAN_CALENDAR));
         assertTrue(codeGenerator.canConvert(LocalDateTimeDatatype.DATATYPE, Datatype.GREGORIAN_CALENDAR));
-        assertTrue(codeGenerator.canConvert(Datatype.GREGORIAN_CALENDAR, LocalDateDatatype.DATATYPE));
-        assertTrue(codeGenerator.canConvert(Datatype.GREGORIAN_CALENDAR, LocalDateTimeDatatype.DATATYPE));
         assertTrue(codeGenerator.canConvert(Datatype.STRING, Datatype.STRING));
         assertTrue(codeGenerator.canConvert(Datatype.STRING, AnyDatatype.INSTANCE));
         assertFalse(codeGenerator.canConvert(AnyDatatype.INSTANCE, Datatype.STRING));

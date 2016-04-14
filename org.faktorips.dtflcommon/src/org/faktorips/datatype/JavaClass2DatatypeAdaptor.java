@@ -44,7 +44,6 @@ public class JavaClass2DatatypeAdaptor extends AbstractDatatype {
         this(clazz.getName());
     }
 
-    @Override
     public String getJavaClassName() {
         return javaClassName;
     }

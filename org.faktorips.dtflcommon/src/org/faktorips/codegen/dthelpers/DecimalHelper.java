@@ -39,6 +39,11 @@ public class DecimalHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return Decimal.class.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();

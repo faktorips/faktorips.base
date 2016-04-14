@@ -33,12 +33,9 @@ public class GregorianCalendarControlFactory extends AbstractDateTimeControlFact
         super();
     }
 
-    @SuppressWarnings("deprecation")
-    // this is only for compatibility to this deprecation
     @Override
     public boolean isFactoryFor(ValueDatatype datatype) {
-        return Datatype.GREGORIAN_CALENDAR.equals(datatype) || Datatype.GREGORIAN_CALENDAR_DATE.equals(datatype)
-                || LocalDateDatatype.DATATYPE.equals(datatype);
+        return Datatype.GREGORIAN_CALENDAR.equals(datatype) || LocalDateDatatype.DATATYPE.equals(datatype);
     }
 
     @Override

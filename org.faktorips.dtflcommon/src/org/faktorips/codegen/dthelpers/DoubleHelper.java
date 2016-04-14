@@ -36,6 +36,11 @@ public class DoubleHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return Double.class.getName();
+    }
+
+    @Override
     protected JavaCodeFragment valueOfExpression(String expression) {
         return newInstance(expression);
     }

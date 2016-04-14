@@ -38,6 +38,11 @@ public class StringHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return String.class.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (value == null) {
             return nullExpression();

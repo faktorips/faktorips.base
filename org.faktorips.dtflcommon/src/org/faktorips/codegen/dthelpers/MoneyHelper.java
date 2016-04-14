@@ -39,6 +39,11 @@ public class MoneyHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return Money.class.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();

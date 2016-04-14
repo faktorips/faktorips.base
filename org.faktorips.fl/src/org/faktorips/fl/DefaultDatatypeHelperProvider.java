@@ -31,6 +31,7 @@ public class DefaultDatatypeHelperProvider implements DatatypeHelperProvider<Jav
         helpers.put(Datatype.BOOLEAN, DatatypeHelper.BOOLEAN);
         helpers.put(Datatype.STRING, DatatypeHelper.STRING);
         helpers.put(Datatype.DECIMAL, DatatypeHelper.DECIMAL);
+        helpers.put(Datatype.BIG_DECIMAL, DatatypeHelper.BIG_DECIMAL);
         helpers.put(Datatype.MONEY, DatatypeHelper.MONEY);
 
         helpers.put(Datatype.PRIMITIVE_BOOLEAN, DatatypeHelper.PRIMITIVE_BOOLEAN);
@@ -43,6 +44,10 @@ public class DefaultDatatypeHelperProvider implements DatatypeHelperProvider<Jav
     @Override
     public DatatypeHelper getDatatypeHelper(Datatype datatype) {
         return helpers.get(datatype);
+    }
+
+    public void put(Datatype type, DatatypeHelper helper) {
+        helpers.put(type, helper);
     }
 
 }

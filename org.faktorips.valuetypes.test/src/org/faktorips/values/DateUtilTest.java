@@ -69,10 +69,11 @@ public class DateUtilTest {
     @Test
     public void tesIsIsoDateTime() {
         assertFalse(DateUtil.isIsoDateTime(null));
-        assertFalse(DateUtil.isIsoDateTime("2008-01-01 1:2:3"));
-        assertFalse(DateUtil.isIsoDateTime("01-01-2008 23:59:59"));
-        assertTrue(DateUtil.isIsoDateTime("2008-01-01 00:00:00"));
-        assertTrue(DateUtil.isIsoDateTime("2015-10-06 20:01:00"));
+        assertFalse(DateUtil.isIsoDateTime("2008-01-01T1:2:3"));
+        assertFalse(DateUtil.isIsoDateTime("01-01-2008T23:59:59"));
+        assertFalse(DateUtil.isIsoDateTime("2008-01-01 00:00:00"));
+        assertTrue(DateUtil.isIsoDateTime("2008-01-01T00:00:00"));
+        assertTrue(DateUtil.isIsoDateTime("2015-10-06T20:01:00"));
     }
 
     @Test
@@ -86,6 +87,7 @@ public class DateUtilTest {
 
     @Test
     public void testParseIsoDateStringToGregorianCalendar() {
+        assertNull(DateUtil.parseIsoDateStringToGregorianCalendar(null));
         assertNull(DateUtil.parseIsoDateStringToGregorianCalendar(""));
         GregorianCalendar date = new GregorianCalendar(2005, 8, 9);
         assertEquals(date, DateUtil.parseIsoDateStringToGregorianCalendar("2005-09-09"));
@@ -94,8 +96,14 @@ public class DateUtilTest {
         assertEquals(date, DateUtil.parseIsoDateStringToGregorianCalendar("2005-10-10"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseIsoDateStringToGregorianCalendar_InvalidFormat() {
+        DateUtil.parseIsoDateStringToGregorianCalendar("10-10-10");
+    }
+
     @Test
     public void testParseIsoDateStringToDate() {
+        assertNull(DateUtil.parseIsoDateStringToDate(null));
         assertNull(DateUtil.parseIsoDateStringToDate(""));
         Date date = new GregorianCalendar(2005, 8, 9).getTime();
         assertEquals(date, DateUtil.parseIsoDateStringToDate("2005-09-09"));
@@ -104,16 +112,36 @@ public class DateUtilTest {
         assertEquals(date, DateUtil.parseIsoDateStringToDate("2005-10-10"));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseIsoDateStringToDate_InvalidFormat() {
+        DateUtil.parseIsoDateStringToDate("10-10-10");
+    }
+
+    @Test
+    public void testParseIsoDateStringToDate_WithMoreThreads() {
+        Thread t1 = new Thread(new Task());
+        Thread t2 = new Thread(new Task());
+
+        t1.start();
+        t2.start();
+    }
+
     @Test
     public void testParseIsoDateTimeStringToDate() {
+        assertNull(DateUtil.parseIsoDateTimeStringToDate(null));
         assertNull(DateUtil.parseIsoDateTimeStringToDate(""));
         Date date = new GregorianCalendar(2005, 8, 9, 1, 2, 3).getTime();
-        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-09-09 01:02:03"));
-        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-9-9 01:02:03"));
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-09-09T01:02:03"));
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-9-9T01:02:03"));
         date = new GregorianCalendar(2005, 9, 10, 1, 2, 3).getTime();
-        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10 01:02:03"));
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10T01:02:03"));
         date = new GregorianCalendar(2005, 9, 10, 20, 2, 3).getTime();
-        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10 20:02:03"));
+        assertEquals(date, DateUtil.parseIsoDateTimeStringToDate("2005-10-10T20:02:03"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testParseIsoDateTimeStringToDate_InvalidFormat() {
+        DateUtil.parseIsoDateTimeStringToDate("10-10-10T20:02:03");
     }
 
     @Test
@@ -188,15 +216,13 @@ public class DateUtilTest {
     }
 
     @Test
-    public void testParseIsoDateStringToDate_WithMoreThreads() {
-        Thread t1 = new Thread(new Task());
-        Thread t2 = new Thread(new Task());
-
-        t1.start();
-        t2.start();
+    public void testDateToIsoDateTimeString() {
+        assertEquals("", DateUtil.dateToIsoDateTimeString(null));
+        Date date = new GregorianCalendar(2009, 0, 1, 0, 0, 0).getTime();
+        assertEquals("2009-01-01T00:00:00", DateUtil.dateToIsoDateTimeString(date));
     }
 
-    private class Task implements Runnable {
+    private static class Task implements Runnable {
 
         @Override
         public void run() {

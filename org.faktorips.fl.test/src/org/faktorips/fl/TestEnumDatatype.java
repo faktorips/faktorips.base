@@ -134,14 +134,6 @@ public class TestEnumDatatype extends AbstractDatatype implements EnumDatatype {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getJavaClassName() {
-        return TestEnum.class.getName();
-    }
-
     @Override
     public boolean isNull(String value) {
         return false;

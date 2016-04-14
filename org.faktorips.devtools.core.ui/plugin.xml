@@ -2950,6 +2950,9 @@
          <ControlFactory
                class="org.faktorips.devtools.core.ui.controlfactories.TimeControlFactory">
          </ControlFactory>
+         <ControlFactory
+               class="org.faktorips.devtools.core.ui.controlfactories.MonthDayControlFactory">
+         </ControlFactory>
       </extension>
 
 	<!-- Extension Points Model Search -->
@@ -3091,6 +3094,12 @@
                class="org.faktorips.devtools.core.ui.inputformat.EnumDatatypeInputFormatFactory">
             <datatype
                   class="org.faktorips.datatype.EnumDatatype">
+            </datatype>
+         </inputformat>
+         <inputformat
+               class="org.faktorips.devtools.core.ui.inputformat.MonthDayISOStringFormatFactory">
+            <datatype
+                  class="org.faktorips.datatype.joda.MonthDayDatatype">
             </datatype>
          </inputformat>     
                   

@@ -31,11 +31,6 @@ public class PrimitiveIntegerDatatype extends AbstractPrimitiveDatatype implemen
     }
 
     @Override
-    public String getJavaClassName() {
-        return "int"; //$NON-NLS-1$
-    }
-
-    @Override
     public String getDefaultValue() {
         return "0"; //$NON-NLS-1$
     }

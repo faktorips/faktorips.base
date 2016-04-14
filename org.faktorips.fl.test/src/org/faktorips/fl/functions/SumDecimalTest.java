@@ -10,6 +10,9 @@
 
 package org.faktorips.fl.functions;
 
+import org.faktorips.codegen.DatatypeHelper;
+import org.faktorips.codegen.dthelpers.ArrayOfValueDatatypeHelper;
+import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.values.Decimal;
 import org.junit.Before;
@@ -29,6 +32,8 @@ public class SumDecimalTest extends FunctionAbstractTest {
     public void test() throws Exception {
         registerFunction(new SumDecimal("SUM", ""));
         DecimalTestArrayFct testFct = new DecimalTestArrayFct();
+        putDatatypeHelper(testFct.getType(), new ArrayOfValueDatatypeHelper((ArrayOfValueDatatype)testFct.getType(),
+                DatatypeHelper.DECIMAL));
         testFct.setValues(new Decimal[] { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) });
         registerFunction(testFct);
         execAndTestSuccessfull("SUM(DECIMALTESTARRAY())", Decimal.valueOf("42"), Datatype.DECIMAL);

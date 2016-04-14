@@ -35,12 +35,12 @@ import org.faktorips.fl.functions.Round;
 import org.faktorips.fl.functions.SqrtDecimal;
 import org.faktorips.fl.functions.TextFunction;
 import org.faktorips.fl.functions.WholeNumber;
-import org.faktorips.fl.functions.joda.Date;
-import org.faktorips.fl.functions.joda.Days;
-import org.faktorips.fl.functions.joda.Days360;
-import org.faktorips.fl.functions.joda.Months;
-import org.faktorips.fl.functions.joda.Weeks;
-import org.faktorips.fl.functions.joda.Years;
+import org.faktorips.fl.functions.date.Date;
+import org.faktorips.fl.functions.date.Days;
+import org.faktorips.fl.functions.date.Days360;
+import org.faktorips.fl.functions.date.Months;
+import org.faktorips.fl.functions.date.Weeks;
+import org.faktorips.fl.functions.date.Years;
 
 /**
  * A {@link FunctionResolver} that supports Excel functions. The functions are available in

@@ -43,6 +43,7 @@ import org.faktorips.devtools.core.model.type.ITypeHierarchy;
 import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.type.TypeValidations;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.DatatypeComparator;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Element;
@@ -564,12 +565,7 @@ public abstract class Type extends BaseIpsObject implements IType {
 
     @Override
     public int compareTo(Datatype o) {
-        return 0;
-    }
-
-    @Override
-    public String getJavaClassName() {
-        throw new UnsupportedOperationException("getJavaClassName is not supported by " + getClass()); //$NON-NLS-1$
+        return DatatypeComparator.doCompare(this, o);
     }
 
     @Override
@@ -806,7 +802,7 @@ public abstract class Type extends BaseIpsObject implements IType {
     }
 
     protected abstract static class AbstractAssociationFinder<T extends IAssociation> extends
-            TypeHierarchyVisitor<IType> {
+    TypeHierarchyVisitor<IType> {
 
         private List<T> associationsFound = new ArrayList<T>();
         private final boolean superTypeFirst;

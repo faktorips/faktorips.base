@@ -42,7 +42,7 @@ public class GreaterThanTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testDecimalInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("7.2 > WHOLENUMBER(7.0)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7.0 > WHOLENUMBER(7.0)", Boolean.FALSE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7.1 > WHOLENUMBER(8.0)", Boolean.FALSE, Datatype.BOOLEAN);
@@ -50,7 +50,7 @@ public class GreaterThanTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntegerDecimal() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("WHOLENUMBER(7.0) > 6.5", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7.0) > 7.0", Boolean.FALSE, Datatype.BOOLEAN);
         execAndTestSuccessfull("WHOLENUMBER(7.0) > 8.0", Boolean.FALSE, Datatype.BOOLEAN);
@@ -65,7 +65,7 @@ public class GreaterThanTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntInteger() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("7 > WHOLENUMBER(3)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 > WHOLENUMBER(7)", Boolean.FALSE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 > WHOLENUMBER(8)", Boolean.FALSE, Datatype.BOOLEAN);
@@ -73,7 +73,7 @@ public class GreaterThanTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testIntegerInt() throws Exception {
-        compiler.add(new ExcelFunctionsResolver(Locale.ENGLISH));
+        getCompiler().add(new ExcelFunctionsResolver(Locale.ENGLISH));
         execAndTestSuccessfull("7 > WHOLENUMBER(3)", Boolean.TRUE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 > WHOLENUMBER(7)", Boolean.FALSE, Datatype.BOOLEAN);
         execAndTestSuccessfull("7 > WHOLENUMBER(8)", Boolean.FALSE, Datatype.BOOLEAN);

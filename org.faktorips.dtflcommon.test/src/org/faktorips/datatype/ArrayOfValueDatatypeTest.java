@@ -48,10 +48,4 @@ public class ArrayOfValueDatatypeTest {
         assertEquals(datatype.getBasicDatatype().getQualifiedName() + "[][]", datatype.getQualifiedName()); //$NON-NLS-1$
     }
 
-    @Test
-    public void testGetJavaClassName() {
-        ArrayOfValueDatatype datatype = new ArrayOfValueDatatype(Datatype.MONEY, 2);
-        assertEquals(datatype.getBasicDatatype().getJavaClassName() + "[][]", datatype.getJavaClassName()); //$NON-NLS-1$
-    }
-
 }

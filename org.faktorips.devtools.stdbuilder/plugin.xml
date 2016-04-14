@@ -179,6 +179,22 @@
                name="additionalAnnotations"
                type="string">
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="joda"
+               description="%localDateDatatypeHelperVariantDescription"
+               disableValue="joda"
+               label="Local date datetype helper variant"
+               name="localDateDatatypeHelperVariant"
+               type="enum">
+            <discreteValues>
+               <value
+                     value="joda">
+               </value>
+               <value
+                     value="java8">
+               </value>
+            </discreteValues>
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension

@@ -10,21 +10,17 @@
 
 package org.faktorips.datatype.classtypes;
 
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 
 /**
  * Datatype for Strings.
  * 
  * @author Jan Ortmann
  */
-public class StringDatatype extends ValueClassDatatype {
+public class StringDatatype extends ValueClassNameDatatype {
 
     public StringDatatype() {
-        super(String.class);
-    }
-
-    public StringDatatype(String name) {
-        super(String.class, name);
+        super(String.class.getSimpleName());
     }
 
     /**

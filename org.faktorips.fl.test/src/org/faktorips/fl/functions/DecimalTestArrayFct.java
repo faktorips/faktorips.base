@@ -50,7 +50,7 @@ public class DecimalTestArrayFct extends AbstractFlFunction {
             return new CompilationResultImpl(fragment, getType());
         }
         fragment.append("new ");
-        fragment.appendClassName(Datatype.DECIMAL.getJavaClassName());
+        fragment.appendClassName(getJavaClassName(Datatype.DECIMAL));
         fragment.append("[] {");
         for (int i = 0; i < values.length; i++) {
             if (i > 0) {

@@ -12,21 +12,17 @@ package org.faktorips.datatype.classtypes;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 
 /**
  * Datatype for <code>Long</code>.
  * 
  * @author Jan Ortmann
  */
-public class LongDatatype extends ValueClassDatatype implements NumericDatatype {
+public class LongDatatype extends ValueClassNameDatatype implements NumericDatatype {
 
     public LongDatatype() {
-        super(Long.class);
-    }
-
-    public LongDatatype(String name) {
-        super(Long.class, name);
+        super(Long.class.getSimpleName());
     }
 
     @Override

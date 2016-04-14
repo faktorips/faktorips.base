@@ -12,21 +12,17 @@ package org.faktorips.datatype.classtypes;
 
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.NumericDatatype;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 
 /**
  * Datatype for <code>Integer</code>.
  * 
  * @author Jan Ortmann
  */
-public class IntegerDatatype extends ValueClassDatatype implements NumericDatatype {
+public class IntegerDatatype extends ValueClassNameDatatype implements NumericDatatype {
 
     public IntegerDatatype() {
-        super(Integer.class);
-    }
-
-    public IntegerDatatype(String name) {
-        super(Integer.class, name);
+        super(Integer.class.getSimpleName());
     }
 
     @Override

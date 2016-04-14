@@ -12,7 +12,6 @@ package org.faktorips.datatype.joda;
 import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueClassNameDatatype;
-import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.values.DateUtil;
 
 /**
@@ -20,11 +19,12 @@ import org.faktorips.values.DateUtil;
  */
 public class LocalDateDatatype extends ValueClassNameDatatype {
 
-    public static final String ORG_JODA_TIME_LOCAL_DATE = "org.joda.time.LocalDate"; //$NON-NLS-1$
-    public static final ValueDatatype DATATYPE = new LocalDateDatatype();
+    public static final LocalDateDatatype DATATYPE = new LocalDateDatatype();
+
+    private static final String NAME = "LocalDate"; //$NON-NLS-1$
 
     public LocalDateDatatype() {
-        super(ORG_JODA_TIME_LOCAL_DATE);
+        super(NAME);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class OrTest extends FunctionAbstractTest {
     public void setUp() throws Exception {
         super.setUp();
         registerFunction(new Or("OR", ""));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
     }
 
     @Test

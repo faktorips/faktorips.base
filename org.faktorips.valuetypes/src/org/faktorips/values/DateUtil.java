@@ -30,7 +30,7 @@ public class DateUtil {
     private static final ThreadLocal<SimpleDateFormat> ISO_DATE_TIME_FORMAT = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("yy-MM-dd HH:mm:ss");
+            return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         }
     };
 
@@ -52,7 +52,7 @@ public class DateUtil {
     private static final String REGEX_ISO_TIME = "([01]\\d|[2][0-3]):([0-5]\\d):([0-5]\\d)";
     private static final Pattern PATERN_ISO_DATE = Pattern.compile("^" + REGEX_ISO_DATE + "$");
     private static final Pattern PATERN_ISO_TIME = Pattern.compile("^" + REGEX_ISO_TIME + "$");
-    private static final Pattern PATERN_ISO_DATE_TIME = Pattern.compile("^" + REGEX_ISO_DATE + " " + REGEX_ISO_TIME
+    private static final Pattern PATERN_ISO_DATE_TIME = Pattern.compile("^" + REGEX_ISO_DATE + "T" + REGEX_ISO_TIME
             + "$");
 
     private DateUtil() {
@@ -89,7 +89,7 @@ public class DateUtil {
         if (date == null) {
             return "";
         }
-        return String.format("%1$tF %1$tT", date);
+        return String.format("%1$tFT%1$tT", date);
     }
 
     /**
@@ -154,6 +154,11 @@ public class DateUtil {
         if (s == null || "".equals(s)) {
             return null;
         }
+
+        if (!isIsoDate(s)) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a date!");
+        }
+
         try {
             return ISO_DATE_FORMAT.get().parse(s);
         } catch (ParseException e) {
@@ -168,6 +173,10 @@ public class DateUtil {
         if (s == null || "".equals(s)) {
             return null;
         }
+        if (!isIsoDateTime(s)) {
+            throw new IllegalArgumentException("Can't parse " + s + " to a date and time!");
+        }
+
         try {
             return ISO_DATE_TIME_FORMAT.get().parse(s);
         } catch (ParseException e) {

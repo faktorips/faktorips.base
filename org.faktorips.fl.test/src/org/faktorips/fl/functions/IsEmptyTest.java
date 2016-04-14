@@ -24,7 +24,7 @@ public class IsEmptyTest extends FunctionAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
         registerFunction(new IsEmpty("ISEMPTY", ""));
     }
 

@@ -13,7 +13,7 @@ package org.faktorips.datatype.classtypes;
 import java.math.BigDecimal;
 
 import org.faktorips.datatype.NumericDatatype;
-import org.faktorips.datatype.ValueClassDatatype;
+import org.faktorips.datatype.ValueClassNameDatatype;
 import org.faktorips.values.Money;
 
 /**
@@ -21,14 +21,10 @@ import org.faktorips.values.Money;
  * 
  * @author Jan Ortmann
  */
-public class MoneyDatatype extends ValueClassDatatype implements NumericDatatype {
+public class MoneyDatatype extends ValueClassNameDatatype implements NumericDatatype {
 
     public MoneyDatatype() {
-        super(Money.class);
-    }
-
-    public MoneyDatatype(String name) {
-        super(Money.class, name);
+        super(Money.class.getSimpleName());
     }
 
     @Override

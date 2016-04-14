@@ -27,7 +27,7 @@ public class DecimalTestArrayFctTest extends FunctionAbstractTest {
         DecimalTestArrayFct testFct = new DecimalTestArrayFct();
         testFct.setValues(new Decimal[] { Decimal.valueOf(10, 0), Decimal.valueOf(32, 0) });
         registerFunction(testFct);
-        CompilationResult<JavaCodeFragment> result = compiler.compile("DECIMALTESTARRAY()");
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("DECIMALTESTARRAY()");
         if (result.failed()) {
             System.out.println(result);
         }
@@ -39,7 +39,7 @@ public class DecimalTestArrayFctTest extends FunctionAbstractTest {
         DecimalTestArrayFct testFct = new DecimalTestArrayFct();
         testFct.setValues(null);
         registerFunction(testFct);
-        CompilationResult<JavaCodeFragment> result = compiler.compile("DECIMALTESTARRAY()");
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile("DECIMALTESTARRAY()");
         if (result.failed()) {
             System.out.println(result);
         }

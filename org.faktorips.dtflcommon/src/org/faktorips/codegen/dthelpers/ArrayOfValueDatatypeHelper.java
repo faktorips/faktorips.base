@@ -10,6 +10,7 @@
 
 package org.faktorips.codegen.dthelpers;
 
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.datatype.ArrayOfValueDatatype;
 import org.faktorips.datatype.Datatype;
@@ -22,12 +23,30 @@ import org.faktorips.datatype.Datatype;
  */
 public class ArrayOfValueDatatypeHelper extends AbstractDatatypeHelper {
 
-    public ArrayOfValueDatatypeHelper() {
-        super();
+    private final DatatypeHelper elementDatatypeHelper;
+
+    public ArrayOfValueDatatypeHelper(ArrayOfValueDatatype datatype, DatatypeHelper elementDatatypeHelper) {
+        super(datatype);
+        this.elementDatatypeHelper = elementDatatypeHelper;
     }
 
-    public ArrayOfValueDatatypeHelper(Datatype datatype) {
-        super(datatype);
+    @Override
+    public void setDatatype(Datatype datatype) {
+        throw new UnsupportedOperationException("Changing datatype is not allowed for ArrayOfValueDatatypeHelper"); //$NON-NLS-1$
+    }
+
+    @Override
+    public ArrayOfValueDatatype getDatatype() {
+        return (ArrayOfValueDatatype)super.getDatatype();
+    }
+
+    @Override
+    public String getJavaClassName() {
+        StringBuffer buffer = new StringBuffer(elementDatatypeHelper.getJavaClassName());
+        for (int i = 0; i < getDatatype().getDimension(); i++) {
+            buffer.append("[]"); //$NON-NLS-1$
+        }
+        return buffer.toString();
     }
 
     /**

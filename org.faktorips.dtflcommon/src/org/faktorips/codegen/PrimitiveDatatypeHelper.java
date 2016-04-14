@@ -23,4 +23,13 @@ public interface PrimitiveDatatypeHelper extends DatatypeHelper {
      * @throws IllegalArgumentException if expression is null.
      */
     public JavaCodeFragment toWrapper(JavaCodeFragment expression);
+
+    /**
+     * Retrieves the {@link DatatypeHelper} for the wrapper type of the primitive type for which
+     * this helper is responsible.
+     * 
+     * @return The {@link DatatypeHelper} of the not primitive wrapper type
+     */
+    public DatatypeHelper getWrapperTypeHelper();
+
 }

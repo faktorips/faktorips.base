@@ -87,12 +87,4 @@ public class TestPropertyDatatype extends AbstractDatatype implements PropertyDa
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getJavaClassName() {
-        return null;
-    }
-
 }

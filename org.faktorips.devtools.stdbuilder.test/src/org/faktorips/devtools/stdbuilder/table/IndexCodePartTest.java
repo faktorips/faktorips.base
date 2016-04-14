@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.faktorips.datatype.Datatype;
+import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.tablestructure.ColumnRangeType;
 import org.faktorips.devtools.core.model.tablestructure.IColumn;
@@ -45,9 +45,9 @@ public class IndexCodePartTest {
 
     @Before
     public void mockProjectDatatypes() {
-        when(ipsProject.findDatatype("Integer")).thenReturn(Datatype.INTEGER);
-        when(ipsProject.findDatatype("String")).thenReturn(Datatype.STRING);
-        when(ipsProject.findDatatype("Money")).thenReturn(Datatype.MONEY);
+        when(ipsProject.findDatatypeHelper("Integer")).thenReturn(DatatypeHelper.INTEGER);
+        when(ipsProject.findDatatypeHelper("String")).thenReturn(DatatypeHelper.STRING);
+        when(ipsProject.findDatatypeHelper("Money")).thenReturn(DatatypeHelper.MONEY);
     }
 
     @Test

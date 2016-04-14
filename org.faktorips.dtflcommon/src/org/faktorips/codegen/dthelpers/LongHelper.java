@@ -38,6 +38,11 @@ public class LongHelper extends AbstractDatatypeHelper {
     }
 
     @Override
+    public String getJavaClassName() {
+        return Long.class.getName();
+    }
+
+    @Override
     public JavaCodeFragment newInstance(String value) {
         if (StringUtils.isEmpty(value)) {
             return nullExpression();

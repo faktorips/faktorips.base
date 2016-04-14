@@ -25,7 +25,7 @@ public class GreaterOrEqualDecimalDecimalTest extends JavaExprCompilerAbstractTe
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(toArray(new GreaterThanOrEqualDecimalDecimal()));
+        getCompiler().setBinaryOperations(toArray(new GreaterThanOrEqualDecimalDecimal()));
     }
 
     @Test

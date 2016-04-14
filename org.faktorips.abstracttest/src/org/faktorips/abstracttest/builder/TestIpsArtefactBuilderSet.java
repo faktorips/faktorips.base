@@ -20,11 +20,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
 import org.faktorips.devtools.core.builder.flidentifier.AbstractIdentifierResolver;
 import org.faktorips.devtools.core.builder.flidentifier.IdentifierNodeGeneratorFactory;
-import org.faktorips.devtools.core.model.enums.EnumTypeDatatypeAdapter;
 import org.faktorips.devtools.core.model.ipsproject.IBuilderKindId;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilder;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSetConfig;
@@ -188,8 +188,8 @@ public class TestIpsArtefactBuilderSet extends DefaultBuilderSet {
     }
 
     @Override
-    public DatatypeHelper getDatatypeHelperForEnumType(EnumTypeDatatypeAdapter datatypeAdapter) {
-        return (DatatypeHelper)testObjectsMap.get(datatypeAdapter);
+    public DatatypeHelper getDatatypeHelper(Datatype datatype) {
+        return (DatatypeHelper)testObjectsMap.get(datatype);
     }
 
     private final class TestParameterIdentifierResolver extends AbstractIdentifierResolver<JavaCodeFragment> {

@@ -62,7 +62,7 @@ public class ProductAttributeConditionType extends AbstractAttributeConditionTyp
 
         ValueDatatype valueDatatype = getValueDatatype(searchableElement);
 
-        if (String.class.getName().equals(valueDatatype.getJavaClassName())) {
+        if (ValueDatatype.STRING.equals(valueDatatype)) {
             searchOperatorTypes.addAll(Arrays.asList(LikeSearchOperatorType.values()));
         }
 

@@ -33,7 +33,7 @@ public class CountTest extends FunctionAbstractTest {
         resolver.register("hsVertrag.Deckung", new JavaCodeFragment("hsVertrag.getDeckungen()"),
                 new ListOfTypeDatatype(Datatype.STRING));
         resolver.register("hsVertrag.VersSumme", new JavaCodeFragment("hsVertrag.VersSumme"), Datatype.MONEY);
-        compiler.setIdentifierResolver(resolver);
+        getCompiler().setIdentifierResolver(resolver);
     }
 
     /**
@@ -41,7 +41,7 @@ public class CountTest extends FunctionAbstractTest {
      * datatype is the expected one.
      */
     private void compileSuccessfull(String expression, String expectedValue) throws Exception {
-        CompilationResult<JavaCodeFragment> result = compiler.compile(expression);
+        CompilationResult<JavaCodeFragment> result = getCompiler().compile(expression);
         if (result.failed()) {
             System.out.println(result);
         }

@@ -31,10 +31,10 @@ public class NotTest extends FunctionAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setEnsureResultIsObject(false);
         registerFunction(new Not("NOT", ""));
         registerFunction(new NotBoolean("NOT", ""));
-        compiler.setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
+        getCompiler().setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
 
             @Override
             public CompilationResult<JavaCodeFragment> compile(String identifier,

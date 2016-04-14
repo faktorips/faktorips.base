@@ -30,7 +30,6 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.codegen.DatatypeHelper;
 import org.faktorips.codegen.JavaCodeFragment;
 import org.faktorips.codegen.JavaCodeFragmentBuilder;
-import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.builder.DefaultJavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.TypeSection;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
@@ -202,8 +201,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         }
 
         for (int i = 0; i < firstkeyItems.length; i++) {
-            Datatype firstDatatype = getDatatypeForKeyName(firstkeyItems[i]);
-            Datatype secondDatatype = getDatatypeForKeyName(secondkeyItems[i]);
+            DatatypeHelper firstDatatype = getDatatypeHelperForKeyName(firstkeyItems[i]);
+            DatatypeHelper secondDatatype = getDatatypeHelperForKeyName(secondkeyItems[i]);
             if (firstDatatype == null || secondDatatype == null) {
                 // compare failed beacause of missing datatypes
                 return false;
@@ -382,7 +381,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
 
         codeBuilder.method(Modifier.PUBLIC | Modifier.STATIC | Modifier.FINAL, qualifiedClassName, "getInstance",
                 new String[] { "repository", "qualifiedTableName" }, new String[] { IRuntimeRepository.class.getName(),
-                        String.class.getName() }, methodBody, getLocalizedText(GET_INSTANCE_JAVADOC),
+                String.class.getName() }, methodBody, getLocalizedText(GET_INSTANCE_JAVADOC),
                 ANNOTATION_GENERATED);
     }
 
@@ -414,10 +413,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
             methodBody.append(i);
             methodBody.append(");");
             IColumn column = columns[i];
-            Datatype columnDatatype = findDatatype(column.getDatatype(), column.getIpsProject());
-            DatatypeHelper helper = getTableStructure().getIpsProject().getDatatypeHelper(columnDatatype);
+            DatatypeHelper helper = findDatatypeHelper(column.getDatatype(), column.getIpsProject());
 
-            methodBody.appendClassName(columnDatatype.getJavaClassName());
+            methodBody.appendClassName(helper.getJavaClassName());
             methodBody.append(' ');
             methodBody.append(StringUtils.uncapitalize(column.getName()));
             methodBody.append(" = ");
@@ -455,10 +453,10 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         codeBuilder.javaDoc(getLocalizedText(ADD_ROW_JAVADOC), ANNOTATION_GENERATED);
         appendOverrideAnnotation(codeBuilder, false);
         codeBuilder.methodBegin(Modifier.PROTECTED, Void.TYPE.getName(), "addRow", new String[] { "values",
-                "productRepository" },
-                new String[] {
-                        isUseTypesafeCollections() ? List.class.getName() + "<" + String.class.getName() + ">"
-                                : List.class.getName(), IRuntimeRepository.class.getName() });
+        "productRepository" },
+        new String[] {
+            isUseTypesafeCollections() ? List.class.getName() + "<" + String.class.getName() + ">"
+                    : List.class.getName(), IRuntimeRepository.class.getName() });
         codeBuilder.append(methodBody);
         codeBuilder.methodEnd();
     }
@@ -770,7 +768,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (String keyName : keyClassParameterNames) {
             methodBody.append("result = 37 * result + ");
             methodBody.append("((").append(keyName).append(" == null) ? 0 : ").append(keyName)
-                    .appendln(".hashCode());");
+            .appendln(".hashCode());");
         }
         methodBody.appendln("return result;");
 
@@ -891,7 +889,7 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         methodBody.append("try").appendOpenBracket();
         methodBody.append(createFindMethodBody(getMethodNameFindExistingRow(methodNameSuffix), index, ""));
         methodBody.appendCloseBracket().appendln("catch (").appendClassName(NoSuchElementException.class).append(" e)")
-                .appendOpenBracket();
+        .appendOpenBracket();
         methodBody.append("throw new ");
         methodBody.appendClassName(IllegalArgumentException.class);
         methodBody.append("(");
@@ -945,9 +943,9 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         for (IKeyItem keyItem : index.getKeyItems()) {
             if (i == 0 && !keyItem.isRange()) {
                 methodBody
-                        .append(".get(")
-                        .append(createKeyInstantiation(indexCodePart.getIndexClassName(),
-                                indexCodePart.getIndexClassParameterNames())).append(")");
+                .append(".get(")
+                .append(createKeyInstantiation(indexCodePart.getIndexClassName(),
+                        indexCodePart.getIndexClassParameterNames())).append(")");
             } else if (keyItem.isRange()) {
                 methodBody.append(".get(").append(indexCodePart.getAllItemParameterNames().get(i)).append(")");
             }
@@ -977,21 +975,20 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return fragment;
     }
 
-    private Datatype getDatatypeForKeyName(String keyName) {
+    private DatatypeHelper getDatatypeHelperForKeyName(String keyName) {
         IColumn column = getTableStructure().getColumn(keyName);
         if (column != null) {
-            return findDatatype(column.getDatatype(), column.getIpsProject());
+            return findDatatypeHelper(column.getDatatype(), column.getIpsProject());
         }
         IColumnRange range = getTableStructure().getRange(keyName);
         if (range != null) {
-            return findDatatype(range.getDatatype(), range.getIpsProject());
+            return findDatatypeHelper(range.getDatatype(), range.getIpsProject());
         }
         throw new RuntimeException("Unable to find column or columnRange for keyItemName: " + keyName);
     }
 
     private String getJavaClassName(String keyName) {
-        Datatype datatypeForKeyName;
-        datatypeForKeyName = getDatatypeForKeyName(keyName);
+        DatatypeHelper datatypeForKeyName = getDatatypeHelperForKeyName(keyName);
         if (datatypeForKeyName != null) {
             return datatypeForKeyName.getJavaClassName();
         } else {
@@ -1008,8 +1005,8 @@ public class TableImplBuilder extends DefaultJavaSourceFileBuilder {
         return docTags;
     }
 
-    static Datatype findDatatype(String name, IIpsProject ipsProject) {
-        return ipsProject.findDatatype(name);
+    static DatatypeHelper findDatatypeHelper(String name, IIpsProject ipsProject) {
+        return ipsProject.findDatatypeHelper(name);
     }
 
     @Override

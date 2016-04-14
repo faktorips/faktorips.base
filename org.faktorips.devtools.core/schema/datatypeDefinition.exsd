@@ -1,16 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.faktorips.plugin">
+<schema targetNamespace="org.faktorips.plugin" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
-      <appInfo>
+      <appinfo>
          <meta.schema plugin="org.faktorips.plugin" id="datatypeDefinition" name="DatatypeDefinition"/>
-      </appInfo>
+      </appinfo>
       <documentation>
-         
+         Defines a datatype and a default datatype helper to use with this datatype. If there is more than one helper implementation for a datatype, a helper factory can be registered using the datatypeHelperFactory extension point.
       </documentation>
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appinfo>
+            <meta.element />
+         </appinfo>
+      </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="datatypeDefinition"/>
@@ -30,69 +35,61 @@
          <attribute name="datatypeClass" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  The datatype tha is defined here.
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute kind="java" basedOn="org.faktorips.datatype.Datatype"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
          <attribute name="helperClass" type="string">
             <annotation>
                <documentation>
-                  
+                  The class of the default helper to use for the datatype.
                </documentation>
-               <appInfo>
+               <appinfo>
                   <meta.attribute kind="java" basedOn="org.faktorips.codegen.DatatypeHelper"/>
-               </appInfo>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="since"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter the first release in which this extension point appears.]
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="examples"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter extension point usage example here.]
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="apiInfo"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter API information here.]
       </documentation>
    </annotation>
 
    <annotation>
-      <appInfo>
+      <appinfo>
          <meta.section type="implementation"/>
-      </appInfo>
+      </appinfo>
       <documentation>
          [Enter information about supplied implementation of this extension point.]
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

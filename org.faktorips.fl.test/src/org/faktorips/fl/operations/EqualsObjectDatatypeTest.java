@@ -33,8 +33,8 @@ public class EqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        compiler.setBinaryOperations(toArray(new EqualsObjectDatatype(AnyDatatype.INSTANCE)));
-        compiler.setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
+        getCompiler().setBinaryOperations(toArray(new EqualsObjectDatatype(AnyDatatype.INSTANCE)));
+        getCompiler().setIdentifierResolver(new IdentifierResolver<JavaCodeFragment>() {
 
             @Override
             public CompilationResult<JavaCodeFragment> compile(String identifier,
@@ -60,24 +60,24 @@ public class EqualsObjectDatatypeTest extends JavaExprCompilerAbstractTest {
 
     @Test
     public void testDecimal() throws Exception {
-        compiler.setBinaryOperations(toArray(new EqualsObjectDatatype(Datatype.DECIMAL, Datatype.DECIMAL)));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setBinaryOperations(toArray(new EqualsObjectDatatype(Datatype.DECIMAL, Datatype.DECIMAL)));
+        getCompiler().setEnsureResultIsObject(false);
         execAndTestSuccessfull("1=2", false);
         execAndTestSuccessfull("1.0=1.0", true);
     }
 
     @Test
     public void testMoney() throws Exception {
-        compiler.setBinaryOperations(toArray(new EqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY)));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setBinaryOperations(toArray(new EqualsObjectDatatype(Datatype.MONEY, Datatype.MONEY)));
+        getCompiler().setEnsureResultIsObject(false);
         execAndTestSuccessfull("1EUR=2EUR", false);
         execAndTestSuccessfull("1.23EUR=1.23EUR", true);
     }
 
     @Test
     public void testString() throws Exception {
-        compiler.setBinaryOperations(toArray(new EqualsObjectDatatype(Datatype.STRING, Datatype.STRING)));
-        compiler.setEnsureResultIsObject(false);
+        getCompiler().setBinaryOperations(toArray(new EqualsObjectDatatype(Datatype.STRING, Datatype.STRING)));
+        getCompiler().setEnsureResultIsObject(false);
         execAndTestSuccessfull("\"abc\" = \"cde\"", false);
         execAndTestSuccessfull("\"abc\" = \"abc\"", true);
     }
