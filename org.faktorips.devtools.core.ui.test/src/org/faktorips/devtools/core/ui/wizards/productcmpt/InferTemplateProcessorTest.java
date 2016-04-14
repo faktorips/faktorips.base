@@ -33,6 +33,8 @@ import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.internal.model.productcmpt.template.PropertyValueHistograms;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProjectProperties;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
@@ -45,6 +47,7 @@ import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
 import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.values.Decimal;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,6 +104,12 @@ public class InferTemplateProcessorTest {
     @Mock
     private IProductCmptGeneration gen2;
 
+    @Mock
+    IIpsProject ipsProject;
+
+    @Mock
+    IIpsProjectProperties ipsProjectProperties;
+
     private List<IProductCmpt> productCmpts;
 
     private InferTemplateProcessor inferTemplateProcessor;
@@ -120,6 +129,11 @@ public class InferTemplateProcessorTest {
     @Before
     @SuppressWarnings("deprecation")
     public void setUp() {
+
+        when(templateGeneration.getIpsProject()).thenReturn(ipsProject);
+        when(ipsProject.getProperties()).thenReturn(ipsProjectProperties);
+        when(ipsProjectProperties.getInferredTemplateLinkThreshold()).thenReturn(Decimal.valueOf(1));
+        when(ipsProjectProperties.getInferredTemplatePropertyValueThreshold()).thenReturn(Decimal.valueOf(8, 1));
 
         when(productCmpt1.getLatestProductCmptGeneration()).thenReturn(gen1);
         when(productCmpt2.getLatestProductCmptGeneration()).thenReturn(gen2);

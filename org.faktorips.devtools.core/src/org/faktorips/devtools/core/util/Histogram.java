@@ -236,9 +236,25 @@ public class Histogram<V, E> {
     public BestValue<V> getBestValue(Decimal threshold) {
         SortedMap<V, Decimal> relativeDistribution = getRelativeDistribution();
         V candidateValue = relativeDistribution.firstKey();
-        Decimal relativeFrequency = getRelativeFrequency(relativeDistribution, candidateValue);
-        if (relativeFrequency.greaterThanOrEqual(threshold)) {
-            return new BestValue<V>(candidateValue, relativeFrequency);
+        return getBestValue(threshold, relativeDistribution, candidateValue);
+    }
+
+    /**
+     * Returns a {@link BestValue} for the given candidate value if its relative distribution in the
+     * given map is above the given threshold. Returns {@code BestValue.missingValue()} if it is
+     * not.
+     * 
+     * @param threshold the threshold to use
+     * @param relativeDistribution the sorted map containing the relative distributions
+     * @param candidateValue the candidate value from the relative distribution (i.e. a key from the
+     *            given map)
+     * @return the {@link BestValue} for the given candidate value if its relative distribution is
+     *         above the given threshold or {@code BestValue.missingValue()} if it is not
+     */
+    protected BestValue<V> getBestValue(Decimal threshold, SortedMap<V, Decimal> relativeDistribution, V candidateValue) {
+        Decimal relDist = getRelativeDistribution(relativeDistribution, candidateValue);
+        if (relDist.greaterThanOrEqual(threshold)) {
+            return new BestValue<V>(candidateValue, relDist);
         } else {
             return BestValue.<V> missingValue();
         }
@@ -251,7 +267,7 @@ public class Histogram<V, E> {
      * have an instant workaround this method returns <code>0</code> to always ignore the
      * problematic property.
      */
-    private Decimal getRelativeFrequency(SortedMap<V, Decimal> relativeDistribution, V candidateValue) {
+    protected Decimal getRelativeDistribution(SortedMap<V, Decimal> relativeDistribution, V candidateValue) {
         Decimal relDist = relativeDistribution.get(candidateValue);
         if (relDist == null) {
             IpsPlugin.log(new IpsStatus(IStatus.ERROR, "There seems to be an error in a datatype comparator: " //$NON-NLS-1$

@@ -15,7 +15,9 @@ import static org.faktorips.devtools.core.model.productcmpt.template.TemplateVal
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.common.collect.Lists;
 
@@ -24,6 +26,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
+import org.faktorips.devtools.core.internal.model.productcmpt.ProductCmpt;
 import org.faktorips.devtools.core.internal.model.productcmpt.SingleValueHolder;
 import org.faktorips.devtools.core.model.ipsobject.Modifier;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -45,6 +48,9 @@ import org.junit.Test;
 
 public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
 
+    private static final Cardinality CARDINALITY_OPTIONAL_DEFAULT_1 = new Cardinality(0, 1, 1);
+    private static final Cardinality CARDINALITY_OPTIONAL_DEFAULT_0 = new Cardinality(0, 1, 0);
+    private static final Cardinality CARDINALITY_MANDATORY = new Cardinality(1, 1, 1);
     private static final String PRODUCT_TYPE_QNAME = "ProductType";
     private static final String POLICY_TYPE_QNAME = "PolicyType";
     private static final String PRODUCT_1_QNAME = "Product1";
@@ -206,8 +212,10 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_LinksAreInheritedFromTemplate() throws CoreException {
+    public void testRun_ProductAndGenerationLinksAreInferred() throws CoreException {
         IIpsProject project = newIpsProject();
+        setLinkThreshold(project, Decimal.valueOf(1));
+
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
 
         IProductCmpt product1 = newProductCmpt(type, PRODUCT_1_QNAME);
@@ -216,7 +224,7 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
         IProductCmpt product2 = newProductCmpt(type, PRODUCT_2_QNAME);
         IProductCmptGeneration gen2 = product2.getLatestProductCmptGeneration();
 
-        Cardinality cardinality = new Cardinality(1, 1, 1);
+        Cardinality cardinality = CARDINALITY_MANDATORY;
 
         // Links on products and generations with same association, target and cardinality
         IProductCmptLink product1Link = product1.newLink(PRODUCT_ASSOCIATION);
@@ -262,90 +270,7 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testRun_OnlyLinksIdenticalInAllComponentsAreInherited() throws CoreException {
-        IIpsProject project = newIpsProject();
-        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
-
-        IProductCmpt product1 = newProductCmpt(type, PRODUCT_1_QNAME);
-        IProductCmptGeneration gen1 = product1.getLatestProductCmptGeneration();
-
-        IProductCmpt product2 = newProductCmpt(type, PRODUCT_2_QNAME);
-        IProductCmptGeneration gen2 = product2.getLatestProductCmptGeneration();
-
-        // Links on products with same association and target but different cardinality
-        IProductCmptLink product1Link = product1.newLink(PRODUCT_ASSOCIATION);
-        product1Link.setTarget("a");
-        product1Link.setCardinality(new Cardinality(1, 1, 1));
-        IProductCmptLink product2Link = product2.newLink(PRODUCT_ASSOCIATION);
-        product2Link.setTarget("a");
-        product2Link.setCardinality(new Cardinality(0, 1, 1));
-
-        // Links on generations with same association but different target
-        IProductCmptLink gen1Link = gen1.newLink(GENERATION_ASSOCIATION);
-        gen1Link.setTarget("a");
-        IProductCmptLink gen2Link = gen2.newLink(GENERATION_ASSOCIATION);
-        gen2Link.setTarget("b");
-
-        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
-        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
-
-        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Lists.newArrayList(product1,
-                product2));
-        processor.run(new NullProgressMonitor());
-
-        // Assert that no links are added to the template
-        assertThat(template.getLinksAsList().size(), is(0));
-        assertThat(templateGeneration.getLinksAsList().size(), is(0));
-
-        // Assert that links in the product components are still DEFINED
-        assertThat(product1Link.getTemplateValueStatus(), is(DEFINED));
-        assertThat(product2Link.getTemplateValueStatus(), is(DEFINED));
-        assertThat(gen1Link.getTemplateValueStatus(), is(DEFINED));
-        assertThat(gen2Link.getTemplateValueStatus(), is(DEFINED));
-    }
-
-    @Test
-    public void testRun_usesThresholdFromIpsProjectPropertiesForLinks() throws CoreException {
-        IIpsProject project = newIpsProject();
-        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
-        IProductCmpt[] products = new IProductCmpt[10];
-        IProductCmptLink[][] productLinks = new IProductCmptLink[10][11];
-        for (int i = 0; i < 10; i++) {
-            products[i] = newProductCmpt(type, "Product" + i);
-            for (int j = 1; j <= 10; j++) {
-                productLinks[i][j] = products[i].newLink(PRODUCT_ASSOCIATION + j);
-                productLinks[i][j].setTarget("a");
-                productLinks[i][j].setCardinality(new Cardinality(1, (j >= 10 - i ? 1 : i + 20), 1));
-            }
-        }
-
-        for (int t = 1; t <= 10; t++) {
-            Decimal threshold = Decimal.valueOf(t, 1);
-            setInferredTemplateLinkThreshold(project, threshold);
-
-            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
-            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
-
-            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(products));
-            processor.run(new NullProgressMonitor());
-
-            for (int j = 1; j <= 10; j++) {
-                assertThat(PRODUCT_ASSOCIATION + j + " has the same cardinality for " + j
-                        + " products and should therefor be in the template for a threshold of " + threshold, template
-                        .getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(j >= t ? 1 : 0));
-            }
-        }
-
-    }
-
-    private void setInferredTemplateLinkThreshold(IIpsProject project, Decimal threshold) throws CoreException {
-        IIpsProjectProperties properties = project.getProperties();
-        properties.setInferredTemplateLinkThreshold(threshold);
-        project.setProperties(properties);
-    }
-
-    @Test
-    public void testRun_usesThresholdFromIpsProjectPropertiesForValues() throws CoreException {
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForPopertyValues() throws CoreException {
         IIpsProject project = newIpsProject();
         IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
         IProductCmptTypeAttribute[] attributes = new IProductCmptTypeAttribute[11];
@@ -368,7 +293,7 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
 
         for (int t = 1; t <= 10; t++) {
             Decimal threshold = Decimal.valueOf(t, 1);
-            setInferredTemplatePropertyValueThreshold(project, threshold);
+            setPropertyValueThreshold(project, threshold);
 
             IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
             for (int j = 1; j <= 10; j++) {
@@ -390,9 +315,211 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
 
     }
 
-    private void setInferredTemplatePropertyValueThreshold(IIpsProject project, Decimal threshold) throws CoreException {
+    @Test
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalities() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmpt[] products = new IProductCmpt[10];
+        for (int i = 0; i < 10; i++) {
+            products[i] = newProductCmpt(type, "Product" + i);
+            for (int j = 1; j <= 10; j++) {
+                newLink(products[i], PRODUCT_ASSOCIATION + j, "a", new Cardinality(1, (j >= 10 - i ? 1 : i + 20), 1));
+            }
+        }
+
+        for (int t = 1; t <= 10; t++) {
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setLinkThreshold(project, threshold);
+
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(products));
+            processor.run(new NullProgressMonitor());
+
+            for (int j = 1; j <= 10; j++) {
+                assertThat(PRODUCT_ASSOCIATION + j + " has the same cardinality for " + j
+                        + " products and should therefor be in the template for a threshold of " + threshold, template
+                        .getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(j >= t ? 1 : 0));
+            }
+        }
+    }
+
+    @Test
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkTargets() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+
+        for (int t = 1; t <= 10; t++) {
+            List<IProductCmpt> products = addProductsAndLinks(type, t);
+            Decimal threshold = Decimal.valueOf(t, 1);
+            setLinkThreshold(project, threshold);
+
+            IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME + t);
+            IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+            InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, products);
+            processor.run(new NullProgressMonitor());
+
+            for (int j = 1; j <= 10; j++) {
+                if (j >= t) { // there should be at least t products with the same target
+                    if (t == 1) { // there is exactly one target that is referenced t+ times
+                        assertThat(PRODUCT_ASSOCIATION + j + " has the same target for " + j
+                                + " products and should therefor be in the template for a threshold of " + threshold,
+                                template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(11 - j));
+                    } else { // as the threshold is so low, all different targets are valid
+                        assertThat(PRODUCT_ASSOCIATION + j + " has the same target for " + j
+                                + " products and should therefor be in the template for a threshold of " + threshold,
+                                template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(1));
+                    }
+                } else { // no target reaches the threshold
+                    assertThat(PRODUCT_ASSOCIATION + j + " has the same target for " + j
+                            + " products and should therefor not be in the template for a threshold of " + threshold,
+                            template.getLinksAsList(PRODUCT_ASSOCIATION + j).size(), is(0));
+                }
+            }
+        }
+    }
+
+    @Test
+    public void testRun_UsesThresholdFromIpsProjectPropertiesForLinkCardinalitiesAndTargets() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
+        newLink(product1, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+        newLink(product1, PRODUCT_ASSOCIATION, "b", CARDINALITY_OPTIONAL_DEFAULT_0);
+        newLink(product1, PRODUCT_ASSOCIATION, "c", CARDINALITY_MANDATORY);
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        newLink(product2, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+        newLink(product2, PRODUCT_ASSOCIATION, "b", CARDINALITY_OPTIONAL_DEFAULT_0);
+        newLink(product2, PRODUCT_ASSOCIATION, "c", CARDINALITY_OPTIONAL_DEFAULT_1);
+        IProductCmpt product3 = newProductCmpt(type, "Product3");
+        newLink(product3, PRODUCT_ASSOCIATION, "a", CARDINALITY_OPTIONAL_DEFAULT_1);
+        newLink(product3, PRODUCT_ASSOCIATION, "b", CARDINALITY_MANDATORY);
+        newLink(product3, PRODUCT_ASSOCIATION, "c", CARDINALITY_OPTIONAL_DEFAULT_0);
+        IProductCmpt product4 = newProductCmpt(type, "Product4");
+        newLink(product4, PRODUCT_ASSOCIATION, "b", CARDINALITY_MANDATORY);
+
+        setLinkThreshold(project, Decimal.valueOf(5, 1));
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(product1,
+                product2, product3, product4));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(2));
+        IProductCmptLink linkA = template.getLinksAsList(PRODUCT_ASSOCIATION).get(0);
+        assertThat(linkA.getTarget(), is("a"));
+        assertThat(linkA.getCardinality(), is(CARDINALITY_MANDATORY));
+        IProductCmptLink linkB = template.getLinksAsList(PRODUCT_ASSOCIATION).get(1);
+        assertThat(linkB.getTarget(), is("b"));
+        // this is the cardinality of the first 2 products in the list; the second 2 would qualify
+        // as well, but the "best" hit is the first
+        assertThat(linkB.getCardinality(), is(CARDINALITY_OPTIONAL_DEFAULT_0));
+    }
+
+    private IProductCmptLink newLink(IProductCmpt productCmpt,
+            String association,
+            String target,
+            Cardinality cardinality) {
+        IProductCmptLink link = productCmpt.newLink(association);
+        link.setTarget(target);
+        link.setCardinality(cardinality);
+        return link;
+    }
+
+    private List<IProductCmpt> addProductsAndLinks(IProductCmptType type, int t) throws CoreException {
+        List<IProductCmpt> products = new ArrayList<IProductCmpt>(10);
+        for (int i = 0; i < 10; i++) {
+            ProductCmpt prod = newProductCmpt(type, "Product" + t + '_' + i);
+            products.add(prod);
+            for (int j = 1; j <= 10; j++) {
+                String target = "a" + (j >= 10 - i ? j : j + "_" + i);
+                newLink(prod, PRODUCT_ASSOCIATION + j, target, CARDINALITY_MANDATORY);
+            }
+        }
+        return products;
+    }
+
+    @Test
+    public void testRun_LinkIsInferredAndTemplateValueStatesAreAdjusted() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
+        IProductCmptLink link1 = newLink(product1, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        IProductCmptLink link2 = newLink(product2, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product3 = newProductCmpt(type, "Product3");
+        IProductCmptLink link3 = newLink(product3, PRODUCT_ASSOCIATION, "a", CARDINALITY_OPTIONAL_DEFAULT_1);
+
+        IProductCmpt product4 = newProductCmpt(type, "Product4");
+
+        setLinkThreshold(project, Decimal.valueOf(5, 1));
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(product1,
+                product2, product3, product4));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        IProductCmptLink templateLink = template.getLinksAsList(PRODUCT_ASSOCIATION).get(0);
+        assertThat(templateLink.getTarget(), is("a"));
+        assertThat(templateLink.getCardinality(), is(CARDINALITY_MANDATORY));
+
+        assertThat(link1.getTemplateValueStatus(), is(INHERITED));
+        assertThat(link2.getTemplateValueStatus(), is(INHERITED));
+        assertThat(link3.getTemplateValueStatus(), is(DEFINED));
+
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTemplateValueStatus(), is(UNDEFINED));
+    }
+
+    @Test
+    public void testRun_MissingLinksAreIgnoredForThresholdCalculation() throws CoreException {
+        IIpsProject project = newIpsProject();
+        IProductCmptType type = newProductCmptType(project, PRODUCT_TYPE_QNAME);
+
+        IProductCmpt product1 = newProductCmpt(type, "Product1");
+        newLink(product1, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product2 = newProductCmpt(type, "Product2");
+        newLink(product2, PRODUCT_ASSOCIATION, "a", CARDINALITY_MANDATORY);
+
+        IProductCmpt product3 = newProductCmpt(type, "Product3");
+        IProductCmpt product4 = newProductCmpt(type, "Product4");
+        IProductCmpt product5 = newProductCmpt(type, "Product5");
+
+        setLinkThreshold(project, Decimal.valueOf(4, 1));
+
+        IProductCmpt template = newProductTemplate(type, TEMPLATE_QNAME);
+        IProductCmptGeneration templateGeneration = template.getLatestProductCmptGeneration();
+
+        InferTemplateProcessor processor = new InferTemplateProcessor(templateGeneration, Arrays.asList(product1,
+                product2, product3, product4, product5));
+        processor.run(new NullProgressMonitor());
+
+        assertThat(template.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
+        IProductCmptLink templateLink = template.getLinksAsList(PRODUCT_ASSOCIATION).get(0);
+        assertThat(templateLink.getTarget(), is("a"));
+        assertThat(templateLink.getCardinality(), is(CARDINALITY_MANDATORY));
+    }
+
+    private void setPropertyValueThreshold(IIpsProject project, Decimal threshold) throws CoreException {
         IIpsProjectProperties properties = project.getProperties();
         properties.setInferredTemplatePropertyValueThreshold(threshold);
+        project.setProperties(properties);
+    }
+
+    private void setLinkThreshold(IIpsProject project, Decimal threshold) throws CoreException {
+        IIpsProjectProperties properties = project.getProperties();
+        properties.setInferredTemplateLinkThreshold(threshold);
         project.setProperties(properties);
     }
 

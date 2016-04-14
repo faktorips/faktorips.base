@@ -113,7 +113,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     /**
      * Sets the values in the given template generation (and the corresponding template/product
      * generation) for which a histogram is found and for which the value in that histogram has a
-     * relative distribution of at least {@link IIpsProjectProperties#getInferredTemplateLinkThreshold()}.
+     * relative distribution of at least
+     * {@link IIpsProjectProperties#getInferredTemplateLinkThreshold()}.
      */
     private void inferTemplate() {
         monitor.beginTask(Messages.InferTemplateOperation_progress_inferringTemplate, propertyValueHistograms.size()
@@ -168,8 +169,8 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
      * Sets the values of the given class to the property values of the given class in the given
      * template generation (and the corresponding product component). Only property values for which
      * a histogram is found and for which the value in that histogram has a relative distribution of
-     * at least {@link IIpsProjectProperties#getInferredTemplatePropertyValueThreshold()} are set. The value
-     * of the property value is set with the given setter.
+     * at least {@link IIpsProjectProperties#getInferredTemplatePropertyValueThreshold()} are set.
+     * The value of the property value is set with the given setter.
      */
     private void updatePropertyValues(Class<? extends IPropertyValue> propertyValueClass,
             BiConsumer<IPropertyValue, Object> setter) {
@@ -225,14 +226,14 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
     }
 
     private void updateLinks(ProductCmptLinkHistograms histograms, IProductCmptLinkContainer templateContainer) {
-        for (Entry<LinkIdentifier, Histogram<Cardinality, IProductCmptLink>> e : histograms.getEntries()) {
-            Histogram<Cardinality, IProductCmptLink> histogram = e.getValue();
-            BestValue<Cardinality> cardinality = histogram.getBestValue(getIpsProjectProperties()
+        for (Entry<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>> e : histograms.getEntries()) {
+            Histogram<Cardinality, IProductCmptLinkContainer> histogram = e.getValue();
+            BestValue<Cardinality> bestCardinality = histogram.getBestValue(getIpsProjectProperties()
                     .getInferredTemplateLinkThreshold());
-            // Only consider links that occur in all product components with the same cardinality
-            if (histogram.countElements() == productCmpts.size() && cardinality.isPresent()) {
-                addTemplateLink(templateContainer, e.getKey(), cardinality.getValue());
-                setLinksInherited(histogram.getElements(cardinality.getValue()));
+            if (bestCardinality.isPresent()) {
+                addTemplateLink(templateContainer, e.getKey(), bestCardinality.getValue());
+                updateLinkTemplateValueStates(e.getKey(), templateContainer.isChangingOverTimeContainer(),
+                        bestCardinality.getValue());
             }
             monitor.worked(1);
         }
@@ -252,10 +253,40 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
         newLink.setTemplateValueStatus(TemplateValueStatus.DEFINED);
     }
 
-    /** Set template value status of the given links to {@link TemplateValueStatus#INHERITED}. */
-    private void setLinksInherited(Set<IProductCmptLink> links) {
-        for (IProductCmptLink link : links) {
-            link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+    /**
+     * Sets the template value states for all product components or their (latest) generations for
+     * the given link identifier.
+     * <p>
+     * If the component/generation has a link for the given identifier, the link's template value
+     * status is set to {@link TemplateValueStatus#INHERITED} or {@link TemplateValueStatus#DEFINED}
+     * depending on whether or not the link's cardinality is the same as the given template
+     * cardinality.
+     * <p>
+     * If the component/generation does not have a link for the identifier, a new link is created
+     * and its template values status is set to {@link TemplateValueStatus#UNDEFINED}.
+     * 
+     * @param linkIdentifier the link identifier to use
+     * @param isLinkFromGeneration whether the link exists on the (latest) product component
+     *            generation or on the component itself
+     * @param templateCardinality the cardinality the link has in the inferred template
+     */
+    private void updateLinkTemplateValueStates(LinkIdentifier linkIdentifier,
+            boolean isLinkFromGeneration,
+            Cardinality templateCardinality) {
+        for (IProductCmpt productCmpt : productCmpts) {
+            IProductCmptLinkContainer container = isLinkFromGeneration ? latestGeneration().apply(productCmpt)
+                    : productCmpt;
+            IProductCmptLink link = linkIdentifier.getValueFrom(container);
+            if (link == null) {
+                container.newLink(linkIdentifier.getAssociation())
+                        .setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+            } else {
+                if (templateCardinality.equals(link.getCardinality())) {
+                    link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+                } else {
+                    link.setTemplateValueStatus(TemplateValueStatus.DEFINED);
+                }
+            }
         }
     }
 }

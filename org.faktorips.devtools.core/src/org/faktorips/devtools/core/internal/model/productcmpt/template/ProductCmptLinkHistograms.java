@@ -9,14 +9,17 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.internal.model.productcmpt.template;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.SortedMap;
 
 import com.google.common.base.Function;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import org.faktorips.devtools.core.internal.model.productcmpt.Cardinality;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
@@ -25,6 +28,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink.LinkIdentifier;
 import org.faktorips.devtools.core.util.Histogram;
+import org.faktorips.values.Decimal;
 
 /**
  * A ProductCmptLinkHistograms holds information about histograms for product component link
@@ -32,23 +36,24 @@ import org.faktorips.devtools.core.util.Histogram;
  */
 public class ProductCmptLinkHistograms {
 
-    private final Map<LinkIdentifier, Histogram<Cardinality, IProductCmptLink>> linkHistograms = new LinkedHashMap<LinkIdentifier, Histogram<Cardinality, IProductCmptLink>>();
+    private final Map<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>> linkHistograms = new LinkedHashMap<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>>();
 
-    private ProductCmptLinkHistograms(Multimap<LinkIdentifier, IProductCmptLink> links) {
-        for (LinkIdentifier linkIdentifier : links.keySet()) {
-            Histogram<Cardinality, IProductCmptLink> histogram = new Histogram<Cardinality, IProductCmptLink>(
-                    getCardinality(), links.get(linkIdentifier));
+    private ProductCmptLinkHistograms(Collection<LinkIdentifier> links,
+            Collection<? extends IProductCmptLinkContainer> container) {
+        for (LinkIdentifier linkIdentifier : links) {
+            Histogram<Cardinality, IProductCmptLinkContainer> histogram = new LinkContainerHistogram(
+                    getCardinality(linkIdentifier), Collections.unmodifiableCollection(container));
             linkHistograms.put(linkIdentifier, histogram);
         }
     }
 
     /** Returns the histogram for the given link identifier. */
-    public Histogram<Cardinality, IProductCmptLink> getHistogram(LinkIdentifier linkIdentifier) {
+    public Histogram<Cardinality, IProductCmptLinkContainer> getHistogram(LinkIdentifier linkIdentifier) {
         return linkHistograms.get(linkIdentifier);
     }
 
     /** Returns the entries for all histograms. */
-    public Set<Entry<LinkIdentifier, Histogram<Cardinality, IProductCmptLink>>> getEntries() {
+    public Set<Entry<LinkIdentifier, Histogram<Cardinality, IProductCmptLinkContainer>>> getEntries() {
         return linkHistograms.entrySet();
     }
 
@@ -57,15 +62,18 @@ public class ProductCmptLinkHistograms {
         return linkHistograms.size();
     }
 
-    /** A function to obtain a link's cardinality. */
-    private Function<IProductCmptLink, Cardinality> getCardinality() {
-        return new Function<IProductCmptLink, Cardinality>() {
+    /**
+     * A function to obtain a link's cardinality.
+     */
+    private Function<IProductCmptLinkContainer, Cardinality> getCardinality(final LinkIdentifier linkIdentifier) {
+        return new Function<IProductCmptLinkContainer, Cardinality>() {
             @Override
-            public Cardinality apply(IProductCmptLink link) {
-                if (link == null) {
+            public Cardinality apply(IProductCmptLinkContainer linkContainer) {
+                if (linkContainer == null) {
                     return null;
                 } else {
-                    return link.getCardinality();
+                    IProductCmptLink link = linkIdentifier.getValueFrom(linkContainer);
+                    return link == null ? Cardinality.UNDEFINED : link.getCardinality();
                 }
             }
         };
@@ -79,14 +87,38 @@ public class ProductCmptLinkHistograms {
      * the containers are {@link IProductCmpt product components} the links from their
      * {@link IProductCmptGeneration generations} are <em>not</em> considered in the histograms.
      */
-    public static ProductCmptLinkHistograms createFor(Iterable<? extends IProductCmptLinkContainer> containers) {
-        Multimap<LinkIdentifier, IProductCmptLink> links = LinkedHashMultimap.create();
+    public static ProductCmptLinkHistograms createFor(Collection<? extends IProductCmptLinkContainer> containers) {
+        Set<LinkIdentifier> links = Sets.newLinkedHashSet();
         for (IProductCmptLinkContainer container : containers) {
             for (IProductCmptLink link : container.getLinksAsList()) {
-                links.put(new LinkIdentifier(link), link);
+                links.add(new LinkIdentifier(link));
             }
         }
-        return new ProductCmptLinkHistograms(links);
+        return new ProductCmptLinkHistograms(links, containers);
     }
 
+    /**
+     * A specialized histogram for link containers. Overrides the {@link #getBestValue(Decimal)}
+     * method to handle the special (0..0, 0) cardinality in a container.
+     */
+    static class LinkContainerHistogram extends Histogram<Cardinality, IProductCmptLinkContainer> {
+
+        LinkContainerHistogram(Function<IProductCmptLinkContainer, Cardinality> elementToValueFunction,
+                Collection<IProductCmptLinkContainer> elements) {
+            super(elementToValueFunction, elements);
+        }
+
+        /**
+         * Returns the best value, ignoring the special (0..0, 0) cardinality for missing links: if
+         * the best value would be (0..0, 0), the second best value is returned if it still is above
+         * the given threshold. Otherwise {@code BestValue.missingValue()} is returned.
+         */
+        @Override
+        public BestValue<Cardinality> getBestValue(Decimal threshold) {
+            SortedMap<Cardinality, Decimal> relativeDistribution = Maps.newTreeMap(super.getRelativeDistribution());
+            relativeDistribution.remove(Cardinality.UNDEFINED);
+            Cardinality candidateValue = relativeDistribution.firstKey();
+            return getBestValue(threshold, relativeDistribution, candidateValue);
+        }
+    }
 }
