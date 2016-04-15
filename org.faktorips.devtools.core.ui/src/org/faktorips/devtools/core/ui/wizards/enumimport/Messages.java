@@ -24,6 +24,8 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String EnumImportWizard_EnumImportControlBody;
+    public static String EnumImportWizard_EnumImportControlTitle;
     public static String EnumImportWizard_operationName;
     public static String EnumImportWizard_title;
     public static String SelectEnumPage_locationLabel;

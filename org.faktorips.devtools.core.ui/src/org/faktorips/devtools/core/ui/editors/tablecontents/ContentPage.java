@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.ui.editors.tablecontents;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -22,7 +23,10 @@ import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
@@ -58,10 +62,12 @@ import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
 import org.faktorips.devtools.core.ui.editors.TableMessageHoverService;
 import org.faktorips.devtools.core.ui.table.IpsCellEditor;
 import org.faktorips.devtools.core.ui.table.TableUtil;
 import org.faktorips.devtools.core.ui.table.TableViewerTraversalStrategy;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -79,6 +85,8 @@ public class ContentPage extends IpsObjectEditorPage {
 
     private TableViewer tableViewer;
 
+    private SelectionStatusBarPublisher selectionStatusBarPublisher;
+
     /**
      * The <tt>ITableContents</tt> the <tt>TableContentsEditor</tt> this page belongs to is
      * currently editing.
@@ -94,7 +102,7 @@ public class ContentPage extends IpsObjectEditorPage {
         super(editor, PAGE_ID, Messages.ContentPage_title);
         tableContents = editor.getTableContents();
         extFactory = new ExtensionPropertyControlFactory(tableContents);
-
+        selectionStatusBarPublisher = new SelectionStatusBarPublisher(getEditor().getEditorSite());
     }
 
     @Override
@@ -119,7 +127,7 @@ public class ContentPage extends IpsObjectEditorPage {
         if (extFactory.needsToCreateControlsFor(IExtensionPropertyDefinition.POSITION_BOTTOM)) {
             createExtensionProperty(formBody, toolkit);
         }
-        Table table = createTable(formBody);
+        final Table table = createTable(formBody);
         initTableViewer(table, toolkit);
         NewRowAction newRowAction = new NewRowAction(tableViewer, this);
         DeleteRowAction deleteRowAction = new DeleteRowAction(tableViewer, this);
@@ -177,6 +185,26 @@ public class ContentPage extends IpsObjectEditorPage {
                 deactivateCellEditors();
             }
         });
+
+        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
+            }
+        });
+    }
+
+    private List<Integer> rowsFromSelection(ISelection selection) {
+        List<Integer> rowNumbers = new ArrayList<Integer>();
+        if (!selection.isEmpty()) {
+            Collection<IRow> rows = TypedSelection.createAnyCount(IRow.class, selection).getElements();
+
+            for (IRow row : rows) {
+                rowNumbers.add(row.getRowNumber());
+            }
+        }
+        return rowNumbers;
     }
 
     private void createExtensionProperty(Composite formBody, UIToolkit toolkit) {
@@ -204,7 +232,7 @@ public class ContentPage extends IpsObjectEditorPage {
      */
     private Table createTable(Composite formBody) {
         // Table: scroll both vertically and horizontally
-        Table table = new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.SINGLE | SWT.FULL_SELECTION);
+        Table table = new Table(formBody, SWT.H_SCROLL | SWT.V_SCROLL | SWT.NO_FOCUS | SWT.MULTI | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
         // occupy all available space
@@ -223,7 +251,6 @@ public class ContentPage extends IpsObjectEditorPage {
                 }
             }
         });
-
         return table;
     }
 
@@ -316,10 +343,10 @@ public class ContentPage extends IpsObjectEditorPage {
                 // use the number of columns in the contents as only those can be edited.
                 CellEditor[] editors = new CellEditor[getTableContents().getNumOfColumns()];
                 for (int i = 0; i < getTableContents().getNumOfColumns(); i++) {
-                    ValueDatatype dataType = tableStructure.getColumn(i).findValueDatatype(
-                            getTableContents().getIpsProject());
-                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault().getValueDatatypeControlFactory(
-                            dataType);
+                    ValueDatatype dataType = tableStructure.getColumn(i)
+                            .findValueDatatype(getTableContents().getIpsProject());
+                    ValueDatatypeControlFactory factory = IpsUIPlugin.getDefault()
+                            .getValueDatatypeControlFactory(dataType);
                     IpsCellEditor cellEditor = factory.createTableCellEditor(toolkit, dataType, null, tableViewer, i,
                             getTableContents().getIpsProject());
                     TableViewerTraversalStrategy tableTraverseStrat = (TableViewerTraversalStrategy)cellEditor
@@ -334,6 +361,7 @@ public class ContentPage extends IpsObjectEditorPage {
             tableViewer.setSorter(new TableSorter());
 
             new TableMessageHoverService(tableViewer) {
+
                 @Override
                 protected MessageList getMessagesFor(Object element) throws CoreException {
                     if (element != null) {
@@ -388,26 +416,8 @@ public class ContentPage extends IpsObjectEditorPage {
             if (difference != 0) {
                 IInputValidator validator = new Validator(difference);
 
-                String msg = null;
-                String title = null;
-                if (difference > 1) {
-                    title = Messages.ContentPage_titleMissingColumns;
-                    msg = NLS.bind(Messages.ContentPage_msgAddMany, String.valueOf(difference),
-                            String.valueOf(getTableContents().getNumOfColumns()));
-
-                } else if (difference == 1) {
-                    title = Messages.ContentPage_titleMissingColumn;
-                    msg = NLS
-                            .bind(Messages.ContentPage_msgAddOne, String.valueOf(getTableContents().getNumOfColumns()));
-                } else if (difference == -1) {
-                    title = Messages.ContentPage_titleTooMany;
-                    msg = NLS.bind(Messages.ContentPage_msgRemoveOne,
-                            String.valueOf(getTableContents().getNumOfColumns()));
-                } else if (difference < -1) {
-                    title = Messages.ContentPage_titleTooMany;
-                    msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String.valueOf(Math.abs(difference)),
-                            String.valueOf(getTableContents().getNumOfColumns()));
-                }
+                String msg = msgByDifference(difference);
+                String title = titleByDifference(difference);
 
                 InputDialog dialog = new InputDialog(getSite().getShell(), title, msg, "", validator); //$NON-NLS-1$
                 int state = dialog.open();
@@ -425,6 +435,38 @@ public class ContentPage extends IpsObjectEditorPage {
         } catch (CoreException e) {
             throw new CoreRuntimeException(e);
         }
+    }
+
+    private String msgByDifference(int difference) {
+        String msg = null;
+        if (difference > 1) {
+            msg = NLS.bind(Messages.ContentPage_msgAddMany, String.valueOf(difference),
+                    String.valueOf(getTableContents().getNumOfColumns()));
+
+        } else if (difference == 1) {
+            msg = NLS.bind(Messages.ContentPage_msgAddOne, String.valueOf(getTableContents().getNumOfColumns()));
+        } else if (difference == -1) {
+            msg = NLS.bind(Messages.ContentPage_msgRemoveOne, String.valueOf(getTableContents().getNumOfColumns()));
+        } else if (difference < -1) {
+            msg = NLS.bind(Messages.ContentPage_msgRemoveMany, String.valueOf(Math.abs(difference)),
+                    String.valueOf(getTableContents().getNumOfColumns()));
+        }
+        return msg;
+    }
+
+    private String titleByDifference(int difference) {
+        String title = null;
+        if (difference > 1) {
+            title = Messages.ContentPage_titleMissingColumns;
+
+        } else if (difference == 1) {
+            title = Messages.ContentPage_titleMissingColumn;
+        } else if (difference == -1) {
+            title = Messages.ContentPage_titleTooMany;
+        } else if (difference < -1) {
+            title = Messages.ContentPage_titleTooMany;
+        }
+        return title;
     }
 
     private void insertColumnsAt(String insertIndices) {
@@ -557,7 +599,10 @@ public class ContentPage extends IpsObjectEditorPage {
                 }
             }
 
-            int difference = Math.abs(indexCount) - tokenizerItemCount;
+            return differenceIndexItem(Math.abs(indexCount) - tokenizerItemCount);
+        }
+
+        private String differenceIndexItem(int difference) {
             if (difference < 0) {
                 if (indexCount == 1 || indexCount == -1) {
                     return Messages.ContentPage_errorTooManyOne;
@@ -569,7 +614,6 @@ public class ContentPage extends IpsObjectEditorPage {
             } else if (difference > 1) {
                 return NLS.bind(Messages.ContentPage_errorManyMore, String.valueOf(difference));
             }
-
             return null;
         }
     }

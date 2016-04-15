@@ -84,6 +84,12 @@ public class Messages extends NLS {
 
     public static String ContentPage_Column;
 
+    public static String SelectionStatusBarPublisher_manyMarkedRows;
+
+    public static String SelectionStatusBarPublisher_multipleMarkedRows;
+
+    public static String SelectionStatusBarPublisher_singleMarkedRow;
+
     public static String TableModelDescriptionPage_generalInformation;
 
 }

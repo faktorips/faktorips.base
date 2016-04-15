@@ -95,7 +95,8 @@ public class TypedSelection<T> {
      * @param minElements the minimum number of elements in the selection
      * @param maxElements the maximum number of elements in the selection
      */
-    public TypedSelection(final Class<T> type, final ISelection selection, final int minElements, final int maxElements) {
+    public TypedSelection(final Class<T> type, final ISelection selection, final int minElements,
+            final int maxElements) {
         ArgumentCheck.notNull(type);
         ArgumentCheck.isTrue(minElements > 0, "minElements must be positive: " + minElements); //$NON-NLS-1$
         ArgumentCheck.isTrue(minElements <= maxElements, "minElements <= maxElements: " + minElements + " <= " //$NON-NLS-1$ //$NON-NLS-2$
@@ -319,7 +320,6 @@ public class TypedSelection<T> {
         if (validator.isValid()) {
             return Optional.fromNullable(validator.getFirstElement());
         }
-
         return Optional.absent();
     }
 

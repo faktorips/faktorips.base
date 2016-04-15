@@ -34,5 +34,4 @@ public class TableContentsContentProvider implements IStructuredContentProvider 
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         // Nothing to do
     }
-
 }
