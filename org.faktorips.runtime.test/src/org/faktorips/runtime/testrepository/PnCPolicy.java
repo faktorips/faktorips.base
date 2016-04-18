@@ -45,18 +45,12 @@ public class PnCPolicy extends AbstractModelObject implements IConfigurableModel
 
     @Override
     public MessageList validate(IValidationContext context) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public IProductComponent getProductComponent() {
         return productConfiguration.getProductComponent();
-    }
-
-    @Override
-    public IProductComponentGeneration getProductCmptGeneration() {
-        return productConfiguration.getProductCmptGeneration(getEffectiveFromAsCalendar());
     }
 
     /**

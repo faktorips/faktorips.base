@@ -23,7 +23,6 @@ public interface ITimedConfigurableModelObject extends IConfigurableModelObject 
     /**
      * Returns the product component generation this policy component is based on.
      */
-    @Override
     public IProductComponentGeneration getProductCmptGeneration();
 
 }

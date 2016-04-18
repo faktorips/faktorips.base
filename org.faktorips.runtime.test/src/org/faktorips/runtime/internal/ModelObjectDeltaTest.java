@@ -568,11 +568,6 @@ public class ModelObjectDeltaTest {
         }
 
         @Override
-        public IProductComponentGeneration getProductCmptGeneration() {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
         public Calendar getEffectiveFromAsCalendar() {
             return null;
         }
