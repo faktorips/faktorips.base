@@ -9,12 +9,15 @@
  *******************************************************************************/
 package org.faktorips.util;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.datatype.Datatype;
 
-public class DatatypeComparator implements Comparator<Datatype> {
+public class DatatypeComparator implements Comparator<Datatype>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static int doCompare(Datatype o1, Datatype o2) {
         return new DatatypeComparator().compare(o1, o2);
