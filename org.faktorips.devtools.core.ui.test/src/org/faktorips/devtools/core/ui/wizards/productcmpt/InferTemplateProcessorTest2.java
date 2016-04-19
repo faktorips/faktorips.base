@@ -287,7 +287,7 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
             for (int j = 1; j <= 10; j++) {
                 IAttributeValue propertyValue = (IAttributeValue)products[i].newPropertyValue(attributes[j]);
                 propertyValue
-                .setValueHolder(new SingleValueHolder(propertyValue, "v" + (j >= 10 - i ? j : j + "_" + i)));
+                        .setValueHolder(new SingleValueHolder(propertyValue, "v" + (j >= 10 - i ? j : j + "_" + i)));
             }
         }
 
@@ -309,7 +309,7 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
                 assertThat("attribute a" + j + " has the same value for " + j
                         + " products and should therefor be in the template for a threshold of " + threshold, template
                         .getAttributeValue("a" + j).getTemplateValueStatus(), j >= t ? is(TemplateValueStatus.DEFINED)
-                        : is(TemplateValueStatus.UNDEFINED));
+                                : is(TemplateValueStatus.UNDEFINED));
             }
         }
 
@@ -474,11 +474,19 @@ public class InferTemplateProcessorTest2 extends AbstractIpsPluginTest {
         assertThat(templateLink.getCardinality(), is(CARDINALITY_MANDATORY));
 
         assertThat(link1.getTemplateValueStatus(), is(INHERITED));
+        assertThat(link1.getTarget(), is("a"));
+        assertThat(link1.getCardinality(), is(CARDINALITY_MANDATORY));
         assertThat(link2.getTemplateValueStatus(), is(INHERITED));
+        assertThat(link2.getTarget(), is("a"));
+        assertThat(link2.getCardinality(), is(CARDINALITY_MANDATORY));
         assertThat(link3.getTemplateValueStatus(), is(DEFINED));
+        assertThat(link3.getTarget(), is("a"));
+        assertThat(link3.getCardinality(), is(CARDINALITY_OPTIONAL_DEFAULT_1));
 
         assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).size(), is(1));
         assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTemplateValueStatus(), is(UNDEFINED));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getTarget(), is("a"));
+        assertThat(product4.getLinksAsList(PRODUCT_ASSOCIATION).get(0).getCardinality(), is(CARDINALITY_MANDATORY));
     }
 
     @Test

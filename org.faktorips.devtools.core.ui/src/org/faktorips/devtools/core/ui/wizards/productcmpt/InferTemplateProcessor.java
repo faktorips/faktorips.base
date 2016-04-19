@@ -278,8 +278,10 @@ public class InferTemplateProcessor implements IWorkspaceRunnable {
                     : productCmpt;
             IProductCmptLink link = linkIdentifier.getValueFrom(container);
             if (link == null) {
-                container.newLink(linkIdentifier.getAssociation())
-                        .setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+                IProductCmptLink newLink = container.newLink(linkIdentifier.getAssociation());
+                newLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+                newLink.setTarget(linkIdentifier.getTarget());
+                newLink.setCardinality(templateCardinality);
             } else {
                 if (templateCardinality.equals(link.getCardinality())) {
                     link.setTemplateValueStatus(TemplateValueStatus.INHERITED);
