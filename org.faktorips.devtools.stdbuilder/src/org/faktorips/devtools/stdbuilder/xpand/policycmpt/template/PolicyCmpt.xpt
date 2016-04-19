@@ -114,8 +114,6 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			«EXPAND getAndSetProductComponent FOR productCmptNode-»
 			«IF generateGenerationAccessMethods»
 				«EXPAND getAndSetProductComponentGeneration FOR productCmptGenerationNode-»
-			«ELSE-»
-				«EXPAND getProductComponentGenerationUnsupported FOR productCmptGenerationNode-»
 			«ENDIF-»		
 			«EXPAND generalMethodsForConfiguredPolicyCmpts-»
 		«ENDIF-»
@@ -320,20 +318,6 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 			 	productConfiguration.«setProductCmptGeneration("productComponentGeneration")»;
 			 }
 		 «ENDIF-»
-«ENDDEFINE»
-
-«DEFINE getProductComponentGenerationUnsupported FOR XProductCmptGenerationClass-»
-		«IF !genInterface() && policyCmptClass.firstConfigurableInHierarchy-»
-			 /**
-			  * {@inheritDoc}
-			  * 
-			  * @generated
-			  */
-			 @Override
-			 public «IProductComponentGeneration()» «getProductCmptGeneration()» {
-			 	throw new UnsupportedOperationException();
-			 }
-		«ENDIF-»
 «ENDDEFINE»
 
 «DEFINE generalMethodsForConfiguredPolicyCmpts FOR XPolicyCmptClass-»
