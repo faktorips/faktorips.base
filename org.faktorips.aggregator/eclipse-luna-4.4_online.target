@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="203">
+<?pde version="3.8"?><target name="Target for Faktor-IPS Base (Luna 4.4)" sequenceNumber="204">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.core.runtime.feature.feature.group" version="0.0.0"/>
@@ -35,6 +35,8 @@
 <unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
 <unit id="com.google.guava" version="15.0.0.v201403281430"/>
 <unit id="com.google.inject" version="0.0.0"/>
+<unit id="org.eclipse.uml2.sdk.feature.group" version="0.0.0"/>
+<unit id="org.eclipse.uml2.feature.group" version="0.0.0"/>
 <repository location="https://update.faktorzehn.org/p2repositories/luna/"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
