@@ -10,7 +10,6 @@
 
 package org.faktorips.devtools.core.model.productcmpt;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
 
@@ -34,7 +33,7 @@ public interface IAttributeValue extends IPropertyValue {
     /**
      * Prefix for all message codes of this class.
      */
-    public static final String MSGCODE_PREFIX = "ATRIBUTEVALUE-"; //$NON-NLS-1$
+    public static final String MSGCODE_PREFIX = "ATTRIBUTEVALUE-"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the attribute the value provides the value for,
@@ -123,6 +122,15 @@ public interface IAttributeValue extends IPropertyValue {
     /**
      * Returns the product component type attribute this object provides the value for.
      */
-    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptTypeAttribute findAttribute(IIpsProject ipsProject);
+
+    /**
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code IAttributeValue}.
+     * 
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
+     */
+    @Override
+    public IAttributeValue findTemplateProperty(IIpsProject ipsProject);
 
 }

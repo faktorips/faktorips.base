@@ -13,20 +13,31 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Function;
+
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.fieldassist.ControlDecoration;
-import org.eclipse.jface.viewers.CellEditor.LayoutData;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Layout;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -35,6 +46,8 @@ import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
+import org.faktorips.devtools.core.ui.views.producttemplate.ShowTemplatePropertyUsageViewAction;
+import org.faktorips.devtools.core.util.TemplatedValueUtil;
 
 /**
  * Abstract base class for composites that allow the user to edit property values.
@@ -45,13 +58,11 @@ import org.faktorips.devtools.core.ui.forms.IpsSection;
  * composite. To change these settings, subclasses are allowed to override {@link #setLayout()} and
  * {@link #setLayoutData()}.
  * <p>
- * The methods {@link #getFirstControlHeight()} and {@link #getFirstControlMarginHeight()} are
- * intended to enable clients of this class to change the position of other UI elements. For
- * example, if a composite of this kind is used in a 2-column layout where the left column features
- * a label representing the property value's caption, it might be necessary to change the vertical
- * position of the label. The height of the first control is computed automatically, subclasses must
- * override {@link #getFirstControlMarginHeight()} if the first control they create features a
- * <em>margin-height</em> other than 0.
+ * The method {@link #getFirstControlHeight()} is intended to enable clients of this class to change
+ * the position of other UI elements. For example, if a composite of this kind is used in a 2-column
+ * layout where the left column features a label representing the property value's caption, it might
+ * be necessary to change the vertical position of the label. The height of the first control is
+ * computed automatically, subclasses may override this method.
  * <p>
  * Finally, the method {@link #createEditFields(List)} must be implemented to create the edit fields
  * of the composite.
@@ -145,17 +156,6 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
     }
 
     /**
-     * Returns the margin-height of the first control contained in this composite.
-     * <p>
-     * <strong>Subclassing:</strong><br>
-     * The default implementation always returns 0. Subclasses should override this method if the
-     * first control they create features a margin-height other than 0.
-     */
-    protected int getFirstControlMarginHeight() {
-        return 0;
-    }
-
-    /**
      * Creates this composite and must be called by subclasses directly after subclass-specific
      * attributes have been initialized by the subclass constructor.
      * <p>
@@ -165,6 +165,7 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
      */
     protected final void initControls() {
         setLayout();
+        updateLayoutForTemplateButton();
         setLayoutData();
 
         try {
@@ -197,8 +198,18 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         setLayout(clientLayout);
     }
 
+    protected void updateLayoutForTemplateButton() {
+        if (showTemplateButton()) {
+            ((GridLayout)getLayout()).numColumns++;
+        }
+    }
+
+    protected boolean showTemplateButton() {
+        return getPropertyValue().isPartOfTemplateHierarchy();
+    }
+
     /**
-     * Creates and sets the {@link LayoutData} of this composite.
+     * Creates and sets the layout data of this composite.
      * <p>
      * <strong>Subclassing:</strong><br>
      * The default implementation creates a {@link GridData} object with the flag
@@ -295,6 +306,51 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         }
     }
 
+    protected void createTemplateStatusButton(final EditField<?> editField) {
+        if (showTemplateButton()) {
+            final TemplateValuePmo<V> pmo = new TemplateValuePmo<V>(getPropertyValue(), getToolTipFormatter());
+            final ToolBar toolBar = new ToolBar(this, SWT.FLAT);
+            ToolItem toolItem = TemplateValueUiUtil.setUpStatusToolItem(toolBar, bindingContext, pmo);
+
+            focusOnTemplateStatusClick(editField.getControl(), toolItem);
+            bindTemplateDependentEnabled(editField.getControl());
+            bindProblemMarker(editField);
+            toolBar.setMenu(new TemplateToolBarMenuBuilder(toolBar).createTemplateMenue());
+        }
+    }
+
+    protected abstract Function<V, String> getToolTipFormatter();
+
+    private void focusOnTemplateStatusClick(final Control control, final ToolItem toolItem) {
+        toolItem.addSelectionListener(new SelectionAdapter() {
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if (getToolkit().isEnabled(control) && getToolkit().isDataChangeable(control)) {
+                    control.setFocus();
+                }
+            }
+        });
+    }
+
+    private IIpsProject getIpsProject() {
+        return getPropertyValue().getIpsProject();
+    }
+
+    private void bindTemplateDependentEnabled(Control control) {
+        Control controlToEnable = control;
+        if (control.getParent() != this) {
+            controlToEnable = control.getParent();
+        }
+        getBindingContext().bindEnabled(controlToEnable, getPropertyValue(),
+                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS, TemplateValueStatus.DEFINED);
+    }
+
+    private void bindProblemMarker(EditField<?> editField) {
+        getBindingContext().bindProblemMarker(editField, getPropertyValue(),
+                IPropertyValue.PROPERTY_TEMPLATE_VALUE_STATUS);
+    }
+
     private static class MoveDecorationFocusListener implements FocusListener {
 
         private final ControlDecoration controlDecoration;
@@ -313,6 +369,54 @@ public abstract class EditPropertyValueComposite<P extends IProductCmptProperty,
         @Override
         public void focusLost(FocusEvent e) {
             controlDecoration.setMarginWidth(0);
+        }
+
+    }
+
+    private class TemplateToolBarMenuBuilder extends AbstractTemplateToolBarMenuBuilder {
+
+        public TemplateToolBarMenuBuilder(ToolBar toolBar) {
+            super(toolBar);
+        }
+
+        @Override
+        protected void addOpenTemplateAction(IMenuManager manager) {
+            IPropertyValue templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+            if (templateValue != null) {
+                String text = getOpenTemplateText(templateValue);
+                IAction openTemplateAction = new SimpleOpenIpsObjectPartAction(templateValue, text);
+                manager.add(openTemplateAction);
+            }
+
+        }
+
+        @Override
+        protected void addShowTemplatePropertyUsageAction(IMenuManager manager) {
+            String text = null;
+            ITemplatedValue templateValue;
+            if (TemplatedValueUtil.isTemplateValue(getPropertyValue())) {
+                text = Messages.AttributeValueEditComposite_MenuItem_showPropertyUsage;
+                templateValue = getPropertyValue();
+            } else {
+                templateValue = getPropertyValue().findTemplateProperty(getIpsProject());
+                if (templateValue == null) {
+                    templateValue = TemplatedValueUtil.findNextTemplateValue(getPropertyValue());
+                }
+                text = getOpenTemplatePropertyUsageText(templateValue);
+            }
+            if (templateValue != null) {
+                manager.add(new ShowTemplatePropertyUsageViewAction(templateValue, text));
+            }
+        }
+
+        private String getOpenTemplateText(final IPropertyValue templateValue) {
+            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_openTemplate, templateValue
+                    .getPropertyValueContainer().getProductCmpt().getName());
+        }
+
+        private String getOpenTemplatePropertyUsageText(final ITemplatedValue templateValue) {
+            return NLS.bind(Messages.AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage, templateValue
+                    .getTemplatedValueContainer().getProductCmpt().getName());
         }
 
     }

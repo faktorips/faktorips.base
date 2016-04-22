@@ -230,11 +230,7 @@ public class PersistentAttributeSection extends SimpleIpsPartsSection {
             public String getColumnText(Object element, int columnIndex) {
                 IPolicyCmptTypeAttribute attribute = (IPolicyCmptTypeAttribute)element;
                 ValueDatatype valueDatatype = null;
-                try {
-                    valueDatatype = attribute.findDatatype(attribute.getIpsProject());
-                } catch (CoreException e) {
-                    IpsPlugin.log(e);
-                }
+                valueDatatype = attribute.findDatatype(attribute.getIpsProject());
                 IPersistentAttributeInfo attributeInfo = attribute.getPersistenceAttributeInfo();
 
                 String property = COLUMN_PROPERTIES.get(columnIndex).property;

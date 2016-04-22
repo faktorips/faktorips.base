@@ -32,14 +32,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
 
     private ExpressionXMLBuilderHelper helper;
     private IIpsProject ipsProject;
     private MultiStatus buildStatus;
-    private NodeList formulaElements;
+    private List<Element> formulaElements;
     private Element node1;
     private Element node2;
     private Element node3;
@@ -55,8 +54,6 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
         doReturn("TestReturn").when(helper).generateJavaCode((IFormula)anyObject(),
                 (IProductCmptTypeMethod)anyObject(), eq(buildStatus));
 
-        formulaElements = mock(NodeList.class);
-        when(formulaElements.getLength()).thenReturn(4);
         node1 = mock(Element.class);
         when(node1.getAttribute(IExpression.PROPERTY_FORMULA_SIGNATURE_NAME)).thenReturn("NormaleFormel1");
         node2 = mock(Element.class);
@@ -65,10 +62,7 @@ public class ExpressionXMLBuilderHelperTest extends XmlAbstractTestCase {
         when(node3.getAttribute(IExpression.PROPERTY_FORMULA_SIGNATURE_NAME)).thenReturn("StatischeFormel1");
         node4 = mock(Element.class);
         when(node4.getAttribute(IExpression.PROPERTY_FORMULA_SIGNATURE_NAME)).thenReturn("StatischeFormel2");
-        when(formulaElements.item(0)).thenReturn(node1);
-        when(formulaElements.item(1)).thenReturn(node2);
-        when(formulaElements.item(2)).thenReturn(node3);
-        when(formulaElements.item(3)).thenReturn(node4);
+        formulaElements = Arrays.asList(node1, node2, node3, node4);
     }
 
     @Test

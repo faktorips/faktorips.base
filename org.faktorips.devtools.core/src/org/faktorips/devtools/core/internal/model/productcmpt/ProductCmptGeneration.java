@@ -35,11 +35,8 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.pctype.IValidationRule;
-import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntryForProperty;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
@@ -84,12 +81,12 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     }
 
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException {
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
         return getProductCmpt().findProductCmptType(ipsProject);
     }
 
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) {
         return getProductCmpt().findPolicyCmptType(ipsProject);
     }
 
@@ -158,6 +155,11 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
     @Override
     public IPropertyValue getPropertyValue(String propertyName) {
         return propertyValueCollection.getPropertyValue(propertyName);
+    }
+
+    @Override
+    public <T extends IPropertyValue> T getPropertyValue(String propertyName, Class<T> type) {
+        return propertyValueCollection.getPropertyValue(type, propertyName);
     }
 
     @Override
@@ -505,16 +507,6 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
             return;
         }
 
-        IPropertyValueContainerToTypeDelta delta = computeDeltaToModel(ipsProject);
-        IDeltaEntry[] entries = delta.getEntries();
-        for (IDeltaEntry entrie : entries) {
-            if (entrie.getDeltaType() == DeltaType.MISSING_PROPERTY_VALUE) {
-                String text = NLS.bind(Messages.ProductCmptGeneration_msgPropertyNotConfigured,
-                        ((IDeltaEntryForProperty)entrie).getDescription());
-                list.add(new Message(MSGCODE_PROPERTY_NOT_CONFIGURED, text, Message.WARNING, this));
-            }
-        }
-
         new ProductCmptLinkContainerValidator(ipsProject, this).startAndAddMessagesToList(type, list);
 
         IIpsProjectProperties props = getIpsProject().getReadOnlyProperties();
@@ -622,5 +614,39 @@ public class ProductCmptGeneration extends IpsObjectGeneration implements IProdu
         List<T> values = getProductCmpt().getPropertyValues(type);
         values.addAll(getPropertyValues(type));
         return values;
+    }
+
+    @Override
+    public boolean isProductTemplate() {
+        return getProductCmpt().isProductTemplate();
+    }
+
+    @Override
+    public IProductCmptGeneration findTemplate(IIpsProject ipsProject) {
+        IProductCmpt template = getProductCmpt().findTemplate(ipsProject);
+        if (template == null) {
+            return null;
+        }
+        return template.getGenerationEffectiveOn(getValidFrom());
+    }
+
+    @Override
+    public boolean isUsingTemplate() {
+        return getProductCmpt().isUsingTemplate();
+    }
+
+    @Override
+    public String getTemplate() {
+        return getProductCmpt().getTemplate();
+    }
+
+    @Override
+    public boolean isPartOfTemplateHierarchy() {
+        return getProductCmpt().isPartOfTemplateHierarchy();
+    }
+
+    @Override
+    public void removeUndefinedLinks() {
+        linkCollection.removeUndefinedLinks();
     }
 }

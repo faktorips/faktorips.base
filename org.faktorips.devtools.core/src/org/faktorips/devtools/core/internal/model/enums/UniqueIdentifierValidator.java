@@ -22,7 +22,7 @@ import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumAttributeValue;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValue;
-import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.values.LocalizedString;
 
 /**
@@ -55,7 +55,7 @@ class UniqueIdentifierValidator {
             @Override
             public void contentsChanged(ContentChangeEvent event) {
                 if (isRelevantChangeEvent(event)) {
-                    IIpsObjectPart part = event.getPart();
+                    IIpsObjectPartContainer part = event.getPart();
                     if (part instanceof IEnumAttributeValue) {
                         IEnumAttributeValue enumAttributeValue = (IEnumAttributeValue)part;
                         int index = getEnumAttributeIndex(enumAttributeValue);

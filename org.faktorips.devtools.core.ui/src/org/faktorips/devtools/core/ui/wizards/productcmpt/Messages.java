@@ -24,8 +24,15 @@ public class Messages extends NLS {
         // Messages bundles shall not be initialized.
     }
 
+    public static String InferTemplateOperation_progress_inferringTemplate;
+    public static String InferTemplateOperation_progress_save;
+    public static String InferTemplateValidator_error_invalidValidFrom;
     public static String NewProductCmptWizard_title;
     public static String NewProductCmptWizard_copyTitle;
+    public static String NewProductTemplateWizard_NoCommonType_message;
+    public static String NewProductTemplateWizard_NoCommonType_title;
+    public static String NewProductTemplateWizard_Precondition_TemplateDefined_message;
+    public static String NewProductTemplateWizard_Precondition_TemplateDefined_title;
     public static String NewProdutCmptValidator_msg_emptyKindId;
     public static String NewProdutCmptValidator_msg_emptyVersionId;
     public static String NewProdutCmptValidator_msg_invalidAddToGeneration;
@@ -43,10 +50,12 @@ public class Messages extends NLS {
     public static String ProductCmptPage_label_versionSuffix;
     public static String ProductCmptPage_label_runtimeId;
     public static String ProductCmptPage_label_selectType;
+    public static String ProductCmptPage_label_selectTypeAndTemplate;
     public static String ProductCmptPage_msg_fullName;
     public static String ProductCmptPage_name;
     public static String ProductCmptPage_title;
     public static String ProductCmptPage_copyTitle;
+    public static String TypeSelectionPage_checkboxTemplate;
     public static String TypeSelectionPage_label_project;
     public static String TypeSelectionPage_label_type;
     public static String TypeSelectionPage_name;

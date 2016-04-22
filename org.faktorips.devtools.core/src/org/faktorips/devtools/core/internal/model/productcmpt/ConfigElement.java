@@ -10,6 +10,7 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -22,8 +23,9 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.internal.model.ValueSetNullIncompatibleValidator;
-import org.faktorips.devtools.core.internal.model.ipsobject.IpsObjectPart;
-import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
+import org.faktorips.devtools.core.internal.model.valueset.DelegatingValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.UnrestrictedValueSet;
 import org.faktorips.devtools.core.internal.model.valueset.ValueSet;
 import org.faktorips.devtools.core.model.IIpsElement;
@@ -35,9 +37,10 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
 import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IRangeValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
@@ -50,7 +53,7 @@ import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class ConfigElement extends IpsObjectPart implements IConfigElement {
+public class ConfigElement extends AbstractSimplePropertyValue implements IConfigElement {
 
     public static final String TAG_NAME = ValueToXmlHelper.XML_TAG_CONFIG_ELEMENT;
 
@@ -60,6 +63,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private String value = ""; //$NON-NLS-1$
 
+    private final TemplateValueSettings templateValueSettings;
+
     public ConfigElement(IPropertyValueContainer parent, String id) {
         this(parent, id, ""); //$NON-NLS-1$
     }
@@ -68,11 +73,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         super(parent, id);
         this.pcTypeAttribute = pcTypeAttribute;
         valueSet = new UnrestrictedValueSet(this, getNextPartId());
-    }
-
-    @Override
-    public final IPropertyValueContainer getPropertyValueContainer() {
-        return (IPropertyValueContainer)getParent();
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     /**
@@ -99,13 +100,13 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE;
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.CONFIG_ELEMENT;
     }
 
     @Override
     public String getPropertyValue() {
-        return value;
+        return getValueSet().toShortString();
     }
 
     @Override
@@ -123,8 +124,26 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public String getValue() {
+        // TODO FIPS-4556 at the moment only value set is inherited from template
+        // if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+        // return findTemplateValue();
+        // }
+        // if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+        //            return ""; //$NON-NLS-1$
+        // }
         return value;
     }
+
+    // TODO FIPS-4556
+    // private String findTemplateValue() {
+    // IConfigElement templateConfigElement = findTemplateProperty(getIpsProject());
+    // if (templateConfigElement == null) {
+    // // Template should exist but does not. Use the "last known" value as a more or less
+    // // helpful fallback while some validation hopefully addresses the missing template...
+    // return value;
+    // }
+    // return templateConfigElement.getValue();
+    // }
 
     @Override
     public void setValue(String newValue) {
@@ -134,7 +153,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) throws CoreException {
+    public IPolicyCmptTypeAttribute findPcTypeAttribute(IIpsProject ipsProject) {
         IPolicyCmptType pcType = getPropertyValueContainer().findPolicyCmptType(ipsProject);
         if (pcType == null) {
             return null;
@@ -143,7 +162,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     @Override
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException {
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject) {
         IPolicyCmptTypeAttribute a = findPcTypeAttribute(ipsProject);
         if (a != null) {
             return a.findDatatype(ipsProject);
@@ -158,15 +177,22 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         if (attribute == null) {
             return;
         }
-        if (attribute.getAttributeType() == AttributeType.CHANGEABLE
-                || attribute.getAttributeType() == AttributeType.CONSTANT) {
+        list.add(templateValueSettings.validate(this, ipsProject));
 
+        if (shouldValidateValueAndValueSet(attribute)) {
             validateValueAndValueSet(list, ipsProject, attribute);
         }
     }
 
-    private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject)
-            throws CoreException {
+    private boolean shouldValidateValueAndValueSet(IPolicyCmptTypeAttribute attribute) {
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return false;
+        }
+        return attribute.getAttributeType() == AttributeType.CHANGEABLE
+                || attribute.getAttributeType() == AttributeType.CONSTANT;
+    }
+
+    private IPolicyCmptTypeAttribute validateReferenceToAttribute(MessageList list, IIpsProject ipsProject) {
 
         IPolicyCmptTypeAttribute attribute = findPcTypeAttribute(ipsProject);
         if (attribute == null) {
@@ -197,8 +223,9 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     private void validateValueVsDatatype(ValueDatatype valueDatatype, MessageList list) throws CoreException {
 
+        String valueToValidate = getValue();
         if (valueDatatype == null) {
-            if (!StringUtils.isEmpty(value)) {
+            if (!StringUtils.isEmpty(valueToValidate)) {
                 String text = Messages.ConfigElement_msgUndknownDatatype;
                 list.add(new Message(IConfigElement.MSGCODE_UNKNOWN_DATATYPE_VALUE, text, Message.WARNING, this,
                         PROPERTY_VALUE));
@@ -216,8 +243,8 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             throw new CoreException(new IpsStatus(e));
         }
 
-        if (!valueDatatype.isParsable(value)) {
-            addNotParsableMessage(value, valueDatatype, list);
+        if (!valueDatatype.isParsable(valueToValidate)) {
+            addNotParsableMessage(valueToValidate, valueDatatype, list);
         }
     }
 
@@ -225,32 +252,34 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             IIpsProject ipsProject,
             MessageList list) throws CoreException {
 
+        IValueSet valueSetToValidate = getValueSet();
         IValueSet modelValueSet = attribute.getValueSet();
+
         if (modelValueSet.validate(ipsProject).containsErrorMsg()) {
             String text = Messages.ConfigElement_msgInvalidAttributeValueset;
             list.add(new Message(IConfigElement.MSGCODE_UNKNWON_VALUESET, text, Message.WARNING, this, PROPERTY_VALUE));
             return;
         }
-        if (valueSet.isAbstract()) {
+        if (valueSetToValidate.isAbstract()) {
             String text = Messages.ConfigElement_error_msg_abstractValueSet;
             list.add(new Message("", text, Message.ERROR, this, IConfigElement.PROPERTY_VALUE_SET)); //$NON-NLS-1$
             return;
         }
-        if (valueSet.isDetailedSpecificationOf(modelValueSet)) {
+        if (valueSetToValidate.isDetailedSpecificationOf(modelValueSet)) {
             // situations like model value set is unrestricted, and this value set is a range
             // are ok.
             return;
         }
-        validateNullIncompatible(list, modelValueSet);
+        validateNullIncompatible(list, modelValueSet, valueSetToValidate);
         String msgCode;
         String text;
-        if (!valueSet.isSameTypeOfValueSet(modelValueSet)) {
+        if (!valueSetToValidate.isSameTypeOfValueSet(modelValueSet)) {
             msgCode = IConfigElement.MSGCODE_VALUESET_TYPE_MISMATCH;
             text = NLS.bind(Messages.ConfigElement_msgTypeMismatch, new String[] {
-                    modelValueSet.getValueSetType().getName(), valueSet.getValueSetType().getName() });
-        } else if (!modelValueSet.containsValueSet(valueSet)) {
+                    modelValueSet.getValueSetType().getName(), valueSetToValidate.getValueSetType().getName() });
+        } else if (!modelValueSet.containsValueSet(valueSetToValidate)) {
             msgCode = IConfigElement.MSGCODE_VALUESET_IS_NOT_A_SUBSET;
-            text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSet.toShortString(),
+            text = NLS.bind(Messages.ConfigElement_valueSetIsNotASubset, valueSetToValidate.toShortString(),
                     modelValueSet.toShortString());
         } else {
             // should never happen
@@ -259,26 +288,29 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
         // determine invalid property (usage e.g. to display problem marker on correct ui control)
         List<ObjectProperty> invalidObjectProperties = new ArrayList<ObjectProperty>();
         invalidObjectProperties.add(new ObjectProperty(this, IConfigElement.PROPERTY_VALUE_SET));
-        if (valueSet instanceof IRangeValueSet) {
-            invalidObjectProperties.add(new ObjectProperty(valueSet, IRangeValueSet.PROPERTY_LOWERBOUND));
-            invalidObjectProperties.add(new ObjectProperty(valueSet, IRangeValueSet.PROPERTY_UPPERBOUND));
-            invalidObjectProperties.add(new ObjectProperty(valueSet, IRangeValueSet.PROPERTY_STEP));
+        if (valueSetToValidate.isRange()) {
+            invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_LOWERBOUND));
+            invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_UPPERBOUND));
+            invalidObjectProperties.add(new ObjectProperty(valueSetToValidate, IRangeValueSet.PROPERTY_STEP));
         }
         ObjectProperty[] invalidOP = invalidObjectProperties
                 .toArray(new ObjectProperty[invalidObjectProperties.size()]);
         list.add(new Message(msgCode, text, Message.ERROR, invalidOP));
     }
 
-    private void validateNullIncompatible(MessageList list, IValueSet modelValueSet) {
-        new ValueSetNullIncompatibleValidator(modelValueSet, valueSet).validateAndAppendMessages(list);
+    private void validateNullIncompatible(MessageList list, IValueSet modelValueSet, IValueSet valueSetToValidate) {
+        new ValueSetNullIncompatibleValidator(modelValueSet, valueSetToValidate).validateAndAppendMessages(list);
     }
 
     private void validateValueVsValueSet(ValueDatatype valueDatatype, IIpsProject ipsProject, MessageList list)
             throws CoreException {
-        if (StringUtils.isNotEmpty(value)) {
-            if (!valueSet.containsValue(value, ipsProject)) {
+        String valueToValidate = getValue();
+        IValueSet valueSetToValidate = getValueSet();
+
+        if (StringUtils.isNotEmpty(valueToValidate)) {
+            if (!valueSetToValidate.containsValue(valueToValidate, ipsProject)) {
                 String formattedValue = IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                        .formatValue(valueDatatype, value);
+                        .formatValue(valueDatatype, valueToValidate);
                 list.add(new Message(IConfigElement.MSGCODE_VALUE_NOT_IN_VALUESET, NLS.bind(
                         Messages.ConfigElement_msgValueNotInValueset, formattedValue), Message.ERROR, this,
                         PROPERTY_VALUE));
@@ -299,7 +331,23 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
     @Override
     public IValueSet getValueSet() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateValueSet();
+        }
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return new UnrestrictedValueSet(this, getNextPartId());
+        }
         return valueSet;
+    }
+
+    private IValueSet findTemplateValueSet() {
+        IConfigElement templateConfigElement = findTemplateProperty(getIpsProject());
+        if (templateConfigElement == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return valueSet;
+        }
+        return new DelegatingValueSet((ValueSet)templateConfigElement.getValueSet(), this);
     }
 
     @Override
@@ -333,13 +381,12 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
             return (IEnumValueSet)valueSet;
         }
         setValueSetType(newValueSetType);
-        EnumValueSet newValueSet = (EnumValueSet)valueSet;
-        ValueDatatype newValueSetDatatype = newValueSet.findValueDatatype(getIpsProject());
-        if (Datatype.BOOLEAN.equals(newValueSetDatatype)
-                || Datatype.PRIMITIVE_BOOLEAN.equals(newValueSetDatatype)) {
+        IEnumValueSet newValueSet = (IEnumValueSet)valueSet;
+        ValueDatatype valueSetDatatype = findValueDatatype(getIpsProject());
+        if (Datatype.BOOLEAN.equals(valueSetDatatype) || Datatype.PRIMITIVE_BOOLEAN.equals(valueSetDatatype)) {
             newValueSet.addValue(Boolean.TRUE.toString());
             newValueSet.addValue(Boolean.FALSE.toString());
-            if (!newValueSetDatatype.isPrimitive()) {
+            if (!valueSetDatatype.isPrimitive()) {
                 newValueSet.addValue(null);
             }
         }
@@ -377,19 +424,21 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
 
         pcTypeAttribute = element.getAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE);
         name = pcTypeAttribute;
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
         element.setAttribute(ValueToXmlHelper.XML_ATTRIBUTE_ATTRIBUTE, pcTypeAttribute);
-        ValueToXmlHelper.addValueToElement(value, element, ValueToXmlHelper.XML_TAG_VALUE);
+        ValueToXmlHelper.addValueToElement(getValue(), element, ValueToXmlHelper.XML_TAG_VALUE);
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
     protected IIpsElement[] getChildrenThis() {
-        if (valueSet != null) {
-            return new IIpsElement[] { valueSet };
+        if (getValueSet() != null) {
+            return new IIpsElement[] { getValueSet() };
         }
         return new IIpsElement[0];
     }
@@ -433,13 +482,7 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     }
 
     public ValueDatatype getValueDatatype() {
-        try {
-            return findValueDatatype(getIpsProject());
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
-        }
-
-        return null;
+        return findValueDatatype(getIpsProject());
     }
 
     @Override
@@ -462,6 +505,33 @@ public class ConfigElement extends IpsObjectPart implements IConfigElement {
     @Override
     public String getLastResortCaption() {
         return StringUtils.capitalize(pcTypeAttribute);
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // Copy value/value set from template (if present)
+            // TODO FIPS-4556 at the moment only value set is inherited from template
+            // this.value = getValue();
+            copyValueSet();
+        }
+        TemplateValueStatus oldValue = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
+    }
+
+    private void copyValueSet() {
+        this.valueSet = getValueSet().copy(this, getNextPartId());
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public IConfigElement findTemplateProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.findTemplateValue(this, IConfigElement.class);
     }
 
 }

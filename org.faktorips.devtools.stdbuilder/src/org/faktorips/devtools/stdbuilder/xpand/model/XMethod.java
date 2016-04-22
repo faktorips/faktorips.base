@@ -188,17 +188,13 @@ public class XMethod extends AbstractGeneratorModelNode {
 
     public XMethod getOverloadedFormulaMethod() {
         if (getMethod() instanceof IProductCmptTypeMethod) {
-            try {
-                IProductCmptTypeMethod overloadedFormulaMethod = ((IProductCmptTypeMethod)getMethod())
-                        .findOverloadedFormulaMethod(getIpsProject());
-                if (overloadedFormulaMethod == null) {
-                    throw new CoreRuntimeException("Cannot find overloaded formula for method " + getName());
-                }
-                XMethod overloadedMethod = getModelNode(overloadedFormulaMethod, XMethod.class);
-                return overloadedMethod;
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
+            IProductCmptTypeMethod overloadedFormulaMethod = ((IProductCmptTypeMethod)getMethod())
+                    .findOverloadedFormulaMethod(getIpsProject());
+            if (overloadedFormulaMethod == null) {
+                throw new CoreRuntimeException("Cannot find overloaded formula for method " + getName());
             }
+            XMethod overloadedMethod = getModelNode(overloadedFormulaMethod, XMethod.class);
+            return overloadedMethod;
         } else {
             throw new RuntimeException("The method " + getName() + " is no formula signature.");
         }

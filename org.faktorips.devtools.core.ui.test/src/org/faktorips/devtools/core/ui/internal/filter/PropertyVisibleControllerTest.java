@@ -12,7 +12,6 @@ package org.faktorips.devtools.core.ui.internal.filter;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -102,34 +101,13 @@ public class PropertyVisibleControllerTest {
     }
 
     @Test
-    public void testUpdateUI_RelayoutParents() {
-        IProductCmptProperty p1 = mock(IProductCmptProperty.class);
-        IProductCmptProperty p2 = mock(IProductCmptProperty.class);
+    public void testUpdateUI_RelayoutSectionParent() {
+        Runnable callback = mock(Runnable.class);
+        controller.setRefreshCallback(callback);
 
-        Composite parentP1C1 = mock(Composite.class);
-        Composite parentP1C2 = mock(Composite.class);
-        Composite parentP2 = mock(Composite.class);
-        Control p1C1 = mockControl(parentP1C1, new GridData());
-        Control p1C2 = mockControl(parentP1C2, new GridData());
-        Control p2C1 = mockControl(parentP2, new GridData());
-        Control p2C2 = mockControl(parentP2, new GridData());
-        when(p1C1.getParent()).thenReturn(parentP1C1);
-        when(p1C2.getParent()).thenReturn(parentP1C2);
-        when(p2C1.getParent()).thenReturn(parentP2);
-        when(p2C2.getParent()).thenReturn(parentP2);
+        controller.updateUI(true);
 
-        IProductCmptPropertyFilter filter = mock(IProductCmptPropertyFilter.class);
-        when(filter.isFiltered(any(IProductCmptProperty.class))).thenReturn(true);
-
-        controller.addPropertyControlMapping(outerControl, p1, p1C1, p1C2);
-        controller.addPropertyControlMapping(outerControl, p2, p2C1, p2C2);
-        controller.addFilter(filter);
-
-        controller.updateUI();
-
-        verify(parentP1C1).layout();
-        verify(parentP1C2).layout();
-        verify(parentP2).layout();
+        verify(callback).run();
     }
 
     @Test

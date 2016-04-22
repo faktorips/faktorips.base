@@ -61,7 +61,7 @@ public class InheritEnumAttributesDialog extends SelectSupertypeHierarchyPartsDi
         }
 
         @Override
-        protected List<IEnumType> getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<IEnumType> getSupertypes(IIpsObject ipsObject) {
             IEnumType enumType = (IEnumType)ipsObject;
             List<IEnumType> supertypes = enumType.findAllSuperEnumTypes(enumType.getIpsProject());
             return supertypes;

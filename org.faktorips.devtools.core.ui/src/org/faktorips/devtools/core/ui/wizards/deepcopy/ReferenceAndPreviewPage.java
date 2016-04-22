@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -29,7 +28,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptStructureReference;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
@@ -140,15 +138,10 @@ public class ReferenceAndPreviewPage extends WizardPage {
         if (visible) {
             if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
                 String productCmptTypeName;
-                try {
-                    productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
-                            getStructure().getRoot().getProductCmpt()
-                                    .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
-                    setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy,
-                            productCmptTypeName));
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
-                }
+                productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                        getStructure().getRoot().getProductCmpt()
+                                .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+                setDescription(NLS.bind(Messages.ReferenceAndPreviewPage_descritionPreviewNewCopy, productCmptTypeName));
             } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
                 String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
                         .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();

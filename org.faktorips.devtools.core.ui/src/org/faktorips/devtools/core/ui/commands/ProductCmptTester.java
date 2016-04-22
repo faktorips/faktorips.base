@@ -18,13 +18,18 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
  */
 public class ProductCmptTester extends PropertyTester {
 
-    private static final String ALLOW_GENERATION = "allowGenerations"; //$NON-NLS-1$
+    public static final String ALLOW_GENERATION = "allowGenerations"; //$NON-NLS-1$
+    public static final String IS_PRODUCT_TEMPLATE = "isProductTemplate"; //$NON-NLS-1$
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
         if (receiver instanceof IProductCmpt) {
+            IProductCmpt productCmpt = (IProductCmpt)receiver;
             if (ALLOW_GENERATION.equals(property)) {
-                return allowGenerations((IProductCmpt)receiver);
+                return allowGenerations(productCmpt);
+            }
+            if (IS_PRODUCT_TEMPLATE.equals(property)) {
+                return isProductTemplate(productCmpt);
             }
         }
         return false;
@@ -32,6 +37,10 @@ public class ProductCmptTester extends PropertyTester {
 
     private boolean allowGenerations(IProductCmpt productCmpt) {
         return productCmpt.allowGenerations();
+    }
+
+    private boolean isProductTemplate(IProductCmpt productCmpt) {
+        return productCmpt.isProductTemplate();
     }
 
 }

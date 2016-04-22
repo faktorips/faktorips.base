@@ -96,7 +96,7 @@ import org.faktorips.util.message.MessageList;
  * @see ICompositeWithSelectableViewer
  */
 public abstract class IpsObjectEditor extends FormEditor implements ContentsChangeListener,
-IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
+        IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListener, IIpsSrcFileEditor {
 
     public static final boolean TRACE = IpsPlugin.TRACE_UI;
 
@@ -528,7 +528,7 @@ IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListe
                 logMethodStarted("contentsChanged(): Received content changed event for the file being edited." + event.getEventType()); //$NON-NLS-1$
 
                 updateHeaderMessage();
-                if (event.getEventType() == ContentChangeEvent.TYPE_WHOLE_CONTENT_CHANGED) {
+                if (event.isAffected(getIpsObject())) {
                     updatePageStructure(false);
                 }
 
@@ -641,8 +641,8 @@ IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListe
                 MessageDialog dlg = new MessageDialog(Display.getCurrent().getActiveShell(),
                         Messages.IpsObjectEditor_fileHasChangesOnDiskTitle, (Image)null,
                         Messages.IpsObjectEditor_fileHasChangesOnDiskMessage, MessageDialog.QUESTION, new String[] {
-                    Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
-                    Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskYesButton,
+                                Messages.IpsObjectEditor_fileHasChangesOnDiskNoButton }, 0);
                 dlg.open();
                 if (dlg.getReturnCode() == 0) {
                     try {
@@ -722,7 +722,7 @@ IModificationStatusChangeListener, IResourceChangeListener, IPropertyChangeListe
                         toFixIpsObject.fixAllDifferencesToModel(getIpsProject());
                     }
                 };
-                IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(fix, null);
+                IpsUIPlugin.getDefault().runWorkspaceModification(fix);
                 refreshIncludingStructuralChanges();
             } else {
                 getSettings().put(getIpsSrcFile(), SETTING_DONT_FIX_DIFFERENCES, true);

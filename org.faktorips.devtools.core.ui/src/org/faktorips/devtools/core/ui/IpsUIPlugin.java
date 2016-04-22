@@ -13,10 +13,12 @@ package org.faktorips.devtools.core.ui;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,12 +32,14 @@ import java.util.concurrent.RunnableFuture;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -48,6 +52,7 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
@@ -97,6 +102,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.model.WorkbenchPartLabelProvider;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.progress.IProgressService;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.ExtensionPoints;
@@ -105,6 +111,7 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.Messages;
 import org.faktorips.devtools.core.internal.model.IpsElement;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.internal.model.ipsobject.LibraryIpsSrcFile;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.IIpsModel;
@@ -112,7 +119,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
-import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.ui.controlfactories.DefaultControlFactory;
 import org.faktorips.devtools.core.ui.controller.EditFieldChangesBroadcaster;
 import org.faktorips.devtools.core.ui.dialogs.OpenIpsObjectSelectionDialog.IpsObjectSelectionHistory;
@@ -123,11 +129,9 @@ import org.faktorips.devtools.core.ui.editors.IpsObjectEditorSettings;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditor;
 import org.faktorips.devtools.core.ui.editors.productcmpt.ProductCmptEditorInput;
 import org.faktorips.devtools.core.ui.filter.IProductCmptPropertyFilter;
-import org.faktorips.devtools.core.ui.filter.IPropertyVisibleController;
 import org.faktorips.devtools.core.ui.forms.IpsSection;
 import org.faktorips.devtools.core.ui.inputformat.DatatypeInputFormatRegistry;
 import org.faktorips.devtools.core.ui.inputformat.IInputFormat;
-import org.faktorips.devtools.core.ui.internal.filter.PropertyVisibleController;
 import org.faktorips.devtools.core.ui.workbenchadapters.IWorkbenchAdapterProvider;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapter;
 import org.faktorips.devtools.core.ui.workbenchadapters.IpsElementWorkbenchAdapterAdapterFactory;
@@ -210,8 +214,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
 
     private static List<IWorkbenchAdapterProvider> workbenchAdapterProviders;
 
-    private IPropertyVisibleController propertyVisibleController;
-
     /** Factories for creating controls depending on the datatype. */
     private ValueDatatypeControlFactory[] controlFactories;
 
@@ -245,6 +247,11 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     private final ImageHandling images = new ImageHandling();
 
     /**
+     * List of global property visibility filters.
+     */
+    private List<IProductCmptPropertyFilter> propertyVisibilityFilters;
+
+    /**
      * This method is for test purposes only.
      * <p>
      * Note: Always reset the registry in test tear down!!!
@@ -258,14 +265,6 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         return oldRegistry;
     }
 
-    /**
-     * Returns the {@link IPropertyVisibleController} that allows to dynamically hide elements
-     * associated to {@link IProductCmptProperty product component properties} from the UI.
-     */
-    public IPropertyVisibleController getPropertyVisibleController() {
-        return propertyVisibleController;
-    }
-
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -273,10 +272,9 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         registry = Platform.getExtensionRegistry();
         ipsEditorSettings = new IpsObjectEditorSettings();
         ipsEditorSettings.load(getStateLocation());
-        createPropertyVisibleController();
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(ipsEditorSettings);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
+        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
         productCmptDnDHandler = initProductCmptDnDHandler();
         controlFactories = initValueDatatypeControlFactories();
         defaultControlFactory = new DefaultControlFactory();
@@ -284,6 +282,7 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         datatypeFormatter = new UIDatatypeFormatter();
         Platform.getAdapterManager().registerAdapters(ipsElementWorkbenchAdapterAdapterFactory, IIpsElement.class);
         initDefaultValidityDate();
+        propertyVisibilityFilters = Collections.unmodifiableList(loadPropertyFilters());
     }
 
     private void initDefaultValidityDate() {
@@ -297,21 +296,25 @@ public class IpsUIPlugin extends AbstractUIPlugin {
         defaultValidityDate.setTimeInMillis(timeInMillis);
     }
 
-    private void createPropertyVisibleController() {
-        propertyVisibleController = new PropertyVisibleController();
-        loadPropertyFilters(propertyVisibleController);
+    /**
+     * @return the list of global property filters, added through the extension point
+     *         "productCmptPropertyFilter".
+     */
+    public List<IProductCmptPropertyFilter> getPropertyVisibilityFilters() {
+        return propertyVisibilityFilters;
     }
 
-    private void loadPropertyFilters(IPropertyVisibleController propertyVisibleController) {
+    private List<IProductCmptPropertyFilter> loadPropertyFilters() {
+        List<IProductCmptPropertyFilter> filters = new ArrayList<IProductCmptPropertyFilter>();
         ExtensionPoints extensionPoints = new ExtensionPoints(IpsUIPlugin.PLUGIN_ID);
         IExtension[] extensions = extensionPoints.getExtension(EXTENSION_POINT_ID_PRODUCT_CMPT_PROPERTY_FILTER);
         for (IExtension extension : extensions) {
             IConfigurationElement[] configElements = extension.getConfigurationElements();
             IProductCmptPropertyFilter filter = ExtensionPoints.createExecutableExtension(extension, configElements[0],
                     "class", IProductCmptPropertyFilter.class); //$NON-NLS-1$
-            filter.setPropertyVisibleController(propertyVisibleController);
-            propertyVisibleController.addFilter(filter);
+            filters.add(filter);
         }
+        return filters;
     }
 
     private List<IIpsDropAdapterProvider> initProductCmptDnDHandler() {
@@ -371,8 +374,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                    + extension.getExtensionPointUniqueIdentifier()
-                                    + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
+                            + extension.getExtensionPointUniqueIdentifier()
+                            + ". The attribute \"" + CONFIG_PROPERTY_CLASS + "\" is not specified.")); //$NON-NLS-1$ //$NON-NLS-2$
                 } else {
                     ValueDatatypeControlFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, ValueDatatypeControlFactory.class);
@@ -536,8 +539,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                 if (StringUtils.isEmpty(configElClass)) {
                     throw new CoreException(new IpsStatus(IStatus.ERROR,
                             "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                    + extension.getExtensionPointUniqueIdentifier()
-                                    + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
+                            + extension.getExtensionPointUniqueIdentifier()
+                            + ". The attribute 'class' is not specified.")); //$NON-NLS-1$
                 }
                 if (tableFormat.getClass().getName().equals(configElClass)) {
                     // the current configuration element corresponds to the given table format
@@ -771,8 +774,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isEmpty(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                        + extension.getExtensionPointUniqueIdentifier()
-                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                                + extension.getExtensionPointUniqueIdentifier()
+                                + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertyEditFieldFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElements[0], CONFIG_PROPERTY_CLASS, IExtensionPropertyEditFieldFactory.class);
@@ -811,8 +814,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                     if (StringUtils.isBlank(configElPropertyId)) {
                         throw new CoreException(new IpsStatus(IStatus.ERROR,
                                 "A problem occured while trying to load the extension: " //$NON-NLS-1$
-                                        + extension.getExtensionPointUniqueIdentifier()
-                                        + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
+                                + extension.getExtensionPointUniqueIdentifier()
+                                + ". The attribute propertyId is not specified.")); //$NON-NLS-1$
                     }
                     IExtensionPropertySectionFactory factory = ExtensionPoints.createExecutableExtension(extension,
                             configElement, CONFIG_PROPERTY_CLASS, IExtensionPropertySectionFactory.class);
@@ -1155,6 +1158,42 @@ public class IpsUIPlugin extends AbstractUIPlugin {
     }
 
     /**
+     * This method calls
+     * {@link IpsModel#runAndQueueChangeEvents(IWorkspaceRunnable, IProgressMonitor)} to perform
+     * multiple change operations and queue all change events. In addition it shows a busy indicator
+     * and starts a progress dialog if the operation takes too long.
+     * 
+     * The whole workspace is blocked while the operation runs.
+     * 
+     * IMPORTANT NOTES:
+     * 
+     * The action will NOT run in UI thread!
+     * 
+     * You cannot call this method from another modal dialog like a wizard because the wizard has
+     * its own progress and this one will wait until the dialog is finished.
+     * 
+     * @param action The {@link IWorkspaceRunnable} that should be startet-
+     */
+    public void runWorkspaceModification(final IWorkspaceRunnable action) {
+        IWorkbench wb = PlatformUI.getWorkbench();
+        IProgressService ps = wb.getProgressService();
+        try {
+            ps.busyCursorWhile(new IRunnableWithProgress() {
+
+                @Override
+                public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+                    IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(action, monitor);
+                }
+
+            });
+        } catch (InvocationTargetException e) {
+            logAndShowErrorDialog(e);
+        } catch (InterruptedException e) {
+            logAndShowErrorDialog(e);
+        }
+    }
+
+    /**
      * Returns the current default validity date which should be used as default date for the
      * creation of new generations.
      */
@@ -1318,8 +1357,8 @@ public class IpsUIPlugin extends AbstractUIPlugin {
                  * using the default IPS object editor.
                  */
                 ((IEditorSite)editorPart.getSite()).getActionBars().getStatusLineManager()
-                        .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
-                                Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
+                .setMessage(getImageHandling().getSharedImage("size8/InfoMessage.gif", true), //$NON-NLS-1$
+                        Messages.IpsPlugin_infoDefaultTextEditorWasOpened);
                 return editorPart;
             } catch (PartInitException e) {
                 IpsPlugin.logAndShowErrorDialog(e);

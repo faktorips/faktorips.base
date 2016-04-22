@@ -20,7 +20,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
@@ -61,20 +60,16 @@ public class SetTestCaseTypeDialog extends EditDialog {
         testCaseType.getTextControl().addModifyListener(new ModifyListener() {
             @Override
             public void modifyText(ModifyEvent e) {
-                try {
-                    if (StringUtils.isEmpty(getTestCaseType())
-                            || null == testCase.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE,
-                                    getTestCaseType())) {
-                        getButton(OK).setEnabled(false);
-                        String msg = NLS.bind(Messages.SetTemplateDialog_DialogTemplate_Error_TemplateNotExists,
-                                testCaseType.getText());
-                        setMessage(msg, IMessageProvider.ERROR);
-                    } else {
-                        getButton(OK).setEnabled(true);
-                        setMessage(message);
-                    }
-                } catch (CoreException exception) {
-                    IpsPlugin.logAndShowErrorDialog(exception);
+                if (StringUtils.isEmpty(getTestCaseType())
+                        || null == testCase.getIpsProject().findIpsObject(IpsObjectType.TEST_CASE_TYPE,
+                                getTestCaseType())) {
+                    getButton(OK).setEnabled(false);
+                    String msg = NLS.bind(Messages.SetTemplateDialog_DialogTemplate_Error_TemplateNotExists,
+                            testCaseType.getText());
+                    setMessage(msg, IMessageProvider.ERROR);
+                } else {
+                    getButton(OK).setEnabled(true);
+                    setMessage(message);
                 }
             }
         });

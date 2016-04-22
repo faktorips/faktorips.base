@@ -30,7 +30,7 @@ public class Messages extends NLS {
 
     public static String EnumValueSet_msgValueNotParsable;
     public static String EnumValueSet_msgDuplicateValue;
-    public static String EnumValueSet_msgValueNotParsableDatatypeUnknown;
+    public static String EnumValueSet_msgDatatypeUnknown;
 
     public static String Range_msgUnknownDatatype;
     public static String Range_msgLowerboundGreaterUpperbound;

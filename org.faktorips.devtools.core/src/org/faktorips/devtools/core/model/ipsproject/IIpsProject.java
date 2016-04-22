@@ -58,6 +58,7 @@ import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
+import org.faktorips.devtools.core.util.Tree;
 import org.faktorips.util.message.MessageList;
 
 /**
@@ -466,7 +467,7 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
     /**
      * Returns the first object with the indicated type and qualified name found on the object path.
      */
-    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName) throws CoreException;
+    public IIpsObject findIpsObject(IpsObjectType type, String qualifiedName);
 
     /**
      * Returns the first object with the indicated qualified name type found on the object path.
@@ -478,14 +479,13 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * Returns <code>null</code> if no such type is found. Returns <code>null</code> if the
      * qualified name is <code>null</code>.
      * 
-     * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptType findPolicyCmptType(String qualifiedName) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(String qualifiedName);
 
     /**
      * Returns the first product component type with the given qualified name found on the path.
      */
-    public IProductCmptType findProductCmptType(String qualifiedName) throws CoreException;
+    public IProductCmptType findProductCmptType(String qualifiedName);
 
     /**
      * Returns the product component with the given qualified name or <code>null</code> if no such
@@ -500,6 +500,19 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * @throws CoreException If an error occurs during the search.
      */
     public IProductCmpt findProductCmpt(String qualifiedName) throws CoreException;
+
+    /**
+     * Returns the product template with the given qualified name or <code>null</code> if no such
+     * product template exists. If more than one product template with the given name exists, the
+     * first one found is returned.
+     * 
+     * @param qualifiedName The qualified name to find the product template for.
+     * 
+     * @return The first product component identified by the given qualified name that has been
+     *         found.
+     * 
+     */
+    public IProductCmpt findProductTemplate(String qualifiedName);
 
     /**
      * Returns a collection of ipsSrcfiles containing product components with the given unqualified
@@ -642,6 +655,31 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      */
     public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeSubtypes)
             throws CoreException;
+
+    /**
+     * Returns all templates which are based on the given {@link IProductCmptType}. If the parameter
+     * includeTemplatesForSubtypes is true also templates based on subtypes will be returned.
+     * 
+     * @param productCmptType The product component type that should that is used by the templates
+     * @param includeTemplatesForSubtypes <code>true</code> to include subtypes while searching for
+     *            templates
+     * @return Returns a list of {@link IIpsSrcFile}, every source file holds a template that is
+     *         based on the given type
+     */
+    public List<IIpsSrcFile> findAllProductTemplates(IProductCmptType productCmptType,
+            boolean includeTemplatesForSubtypes);
+
+    /**
+     * Returns all templates that are compatible to the given product component type. A template is
+     * compatible if it is based on the same product component type or on any supertype of the
+     * specified one.
+     * 
+     * @param productCmptType The product component type to which the returned templates are
+     *            compatible to
+     * @return A list of all templates found from this project (including referenced projects) that
+     *         are compatible to the specified type
+     */
+    public List<IIpsSrcFile> findCompatibleProductTemplates(IProductCmptType productCmptType);
 
     /**
      * Returns all <code>IIpsSrcFile</code>s representing test cases that are based on the given
@@ -913,5 +951,18 @@ public interface IIpsProject extends IIpsElement, IProjectNature {
      * 
      */
     public void clearCaches();
+
+    /**
+     * Returns the hierarchy of the given template as a tree of source files. The root of the tree
+     * is the source file of the given template, all source files of product components and
+     * templates that (directly or indirectly) reference the given template are nodes in that tree.
+     * Returns an empty tree if no template is given or the given product component is not a
+     * template.
+     * 
+     * @param template the template whose hierarchy is returned
+     * @return a tree with the hierarchy of the given template. The tree is empty if no template or
+     *         a non-template product component is given.
+     */
+    public Tree<IIpsSrcFile> findTemplateHierarchy(IProductCmpt template);
 
 }

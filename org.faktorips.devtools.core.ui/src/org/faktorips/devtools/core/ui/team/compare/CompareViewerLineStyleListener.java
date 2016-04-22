@@ -52,7 +52,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
     /**
      * List of patterns to be applied to lines in getStylesForRestOfLine().
      */
-    protected List<Pattern> linePatternList = new ArrayList<Pattern>();
+    private List<Pattern> linePatternList = new ArrayList<Pattern>();
     /**
      * Maps patterns to specific highlight colors and thus defines a colour for specific tokens
      * should in which the should be displayed.
@@ -83,7 +83,7 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
                         + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(rulesPattern);
         Pattern typePattern = Pattern
-                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_template
+                .compile(org.faktorips.devtools.core.ui.editors.productcmpt.Messages.ProductAttributesSection_type
                         + AbstractCompareItem.COLON_BLANK);
         linePatternList.add(typePattern);
         Pattern runtimeIDPattern = Pattern
@@ -186,8 +186,8 @@ public class CompareViewerLineStyleListener implements LineStyleListener {
             Matcher matcher = pattern.matcher(lineText);
             if (matcher.find()) {
                 int start = matcher.start();
-                Color highlight = highlightColorMap.get(pattern); // if null, default foreground is
-                // used
+                // if null, default foreground is used
+                Color highlight = highlightColorMap.get(pattern);
                 styleList.add(new StyleRange(lineOffset + start, lineText.length() - start, highlight, null, SWT.BOLD));
                 break;
             }

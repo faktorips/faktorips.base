@@ -50,4 +50,34 @@ public abstract class IpsSrcFileViewItem extends PlatformObject implements IIpsS
         return getIpsSrcFile();
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((ipsSrcFile == null) ? 0 : ipsSrcFile.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        IpsSrcFileViewItem other = (IpsSrcFileViewItem)obj;
+        if (ipsSrcFile == null) {
+            if (other.ipsSrcFile != null) {
+                return false;
+            }
+        } else if (!ipsSrcFile.equals(other.ipsSrcFile)) {
+            return false;
+        }
+        return true;
+    }
+
 }

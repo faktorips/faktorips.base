@@ -10,13 +10,14 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -52,6 +53,7 @@ import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
 import org.faktorips.devtools.core.model.productcmpt.IValidationRuleConfig;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribute;
@@ -231,23 +233,23 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         IConfigElement ce3 = generation.newConfigElement();
         IConfigElement ce4 = generation.newConfigElement();
 
-        List<? extends IPropertyValue> values = generation
-                .getPropertyValues(ProductCmptPropertyType.PRODUCT_CMPT_TYPE_ATTRIBUTE.getValueClass());
+        List<? extends IPropertyValue> values = generation.getPropertyValues(PropertyValueType.ATTRIBUTE_VALUE
+                .getInterfaceClass());
         assertEquals(1, values.size());
         assertEquals(value1, values.get(0));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION.getValueClass());
+        values = generation.getPropertyValues(PropertyValueType.FORMULA.getInterfaceClass());
         assertEquals(2, values.size());
         assertEquals(formula1, values.get(0));
         assertEquals(formula2, values.get(1));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.TABLE_STRUCTURE_USAGE.getValueClass());
+        values = generation.getPropertyValues(PropertyValueType.TABLE_CONTENT_USAGE.getInterfaceClass());
         assertEquals(3, values.size());
         assertEquals(tcu1, values.get(0));
         assertEquals(tcu2, values.get(1));
         assertEquals(tcu3, values.get(2));
 
-        values = generation.getPropertyValues(ProductCmptPropertyType.POLICY_CMPT_TYPE_ATTRIBUTE.getValueClass());
+        values = generation.getPropertyValues(PropertyValueType.CONFIG_ELEMENT.getInterfaceClass());
         assertEquals(4, values.size());
         assertEquals(ce1, values.get(0));
         assertEquals(ce2, values.get(1));
@@ -286,7 +288,7 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
 
         Element element = generation.toXml(newDocument());
 
-        IProductCmptGeneration copy = new ProductCmptGeneration();
+        IProductCmptGeneration copy = (IProductCmptGeneration)productCmpt.newGeneration();
         copy.initFromXml(element);
         assertEquals(2, copy.getNumOfConfigElements());
         assertEquals(3, copy.getNumOfLinks());
@@ -396,21 +398,6 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         ProductCmpt subProductCmpt = newProductCmpt(subProductCmptType, "SubTestProduct");
         IProductCmptGeneration subGeneration = subProductCmpt.getProductCmptGeneration(0);
         return subGeneration;
-    }
-
-    @Test
-    public void testValidateAttributeWithMissingConfigElement() throws Exception {
-        IProductCmpt product = newProductCmpt(productCmptType, "EmptyTestProduct");
-        IProductCmptGeneration gen = product.getProductCmptGeneration(0);
-        MessageList msgList = gen.validate(ipsProject);
-        assertTrue(msgList.isEmpty());
-
-        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute();
-        attribute.setProductRelevant(true);
-        attribute.setName("test");
-        msgList = gen.validate(ipsProject);
-        assertFalse(msgList.isEmpty());
-        assertNotNull(msgList.getMessageByCode(IProductCmptGeneration.MSGCODE_PROPERTY_NOT_CONFIGURED));
     }
 
     @Test
@@ -771,4 +758,59 @@ public class ProductCmptGenerationTest extends AbstractIpsPluginTest {
         assertFalse(propertyValuesGen.contains(valueA2));
     }
 
+    @Test
+    public void testIsTemplate_default() {
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isProductTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsTemplate_true() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration gen = template.getProductCmptGeneration(0);
+
+        assertThat(gen.isProductTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsUsingTemplate() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isUsingTemplate(), is(true));
+    }
+
+    @Test
+    public void testIsUsingTemplate_noTemplate() {
+        IProductCmptGeneration gen = productCmpt.getProductCmptGeneration(0);
+
+        assertThat(gen.isUsingTemplate(), is(false));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_prodCmpt() throws CoreException {
+        IProductCmpt product = newProductCmpt(ipsProject, "product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
+        product.setTemplate(null);
+
+        assertThat(generation.isPartOfTemplateHierarchy(), is(false));
+
+        product.setTemplate("someTemplate");
+        assertThat(generation.isPartOfTemplateHierarchy(), is(true));
+    }
+
+    @Test
+    public void testIsPartOfTemplateHierarchy_template() throws CoreException {
+        IProductCmpt product = newProductTemplate(ipsProject, "product");
+        IProductCmptGeneration generation = (IProductCmptGeneration)product.newGeneration();
+        product.setTemplate(null);
+
+        assertThat(generation.isPartOfTemplateHierarchy(), is(true));
+
+        product.setTemplate("parentTemplate");
+        assertThat(generation.isPartOfTemplateHierarchy(), is(true));
+    }
 }

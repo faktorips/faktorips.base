@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.ui.filter;
 
+import java.util.List;
+
 import org.eclipse.swt.widgets.Control;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 
@@ -20,7 +22,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * <p>
  * Multiple {@link IProductCmptPropertyFilter product component property filters} can be added to
  * this controller. Each filter implements it's own logic to trigger the controller's
- * {@link #updateUI()} method, which adjusts the visibility of the mapped controls.
+ * {@link #updateUI(boolean)} method, which adjusts the visibility of the mapped controls.
  * 
  * @since 3.6
  * 
@@ -31,8 +33,11 @@ public interface IPropertyVisibleController {
     /**
      * Adjusts the visibility of the controls that have been registered to this controller by means
      * of the {@link #addPropertyControlMapping(Control, IProductCmptProperty, Control...)}.
+     * 
+     * @param refresh if <code>true</code> a full refresh needs to be performed that means the
+     *            refresh callback installed by {@link #setRefreshCallback(Runnable)} is executed
      */
-    public void updateUI();
+    public void updateUI(boolean refresh);
 
     /**
      * Registers the indicated {@link IProductCmptProperty product component property} to this
@@ -102,4 +107,17 @@ public interface IPropertyVisibleController {
      * 
      */
     public boolean isFiltered(IProductCmptProperty property);
+
+    /**
+     * Adds the list of filters to this controller. Useful when adding multiple filters at once.
+     */
+    public void addFilters(List<IProductCmptPropertyFilter> filters);
+
+    /**
+     * Installs a callback function that is executed after the filter has changed to inform the
+     * caller that a refresh needs to be performed.
+     * 
+     * @param callback The callback that is executed when refresh is required.
+     */
+    public void setRefreshCallback(Runnable callback);
 }

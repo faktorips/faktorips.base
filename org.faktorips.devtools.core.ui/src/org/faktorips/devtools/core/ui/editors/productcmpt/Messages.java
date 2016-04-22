@@ -26,6 +26,14 @@ public class Messages extends NLS {
 
     public static String AttributeValueEditComposite_attributeNotChangingOverTimeDescription;
 
+    public static String AttributeValueEditComposite_MenuItem_findUsagesAndVariations;
+
+    public static String AttributeValueEditComposite_MenuItem_openTemplate;
+
+    public static String AttributeValueEditComposite_MenuItem_showPropertyUsage;
+
+    public static String AttributeValueEditComposite_MenuItem_showTemplatePropertyUsage;
+
     public static String DefaultsAndRangesEditDialog_additionalValuesDefinedInModel;
 
     public static String DefaultsAndRangesEditDialog_valueDefinedInProductCmpt;
@@ -35,6 +43,8 @@ public class Messages extends NLS {
     public static String ComponentPropertiesSection_title;
 
     public static String ComponentPropertiesSection_labelValidFrom;
+
+    public static String ComponentPropertiesSection_TemplateName;
 
     public static String ConfigElementEditComposite_valueSet;
 
@@ -80,7 +90,9 @@ public class Messages extends NLS {
 
     public static String RelationEditDialog_cardinalityMax;
 
-    public static String ProductAttributesSection_template;
+    public static String ProductAttributesSection_type;
+
+    public static String ProductCmptEditor_productCmptTitle;
 
     public static String ProductCmptEditor_productComponent;
 
@@ -94,6 +106,8 @@ public class Messages extends NLS {
 
     public static String RelationsLabelProvider_undefined;
 
+    public static String ProductCmptEditor_templateTitle;
+
     public static String ProductCmptEditor_title_GenerationMissmatch;
 
     public static String CardinalityPanel_LabelDefaultCardinality;
@@ -103,6 +117,10 @@ public class Messages extends NLS {
     public static String CardinalityPanel_labelMandatory;
 
     public static String CardinalityPanel_labelOther;
+
+    public static String CardinalityPanel_MenuItem_showUsage;
+
+    public static String CardinalityPanel_MenuItem_showTemplateLinkUsage;
 
     public static String ExpressionProposalProvider_defaultValue;
 
@@ -116,7 +134,7 @@ public class Messages extends NLS {
 
     public static String SetTemplateDialog_msgTemplateDoesNotExist;
 
-    public static String ProductCmptEditor_msgTemplateNotFound;
+    public static String ProductCmptEditor_msgTypeNotFound;
 
     public static String GenerationEditDialog_titleChangeValidFromDate;
 
@@ -135,6 +153,10 @@ public class Messages extends NLS {
     public static String GenerationPropertiesPage_fallbackSectionTitle;
 
     public static String GenerationPropertiesPage_msg_warning_notLatestGeneration;
+
+    public static String GenerationPropertiesPage_hideInheritedValues;
+
+    public static String GenerationPropertiesPage_showAllValues;
 
     public static String GenerationSelectionDialog_labelCreate;
 
@@ -218,8 +240,36 @@ public class Messages extends NLS {
 
     public static String LinksSection_filterEmptyAssociations;
 
+    public static String ValidationRuleConfigEditComposite_activated;
+
+    public static String ValidationRuleConfigEditComposite_deactivated;
+
     public static String ValidationRuleSection_DefaultTitle;
 
     public static String ProductCmptPropertySection_NoContentToDisplay;
+
+    public static String TemplateLinkPmo_Status_Delete;
+
+    public static String TemplateLinkPmo_Status_Inherited;
+
+    public static String TemplateLinkPmo_Status_NewlyDefined;
+
+    public static String TemplateLinkPmo_Status_Override;
+
+    public static String TemplateLinkPmo_Status_OverrideEqual;
+
+    public static String TemplateValuePmo_Status_Inherited;
+
+    public static String TemplateValuePmo_Status_NewlyDefined;
+
+    public static String TemplateValuePmo_Status_NewlyDefined_withoutParentTemplate;
+
+    public static String TemplateValuePmo_Status_Override;
+
+    public static String TemplateValuePmo_Status_OverrideEqual;
+
+    public static String TemplateValuePmo_Status_Undefined;
+
+    public static String TemplateValuePmo_Status_Undefined_WithoutParentTemplate;
 
 }

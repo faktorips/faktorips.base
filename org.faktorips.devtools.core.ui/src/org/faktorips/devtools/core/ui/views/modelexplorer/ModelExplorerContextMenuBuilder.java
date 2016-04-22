@@ -86,6 +86,7 @@ import org.faktorips.devtools.core.ui.actions.NewTestCaseAction;
 import org.faktorips.devtools.core.ui.actions.NewTestCaseTypeAction;
 import org.faktorips.devtools.core.ui.actions.OpenEditorAction;
 import org.faktorips.devtools.core.ui.actions.TableImportExportAction;
+import org.faktorips.devtools.core.ui.commands.InferTemplateHandler;
 import org.faktorips.devtools.core.ui.wizards.deepcopy.DeepCopyWizard;
 
 /**
@@ -116,11 +117,11 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
     private IWorkbenchAction properties;
 
-    protected ModelExplorerConfiguration modelExplorerConfig;
+    private ModelExplorerConfiguration modelExplorerConfig;
 
     private ModelExplorer modelExplorer;
 
-    protected IViewSite viewSite;
+    private IViewSite viewSite;
 
     private TreeViewer treeViewer;
 
@@ -174,10 +175,20 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
 
         manager.add(new Separator("copy")); //$NON-NLS-1$
         // Add copy actions depending on selected ips object type
-        if (selected instanceof IProductCmpt || selected instanceof IProductCmptGeneration) {
-            manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
-            manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
-            manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
+        if (selected instanceof IProductCmpt) {
+            IProductCmpt cmpt = (IProductCmpt)selected;
+            if (cmpt.isProductTemplate()) {
+                addProductTemplateActions(manager);
+            } else {
+                addProductComponentActions(manager);
+            }
+        } else if (selected instanceof IProductCmptGeneration) {
+            IProductCmptGeneration gen = (IProductCmptGeneration)selected;
+            if (gen.isProductTemplate()) {
+                addProductTemplateActions(manager);
+            } else {
+                addProductComponentActions(manager);
+            }
         } else if (selected instanceof ITestCase) {
             manager.add(new IpsTestCaseCopyAction(viewSite.getShell(), treeViewer));
         } else if (selected instanceof ITableContents) {
@@ -214,58 +225,35 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         createPropertiesActions(manager, selected);
     }
 
-    protected void createNewMenu(IMenuManager manager, Object selected) {
-        selected = mapIpsSrcFile2IpsObject(selected);
+    private void addProductComponentActions(IMenuManager manager) {
+        manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_NEW_VERSION));
+        manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
+        manager.add(new IpsDeepCopyAction(viewSite.getShell(), treeViewer, DeepCopyWizard.TYPE_COPY_PRODUCT));
+        manager.add(InferTemplateHandler.createContributionItem(viewSite));
+    }
+
+    private void addProductTemplateActions(IMenuManager manager) {
+        manager.add(new CreateNewGenerationAction(viewSite.getShell(), treeViewer));
+        manager.add(InferTemplateHandler.createContributionItem(viewSite));
+    }
+
+    protected void createNewMenu(IMenuManager manager, final Object selected) {
+        Object selection = mapIpsSrcFile2IpsObject(selected);
         MenuManager newMenu = new MenuManager(Messages.ModelExplorer_submenuNew, NEW_MENU_ID);
 
-        if ((selected instanceof IFolder) || (selected instanceof IIpsProject)) {
+        if ((selection instanceof IFolder) || (selection instanceof IIpsProject)) {
             newMenu.add(new NewFolderAction(viewSite.getShell(), treeViewer));
             newMenu.add(new NewFileResourceAction(viewSite.getShell(), treeViewer));
         }
 
-        if ((selected instanceof IIpsElement) && !(selected instanceof IIpsProject)) {
+        if ((selection instanceof IIpsElement) && !(selection instanceof IIpsProject)) {
             IWorkbenchWindow workbenchWindow = viewSite.getWorkbenchWindow();
 
             newMenu.add(new Separator(GROUP_MODELDEF));
-
-            // Model side elements
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.POLICY_CMPT_TYPE)) {
-                newMenu.add(new NewPolicyComponentTypeAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT_TYPE)) {
-                newMenu.add(new NewProductCmptTypeAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE)) {
-                newMenu.add(new NewEnumTypeAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.BUSINESS_FUNCTION)) {
-                newMenu.add(new NewBusinessFunctionAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_STRUCTURE)) {
-                newMenu.add(new NewTableStructureAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE_TYPE)) {
-                newMenu.add(new NewTestCaseTypeAction(workbenchWindow));
-            }
-
+            addModelMenueItems(newMenu, workbenchWindow);
             newMenu.add(new Separator(GROUP_PRODUCTDEF));
-
-            // Product side elements
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
-                newMenu.add(new NewProductComponentAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT)) {
-                newMenu.add(new NewEnumContentAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_CONTENTS)) {
-                newMenu.add(new NewTableContentAction(workbenchWindow));
-            }
-            if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE)) {
-                newMenu.add(new NewTestCaseAction(workbenchWindow));
-            }
-
+            addProductCmptMenuItems(newMenu, workbenchWindow);
             newMenu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-
             newMenu.add(new Separator(GROUP_COMMON));
 
             // Ips package and default file actions
@@ -276,10 +264,51 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
         manager.add(newMenu);
     }
 
+    private void addModelMenueItems(MenuManager newMenu, IWorkbenchWindow workbenchWindow) {
+        // Model side elements
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.POLICY_CMPT_TYPE)) {
+            newMenu.add(new NewPolicyComponentTypeAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT_TYPE)) {
+            newMenu.add(new NewProductCmptTypeAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_TYPE)) {
+            newMenu.add(new NewEnumTypeAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.BUSINESS_FUNCTION)) {
+            newMenu.add(new NewBusinessFunctionAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_STRUCTURE)) {
+            newMenu.add(new NewTableStructureAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE_TYPE)) {
+            newMenu.add(new NewTestCaseTypeAction(workbenchWindow));
+        }
+    }
+
+    private void addProductCmptMenuItems(MenuManager newMenu, IWorkbenchWindow workbenchWindow) {
+        // Product side elements
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
+            newMenu.add(new NewProductComponentAction(workbenchWindow, false));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_TEMPLATE)) {
+            newMenu.add(new NewProductComponentAction(workbenchWindow, true));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.ENUM_CONTENT)) {
+            newMenu.add(new NewEnumContentAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TABLE_CONTENTS)) {
+            newMenu.add(new NewTableContentAction(workbenchWindow));
+        }
+        if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE)) {
+            newMenu.add(new NewTestCaseAction(workbenchWindow));
+        }
+    }
+
     public Object mapIpsSrcFile2IpsObject(Object selected) {
         if (selected instanceof IIpsSrcFile) {
             IIpsSrcFile ipsSrcFile = (IIpsSrcFile)selected;
-            selected = ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
+            return ipsSrcFile.getIpsObjectType().newObject(ipsSrcFile);
         }
         return selected;
     }
@@ -440,12 +469,19 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createTestCaseAction(IMenuManager manager, Object selected) {
         if (modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.TEST_CASE)
                 || modelExplorerConfig.isAllowedIpsElementType(IpsObjectType.PRODUCT_CMPT)) {
-            if (selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
-                    || selected instanceof IIpsProject || selected instanceof ITestCase
-                    || selected instanceof IProductCmpt) {
+            if (isAllowIpsTest(selected)) {
                 manager.add(new IpsTestAction(treeViewer));
             }
         }
+    }
+
+    private boolean isAllowIpsTest(Object selected) {
+        return isFolderLike(selected) || selected instanceof ITestCase || selected instanceof IProductCmpt;
+    }
+
+    private boolean isFolderLike(Object selected) {
+        return selected instanceof IIpsPackageFragment || selected instanceof IIpsPackageFragmentRoot
+                || selected instanceof IIpsProject;
     }
 
     protected void createIpsArchiveAction(IMenuManager manager, Object selected) {
@@ -489,7 +525,7 @@ public class ModelExplorerContextMenuBuilder implements IMenuListener {
     protected void createAdditionalActions(IMenuManager manager, IStructuredSelection structuredSelection) {
         manager.add(new Separator("additions")); //$NON-NLS-1$
         manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));//$NON-NLS-1$
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end")); //$NON-NLS-1$
     }
 
     protected void createPropertiesActions(IMenuManager manager, Object selected) {

@@ -12,8 +12,8 @@ package org.faktorips.devtools.core.internal.model.ipsproject;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItem;
-import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.IIpsModel;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -98,7 +97,7 @@ public class TableContentsStructureCacheTest {
     }
 
     @Before
-    public void setUpsIpsSrcFiles() throws CoreException {
+    public void setUpsIpsSrcFiles() {
         when(tableStructure.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_STRUCTURE);
         when(tableStructure.getIpsProject()).thenReturn(ipsProjectBase);
         when(tableContent1.getIpsObjectType()).thenReturn(IpsObjectType.TABLE_CONTENTS);
@@ -253,7 +252,7 @@ public class TableContentsStructureCacheTest {
         assertTrue(tableContentsStructureCacheA.isNew());
     }
 
-    private void setUpTableStructureNameFor(IIpsSrcFile tc, String name) throws CoreException {
+    private void setUpTableStructureNameFor(IIpsSrcFile tc, String name) {
         when(tc.getPropertyValue(ITableContents.PROPERTY_TABLESTRUCTURE)).thenReturn(name);
     }
 

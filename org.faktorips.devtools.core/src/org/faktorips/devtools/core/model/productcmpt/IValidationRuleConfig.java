@@ -51,4 +51,13 @@ public interface IValidationRuleConfig extends IPropertyValue {
      * Returns the name of the referenced {@link ValidationRule}
      */
     public String getValidationRuleName();
+
+    /**
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code IValidationRuleConfig}.
+     * 
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
+     */
+    @Override
+    public IValidationRuleConfig findTemplateProperty(IIpsProject ipsProject);
 }

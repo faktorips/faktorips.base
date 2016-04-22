@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.internal.model.ipsobject.IpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
@@ -61,7 +60,7 @@ public class LinkCandidateFilterTest {
     private GregorianCalendar validAt;
 
     @Before
-    public void setUp() throws CoreException {
+    public void setUp() {
         when(prodCmpt.getIpsProject()).thenReturn(ipsProject);
 
         when(prodCmpt.getGenerationEffectiveOn(any(GregorianCalendar.class))).thenReturn(prodCmptGeneration);
@@ -82,7 +81,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testWrongObjectType() throws CoreException {
+    public void testWrongObjectType() {
         createFilter();
 
         IIpsSrcFile sourceFileWrongType = createSourceFile(ipsProject, type);
@@ -92,7 +91,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testImmutableProductCmpt() throws CoreException {
+    public void testImmutableProductCmpt() {
         when(srcFile.isReadOnly()).thenReturn(true);
 
         createFilter();
@@ -101,14 +100,14 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testWorkingModeBrowse() throws CoreException {
+    public void testWorkingModeBrowse() {
         createFilter(true);
 
         assertFalse(filter.filter(createSourceFile(ipsProject, type)));
     }
 
     @Test
-    public void testInProject() throws CoreException {
+    public void testInProject() {
         createFilter();
 
         IIpsSrcFile srcFileSameProject = createSourceFile(ipsProject, type);
@@ -128,7 +127,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testSameTargetType() throws CoreException {
+    public void testSameTargetType() {
         createFilter();
 
         IIpsSrcFile srcFileSameType = createSourceFile(ipsProject, type);
@@ -136,7 +135,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testSubOfTargetType() throws CoreException {
+    public void testSubOfTargetType() {
         createFilter();
 
         IProductCmptType subType = mock(IProductCmptType.class);
@@ -147,7 +146,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testSuperOfTargetType() throws CoreException {
+    public void testSuperOfTargetType() {
         createFilter();
 
         IProductCmptType superType = mock(IProductCmptType.class);
@@ -158,7 +157,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testAnotherTargetType() throws CoreException {
+    public void testAnotherTargetType() {
         createFilter();
 
         IProductCmptType anotherType = mock(IProductCmptType.class);
@@ -170,7 +169,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testAlreadyAssociated() throws CoreException {
+    public void testAlreadyAssociated() {
         createFilter();
 
         IIpsSrcFile srcFileNotLinked = createSourceFile(ipsProject, type);
@@ -191,7 +190,7 @@ public class LinkCandidateFilterTest {
     }
 
     @Test
-    public void testAssociationAlreadyFull() throws CoreException {
+    public void testAssociationAlreadyFull() {
 
         String linkedName = "de.linked.PC";
 
@@ -236,7 +235,7 @@ public class LinkCandidateFilterTest {
         filter = new LinkCandidateFilter(structureReference, workingModeBrowse);
     }
 
-    private IIpsSrcFile createSourceFile(IIpsProject project, IProductCmptType productCmptType) throws CoreException {
+    private IIpsSrcFile createSourceFile(IIpsProject project, IProductCmptType productCmptType) {
         IpsSrcFile srcFile = mock(IpsSrcFile.class);
         QualifiedNameType type = mock(QualifiedNameType.class);
         when(srcFile.getQualifiedNameType()).thenReturn(type);

@@ -251,7 +251,7 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
         for (ObjectProperty property : objectProperties) {
             IPolicyCmptTypeAssociation association = (IPolicyCmptTypeAssociation)property.getObject();
             try {
-                IPolicyCmptType target = association.findTargetPolicyCmptType(ipsProject);
+                IPolicyCmptType target = association.findTargetPolicyCmptType(getIpsProject());
                 if (target == null) {
                     return false;
                 }
@@ -269,11 +269,11 @@ public abstract class DuplicatePropertyNameValidator extends TypeHierarchyVisito
                 for (int i = index; i < objectProperties.length; i++) {
                     IPolicyCmptTypeAssociation nextAssociation = (IPolicyCmptTypeAssociation)objectProperties[i]
                             .getObject();
-                    IPolicyCmptType nextTarget = nextAssociation.findTargetPolicyCmptType(ipsProject);
+                    IPolicyCmptType nextTarget = nextAssociation.findTargetPolicyCmptType(getIpsProject());
                     if (nextTarget == null) {
                         return false;
                     }
-                    if (!target.isSubtypeOrSameType(nextTarget, ipsProject)) {
+                    if (!target.isSubtypeOrSameType(nextTarget, getIpsProject())) {
                         return false;
                     }
                 }

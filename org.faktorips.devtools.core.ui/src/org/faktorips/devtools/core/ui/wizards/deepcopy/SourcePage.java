@@ -51,7 +51,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragmentRoot;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
@@ -376,7 +375,7 @@ public class SourcePage extends WizardPage {
             TextField searchInputField = new TextField(searchInput);
             TextField replaceInputField = new TextField(replaceInput);
             bindingContext
-                    .bindContent(searchInputField, getPresentationModel(), DeepCopyPresentationModel.SEARCH_INPUT);
+            .bindContent(searchInputField, getPresentationModel(), DeepCopyPresentationModel.SEARCH_INPUT);
             bindingContext.bindContent(replaceInputField, getPresentationModel(),
                     DeepCopyPresentationModel.REPLACE_INPUT);
 
@@ -476,14 +475,10 @@ public class SourcePage extends WizardPage {
     private void setMessagePleaseEnterWorkingDate() {
         if (type == DeepCopyWizard.TYPE_COPY_PRODUCT) {
             String productCmptTypeName;
-            try {
-                productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
-                        getStructure().getRoot().getProductCmpt()
-                                .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
-                setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
-            } catch (CoreException e) {
-                throw new CoreRuntimeException(e);
-            }
+            productCmptTypeName = IpsPlugin.getMultiLanguageSupport().getLocalizedLabel(
+                    getStructure().getRoot().getProductCmpt()
+                            .findProductCmptType(getStructure().getRoot().getProductCmpt().getIpsProject()));
+            setDescription(NLS.bind(Messages.SourcePage_msgPleaseEnterNewWorkingDateNewCopy, productCmptTypeName));
         } else if (type == DeepCopyWizard.TYPE_NEW_VERSION) {
             String versionConceptNameSingular = IpsPlugin.getDefault().getIpsPreferences()
                     .getChangesOverTimeNamingConvention().getVersionConceptNameSingular();

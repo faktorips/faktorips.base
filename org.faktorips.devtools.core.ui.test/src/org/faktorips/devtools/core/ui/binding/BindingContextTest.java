@@ -30,14 +30,18 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
+import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.internal.model.IpsModel;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.Validatable;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
+import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IAttributeValue;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IValueHolder;
+import org.faktorips.devtools.core.ui.binding.BindingContext.Listener;
 import org.faktorips.devtools.core.ui.controller.EditField;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMapping;
 import org.faktorips.devtools.core.ui.controller.FieldPropertyMappingByPropertyDescriptor;
@@ -46,15 +50,27 @@ import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class BindingContextTest extends AbstractIpsPluginTest {
 
     private BindingContext bindingContext;
+
     private TestPMO pmo;
+
     private EditField<?> editField;
+
     private Control controlMock;
+
+    private Listener listener = mock(BindingContext.Listener.class);
+
+    @Mock
+    private IIpsSrcFile ipsSrcFile;
 
     @Override
     @Before
@@ -66,55 +82,45 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         editField = Mockito.mock(EditField.class);
         controlMock = mock(Control.class);
         when(editField.getControl()).thenReturn(controlMock);
+
+        when(ipsSrcFile.exists()).thenReturn(true);
     }
 
     @Test
-    public void applyAllBindingsOnContentChange() throws CoreException {
+    public void applyAllBindingsOnContentChange() {
         ControlPropertyBinding binding = new TestBinding(controlMock, pmo, TestPMO.PROPERTY_ENABLED, null);
         binding = spy(binding);
         bindingContext.add(binding);
 
-        IIpsObjectPartContainer ipsObject = newProductCmpt(newIpsProject(), "ProdCmpt");
-        ContentChangeEvent contentChangeEventMock = mock(ContentChangeEvent.class);
-        when(contentChangeEventMock.isAffected(ipsObject)).thenReturn(true);
+        ContentChangeEvent contentChangeEventMock = ContentChangeEvent.newWholeContentChangedEvent(ipsSrcFile);
+        ((IpsModel)IpsPlugin.getDefault().getIpsModel()).notifyChangeListeners(contentChangeEventMock);
 
-        // force property change
-        pmo.fireChange();
         verify(binding, times(1)).updateUI();
     }
 
     @Test
-    public void applyAllBindingsOnPropertyChange() {
+    public void applyPropertyChange() {
+        bindingContext = new BindingContext(listener);
         ControlPropertyBinding binding = new TestBinding(controlMock, pmo, TestPMO.PROPERTY_ENABLED, null);
-        binding = spy(binding);
         bindingContext.add(binding);
 
         pmo.setEnabled(true);
-        verify(binding, times(1)).updateUI(TestPMO.PROPERTY_ENABLED);
+
+        verify(listener, times(1)).propertyChange(any(PropertyChangeEvent.class));
     }
 
     @Test
     public void updateAllMappingsOnContentChange() throws CoreException {
         IProductCmpt prodCmpt = newProductCmpt(newIpsProject(), "ProdCmpt");
         FieldPropertyMapping<?> mapping = bindingContext.createMapping(editField, prodCmpt, "name"); // some
-                                                                                                     // valid
-                                                                                                     // property
+        // valid
+        // property
         FieldPropertyMapping<?> spyMapping = spy(mapping);
         bindingContext.add(spyMapping);
 
         // force property change
         prodCmpt.newGeneration();
         verify(spyMapping, times(1)).setControlValue();
-    }
-
-    @Test
-    public void updateMappingsOnPropertyChangeForSameProperty() {
-        updateMappingsOnPropertyChange(TestPMO.PROPERTY_ENABLED);
-    }
-
-    @Test
-    public void updateMappingsOnPropertyChangeForDifferentProperty() {
-        updateMappingsOnPropertyChange(TestPMO.PROPERTY_OTHER_PROPERTY);
     }
 
     @Test
@@ -222,15 +228,6 @@ public class BindingContextTest extends AbstractIpsPluginTest {
         bindingContext.removeBindings(pmo);
         assertEquals(0, bindingContext.getNumberOfMappingsAndBindings());
         verify(textControl).removeFocusListener(any(FocusListener.class));
-    }
-
-    protected void updateMappingsOnPropertyChange(String propertyName) {
-        FieldPropertyMapping<?> mapping = bindingContext.createMapping(editField, pmo, propertyName);
-        FieldPropertyMapping<?> spyMapping = spy(mapping);
-        bindingContext.add(spyMapping);
-
-        pmo.setEnabled(true);
-        verify(spyMapping, times(1)).setControlValue();
     }
 
     public class TestPMO extends PresentationModelObject {

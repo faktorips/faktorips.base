@@ -10,9 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import static org.faktorips.devtools.core.model.DatatypeUtil.isNullValue;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +23,8 @@ import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -37,9 +42,8 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.util.ListElementMover;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
-import org.faktorips.util.message.Message;
+import org.faktorips.util.collections.ListComparator;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -126,16 +130,12 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (datatype == null) {
             return false;
         }
-        if (isNullValue(value, datatype)) {
-            return isContainsNull();
+        if (isNullValue(datatype, value) && isContainsNull()) {
+            return true;
         }
         if (isAbstract()) {
             return true;
         }
-        if (!datatype.isParsable(value)) {
-            return false;
-        }
-
         return isValueInEnum(value, datatype);
     }
 
@@ -165,7 +165,7 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
 
-        if (!(subset instanceof EnumValueSet)) {
+        if (!(subset.isEnum())) {
             return false;
         }
         if (!datatypesCompatible(subset, datatype, contextProject)) {
@@ -180,17 +180,16 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         if (subset.isAbstract()) {
             return false;
         }
-        return containsAllValues(subset, contextProject);
+        return containsAllValues((IEnumValueSet)subset, contextProject);
     }
 
     private boolean datatypesCompatible(IValueSet subset, ValueDatatype datatype, IIpsProject contextProject) {
-        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
         return ObjectUtils.equals(datatype, subDatatype);
     }
 
-    private boolean containsAllValues(IValueSet subset, IIpsProject contextProject) {
-        IEnumValueSet enumSubset = (IEnumValueSet)subset;
-        String[] subsetValues = enumSubset.getValues();
+    private boolean containsAllValues(IEnumValueSet subset, IIpsProject contextProject) {
+        String[] subsetValues = subset.getValues();
 
         for (String value : subsetValues) {
             try {
@@ -315,94 +314,19 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
     }
 
     @Override
+    protected EnumValueSetValidator createValidator(IValueSetOwner owner, ValueDatatype datatype) {
+        return new EnumValueSetValidator(this, owner, datatype);
+    }
+
+    @Override
     public void validateThis(MessageList list, IIpsProject ipsProject) throws CoreException {
         super.validateThis(list, ipsProject);
-        ValueDatatype datatype = findValueDatatype(ipsProject);
-
-        if (datatype != null && datatype.isPrimitive() && isContainsNull()) {
-            String text = Messages.ValueSet_msgNullNotSupported;
-            list.add(new Message(MSGCODE_NULL_NOT_SUPPORTED, text, Message.ERROR, this, PROPERTY_CONTAINS_NULL));
-        }
-
-        int numOfValues = values.size();
-        for (int i = 0; i < numOfValues; i++) {
-            validateValueWithoutDuplicateCheck(list, i, datatype);
-        }
-        checkForDuplicates(list);
+        list.add(createValidator(getValueSetOwner(), findValueDatatype(ipsProject)).validate());
     }
 
     @Override
     public MessageList validateValue(int index, IIpsProject ipsProject) throws CoreException {
-        MessageList list = new MessageList();
-        validateValueWithoutDuplicateCheck(list, index, findValueDatatype(ipsProject));
-        if (list.getSeverity() != Message.ERROR) {
-            checkForDuplicate(list, index);
-        }
-        return list;
-    }
-
-    private void validateValueWithoutDuplicateCheck(MessageList list, int index, ValueDatatype datatype) {
-        ObjectProperty op = new ObjectProperty(this, PROPERTY_VALUES, index);
-        ObjectProperty parentOP = new ObjectProperty(getParent(), IValueSetOwner.PROPERTY_VALUE_SET);
-        String value = values.get(index);
-        if (datatype == null) {
-            String msg = NLS.bind(Messages.EnumValueSet_msgValueNotParsableDatatypeUnknown, getNotNullValue(value));
-            list.add(new Message(MSGCODE_UNKNOWN_DATATYPE, msg, Message.WARNING, op, parentOP));
-        } else if (!datatype.isParsable(value) || isSpecialNull(value, datatype)) {
-            String msg = NLS
-                    .bind(Messages.EnumValueSet_msgValueNotParsable, getNotNullValue(value), datatype.getName());
-            list.add(new Message(MSGCODE_VALUE_NOT_PARSABLE, msg, Message.ERROR, op, parentOP));
-        }
-    }
-
-    private void checkForDuplicate(MessageList list, int index) {
-        String value = values.get(index);
-        if (valuesToIndexMap.get(value).size() > 1) {
-            ObjectProperty op = new ObjectProperty(this, PROPERTY_VALUES, index);
-            list.add(createMsgForDuplicateValues(value, op));
-        }
-    }
-
-    private void checkForDuplicates(MessageList list) {
-        for (String value : valuesToIndexMap.keySet()) {
-            List<Integer> indexes = valuesToIndexMap.get(value);
-            if (indexes.size() <= 1) {
-                continue;
-            }
-            List<ObjectProperty> ops = new ArrayList<ObjectProperty>(indexes.size());
-            ops.add(new ObjectProperty(getValueSetOwner(), IValueSetOwner.PROPERTY_VALUE_SET));
-            for (Integer index : indexes) {
-                ops.add(new ObjectProperty(this, PROPERTY_VALUES, index));
-            }
-            list.add(createMsgForDuplicateValues(value, ops.toArray(new ObjectProperty[ops.size()])));
-        }
-    }
-
-    private Message createMsgForDuplicateValues(String value, ObjectProperty... ops) {
-        String msg = NLS.bind(Messages.EnumValueSet_msgDuplicateValue, getNotNullValue(value));
-        return new Message(MSGCODE_DUPLICATE_VALUE, msg, Message.ERROR, ops);
-    }
-
-    /**
-     * Returns whether the given value represents the special null value for the given datatype.
-     */
-    private boolean isSpecialNull(String value, ValueDatatype datatype) {
-        if (datatype.isPrimitive()) {
-            return false;
-        }
-
-        if (value == null) {
-            return false;
-        }
-
-        return isNullValue(value, datatype);
-    }
-
-    private String getNotNullValue(String value) {
-        if (value == null) {
-            return IpsPlugin.getDefault().getIpsPreferences().getNullPresentation();
-        }
-        return value;
+        return createValidator(getValueSetOwner(), findValueDatatype(ipsProject)).validateValue(index);
     }
 
     @Override
@@ -504,6 +428,56 @@ public class EnumValueSet extends ValueSet implements IEnumValueSet {
         } else if (!containsNull) {
             removeValue(null);
         }
+    }
+
+    protected Map<String, List<Integer>> getValuesToIndexMap() {
+        return valuesToIndexMap;
+    }
+
+    @Override
+    public int compareTo(IValueSet o) {
+        if (o.isEnum()) {
+            IEnumValueSet otherEnum = (IEnumValueSet)o;
+            return compareValueSetValues(otherEnum);
+        } else {
+            return compareDifferentValueSets(o);
+        }
+    }
+
+    /**
+     * Compare two enum value sets by comparing their values with each other one by one. Uses the
+     * value set's data type to parse values where possible, otherwise compares the raw values
+     * (strings).
+     */
+    protected int compareValueSetValues(IEnumValueSet otherEnum) {
+        ValueDatatype datatype = findValueDatatype(getIpsProject());
+        ValueDatatype otherDatatype = otherEnum.findValueDatatype(getIpsProject());
+        if (!datatype.equals(otherDatatype)) {
+            return datatype.compareTo(otherDatatype);
+        } else {
+            ListComparator<String> listComparator = ListComparator.listComparator(new ValueComparator(datatype));
+            return listComparator.compare(values, otherEnum.getValuesAsList());
+        }
+    }
+
+    @SuppressFBWarnings("SE_COMPARATOR_SHOULD_BE_SERIALIZABLE")
+    private static class ValueComparator implements Comparator<String> {
+
+        private final ValueDatatype datatype;
+
+        public ValueComparator(ValueDatatype datatype) {
+            this.datatype = datatype;
+        }
+
+        @Override
+        public int compare(String value, String otherValue) {
+            if (datatype.supportsCompare() && datatype.isParsable(value) && datatype.isParsable(otherValue)) {
+                return datatype.compare(value, otherValue);
+            } else {
+                return ObjectUtils.compare(value, otherValue);
+            }
+        }
+
     }
 
 }

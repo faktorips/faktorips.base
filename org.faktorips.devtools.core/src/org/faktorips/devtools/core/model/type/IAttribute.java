@@ -131,7 +131,7 @@ public interface IAttribute extends IChangingOverTimeProperty {
      * 
      * @see #getDatatype()
      */
-    public ValueDatatype findDatatype(IIpsProject project) throws CoreException;
+    public ValueDatatype findDatatype(IIpsProject project);
 
     /**
      * Returns the attribute's default value.

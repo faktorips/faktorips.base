@@ -64,7 +64,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     public void setUp() throws Exception {
         super.setUp();
 
-        project = this.newIpsProject("TestProject");
+        project = this.newIpsProject();
         root = project.getIpsPackageFragmentRoots()[0];
         pack = root.createPackageFragment("products.folder", true, null);
 
@@ -83,7 +83,7 @@ public class IpsPasteActionTest extends AbstractIpsPluginTest {
     }
 
     private IFile createIpsArchiveFile(IIpsPackageFragmentRoot targetRoot) throws Exception {
-        IIpsProject tempProject = this.newIpsProject("TempProject");
+        IIpsProject tempProject = this.newIpsProject();
         newPolicyCmptTypeWithoutProductCmptType(tempProject, "test.PolicyInArchive1");
         newPolicyCmptTypeWithoutProductCmptType(tempProject, "test.PolicyInArchive2");
 

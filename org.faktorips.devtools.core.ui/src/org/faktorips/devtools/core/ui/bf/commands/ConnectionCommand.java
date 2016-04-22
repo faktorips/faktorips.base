@@ -107,7 +107,7 @@ public class ConnectionCommand extends Command {
                         controlFlow.setConditionValue(Boolean.TRUE.toString());
                     } else if (outs.size() == 1) {
                         IControlFlow out1 = outs.get(0);
-                        Boolean conditionValue = Boolean.parseBoolean(out1.getConditionValue());
+                        Boolean conditionValue = Boolean.valueOf(out1.getConditionValue());
                         if (conditionValue != null) {
                             if (conditionValue.equals(Boolean.TRUE)) {
                                 controlFlow.setConditionValue(Boolean.FALSE.toString());

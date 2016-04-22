@@ -10,8 +10,15 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
@@ -20,6 +27,8 @@ import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.ValidationUtils;
 import org.faktorips.devtools.core.internal.model.ipsobject.AtomicIpsObjectPart;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -27,10 +36,13 @@ import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
+import org.faktorips.devtools.core.util.NullSafeComparableComparator;
 import org.faktorips.util.ArgumentCheck;
+import org.faktorips.util.functional.BiConsumer;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -39,23 +51,20 @@ import org.w3c.dom.Element;
 
 public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmptLink {
 
+    private static final Cardinality DEFAULT_CARDINALITY = new Cardinality(0, 1, 0);
+
     /** the name of the association this link is an instance of */
     private String association = ""; //$NON-NLS-1$
 
     private String target = ""; //$NON-NLS-1$
 
-    private int minCardinality = 0;
+    private Cardinality cardinality = DEFAULT_CARDINALITY;
 
-    private int defaultCardinality = minCardinality;
-
-    private int maxCardinality = 1;
+    private final TemplateValueSettings templateValueSettings;
 
     public ProductCmptLink(IProductCmptLinkContainer parent, String id) {
         super(parent, id);
-    }
-
-    public ProductCmptLink() {
-        super();
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
@@ -63,6 +72,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         return getProductCmptLinkContainer().getProductCmpt();
     }
 
+    /**
+     * @deprecated use {@link #getProductCmptLinkContainer()} instead
+     */
     @Override
     @Deprecated
     public IProductCmptGeneration getProductCmptGeneration() {
@@ -75,6 +87,11 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     @Override
     public IProductCmptLinkContainer getProductCmptLinkContainer() {
         return (IProductCmptLinkContainer)getParent();
+    }
+
+    @Override
+    public IProductCmptLinkContainer getTemplatedValueContainer() {
+        return getProductCmptLinkContainer();
     }
 
     @Override
@@ -121,39 +138,64 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     @Override
+    public Cardinality getCardinality() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateCardinality();
+        }
+        return cardinality;
+    }
+
+    private Cardinality findTemplateCardinality() {
+        IProductCmptLink templateLink = findTemplateProperty(getIpsProject());
+        if (templateLink == null) {
+            // Template should have a link but does not. Use the "last known" cardinality
+            // as a more or less helpful fallback while some validation hopefully addresses
+            // the missing link in the template...
+            return cardinality;
+        }
+        return templateLink.getCardinality();
+    }
+
+    @Override
+    public void setCardinality(Cardinality cardinality) {
+        Cardinality oldValue = this.cardinality;
+        this.cardinality = cardinality;
+        valueChanged(oldValue, cardinality, PROPERTY_CARDINALITY);
+    }
+
+    @Override
     public int getMinCardinality() {
-        return minCardinality;
+        return getCardinality().getMin();
     }
 
     @Override
     public void setMinCardinality(int newValue) {
-        int oldValue = minCardinality;
-        minCardinality = newValue;
+        int oldValue = getMinCardinality();
+        cardinality = getCardinality().withMin(newValue);
         valueChanged(oldValue, newValue);
-
     }
 
     @Override
     public int getDefaultCardinality() {
-        return defaultCardinality;
+        return getCardinality().getDefault();
     }
 
     @Override
     public void setDefaultCardinality(int newValue) {
-        int oldValue = defaultCardinality;
-        defaultCardinality = newValue;
+        int oldValue = getDefaultCardinality();
+        cardinality = getCardinality().withDefault(newValue);
         valueChanged(oldValue, newValue);
     }
 
     @Override
     public int getMaxCardinality() {
-        return maxCardinality;
+        return getCardinality().getMax();
     }
 
     @Override
     public void setMaxCardinality(int newValue) {
-        int oldValue = maxCardinality;
-        maxCardinality = newValue;
+        int oldValue = getMaxCardinality();
+        cardinality = getCardinality().withMax(newValue);
         valueChanged(oldValue, newValue);
     }
 
@@ -176,11 +218,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             String text = NLS.bind(Messages.ProductCmptRelation_msgNoRelationDefined, association, typeLabel);
             list.add(new Message(MSGCODE_UNKNWON_ASSOCIATION, text, Message.ERROR, this, PROPERTY_ASSOCIATION));
         } else {
-            IPolicyCmptTypeAssociation polAssociation = associationObj
-                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
-            if (polAssociation != null) {
-                validateCardinality(list, polAssociation);
-            }
+            validateCardinalityForMatchingAssociation(list, ipsProject, associationObj);
 
             IProductCmpt targetObj = findTarget(ipsProject);
             if (!willBeValid(targetObj, associationObj, ipsProject)) {
@@ -190,6 +228,19 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             }
 
             validateChangingOverTimeProperty(list, associationObj);
+        }
+        list.add(templateValueSettings.validate(this, ipsProject));
+    }
+
+    protected void validateCardinalityForMatchingAssociation(MessageList list,
+            IIpsProject ipsProject,
+            IProductCmptTypeAssociation associationObj) {
+        if (!getProductCmptLinkContainer().isProductTemplate()) {
+            IPolicyCmptTypeAssociation polAssociation = associationObj
+                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
+            if (polAssociation != null) {
+                validateCardinality(list, polAssociation);
+            }
         }
     }
 
@@ -205,7 +256,7 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                         associationLabel,
                         getName(),
                         IpsPlugin.getDefault().getIpsPreferences().getChangesOverTimeNamingConvention()
-                                .getGenerationConceptNameSingular(true) });
+                        .getGenerationConceptNameSingular(true) });
             }
             ObjectProperty prop1 = new ObjectProperty(this, PROPERTY_ASSOCIATION);
             ObjectProperty prop2 = new ObjectProperty(associationObj.getTargetRoleSingular(), null);
@@ -214,17 +265,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
     }
 
     private void validateCardinality(MessageList list, IPolicyCmptTypeAssociation associationObj) {
-        if (maxCardinality < 1) {
-            String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThan1;
-            list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_1, text, Message.ERROR, this,
-                    PROPERTY_MAX_CARDINALITY));
-        } else {
-            if (minCardinality > maxCardinality) {
-                String text = Messages.ProductCmptRelation_msgMaxCardinalityIsLessThanMin;
-                list.add(new Message(MSGCODE_MAX_CARDINALITY_IS_LESS_THAN_MIN, text, Message.ERROR, this, new String[] {
-                        PROPERTY_MIN_CARDINALITY, PROPERTY_MAX_CARDINALITY }));
-            }
-            // For qulified associations the implicit
+        MessageList cardinalityValidation = getCardinality().validate(this);
+        list.add(cardinalityValidation);
+        if (!cardinalityValidation.containsErrorMsg()) {
             if (associationObj.isQualified()) {
                 if (getMaxCardinality() > associationObj.getMaxCardinality()) {
                     String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMaxQualified,
@@ -233,59 +276,64 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                             PROPERTY_MAX_CARDINALITY));
                 }
             } else {
-                // MTB#515
-                // this.maxCardinality + ForAllOtherOfSameAssociation(Sum(other.minCardinality)) <=
-                // policyCmptAssociation.maxCardinality
-                int maxType = associationObj.getMaxCardinality();
-                if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
-                    int sumMinCardinality = this.getMaxCardinality();
-                    List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
-                    if (sumMinCardinality < IProductCmptLink.CARDINALITY_MANY) {
-                        for (IProductCmptLink productCmptLink : links) {
-                            if (!productCmptLink.equals(this)) {
-                                sumMinCardinality += productCmptLink.getMinCardinality();
-                            }
-                        }
-                    }
-                    if (sumMinCardinality > maxType) {
-                        String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
-                                this.getMaxCardinality(), Integer.toString(maxType));
-                        list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
-                                PROPERTY_MAX_CARDINALITY));
-                    }
-                }
-                // MTB#515
-                // this.minCardinality + ForAllOtherOfSameAssociation(Sum(other.maxCardinality)) <=
-                // policyCmptAssociation.minCardinality
-                int minType = associationObj.getMinCardinality();
-                int sumMaxCardinality = this.getMinCardinality();
-                List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
-                for (IProductCmptLink productCmptLink : links) {
-                    if (!productCmptLink.equals(this)) {
-                        if (productCmptLink.getMaxCardinality() == IProductCmptLink.CARDINALITY_MANY) {
-                            sumMaxCardinality = IProductCmptLink.CARDINALITY_MANY;
-                            break;
-                        }
-                        sumMaxCardinality += productCmptLink.getMaxCardinality();
-                    }
-                }
-                if (sumMaxCardinality < minType) {
-                    String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin,
-                            this.getMinCardinality(), Integer.toString(minType));
-                    list.add(new Message(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, Message.ERROR, this,
-                            PROPERTY_MIN_CARDINALITY));
-                }
-            }
-            if (defaultCardinality > maxCardinality || minCardinality > defaultCardinality
-                    || defaultCardinality == Integer.MAX_VALUE) {
-                String text = NLS.bind(Messages.ProductCmptLink_msgDefaultCardinalityOutOfRange, Integer
-                        .toString(minCardinality),
-                        maxCardinality == IAssociation.CARDINALITY_MANY ? "*" : Integer.toString(maxCardinality) //$NON-NLS-1$ 
-                        );
-                list.add(new Message(MSGCODE_DEFAULT_CARDINALITY_OUT_OF_RANGE, text, Message.ERROR, this,
-                        PROPERTY_DEFAULT_CARDINALITY));
+                validateTotalMax(list, associationObj);
+                validateTotalMin(list, associationObj);
             }
         }
+    }
+
+    /**
+     * FIPS-106: this.maxCardinality + ForAllOtherOfSameAssociation(Sum(other.minCardinality)) <=
+     * policyCmptAssociation.maxCardinality
+     */
+    private void validateTotalMax(MessageList list, IPolicyCmptTypeAssociation associationObj) {
+        int maxType = associationObj.getMaxCardinality();
+        if (maxType != IProductCmptTypeAssociation.CARDINALITY_MANY) {
+            int sumMinCardinality = this.getMaxCardinality();
+            List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
+            if (sumMinCardinality < Cardinality.CARDINALITY_MANY) {
+                for (IProductCmptLink productCmptLink : links) {
+                    if (!equals(productCmptLink)) {
+                        sumMinCardinality += productCmptLink.getMinCardinality();
+                    }
+                }
+            }
+            if (sumMinCardinality > maxType) {
+                String text = NLS.bind(Messages.ProductCmptLink_msgMaxCardinalityExceedsModelMax,
+                        this.getMaxCardinality(), Integer.toString(maxType));
+                list.add(new Message(MSGCODE_MAX_CARDINALITY_EXCEEDS_MODEL_MAX, text, Message.ERROR, this,
+                        PROPERTY_MAX_CARDINALITY));
+            }
+        }
+    }
+
+    /**
+     * FIPS-106: this.minCardinality + ForAllOtherOfSameAssociation(Sum(other.maxCardinality)) <=
+     * policyCmptAssociation.minCardinality
+     */
+    private void validateTotalMin(MessageList list, IPolicyCmptTypeAssociation associationObj) {
+        int minType = associationObj.getMinCardinality();
+        int sumMaxCardinality = this.getMinCardinality();
+        List<IProductCmptLink> links = getProductCmptLinkContainer().getLinksAsList(getAssociation());
+        for (IProductCmptLink productCmptLink : links) {
+            if (!equals(productCmptLink)) {
+                if (productCmptLink.getMaxCardinality() == Cardinality.CARDINALITY_MANY) {
+                    sumMaxCardinality = Cardinality.CARDINALITY_MANY;
+                    break;
+                }
+                sumMaxCardinality += productCmptLink.getMaxCardinality();
+            }
+        }
+        if (sumMaxCardinality < minType) {
+            addTotalMinMessage(list, minType);
+        }
+    }
+    
+    private void addTotalMinMessage(MessageList list, int minType) {
+        String text = NLS.bind(Messages.ProductCmptLink_msgMinCardinalityExceedsModelMin, this.getMinCardinality(),
+                Integer.toString(minType));
+        ObjectProperty property = new ObjectProperty(this, PROPERTY_MIN_CARDINALITY);
+        list.newError(MSGCODE_MIN_CARDINALITY_FALLS_BELOW_MODEL_MIN, text, property);
     }
 
     @Override
@@ -298,6 +346,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         super.initPropertiesFromXml(element, id);
         association = element.getAttribute(PROPERTY_ASSOCIATION);
         target = element.getAttribute(PROPERTY_TARGET);
+        int minCardinality;
+        int maxCardinality;
+        int defaultCardinality;
         try {
             minCardinality = Integer.parseInt(element.getAttribute(PROPERTY_MIN_CARDINALITY));
         } catch (NumberFormatException e) {
@@ -309,8 +360,8 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             defaultCardinality = minCardinality;
         }
         String max = element.getAttribute(PROPERTY_MAX_CARDINALITY);
-        if (max.equals("*")) { //$NON-NLS-1$
-            maxCardinality = CARDINALITY_MANY;
+        if ("*".equals(max)) { //$NON-NLS-1$
+            maxCardinality = Cardinality.CARDINALITY_MANY;
         } else {
             try {
                 maxCardinality = Integer.parseInt(max);
@@ -318,35 +369,47 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
                 maxCardinality = 0;
             }
         }
+        if (minCardinality == 0 && maxCardinality == 0 && defaultCardinality == 0) {
+            cardinality = Cardinality.UNDEFINED;
+        } else {
+            cardinality = new Cardinality(minCardinality, maxCardinality, defaultCardinality);
+        }
+        templateValueSettings.initPropertiesFromXml(element);
     }
 
     @Override
     protected void propertiesToXml(Element element) {
         super.propertiesToXml(element);
+        Cardinality card = getCardinality();
         element.setAttribute(PROPERTY_ASSOCIATION, association);
         element.setAttribute(PROPERTY_TARGET, target);
-        element.setAttribute(PROPERTY_MIN_CARDINALITY, Integer.toString(minCardinality));
-        element.setAttribute(PROPERTY_DEFAULT_CARDINALITY, Integer.toString(defaultCardinality));
+        element.setAttribute(PROPERTY_MIN_CARDINALITY, Integer.toString(card.getMin()));
+        element.setAttribute(PROPERTY_DEFAULT_CARDINALITY, Integer.toString(card.getDefault()));
 
-        if (maxCardinality == CARDINALITY_MANY) {
+        if (card.isToMany()) {
             element.setAttribute(PROPERTY_MAX_CARDINALITY, "*"); //$NON-NLS-1$
         } else {
-            element.setAttribute(PROPERTY_MAX_CARDINALITY, Integer.toString(maxCardinality));
+            element.setAttribute(PROPERTY_MAX_CARDINALITY, Integer.toString(card.getMax()));
         }
+        templateValueSettings.propertiesToXml(element);
     }
 
     @Override
-    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException {
+    public boolean constrainsPolicyCmptTypeAssociation(IIpsProject ipsProject) {
         if (isDeleted()) {
             return false;
         }
-        IProductCmptTypeAssociation association = findAssociation(ipsProject);
-        if (association == null) {
-            return false;
+        try {
+            IProductCmptTypeAssociation assoc = findAssociation(ipsProject);
+            if (assoc == null) {
+                return false;
+            }
+            IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = assoc
+                    .findMatchingPolicyCmptTypeAssociation(ipsProject);
+            return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
         }
-        IPolicyCmptTypeAssociation matchingPolicyCmptTypeAssociation = association
-                .findMatchingPolicyCmptTypeAssociation(ipsProject);
-        return matchingPolicyCmptTypeAssociation != null && matchingPolicyCmptTypeAssociation.isConfigurable();
 
     }
 
@@ -370,9 +433,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         ArgumentCheck.notNull(locale);
 
         String caption = null;
-        IAssociation association = findAssociation(getIpsProject());
-        if (association != null) {
-            caption = association.getLabelValue(locale);
+        IAssociation assoc = findAssociation(getIpsProject());
+        if (assoc != null) {
+            caption = assoc.getLabelValue(locale);
         }
         return caption;
     }
@@ -382,9 +445,9 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
         ArgumentCheck.notNull(locale);
 
         String pluralCaption = null;
-        IAssociation association = findAssociation(getIpsProject());
-        if (association != null) {
-            pluralCaption = association.getPluralLabelValue(locale);
+        IAssociation assoc = findAssociation(getIpsProject());
+        if (assoc != null) {
+            pluralCaption = assoc.getPluralLabelValue(locale);
         }
         return pluralCaption;
     }
@@ -425,6 +488,100 @@ public class ProductCmptLink extends AtomicIpsObjectPart implements IProductCmpt
             return false;
         }
         return actualTargetType.isSubtypeOrSameType(association.findTarget(ipsProject), ipsProject);
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        TemplateValueStatus oldValue = templateValueSettings.getStatus();
+        if (oldValue == newStatus) {
+            return;
+        }
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // safe the current cardinality from template
+            cardinality = Optional.fromNullable(findTemplateCardinality()).or(DEFAULT_CARDINALITY);
+        } else if (newStatus == TemplateValueStatus.UNDEFINED) {
+            cardinality = Cardinality.UNDEFINED;
+        }
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldValue, newStatus));
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public IProductCmptLink findTemplateProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.findTemplateValue(this, IProductCmptLink.class);
+    }
+
+    @Override
+    public boolean isPartOfTemplateHierarchy() {
+        return getProductCmptLinkContainer().isProductTemplate() || getProductCmptLinkContainer().isUsingTemplate();
+    }
+
+    @Override
+    public void delete() {
+        if (findTemplateProperty(getIpsProject()) != null) {
+            setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        } else {
+            super.delete();
+        }
+    }
+
+    @Override
+    public Comparator<Object> getValueComparator() {
+        return new NullSafeComparableComparator<Object>();
+    }
+
+    @Override
+    public Function<IProductCmptLink, Object> getValueGetter() {
+        return new Function<IProductCmptLink, Object>() {
+
+            @SuppressFBWarnings
+            @Override
+            public Object apply(IProductCmptLink input) {
+                return input.getCardinality();
+            }
+        };
+    }
+
+    @Override
+    public BiConsumer<IProductCmptLink, Object> getValueSetter() {
+        return new BiConsumer<IProductCmptLink, Object>() {
+            @Override
+            public void accept(IProductCmptLink t, Object u) {
+                ArgumentCheck.isInstanceOf(u, Cardinality.class);
+                t.setCardinality((Cardinality)u);
+            }
+        };
+    }
+
+    @Override
+    public LinkIdentifier getIdentifier() {
+        return new LinkIdentifier(this);
+    }
+
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED
+                || getTemplateValueStatus() == TemplateValueStatus.UNDEFINED;
+    }
+
+    @Override
+    public boolean isConfiguringPolicyAssociation() {
+        try {
+            IProductCmptTypeAssociation productAsssociation = findAssociation(getIpsProject());
+            return productAsssociation.findMatchingPolicyCmptTypeAssociation(getIpsProject()) != null;
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     private static class DerivedUnionVisitor extends HierarchyVisitor<IAssociation> {

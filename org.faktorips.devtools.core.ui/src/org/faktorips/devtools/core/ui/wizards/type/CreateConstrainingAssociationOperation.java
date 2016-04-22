@@ -112,12 +112,8 @@ public class CreateConstrainingAssociationOperation {
     }
 
     private boolean isTargetTypeValid() {
-        try {
-            IType constrainedTargetType = getConstrainedTargetType();
-            return getTargetType().isSubtypeOrSameType(constrainedTargetType, getIpsProject());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        IType constrainedTargetType = getConstrainedTargetType();
+        return getTargetType().isSubtypeOrSameType(constrainedTargetType, getIpsProject());
     }
 
     private IType getConstrainedTargetType() {

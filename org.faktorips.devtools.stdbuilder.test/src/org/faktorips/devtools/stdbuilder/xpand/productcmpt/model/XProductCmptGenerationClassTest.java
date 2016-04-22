@@ -13,8 +13,8 @@ package org.faktorips.devtools.stdbuilder.xpand.productcmpt.model;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
-import static org.junit.matchers.JUnitMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -64,7 +63,7 @@ public class XProductCmptGenerationClassTest {
     private XProductCmptGenerationClass xProductCmptGenerationClass;
 
     @Before
-    public void initMocks() throws CoreException {
+    public void initMocks() {
         when(modelContext.getGeneratorModelCache()).thenReturn(new GeneratorModelCaches());
         when(productCmptType.getQualifiedName()).thenReturn("ProductCmptType");
         when(productCmptType.getIpsProject()).thenReturn(ipsProject);

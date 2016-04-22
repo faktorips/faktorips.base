@@ -17,10 +17,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
@@ -28,6 +34,7 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.controls.contentproposal.AbstractIpsSrcFileContentProposalProvider;
 import org.faktorips.devtools.core.ui.controls.contentproposal.IpsSrcFileContentProposalLabelProvider;
@@ -37,7 +44,8 @@ import org.faktorips.util.StringUtil;
 
 /**
  * Control to edit a reference to an ips source file in a text control with an associated browse
- * button that allows to browse the available objects.
+ * button that allows to browse the available objects and an optional delete button if the reference
+ * may be removed.
  * <p>
  * The referenced {@link IIpsSrcFile ips source files} should be within the given
  * {@link IIpsProject ips projects}.
@@ -57,13 +65,29 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
 
     private IContentProposalProvider proposalProvider;
 
+    private Button deleteButton;
+
     public IpsObjectRefControl(IIpsProject project, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
         this(Arrays.asList(project), parent, toolkit, dialogTitle, dialogMessage);
     }
 
+    /**
+     * Allows no empty ref.
+     */
     public IpsObjectRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit, String dialogTitle,
             String dialogMessage) {
+        this(projects, parent, toolkit, dialogTitle, dialogMessage, false);
+    }
+
+    /**
+     * @param allowEmptyRef whether this control allows the object reference to be <code>null</code>
+     *            , i.e. when there is no ref to another object. <code>true</code> to allow the ref
+     *            to be set to <code>null</code> and display a delete button for that purpose,
+     *            <code>false</code> to enforce a valid ref, hide the delete button (default).
+     */
+    public IpsObjectRefControl(List<IIpsProject> projects, Composite parent, UIToolkit toolkit, String dialogTitle,
+            String dialogMessage, boolean allowEmptyRef) {
         super(parent, toolkit, Messages.IpsObjectRefControl_title);
         this.dialogTitle = dialogTitle;
         this.dialogMessage = dialogMessage;
@@ -80,10 +104,30 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             }
         };
 
+        if (allowEmptyRef) {
+            addDeleteButton();
+        }
+
         toolkit.attachContentProposalAdapter(getTextControl(), proposalProvider,
                 new IpsSrcFileContentProposalLabelProvider());
 
         setIpsProjects(projects);
+    }
+
+    /**
+     * SW 23.11.2015 Introducing a listener hurts. We have to refactor all ips-object-ref fields to
+     * use PMOs.
+     */
+    protected void addDeleteButton() {
+        ((GridLayout)getLayout()).numColumns = 3;
+        deleteButton = new Button(this, SWT.PUSH);
+        deleteButton.setImage(IpsUIPlugin.getImageHandling().getSharedImage("Delete_grey.png", true)); //$NON-NLS-1$
+        deleteButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                setText(StringUtils.EMPTY);
+            }
+        });
     }
 
     /**
@@ -219,7 +263,7 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
      * <p>
      * This is a convenience method for subclasses.
      */
-    protected final IIpsObject findIpsObject(IpsObjectType type) throws CoreException {
+    protected final IIpsObject findIpsObject(IpsObjectType type) {
         for (IIpsProject project : getIpsProjects()) {
             IIpsObject object = project.findIpsObject(type, getText());
             if (object != null) {
@@ -227,5 +271,13 @@ public abstract class IpsObjectRefControl extends TextButtonControl {
             }
         }
         return null;
+    }
+
+    @Override
+    public void setButtonEnabled(boolean value) {
+        super.setButtonEnabled(value);
+        if (deleteButton != null) {
+            deleteButton.setEnabled(value);
+        }
     }
 }

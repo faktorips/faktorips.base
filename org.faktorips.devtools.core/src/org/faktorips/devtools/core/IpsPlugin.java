@@ -201,7 +201,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
         IpsCompositeSaveParticipant saveParticipant = new IpsCompositeSaveParticipant();
         saveParticipant.addSaveParticipant(dependencyGraphPersistenceManager);
-        ResourcesPlugin.getWorkspace().addSaveParticipant(this, saveParticipant);
+        ResourcesPlugin.getWorkspace().addSaveParticipant(PLUGIN_ID, saveParticipant);
 
         // force loading of class before model is created!
         IpsObjectType.POLICY_CMPT_TYPE.getId();
@@ -504,7 +504,7 @@ public class IpsPlugin extends AbstractUIPlugin {
 
         for (IConfigurationElement element : elements) {
             String tableFormatId = formatElement.getAttribute("id"); //$NON-NLS-1$
-            if (element.getAttribute("tableFormatId").equals(tableFormatId)) { //$NON-NLS-1$") 
+            if (element.getAttribute("tableFormatId").equals(tableFormatId)) { //$NON-NLS-1$")
                 // Converter found for current table format id.
                 IConfigurationElement[] valueConverters = element.getChildren();
                 for (IConfigurationElement valueConverter : valueConverters) {
@@ -584,7 +584,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                         try {
                             @SuppressWarnings("unchecked")
                             IFunctionResolverFactory<JavaCodeFragment> functionResolverFactory = (IFunctionResolverFactory<JavaCodeFragment>)configElement
-                                    .createExecutableExtension("class"); //$NON-NLS-1$
+                            .createExecutableExtension("class"); //$NON-NLS-1$
                             Integer sortOrder;
                             try {
                                 sortOrder = Integer.valueOf(configElement.getAttribute("sortorder")); //$NON-NLS-1$
@@ -596,7 +596,7 @@ public class IpsPlugin extends AbstractUIPlugin {
                         } catch (CoreException e) {
                             log(new IpsStatus(
                                     "Unable to create the flfunctionResolverFactory identified by the extension unique identifier: " //$NON-NLS-1$
-                                            + extension.getUniqueIdentifier(), e));
+                                    + extension.getUniqueIdentifier(), e));
                         }
                     }
                 }

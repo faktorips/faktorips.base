@@ -44,7 +44,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
 
     @Override
     public String formatInternal(IValueSet value) {
-        if (value instanceof IRangeValueSet) {
+        if (value.isRange()) {
             return formatRangeValueSet(value);
         } else {
             return StringUtils.EMPTY;
@@ -125,7 +125,7 @@ public class RangeValueSetFormat extends AbstractValueSetFormat {
     }
 
     private boolean isEqualContentRange(String lowerBound, String upperBound, String step, boolean containsNull) {
-        if (getValueSet() instanceof IRangeValueSet) {
+        if (getValueSet().isRange()) {
             IRangeValueSet range = (IRangeValueSet)getValueSet();
             return ObjectUtils.equals(range.getLowerBound(), lowerBound)
                     && ObjectUtils.equals(range.getUpperBound(), upperBound)

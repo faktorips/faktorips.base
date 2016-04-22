@@ -160,7 +160,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             @Override
             protected boolean visit(IProductCmptType currentType) {
                 try {
-                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false, ipsProject)) {
+                    for (IProductCmptProperty property : currentType.findProductCmptProperties(false, getIpsProject())) {
                         /*
                          * First, check whether the property has been overwritten by a subtype - in
                          * this case we do not add the property to the category.
@@ -187,7 +187,7 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
                             continue;
                         }
 
-                        if (findIsContainingProperty(property, currentType, ipsProject)
+                        if (findIsContainingProperty(property, currentType, getIpsProject())
                                 && !properties.contains(property)) {
                             properties.add(property);
                         }
@@ -617,15 +617,10 @@ public class ProductCmptCategory extends AtomicIpsObjectPart implements IProduct
             }
 
             // Sort supertypes towards the beginning
-            try {
-                if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
-                    return 1;
-                } else {
-                    return -1;
-                }
-            } catch (CoreException e) {
-                // Consider elements equal if it the subtype relationship cannot be determined
-                return 0;
+            if (productCmptType1.isSubtypeOf(productCmptType2, productCmptType.getIpsProject())) {
+                return 1;
+            } else {
+                return -1;
             }
         }
 

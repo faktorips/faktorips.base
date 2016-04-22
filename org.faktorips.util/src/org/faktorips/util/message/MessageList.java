@@ -70,8 +70,8 @@ public class MessageList implements Iterable<Message> {
      * Creates and returns a new message with severity {@link Message#ERROR} with the given code,
      * text and object properties and adds the message to the list.
      */
-    public Message newError(String code, String text, Object invalidObject, String invalidProperty) {
-        Message newError = Message.newError(code, text, invalidObject, invalidProperty);
+    public Message newError(String code, String text, Object invalidObject, String... invalidProperties) {
+        Message newError = Message.newError(code, text, invalidObject, invalidProperties);
         add(newError);
         return newError;
     }
@@ -90,8 +90,8 @@ public class MessageList implements Iterable<Message> {
      * Creates and returns a new message with severity {@link Message#WARNING} with the given code,
      * text and object properties and adds the message to the list.
      */
-    public Message newWarning(String code, String text, Object invalidObject, String invalidProperty) {
-        Message newWarning = Message.newWarning(code, text, invalidObject, invalidProperty);
+    public Message newWarning(String code, String text, Object invalidObject, String... invalidProperties) {
+        Message newWarning = Message.newWarning(code, text, invalidObject, invalidProperties);
         add(newWarning);
         return newWarning;
     }

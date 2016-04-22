@@ -32,6 +32,7 @@ import org.faktorips.devtools.core.model.ipsproject.ITableNamingStrategy;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.MessageList;
+import org.faktorips.values.Decimal;
 
 /**
  * A proxy implementation of the IIpsProjectProperties interface that delegates all method calls
@@ -563,7 +564,7 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
 
     @Override
     public void setMarkerEnumsEnabled(boolean enabled) {
-        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$        
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
     }
 
     @Override
@@ -584,6 +585,26 @@ public class IpsProjectPropertiesReadOnlyProxy implements IIpsProjectProperties 
     @Override
     public void setChangingOverTimeDefault(boolean enabled) {
         throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public void setInferredTemplatePropertyValueThreshold(Decimal relativePropertyValueThreshold) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public Decimal getInferredTemplatePropertyValueThreshold() {
+        return propertiesInternal.getInferredTemplatePropertyValueThreshold();
+    }
+
+    @Override
+    public void setInferredTemplateLinkThreshold(Decimal relativeLinkThreshold) {
+        throw new RuntimeException("This is a read only object and can therefor not be manipulated."); //$NON-NLS-1$
+    }
+
+    @Override
+    public Decimal getInferredTemplateLinkThreshold() {
+        return propertiesInternal.getInferredTemplateLinkThreshold();
     }
 
 }

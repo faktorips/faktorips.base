@@ -75,14 +75,10 @@ public class OverrideMethodDialog extends SelectSupertypeHierarchyPartsDialog<IM
         }
 
         @Override
-        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) throws CoreException {
+        protected List<? extends IIpsObject> getSupertypes(IIpsObject ipsObject) {
             IType type = (IType)ipsObject;
             SupertypesCollector collector = new SupertypesCollector(type.getIpsProject());
-            try {
-                collector.start(type.findSupertype(type.getIpsProject()));
-            } catch (CoreException e) {
-                throw new RuntimeException(e);
-            }
+            collector.start(type.findSupertype(type.getIpsProject()));
             return collector.supertypes;
         }
 

@@ -11,7 +11,7 @@ package org.faktorips.devtools.core.ui.controlfactories;
 
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItem;
 
 import java.util.LinkedHashMap;
 

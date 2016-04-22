@@ -13,11 +13,9 @@ package org.faktorips.devtools.core.internal.model.productcmpt;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
-import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.internal.model.value.StringValue;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.AttributeValueType;
@@ -28,10 +26,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAttribu
 import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.devtools.core.model.value.ValueFactory;
 import org.faktorips.devtools.core.model.value.ValueType;
-import org.faktorips.devtools.core.model.valueset.ValueSetType;
-import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
-import org.faktorips.util.message.ObjectProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -98,12 +93,8 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     }
 
     private static IProductCmptTypeAttribute findAttribute(IAttributeValue parent) {
-        try {
-            if (parent != null && parent.getIpsProject() != null) {
-                return parent.findAttribute(parent.getIpsProject());
-            }
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
+        if (parent != null && parent.getIpsProject() != null) {
+            return parent.findAttribute(parent.getIpsProject());
         }
         return null;
     }
@@ -116,11 +107,6 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
         if (this.value != null) {
             this.value.addObserver(valueObserver);
         }
-    }
-
-    @Override
-    public IAttributeValue getParent() {
-        return (IAttributeValue)super.getParent();
     }
 
     @Override
@@ -149,57 +135,13 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     }
 
     @Override
-    public MessageList validate(IIpsProject ipsProject) throws CoreException {
-        MessageList list = new MessageList();
-        IProductCmptTypeAttribute attribute = getParent().findAttribute(getParent().getIpsProject());
-        ObjectProperty[] invalidObjectProperties = new ObjectProperty[] {
-                new ObjectProperty(getParent(), IAttributeValue.PROPERTY_VALUE_HOLDER),
-                new ObjectProperty(this, PROPERTY_VALUE) };
-        if (attribute == null || getValue() == null) {
-            return list;
-        }
-        getValue().validate(attribute.findDatatype(getParent().getIpsProject()), getParent().getIpsProject(), list,
-                invalidObjectProperties);
-        if (!list.isEmpty()) {
-            return list;
-        }
-
-        if (getValueType().equals(ValueType.STRING)) {
-            if (attribute.isMultilingual()) {
-                String text = NLS.bind(Messages.AttributeValue_MultiLingual, getParent().getAttribute());
-                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, text, Message.ERROR,
-                        invalidObjectProperties));
-            }
-            if (!attribute.getValueSet().containsValue(((StringValue)getValue()).getContentAsString(), ipsProject)) {
-                String text;
-                if (attribute.getValueSet().getValueSetType() == ValueSetType.RANGE) {
-                    text = NLS.bind(Messages.AttributeValue_AllowedValuesAre, getFormattedValue(), attribute
-                            .getValueSet().toShortString());
-                } else {
-                    text = NLS
-                            .bind(Messages.AttributeValue_ValueNotAllowed, getFormattedValue(), getParent().getName());
-                }
-                list.add(new Message(AttributeValue.MSGCODE_VALUE_NOT_IN_SET, text, Message.ERROR,
-                        invalidObjectProperties));
-            }
-        } else if (getValueType().equals(ValueType.INTERNATIONAL_STRING)) {
-            if (!attribute.isMultilingual()) {
-                String text = NLS.bind(Messages.AttributeValue_NotMultiLingual, getParent().getAttribute());
-                list.add(new Message(AttributeValue.MSGCODE_INVALID_VALUE_TYPE, text, Message.ERROR,
-                        invalidObjectProperties));
-            }
-        }
-        return list;
+    public boolean isMultiValue() {
+        return false;
     }
 
-    private String getFormattedValue() {
-        try {
-            ValueDatatype datatype = getParent().findAttribute(getIpsProject()).findDatatype(getIpsProject());
-            return IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormatter()
-                    .formatValue(datatype, value.getContentAsString());
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+    @Override
+    public MessageList validate(IIpsProject ipsProject) throws CoreException {
+        return new SingleValueHolderValidator(this, getParent(), ipsProject).validate();
     }
 
     @Override
@@ -241,18 +183,29 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
     }
 
     @Override
+    protected SingleValueHolderValidator newValidator(IAttributeValue parent, IIpsProject ipsProject) {
+        return new SingleValueHolderValidator(this, parent, ipsProject);
+    }
+
+    @Override
     public int compareTo(IValueHolder<IValue<?>> o) {
-        if (value.equals(o.getValue())) {
+        if (o == null) {
+            return -1;
+        }
+        if (this.equals(o)) {
             return 0;
         }
-        return value.getContentAsString().compareTo(o.getValue().getContentAsString());
+        if (value == null) {
+            return ObjectUtils.compare(null, o.getStringValue());
+        }
+        ValueDatatype datatype = getParent().findAttribute(getIpsProject()).findValueDatatype(getIpsProject());
+        return value.compare(o.getValue(), datatype);
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getParent() == null) ? 0 : getParent().hashCode());
         result = prime * result + ((value == null) ? 0 : value.hashCode());
         return result;
     }
@@ -269,21 +222,7 @@ public class SingleValueHolder extends AbstractValueHolder<IValue<?>> {
             return false;
         }
         SingleValueHolder other = (SingleValueHolder)obj;
-        if (getParent() == null) {
-            if (other.getParent() != null) {
-                return false;
-            }
-        } else if (!getParent().equals(other.getParent())) {
-            return false;
-        }
-        if (value == null) {
-            if (other.value != null) {
-                return false;
-            }
-        } else if (!value.equals(other.value)) {
-            return false;
-        }
-        return true;
+        return ObjectUtils.equals(value, other.value);
     }
 
     /**

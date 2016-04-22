@@ -10,11 +10,11 @@
 
 package org.faktorips.runtime.internal.tableindex;
 
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -24,7 +24,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 
 public class TwoColumnRangeStructureTest {
 
@@ -476,9 +475,9 @@ public class TwoColumnRangeStructureTest {
      * {@link #hasRange(TwoColumnRange)} we introduce an own matcher that checks lower and upper
      * bounds.
      */
-    public static <K extends Comparable<? super K>> Matcher<java.lang.Iterable<TwoColumnRange<K>>> hasRange(TwoColumnRange<K> element) {
+    public static <K extends Comparable<? super K>> Matcher<Iterable<? super TwoColumnRange<K>>> hasRange(TwoColumnRange<K> element) {
         TwoColumnRangeMatcher<K> elementMatcher = new TwoColumnRangeMatcher<K>(element);
-        return JUnitMatchers.hasItem(elementMatcher);
+        return hasItem(elementMatcher);
     }
 
     private static class TwoColumnRangeMatcher<K extends Comparable<? super K>> extends BaseMatcher<TwoColumnRange<K>> {

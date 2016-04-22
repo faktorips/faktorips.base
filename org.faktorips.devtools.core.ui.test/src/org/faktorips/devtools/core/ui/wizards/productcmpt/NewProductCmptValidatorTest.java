@@ -20,7 +20,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.GregorianCalendar;
 
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
@@ -272,7 +271,7 @@ public class NewProductCmptValidatorTest {
     }
 
     @Test
-    public void testValidateAllPagesProductCmptPage_validateAddToType() throws CoreException {
+    public void testValidateAllPagesProductCmptPage_validateAddToType() {
         NewProductCmptPMO pmo = mock(NewProductCmptPMO.class);
         NewProductCmptValidator newProdutCmptValidator = new NewProductCmptValidator(pmo);
         IIpsProject ipsProject = mockTypeSelection(pmo);

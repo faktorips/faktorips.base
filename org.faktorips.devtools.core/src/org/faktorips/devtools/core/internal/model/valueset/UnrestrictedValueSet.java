@@ -10,6 +10,8 @@
 
 package org.faktorips.devtools.core.internal.model.valueset;
 
+import static org.faktorips.devtools.core.model.DatatypeUtil.isNullValue;
+
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.ipsobject.DescriptionHelper;
@@ -21,6 +23,7 @@ import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
 import org.faktorips.devtools.core.model.valueset.Messages;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.runtime.internal.ValueToXmlHelper;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -94,7 +97,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
             return false;
         }
 
-        if (isNullValue(value, datatype)) {
+        if (isNullValue(datatype, value)) {
             return isContainsNull();
         }
 
@@ -105,7 +108,7 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
     public boolean containsValueSet(IValueSet subset) {
         IIpsProject contextProject = subset.getIpsProject();
         ValueDatatype datatype = findValueDatatype(contextProject);
-        ValueDatatype subDatatype = ((ValueSet)subset).findValueDatatype(contextProject);
+        ValueDatatype subDatatype = subset.findValueDatatype(contextProject);
 
         if (!DatatypeUtil.isCovariant(subDatatype, datatype)) {
             return false;
@@ -158,6 +161,32 @@ public class UnrestrictedValueSet extends ValueSet implements IUnrestrictedValue
         boolean oldContainsNull = this.isContainsNull();
         this.containsNull = containsNull;
         valueChanged(oldContainsNull, containsNull, PROPERTY_CONTAINS_NULL);
+    }
+
+    @Override
+    protected AbstractValueSetValidator<?> createValidator(IValueSetOwner owner, ValueDatatype datatype) {
+        return new AbstractValueSetValidator<ValueSet>(this, owner, datatype) {
+
+            @Override
+            public MessageList validate() {
+                return new MessageList();
+            }
+        };
+    }
+
+    @Override
+    public int compareTo(IValueSet o) {
+        if (o.isUnrestricted()) {
+            if (isContainsNull() == o.isContainsNull()) {
+                return 0;
+            } else if (isContainsNull()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        } else {
+            return compareDifferentValueSets(o);
+        }
     }
 
 }

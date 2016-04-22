@@ -42,24 +42,24 @@ import org.faktorips.values.xml.MoneyXmlAdapter;
 @XmlJavaTypeAdapter(MoneyXmlAdapter.class)
 public class Money implements Comparable<Money>, NullObjectSupport, Serializable {
 
-    private static final long serialVersionUID = 5639586670329581901L;
-
     /**
      * Constant representing the <code>null</code> value.
      */
-    public final static Money NULL = new MoneyNull();
+    public static final Money NULL = new MoneyNull();
 
     /**
      * Currency EUR
      */
-    public final static Currency EUR = Currency.getInstance("EUR");
+    public static final Currency EUR = Currency.getInstance("EUR");
 
     /**
      * Currency USD
      */
-    public final static Currency USD = Currency.getInstance("USD");
+    public static final Currency USD = Currency.getInstance("USD");
 
-    private final static int[] power10 = new int[] { 1, 10, 100, 1000, 10000, 100000 };
+    private static final long serialVersionUID = 5639586670329581901L;
+
+    private static final int[] POWER_10 = new int[] { 1, 10, 100, 1000, 10000, 100000 };
 
     /**
      * the money's amount is stored internally as long; for example: The internal amount for 3.50EUR
@@ -70,10 +70,18 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
     private final Currency currency;
 
     /**
+     * Creates a new money object.
+     */
+    Money(long intAmount, Currency currency) {
+        internalAmount = intAmount;
+        this.currency = currency;
+    }
+
+    /**
      * Returns a money object with the currency euro and an amount defined by the given euros and
      * cents.
      */
-    public final static Money euro(long euros, int cents) {
+    public static final Money euro(long euros, int cents) {
         return Money.valueOf(euros, cents, EUR);
     }
 
@@ -81,7 +89,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Returns a money object with the currency euro and an amount defined by the given euros and 0
      * cents.
      */
-    public final static Money euro(long euros) {
+    public static final Money euro(long euros) {
         return Money.valueOf(euros, 0, EUR);
     }
 
@@ -89,7 +97,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Returns a money object with the currency us dollar and an amount defined by the given
      * usdollars and cents.
      */
-    public final static Money usd(long usdollars, int cents) {
+    public static final Money usd(long usdollars, int cents) {
         return Money.valueOf(usdollars, cents, USD);
     }
 
@@ -97,7 +105,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * Returns a money object with the currency us dollar and an amount defined by the given
      * usdollars and 0 cents.
      */
-    public final static Money usd(long usdollars) {
+    public static final Money usd(long usdollars) {
         return Money.valueOf(usdollars, 0, USD);
     }
 
@@ -108,28 +116,30 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @throws IllegalArgumentException if the String does not represent a money amount, e.g. if the
      *             currency symbol is invalid.
      */
-    public final static Money valueOf(String value) {
-        if (value == null || value.equals("") || value.equals(MoneyNull.STRING_REPRESENTATION)) {
+    // CSOFF: IllegalCatch
+    // CSOFF: CyclomaticComplexity
+    public static final Money valueOf(String value) {
+        if (value == null || "".equals(value) || MoneyNull.STRING_REPRESENTATION.equals(value)) {
             return Money.NULL;
         }
         String initialValue = value;
         try {
-            value = value.trim();
-            Currency currency = Currency.getInstance(value.substring(value.length() - 3));
-            value = value.substring(0, value.length() - 3);
+            String trimmedValue = value.trim();
+            Currency currency = Currency.getInstance(trimmedValue.substring(trimmedValue.length() - 3));
+            String amountValue = trimmedValue.substring(0, trimmedValue.length() - 3).trim();
             long majorUnits;
             int minorUnits = 0;
-            int dotPos = value.indexOf('.');
+            int dotPos = amountValue.indexOf('.');
             int fractionDigitsIn = 0;
             if (dotPos == -1) {
-                majorUnits = Long.valueOf(value.trim()).longValue();
+                majorUnits = Long.valueOf(amountValue).longValue();
             } else {
-                majorUnits = Long.valueOf(value.substring(0, dotPos).trim()).longValue();
-                if (dotPos < value.length() - 1) {
-                    String minorUnitsString = value.substring(dotPos + 1).trim();
+                majorUnits = Long.valueOf(amountValue.substring(0, dotPos)).longValue();
+                if (dotPos < amountValue.length() - 1) {
+                    String minorUnitsString = amountValue.substring(dotPos + 1);
                     if (minorUnitsString.length() > 0) {
                         minorUnits = Integer.valueOf(minorUnitsString).intValue();
-                        fractionDigitsIn = value.substring(dotPos + 1).trim().length();
+                        fractionDigitsIn = minorUnitsString.length();
                     }
                 }
             }
@@ -149,7 +159,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
                 fractionDigitsIn++;
             }
 
-            if (value.charAt(0) == '-') {
+            if (amountValue.charAt(0) == '-') {
                 return Money.valueOf(majorUnits, minorUnits * -1, currency);
             }
             return Money.valueOf(majorUnits, minorUnits, currency);
@@ -158,17 +168,20 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
         }
     }
 
+    // CSON: IllegalCatch
+    // CSON: CyclomaticComplexity
+
     /**
      * Returns a money value in the indicated currency and with the indicated number of major units
      * (e.g. Euro or US Dollar) and minor units (e.g. Cents).
      */
-    public final static Money valueOf(long majorUnits, int minorUnits, Currency currency) {
+    public static final Money valueOf(long majorUnits, int minorUnits, Currency currency) {
         // the first check is for currencies like Yen which does not have minor units at all
         // the second check verify that the count of digits of the minor units is smaller than the
         // default fraction digits
         if (minorUnits == currency.getDefaultFractionDigits()
                 || Math.log10(Math.abs(minorUnits)) <= currency.getDefaultFractionDigits()) {
-            long intAmount = majorUnits * power10[currency.getDefaultFractionDigits()] + minorUnits;
+            long intAmount = majorUnits * POWER_10[currency.getDefaultFractionDigits()] + minorUnits;
             return new Money(intAmount, currency);
         }
         throw new IllegalArgumentException("Too much fraction digits (is " + minorUnits + ")");
@@ -183,7 +196,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      *             fraction digits, e.g. value is 10.324 (scale 3) and currency is Euro with 2
      *             digits.
      */
-    public final static Money valueOf(Decimal value, Currency currency) {
+    public static final Money valueOf(Decimal value, Currency currency) {
         if (value == null || currency == null || value.isNull()) {
             return Money.NULL;
         }
@@ -211,22 +224,15 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      * @param roundingMode the rouding mode according to the definition in BigDecimal to be applied
      *            when the value's scale is greater than the currency's default fraction digits
      */
-    public final static Money valueOf(Decimal value, Currency currency, int roundingMode) {
+    public static final Money valueOf(Decimal value, Currency currency, int roundingMode) {
         if (value == null || currency == null || value.isNull()) {
             return Money.NULL;
         }
+        Decimal scaledValue = value;
         if (value.scale() > currency.getDefaultFractionDigits()) {
-            value = value.setScale(currency.getDefaultFractionDigits(), roundingMode);
+            scaledValue = value.setScale(currency.getDefaultFractionDigits(), roundingMode);
         }
-        return Money.valueOf(value.toString() + currency.toString());
-    }
-
-    /**
-     * Creates a new money object.
-     */
-    Money(long intAmount, Currency currency) {
-        internalAmount = intAmount;
-        this.currency = currency;
+        return Money.valueOf(scaledValue.toString() + currency.toString());
     }
 
     /**
@@ -366,7 +372,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      */
     public Money divide(int d, int roundingMode) {
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
-                .multiply(power10[currency.getDefaultFractionDigits()]).longValue();
+                .multiply(POWER_10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
     }
 
@@ -385,7 +391,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
      */
     public Money divide(long d, int roundingMode) {
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
-                .multiply(power10[currency.getDefaultFractionDigits()]).longValue();
+                .multiply(POWER_10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
     }
 
@@ -410,7 +416,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
             return Money.NULL;
         }
         long newAmount = getAmount().divide(d, currency.getDefaultFractionDigits(), roundingMode)
-                .multiply(power10[currency.getDefaultFractionDigits()]).longValue();
+                .multiply(POWER_10[currency.getDefaultFractionDigits()]).longValue();
         return new Money(newAmount, currency);
     }
 
@@ -426,7 +432,7 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
     public int compareTo(Money other) {
         // First check the currencies
         if (other.isNull()) {
-            throw new NullPointerException();
+            return 1;
         }
         if (!getCurrency().equals(other.getCurrency())) {
             throw new IllegalArgumentException("The currencys are different. The objects are not comparable ");
@@ -539,7 +545,11 @@ public class Money implements Comparable<Money>, NullObjectSupport, Serializable
             return false;
         }
         Money other = (Money)o;
-        return internalAmount == other.internalAmount && currency.equals(other.currency);
+        if (isNull() && other.isNull()) {
+            return true;
+        } else {
+            return internalAmount == other.internalAmount && currency.equals(other.currency);
+        }
     }
 
     /**

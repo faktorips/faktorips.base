@@ -176,7 +176,7 @@ public class AttributeTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testFindValueDatatype() throws CoreException {
+    public void testFindValueDatatype() {
         productCmptTypeAttribute.setDatatype(Datatype.BOOLEAN.getName());
         assertEquals(Datatype.BOOLEAN, productCmptTypeAttribute.findDatatype(ipsProject));
         productCmptTypeAttribute.setDatatype("unkown");

@@ -59,20 +59,15 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
 
         addPageElements(new WrapperPageElement(WrapperType.BLOCK, getContext(), new IPageElement[] {
-                new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
-                new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
-                        TargetType.CONTENT, getContext().getLabel(productCmptType), true) }));
+            new TextPageElement(IpsObjectType.PRODUCT_CMPT_TYPE.getDisplayName() + ": ", getContext()), //$NON-NLS-1$
+            new PageElementUtils(getContext()).createLinkPageElement(getContext(), productCmptType,
+                    TargetType.CONTENT, getContext().getLabel(productCmptType), true) }));
     }
 
     private IProductCmptType findProductCmptType() {
         IProductCmptType productCmptType = null;
-        try {
-            productCmptType = getContext().getIpsProject().findProductCmptType(
-                    getDocumentedIpsObject().getProductCmptType());
-        } catch (CoreException e) {
-            getContext().addStatus(
-                    new IpsStatus(IStatus.ERROR, "Error getting  " + getDocumentedIpsObject().getProductCmptType(), e)); //$NON-NLS-1$
-        }
+        productCmptType = getContext().getIpsProject().findProductCmptType(
+                getDocumentedIpsObject().getProductCmptType());
         return productCmptType;
     }
 
@@ -132,7 +127,7 @@ public class ProductCmptContentPageElement extends AbstractIpsObjectContentPageE
         }
 
         wrapper.addPageElements(new ListPageElement(Arrays.asList(new PageElementUtils(getContext())
-                .createTextPageElements(validFroms)), getContext()));
+        .createTextPageElements(validFroms)), getContext()));
         addPageElements(wrapper);
     }
 }

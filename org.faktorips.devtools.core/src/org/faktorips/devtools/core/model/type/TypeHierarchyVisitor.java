@@ -10,8 +10,6 @@
 
 package org.faktorips.devtools.core.model.type;
 
-import org.eclipse.core.runtime.CoreException;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.HierarchyVisitor;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 
@@ -39,18 +37,14 @@ public abstract class TypeHierarchyVisitor<T extends IType> extends HierarchyVis
      * Returns the types visited by the visitor in the order they were visited.
      */
     public IType[] getVisitedTypes() {
-        return visitedTypes.toArray(new IType[visitedTypes.size()]);
+        return getVisitedTypesAsSet().toArray(new IType[getVisitedTypesAsSet().size()]);
     }
 
     @Override
     protected T findSupertype(T currentType, IIpsProject ipsProject) {
-        try {
-            @SuppressWarnings("unchecked")
-            T supertype = (T)currentType.findSupertype(ipsProject);
-            return supertype;
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        @SuppressWarnings("unchecked")
+        T supertype = (T)currentType.findSupertype(ipsProject);
+        return supertype;
     }
 
 }

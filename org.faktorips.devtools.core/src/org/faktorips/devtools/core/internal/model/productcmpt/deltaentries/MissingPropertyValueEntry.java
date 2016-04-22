@@ -16,8 +16,8 @@ import org.faktorips.devtools.core.model.productcmpt.DeltaType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
-import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
 
 /**
  * 
@@ -43,8 +43,8 @@ public class MissingPropertyValueEntry extends AbstractDeltaEntryForProperty {
      * This implementation receives the type from the property because there is no property value.
      */
     @Override
-    public ProductCmptPropertyType getPropertyType() {
-        return property.getProductCmptPropertyType();
+    public PropertyValueType getPropertyType() {
+        return property.getProductCmptPropertyType().getValueType();
     }
 
     /**

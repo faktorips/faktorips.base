@@ -13,7 +13,6 @@ package org.faktorips.devtools.core.ui.workbenchadapters;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -21,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
+import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
@@ -40,9 +40,12 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
     private ImageDescriptor prodCmptDefaultIcon;
 
+    private ImageDescriptor productTemplateIcon;
+
     public ProductCmptWorkbenchAdapter() {
         super();
         prodCmptDefaultIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductCmpt.gif"); //$NON-NLS-1$
+        productTemplateIcon = IpsUIPlugin.getImageHandling().createImageDescriptor("ProductTemplate.gif"); //$NON-NLS-1$
     }
 
     private ImageRegistry getImageRegistry() {
@@ -70,11 +73,7 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
             return new PathIconDesc(type.getIpsProject(), type.getInstancesIcon());
         } else if (type.hasSupertype()) {
             IProductCmptType superType;
-            try {
-                superType = (IProductCmptType)type.findSupertype(type.getIpsProject());
-            } catch (CoreException e) {
-                return new DefaultIconDesc();
-            }
+            superType = (IProductCmptType)type.findSupertype(type.getIpsProject());
             return getProductCmptIconDesc(superType);
         } else {
             return new DefaultIconDesc();
@@ -83,27 +82,28 @@ public class ProductCmptWorkbenchAdapter extends IpsObjectWorkbenchAdapter {
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsSrcFile ipsSrcFile) {
-        try {
+        boolean template = ipsSrcFile.getIpsObjectType().equals(IpsObjectType.PRODUCT_TEMPLATE);
+        if (template) {
+            return productTemplateIcon;
+        } else {
             String typeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
             if (typeName != null) {
                 IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(typeName);
                 return getProductCmptImageDescriptor(type);
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         }
         return getDefaultImageDescriptor();
     }
 
     @Override
     protected ImageDescriptor getImageDescriptor(IIpsObject ipsObject) {
-        try {
-            if (ipsObject instanceof IProductCmpt) {
-                IProductCmpt productCmpt = (IProductCmpt)ipsObject;
+        if (ipsObject instanceof IProductCmpt) {
+            IProductCmpt productCmpt = (IProductCmpt)ipsObject;
+            if (productCmpt.isProductTemplate()) {
+                return productTemplateIcon;
+            } else {
                 return getProductCmptImageDescriptor(productCmpt.findProductCmptType(ipsObject.getIpsProject()));
             }
-        } catch (CoreException e) {
-            IpsPlugin.log(e);
         }
         return null;
     }

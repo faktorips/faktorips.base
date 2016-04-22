@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Observer;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.datatype.ValueDatatype;
@@ -23,6 +24,7 @@ import org.faktorips.devtools.core.internal.model.productcmpt.AttributeValue;
 import org.faktorips.devtools.core.model.IInternationalString;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.ipsproject.ISupportedLanguage;
+import org.faktorips.devtools.core.model.value.IValue;
 import org.faktorips.util.message.Message;
 import org.faktorips.util.message.MessageList;
 import org.faktorips.util.message.ObjectProperty;
@@ -164,7 +166,6 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
             }
         }
         return StringUtils.EMPTY;
-
     }
 
     @Override
@@ -176,6 +177,15 @@ public class InternationalStringValue extends AbstractValue<IInternationalString
     @Override
     public void deleteObserver(Observer observer) {
         this.content.deleteObserver(observer);
+    }
+
+    @Override
+    public int compare(IValue<?> other, ValueDatatype valueDatatype) {
+        if (IInternationalString.class.isAssignableFrom(other.getContent().getClass())) {
+            return getContent().compareTo((IInternationalString)other.getContent());
+        } else {
+            return ObjectUtils.compare(getContentAsString(), other.getContentAsString());
+        }
     }
 
 }

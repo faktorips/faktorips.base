@@ -39,7 +39,7 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * are supported.
      */
     public static final AssociationType[] APPLICABLE_ASSOCIATION_TYPES = new AssociationType[] {
-            AssociationType.AGGREGATION, AssociationType.ASSOCIATION };
+        AssociationType.AGGREGATION, AssociationType.ASSOCIATION };
 
     public static final String PROPERTY_MATCHING_ASSOCIATION_SOURCE = "matchingAssociationSource"; //$NON-NLS-1$
 
@@ -95,10 +95,8 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * 
      * @param project The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
-     * @throws CoreException if an error occurs while searching for the target.
      */
-    public IProductCmptType findTargetProductCmptType(IIpsProject project) throws CoreException;
+    public IProductCmptType findTargetProductCmptType(IIpsProject project);
 
     /**
      * Returns <code>true</code> if this association constrains a policy component type association,
@@ -123,10 +121,8 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
      * 
-     * @throws CoreException if an error occurs while searching for the matching association.
      */
-    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject)
-            throws CoreException;
+    public IPolicyCmptTypeAssociation findMatchingPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Returns the corresponding policy component type association that is set per default or
@@ -135,10 +131,8 @@ public interface IProductCmptTypeAssociation extends IAssociation, IChangingOver
      * 
      * @param ipsProject The project which IPS object path is used for the search. This is not
      *            necessarily the project this type is part of.
-     * 
-     * @throws CoreException if an error occurs while searching for the matching association.
      */
-    public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptTypeAssociation findDefaultPolicyCmptTypeAssociation(IIpsProject ipsProject);
 
     /**
      * Finding all {@link IPolicyCmptTypeAssociation}s that could be configured by this

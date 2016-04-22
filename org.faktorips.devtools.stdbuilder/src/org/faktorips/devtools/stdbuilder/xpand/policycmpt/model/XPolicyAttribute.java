@@ -456,7 +456,7 @@ public class XPolicyAttribute extends XAttribute {
         } else if (isValueSetEnum()) {
             String[] valueIds;
             boolean containsNull;
-            if ((getAttribute()).getValueSet() instanceof IEnumValueSet) {
+            if ((getAttribute()).getValueSet().isEnum()) {
                 IEnumValueSet set = (IEnumValueSet)(getAttribute()).getValueSet();
                 valueIds = set.getValues();
                 containsNull = !getDatatype().isPrimitive() && set.isContainsNull();
@@ -498,10 +498,10 @@ public class XPolicyAttribute extends XAttribute {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         if (enumDatatype.getEnumType().isInextensibleEnum()) {
             javaCodeFragment.appendClassName(Arrays.class).append(".asList(").append(getJavaClassName())
-                    .append(".values())");
+            .append(".values())");
         } else {
             javaCodeFragment.append(repositoryExpression).append(".").append("getEnumValues(")
-                    .append(getJavaClassName()).append(".class)");
+            .append(getJavaClassName()).append(".class)");
         }
         addImport(javaCodeFragment.getImportDeclaration());
         return javaCodeFragment.getSourcecode();

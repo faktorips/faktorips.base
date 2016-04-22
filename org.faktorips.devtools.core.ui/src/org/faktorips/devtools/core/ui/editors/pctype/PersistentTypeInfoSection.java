@@ -182,14 +182,14 @@ public class PersistentTypeInfoSection extends IpsSection {
                         public void updateUiIfNotDisposed(String nameOfChangedProperty) {
                             IPersistentTypeInfo persistenceTypeInfo = ipsObject.getPersistenceTypeInfo();
                             if (!(ipsObject.getPersistenceTypeInfo().getPersistentType() == PersistentType.ENTITY)) {
-                                uiToolkit.setDataChangeable(tableNameText, false);
+                                uiToolkit.setEnabled(tableNameText, false);
                                 return;
                             }
 
                             if (persistenceTypeInfo.isUseTableDefinedInSupertype()) {
-                                uiToolkit.setDataChangeable(tableNameText, false);
+                                uiToolkit.setEnabled(tableNameText, false);
                             } else {
-                                uiToolkit.setDataChangeable(tableNameText, true);
+                                uiToolkit.setEnabled(tableNameText, true);
                             }
                         }
                     });

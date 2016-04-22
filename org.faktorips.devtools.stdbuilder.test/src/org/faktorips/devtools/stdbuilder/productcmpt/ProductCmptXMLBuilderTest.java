@@ -10,8 +10,10 @@
 
 package org.faktorips.devtools.stdbuilder.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -32,6 +34,7 @@ import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
@@ -54,6 +57,8 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
     private IProductCmptType productCmptType;
     private IProductCmpt productCmpt;
     private IProductCmpt refTarget;
+    private IProductCmptLink link;
+    private IProductCmptLink staticLink;
 
     @Override
     @Before
@@ -104,9 +109,9 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         refTarget.newGeneration(gen.getValidFrom());
         refTarget.setRuntimeId("RefProductRuntimeId");
 
-        IProductCmptLink link = gen.newLink("role");
+        link = gen.newLink("role");
         link.setTarget(refTarget.getQualifiedName());
-        IProductCmptLink staticLink = productCmpt.newLink("staticRole");
+        staticLink = productCmpt.newLink("staticRole");
         staticLink.setTarget(refTarget.getQualifiedName());
 
         productCmpt.getIpsSrcFile().save(true, null);
@@ -188,6 +193,30 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertNumberOfGenerations(productCmpt, 0);
     }
 
+    @Test
+    public void testDoNotCopyUndefinedLinks() throws CoreException, IOException, SAXException,
+    ParserConfigurationException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
+        templateGen.setValidFrom(new GregorianCalendar(2006, 0, 1));
+
+        IProductCmptLink templateStaticLink = template.newLink("staticRole");
+        templateStaticLink.setTarget(refTarget.getQualifiedName());
+
+        IProductCmptLink templateLink = templateGen.newLink("role");
+        templateLink.setTarget(refTarget.getQualifiedName());
+
+        productCmpt.setTemplate(template.getQualifiedName());
+        link.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+        staticLink.setTemplateValueStatus(TemplateValueStatus.UNDEFINED);
+
+        template.getIpsSrcFile().save(true, null);
+        incrementalBuild();
+
+        IFile file = getXmlFile(productCmpt);
+        assertNoLinks(file);
+    }
+
     private void assertNumberOfGenerations(IProductCmpt productCmpt, int expectedGenerationCount) throws SAXException,
             IOException, ParserConfigurationException, CoreException {
         IFile xmlFile = getXmlFile(productCmpt);
@@ -212,6 +241,19 @@ public class ProductCmptXMLBuilderTest extends AbstractStdBuilderTest {
         assertEquals(1, linkElements.size());
         assertTrue(linkElements.get(0).hasAttribute("targetRuntimeId"));
         assertEquals(expectedRuntimeId, linkElements.get(0).getAttribute("targetRuntimeId"));
+    }
+
+    private void assertNoLinks(IFile file) throws SAXException, IOException, ParserConfigurationException,
+    CoreException {
+        Document document = getDocumentBuilder().parse(file.getContents());
+        Element prodCmpt = document.getDocumentElement();
+
+        List<Element> generations = getChildElementsByTagName(prodCmpt, IProductCmptGeneration.TAG_NAME);
+        List<Element> generationLinks = getChildElementsByTagName(generations.get(0), IProductCmptLink.TAG_NAME);
+        List<Element> staticLinks = getChildElementsByTagName(prodCmpt, IProductCmptLink.TAG_NAME);
+
+        assertThat(generationLinks.isEmpty(), is(true));
+        assertThat(staticLinks.isEmpty(), is(true));
     }
 
     private static List<Element> getChildElementsByTagName(Element prodCmptElement, String tagName) {

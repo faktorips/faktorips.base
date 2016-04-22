@@ -21,6 +21,7 @@ import org.faktorips.devtools.core.model.ipsobject.IFixDifferencesToModelSupport
 import org.faktorips.devtools.core.model.ipsobject.ITimedIpsObject;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.CycleInProductStructureException;
 import org.faktorips.devtools.core.model.productcmpt.treestructure.IProductCmptTreeStructure;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptCategory;
@@ -31,7 +32,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
-        IPropertyValueContainer {
+IPropertyValueContainer {
 
     /**
      * The name of the product component type property
@@ -39,6 +40,8 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public static final String PROPERTY_PRODUCT_CMPT_TYPE = "productCmptType"; //$NON-NLS-1$
 
     public static final String PROPERTY_RUNTIME_ID = "runtimeId"; //$NON-NLS-1$
+
+    public static final String PROPERTY_TEMPLATE = "template"; //$NON-NLS-1$
 
     public static final String MSGCODE_PREFIX = "PRODUCT_CMPT-"; //$NON-NLS-1$
 
@@ -61,17 +64,39 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
     public static final String MSGCODE_INCONSISTENT_TYPE_HIERARCHY = MSGCODE_PREFIX + "InconsistTypeHierarchy"; //$NON-NLS-1$
 
     /**
-     * Validation message code that indicates if the product component has invalid generations. This
-     * could be in case when the product component does not allow, but still has generations.
+     * Validation message code that indicates if the specified template could not be found
      */
-    public static final String MSGCODE_INVALID_GENERATIONS = MSGCODE_PREFIX + "InvalidGenerations"; //$NON-NLS-1$
+    public static final String MSGCODE_INVALID_TEMPLATE = MSGCODE_PREFIX + "InvalidTemplate"; //$NON-NLS-1$
 
     /**
-     * Validation message code to indicate that the product component type for this product
-     * component contains an attribute, method or tableStructureUsage that has no corresponding
-     * property configured in this generation.
+     * Validation message code that indicates if the template's type is inconsistent to this
+     * product's type
      */
-    public static final String MSGCODE_PROPERTY_NOT_CONFIGURED = MSGCODE_PREFIX + "PropertyNotConfigured"; //$NON-NLS-1$
+    public static final String MSGCODE_INCONSISTENT_TEMPLATE_TYPE = MSGCODE_PREFIX + "InconsistTemplateType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code that indicates if the template's type is inconsistent to this
+     * product's type
+     */
+    public static final String MSGCODE_INCONSISTENT_TEMPLATE_VALID_FROM = MSGCODE_PREFIX + "InconsistTemplateValidFrom"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the template hierarchy for this template contains a
+     * cycle.
+     */
+    public static final String MSGCODE_TEMPLATE_CYCLE = MSGCODE_PREFIX + "TemplateCycle"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that a template has the same type as its parent template.
+     */
+    public static final String MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE = MSGCODE_PREFIX
+            + "MultipleTemplatesWithSameType"; //$NON-NLS-1$
+
+    /**
+     * Validation message code to indicate that the template for the product this generation is for
+     * could not be found.
+     */
+    public static final String MSGCODE_DIFFERENCES_TO_MODEL = MSGCODE_PREFIX + "DifferencesToModel"; //$NON-NLS-1$
 
     /**
      * Returns the product component's generation at the specified index.
@@ -118,11 +143,9 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return The policy component type this product component configures or <code>null</code> if
      *         the policy component type can't be found or this product component does not configure
      *         a product component.
-     * 
-     * @throws CoreException if an exception occurs while searching for the type.
      */
     @Override
-    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject) throws CoreException;
+    public IPolicyCmptType findPolicyCmptType(IIpsProject ipsProject);
 
     /**
      * Sets the qualified name of the product component type this product component is based on.
@@ -140,10 +163,9 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * @return The product component type this product component is based on or <code>null</code> if
      *         the product component type can't be found.
      * 
-     * @throws CoreException if an exception occurs while searching for the type.
      */
     @Override
-    public IProductCmptType findProductCmptType(IIpsProject ipsProject) throws CoreException;
+    public IProductCmptType findProductCmptType(IIpsProject ipsProject);
 
     /**
      * Returns <code>true</code> if any of the generations contain at least one formula. Returns
@@ -305,5 +327,45 @@ public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductC
      * <code>null</code> if formulaName is <code>null</code>.
      */
     public IFormula getFormula(String formulaName);
+
+    /**
+     * Returns <code>true</code> if this object represents a product template.
+     * 
+     * @return <code>true</code> if this is a template, <code>false</code> if not
+     */
+    @Override
+    public boolean isProductTemplate();
+
+    /**
+     * Set the name of the template that should be used by this product component. Set
+     * <code>null</code> to disable the template and tell the product component to specify every
+     * value by its own.
+     * 
+     * @param template The name of the template that should be used by this product component or
+     *            <code>null</code> to not use any template.
+     */
+    public void setTemplate(String template);
+
+    /**
+     * Returns the template object that is used by this product component if this product component
+     * has specified a template. Returns <code>null</code> if no template is specified or the
+     * specified template was not found.
+     * 
+     * @see #getTemplate()
+     * @see #setTemplate(String)
+     * 
+     * @param ipsProject The project that should be used to search for the template
+     * @return The product component that is specified as the template of this product component
+     */
+    @Override
+    IProductCmpt findTemplate(IIpsProject ipsProject);
+
+    /**
+     * Resets the {@link TemplateValueStatus} for all {@link IPropertyValue} in this product
+     * component. Resetting means that the {@link TemplateValueStatus} is set to
+     * {@link TemplateValueStatus#DEFINED} if it was {@link TemplateValueStatus#INHERITED}. The
+     * status {@link TemplateValueStatus#UNDEFINED} remains unchanged.
+     */
+    void resetTemplateStatus();
 
 }

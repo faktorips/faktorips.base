@@ -345,6 +345,9 @@ public class MoneyTest {
         assertTrue(m.compareTo(Money.euro(10, 42)) == 0);
         assertTrue(m.compareTo(Money.euro(10, 43)) < 0);
 
+        assertTrue(m.compareTo(Money.NULL) > 0);
+        assertTrue(Money.NULL.compareTo(m) < 0);
+
         try {
             m.compareTo(Money.usd(10, 42));
             fail();
@@ -354,20 +357,6 @@ public class MoneyTest {
 
         try {
             m.compareTo(null);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
-
-        try {
-            m.compareTo(Money.NULL);
-            fail();
-        } catch (NullPointerException e) {
-            // Expected exception.
-        }
-
-        try {
-            Money.NULL.compareTo(m);
             fail();
         } catch (NullPointerException e) {
             // Expected exception.

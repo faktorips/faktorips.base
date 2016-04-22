@@ -313,11 +313,7 @@ public abstract class AbstractProductCuBuilder<T extends IPropertyValueContainer
     }
 
     protected IIpsObject findProductCmptType(IIpsProject ipsProject) {
-        try {
-            return getPropertyValueContainer().findProductCmptType(ipsProject);
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
-        }
+        return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
     /**

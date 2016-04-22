@@ -10,27 +10,39 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.base.Function;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueFinder;
+import org.faktorips.devtools.core.internal.model.productcmpt.template.TemplateValueSettings;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptTypeAttribute;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IFormula;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
+import org.faktorips.devtools.core.model.productcmpt.IPropertyValue;
 import org.faktorips.devtools.core.model.productcmpt.IPropertyValueContainer;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.ITemplatedValueIdentifier;
+import org.faktorips.devtools.core.model.productcmpt.PropertyValueType;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeMethod;
 import org.faktorips.devtools.core.model.type.IAttribute;
 import org.faktorips.devtools.core.model.type.IProductCmptProperty;
 import org.faktorips.devtools.core.model.type.ProductCmptPropertyType;
+import org.faktorips.util.functional.BiConsumer;
+import org.faktorips.util.message.MessageList;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -40,17 +52,25 @@ import org.w3c.dom.Element;
  */
 public class Formula extends Expression implements IFormula {
 
+    private final TemplateValueSettings templateValueSettings;
+
     public Formula(IPropertyValueContainer parent, String id) {
-        super(parent, id);
+        this(parent, id, ""); //$NON-NLS-1$
     }
 
     public Formula(IPropertyValueContainer parent, String id, String formulaSignature) {
         super(parent, id, formulaSignature);
+        this.templateValueSettings = new TemplateValueSettings(this);
     }
 
     @Override
     public final IPropertyValueContainer getPropertyValueContainer() {
         return (IPropertyValueContainer)getParent();
+    }
+
+    @Override
+    public IPropertyValueContainer getTemplatedValueContainer() {
+        return getPropertyValueContainer();
     }
 
     @Override
@@ -74,13 +94,51 @@ public class Formula extends Expression implements IFormula {
     }
 
     @Override
+    public PropertyValueType getPropertyValueType() {
+        return PropertyValueType.FORMULA;
+    }
+
+    @Override
     public ProductCmptPropertyType getPropertyType() {
-        return ProductCmptPropertyType.FORMULA_SIGNATURE_DEFINITION;
+        return getProductCmptPropertyType();
+    }
+
+    @Override
+    public ProductCmptPropertyType getProductCmptPropertyType() {
+        return getPropertyValueType().getCorrespondingPropertyType();
     }
 
     @Override
     public String getPropertyValue() {
         return getExpression();
+    }
+
+    /**
+     * Returns the formula expression. Note that this overrides the method
+     * {@link Expression#getExpression()} and returns the formula from this formula's template if
+     * applicable.
+     */
+    @Override
+    public String getExpression() {
+        if (getTemplateValueStatus() == TemplateValueStatus.INHERITED) {
+            return findTemplateExpression();
+        }
+
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return ""; //$NON-NLS-1$
+        }
+
+        return super.getExpression();
+    }
+
+    private String findTemplateExpression() {
+        IFormula templateFormula = findTemplateProperty(getIpsProject());
+        if (templateFormula == null) {
+            // Template should exist but does not. Use the "last known" value as a more or less
+            // helpful fallback while some validation hopefully addresses the missing template...
+            return super.getExpression();
+        }
+        return templateFormula.getExpression();
     }
 
     /**
@@ -102,11 +160,7 @@ public class Formula extends Expression implements IFormula {
 
     @Override
     public IProductCmptType findProductCmptType(IIpsProject ipsProject) {
-        try {
-            return getPropertyValueContainer().findProductCmptType(ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        return getPropertyValueContainer().findProductCmptType(ipsProject);
     }
 
     @Override
@@ -162,15 +216,14 @@ public class Formula extends Expression implements IFormula {
         if (type == null) {
             return null;
         }
-        try {
-            return type.findFormulaSignature(getFormulaSignature(), ipsProject);
-        } catch (final CoreException e) {
-            throw new CoreRuntimeException(e.getMessage(), e);
-        }
+        return type.findFormulaSignature(getFormulaSignature(), ipsProject);
     }
 
     @Override
     public boolean isFormulaMandatory() {
+        if (getTemplateValueStatus() == TemplateValueStatus.UNDEFINED) {
+            return false;
+        }
         IProductCmptTypeMethod formulaSignature = findFormulaSignature(getIpsProject());
         if (formulaSignature != null) {
             return formulaSignature.isFormulaMandatory();
@@ -178,4 +231,77 @@ public class Formula extends Expression implements IFormula {
         return true;
     }
 
+    @Override
+    protected void initPropertiesFromXml(Element element, String id) {
+        super.initPropertiesFromXml(element, id);
+        templateValueSettings.initPropertiesFromXml(element);
+    }
+
+    @Override
+    protected void propertiesToXml(Element element) {
+        super.propertiesToXml(element);
+        templateValueSettings.propertiesToXml(element);
+    }
+
+    @Override
+    protected void validateThis(MessageList list, IIpsProject ipsProject) {
+        super.validateThis(list, ipsProject);
+        list.add(templateValueSettings.validate(this, ipsProject));
+    }
+
+    @Override
+    public void setTemplateValueStatus(TemplateValueStatus newStatus) {
+        if (newStatus == TemplateValueStatus.DEFINED) {
+            // Copy current expression from template (if present)
+            setExpressionInternal(getExpression());
+        }
+        TemplateValueStatus oldStatus = templateValueSettings.getStatus();
+        templateValueSettings.setStatus(newStatus);
+        objectHasChanged(new PropertyChangeEvent(this, PROPERTY_TEMPLATE_VALUE_STATUS, oldStatus, newStatus));
+    }
+
+    @Override
+    public TemplateValueStatus getTemplateValueStatus() {
+        return templateValueSettings.getStatus();
+    }
+
+    @Override
+    public void switchTemplateValueStatus() {
+        setTemplateValueStatus(getTemplateValueStatus().getNextStatus(this));
+    }
+
+    @Override
+    public IFormula findTemplateProperty(IIpsProject ipsProject) {
+        return TemplateValueFinder.findTemplateValue(this, IFormula.class);
+    }
+
+    @Override
+    public boolean isPartOfTemplateHierarchy() {
+        return getTemplatedValueContainer().isPartOfTemplateHierarchy();
+    }
+
+    @Override
+    public Comparator<Object> getValueComparator() {
+        return getPropertyValueType().getValueComparator();
+    }
+
+    @Override
+    public Function<IPropertyValue, Object> getValueGetter() {
+        return getPropertyValueType().getValueGetter();
+    }
+
+    @Override
+    public BiConsumer<IPropertyValue, Object> getValueSetter() {
+        return getPropertyValueType().getValueSetter();
+    }
+
+    @Override
+    public ITemplatedValueIdentifier getIdentifier() {
+        return new PropertyValueIdentifier(this);
+    }
+
+    @Override
+    public boolean isConcreteValue() {
+        return getTemplateValueStatus() == TemplateValueStatus.DEFINED;
+    }
 }

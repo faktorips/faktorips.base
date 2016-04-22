@@ -599,8 +599,8 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
         AggregateRootBuilderSet builderSet = new AggregateRootBuilderSet();
         builderSet.setIpsProject(ipsProject);
         ((IpsModel)ipsProject.getIpsModel())
-        .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
-                builderSet) });
+                .setIpsArtefactBuilderSetInfos(new IIpsArtefactBuilderSetInfo[] { new TestArtefactBuilderSetInfo(
+                        builderSet) });
 
         List<IDependency> dependsOn = Arrays.asList(a.dependsOn());
         IDependency dependency = IpsObjectDependency.createCompostionMasterDetailDependency(a.getQualifiedNameType(),
@@ -735,7 +735,7 @@ public class PolicyCmptTypeTest extends AbstractDependencyTest {
     }
 
     @Test
-    public void testGetSupertypeHierarchy() throws CoreException {
+    public void testGetSupertypeHierarchy() {
         ITypeHierarchy hierarchy = policyCmptType.getSupertypeHierarchy();
         assertNotNull(hierarchy);
     }

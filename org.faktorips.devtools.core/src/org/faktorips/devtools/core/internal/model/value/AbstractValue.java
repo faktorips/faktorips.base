@@ -12,6 +12,7 @@ package org.faktorips.devtools.core.internal.model.value;
 
 import java.util.Locale;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.value.IValue;
 
@@ -46,4 +47,22 @@ public abstract class AbstractValue<T> implements IValue<T> {
     private Locale getDefaultLanguage(IIpsProject ipsProject) {
         return ipsProject.getReadOnlyProperties().getDefaultLanguage().getLocale();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!getClass().equals(obj.getClass())) {
+            return false;
+        }
+        AbstractValue<?> value = (AbstractValue<?>)obj;
+        return ObjectUtils.equals(getContentAsString(), value.getContentAsString());
+    }
+
+    @Override
+    public int hashCode() {
+        return getContentAsString().hashCode();
+    }
+
 }

@@ -148,12 +148,8 @@ class CategoryComposite extends ViewerButtonComposite {
         return new ContentsChangeListener() {
             @Override
             public void contentsChanged(ContentChangeEvent event) {
-                try {
-                    if (event.isAffected(contextType.findPolicyCmptType(contextType.getIpsProject()))) {
-                        refresh();
-                    }
-                } catch (CoreException e) {
-                    throw new CoreRuntimeException(e);
+                if (event.isAffected(contextType.findPolicyCmptType(contextType.getIpsProject()))) {
+                    refresh();
                 }
             }
         };

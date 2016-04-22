@@ -10,10 +10,12 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.util.Locale;
@@ -24,7 +26,9 @@ import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
+import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.ITableContentUsage;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.ITableStructureUsage;
 import org.faktorips.devtools.core.model.tablecontents.ITableContents;
@@ -66,15 +70,16 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         structUsage.addTableStructure(structure.getQualifiedName());
         structUsage.setRoleName(STRUCTURE_ROLENAME);
 
-        contentUsage = cmpt.getProductCmptGeneration(0).newTableContentUsage();
+        contentUsage = cmpt.getProductCmptGeneration(0).newTableContentUsage(structUsage);
     }
 
     @Test
     public void testValidateUnknownStructure() throws Exception {
+        contentUsage.setStructureUsage("");
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
 
-        contentUsage.setStructureUsage("StructUsageRole");
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         ml = contentUsage.validate(project);
         assertNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_STRUCTURE_USAGE));
     }
@@ -82,7 +87,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateUnknownContent() throws Exception {
         structUsage.setMandatoryTableContent(true);
-        contentUsage.setStructureUsage("StructUsageRole");
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         contentUsage.setTableContentName("unknown");
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_UNKNOWN_TABLE_CONTENT));
@@ -112,7 +117,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
     @Test
     public void testValidateInvalidContent() throws Exception {
         content.setTableStructure("unknown");
-        contentUsage.setStructureUsage("StructUsageRole");
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         contentUsage.setTableContentName(content.getQualifiedName());
         MessageList ml = contentUsage.validate(project);
         assertNotNull(ml.getMessageByCode(ITableContentUsage.MSGCODE_INVALID_TABLE_CONTENT));
@@ -150,7 +155,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
 
     @Test
     public void testToXml() {
-        contentUsage.setStructureUsage("rateTable");
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
         contentUsage.setTableContentName("RateTable2007");
         Element el = contentUsage.toXml(newDocument());
 
@@ -158,7 +163,7 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         contentUsage.setTableContentName("");
         contentUsage.initFromXml(el);
 
-        assertEquals("rateTable", contentUsage.getStructureUsage());
+        assertEquals(STRUCTURE_ROLENAME, contentUsage.getStructureUsage());
         assertEquals("RateTable2007", contentUsage.getTableContentName());
 
         contentUsage.setTableContentName(null);
@@ -166,6 +171,25 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         contentUsage.setTableContentName("");
         contentUsage.initFromXml(el);
         assertNull(contentUsage.getTableContentName());
+    }
+
+    @Test
+    public void testToXml_InheritedValue() throws CoreException {
+        ITableContentUsage templateContentUsage = addTemplateContentUsage();
+        assertThat(contentUsage.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+
+        contentUsage.setStructureUsage(STRUCTURE_ROLENAME);
+        contentUsage.setTableContentName("RateTable2007");
+        templateContentUsage.setTableContentName("TemplateTable");
+
+        Element el = contentUsage.toXml(newDocument());
+        ITableContentUsage copy = cmpt.getProductCmptGeneration(0).newTableContentUsage(structUsage);
+        copy.initFromXml(el);
+
+        assertThat(copy.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+        assertThat(copy.getStructureUsage(), is(STRUCTURE_ROLENAME));
+        assertThat(copy.getTableContentName(), is("TemplateTable"));
+
     }
 
     @Test
@@ -205,5 +229,33 @@ public class TableContentUsageTest extends AbstractIpsPluginTest {
         assertNotNull(contentUsagePC);
         assertNotNull(contentUsagePC.getProductCmpt());
         assertEquals(cmpt, contentUsagePC.getProductCmpt());
+    }
+
+    @Test
+    public void testGetTableContentName() {
+        assertThat(contentUsage.getTemplateValueStatus(), is(TemplateValueStatus.DEFINED));
+        contentUsage.setTableContentName(content.getQualifiedName());
+        assertThat(contentUsage.getTableContentName(), is(content.getQualifiedName()));
+    }
+
+    @Test
+    public void testGetTableContentName_InheritedValue() throws CoreException {
+        ITableContentUsage templateContentUsage = addTemplateContentUsage();
+        assertThat(contentUsage.getTemplateValueStatus(), is(TemplateValueStatus.INHERITED));
+
+        contentUsage.setTableContentName("my little table");
+        templateContentUsage.setTableContentName(content.getQualifiedName());
+
+        assertThat(contentUsage.getTableContentName(), is(content.getQualifiedName()));
+    }
+
+    private ITableContentUsage addTemplateContentUsage() throws CoreException {
+        IProductCmpt template = newProductTemplate(productCmptType, "Template");
+        IProductCmptGeneration templateGen = template.getProductCmptGeneration(0);
+        ITableContentUsage templateContentUsage = templateGen.newTableContentUsage(structUsage);
+
+        cmpt.setTemplate(template.getQualifiedName());
+        contentUsage.setTemplateValueStatus(TemplateValueStatus.INHERITED);
+        return templateContentUsage;
     }
 }

@@ -94,4 +94,6 @@ public interface IValue<T> {
      * @see #getLocalizedContent(Locale)
      */
     String getLocalizedContent();
+
+    int compare(IValue<?> other, ValueDatatype valueDatatype);
 }

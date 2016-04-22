@@ -218,10 +218,8 @@ public interface IPolicyCmptType extends IType {
      * one attribute with the name exist, the first attribute with the name is returned. Returns
      * <code>null</code> if no attribute with the given name is found.
      * 
-     * @throws CoreException if an error occurs while searching.
      */
-    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject)
-            throws CoreException;
+    public IPolicyCmptTypeAttribute findPolicyCmptTypeAttribute(String name, IIpsProject ipsProject);
 
     /**
      * Creates a new attribute and returns it.
@@ -273,17 +271,15 @@ public interface IPolicyCmptType extends IType {
     /**
      * Returns all {@link IValidationRule}s defined by this type and its super-types.
      * 
-     * @throws CoreException if an error occurs while searching
      */
-    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject) throws CoreException;
+    public List<IValidationRule> findAllValidationRules(IIpsProject ipsProject);
 
     /**
      * Returns the {@link IValidationRule} with the given name, or <code>null</code> if no such rule
      * is defined by this type and its super-types.
      * 
-     * @throws CoreException if an error occurs while searching
      */
-    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject) throws CoreException;
+    public IValidationRule findValidationRule(String ruleName, IIpsProject ipsProject);
 
     /**
      * Creates a new validation rule and returns it.

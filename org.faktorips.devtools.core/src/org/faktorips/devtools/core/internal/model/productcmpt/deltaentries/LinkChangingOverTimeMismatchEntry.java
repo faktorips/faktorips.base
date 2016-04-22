@@ -10,15 +10,14 @@
 
 package org.faktorips.devtools.core.internal.model.productcmpt.deltaentries;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.internal.model.productcmpt.IProductCmptLinkContainer;
 import org.faktorips.devtools.core.model.productcmpt.DeltaType;
-import org.faktorips.devtools.core.model.productcmpt.IDeltaEntry;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
+import org.faktorips.util.StringUtil;
 
 /**
  * Represents a link that has the wrong parent, e.g. the parent is the generation but the link
@@ -36,21 +35,15 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssocia
  * 
  * @author widmaier
  */
-public class LinkChangingOverTimeMismatchEntry implements IDeltaEntry {
+public class LinkChangingOverTimeMismatchEntry extends AbstractDeltaEntryForLinks {
 
-    private final IProductCmptLink link;
     private final IProductCmptTypeAssociation association;
-    private String targetName;
+    private final String unqualifiedTargetName;
 
     public LinkChangingOverTimeMismatchEntry(IProductCmptTypeAssociation association, IProductCmptLink link) {
+        super(link);
         this.association = association;
-        this.link = link;
-
-        try {
-            targetName = link.findTarget(link.getIpsProject()).getUnqualifiedName();
-        } catch (CoreException e) {
-            targetName = link.getTarget();
-        }
+        this.unqualifiedTargetName = StringUtil.unqualifiedName(link.getTarget());
     }
 
     @Override
@@ -60,19 +53,19 @@ public class LinkChangingOverTimeMismatchEntry implements IDeltaEntry {
 
     @Override
     public String getDescription() {
-        String linkCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(link);
+        String linkCaption = IpsPlugin.getMultiLanguageSupport().getLocalizedCaption(getLink());
         String generationLabelByNamingConvention = IpsPlugin.getDefault().getIpsPreferences()
                 .getChangesOverTimeNamingConvention().getGenerationConceptNameSingular(true);
         if (getAssociation().isChangingOverTime()) {
             return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_GenToProdCmpt, new String[] {
-                    linkCaption, targetName, generationLabelByNamingConvention });
+                    linkCaption, unqualifiedTargetName, generationLabelByNamingConvention });
         } else {
             if (isLinkPartOfLatestGeneration()) {
                 return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_ProdCmptToGen, linkCaption,
-                        targetName);
+                        unqualifiedTargetName);
             } else {
                 return NLS.bind(Messages.LinkChangingOverTimeMismatchEntry_Description_RemoveOnly, new String[] {
-                        linkCaption, targetName, generationLabelByNamingConvention });
+                        linkCaption, unqualifiedTargetName, generationLabelByNamingConvention });
             }
         }
     }
@@ -118,29 +111,8 @@ public class LinkChangingOverTimeMismatchEntry implements IDeltaEntry {
         return getLink().getProductCmptLinkContainer().equals(latestGeneration);
     }
 
-    private boolean isLinkPartOfProductComponent() {
-        return getLink().getProductCmptLinkContainer().equals(getLink().getProductCmpt());
-    }
-
     protected IProductCmptTypeAssociation getAssociation() {
         return association;
-    }
-
-    /**
-     * Returns the respective link.
-     */
-    public IProductCmptLink getLink() {
-        return link;
-    }
-
-    /**
-     * Returns <code>true</code> if fixing this delta entry moves the link from one parent to
-     * another. That is if the link is part of the product component or part of the latest
-     * generation. Returns <code>false</code> if {@link #fix()} only removes the link. The link is
-     * part of an old generation in the latter case.
-     */
-    public boolean isMovingLink() {
-        return isLinkPartOfProductComponent() || isLinkPartOfLatestGeneration();
     }
 
 }

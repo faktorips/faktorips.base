@@ -15,7 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.matchers.JUnitMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -122,55 +122,55 @@ public class RangeStructureTest {
         structure.put(10, new ResultStructure<String>("C"));
     }
 
-    public void resultSetForKeyWayOutOfLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyWayOutOfLowerBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(-100).get(), matcher);
     }
 
-    public void resultSetForKeyLessThanSmallestLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyLessThanSmallestLowerBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(-6).get(), matcher);
     }
 
-    public void resultSetForKeyExactSmallestLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyExactSmallestLowerBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(-5).get(), matcher);
     }
 
-    public void resultSetForKeyGreaterThanSmallestLowerBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyGreaterThanSmallestLowerBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(-4).get(), matcher);
     }
 
-    public void resultSetForKeyInRange1(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyInRange1(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(0).get(), matcher);
     }
 
-    public void resultSetForKeyInRange2(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyInRange2(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(5).get(), matcher);
     }
 
-    public void resultSetForKeyLessThanGreatestUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyLessThanGreatestUpperBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(9).get(), matcher);
     }
 
-    public void resultSetForKeyExactGreatestUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyExactGreatestUpperBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(10).get(), matcher);
     }
 
-    public void resultSetForKeyGreaterThanGreatestUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyGreaterThanGreatestUpperBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(11).get(), matcher);
     }
 
-    public void resultSetForKeyWayOutOfUpperBound(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyWayOutOfUpperBound(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(100).get(), matcher);
     }
 
-    public void resultSetForKeyNull(Matcher<Iterable<String>> matcher) {
+    public void resultSetForKeyNull(Matcher<Iterable<? super String>> matcher) {
         assertThat(structure.get(null).get(), matcher);
     }
 
-    private static Matcher<Iterable<String>> isEmpty() {
+    private static Matcher<Iterable<? super String>> isEmpty() {
         return new IsEmpty<String>();
     }
 
-    private static class IsEmpty<T> extends BaseMatcher<Iterable<T>> {
+    private static class IsEmpty<T> extends BaseMatcher<Iterable<? super T>> {
 
         @Override
         public boolean matches(Object item) {

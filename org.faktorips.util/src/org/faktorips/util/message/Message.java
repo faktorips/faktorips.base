@@ -52,19 +52,19 @@ public class Message {
     private static final ObjectProperty[] EMPTY_OBJECT_PROPERTIES = new ObjectProperty[0];
 
     /** One of the constants ERROR, WARNING, INFO. */
-    private int severity = ERROR;
+    private final int severity;
 
     /** The human readable message text. */
-    private String text = "";
+    private final String text;
 
     /** Code to identify the type of message. */
-    private String code = "";
+    private final String code;
 
     /**
      * The object and its properties that are addressed in the message as having an error or that a
      * warning or information relates to.
      */
-    private ObjectProperty[] invalidOp = EMPTY_OBJECT_PROPERTIES;
+    private final ObjectProperty[] invalidOp;
 
     /**
      * Copy constructor.
@@ -72,13 +72,7 @@ public class Message {
      * @param msg The message to copy from.
      */
     public Message(Message msg) {
-        this.code = msg.code;
-        this.severity = msg.severity;
-        this.text = msg.text;
-        if (msg.invalidOp != null) {
-            invalidOp = new ObjectProperty[msg.invalidOp.length];
-            System.arraycopy(msg.invalidOp, 0, invalidOp, 0, invalidOp.length);
-        }
+        this(msg.code, msg.text, msg.severity, msg.invalidOp);
     }
 
     /**
@@ -89,9 +83,7 @@ public class Message {
      * @param severity The severity of the message.
      */
     public Message(String code, String text, int severity) {
-        this.code = code;
-        this.text = text;
-        this.severity = severity;
+        this(code, text, severity, EMPTY_OBJECT_PROPERTIES);
     }
 
     /**
@@ -149,11 +141,16 @@ public class Message {
      *            invalidObject to refer to.
      */
     public Message(String code, String text, int severity, Object invalidObject, String... invalidProperties) {
-        this(code, text, severity);
-
-        invalidOp = new ObjectProperty[invalidProperties.length];
-        for (int i = 0; i < invalidProperties.length; i++) {
-            invalidOp[i] = new ObjectProperty(invalidObject, invalidProperties[i]);
+        this.code = code;
+        this.text = text;
+        this.severity = severity;
+        if (invalidProperties == null || invalidProperties.length == 0) {
+            this.invalidOp = new ObjectProperty[] { new ObjectProperty(invalidObject, null) };
+        } else {
+            this.invalidOp = new ObjectProperty[invalidProperties.length];
+            for (int i = 0; i < invalidProperties.length; i++) {
+                invalidOp[i] = new ObjectProperty(invalidObject, invalidProperties[i]);
+            }
         }
     }
 
@@ -169,8 +166,9 @@ public class Message {
      *            properties of all the invalid objects to refer to.
      */
     public Message(String code, String text, int severity, ObjectProperty... invalidObjectProperties) {
-        this(code, text, severity);
-
+        this.code = code;
+        this.text = text;
+        this.severity = severity;
         invalidOp = new ObjectProperty[invalidObjectProperties.length];
         System.arraycopy(invalidObjectProperties, 0, invalidOp, 0, invalidOp.length);
     }
@@ -225,12 +223,11 @@ public class Message {
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object
-     * @param invalidProperty The name of the invalid property (which is a property of the
+     * @param invalidProperties The name of the invalid properties (which are properties of the
      *            invalidObject)
      */
-    public static final Message newWarning(String code, String text, Object invalidObject, String invalidProperty) {
-        return new Message(code, text, WARNING, new ObjectProperty[] { new ObjectProperty(invalidObject,
-                invalidProperty) });
+    public static final Message newWarning(String code, String text, Object invalidObject, String... invalidProperties) {
+        return new Message(code, text, WARNING, invalidObject, invalidProperties);
     }
 
     /**
@@ -249,11 +246,11 @@ public class Message {
      * @param code The code that identifies the message.
      * @param text The human readable text of the message.
      * @param invalidObject The invalid object to refer to.
-     * @param invalidProperty The name of the invalid property (which is a property of the
+     * @param invalidProperties The name of the invalid properties (which are properties of the
      *            invalidObject)
      */
-    public static final Message newError(String code, String text, Object invalidObject, String invalidProperty) {
-        return new Message(code, text, ERROR, invalidObject, invalidProperty);
+    public static final Message newError(String code, String text, Object invalidObject, String... invalidProperties) {
+        return new Message(code, text, ERROR, invalidObject, invalidProperties);
     }
 
     /**

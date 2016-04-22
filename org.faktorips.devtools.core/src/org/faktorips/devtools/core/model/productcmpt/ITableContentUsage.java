@@ -114,4 +114,13 @@ public interface ITableContentUsage extends IPropertyValue {
      */
     public ITableStructureUsage findTableStructureUsage(IIpsProject ipsProject) throws CoreException;
 
+    /**
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code ITableContentUsage}.
+     * 
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
+     */
+    @Override
+    public ITableContentUsage findTemplateProperty(IIpsProject ipsProject);
+
 }

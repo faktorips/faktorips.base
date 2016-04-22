@@ -12,15 +12,21 @@ package org.faktorips.devtools.core.ui.wizards.productdefinition;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -75,6 +81,9 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
                 } else if (ipsElement instanceof IIpsPackageFragment) {
                     IIpsPackageFragment packageFragment = (IIpsPackageFragment)ipsElement;
                     initDefaults(packageFragment, null);
+                } else if (ipsElement instanceof IIpsObject) {
+                    IIpsObject ipsObject = (IIpsObject)ipsElement;
+                    initDefaults(ipsObject.getIpsPackageFragment(), ipsObject);
                 } else if (ipsElement instanceof IIpsSrcFile) {
                     IIpsSrcFile ipsSrcFile = (IIpsSrcFile)ipsElement;
                     IIpsObject ipsObject = ((IIpsSrcFile)ipsElement).getIpsObject();
@@ -115,14 +124,20 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
 
     @Override
     public boolean performFinish() {
-        try {
-            getContainer().run(false, true, getOperation());
-        } catch (InvocationTargetException e) {
-            IpsPlugin.logAndShowErrorDialog(e);
-            return false;
-        } catch (InterruptedException e) {
-            return false;
-        }
+        setNeedsProgressMonitor(true);
+        IpsPlugin.getDefault().getIpsModel().runAndQueueChangeEvents(new IWorkspaceRunnable() {
+
+            @Override
+            public void run(IProgressMonitor monitor) throws CoreException {
+                try {
+                    getContainer().run(false, true, getOperation());
+                } catch (InvocationTargetException e) {
+                    throw new CoreException(new IpsStatus(e));
+                } catch (InterruptedException e) {
+                    throw new CoreException(new IpsStatus(e));
+                }
+            }
+        }, new NullProgressMonitor());
         afterFinishPerformed();
         return true;
     }
@@ -152,8 +167,13 @@ public abstract class NewProductDefinitionWizard extends Wizard implements INewW
      * @param settings the dialog settings for this dialog
      */
     protected void loadDialogSettings(IDialogSettings settings) {
-        boolean openEditor = settings.getBoolean(NewProductDefinitionPMO.PROPERTY_OPEN_EDITOR);
-        getPmo().setOpenEditor(openEditor);
+        String openEditorSetting = settings.get(NewProductDefinitionPMO.PROPERTY_OPEN_EDITOR);
+        if (StringUtils.isNotEmpty(openEditorSetting)) {
+            boolean openEditor = Boolean.parseBoolean(openEditorSetting);
+            getPmo().setOpenEditor(openEditor);
+        } else {
+            getPmo().setOpenEditor(true);
+        }
     }
 
     /**

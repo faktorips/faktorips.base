@@ -63,6 +63,8 @@ import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.ui.actions.Messages;
 import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductCmptWizard;
+import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductTemplateWizard;
+import org.faktorips.devtools.core.ui.wizards.productcmpt.NewProductWizard;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.StringUtil;
 
@@ -588,7 +590,12 @@ public class IpsPasteHandler extends AbstractCopyPasteHandler {
     }
 
     private void copyProductCmptByWizard(IProductCmpt productCmpt, IResource target) {
-        NewProductCmptWizard wizard = new NewProductCmptWizard();
+        NewProductWizard wizard;
+        if (productCmpt.getIpsObjectType().equals(IpsObjectType.PRODUCT_CMPT)) {
+            wizard = new NewProductCmptWizard();
+        } else {
+            wizard = new NewProductTemplateWizard();
+        }
         wizard.init(IpsPlugin.getDefault().getWorkbench(), new StructuredSelection(target));
         wizard.setCopyProductCmpt(productCmpt);
 

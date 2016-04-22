@@ -101,10 +101,13 @@ import org.faktorips.devtools.core.model.tablecontents.ITableContents;
 import org.faktorips.devtools.core.model.tablestructure.ITableStructure;
 import org.faktorips.devtools.core.model.testcase.ITestCase;
 import org.faktorips.devtools.core.model.testcasetype.ITestCaseType;
+import org.faktorips.devtools.core.model.type.IType;
+import org.faktorips.devtools.core.model.type.TypeHierarchyVisitor;
 import org.faktorips.devtools.core.model.valueset.ValueSetType;
 import org.faktorips.devtools.core.model.versionmanager.IIpsFeatureVersionManager;
 import org.faktorips.devtools.core.productrelease.IReleaseAndDeploymentOperation;
 import org.faktorips.devtools.core.util.EclipseIOUtil;
+import org.faktorips.devtools.core.util.Tree;
 import org.faktorips.devtools.core.util.XmlUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.IoUtil;
@@ -193,7 +196,7 @@ public class IpsProject extends IpsElement implements IIpsProject {
     public IIpsProjectProperties getProperties() {
         if (TRACE_IPSPROJECT_PROPERTIES) {
             System.out
-            .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
+                    .println("Calling getProperties() is really expensive, use getReadOnlyProperties() wherever possible!"); //$NON-NLS-1$
         }
         return new IpsProjectProperties(this, getPropertiesInternal());
     }
@@ -811,6 +814,11 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
+    public IProductCmpt findProductTemplate(String qualifiedName) {
+        return (IProductCmpt)findIpsObject(IpsObjectType.PRODUCT_TEMPLATE, qualifiedName);
+    }
+
+    @Override
     public Collection<IIpsSrcFile> findProductCmptByUnqualifiedName(String unqualifiedName) {
         return unqualifiedNameCache.findProductCmptByUnqualifiedName(unqualifiedName);
     }
@@ -1270,17 +1278,28 @@ public class IpsProject extends IpsElement implements IIpsProject {
     }
 
     @Override
-    public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeCmptsForSubtypes)
-            throws CoreException {
-
+    public IIpsSrcFile[] findAllProductCmptSrcFiles(IProductCmptType productCmptType, boolean includeCmptsForSubtypes) {
         IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.PRODUCT_CMPT);
-        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>(ipsSrcFiles.length);
+        List<IIpsSrcFile> result = findAllProducts(ipsSrcFiles, productCmptType, includeCmptsForSubtypes);
+        return result.toArray(new IIpsSrcFile[result.size()]);
+    }
+
+    @Override
+    public List<IIpsSrcFile> findAllProductTemplates(IProductCmptType productCmptType, boolean includeSubtypes) {
+        IIpsSrcFile[] ipsSrcFiles = findIpsSrcFiles(IpsObjectType.PRODUCT_TEMPLATE);
+        return findAllProducts(ipsSrcFiles, productCmptType, includeSubtypes);
+    }
+
+    private List<IIpsSrcFile> findAllProducts(IIpsSrcFile[] ipsSrcFiles,
+            IProductCmptType productCmptType,
+            boolean includeSubtypes) {
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
         for (IIpsSrcFile ipsSrcFile : ipsSrcFiles) {
-            String strProductCmptTypeOfCandidate = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
-            if (productCmptType == null || productCmptType.getQualifiedName().equals(strProductCmptTypeOfCandidate)) {
+            String referencedTypeName = ipsSrcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+            if (productCmptType == null || productCmptType.getQualifiedName().equals(referencedTypeName)) {
                 result.add(ipsSrcFile);
-            } else if (includeCmptsForSubtypes) {
-                IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(strProductCmptTypeOfCandidate);
+            } else if (includeSubtypes) {
+                IProductCmptType type = ipsSrcFile.getIpsProject().findProductCmptType(referencedTypeName);
                 if (type == null) {
                     continue;
                 }
@@ -1289,8 +1308,40 @@ public class IpsProject extends IpsElement implements IIpsProject {
                 }
             }
         }
+        return result;
+    }
 
-        return result.toArray(new IIpsSrcFile[result.size()]);
+    @Override
+    public List<IIpsSrcFile> findCompatibleProductTemplates(IProductCmptType productCmptType) {
+        IIpsSrcFile[] allTemplates = findIpsSrcFiles(IpsObjectType.PRODUCT_TEMPLATE);
+        List<String> subtypes = getSupertypes(productCmptType);
+        List<IIpsSrcFile> result = new ArrayList<IIpsSrcFile>();
+        for (IIpsSrcFile templateCandidate : allTemplates) {
+            String referencedTypeName = templateCandidate.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+            if (subtypes.contains(referencedTypeName)) {
+                result.add(templateCandidate);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public Tree<IIpsSrcFile> findTemplateHierarchy(IProductCmpt template) {
+        return TemplateHierarchyFinder.findTemplateHierarchyFor(template, this);
+    }
+
+    protected List<String> getSupertypes(IType type) {
+        final List<String> supertypes = new ArrayList<String>();
+        TypeHierarchyVisitor<IType> collector = new TypeHierarchyVisitor<IType>(this) {
+
+            @Override
+            public boolean visit(IType type) {
+                supertypes.add(type.getQualifiedName());
+                return true;
+            }
+        };
+        collector.start(type);
+        return supertypes;
     }
 
     @Override

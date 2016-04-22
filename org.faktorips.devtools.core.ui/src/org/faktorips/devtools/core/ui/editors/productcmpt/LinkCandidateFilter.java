@@ -17,9 +17,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.faktorips.devtools.core.IpsPlugin;
-import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.IpsObjectType;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
@@ -169,23 +167,18 @@ public class LinkCandidateFilter {
     }
 
     private boolean isWrongType(IIpsSrcFile srcFile) {
-        try {
-            String typeName = srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
+        String typeName = srcFile.getPropertyValue(IProductCmpt.PROPERTY_PRODUCT_CMPT_TYPE);
 
-            IProductCmptType productCmptType = getIpsProject().findProductCmptType(typeName);
+        IProductCmptType productCmptType = getIpsProject().findProductCmptType(typeName);
 
-            for (IProductCmptTypeAssociation association : associations) {
+        for (IProductCmptTypeAssociation association : associations) {
 
-                IProductCmptType targetType = association.findTargetProductCmptType(getIpsProject());
-                boolean subtypeOrSameType = productCmptType.isSubtypeOrSameType(targetType, getIpsProject());
+            IProductCmptType targetType = association.findTargetProductCmptType(getIpsProject());
+            boolean subtypeOrSameType = productCmptType.isSubtypeOrSameType(targetType, getIpsProject());
 
-                if (subtypeOrSameType) {
-                    return false;
-                }
+            if (subtypeOrSameType) {
+                return false;
             }
-
-        } catch (CoreException e) {
-            throw new CoreRuntimeException(e);
         }
 
         return true;

@@ -13,8 +13,11 @@ package org.faktorips.devtools.core.model;
 import java.beans.PropertyChangeEvent;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPart;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
@@ -37,28 +40,36 @@ public class ContentChangeEvent {
 
     private final IIpsSrcFile ipsSrcFile;
 
-    private final IIpsObjectPart part;
+    private final IIpsObjectPartContainer part;
 
     private final List<IIpsObjectPart> movedParts;
 
     private final int type;
 
-    private final PropertyChangeEvent propertyChangeEvent;
+    private final Set<PropertyChangeEvent> propertyChangeEvents;
 
-    private ContentChangeEvent(IIpsSrcFile ipsSrcFile) {
+    private ContentChangeEvent(IIpsSrcFile ipsSrcFile, PropertyChangeEvent... propertyChangeEvents) {
         this.ipsSrcFile = ipsSrcFile;
         type = TYPE_WHOLE_CONTENT_CHANGED;
-        propertyChangeEvent = new PropertyChangeEvent(ipsSrcFile, null, null, null);
+        this.propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(Arrays.asList(propertyChangeEvents));
         part = null;
         movedParts = null;
     }
 
-    private ContentChangeEvent(IIpsObjectPart part, int eventType) {
+    private ContentChangeEvent(IIpsSrcFile ipsSrcFile, Set<PropertyChangeEvent> propertyChangeEvents) {
+        this.ipsSrcFile = ipsSrcFile;
+        type = TYPE_WHOLE_CONTENT_CHANGED;
+        this.propertyChangeEvents = propertyChangeEvents;
+        part = null;
+        movedParts = null;
+    }
+
+    private ContentChangeEvent(IIpsObjectPartContainer part, int eventType) {
         ArgumentCheck.notNull(part);
         this.part = part;
         ipsSrcFile = part.getIpsObject().getIpsSrcFile();
         type = eventType;
-        propertyChangeEvent = new PropertyChangeEvent(part, null, null, null);
+        propertyChangeEvents = Collections.emptySet();
         movedParts = null;
     }
 
@@ -66,7 +77,7 @@ public class ContentChangeEvent {
         ipsSrcFile = file;
         movedParts = Collections.unmodifiableList(Arrays.asList(parts));
         type = TYPE_PARTS_CHANGED_POSITIONS;
-        propertyChangeEvent = new PropertyChangeEvent(file, null, null, null);
+        propertyChangeEvents = Collections.emptySet();
         part = null;
     }
 
@@ -75,15 +86,24 @@ public class ContentChangeEvent {
         type = TYPE_PARTS_CHANGED_POSITIONS;
         ipsSrcFile = parts.get(0).getIpsSrcFile();
         part = null;
-        propertyChangeEvent = new PropertyChangeEvent(ipsSrcFile, null, null, null);
+        propertyChangeEvents = Collections.emptySet();
     }
 
-    private ContentChangeEvent(IIpsObjectPart part, PropertyChangeEvent propertyChangeEvent) {
+    private ContentChangeEvent(IIpsObjectPartContainer part, PropertyChangeEvent... propertyChangeEvents) {
         ArgumentCheck.notNull(part);
         this.part = part;
         ipsSrcFile = part.getIpsSrcFile();
-        type = TYPE_PROPERTY_CHANGED;
-        this.propertyChangeEvent = propertyChangeEvent;
+        this.type = TYPE_PROPERTY_CHANGED;
+        this.propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(Arrays.asList(propertyChangeEvents));
+        movedParts = null;
+    }
+
+    private ContentChangeEvent(IIpsSrcFile srcFile, IIpsObjectPartContainer part, int type,
+            Set<PropertyChangeEvent> propertyChangeEvents) {
+        this.part = part;
+        this.ipsSrcFile = srcFile;
+        this.type = type;
+        this.propertyChangeEvents = propertyChangeEvents;
         movedParts = null;
     }
 
@@ -91,18 +111,18 @@ public class ContentChangeEvent {
         return new ContentChangeEvent(part, TYPE_PART_ADDED);
     }
 
-    public static final ContentChangeEvent newPartRemovedEvent(IIpsObjectPart part) {
+    public static final ContentChangeEvent newPartRemovedEvent(IIpsObjectPartContainer part) {
         return new ContentChangeEvent(part, TYPE_PART_REMOVED);
     }
 
-    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPart part) {
+    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPartContainer part) {
         return new ContentChangeEvent(part, TYPE_PROPERTY_CHANGED);
     }
 
-    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPart part,
-            PropertyChangeEvent propertyChangeEvent) {
-        ArgumentCheck.notNull(propertyChangeEvent);
-        return new ContentChangeEvent(part, propertyChangeEvent);
+    public static final ContentChangeEvent newPartChangedEvent(IIpsObjectPartContainer part,
+            PropertyChangeEvent... propertyChangeEvents) {
+        ArgumentCheck.isTrue(propertyChangeEvents.length > 0);
+        return new ContentChangeEvent(part, propertyChangeEvents);
     }
 
     public static final ContentChangeEvent newPartsChangedPositionsChangedEvent(IIpsSrcFile file, IIpsObjectPart[] parts) {
@@ -127,8 +147,24 @@ public class ContentChangeEvent {
         return new ContentChangeEvent(parts);
     }
 
-    public static final ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file) {
-        return new ContentChangeEvent(file);
+    public static final ContentChangeEvent newWholeContentChangedEvent(IIpsSrcFile file,
+            PropertyChangeEvent... propertyChangeEvents) {
+        return new ContentChangeEvent(file, propertyChangeEvents);
+    }
+
+    public static final ContentChangeEvent mergeChangeEvents(ContentChangeEvent ce1, ContentChangeEvent ce2) {
+        if (!ObjectUtils.equals(ce1.getIpsSrcFile(), ce2.getIpsSrcFile())) {
+            throw new IllegalArgumentException("Can only merge change events from same source file. Was " //$NON-NLS-1$
+                    + ce1.getIpsSrcFile() + " and " + ce2.getIpsSrcFile()); //$NON-NLS-1$
+        }
+        Set<PropertyChangeEvent> propertyChangeEvents = new LinkedHashSet<PropertyChangeEvent>(
+                ce1.getPropertyChangeEvents());
+        propertyChangeEvents.addAll(ce2.getPropertyChangeEvents());
+        if (ce1.getEventType() == ce2.getEventType() && ObjectUtils.equals(ce1.getPart(), ce2.getPart())) {
+            return new ContentChangeEvent(ce1.getIpsSrcFile(), ce1.getPart(), ce1.getEventType(), propertyChangeEvents);
+        } else {
+            return new ContentChangeEvent(ce1.getIpsSrcFile(), propertyChangeEvents);
+        }
     }
 
     /**
@@ -154,7 +190,7 @@ public class ContentChangeEvent {
      * Returns the part that was either changed, added, or removed. Returns <code>null</code> if
      * this information is not available.
      */
-    public IIpsObjectPart getPart() {
+    public IIpsObjectPartContainer getPart() {
         return part;
     }
 
@@ -209,7 +245,7 @@ public class ContentChangeEvent {
                 && (type == TYPE_WHOLE_CONTENT_CHANGED);
     }
 
-    private boolean isChildOf(IIpsObjectPart potentialChild, IIpsObjectPartContainer potentialParent) {
+    private boolean isChildOf(IIpsObjectPartContainer potentialChild, IIpsObjectPartContainer potentialParent) {
         if (potentialChild == null) {
             return false;
         }
@@ -227,10 +263,15 @@ public class ContentChangeEvent {
     }
 
     public boolean isPropertyAffected(String propertyName) {
-        if (propertyChangeEvent == null || propertyName == null) {
+        if (propertyChangeEvents == null || propertyName == null) {
             return false;
         }
-        return propertyName.equals(propertyChangeEvent.getPropertyName());
+        for (PropertyChangeEvent propertyChangeEvent : propertyChangeEvents) {
+            if (propertyName.equals(propertyChangeEvent.getPropertyName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean containsAffectedObjects(Class<?> type) {
@@ -256,8 +297,42 @@ public class ContentChangeEvent {
         return "ContentChangeEvent for " + ipsSrcFile; //$NON-NLS-1$
     }
 
+    /**
+     * Returns the property change event which was the trigger of this event.
+     * 
+     * @return The underlying property change event, may be <code>null</code>
+     * @deprecated Since 3.16 a {@link ContentChangeEvent} may have multiple underlying change
+     *             events. Use {@link #getFirstPropertyChangeEvent()} or
+     *             {@link #getPropertyChangeEvents()}
+     */
+    @Deprecated
     public PropertyChangeEvent getPropertyChangeEvent() {
-        return propertyChangeEvent;
+        return getFirstPropertyChangeEvent();
+    }
+
+    /**
+     * Returns the first property change event which was the trigger of this event.
+     * 
+     * @return the first underlying {@link PropertyChangeEvent}
+     * 
+     * @see #getPropertyChangeEvents()
+     */
+    public PropertyChangeEvent getFirstPropertyChangeEvent() {
+        if (propertyChangeEvents.isEmpty()) {
+            return null;
+        } else {
+            return propertyChangeEvents.iterator().next();
+        }
+    }
+
+    /**
+     * Returns the underlying {@link PropertyChangeEvent events} that have triggered this
+     * {@link ContentChangeEvent}
+     * 
+     * @return A set of underlying {@link PropertyChangeEvent events}
+     */
+    public Set<PropertyChangeEvent> getPropertyChangeEvents() {
+        return Collections.unmodifiableSet(propertyChangeEvents);
     }
 
 }

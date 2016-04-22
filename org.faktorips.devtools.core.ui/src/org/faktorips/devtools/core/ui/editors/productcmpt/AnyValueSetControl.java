@@ -61,7 +61,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
     private boolean dirty;
 
     /** true if the value set can be edited, false if it read-only. */
-    private boolean dataChangeable;
+    private boolean dataChangeable = true;
 
     /**
      * Provider for source and target enum value set.
@@ -106,7 +106,7 @@ public class AnyValueSetControl extends TextButtonControl implements IDataChange
         }
     }
 
-    private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) throws CoreException {
+    private ValueDatatype getValueDatatype(IPolicyCmptTypeAttribute attribute) {
         ValueDatatype datatype = null;
         if (attribute != null) {
             datatype = attribute.findDatatype(getIpsProject());

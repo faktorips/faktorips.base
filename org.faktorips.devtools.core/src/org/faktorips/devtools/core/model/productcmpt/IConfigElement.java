@@ -191,10 +191,9 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
      * 
      * @param ipsProject The IPS project which IPS object path is used to search.
      * 
-     * @throws CoreException if an error occurs while searching.
      */
     @Override
-    public ValueDatatype findValueDatatype(IIpsProject ipsProject) throws CoreException;
+    public ValueDatatype findValueDatatype(IIpsProject ipsProject);
 
     /**
      * Creates a copy of the given value set and applies this copy to this configuration element.
@@ -203,4 +202,12 @@ public interface IConfigElement extends IPropertyValue, IValueSetOwner, IDescrib
 
     void setValueSet(IValueSet source);
 
+    /**
+     * Overrides {@link IPropertyValue#findTemplateProperty(IIpsProject)} to return co-variant
+     * {@code IConfigElement}.
+     * 
+     * @see IPropertyValue#findTemplateProperty(IIpsProject)
+     */
+    @Override
+    public IConfigElement findTemplateProperty(IIpsProject ipsProject);
 }

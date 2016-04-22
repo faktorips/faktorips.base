@@ -6,7 +6,8 @@ Bundle-Version: 3.17.0.qualifier
 Fragment-Host: org.faktorips.fl;bundle-version="0.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: Faktor Zehn AG
-Require-Bundle: org.mockito.mockito-all;bundle-version="1.8.5"
+Require-Bundle: org.hamcrest.core;bundle-version="1.3.0", 
+ org.mockito.mockito-all;bundle-version="1.8.5"
 Import-Package: org.junit;version="4.5.0",
  org.junit.matchers;version="4.5.0",
  org.junit.runner;version="4.5.0"

@@ -29,10 +29,10 @@ public class DefaultRange<T extends Comparable<? super T>> implements Range<T> {
 
     private static final long serialVersionUID = -2886828952622682290L;
 
-    private T lowerBound;
-    private T upperBound;
-    private T step;
-    private boolean containsNull = false;
+    private final T lowerBound;
+    private final T upperBound;
+    private final T step;
+    private final boolean containsNull;
 
     /**
      * Creates a new continuous AbstractRange instance that doesn't contain null.

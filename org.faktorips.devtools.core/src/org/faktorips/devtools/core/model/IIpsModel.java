@@ -64,16 +64,22 @@ public interface IIpsModel extends IIpsElement {
      * finished and then broadcasted. If an IPS source file is changed more than once, only one
      * change event is sent.
      * 
+     * Note: To get a busy indicator and progress dialog better call
+     * IpsUIPlugin#runWorkspaceModification
+     * 
      * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
      *      org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor) throws CoreException;
+    public void runAndQueueChangeEvents(IWorkspaceRunnable action, IProgressMonitor monitor);
 
     /**
      * Runs the given runnable/action as an atomic workspace operation like the <code>run</code>
      * method in IWorkspace. All IPS source file change events are queued until the action is
      * finished and then broadcasted. If an IPS source file is change more than one, only one change
      * event is sent.
+     * 
+     * Note: To get a busy indicator and progress dialog better call
+     * IpsUIPlugin#runWorkspaceModification
      * 
      * @see IWorkspace#run(org.eclipse.core.resources.IWorkspaceRunnable,
      *      org.eclipse.core.runtime.jobs.ISchedulingRule, int,
@@ -82,7 +88,7 @@ public interface IIpsModel extends IIpsElement {
     public void runAndQueueChangeEvents(IWorkspaceRunnable action,
             ISchedulingRule rule,
             int flags,
-            IProgressMonitor monitor) throws CoreException;
+            IProgressMonitor monitor);
 
     /**
      * Creates an ID for a new {@link IIpsObjectPart} in an {@link IIpsObjectPartContainer}. The

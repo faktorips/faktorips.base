@@ -12,6 +12,8 @@ package org.faktorips.devtools.core.ui.editors.productcmpt;
 
 import java.util.List;
 
+import com.google.common.base.Function;
+
 import org.eclipse.jface.bindings.keys.KeyStroke;
 import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
@@ -51,10 +53,12 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
 
     @Override
     protected void createEditFields(List<EditField<?>> editFields) {
-        createExpressionEditField(editFields);
+        EditField<?> editField = createExpressionEditField();
+        createTemplateStatusButton(editField);
+        editFields.add(editField);
     }
 
-    private void createExpressionEditField(List<EditField<?>> editFields) {
+    private TextButtonField createExpressionEditField() {
         FormulaEditControl formulaEditControl = new FormulaEditControl(this, getToolkit(), getPropertyValue(),
                 getShell(), getProductCmptPropertySection());
         KeyStroke keyStroke = null;
@@ -72,9 +76,14 @@ public class FormulaEditComposite extends EditPropertyValueComposite<IProductCmp
         contentProposalAdapter.addContentProposalListener(contentProposalListener);
 
         TextButtonField editField = new TextButtonField(formulaEditControl);
-        editFields.add(editField);
         getBindingContext().bindContent(editField, getPropertyValue(), IFormula.PROPERTY_EXPRESSION);
         addChangingOverTimeDecorationIfRequired(editField);
+        return editField;
+    }
+
+    @Override
+    protected Function<IFormula, String> getToolTipFormatter() {
+        return PropertyValueFormatter.FORMULA;
     }
 
     @Override

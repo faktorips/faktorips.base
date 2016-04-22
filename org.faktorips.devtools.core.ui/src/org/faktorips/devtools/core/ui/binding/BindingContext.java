@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.google.common.base.Predicate;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -97,7 +99,7 @@ public class BindingContext {
      * listener for changes and focus losts. Instance of an inner class is used to avoid poluting
      * this class' interface.
      */
-    private final Listener listener = new Listener();
+    private final Listener listener;
 
     /** list of mappings between edit fields and properties of model objects. */
     private final List<FieldPropertyMapping<?>> mappings = new CopyOnWriteArrayList<FieldPropertyMapping<?>>();
@@ -113,6 +115,17 @@ public class BindingContext {
     private final List<ControlPropertyBinding> controlBindings = new CopyOnWriteArrayList<ControlPropertyBinding>();
 
     private final Set<String> ignoredMessageCodes = new HashSet<String>(2);
+
+    public BindingContext() {
+        this.listener = new Listener();
+    }
+
+    /**
+     * Constructor for tests
+     */
+    protected BindingContext(Listener listener) {
+        this.listener = listener;
+    }
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
@@ -433,6 +446,23 @@ public class BindingContext {
     }
 
     /**
+     * Binds the control's enabled property to the given part container's property. Uses a
+     * {@link Predicate} to check whether the control should be enabled or disabled
+     * 
+     * @param control The control which enabled property is bound
+     * @param object The object the control is bound to
+     * @param property The name of the object's property the control is bound to.
+     * @param enabledPredicate A predicate that gets the property from the object and returns
+     *            <code>true</code> if the control should be enabled.
+     * 
+     * @throws IllegalArgumentException if the object's property is not of type boolean.
+     * @throws NullPointerException if any argument is <code>null</code>.
+     */
+    public void bindEnabled(Control control, Object object, String property, Predicate<Object> enabledPredicate) {
+        add(new EnableBinding(control, object, property, enabledPredicate));
+    }
+
+    /**
      * Binds the control's visible property to the given part container's property.
      * 
      * @param excludeWhenInvisible if true, the {@link org.eclipse.swt.layout.GridData#exclude
@@ -709,7 +739,7 @@ public class BindingContext {
                     binding.updateUI(propertyName);
                 }
             } catch (Exception e) {
-                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding)); //$NON-NLS-1$
+                IpsPlugin.log(new IpsStatus("Error updating ui with control binding " + binding, e)); //$NON-NLS-1$
             }
         }
     }
@@ -806,7 +836,8 @@ public class BindingContext {
 
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
-    class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener, PropertyChangeListener {
+    protected class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener,
+            PropertyChangeListener {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
@@ -834,7 +865,8 @@ public class BindingContext {
         }
 
         @Override
-        public void contentsChanged(ContentChangeEvent event) {
+        public void contentsChanged(final ContentChangeEvent event) {
+            // No need of running in Display Thread because the IpsModel already handles it
             for (FieldPropertyMapping<?> mapping : mappings) {
                 IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
                 if (mappedPart != null) {

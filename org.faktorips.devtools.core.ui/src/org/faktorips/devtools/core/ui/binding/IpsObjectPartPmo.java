@@ -51,6 +51,7 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
     public void setIpsObjectPartContainer(IIpsObjectPartContainer part) {
         IIpsObjectPartContainer oldValue = this.part;
         this.part = part;
+        partHasChanged();
         notifyListeners(new PropertyChangeEvent(this, PROPERTY_IPS_OBJECT_PART_CONTAINER, oldValue, part));
     }
 
@@ -69,10 +70,30 @@ public class IpsObjectPartPmo extends ValidatablePMO implements ContentsChangeLi
 
     @Override
     public void contentsChanged(ContentChangeEvent event) {
-        if (event.isAffected(part)) {
+        if (isAffected(event)) {
             partHasChanged();
-            notifyListeners(event.getPropertyChangeEvent());
+            if (event.getPropertyChangeEvents().isEmpty()) {
+                notifyListeners(new PropertyChangeEvent(event.getIpsSrcFile(), null, null, null));
+            } else {
+                for (PropertyChangeEvent changeEvent : event.getPropertyChangeEvents()) {
+                    notifyListeners(changeEvent);
+                }
+            }
         }
+    }
+
+    /**
+     * The default implementation uses the standard behavior
+     * {@link ContentChangeEvent#isAffected(IIpsObjectPartContainer)}. Subclasses may override to
+     * behave differently to certain events.
+     * 
+     * @param event the change event sent by the IPS model
+     * @return <code>true</code> if this PMO is affected by the event. Listeners are notified and
+     *         {@link #partHasChanged()} is called in that case. <code>false</code> if the PMO is
+     *         unaffected.
+     */
+    protected boolean isAffected(ContentChangeEvent event) {
+        return event.isAffected(part);
     }
 
     protected void partHasChanged() {
