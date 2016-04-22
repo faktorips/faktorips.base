@@ -17,12 +17,16 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.IWizardPage;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.faktorips.devtools.core.IpsPlugin;
+import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
@@ -54,6 +58,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     private ImportPreviewPage tablePreviewPage;
 
     public EnumImportWizard() {
+        super();
         setWindowTitle(Messages.EnumImportWizard_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/EnumImportWizard.png")); //$NON-NLS-1$
@@ -62,12 +67,12 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     @Override
     public void addPages() {
         try {
-            startingPage = new SelectFileAndImportMethodPage(null);
-            startingPage.setImportIntoExisting(importIntoExisting);
-            newEnumContentPage = new EnumContentPage(selection);
-            selectContentsPage = new SelectEnumPage(selection);
+            setIpsOIWStartingPage(new SelectFileAndImportMethodPage(null));
+            getIpsOIWStartingPage().setImportIntoExisting(isImportIntoExisting());
+            newEnumContentPage = new EnumContentPage(getSelection());
+            selectContentsPage = new SelectEnumPage(getSelection());
 
-            addPage(startingPage);
+            addPage(getIpsOIWStartingPage());
             addPage(newEnumContentPage);
             addPage(selectContentsPage);
 
@@ -79,6 +84,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
     @Override
     public IWizardPage getNextPage(IWizardPage page) {
         saveDataToWizard();
+        SelectFileAndImportMethodPage startingPage = (SelectFileAndImportMethodPage)getIpsOIWStartingPage();
         if (page == startingPage) {
             /*
              * Set the completed state on the opposite page to true so that the wizard can finish
@@ -155,9 +161,12 @@ public class EnumImportWizard extends IpsObjectImportWizard {
 
     @Override
     public boolean performFinish() {
+        final SelectFileAndImportMethodPage startingPage = (SelectFileAndImportMethodPage)getIpsOIWStartingPage();
         final ITableFormat format = startingPage.getFormat();
+        int enumCount = 0;
         try {
             final IEnumValueContainer enumTypeOrContent = getEnumValueContainer();
+            enumCount = enumTypeOrContent.getEnumValuesCount();
             if (startingPage.isImportExistingReplace()) {
                 enumTypeOrContent.clear();
             }
@@ -183,10 +192,42 @@ public class EnumImportWizard extends IpsObjectImportWizard {
             IpsUIPlugin.getDefault().openEditor(enumTypeOrContent.getIpsSrcFile());
         } catch (CoreException e) {
             IpsPlugin.logAndShowErrorDialog(e);
+        } finally {
+            // save the dialog settings
+            if (isHasNewDialogSettings()) {
+                IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+                IDialogSettings settings = workbenchSettings.addNewSection(getDialogSettingsKey());
+                setDialogSettings(settings);
+            }
+            selectContentsPage.saveWidgetValues();
+            startingPage.saveWidgetValues();
         }
+        enumCount = calculateEnumCount(enumCount);
+        MessageDialog.openInformation(getShell(), Messages.EnumImportWizard_EnumImportControlTitle,
+                NLS.bind(Messages.EnumImportWizard_EnumImportControlBody, enumCount));
 
         // Don't keep wizard open.
         return true;
+    }
+
+    private int calculateEnumCount(int oldEnumCount) {
+        if (newEnumContentPage.getCreatedEnumContent() != null) {
+            return newEnumContentPage.getCreatedEnumContent().getEnumValuesCount();
+        } else {
+            if (getIpsOIWStartingPage().isImportExistingAppend()) {
+                return getEnumCountNewTable() - oldEnumCount;
+            } else {
+                return getEnumCountNewTable();
+            }
+        }
+    }
+
+    private int getEnumCountNewTable() {
+        try {
+            return getEnumValueContainer().getEnumValuesCount();
+        } catch (CoreException e) {
+            throw new CoreRuntimeException(e);
+        }
     }
 
     /**
@@ -194,7 +235,7 @@ public class EnumImportWizard extends IpsObjectImportWizard {
      */
     private IEnumType getEnumType() {
         try {
-            if (startingPage.isImportIntoExisting()) {
+            if (getIpsOIWStartingPage().isImportIntoExisting()) {
                 IEnumValueContainer enumValueContainer = (IEnumValueContainer)selectContentsPage.getTargetForImport();
                 IIpsProject ipsProject = enumValueContainer.getIpsProject();
                 if (ipsProject != null) {
@@ -213,12 +254,17 @@ public class EnumImportWizard extends IpsObjectImportWizard {
      * Returns the enumeration type or enumeration content as a target for import.
      */
     private IEnumValueContainer getEnumValueContainer() throws CoreException {
-        if (startingPage.isImportIntoExisting()) {
+        if (getIpsOIWStartingPage().isImportIntoExisting()) {
             return (IEnumValueContainer)selectContentsPage.getTargetForImport();
         }
         IIpsSrcFile ipsSrcFile = newEnumContentPage.createIpsSrcFile(new NullProgressMonitor());
         newEnumContentPage.finishIpsObjects(ipsSrcFile.getIpsObject(), new HashSet<IIpsObject>());
         return newEnumContentPage.getCreatedEnumContent();
+    }
+
+    @Override
+    protected String getDialogSettingsKey() {
+        return DIALOG_SETTINGS_KEY;
     }
 
 }

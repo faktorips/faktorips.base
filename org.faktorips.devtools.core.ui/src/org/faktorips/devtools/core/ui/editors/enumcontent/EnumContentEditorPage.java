@@ -10,12 +10,21 @@
 
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.faktorips.devtools.core.internal.model.enums.EnumValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
@@ -25,7 +34,9 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
  * The <tt>EnumContentEditorPage</tt> shows general information about an <tt>IEnumContent</tt> and
@@ -44,6 +55,9 @@ import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
  */
 public class EnumContentEditorPage extends IpsObjectEditorPage implements ContentsChangeListener {
 
+    /** Values section showing the <tt>IEnumValue</tt>s. */
+    private EnumValuesSection enumValuesSection;
+
     /**
      * The <tt>IEnumContent</tt> the <tt>EnumContentEditor</tt> this page belongs to is currently
      * editing.
@@ -57,8 +71,7 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
 
     private EnumImportExportActionInEditor exportAction;
 
-    /** Values section showing the <tt>IEnumValue</tt>s. */
-    private EnumValuesSection enumValuesSection;
+    private SelectionStatusBarPublisher selectionStatusBarPublisher;
 
     /**
      * Creates a new <tt>EnumContentEditorPage</tt>.
@@ -89,6 +102,27 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+
+        selectionStatusBarPublisher = new SelectionStatusBarPublisher(getEditorSite());
+
+        TableViewer tab = enumValuesSection.getEnumValueTableViewer();
+        tab.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
+            }
+        });
+    }
+
+    private List<Integer> rowsFromSelection(ISelection selection) {
+        List<Integer> rowNumbers = new ArrayList<Integer>();
+        if (!selection.isEmpty()) {
+            Collection<EnumValue> rows = TypedSelection.createAnyCount(EnumValue.class, selection).getElements();
+            for (EnumValue row : rows) {
+                rowNumbers.add(row.getEnumValueContainer().getIndexOfEnumValue(row));
+            }
+        }
+        return rowNumbers;
     }
 
     private void createToolbarActions() {
@@ -177,7 +211,5 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
                 enumValuesSection.refresh();
             }
         }
-
     }
-
 }

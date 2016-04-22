@@ -172,7 +172,7 @@ public class ImportPreviewPage extends WizardPage implements ValueChangeListener
 
         handleNumberOfTableColumnsChanged();
 
-        String nullRepresentation = ((IpsObjectImportWizard)getWizard()).nullRepresentation;
+        String nullRepresentation = ((IpsObjectImportWizard)getWizard()).getNullRepresentation();
         List<String[]> preview = Collections.emptyList();
         if (structure instanceof ITableStructure) {
             preview = tableFormat.getImportTablePreview((ITableStructure)structure, new Path(filename),

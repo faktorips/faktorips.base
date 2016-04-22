@@ -26,6 +26,8 @@ public class Messages extends NLS {
 
     public static String TableImport_title;
     public static String TableImportWizard_operationName;
+    public static String TableImportWizard_tableImportControlBody;
+    public static String TableImportWizard_tableImportControlTitle;
     public static String SelectTableContentsPage_title;
     public static String SelectTableContentsPage_labelContents;
     public static String SelectTableContentsPage_msgMissingContent;

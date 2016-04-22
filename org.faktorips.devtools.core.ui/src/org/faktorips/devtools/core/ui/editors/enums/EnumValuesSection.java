@@ -146,7 +146,9 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
     /** Action to reset all literal names to the values of their respective default providers. */
     private IAction resetLiteralNamesAction;
 
-    /** Flag indicating whether the 'Lock and Synchronize Literal Names' option is currently active. */
+    /**
+     * Flag indicating whether the 'Lock and Synchronize Literal Names' option is currently active.
+     */
     private boolean lockAndSynchronizeLiteralNames;
 
     /**
@@ -170,7 +172,6 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      */
     public EnumValuesSection(final IEnumValueContainer enumValueContainer, Composite parent, UIToolkit toolkit)
             throws CoreException {
-
         super(enumValueContainer, parent, ExpandableComposite.TITLE_BAR, GridData.FILL_BOTH, toolkit);
         ArgumentCheck.notNull(enumValueContainer);
 
@@ -313,7 +314,7 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
      * 
      * @param datatype the datatype to set the correct column style. If data type is null, the
      *            default style configured by the {@link DefaultControlFactory} is used.
-     * */
+     */
     private EnumValueTraversalStrategy addTableColumn(String columnName,
             ValueDatatype datatype,
             boolean identifierColumnn,
@@ -613,6 +614,10 @@ public class EnumValuesSection extends IpsObjectPartContainerSection implements 
             literalValue = ipsProject.getJavaNamingConvention().getEnumLiteral(newValue);
         }
         literalNameAttributeValue.setValue(ValueFactory.createStringValue(literalValue));
+    }
+
+    public TableViewer getEnumValueTableViewer() {
+        return enumValuesTableViewer;
     }
 
     private static class EnumValueTraversalStrategy extends LinkedColumnsTraversalStrategy<IEnumValue> {
