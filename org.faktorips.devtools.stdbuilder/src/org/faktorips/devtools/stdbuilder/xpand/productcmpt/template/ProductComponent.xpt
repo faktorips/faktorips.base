@@ -4,6 +4,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -22,6 +23,7 @@
 		 * «getAnnotations(AnnotatedJavaElementType::ELEMENT_JAVA_DOC)»
 		 * @generated
 		 */
+		«getAnnotations(AnnotatedJavaElementType::PRODUCT_CMPT_IMPL_CLASS)-»
 		public «abstract()» class «implClassName» extends «superclassName-» «EXPAND CommonDefinitions::implementedInterfaces-»
 		 {
 		 
@@ -159,6 +161,13 @@
 		    
 		    «IF associations.size > 0-»
 				«EXPAND ProductAssociation::getLinkMethods»
+			«ENDIF-»
+			
+			«IF generateProductBuilder && !abstract-»
+				«EXPAND ProductCmptCreateBuilder::builder FOR productBuilderModelNode-»
+				«IF !generatePublishedInterfaces-»
+					«EXPAND ProductCmptCreateBuilder::with(true) FOR productBuilderModelNode-»
+				«ENDIF-»
 			«ENDIF-»
 		}
 	«ENDFILE»

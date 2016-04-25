@@ -203,6 +203,15 @@ public class StandardBuilderSet extends DefaultBuilderSet {
      */
     public static final String CONFIG_PROPERTY_ADDITIONAL_ANNOTATIONS = "additionalAnnotations"; //$NON-NLS-1$
 
+    /**
+     * Configuration property that defines whether and which builder classes should be generated.
+     */
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR = "builderClasses";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_NONE = "None";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_ALL = "All";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_POLICY = "Policies only";
+    public static final String CONFIG_PROPERTY_BUILDER_GENERATOR_PRODUCT = "Products only";
+
     private static final String EXTENSION_POINT_ARTEFACT_BUILDER_FACTORY = "artefactBuilderFactory";
 
     private ModelService modelService;

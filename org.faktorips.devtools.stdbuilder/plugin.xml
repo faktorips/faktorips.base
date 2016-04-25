@@ -195,6 +195,28 @@
                </value>
             </discreteValues>
          </builderSetPropertyDef>
+         <builderSetPropertyDef
+               defaultValue="All"
+               description="%builderClasses"
+               disableValue="None"
+               label="Generate builder classes"
+               name="builderClasses"
+               type="enum">
+            <discreteValues>
+               <value
+                     value="Policies only">
+               </value>
+               <value
+                     value="Products only">
+               </value>
+               <value
+                     value="All">
+               </value>
+               <value
+                     value="None">
+               </value>
+            </discreteValues>
+         </builderSetPropertyDef>
       </builderSet>
    </extension>
    <extension
@@ -228,6 +250,18 @@
             id="org.faktorips.devtools.stdbuilder.pullUpParticipant"
             name="StdBuilderPullUpParticipant">
       </pullUpParticipant>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.stdbuilder.artefactBuilderFactory">
+      <artefactBuilderFactory
+            class="org.faktorips.devtools.stdbuilder.xpand.policycmptbuilder.PolicyBuilderFactory">
+      </artefactBuilderFactory>
+   </extension>
+   <extension
+         point="org.faktorips.devtools.stdbuilder.artefactBuilderFactory">
+      <artefactBuilderFactory
+            class="org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.ProductBuilderFactory">
+      </artefactBuilderFactory>
    </extension>
 
 </plugin>

@@ -1,0 +1,343 @@
+«IMPORT org::faktorips::devtools::core::builder::naming»
+«IMPORT org::faktorips::devtools::stdbuilder»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::template»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template»
+
+«EXTENSION org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template::ProductBuilderNames»
+
+«DEFINE main FOR XProductBuilder»
+	«FILE getFileName(BuilderAspect::IMPLEMENTATION)-»
+		package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
+		«EXPAND CommonDefinitions::ImportBlock FOREACH context.imports ONFILECLOSE»
+
+		/**
+		* «localizedJDoc("CLASS",implClassName,productName)»
+		*
+		* @generated
+		*/
+		public «EXPAND abstract» class «implClassName» «EXPAND extendSuperclass»{
+			«EXPAND variableDeclaration-»
+			
+			«EXPAND constructors-»
+			
+			«EXPAND attributeSetter(this) FOREACH attributes»
+			«IF hasSupertype()-»
+				«EXPAND superAttributeSetter(this) FOREACH superAttributes»				
+			«ENDIF-»
+			
+			«IF changingOverTime && !abstract-»
+				«EXPAND anpSetter»
+			«ENDIF-»
+			
+			«EXPAND getBuilderValue-»
+			
+			«EXPAND getProductClass-»
+			
+			«IF !abstract-»
+				«EXPAND from»
+			«ENDIF-»
+			
+			«EXPAND associationClass-»
+			
+			«EXPAND factoryClass-»
+		}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE abstract FOR XProductBuilder-»
+	«IF abstract-» abstract	«ENDIF-»
+«ENDDEFINE»
+
+«DEFINE extendSuperclass FOR XProductBuilder-»
+	«IF hasSupertype()-»
+		extends «supertype.implClassName-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM»
+	The method generates variables that are needed in this class. They are:
+	1. The InMemoryRuntimeRepository, which is needed to add changes to the product class durring Runtime.
+	2. The product that is actually built by the class. 
+	In case the product is chaning over time, a field is also generated to store a generation to edit.	
+	
+	Note that if a product has a generation, the supertype also has generation.
+«ENDREM»
+«DEFINE variableDeclaration FOR XProductBuilder»
+	«IF !hasSupertype()-»
+		/**
+		* @generated
+		*/
+		private final «InMemoryRuntimeRepository()» runtimeRepository;
+		
+		/**
+		* @generated
+		*/
+		private final «productImplClassName» «field(productFieldName)»;
+		
+		«IF changingOverTime-»
+			/**
+			* @generated
+			*/
+			private «prodGenImplClassName» «field(prodGenFieldName)»;
+			
+			/**
+			* @generated
+			*/
+			protected void «methodNameSetGeneration»(«prodGenImplClassName» currentGeneration){
+				this.«prodGenFieldName» = currentGeneration;
+			}
+		«ENDIF-»
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM» Internal constructors 
+	The constructor needs a product and InMemeryRuntimeReopsitory, both should not be null. 
+«ENDREM»
+«DEFINE constructors FOR XProductBuilder»
+	/**
+	* «localizedJDoc("CONSTRUCTOR_INTERNAL", implClassName)»
+	*
+	* @generated
+	*/
+	«IF changingOverTime-»
+		protected «method(implClassName, productImplClassName, "product", InMemoryRuntimeRepository(), "runtimeRepository", prodGenImplClassName, "currentGeneration")»{
+	«ELSE-»
+		protected «method(implClassName, productImplClassName, "product", InMemoryRuntimeRepository(), "runtimeRepository")»{
+	«ENDIF-»
+		«IF hasSupertype()-»«REM» supertype has to be changing too«ENDREM»
+			super(product, runtimeRepository «IF changingOverTime-», currentGeneration«ENDIF»);
+		«ELSE-»
+			if(product == null ||  runtimeRepository == null){
+				throw new «RuntimeException()»("«localizedText("EXCEPTION_CONSTR_NULL")»");
+			}else{
+				runtimeRepository.«getExistingProductComponent("product.getId()")»;
+			
+				this.runtimeRepository = runtimeRepository;
+				this.«productFieldName» = product;
+				«IF changingOverTime» this.«prodGenFieldName» = currentGeneration;«ENDIF-»
+			}
+		«ENDIF-»
+		}
+«ENDDEFINE»
+
+«DEFINE attributeSetter(XProductBuilder builder) FOR XProductAttribute-»
+	/**
+	* «localizedJDoc("METHOD_SETVALUE",name)»
+	*
+	* @generated
+	*/
+	«IF overwrite && !overwrittenAttribute.abstract-» @Override «ENDIF-»
+	public «builder.implClassName» «method(fieldName,javaClassName,fieldName)»{
+		«IF changingOverTime-»
+			«builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
+		«ELSE-»
+			«builder.productFieldName».«methodNameSetter»(«fieldName»);
+		«ENDIF-»
+		return this;
+	}
+«ENDDEFINE»
+
+«REM»
+	Generates setter for attributes of the supertypes that are not overwritten in order to override the return type
+«ENDREM»
+«DEFINE superAttributeSetter(XProductBuilder builder) FOR XProductAttribute-»
+	/**
+	* «localizedJDoc("METHOD_SETVALUE",name)»
+	*
+	* @generated
+	*/
+	@Override
+	public «builder.implClassName» «method(fieldName,javaClassName,fieldName)-»{
+		«IF changingOverTime-»
+			«builder.prodGenFieldName».«methodNameSetter»(«fieldName»);
+		«ELSE-»
+			«builder.productFieldName».«methodNameSetter»(«fieldName»);
+		«ENDIF-»
+		return this;
+	}
+«ENDDEFINE»
+
+«REM» creates/gets generation builder
+	- look for the valid generation to given date
+	  * found and validFrom same as given date -> replace if not the same is already stored
+	  * else -> create a new one with the given validFrom date 
+«ENDREM»
+«DEFINE anpSetter FOR XProductBuilder»
+	/**
+	* «localizedJDoc("METHOD_ANP_SETTER", productName)»
+	*
+	* @generated
+	*/
+	«IF needOverrideForProductGenSetter-»@Override«ENDIF-»
+	public «implClassName» «methodNameGeneration»(int year, int month, int day){
+		«DateTime()» genDate= new «DateTime()»(year, month, day);
+		«prodGenImplClassName» generation = («prodGenImplClassName») «getRepository()»
+				.«getProductCmptGeneration(productFieldName + ".getId()", "genDate.toGregorianCalendar(" + TimeZone() + ".getDefault())")»;
+		
+		if (generation == null || !genDate.equals(generation.getValidFrom())) {
+			generation = new «prodGenImplClassName»(«productFieldName»);
+			generation.«setValidFrom("new " + DateTime() +"(year, month, day)")»;
+			«IF hasSupertype()-»
+				super.«getRepository()».«putProductCmptGeneration("generation")»;
+			«ELSE-»
+				runtimeRepository.«putProductCmptGeneration("generation")»;
+			«ENDIF»
+		}
+		«methodNameSetGeneration»(generation);
+		return this;
+	}
+	
+	/**
+	* «localizedJDoc("METHOD_LATEST_GEN")»
+	*
+	* @generated
+	*/
+	«IF needOverrideForProductGenSetter-»@Override«ENDIF-»
+	public «implClassName» «methodNameSetLatestGeneration»() {
+		«methodNameSetGeneration»((«prodGenImplClassName») «getRepository()»
+			.«getLatestProductComponentGeneration("get()")»);
+	
+		«REM»Nullpointer exception earlier in getLaterstProductComponentGeneration, if no such generation exists....«ENDREM-»
+		return this;	
+	}
+«ENDDEFINE»
+
+«DEFINE getBuilderValue FOR XProductBuilder-»
+	«IF !hasSupertype()-»
+		/**
+		* «localizedJDoc("METHOD_GET_RUNTIMEREPOSITORY")»
+		* 
+		* @generated
+		*/
+		public «InMemoryRuntimeRepository()» «getRepository()» {
+			return this.runtimeRepository;
+		}
+	«ENDIF»
+	
+	/**
+	* «localizedJDoc("METHOD_GET_VALUE", productName)»
+	*
+	* @generated
+	*/			
+	«IF hasSupertype()-»@Override«ENDIF-»
+	public «productPublishedInterfaceName» get() {
+		«IF hasSupertype()-»
+			return («productPublishedInterfaceName») super.get();
+		«ELSE-»
+			return «productFieldName»;
+		«ENDIF»
+	}
+	
+	«IF changingOverTime-»
+		/**
+		* «localizedJDoc("METHOD_GET_GENERATION", prodGenImplClassName)»
+		*
+		* @generated
+		*/			
+		«IF hasSupertype()-»@Override«ENDIF-»
+		public «prodGenPublishedInterfaceName» getCurrentGeneration() {
+			«IF hasSupertype()-»
+				return («prodGenPublishedInterfaceName») super.getCurrentGeneration();
+			«ELSE-»
+				return «prodGenFieldName»;
+			«ENDIF»
+		}
+		
+		/**
+		* «localizedJDoc("METHOD_GET_LATEST_GEN", prodGenImplClassName)»
+		*
+		* @generated
+		*/
+		«IF hasSupertype()-»@Override«ENDIF-»
+		public «prodGenPublishedInterfaceName» «methodNameGetLatestGeneration»() {
+			«IF hasSupertype()-»
+				return («prodGenPublishedInterfaceName») super.«methodNameGetLatestGeneration»();
+			«ELSE-»
+				return («prodGenPublishedInterfaceName») runtimeRepository.«getLatestProductComponentGeneration(productFieldName)»;
+			«ENDIF»
+		}
+	«ENDIF-»
+«ENDDEFINE»
+
+«REM»internal method used for association setter with generic type  if no interfaces are generated. BUILD has then to be called from the product class«ENDREM»
+«DEFINE getProductClass FOR XProductBuilder-»
+	/**
+	* «localizedJDoc("METHOD_GET_CLASS")»
+	*
+	* @generated
+	*/
+	public static Class<?> getProductClass() {
+		return «productImplClassName».class;
+	}
+«ENDDEFINE»
+
+«REM»A static method to create builder from a product instance.«ENDREM»
+«DEFINE from FOR XProductBuilder»	
+	«IF changingOverTime-»
+		/**
+		* «localizedJDoc("METHOD_FROM_REPO_CHANGING", name, productName)»
+		*
+		* @generated
+		*/
+		public static «implClassName» «from()»(«productPublishedInterfaceName» product, «InMemoryRuntimeRepository()» runtimeRepository, «prodGenImplClassName» currentGeneration) {
+			return new «implClassName»(«castToImplementation(productImplClassName)» product, runtimeRepository, currentGeneration);
+		}
+	«ENDIF-»
+	
+	/**
+	* «localizedJDoc("METHOD_FROM_REPO", name, productName)»
+	«IF changingOverTime-» * «localizedJDoc("METHOD_FROM_REPO_CHANGING_LATEST")» «ENDIF-»
+	*
+	* @generated
+	*/
+	public static «implClassName» «from()»(«productPublishedInterfaceName» product, «InMemoryRuntimeRepository()» runtimeRepository) {
+		«IF changingOverTime-»
+			return new «implClassName»(«castToImplementation(productImplClassName)»product, runtimeRepository, («prodGenImplClassName») runtimeRepository.«getLatestProductComponentGeneration("product")»);
+		«ELSE-»
+			return new «implClassName»(«castToImplementation(productImplClassName)»product, runtimeRepository);
+		«ENDIF»
+	}
+«ENDDEFINE»
+
+«DEFINE associationClass FOR XProductBuilder»
+	«IF builderAssociations.size > 0-»
+		/**
+		* «localizedJDoc("METHOD_ASSOCIATION")»
+		*
+		* @generated
+		*/
+		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
+		public AssociationBuilder association(){
+			return new AssociationBuilder(this);
+		}
+	«ENDIF»
+
+	«IF builderAssociations.size > 0 || superBuilderAssociations.size > 0 -»
+		/**
+		* «localizedJDoc("METHOD_ASSOCIATIONS")»
+		*
+		* @generated
+		*/
+		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
+		public AssociationsBuilder associations(){
+			return new AssociationsBuilder(this);	
+		}
+	«ENDIF»
+	«EXPAND ProductAssociationBuilder::main-»
+«ENDDEFINE» 
+
+«DEFINE factoryClass FOR XProductBuilder»
+	«IF !abstract && generatePublishedInterfaces-»
+		/**
+		* «localizedJDoc("CLASS_FACTORY", name)»
+		*
+		* @generated
+		*/
+		public static class Factory {
+			«EXPAND ProductCmptCreateBuilder::with(false)-»	
+		}
+	«ENDIF-»
+«ENDDEFINE»

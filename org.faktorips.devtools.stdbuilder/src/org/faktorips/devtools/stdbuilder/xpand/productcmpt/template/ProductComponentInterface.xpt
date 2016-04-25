@@ -4,6 +4,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -23,6 +24,12 @@
 			extends «FOREACH extendedInterfaces AS interface SEPARATOR ","»«interface»«ENDFOREACH»
 		«ENDIF-»
 		 {
+		 	«IF generateProductBuilder && !abstract-»
+				/**
+				* @generated
+				*/
+				public final static «productBuilderModelNode.factoryImplClassName» BUILD = new «productBuilderModelNode.factoryImplClassName»();	
+			«ENDIF-»
 		 
 		 	«FOREACH attributes AS this-»
 		 		«IF published -»
@@ -68,6 +75,10 @@
 			«IF configurationForPolicyCmptType»
 				«EXPAND ProductComponent::createPolicyCmpt(this) FOR policyCmptClass»
 			«ENDIF»
+			
+			«IF generateProductBuilder && !abstract-»
+				«EXPAND ProductCmptCreateBuilder::builder FOR productBuilderModelNode-»
+			«ENDIF-»
 
 		 }
 	«ENDFILE»

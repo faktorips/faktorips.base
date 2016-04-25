@@ -136,6 +136,15 @@ CardinalityRange(AbstractGeneratorModelNode this) :
 IRuntimeRepository(AbstractGeneratorModelNode this) :
 	addImport(IRuntimeRepository.name);
 	
+InMemoryRuntimeRepository(AbstractGeneratorModelNode this) :
+	addImport(InMemoryRuntimeRepository.name);
+
+DateTime(AbstractGeneratorModelNode this) :
+	addImport(DateTime.name);
+
+TimeZone(AbstractGeneratorModelNode this) :
+	addImport(TimeZone.name);
+	
 IXmlPersistenceSupport(AbstractGeneratorModelNode this) :
 	addImport(IXmlPersistenceSupport.name);
 
@@ -208,3 +217,21 @@ IObjectReferenceStore(AbstractGeneratorModelNode this):
 	
 XmlCallback(AbstractGeneratorModelNode this):
 	addImport(XmlCallback.name);
+	
+BuilderUtil(AbstractGeneratorModelNode this):
+	addImport("org.faktorips.runtime.builder.BuilderUtil");
+	
+Method(AbstractGeneratorModelNode this):
+	addImport("java.lang.reflect.Method");
+
+Constructor(AbstractGeneratorModelNode this):
+	addImport("java.lang.reflect.Constructor");
+
+InvocationTargetException(AbstractGeneratorModelNode this):
+	addImport("java.lang.reflect.InvocationTargetException");
+
+InstantiationException(AbstractGeneratorModelNode this):
+	addImport("java.lang.InstantiationException");
+	
+GregorianCalendar(AbstractGeneratorModelNode this):
+	addImport("java.util.GregorianCalendar");

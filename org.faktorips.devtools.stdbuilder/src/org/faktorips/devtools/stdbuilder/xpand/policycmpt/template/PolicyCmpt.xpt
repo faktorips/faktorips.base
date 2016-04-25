@@ -5,6 +5,7 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::template»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmptbuilder::template»
 
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
@@ -128,6 +129,12 @@ package «getPackageName(BuilderAspect::IMPLEMENTATION)»;
 
 		«EXPAND ValidationRule::validationRuleMethods FOREACH validationRules-»
 		
+		«IF generatePolicyBuilder && !abstract-»
+			«EXPAND PolicyCmptCreateBuilder::builder FOR policyBuilderModelNode-»
+			«IF !generatePublishedInterfaces-»
+				«EXPAND PolicyCmptCreateBuilder::with(true) FOR policyBuilderModelNode-»
+			«ENDIF-»
+		«ENDIF-»
 		}
 	«ENDFILE»
 «ENDDEFINE»

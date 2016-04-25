@@ -17,6 +17,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
 import org.faktorips.devtools.stdbuilder.xpand.model.ModelService;
 import org.faktorips.devtools.stdbuilder.xpand.policycmpt.model.XPolicyAttribute;
+import org.faktorips.devtools.stdbuilder.xpand.productcmptbuilder.model.XProductBuilder;
 import org.faktorips.runtime.IProductComponent;
 import org.faktorips.runtime.internal.ProductComponent;
 
@@ -96,6 +97,10 @@ public class XProductCmptClass extends XProductClass {
      */
     public boolean isChangingOverTime() {
         return getType().isChangingOverTime();
+    }
+
+    public XProductBuilder getProductBuilderModelNode() {
+        return getModelNode(getIpsObjectPartContainer(), XProductBuilder.class);
     }
 
     @Override

@@ -101,6 +101,42 @@ public class XProductAssociation extends XAssociation {
         return prefix + (isOneToMany() ? "_MANY" : "_ONE");
     }
 
+    protected XProductAssociation getSuperAssociationWithSameName() {
+        IProductCmptTypeAssociation superAssociationWithSameName = (IProductCmptTypeAssociation)getAssociation()
+                .findSuperAssociationWithSameName(getIpsProject());
+        if (superAssociationWithSameName != null) {
+            return getModelNode(superAssociationWithSameName, XProductAssociation.class);
+        } else {
+            return null;
+        }
+    }
+
+    public XProductCmptClass getTargetProductCmptClass() {
+        IProductCmptType proCmptType = getAssociation().findTargetProductCmptType(getIpsProject());
+        return getModelNode(proCmptType, XProductCmptClass.class);
+    }
+
+    public boolean isGenerateNewChildMethods() {
+        return isMasterToDetail() && !getTargetProductCmptClass().isAbstract() && !isDerivedUnion();
+    }
+
+    /**
+     * This method checks if any association of the super class has the same name as the given one.
+     * 
+     * @return true if '@Override is needed for the association, false is not.
+     */
+    public boolean isNeedOverrideForConstrainNewChildMethod() {
+        if (isConstrain()) {
+            if (getSuperAssociationWithSameName().isGenerateNewChildMethods()) {
+                return true;
+            } else {
+                return getSuperAssociationWithSameName().isNeedOverrideForConstrainNewChildMethod();
+            }
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Returns true if the changing over time flag of association target product component type is
      * enabled.

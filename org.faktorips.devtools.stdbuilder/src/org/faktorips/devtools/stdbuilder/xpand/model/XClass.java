@@ -70,7 +70,7 @@ public abstract class XClass extends AbstractGeneratorModelNode {
      * of the published interface. Else the name of the implementation class is returned.
      */
     public String getPublishedInterfaceName() {
-        return addImport(getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces())));
+        return getSimpleName(BuilderAspect.getValue(isGeneratePublishedInterfaces()));
     }
 
     /**

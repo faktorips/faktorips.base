@@ -5,6 +5,8 @@
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmpt::model»
 «IMPORT org::faktorips::devtools::stdbuilder::xpand::policycmpt::model»
 
+«IMPORT org::faktorips::devtools::stdbuilder::xpand::productcmptbuilder::template»
+
 «EXTENSION org::faktorips::devtools::stdbuilder::xpand::template::CommonGeneratorExtensions»
 
 «DEFINE main FOR XProductCmptGenerationClass-»
@@ -149,6 +151,10 @@
 			«EXPAND ProductAssociation::getLinkMethods»
 			
 			«EXPAND TableUsages::getterAndSetter FOREACH tables»
+			
+			«REM»«IF generateProductBuilder && !abstract-»
+				«EXPAND ProductCmptGenCreateBuilder::builder FOR productGenBuilderModelNode-»
+			«ENDIF-»«ENDREM»
 	}
 	«ENDFILE»
 «ENDDEFINE»

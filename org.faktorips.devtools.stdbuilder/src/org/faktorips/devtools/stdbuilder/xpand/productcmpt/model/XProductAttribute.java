@@ -69,6 +69,10 @@ public class XProductAttribute extends XAttribute {
         }
     }
 
+    public String addImport() {
+        return addImport(getQualifiedJavaClassName());
+    }
+
     @Override
     public String getJavaClassName() {
         return super.getJavaClassName();

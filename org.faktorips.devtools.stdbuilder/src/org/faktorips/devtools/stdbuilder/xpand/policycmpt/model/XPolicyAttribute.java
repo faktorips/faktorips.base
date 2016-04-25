@@ -498,10 +498,10 @@ public class XPolicyAttribute extends XAttribute {
         JavaCodeFragment javaCodeFragment = new JavaCodeFragment();
         if (enumDatatype.getEnumType().isInextensibleEnum()) {
             javaCodeFragment.appendClassName(Arrays.class).append(".asList(").append(getJavaClassName())
-            .append(".values())");
+                    .append(".values())");
         } else {
             javaCodeFragment.append(repositoryExpression).append(".").append("getEnumValues(")
-            .append(getJavaClassName()).append(".class)");
+                    .append(getJavaClassName()).append(".class)");
         }
         addImport(javaCodeFragment.getImportDeclaration());
         return javaCodeFragment.getSourcecode();

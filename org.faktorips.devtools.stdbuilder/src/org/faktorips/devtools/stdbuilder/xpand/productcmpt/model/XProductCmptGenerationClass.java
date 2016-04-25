@@ -15,7 +15,6 @@ import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import org.faktorips.devtools.core.builder.naming.IJavaClassNameProvider;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.util.QNameUtil;
 import org.faktorips.devtools.stdbuilder.xpand.GeneratorModelContext;
@@ -30,7 +29,7 @@ public class XProductCmptGenerationClass extends XProductClass {
 
     private static final boolean CHANGE_OVER_TIME = true;
 
-    private final IJavaClassNameProvider prodGenJavaClassNameProvider;
+    private final ProductCmptGenJavaClassNameProvider prodGenJavaClassNameProvider;
 
     public XProductCmptGenerationClass(IProductCmptType productCmptType, GeneratorModelContext modelContext,
             ModelService modelService) {
@@ -66,7 +65,7 @@ public class XProductCmptGenerationClass extends XProductClass {
     }
 
     @Override
-    public IJavaClassNameProvider getJavaClassNameProvider() {
+    public ProductCmptGenJavaClassNameProvider getJavaClassNameProvider() {
         return prodGenJavaClassNameProvider;
     }
 
@@ -124,5 +123,4 @@ public class XProductCmptGenerationClass extends XProductClass {
         }
         return changingOverTimeAttributes;
     }
-
 }
