@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptLink;
 import org.faktorips.devtools.core.model.productcmpt.ITemplatedValue;
+import org.faktorips.devtools.core.model.productcmpt.template.TemplateValueStatus;
 import org.faktorips.devtools.core.ui.IDataChangeableReadWriteAccess;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.binding.BindingContext;
@@ -287,6 +288,9 @@ public class CardinalityPanel implements IDataChangeableReadWriteAccess {
 
         @Override
         public void widgetSelected(SelectionEvent e) {
+            for (LinkViewItem linkViewItem : pmo.getLinks()) {
+                linkViewItem.getLink().setTemplateValueStatus(TemplateValueStatus.DEFINED);
+            }
             if (e.getSource() == optional) {
                 pmo.setMinCardinality(0);
                 pmo.setMaxCardinality(1);

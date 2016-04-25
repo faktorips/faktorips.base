@@ -23,7 +23,7 @@ public class TemplateLinkPmo extends AbstractTemplateValuePmo<IProductCmptLink> 
         if (isLinkAvailable()) {
             return TemplateValueUiStatus.mapStatus(getTemplatedProperty());
         } else {
-            return TemplateValueUiStatus.UNDEFINED;
+            return TemplateValueUiStatus.OVERWRITE_EQUAL;
         }
     }
 
