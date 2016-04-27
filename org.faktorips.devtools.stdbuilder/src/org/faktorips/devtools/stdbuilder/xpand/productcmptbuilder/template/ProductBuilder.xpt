@@ -310,7 +310,7 @@
 		* @generated
 		*/
 		«overrideAnnotationIf(hasSuperAssociationBuilder())-»
-		public AssociationBuilder association(){
+		public AssociationBuilder associate(){
 			return new AssociationBuilder(this);
 		}
 	«ENDIF»
