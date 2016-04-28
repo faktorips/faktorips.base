@@ -58,7 +58,7 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     private EnumImportExportActionInEditor exportAction;
 
     /** Values section showing the <tt>IEnumValue</tt>s. */
-    EnumValuesSection enumValuesSection;
+    private EnumValuesSection enumValuesSection;
 
     /**
      * Creates a new <tt>EnumContentEditorPage</tt>.
@@ -153,6 +153,10 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         }
 
         updateToolbarActionsEnabledStates();
+    }
+
+    public EnumValuesSection getEnumValuesSection() {
+        return enumValuesSection;
     }
 
     /** Executes the <tt>EnumImportExportOperation</tt> and refreshes the view. */

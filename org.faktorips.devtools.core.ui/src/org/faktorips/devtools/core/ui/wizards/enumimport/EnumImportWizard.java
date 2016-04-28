@@ -29,7 +29,6 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
-import org.faktorips.devtools.core.ui.controls.EnumRefControl;
 import org.faktorips.devtools.core.ui.editors.enumcontent.EnumContentEditor;
 import org.faktorips.devtools.core.ui.editors.enumtype.EnumTypeEditor;
 import org.faktorips.devtools.core.ui.wizards.ResultDisplayer;
@@ -47,14 +46,12 @@ import org.faktorips.util.message.MessageList;
  */
 public class EnumImportWizard extends IpsObjectImportWizard {
 
-    public final static String ID = "org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"; //$NON-NLS-1$
-    protected final static String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
+    public static final String ID = "org.faktorips.devtools.core.ui.wizards.enumimport.EnumImportWizard"; //$NON-NLS-1$
+    public static final String DIALOG_SETTINGS_KEY = "EnumImportWizard"; //$NON-NLS-1$
 
     private EnumContentPage newEnumContentPage;
     private SelectImportTargetPage selectContentsPage;
     private ImportPreviewPage tablePreviewPage;
-
-    public EnumRefControl enumControl;
 
     public EnumImportWizard() {
         setWindowTitle(Messages.EnumImportWizard_title);

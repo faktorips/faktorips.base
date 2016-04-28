@@ -41,8 +41,8 @@ import org.faktorips.util.message.MessageList;
  */
 public class TableImportWizard extends IpsObjectImportWizard {
 
-    protected final static String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
-    protected final static String DIALOG_SETTINGS_KEY = "TableImportWizard"; //$NON-NLS-1$
+    public static final String ID = "org.faktorips.devtools.core.ui.wizards.tableimport.TableImportWizard"; //$NON-NLS-1$
+    private static final String DIALOG_SETTINGS_KEY_TABLE_IMPORT_WIZARD = "TableImportWizard"; //$NON-NLS-1$
 
     private TableContentsPage newTableContentsPage;
     private SelectTableContentsPage selectContentsPage;
@@ -52,6 +52,7 @@ public class TableImportWizard extends IpsObjectImportWizard {
         setWindowTitle(Messages.TableImport_title);
         setDefaultPageImageDescriptor(IpsUIPlugin.getImageHandling().createImageDescriptor(
                 "wizards/TableImportWizard.png")); //$NON-NLS-1$
+        initializeDialogSettings();
     }
 
     @Override
@@ -172,9 +173,8 @@ public class TableImportWizard extends IpsObjectImportWizard {
             // save the dialog settings
             if (hasNewDialogSettings) {
                 IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
-                IDialogSettings section = workbenchSettings.getSection(DIALOG_SETTINGS_KEY);
-                section = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
-                setDialogSettings(section);
+                IDialogSettings settings = workbenchSettings.addNewSection(DIALOG_SETTINGS_KEY);
+                setDialogSettings(settings);
             }
 
             contents.getIpsObject().getIpsSrcFile().save(true, new NullProgressMonitor());
@@ -194,6 +194,13 @@ public class TableImportWizard extends IpsObjectImportWizard {
         // dialog to close. in either case if an exception arises or not it doesn't make sense to
         // keep the dialog up
         return true;
+    }
+
+    private void initializeDialogSettings() {
+        IDialogSettings workbenchSettings = IpsPlugin.getDefault().getDialogSettings();
+        IDialogSettings settings = workbenchSettings.getSection(DIALOG_SETTINGS_KEY_TABLE_IMPORT_WIZARD);
+        hasNewDialogSettings = (settings == null);
+        setDialogSettings(settings);
     }
 
     /**

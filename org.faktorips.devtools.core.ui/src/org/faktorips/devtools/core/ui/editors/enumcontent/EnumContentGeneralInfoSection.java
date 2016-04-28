@@ -122,8 +122,8 @@ public class EnumContentGeneralInfoSection extends IpsSection {
             MessageList validationMessages = enumContent.validate(ipsProject);
             if (validationMessages.getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_ENUM_TYPE_DOES_NOT_EXIST) != null
                     || validationMessages
-                            .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
-                enumContentEditorPage.enumValuesSection.reinit();
+                    .getMessageByCode(IEnumContent.MSGCODE_ENUM_CONTENT_REFERENCED_ENUM_ATTRIBUTES_COUNT_INVALID) != null) {
+                enumContentEditorPage.getEnumValuesSection().reinit();
             }
         } catch (CoreException e) {
             throw new RuntimeException(e);

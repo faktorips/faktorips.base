@@ -15,6 +15,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.faktorips.datatype.Datatype;
 import org.faktorips.util.message.MessageList;
 import org.junit.Test;
@@ -41,9 +43,33 @@ public class BooleanValueConverterTest {
         assertTrue(Datatype.BOOLEAN.isParsable(value));
         assertTrue(ml.isEmpty());
 
-        value = converter.getIpsValue(new Integer(0), ml);
+        value = converter.getIpsValue("1", ml);
+        assertTrue(Datatype.BOOLEAN.isParsable(value));
+        assertTrue(ml.isEmpty());
+
+        value = converter.getIpsValue("3", ml);
         assertFalse(ml.isEmpty());
-        assertEquals(value, new Integer(0).toString());
+        assertEquals(value, new Integer(3).toString());
+
+        ml.clear();
+
+        value = converter.getIpsValue(new BigDecimal(1), ml);
+        assertTrue(Datatype.BOOLEAN.isParsable(value));
+        assertTrue(ml.isEmpty());
+
+        value = converter.getIpsValue(new Integer(0), ml);
+        assertTrue(Datatype.BOOLEAN.isParsable(value));
+        assertTrue(ml.isEmpty());
+
+        value = converter.getIpsValue(3, ml);
+        assertFalse(ml.isEmpty());
+        assertEquals(value, new Integer(3).toString());
+
+        ml.clear();
+
+        value = converter.getIpsValue(null, ml);
+        assertFalse(ml.isEmpty());
+        assertEquals(value, String.valueOf((Object)null));
     }
 
     @Test

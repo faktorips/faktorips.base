@@ -27,15 +27,25 @@ public class BooleanValueConverter extends AbstractValueConverter {
      */
     @Override
     public String getIpsValue(Object externalDataValue, MessageList messageList) {
-        if (externalDataValue instanceof String) {
-            return Boolean.valueOf((String)externalDataValue).toString();
-        } else if (externalDataValue instanceof Boolean) {
+        if (externalDataValue instanceof Boolean) {
             return ((Boolean)externalDataValue).toString();
+        } else {
+            String dataValue = String.valueOf(externalDataValue);
+            if ("true".equalsIgnoreCase(dataValue) || "1".equalsIgnoreCase(dataValue)) { //$NON-NLS-1$ //$NON-NLS-2$
+                return Boolean.toString(true);
+            } else if ("false".equalsIgnoreCase(dataValue) || "0".equalsIgnoreCase(dataValue)) { //$NON-NLS-1$ //$NON-NLS-2$
+                return Boolean.toString(false);
+            } else {
+                if (externalDataValue != null) {
+                    messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(dataValue,
+                            externalDataValue.getClass().getName(), getSupportedDatatype().getQualifiedName()));
+                } else {
+                    messageList.add(ExtSystemsMessageUtil.createConvertExtToIntLostValueErrorMessage(dataValue,
+                            dataValue));
+                }
+                return dataValue;
+            }
         }
-        messageList.add(ExtSystemsMessageUtil.createConvertExtToIntErrorMessage(
-                "" + externalDataValue, externalDataValue.getClass() //$NON-NLS-1$
-                        .getName(), getSupportedDatatype().getQualifiedName()));
-        return externalDataValue.toString();
     }
 
     @Override
