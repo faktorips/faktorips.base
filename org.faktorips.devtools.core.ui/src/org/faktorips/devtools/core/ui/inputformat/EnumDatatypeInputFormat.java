@@ -28,7 +28,7 @@ public class EnumDatatypeInputFormat extends AbstractInputFormat<String> {
     private final IpsPreferences ipsPreferences;
 
     public EnumDatatypeInputFormat(EnumDatatype enumDatatype, IpsPreferences ipsPreferences) {
-        super(StringUtils.EMPTY, IpsPlugin.getDefault().getIpsPreferences().getDatatypeFormattingLocale());
+        super(StringUtils.EMPTY, ipsPreferences.getDatatypeFormattingLocale());
         this.enumDatatype = enumDatatype;
         this.ipsPreferences = ipsPreferences;
     }

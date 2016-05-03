@@ -29,6 +29,8 @@ import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.exception.CoreRuntimeException;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
+import org.faktorips.devtools.core.model.pctype.IPolicyCmptTypeAttribute;
+import org.faktorips.devtools.core.model.productcmpt.IConfigElement;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSet;
 import org.faktorips.devtools.core.model.valueset.IValueSetOwner;
@@ -206,7 +208,7 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         Group group = createGroupAroundValueSet(parent, valueSet.getValueSetType().getName());
         ValueSetEditControlFactory factory = new ValueSetEditControlFactory();
         valueSetEditControl = factory.newControl(valueSet, valueDatatype, group, toolkit, bindingContext,
-                valueSetOwner.getIpsProject());
+                valueSetOwner.getIpsProject(), valueSetPmo.sourceSet);
         valueSetEditControl.getComposite().setLayoutData(
                 new GridData(GridData.VERTICAL_ALIGN_BEGINNING | GridData.FILL_BOTH));
         return group;
@@ -463,13 +465,25 @@ public class ValueSetSpecificationControl extends ControlComposite implements ID
         public static final String MSG_CODE_NULL_NOT_ALLOWED = MSGCODE_PREFIX + "nullNotAllowed"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL_ENABLED = "containsNullEnabled"; //$NON-NLS-1$
         public static final String PROPERTY_CONTAINS_NULL = IValueSet.PROPERTY_CONTAINS_NULL;
+        private IValueSet sourceSet;
 
         public ValueSetPmo(IValueSetOwner valueSetOwner) {
             super(valueSetOwner);
+            if (valueSetOwner instanceof IConfigElement) {
+                IConfigElement configElement = (IConfigElement)valueSetOwner;
+                try {
+                    IPolicyCmptTypeAttribute attribute = configElement.findPcTypeAttribute(configElement
+                            .getIpsProject());
+                    sourceSet = attribute.getValueSet();
+                } catch (CoreException e) {
+                    throw new CoreRuntimeException(e);
+                }
+            }
         }
 
         public boolean isContainsNullEnabled() {
-            return !getValueDatatype().isPrimitive() || getValueSet().isEnum();
+            boolean sourceSetAllowsNull = sourceSet == null || sourceSet.isContainsNull();
+            return sourceSetAllowsNull && (!getValueDatatype().isPrimitive() || getValueSet().isEnum());
         }
 
         public boolean isContainsNull() {
