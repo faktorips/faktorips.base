@@ -380,7 +380,7 @@ public class BindingContext {
         if (!expectedType.isAssignableFrom(property.getPropertyType())) {
             throw new IllegalArgumentException(
                     "Expected property " + property.getName() + " to be of type " + expectedType //$NON-NLS-1$ //$NON-NLS-2$
-                            + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
+                    + ", but is of type " + property.getPropertyType()); //$NON-NLS-1$
         }
     }
 
@@ -395,7 +395,7 @@ public class BindingContext {
 
         throw new IllegalArgumentException(
                 "Property " + property.getName() + " is of type " + property.getPropertyType() //$NON-NLS-1$ //$NON-NLS-2$
-                        + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
+                + ", but is expected to of one of the types " + buffer.toString()); //$NON-NLS-1$
     }
 
     /**
@@ -837,7 +837,7 @@ public class BindingContext {
     // CSOFF: IllegalCatch
     // We need to catch all exception and only log it to update other not erroneous fields
     protected class Listener implements ContentsChangeListener, ValueChangeListener, FocusListener,
-            PropertyChangeListener {
+    PropertyChangeListener {
 
         @Override
         public void valueChanged(FieldValueChangedEvent e) {
@@ -870,13 +870,15 @@ public class BindingContext {
             for (FieldPropertyMapping<?> mapping : mappings) {
                 IIpsObjectPartContainer mappedPart = getMappedPart(mapping.getObject());
                 if (mappedPart != null) {
-                    if (event.isAffected(mappedPart)) {
-                        try {
-                            mapping.setControlValue();
-                        } catch (Exception ex) {
-                            IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
-                                    + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
-                        }
+                    try {
+                        // FIPS-4837: Don't check if mappedPart is actually affected by the event.
+                        // An update might be required anyhow (e.g. if a template changed and a
+                        // product component based on the template needs to be refreshed) and the
+                        // performance penalty is negligible
+                        mapping.setControlValue();
+                    } catch (Exception ex) {
+                        IpsPlugin.log(new IpsStatus("Error updating model property " + mapping.getPropertyName() //$NON-NLS-1$
+                                + " of object " + mapping.getObject(), ex)); //$NON-NLS-1$
                     }
                 } else {
                     mapping.setControlValue();
