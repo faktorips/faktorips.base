@@ -94,7 +94,8 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         if (sourceValueSet != null && sourceValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return convertToListChooserValues(ValueListExtractor.extractValues((IEnumValueSet)sourceValueSet));
         } else if (datatype.isEnum()) {
-            return convertToListChooserValues(ValueListExtractor.extractValues((EnumDatatype)datatype));
+            return convertToListChooserValues(ValueListExtractor.extractValues((EnumDatatype)datatype,
+                    sourceValueSet == null ? true : sourceValueSet.isContainsNull()));
         } else {
             throw new IllegalArgumentException(
                     NLS.bind(
