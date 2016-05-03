@@ -32,7 +32,7 @@ import org.faktorips.devtools.core.model.type.IProductCmptProperty;
  * A part (or component) of a product.
  */
 public interface IProductCmpt extends IIpsMetaObject, ITimedIpsObject, IProductCmptLinkContainer,
-IPropertyValueContainer {
+        IPropertyValueContainer {
 
     /**
      * The name of the product component type property
@@ -85,12 +85,6 @@ IPropertyValueContainer {
      * cycle.
      */
     public static final String MSGCODE_TEMPLATE_CYCLE = MSGCODE_PREFIX + "TemplateCycle"; //$NON-NLS-1$
-
-    /**
-     * Validation message code to indicate that a template has the same type as its parent template.
-     */
-    public static final String MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE = MSGCODE_PREFIX
-            + "MultipleTemplatesWithSameType"; //$NON-NLS-1$
 
     /**
      * Validation message code to indicate that the template for the product this generation is for

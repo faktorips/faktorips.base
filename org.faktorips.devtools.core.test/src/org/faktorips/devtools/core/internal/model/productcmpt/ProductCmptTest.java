@@ -294,36 +294,6 @@ public class ProductCmptTest extends AbstractIpsPluginTest {
     }
 
     @Test
-    public void testValidate_ProductTemplate_TemplateTypeShouldBeUniqueInTemplateHierarchy() throws CoreException {
-        IProductCmptType type = newProductCmptType(ipsProject, "type");
-        IProductCmptType subType = newProductCmptType(type, "subType");
-
-        ProductCmpt template = newProductTemplate(type, "template");
-        ProductCmpt subTemplate1 = newProductTemplate(subType, "subTemplate1");
-        ProductCmpt subTemplate2 = newProductTemplate(subType, "subTemplate2");
-
-        // Template has no template hierarchy
-        MessageList list = template.validate(ipsProject);
-        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
-
-        // Template hierarchy with unique types
-        subTemplate1.setTemplate(template.getQualifiedName());
-        list = template.validate(ipsProject);
-        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
-        list = subTemplate1.validate(ipsProject);
-        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
-
-        // Template hierarchy contains duplicate types
-        subTemplate2.setTemplate(subTemplate1.getQualifiedName());
-        list = template.validate(ipsProject);
-        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
-        list = subTemplate1.validate(ipsProject);
-        assertNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
-        list = subTemplate2.validate(ipsProject);
-        assertNotNull(list.getMessageByCode(IProductCmpt.MSGCODE_MULTIPLE_TEMPLATES_WITH_SAME_TYPE));
-    }
-
-    @Test
     public void testValidate_InconsitencyInTypeHierarch() throws CoreException {
         IProductCmptType type = newProductCmptType(ipsProject, "Product");
         ProductCmpt product = newProductCmpt(type, "products.Testproduct");

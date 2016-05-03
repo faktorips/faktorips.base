@@ -233,7 +233,6 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         validateName(list, ipsProject);
         if (isProductTemplate()) {
             TemplateValidations.validateTemplateCycle(this, list, ipsProject);
-            TemplateValidations.validateTemplateTypeDiffersFromParentTemplate(this, list, ipsProject);
         } else {
             validateRuntimeId(list, ipsProject);
         }
@@ -335,7 +334,7 @@ public class ProductCmpt extends TimedIpsObject implements IProductCmpt {
         for (ITableContentUsage tableContentUsage : tableContentUsages) {
             IDependency dependency = IpsObjectDependency.createReferenceDependency(getIpsObject()
                     .getQualifiedNameType(), new QualifiedNameType(tableContentUsage.getTableContentName(),
-                            IpsObjectType.TABLE_CONTENTS));
+                    IpsObjectType.TABLE_CONTENTS));
             qaTypes.add(dependency);
             addDetails(details, dependency, tableContentUsage, ITableContentUsage.PROPERTY_TABLE_CONTENT);
         }

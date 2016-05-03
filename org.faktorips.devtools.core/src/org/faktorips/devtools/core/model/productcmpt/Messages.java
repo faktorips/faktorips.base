@@ -60,6 +60,4 @@ public class Messages extends NLS {
     public static String DeltaType_removedTemplateLink;
 
     public static String TemplateValidations_error_templateCycle;
-    public static String TemplateValidations_warning_mutlipleTemplatesWithSameType;
-
 }

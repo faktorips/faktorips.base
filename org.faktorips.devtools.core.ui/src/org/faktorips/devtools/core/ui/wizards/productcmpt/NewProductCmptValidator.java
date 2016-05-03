@@ -15,11 +15,8 @@ import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsproject.IChangesOverTimeNamingConvention;
-import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.model.productcmpt.IProductCmpt;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptGeneration;
 import org.faktorips.devtools.core.model.productcmpt.IProductCmptNamingStrategy;
-import org.faktorips.devtools.core.model.productcmpt.template.TemplateValidations;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
@@ -100,7 +97,6 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         if (result.isEmpty()) {
             result.add(validateIpsObjectName(NewProductCmptPMO.PROPERTY_KIND_ID));
             result.add(validateAddToGeneration());
-            validateTemplateTypeDiffersFromParentTemplate(result);
         }
 
         return result;
@@ -159,23 +155,11 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
         IIpsSrcFile ipsSrcFile = generation.getIpsSrcFile();
         if (!IpsUIPlugin.isEditable(ipsSrcFile)) {
             messageList
-            .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
-                            Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
-                            Message.WARNING));
+                    .add(new Message(MSG_INVALID_ADD_TO_GENERATION, NLS.bind(
+                    Messages.NewProdutCmptValidator_msg_invalidAddToGeneration, ipsSrcFile.getName()),
+                    Message.WARNING));
         }
         return messageList;
-    }
-
-    private void validateTemplateTypeDiffersFromParentTemplate(MessageList list) {
-        if (!getPmo().isTemplate()) {
-            return;
-        }
-        IProductCmptType templateType = getPmo().getSelectedType();
-        String templateName = getPmo().getName();
-        IProductCmpt parentTemplate = getPmo().getSelectedTemplateAsProductCmpt();
-        IIpsProject ipsProject = getPmo().getIpsProject();
-        TemplateValidations.validateTemplateTypeDiffersFromParentTemplate(templateType, templateName, parentTemplate,
-                list, ipsProject);
     }
 
     MessageList validateAddToType() {
@@ -187,7 +171,7 @@ public class NewProductCmptValidator extends NewProductDefinitionValidator {
             if (!getPmo().getSelectedType().isSubtypeOrSameType(targetProductCmptType, getPmo().getIpsProject())) {
                 result.add(new Message(MSG_INVALID_SELECTED_TYPE, NLS.bind(
                         Messages.NewProdutCmptValidator_msg_invalidTypeAddTo, addToAssociation.getName(), getPmo()
-                        .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
+                                .getAddToProductCmptGeneration().getProductCmpt().getName()), Message.WARNING));
             }
         }
         return result;
