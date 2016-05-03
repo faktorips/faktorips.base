@@ -33,6 +33,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.faktorips.devtools.core.IpsPlugin;
 import org.faktorips.devtools.core.ui.IpsUIPlugin;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.ValueDatatypeControlFactory;
@@ -293,10 +294,11 @@ public class SubsetChooserViewer {
 
         @Override
         public void update(ViewerCell cell) {
-            ListChooserValue value = (ListChooserValue)cell.getElement();
+            ListChooserValue listChooserValue = (ListChooserValue)cell.getElement();
 
-            String formattedString = IpsUIPlugin.getDefault().getDatatypeFormatter()
-                    .formatValue(model.getValueDatatype(), value.getValue());
+            String value = listChooserValue.getValue();
+            String formattedString = value == null ? IpsPlugin.getDefault().getIpsPreferences().getNullPresentation()
+                    : IpsUIPlugin.getDefault().getDatatypeFormatter().formatValue(model.getValueDatatype(), value);
             cell.setText(formattedString);
         }
 
