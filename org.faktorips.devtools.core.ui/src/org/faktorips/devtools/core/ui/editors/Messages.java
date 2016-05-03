@@ -64,5 +64,6 @@ public class Messages extends NLS {
     public static String LabelEditComposite_tableColumnHeaderLanguage;
     public static String LabelEditComposite_tableColumnHeaderLabel;
     public static String LabelEditComposite_tableColumnHeaderPluralLabel;
+    public static String SearchSelectionBar_searchBarTitle;
 
 }

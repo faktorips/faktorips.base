@@ -10,14 +10,24 @@
 
 package org.faktorips.devtools.core.ui.editors.enumcontent;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.faktorips.devtools.core.internal.model.enums.EnumValue;
 import org.faktorips.devtools.core.model.ContentChangeEvent;
 import org.faktorips.devtools.core.model.ContentsChangeListener;
+import org.faktorips.devtools.core.model.IIpsElement;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.enums.IEnumType;
 import org.faktorips.devtools.core.model.enums.IEnumValueContainer;
@@ -25,7 +35,10 @@ import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.ui.UIToolkit;
 import org.faktorips.devtools.core.ui.actions.EnumImportExportAction;
 import org.faktorips.devtools.core.ui.editors.IpsObjectEditorPage;
+import org.faktorips.devtools.core.ui.editors.SearchSelectionBar;
+import org.faktorips.devtools.core.ui.editors.SelectionStatusBarPublisher;
 import org.faktorips.devtools.core.ui.editors.enums.EnumValuesSection;
+import org.faktorips.devtools.core.ui.util.TypedSelection;
 
 /**
  * The <tt>EnumContentEditorPage</tt> shows general information about an <tt>IEnumContent</tt> and
@@ -60,6 +73,8 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     /** Values section showing the <tt>IEnumValue</tt>s. */
     private EnumValuesSection enumValuesSection;
 
+    private SelectionStatusBarPublisher selectionStatusBarPublisher;
+
     /**
      * Creates a new <tt>EnumContentEditorPage</tt>.
      * 
@@ -79,8 +94,10 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
     @Override
     protected void createPageContent(Composite formBody, UIToolkit toolkit) {
         formBody.setLayout(createPageLayout(1, false));
+        SearchSelectionBar searchSelectionLogic = new SearchSelectionBar(formBody, toolkit);
 
         createToolbarActions();
+
         createToolbar();
 
         new EnumContentGeneralInfoSection(this, enumContent, formBody, toolkit);
@@ -89,6 +106,43 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
         } catch (CoreException e) {
             throw new RuntimeException(e);
         }
+
+        selectionStatusBarPublisher = new SelectionStatusBarPublisher(getEditorSite());
+
+        TableViewer tab = enumValuesSection.getEnumValueTableViewer();
+        tab.addSelectionChangedListener(new ISelectionChangedListener() {
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                selectionStatusBarPublisher.updateMarkedRows(rowsFromSelection(event.getSelection()));
+            }
+        });
+
+        searchSelectionLogic.init(tab);
+    }
+
+    private List<Integer> rowsFromSelection(ISelection selection) {
+        List<Integer> rowNumbers = new ArrayList<Integer>();
+        if (!selection.isEmpty()) {
+            Collection<EnumValue> rows = TypedSelection.createAnyCount(EnumValue.class, selection).getElements();
+            for (EnumValue row : rows) {
+                rowNumbers.add(calculateEnumRowNr(row));
+            }
+        }
+        return rowNumbers;
+    }
+
+    private int calculateEnumRowNr(EnumValue enumValue) {
+        int a = 0;
+        try {
+            IIpsElement[] arr = enumValue.getParent().getChildren();
+            while (enumValue != arr[a]) {
+                a++;
+            }
+        } catch (CoreException e) {
+            // Just for safety reasons
+            e.printStackTrace();
+        }
+        return a - 1;
     }
 
     private void createToolbarActions() {
@@ -177,7 +231,5 @@ public class EnumContentEditorPage extends IpsObjectEditorPage implements Conten
                 enumValuesSection.refresh();
             }
         }
-
     }
-
 }
