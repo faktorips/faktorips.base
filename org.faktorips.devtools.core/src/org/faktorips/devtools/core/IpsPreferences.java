@@ -247,14 +247,14 @@ public class IpsPreferences {
     /**
      * Returns the string to represent null values to the user.
      */
-    public final String getNullPresentation() {
+    public String getNullPresentation() {
         return prefStore.getString(NULL_REPRESENTATION_STRING);
     }
 
     /**
      * Sets the new presentation for <code>null</code>.
      */
-    public final void setNullPresentation(String newPresentation) {
+    public void setNullPresentation(String newPresentation) {
         prefStore.setValue(NULL_REPRESENTATION_STRING, newPresentation);
     }
 
@@ -262,7 +262,7 @@ public class IpsPreferences {
      * Returns the postfix used to create a default name for a product component type for a given
      * policy component type name.
      */
-    public final String getDefaultProductCmptTypePostfix() {
+    public String getDefaultProductCmptTypePostfix() {
         return prefStore.getString(DEFAULT_PRODUCT_CMPT_TYPE_POSTFIX);
     }
 

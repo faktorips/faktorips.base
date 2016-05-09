@@ -45,15 +45,15 @@ public class MultiValueAttributeHandler {
             openMultiValueSubsetDialog((IEnumValueSet)modelValueSet);
         } else {
             if (datatype.isEnum()) {
-                openMultiValueSubsetDialog((EnumDatatype)datatype);
+                openMultiValueSubsetDialog((EnumDatatype)datatype, modelValueSet.isContainsNull());
             } else {
                 openMultiValueDialog();
             }
         }
     }
 
-    protected void openMultiValueSubsetDialog(EnumDatatype enumDatatype) {
-        openMultiValueSubsetDialog(ValueListExtractor.extractValues(enumDatatype));
+    protected void openMultiValueSubsetDialog(EnumDatatype enumDatatype, boolean includeNull) {
+        openMultiValueSubsetDialog(ValueListExtractor.extractValues(enumDatatype, includeNull));
     }
 
     protected void openMultiValueSubsetDialog(IEnumValueSet sourceValueSet) {

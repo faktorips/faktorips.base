@@ -148,6 +148,7 @@ public class MultiValueAttributeHandlerTest {
         when(enumValueset.canBeUsedAsSupersetForAnotherEnumValueSet()).thenReturn(!abstractValueSet);
         when(prodAttr.getValueSet()).thenReturn(enumValueset);
         when(enumValueset.getValuesAsList()).thenReturn(valueSetValues);
+        when(enumValueset.isContainsNull()).thenReturn(true);
         doNothing().when(handler).openMultiValueSubsetDialog(anyListOf(String.class));
         return handler;
     }

@@ -12,8 +12,12 @@ package org.faktorips.devtools.core.ui.inputformat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
+import java.util.Locale;
+
+import org.apache.commons.lang.StringUtils;
 import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.devtools.core.EnumTypeDisplay;
 import org.faktorips.devtools.core.IpsPreferences;
@@ -36,6 +40,7 @@ public class EnumDatatypeInputFormatTest {
 
     @Before
     public void createInputFormat() {
+        doReturn(Locale.GERMANY).when(ipsPreferences).getDatatypeFormattingLocale();
         enumDatatypeInputFormat = new EnumDatatypeInputFormat(enumDatatype, ipsPreferences);
     }
 
@@ -48,6 +53,7 @@ public class EnumDatatypeInputFormatTest {
         when(enumDatatype.getValueName("c")).thenReturn("c (c)");
         when(enumDatatype.isParsable("a")).thenReturn(true);
         when(enumDatatype.isParsable("b")).thenReturn(true);
+        when(enumDatatype.isParsable("c")).thenReturn(true);
         when(enumDatatype.isParsable("c")).thenReturn(true);
     }
 
@@ -241,6 +247,13 @@ public class EnumDatatypeInputFormatTest {
         String parseValueName = enumDatatypeInputFormat.parseValueNameAndID("agds (");
 
         assertNull(parseValueName);
+    }
+
+    @Test
+    public void testFormatNullIsEmptyString() throws Exception {
+        String nullString = enumDatatypeInputFormat.format(null);
+
+        assertEquals(StringUtils.EMPTY, nullString);
     }
 
 }

@@ -9,7 +9,9 @@
  *******************************************************************************/
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.runtime.CoreException;
 import org.faktorips.abstracttest.AbstractIpsPluginTest;
 import org.faktorips.abstracttest.TestEnumType;
+import org.faktorips.datatype.Datatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.internal.model.productcmpttype.ProductCmptType;
 import org.faktorips.devtools.core.internal.model.valueset.EnumValueSet;
@@ -89,6 +92,50 @@ public class ValueSetSpecificationControlTest extends AbstractIpsPluginTest {
         overwritingAttr.setValueSetCopy(new EnumValueSet(overwritingAttr, listWithNull, "partId"));
 
         assertHasNullNotAllowedMessage(overwritingAttr);
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_primitiveAttribute() {
+        IProductCmptTypeAttribute primitiveAttribute = productCmptType.newProductCmptTypeAttribute("attr");
+        primitiveAttribute.setDatatype(Datatype.PRIMITIVE_INT.getName());
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(primitiveAttribute);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_nonPrimitiveAttribute() {
+        IProductCmptTypeAttribute attribute = productCmptType.newProductCmptTypeAttribute("attr");
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(attribute);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(true));
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_EnumContainsNullAttribute() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setProductRelevant(true);
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3", null), "mockId"));
+        IConfigElement configElement = generation.newConfigElement(attribute);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configElement);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(true));
+    }
+
+    @Test
+    public void testValueSetPmoIsContainsNullEnabled_EnumDoesNotContainNullAttribute() {
+        IPolicyCmptTypeAttribute attribute = policyCmptType.newPolicyCmptTypeAttribute("attr");
+        attribute.setProductRelevant(true);
+        attribute.setDatatype(Datatype.INTEGER.getName());
+        attribute.changeValueSetType(ValueSetType.ENUM);
+        attribute.setValueSetCopy(new EnumValueSet(attribute, Arrays.asList("1", "2", "3"), "mockId"));
+        IConfigElement configElement = generation.newConfigElement(attribute);
+        ValueSetPmo valueSetPmo = new ValueSetSpecificationControl.ValueSetPmo(configElement);
+
+        assertThat(valueSetPmo.isContainsNullEnabled(), is(false));
     }
 
     private void assertHasNullNotAllowedMessage(IValueSetOwner valueSetOwner) throws CoreException {

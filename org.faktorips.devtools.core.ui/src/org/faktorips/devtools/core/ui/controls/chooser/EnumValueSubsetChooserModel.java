@@ -70,17 +70,6 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         sourceValues = initSourceValuesForEnumDatatypeAndValueSet(sourceValueSet, datatype);
     }
 
-    /**
-     * Creates a subset chooser model that uses the given enumDatatype's values as source values.
-     * The enumValueset's values are the target/resulting values.
-     * 
-     * @param enumDatatype the data type defining the set of valid values
-     * @param enumValueSet the resulting value set (e.g. the config-element's value set)
-     */
-    public EnumValueSubsetChooserModel(EnumDatatype enumDatatype, IEnumValueSet enumValueSet) {
-        this(null, enumDatatype, enumValueSet);
-    }
-
     private List<ListChooserValue> convertToListChooserValues(List<String> allValueIds) {
         List<ListChooserValue> values = new ArrayList<ListChooserValue>();
         for (String string : allValueIds) {
@@ -94,7 +83,8 @@ public class EnumValueSubsetChooserModel extends AbstractSubsetChooserModel {
         if (sourceValueSet != null && sourceValueSet.canBeUsedAsSupersetForAnotherEnumValueSet()) {
             return convertToListChooserValues(ValueListExtractor.extractValues((IEnumValueSet)sourceValueSet));
         } else if (datatype.isEnum()) {
-            return convertToListChooserValues(ValueListExtractor.extractValues((EnumDatatype)datatype));
+            return convertToListChooserValues(ValueListExtractor.extractValues((EnumDatatype)datatype,
+                    sourceValueSet == null ? true : sourceValueSet.isContainsNull()));
         } else {
             throw new IllegalArgumentException(
                     NLS.bind(

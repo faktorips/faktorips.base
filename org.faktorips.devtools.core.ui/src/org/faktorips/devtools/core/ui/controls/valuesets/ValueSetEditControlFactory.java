@@ -11,7 +11,6 @@
 package org.faktorips.devtools.core.ui.controls.valuesets;
 
 import org.eclipse.swt.widgets.Composite;
-import org.faktorips.datatype.EnumDatatype;
 import org.faktorips.datatype.ValueDatatype;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.valueset.IEnumValueSet;
@@ -44,6 +43,8 @@ public class ValueSetEditControlFactory {
      * @param toolkit The ui toolkit to use.
      * @param uiController The bindingContext.
      * @param ipsProject the {@link IValueSetOwner}'s {@link IIpsProject}
+     * @param sourceSet if the valueSet is an {@link IEnumValueSet} that constrains another
+     *            {@link IValueSet}, that sourceSet is given here
      * 
      * @return The new composite.
      */
@@ -52,7 +53,8 @@ public class ValueSetEditControlFactory {
             Composite parent,
             UIToolkit toolkit,
             BindingContext uiController,
-            IIpsProject ipsProject) {
+            IIpsProject ipsProject,
+            IValueSet sourceSet) {
 
         if (valueSet.isRange() && !valueSet.isAbstract()) {
             return new RangeEditControl(parent, toolkit, valueDatatype, (IRangeValueSet)valueSet, uiController);
@@ -61,7 +63,7 @@ public class ValueSetEditControlFactory {
             IEnumValueSet enumValueSet = (IEnumValueSet)valueSet;
             if (valueDatatype.isEnum()) {
                 SubsetChooserViewer subsetChooserViewer = new SubsetChooserViewer(parent, toolkit);
-                EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel((EnumDatatype)valueDatatype,
+                EnumValueSubsetChooserModel model = new EnumValueSubsetChooserModel(sourceSet, valueDatatype,
                         enumValueSet);
                 subsetChooserViewer.init(model);
                 return new SubsetChooserEditControl(subsetChooserViewer.getChooserComposite(), model);
