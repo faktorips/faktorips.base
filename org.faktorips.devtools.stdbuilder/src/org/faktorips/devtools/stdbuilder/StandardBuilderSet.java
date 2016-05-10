@@ -30,6 +30,7 @@ import org.faktorips.devtools.core.ExtensionPoints;
 import org.faktorips.devtools.core.builder.DefaultBuilderSet;
 import org.faktorips.devtools.core.builder.ExtendedExprCompiler;
 import org.faktorips.devtools.core.builder.GenericBuilderKindId;
+import org.faktorips.devtools.core.builder.IJavaBuilderSet;
 import org.faktorips.devtools.core.builder.IPersistenceProvider;
 import org.faktorips.devtools.core.builder.JavaSourceFileBuilder;
 import org.faktorips.devtools.core.builder.naming.BuilderAspect;
@@ -95,7 +96,7 @@ import org.faktorips.util.ArgumentCheck;
  * 
  * @author Peter Erzberger
  */
-public class StandardBuilderSet extends DefaultBuilderSet {
+public class StandardBuilderSet extends DefaultBuilderSet implements IJavaBuilderSet {
 
     public static final String ID = "org.faktorips.devtools.stdbuilder.ipsstdbuilderset";
 
@@ -529,21 +530,7 @@ public class StandardBuilderSet extends DefaultBuilderSet {
 
     }
 
-    /**
-     * Returns a list containing all <tt>IJavaElement</tt>s this builder set generates for the given
-     * <tt>IIpsObjectPartContainer</tt>.
-     * <p>
-     * Returns an empty list if no <tt>IJavaElement</tt>s are generated for the provided
-     * <tt>IIpsObjectPartContainer</tt>.
-     * <p>
-     * The IPS model should be completely valid if calling this method or else the results may not
-     * be exhaustive.
-     * 
-     * @param ipsObjectPartContainer The <tt>IIpsObjectPartContainer</tt> to obtain the generated
-     *            <tt>IJavaElement</tt>s for.
-     * 
-     * @throws NullPointerException If the parameter is null
-     */
+    @Override
     public List<IJavaElement> getGeneratedJavaElements(IIpsObjectPartContainer ipsObjectPartContainer) {
         ArgumentCheck.notNull(ipsObjectPartContainer);
 

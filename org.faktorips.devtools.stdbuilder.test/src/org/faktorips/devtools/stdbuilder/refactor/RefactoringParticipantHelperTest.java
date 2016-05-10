@@ -17,16 +17,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.faktorips.devtools.core.internal.model.ipsobject.refactor.IIpsMoveRenameIpsObjectProcessor;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
-import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.stdbuilder.StandardBuilderSet;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +79,23 @@ public class RefactoringParticipantHelperTest extends RefactoringParticipantTest
         assertTrue(spyRefactoringHelper.initialize(ipsRefactoringProcessor, mockIpsObjectPartContainer));
 
         verify(spyRefactoringHelper).initializeJavaElements(targetIpsObjectPartContainer, mockStandardBuilderSet);
+    }
+
+    @Test
+    public void testInitializeIpsObjectPartContainer_targetsRemembered() throws CoreException {
+        ipsRefactoringProcessor = mock(IpsRefactoringProcessor.class,
+                withSettings().extraInterfaces(IIpsMoveRenameIpsObjectProcessor.class));
+        when(mockIpsObjectPartContainer.getIpsProject()).thenReturn(mockIpsProject);
+        when(mockIpsProject.getIpsArtefactBuilderSet()).thenReturn(mockStandardBuilderSet);
+        IpsRefactoringModificationSet modificationSet = new IpsRefactoringModificationSet(mockIpsObjectPartContainer);
+        IIpsObjectPartContainer targetIpsObjectPartContainer = mock(IIpsObjectPartContainer.class);
+        modificationSet.setTargetElement(targetIpsObjectPartContainer);
+        when(ipsRefactoringProcessor.refactorIpsModel(any(IProgressMonitor.class))).thenReturn(modificationSet);
+
+        assertTrue(spyRefactoringHelper.initialize(ipsRefactoringProcessor, mockIpsObjectPartContainer));
+
+        verify(mockStandardBuilderSet).getGeneratedJavaElements(mockIpsObjectPartContainer);
+        ((IIpsMoveRenameIpsObjectProcessor)verify(ipsRefactoringProcessor)).getTargetJavaElements();
     }
 
     @Test

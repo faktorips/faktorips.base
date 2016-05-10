@@ -11,6 +11,7 @@
 package org.faktorips.devtools.core.internal.model.ipsobject.refactor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,17 +19,21 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.osgi.util.NLS;
 import org.faktorips.devtools.core.IpsStatus;
 import org.faktorips.devtools.core.builder.IDependencyGraph;
+import org.faktorips.devtools.core.builder.IJavaBuilderSet;
 import org.faktorips.devtools.core.internal.builder.DependencyGraph;
 import org.faktorips.devtools.core.model.IDependency;
 import org.faktorips.devtools.core.model.IDependencyDetail;
 import org.faktorips.devtools.core.model.enums.IEnumContent;
 import org.faktorips.devtools.core.model.ipsobject.IIpsObject;
+import org.faktorips.devtools.core.model.ipsobject.IIpsObjectPartContainer;
 import org.faktorips.devtools.core.model.ipsobject.IIpsSrcFile;
 import org.faktorips.devtools.core.model.ipsobject.QualifiedNameType;
+import org.faktorips.devtools.core.model.ipsproject.IIpsArtefactBuilderSet;
 import org.faktorips.devtools.core.model.ipsproject.IIpsPackageFragment;
 import org.faktorips.devtools.core.model.ipsproject.IIpsProject;
 import org.faktorips.devtools.core.model.pctype.IPolicyCmptType;
@@ -40,6 +45,7 @@ import org.faktorips.devtools.core.model.productcmpttype.IProductCmptType;
 import org.faktorips.devtools.core.model.productcmpttype.IProductCmptTypeAssociation;
 import org.faktorips.devtools.core.model.type.IAssociation;
 import org.faktorips.devtools.core.refactor.IpsRefactoringModificationSet;
+import org.faktorips.devtools.core.refactor.IpsRefactoringProcessor;
 import org.faktorips.devtools.core.util.RefactorUtil;
 import org.faktorips.util.ArgumentCheck;
 import org.faktorips.util.message.Message;
@@ -51,13 +57,15 @@ import org.faktorips.util.message.MessageList;
  * 
  * @author Alexander Weickmann
  */
-public final class MoveRenameIpsObjectHelper {
+public final class MoveRenameIpsObjectHelper implements IIpsMoveRenameIpsObjectProcessor {
 
     private final IIpsObject toBeRefactored;
 
     private IDependency[] dependencies;
 
     private Map<IDependency, IIpsProject> dependencyToProject;
+
+    private List<IJavaElement> targetJavaElements;
 
     /**
      * @throws NullPointerException If the provided {@link IIpsObject} is null
@@ -133,11 +141,9 @@ public final class MoveRenameIpsObjectHelper {
      * Returns the list of validation messages that should be added to the return status by the
      * calling refactoring processor.
      */
-    public MessageList checkFinalConditionsThis(IIpsPackageFragment targetIpsPackageFragment,
-            String newName,
+    public MessageList checkFinalConditionsThis(IpsRefactoringProcessor ipsRefactoringProcessor,
             RefactoringStatus status,
-            IProgressMonitor pm) throws CoreException {
-
+            IProgressMonitor pm) {
         IIpsSrcFile originalFile = toBeRefactored.getIpsSrcFile();
         if (isSourceFilesSavedRequired() && originalFile.isDirty()) {
             String text = NLS.bind(Messages.MoveRenameIpsObjectHelper_msgSourceFileDirty,
@@ -145,19 +151,21 @@ public final class MoveRenameIpsObjectHelper {
             status.addFatalError(text);
             return new MessageList();
         }
-        IIpsSrcFile targetFile = null;
+        IpsRefactoringModificationSet modificationSet = null;
         try {
-            targetFile = RefactorUtil.moveIpsSrcFile(originalFile, targetIpsPackageFragment, newName, pm);
+            modificationSet = ipsRefactoringProcessor.refactorIpsModel(pm);
+            IIpsObjectPartContainer refactoredTarget = (IIpsObjectPartContainer)modificationSet.getTargetElement();
+
+            rememberTargetJavaElementsForRefactoringParticipants(refactoredTarget);
 
             // Perform validation on target file.
-            IIpsObject copiedIpsObject = targetFile.getIpsObject();
-            MessageList validationMessageList = copiedIpsObject.validate(copiedIpsObject.getIpsProject());
+            MessageList validationMessageList = refactoredTarget.validate(refactoredTarget.getIpsProject());
 
             return validationMessageList;
             // CSOFF: IllegalCatch
-            // Need to catch RuntimeException to get really every exception and set corresponding
+            // Need to catch Exception to get really every exception and set corresponding
             // fatal error status
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             if (e.getLocalizedMessage() != null) {
                 status.addFatalError(e.getLocalizedMessage());
             } else {
@@ -166,10 +174,17 @@ public final class MoveRenameIpsObjectHelper {
             return new MessageList();
             // CSON: IllegalCatch
         } finally {
-            if (targetFile != null) {
-                RefactorUtil.moveIpsSrcFile(targetFile, originalFile.getIpsPackageFragment(),
-                        originalFile.getIpsObjectName(), pm);
+            if (modificationSet != null) {
+                modificationSet.undo();
             }
+        }
+    }
+
+    private void rememberTargetJavaElementsForRefactoringParticipants(IIpsObjectPartContainer copiedIpsObject) {
+        IIpsArtefactBuilderSet ipsArtefactBuilderSet = copiedIpsObject.getIpsProject().getIpsArtefactBuilderSet();
+        if (ipsArtefactBuilderSet instanceof IJavaBuilderSet) {
+            IJavaBuilderSet javaBuilderSet = (IJavaBuilderSet)ipsArtefactBuilderSet;
+            this.targetJavaElements = javaBuilderSet.getGeneratedJavaElements(copiedIpsObject);
         }
     }
 
@@ -287,6 +302,15 @@ public final class MoveRenameIpsObjectHelper {
         for (IDependency dependency : graph.getDependants(toBeRefactored.getQualifiedNameType())) {
             dependencies.add(dependency);
             dependencyToProject.put(dependency, project);
+        }
+    }
+
+    @Override
+    public List<IJavaElement> getTargetJavaElements() {
+        if (targetJavaElements != null) {
+            return targetJavaElements;
+        } else {
+            return Collections.emptyList();
         }
     }
 
